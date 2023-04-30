@@ -2,6 +2,21 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@layer utilities {
+  .notched {
+    clip-path: polygon(
+      0% 10px,
+      /* top left */ 10px 0%,
+      /* top left */ calc(100% - 10px) 0%,
+      /* top right */ 100% 10px,
+      /* top right */ 100% calc(100% - 10px),
+      /* bottom right */ calc(100% - 10px) 100%,
+      /* bottom right */ 10px 100%,
+      /* bottom left */ 0 calc(100% - 10px) /* bottom left */
+    );
+  }
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -9,7 +24,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #151225;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

@@ -5,7 +5,7 @@ import { refreshToken } from './auth';
 function authInterceptor(config: { headers: any }) {
     const token = getAccessToken();
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `${token}`;
     }
     return config;
 }
@@ -24,7 +24,7 @@ axios.interceptors.response.use(
 
                 saveTokens(accessToken, newRefreshToken);
 
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                originalRequest.headers.Authorization = `${accessToken}`;
 
                 return axios(originalRequest);
             } catch (err) {

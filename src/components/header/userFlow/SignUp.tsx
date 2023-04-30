@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 // Import Google Login component (optional)
 // import GoogleLogin from "react-google-login";
-import { register } from "../../services/auth/auth";
-import { TailSpin } from "react-loader-spinner";
+import { register } from "../../../services/auth/auth";
+import MainButton from "../../MainButton";
+import { saveTokens } from "../../../services/auth/authUtils";
+import UserContext from "../../../UserContext";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -11,12 +13,17 @@ const SignUpPage: React.FC = () => {
   const [profilePicture, setProfilePicture] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { toggleLogin } = useContext(UserContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     setLoading(true);
     e.preventDefault();
     try {
       await register(email, password, nickname, profilePicture)
+        .then((response) => {
+          saveTokens(response.token, "");
+          toggleLogin();
+        })
         .catch((error) => {
           console.log(error);
           setError(
@@ -138,23 +145,14 @@ const SignUpPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex flex-col ">
-                  <button
-                    type="submit"
+                  <MainButton
+                    text="Sign up"
+                    onClick={() => {}}
                     disabled={loading}
-                    className="bg-indigo-500 text-white px-6 py-2 rounded-lg hover:bg-indigo-40"
-                  >
-                    {loading === true ? (
-                      <TailSpin
-                        height="20"
-                        width="20"
-                        color="#fff"
-                        ariaLabel="tail-spin-loading"
-                        radius="1"
-                      />
-                    ) : (
-                      "Create Account"
-                    )}
-                  </button>
+                    loading={loading}
+                    submit
+                  />
+
                   {error && <p className="text-red-500 text-sm">{error}</p>}
                   {/* Uncomment to enable Google Login */}
                   {/* <GoogleLogin

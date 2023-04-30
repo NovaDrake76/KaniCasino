@@ -17,3 +17,8 @@ export async function register(email: string, password: string, username: string
     });
     return response.data;
 }
+
+export async function me() {
+    const response = await api.get('/users/me');
+    return response.data;
+}

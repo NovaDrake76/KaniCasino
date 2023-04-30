@@ -113,7 +113,14 @@ router.post(
 // Get logged-in user data
 router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
   try {
-    res.json(req.user);
+    const {
+      _id: id,
+      nickname,
+      profilePicture,
+      level,
+      walletBalance,
+    } = req.user;
+    res.json({ id, nickname, profilePicture, level, walletBalance });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

@@ -1,25 +1,32 @@
-import React, { useState } from "react";
-import { login } from "../../services/auth/auth";
-import { saveTokens } from "../../services/auth/authUtils";
-import { TailSpin } from "react-loader-spinner";
+import React, { useContext, useState } from "react";
+import { login } from "../../../services/auth/auth";
+import { saveTokens } from "../../../services/auth/authUtils";
+import MainButton from "../../MainButton";
+import UserContext from "../../../UserContext";
 
-interface LoginPageProps {
-  onLoginSuccess: any;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingButton, setLoadingButton] = useState(false);
+  const { toggleLogin } = useContext(UserContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     setLoadingButton(true);
     e.preventDefault();
     try {
-      const { accessToken, refreshToken } = await login(email, password);
-      saveTokens(accessToken, refreshToken);
-      onLoginSuccess();
+      await login(email, password)
+        .then((response) => {
+          saveTokens(response.token, "");
+          toggleLogin();
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessage(
+            error.response.data.message || "Invalid email or password."
+          );
+        });
+
       setLoadingButton(false);
     } catch (error) {
       setErrorMessage("Invalid email or password");
@@ -31,7 +38,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     <div className="flex items-center justify-center transition-all ">
       <div className="max-w-md w-full space-y-4">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
             Sign in to your account
           </h2>
         </div>
@@ -86,23 +93,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           </div>
 
           <div>
-            <button
-              type="submit"
+            <MainButton
+              text="Sign in"
+              onClick={() => {}}
               disabled={loadingButton}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              {loadingButton ? (
-                <TailSpin
-                  height="20"
-                  width="20"
-                  color="#fff"
-                  ariaLabel="tail-spin-loading"
-                  radius="1"
-                />
-              ) : (
-                "Sign in"
-              )}
-            </button>
+              loading={loadingButton}
+              submit
+            />
           </div>
         </form>
       </div>
