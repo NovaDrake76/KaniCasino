@@ -6,6 +6,7 @@ const { check, validationResult } = require("express-validator");
 
 const User = require("../models/User");
 const authMiddleware = require("../middleware/authMiddleware");
+const getRandomPlaceholderImage = require("../utils/placeholderImages");
 
 // Register user
 router.post(
@@ -40,6 +41,11 @@ router.post(
       // Hash password
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
+
+      //if profilePicture is not provided, use default image
+      if (!profilePicture || profilePicture === "") {
+        user.profilePicture = getRandomPlaceholderImage();
+      }
 
       // Save user to the database
       await user.save();

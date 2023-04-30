@@ -4,6 +4,7 @@ import UserContext from "../../UserContext";
 import MainButton from "../MainButton";
 import { clearTokens } from "../../services/auth/authUtils";
 import { me } from "../../services/auth/auth";
+import { IoMdExit } from "react-icons/io";
 
 interface Navbar {
   openUserFlow: boolean;
@@ -27,7 +28,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const getUserInfo = async () => {
     await me()
       .then((response: { data: any }) => {
-        setData(response.data);
+        setData(response);
       })
       .catch((error: any) => {
         console.log(error);
@@ -73,11 +74,24 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
 
           {isLogged === true ? (
             <div className="flex items-center gap-4">
-              <Link to="/dashboard">
-                <div className="text-white font-normal text-lg">Dashboard</div>
-              </Link>
-              <div className="text-white font-normal text-lg" onClick={Logout}>
-                Logout
+              <img
+                src={
+                  data?.profilePicture
+                    ? `data:image/jpeg;base64,${data?.profilePicture}`
+                    : "https://i.imgur.com/0hW0K1Z.png"
+                }
+                alt="avatar"
+                className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+              />
+              <div className="rounded-full bg-blue-500 w-5 h-5 flex justify-center items-center -ml-7 -mb-7">
+                {data?.level}
+              </div>
+
+              <div
+                className="text-[#625F7E] font-normal text-lg cursor-pointer hover:text-gray-200 transition-all "
+                onClick={Logout}
+              >
+                <IoMdExit className="text-2xl" />
               </div>
             </div>
           ) : (
