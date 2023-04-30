@@ -25,7 +25,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password, username } = req.body;
+    const { email, password, username, profilePicture } = req.body;
 
     try {
       // Check if user already exists
@@ -35,7 +35,7 @@ router.post(
       }
 
       // Create new user
-      user = new User({ email, password, username });
+      user = new User({ email, password, username, profilePicture });
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
@@ -65,6 +65,7 @@ router.post(
 // Login user
 router.post(
   "/login",
+
   [
     check("email", "Please include a valid email").isEmail(),
     check("password", "Password is required").exists(),
