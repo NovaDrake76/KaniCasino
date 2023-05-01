@@ -18,6 +18,7 @@ router.post(
       "Please enter a password with 6 or more characters"
     ).isLength({ min: 6 }),
     check("username", "Please enter a valid username").not().isEmpty(),
+    check("isAdmin", "isAdmin must be a boolean value").optional().isBoolean(),
   ],
   async (req, res) => {
     // Handle validation errors
@@ -26,7 +27,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password, username, profilePicture } = req.body;
+    const { email, password, username, profilePicture, isAdmin } = req.body;
 
     try {
       // Check if user already exists
@@ -36,7 +37,7 @@ router.post(
       }
 
       // Create new user
-      user = new User({ email, password, username, profilePicture });
+      user = new User({ email, password, username, profilePicture, isAdmin });
 
       // Hash password
       const salt = await bcrypt.genSalt(10);

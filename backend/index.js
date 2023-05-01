@@ -1,9 +1,18 @@
 const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const http = require("http");
 const socketIO = require("socket.io");
-const cors = require("cors");
 require("dotenv").config();
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server, {
+  cors: {
+    origin: "*", // Change this later
+    methods: ["GET", "POST"],
+  },
+});
 
 const authRoutes = require("./routes/auth");
 const coinFlip = require("./games/coinFlip");
@@ -13,10 +22,6 @@ const itemRoutes = require("./routes/itemRoutes");
 const userRoutes = require("./routes/userRoutes");
 const marketplaceRoutes = require("./routes/marketplaceRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-
-const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
 
 // Connect to MongoDB
 mongoose
@@ -48,4 +53,16 @@ const port = process.env.PORT || 5000;
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+let onlineUsers = 0;
+
+io.on("connection", (socket) => {
+  onlineUsers++;
+  io.emit("onlineUsers", onlineUsers);
+
+  socket.on("disconnect", () => {
+    onlineUsers--;
+    io.emit("onlineUsers", onlineUsers);
+  });
 });
