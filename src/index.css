@@ -42,6 +42,10 @@
     rgba(21, 18, 37, 1) 71%,
     rgba(62, 42, 92, 1) 100%
   );
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#151225",endColorstr="#3e2a5c",GradientType=1);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
