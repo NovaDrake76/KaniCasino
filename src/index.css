@@ -2,6 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
 @layer utilities {
   .notched {
     clip-path: polygon(
@@ -18,14 +20,29 @@
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #151225;
-
+  background: rgb(21, 18, 37);
+  background: -moz-linear-gradient(
+    322deg,
+    rgba(21, 18, 37, 1) 71%,
+    rgba(62, 42, 92, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    322deg,
+    rgba(21, 18, 37, 1) 71%,
+    rgba(62, 42, 92, 1) 100%
+  );
+  background: linear-gradient(
+    322deg,
+    rgba(21, 18, 37, 1) 71%,
+    rgba(62, 42, 92, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#151225",endColorstr="#3e2a5c",GradientType=1);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

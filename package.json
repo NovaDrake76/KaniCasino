@@ -16,6 +16,7 @@
     "react-helmet": "^6.1.0",
     "react-icons": "^4.8.0",
     "react-loader-spinner": "^5.3.4",
+    "react-loading-skeleton": "^3.2.1",
     "react-router-dom": "^6.11.0",
     "socket.io-client": "^4.6.1"
   },
