@@ -36,7 +36,8 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
       })
       .catch((error: any) => {
         console.log(error);
-        clearTokens();
+        Logout();
+        setLoading(false);
       });
   };
 

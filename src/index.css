@@ -27,24 +27,6 @@
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background: rgb(21, 18, 37);
-  background: -moz-linear-gradient(
-    322deg,
-    rgba(21, 18, 37, 1) 71%,
-    rgba(62, 42, 92, 1) 100%
-  );
-  background: -webkit-linear-gradient(
-    322deg,
-    rgba(21, 18, 37, 1) 71%,
-    rgba(62, 42, 92, 1) 100%
-  );
-  background: linear-gradient(
-    322deg,
-    rgba(21, 18, 37, 1) 71%,
-    rgba(62, 42, 92, 1) 100%
-  );
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
 
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#151225",endColorstr="#3e2a5c",GradientType=1);
   font-synthesis: none;
@@ -69,6 +51,24 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background: rgb(21, 18, 37);
+  background: -moz-linear-gradient(
+    322deg,
+    rgba(21, 18, 37, 1) 71%,
+    rgba(62, 42, 92, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    322deg,
+    rgba(21, 18, 37, 1) 71%,
+    rgba(62, 42, 92, 1) 100%
+  );
+  background: linear-gradient(
+    322deg,
+    rgba(21, 18, 37, 1) 71%,
+    rgba(62, 42, 92, 1) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 h1 {

@@ -11,7 +11,6 @@ const Home = () => {
     setLoading(true);
     getCases()
       .then((response) => {
-        console.log(response);
         setCases(response);
       })
       .catch((error) => {

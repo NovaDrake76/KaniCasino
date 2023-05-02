@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import Case from "../Case";
+import Title from "../Title";
 
 interface CaseListingProps {
   name: string;
@@ -14,28 +16,20 @@ const CaseListing: React.FC<CaseListingProps> = ({
   return (
     <div className="w-full flex flex-col gap-4 py-10" key={name}>
       <div className="flex flex-col items-center justify-center">
-        <div className="w-auto">
-          <div className="text-white w-auto text-3xl font-semibold">{name}</div>
-
-          <div
-            className="w-auto mt-1 h-1 bg-[#606BC7] rounded-full shadow-lg transition-all "
-            style={{
-              boxShadow: "0px 0px 50px 10px #1d20b4",
-            }}
-          />
-        </div>
-
+        <Title title={name} />
         {description && <div className="text">{description}</div>}
         {
-          <div className="flex items-center justiy-around mt-10">
+          <div className="flex items-center justiy-around ">
             {cases.map((item: any) => (
-              <Case
-                key={item.id}
-                id={item.id}
-                title={item.title}
-                image={item.image}
-                price={item.price}
-              />
+              <Link to={`/case/${item._id}`} key={item._id}>
+                <Case
+                  key={item._id}
+                  id={item._id}
+                  title={item.title}
+                  image={item.image}
+                  price={item.price}
+                />
+              </Link>
             ))}
           </div>
         }

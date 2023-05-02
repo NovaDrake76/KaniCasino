@@ -13,8 +13,6 @@ function App() {
     const socket = io("http://localhost:5000");
 
     socket.on("onlineUsers", (count) => {
-      console.log("onlineUsers", count);
-
       setOnlineUsers(count);
     });
 
