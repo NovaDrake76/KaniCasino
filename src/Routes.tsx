@@ -8,7 +8,7 @@ const defaultRoutes = (
   <>
     <Route path="/" element={<Home />} />
     <Route path="/market" element={<Market />} />
-    <Route path="/profile" element={<Profile />} />
+    <Route path="/profile/:id" element={<Profile />} />
     <Route path="/case/:id" element={<CasePage />} />
   </>
 );

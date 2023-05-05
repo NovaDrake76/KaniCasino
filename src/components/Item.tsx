@@ -41,7 +41,7 @@ const Item: React.FC<itemProps> = ({ item }) => {
         <img
           src={item.image}
           alt={item.name}
-          className="w-52 h-52 hover:scale-105 transition-all"
+          className="w-44 h-44 hover:scale-105 transition-all object-cover"
         />
         <div
           className="w-auto"

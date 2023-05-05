@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
   },
   level: {
     type: Number,
-    default: 1,
+    default: 0,
   },
   profilePicture: {
     type: String,
