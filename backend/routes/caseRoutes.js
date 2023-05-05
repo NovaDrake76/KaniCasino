@@ -28,6 +28,15 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const cases = await Case.findById(req.params.id).populate("items");
+    res.json(cases);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 router.put("/:id", isAuthenticated, isAdmin, async (req, res) => {
   try {
     const updatedCase = await Case.findByIdAndUpdate(req.params.id, req.body, {

@@ -14,7 +14,7 @@ const CasePage = () => {
   const getCaseInfo = async () => {
     getCase(id)
       .then((response) => {
-        setData(response[0]);
+        setData(response);
       })
       .catch((error: any) => {
         console.log(error);

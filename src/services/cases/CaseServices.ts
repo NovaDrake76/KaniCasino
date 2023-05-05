@@ -7,11 +7,7 @@ export async function getCases() {
 
 
 export async function getCase(id: string) {
-    const response = await api.get('/cases/', {
-        params: {
-            id: id
-        }
-    });
+    const response = await api.get(`/cases/${id}`);;
 
 
     return response.data;
