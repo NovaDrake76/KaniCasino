@@ -14,12 +14,12 @@ const CaseListing: React.FC<CaseListingProps> = ({
   cases,
 }) => {
   return (
-    <div className="w-full flex flex-col gap-4 py-10" key={name}>
-      <div className="flex flex-col items-center justify-center">
+    <div className="w-full flex flex-col gap-4 py-10 items-center" key={name}>
+      <div className="flex flex-col items-center justify-center max-w-[1600px]">
         <Title title={name} />
         {description && <div className="text">{description}</div>}
         {
-          <div className="flex items-center justiy-around ">
+          <div className="flex items-center w-full justiy-center gap-8">
             {cases.map((item: any) => (
               <Link to={`/case/${item._id}`} key={item._id}>
                 <Case

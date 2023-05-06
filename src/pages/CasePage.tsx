@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { getCase } from "../services/cases/CaseServices";
 import Title from "../components/Title";
 import Item from "../components/Item";
+import Roulette from "../components/Roullete";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [started, setStarted] = useState<boolean>(false);
   const [openedItem, setOpenedItem] = useState<any>(null);
 
   //get id from url
@@ -30,7 +32,7 @@ const CasePage = () => {
 
   const openCase = () => {
     const randomIndex = Math.floor(Math.random() * data.items.length);
-    setOpenedItem(data.items[randomIndex]);
+    setStarted(true);
   };
 
   return (
@@ -44,6 +46,8 @@ const CasePage = () => {
           <div className="flex flex-col items-center max-w-[1920px]">
             <h1>{data.title}</h1>
             <button onClick={openCase}>Open Case</button>
+
+            <Roulette items={data.items} />
             {openedItem && (
               <div>
                 <h2>You got:</h2>
@@ -52,7 +56,7 @@ const CasePage = () => {
               </div>
             )}
             <div className="flex flex-col p-20 gap-2 items-center ">
-              <Title title="Items in this case " />
+              <Title title="Items in this case" />
               <div className="flex flex-wrap gap-6  justify-center ">
                 {data.items.map((item: any) => (
                   <Item item={item} />

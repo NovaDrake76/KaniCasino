@@ -36,12 +36,15 @@ const Item: React.FC<itemProps> = ({ item }) => {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center bg-[#212031] rounded">
+    <div
+      className="flex flex-col w-44 items-center justify-center bg-[#212031] rounded"
+      key={item.name}
+    >
       <div className="overflow-hidden">
         <img
           src={item.image}
           alt={item.name}
-          className="w-44 h-44 hover:scale-105 transition-all object-cover"
+          className="w-44 h-44 hover:scale-105 transition-all object-contain "
         />
         <div
           className="w-auto"
@@ -53,7 +56,7 @@ const Item: React.FC<itemProps> = ({ item }) => {
         />
       </div>
 
-      <p className="text-xl py-2">{item.name}</p>
+      <p className="text-base py-2">{item.name}</p>
     </div>
   );
 };
