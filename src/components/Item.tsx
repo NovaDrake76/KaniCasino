@@ -1,3 +1,5 @@
+import Rarities from "./Rarities";
+
 interface itemProps {
   item: {
     name: string;
@@ -7,34 +9,6 @@ interface itemProps {
 }
 
 const Item: React.FC<itemProps> = ({ item }) => {
-  const rarities = [
-    {
-      id: 1,
-      name: "Common",
-      color: "#4B69FF",
-    },
-    {
-      id: 2,
-      name: "Rare",
-      color: "#8847FF",
-    },
-    {
-      id: 3,
-      name: "Epic",
-      color: "#D32CE6",
-    },
-    {
-      id: 4,
-      name: "Ultra Rare",
-      color: "#EB4B4B",
-    },
-    {
-      id: 5,
-      name: "Unique",
-      color: "#FFFF6E",
-    },
-  ];
-
   return (
     <div
       className="flex flex-col w-44 items-center justify-center bg-[#212031] rounded"
@@ -50,7 +24,7 @@ const Item: React.FC<itemProps> = ({ item }) => {
           className="w-auto"
           style={{
             boxShadow: `0px 0px 120px 80px ${
-              rarities.find((rarity) => rarity.id == item.rarity)?.color
+              Rarities.find((rarity) => rarity.id == item.rarity)?.color
             }`,
           }}
         />

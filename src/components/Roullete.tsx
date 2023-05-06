@@ -4,9 +4,10 @@ interface Roulette {
   items: any;
   opened: any;
   spin: boolean;
+  className?: string;
 }
 
-const Roulette: React.FC<Roulette> = ({ items, opened, spin }) => {
+const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
   const [rouletteItems, setRouletteItems] = useState<any[]>([]);
   const rouletteRef = useRef<HTMLDivElement | null>(null);
 
@@ -35,8 +36,7 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin }) => {
         array[randomIndex] = temporaryValue;
       }
 
-      array[43] = opened;
-
+      array[36] = opened;
       return array;
     };
 
@@ -46,20 +46,20 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin }) => {
   useEffect(() => {
     if (rouletteRef.current && spin) {
       rouletteRef.current.style.animation =
-        "spin 6.31s cubic-bezier(0.1, 0, 0.2, 1)";
+        "spin 7.1s cubic-bezier(0.1, 0, 0.2, 1)";
     } else if (rouletteRef.current) {
       rouletteRef.current.style.animation = "";
     }
   }, [spin]);
   return (
-    <div className="flex max-w-4xl overflow-hidden">
+    <div className={`flex max-w-[1100px] overflow-hidden ${className}`}>
       <div className="flex items-center gap-2" ref={rouletteRef}>
         {rouletteItems.map((item: any, index: number) => (
           <img
             key={index}
             src={item.image}
             alt={item.name}
-            className="w-36 h-36 object-contain"
+            className="w-44 h-44 object-contain"
           />
         ))}
         <style>{`
@@ -73,6 +73,8 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin }) => {
           }
         `}</style>
       </div>
+      <div className="absolute inset-y-0 left-0 w-24 h-full bg-gradient-to-r from-[#151225] via-transparent"></div>
+      <div className="absolute inset-y-0 right-0 w-24 h-full bg-gradient-to-l from-[#151225] via-transparent"></div>
     </div>
   );
 };
