@@ -9,6 +9,7 @@ const CasePage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [started, setStarted] = useState<boolean>(false);
   const [openedItem, setOpenedItem] = useState<any>(null);
+  const [showPrize, setShowPrize] = useState<boolean>(false);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -31,8 +32,14 @@ const CasePage = () => {
   }, []);
 
   const openCase = () => {
-    const randomIndex = Math.floor(Math.random() * data.items.length);
     setStarted(true);
+    setShowPrize(false);
+    setOpenedItem(data.items[Math.floor(Math.random() * data.items.length)]);
+
+    setTimeout(() => {
+      setStarted(false);
+      setShowPrize(true);
+    }, 6300);
   };
 
   return (
@@ -46,20 +53,25 @@ const CasePage = () => {
           <div className="flex flex-col items-center max-w-[1920px]">
             <h1>{data.title}</h1>
             <button onClick={openCase}>Open Case</button>
-
-            <Roulette items={data.items} />
-            {openedItem && (
+            {started && (
+              <Roulette items={data.items} opened={openedItem} spin={started} />
+            )}
+            {showPrize && (
               <div>
                 <h2>You got:</h2>
                 <p>{openedItem.name}</p>
-                <img src={openedItem.image} alt={openedItem.name} />
+                <img
+                  src={openedItem.image}
+                  alt={openedItem.name}
+                  className="w-48 h-48 object-cover"
+                />
               </div>
             )}
             <div className="flex flex-col p-20 gap-2 items-center ">
               <Title title="Items in this case" />
               <div className="flex flex-wrap gap-6  justify-center ">
                 {data.items.map((item: any) => (
-                  <Item item={item} />
+                  <Item item={item} key={item.name} />
                 ))}
               </div>
             </div>

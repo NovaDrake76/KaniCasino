@@ -35,7 +35,7 @@ const Home = () => {
   }, []);
 
   const leftContent: BannerProps["left"] = {
-    image: "/images/HomeBanner.webp",
+    image: "/images/paris.webp",
     title: "NEW MAJOR CASE",
     description: "Check out our new case for Paris 2023 Major!",
     link: "/case/6454fc0436a60f47a8aa9838",

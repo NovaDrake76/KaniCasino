@@ -2,19 +2,21 @@ import { useState, useEffect, useRef } from "react";
 
 interface Roulette {
   items: any;
+  opened: any;
+  spin: boolean;
 }
 
-const Roulette: React.FC<Roulette> = ({ items }) => {
+const Roulette: React.FC<Roulette> = ({ items, opened, spin }) => {
   const [rouletteItems, setRouletteItems] = useState<any[]>([]);
   const rouletteRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const createRouletteItems = () => {
       let newItems = items.slice();
-      while (newItems.length < 40) {
+      while (newItems.length < 50) {
         newItems = newItems.concat(items.slice());
       }
-      newItems = newItems.slice(0, 40);
+      newItems = newItems.slice(0, 50);
       newItems = shuffle(newItems);
       setRouletteItems(newItems);
     };
@@ -33,6 +35,8 @@ const Roulette: React.FC<Roulette> = ({ items }) => {
         array[randomIndex] = temporaryValue;
       }
 
+      array[43] = opened;
+
       return array;
     };
 
@@ -40,32 +44,35 @@ const Roulette: React.FC<Roulette> = ({ items }) => {
   }, [items]);
 
   useEffect(() => {
-    if (rouletteRef.current) {
-      rouletteRef.current.style.animation = "spin 5s linear infinite";
+    if (rouletteRef.current && spin) {
+      rouletteRef.current.style.animation =
+        "spin 6.31s cubic-bezier(0.1, 0, 0.2, 1)";
+    } else if (rouletteRef.current) {
+      rouletteRef.current.style.animation = "";
     }
-  }, [rouletteItems]);
-
+  }, [spin]);
   return (
-    <div
-      className="flex items-center gap-2 overflow-hidden"
-      ref={rouletteRef}
-      style={{ animationPlayState: "running" }}
-    >
-      {rouletteItems.map((item: any, index: number) => (
-        <div className="flex flex-col items-center gap-2 max-w-4xl" key={index}>
-          <img src={item.image} alt={item.name} />
-        </div>
-      ))}
-      <style>{`
-        @keyframes spin {
-          from {
-            transform: translateX(0%);
+    <div className="flex max-w-4xl overflow-hidden">
+      <div className="flex items-center gap-2" ref={rouletteRef}>
+        {rouletteItems.map((item: any, index: number) => (
+          <img
+            key={index}
+            src={item.image}
+            alt={item.name}
+            className="w-36 h-36 object-contain"
+          />
+        ))}
+        <style>{`
+          @keyframes spin {
+            from {
+              transform: translateX(0%);
+            }
+            to {
+              transform: translateX(-6200px);
+            }
           }
-          to {
-            transform: translateX(-100%);
-          }
-        }
-      `}</style>
+        `}</style>
+      </div>
     </div>
   );
 };
