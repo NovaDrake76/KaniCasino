@@ -23,8 +23,11 @@ const UserSchema = new mongoose.Schema({
   },
   inventory: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Item",
+      _id: mongoose.Schema.Types.ObjectId,
+      name: String,
+      image: String,
+      rarity: String,
+      case: mongoose.Schema.Types.ObjectId,
     },
   ],
   xp: {
@@ -37,11 +40,7 @@ const UserSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
-    default: "", // default to an empty string or a default image URL
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
+    default: "", // default "" to a default image URL
   },
 });
 

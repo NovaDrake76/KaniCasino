@@ -40,12 +40,12 @@ const UserInfo: React.FC<UserProps> = ({
           <div className="flex flex-col gap-2 mt-5">
             <div className="flex">
               <div
-                className={`h-1 bg-blue-400 rounded rounded-r-none`}
-                style={{ width: `${getPercent((level + 1) * 1000, xp)}%` }}
-              />
-              <div
-                className={`h-1 bg-[#3a365a] rounded rounded-l-none`}
+                className={`h-1 bg-blue-400 rounded rounded-l-none`}
                 style={{ width: `${getPercent(xp, (level + 1) * 1000)}%` }}
+              />{" "}
+              <div
+                className={`h-1 bg-[#3a365a] rounded rounded-r-none`}
+                style={{ width: `${getPercent((level + 1) * 1000, xp)}%` }}
               />
             </div>
             <div className="flex w-full items-center justify-between">

@@ -137,7 +137,11 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
 // Get user by id
 router.get("/:id", async (req, res) => {
   try {
-    res.json(await User.findById(req.params.id));
+    res.json(
+      await User.findById(req.params.id)
+        .select("-inventory")
+        .select("-password")
+    );
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -215,5 +219,36 @@ router.delete(
     }
   }
 );
+
+const ITEMS_PER_PAGE = 20;
+
+router.get("/inventory/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const page = parseInt(req.query.page) || 1;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const totalItems = user.inventory.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+    const inventoryItems = user.inventory.slice(
+      (page - 1) * ITEMS_PER_PAGE,
+      page * ITEMS_PER_PAGE
+    );
+
+    res.json({
+      items: inventoryItems,
+      currentPage: page,
+      totalPages: totalPages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 module.exports = router;

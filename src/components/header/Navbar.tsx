@@ -7,6 +7,7 @@ import { me } from "../../services/auth/auth";
 import { IoMdExit } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { BiWallet } from "react-icons/bi";
 
 interface Navbar {
   openUserFlow: boolean;
@@ -17,7 +18,8 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const { isLogged, toggleLogin, toogleUserData } = useContext(UserContext);
+  const { isLogged, toggleLogin, toogleUserData, userData } =
+    useContext(UserContext);
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -81,6 +83,19 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
 
           {isLogged === true ? (
             <div className="flex items-center gap-4">
+              {!loading && (
+                <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all ">
+                  <BiWallet className="text-2xl" />
+                  <div>
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "DOL",
+                    })
+                      .format(userData?.walletBalance)
+                      .replace("DOL", "C₽")}
+                  </div>
+                </div>
+              )}
               {loading ? (
                 <Skeleton
                   circle={true}

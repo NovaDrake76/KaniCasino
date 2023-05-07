@@ -7,3 +7,9 @@ export async function getUser(id: string) {
 
     return response.data;
 }
+
+export async function getInventory(id: string) {
+    const response = await api.get(`/users/inventory/${id}`, {
+    });
+    return response.data;
+}

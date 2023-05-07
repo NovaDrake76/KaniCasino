@@ -70,13 +70,14 @@ router.post("/openCase/:id", isAuthenticated, async (req, res) => {
     await user.save();
 
     const itemsByRarity = groupItemsByRarity(caseData.items);
-    const winningRarity = getRandomWeightedItem(Rarities, "chance"); // Fix the argument here
+    const winningRarity = getRandomWeightedItem(Rarities, "chance");
     const winningItem = getRandomItemFromRarity(
       itemsByRarity,
       winningRarity.id
     );
 
-    user.inventory.push(winningItem._id);
+    // Add the entire winning item object to the user's inventory
+    user.inventory.push(winningItem);
     await user.save();
 
     res.json({ item: winningItem });

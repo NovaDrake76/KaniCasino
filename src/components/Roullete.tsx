@@ -42,9 +42,6 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
         array[randomIndex] = temporaryValue;
 
         if (currentIndex === 36) {
-          console.log("array", array);
-          console.log("opened", opened);
-
           array[currentIndex] = opened.item;
         }
       }

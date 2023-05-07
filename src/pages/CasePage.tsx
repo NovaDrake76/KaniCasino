@@ -17,7 +17,7 @@ const CasePage = () => {
   const [hasSpinned, setHasSpinned] = useState<boolean>(false);
   const [animationAux, setAnimationAux] = useState<boolean>(false);
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
-  const { userData } = useContext(UserContext);
+  const { userData, toogleUserData } = useContext(UserContext);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -42,6 +42,10 @@ const CasePage = () => {
   const openCase = async () => {
     try {
       const response = await openBox(id, userData.id);
+      toogleUserData({
+        ...userData,
+        walletBalance: userData.walletBalance - data.price,
+      });
       setOpenedItem(response);
     } catch (error) {
       console.log(error);
