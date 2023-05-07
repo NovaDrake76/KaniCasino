@@ -17,7 +17,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const { isLogged, toggleLogin } = useContext(UserContext);
+  const { isLogged, toggleLogin, toogleUserData } = useContext(UserContext);
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -32,6 +32,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
     await me()
       .then((response: { data: any }) => {
         setData(response);
+        toogleUserData(response);
         setLoading(false);
       })
       .catch((error: any) => {

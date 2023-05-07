@@ -4,6 +4,7 @@ interface Roulette {
   items: any;
   opened: any;
   spin: boolean;
+
   className?: string;
 }
 
@@ -29,14 +30,25 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
 
       while (0 !== currentIndex) {
         randomIndex = Math.floor(Math.random() * currentIndex);
+        if (
+          (randomIndex === currentIndex - 1 && currentIndex !== 1) ||
+          (randomIndex === currentIndex + 1 && currentIndex !== array.length)
+        ) {
+          continue;
+        }
         currentIndex -= 1;
-
         temporaryValue = array[currentIndex];
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
+
+        if (currentIndex === 36) {
+          console.log("array", array);
+          console.log("opened", opened);
+
+          array[currentIndex] = opened.item;
+        }
       }
 
-      array[36] = opened;
       return array;
     };
 

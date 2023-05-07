@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getCase } from "../services/cases/CaseServices";
 import Title from "../components/Title";
 import Item from "../components/Item";
 import Roulette from "../components/Roullete";
 import classNames from "classnames";
 import Rarities from "../components/Rarities";
+import { openBox } from "../services/games/GamesServices";
+import UserContext from "../UserContext";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -15,6 +17,7 @@ const CasePage = () => {
   const [hasSpinned, setHasSpinned] = useState<boolean>(false);
   const [animationAux, setAnimationAux] = useState<boolean>(false);
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
+  const { userData } = useContext(UserContext);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -36,12 +39,19 @@ const CasePage = () => {
     getCaseInfo();
   }, []);
 
-  const openCase = () => {
+  const openCase = async () => {
+    try {
+      const response = await openBox(id, userData.id);
+      setOpenedItem(response);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+
     setShowPrize(false);
     setAnimationAux2(false);
 
     setAnimationAux(!animationAux);
-    setOpenedItem(data.items[Math.floor(Math.random() * data.items.length)]);
 
     setTimeout(() => {
       setStarted(true);
@@ -104,22 +114,53 @@ const CasePage = () => {
                 ) : (
                   <div id="prize" className={`animate-fade-in flex  relative`}>
                     <img
-                      src={openedItem.image}
-                      alt={openedItem.name}
-                      className={`w-48 h-48 object-cover rounded ${
+                      src={openedItem.item.image}
+                      alt={openedItem.item.name}
+                      className={`w-48 h-48 object-contain rounded ${
                         showPrize ? "opacity-100" : "opacity-0"
                       }`}
                     />
                     {animationAux2 && (
                       <div
-                        className={`notched h-48 w-48 transition-all animate-fade-in-left absolute left-[210px]`}
+                        className={`notched h-48 w-48 transition-all animate-fade-in-left absolute left-[210px] flex items-center justify-center z-20`}
                         style={{
                           background: Rarities.find(
-                            (rarity) => rarity.id == openedItem.rarity
+                            (rarity) => rarity.id == openedItem.item.rarity
                           )?.color,
                         }}
                       >
-                        a
+                        <div
+                          className={`notched h-[184px] w-[184px] transition-all bg-[#151225] z-30 flex flex-col items-center justify-center`}
+                        >
+                          <span className="text-2xl font-bold color-[#e1dde9]">
+                            {openedItem.item.name}
+                          </span>
+                          <span
+                            className="text-xl underline"
+                            style={{
+                              color: Rarities.find(
+                                (rarity) => rarity.id == openedItem.item.rarity
+                              )?.color,
+                            }}
+                          >
+                            {
+                              Rarities.find(
+                                (rarity) => rarity.id == openedItem.item.rarity
+                              )?.name
+                            }
+                          </span>
+                          <div
+                            style={{
+                              width: "1px",
+                              boxShadow: `0px 0px 80px 30px ${
+                                Rarities.find(
+                                  (rarity) =>
+                                    rarity.id == openedItem.item.rarity
+                                )?.color
+                              }`,
+                            }}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
