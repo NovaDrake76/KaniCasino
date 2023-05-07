@@ -14,13 +14,43 @@ const Rarities = [
   { id: "5", chance: 0.0026 },
 ];
 
+// Helper functions
+function groupItemsByRarity(items) {
+  const itemsByRarity = {};
+  items.forEach((item) => {
+    if (!itemsByRarity[item.rarity]) {
+      itemsByRarity[item.rarity] = [];
+    }
+    itemsByRarity[item.rarity].push(item);
+  });
+  return itemsByRarity;
+}
+
+function getRandomWeightedItem(items, weightPropertyName) {
+  const randomNumber = Math.random();
+  let cumulativeWeight = 0;
+  for (const item of items) {
+    cumulativeWeight += item[weightPropertyName];
+    if (randomNumber <= cumulativeWeight) {
+      return item;
+    }
+  }
+}
+
+function getRandomItemFromRarity(itemsByRarity, rarity) {
+  const items = itemsByRarity[rarity];
+  if (!items || items.length === 0) {
+    return null;
+  }
+  return items[Math.floor(Math.random() * items.length)];
+}
+
 // Routes
 router.post("/openCase/:id", isAuthenticated, async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.body;
 
-    // Get the case and user
     const caseData = await Case.findById(id).populate("items");
     const user = await User.findById(userId);
 
@@ -32,39 +62,24 @@ router.post("/openCase/:id", isAuthenticated, async (req, res) => {
       }
     }
 
-    // Check if the user has enough balance
-    if (user.wallet < caseData.price) {
+    if (user.walletBalance < caseData.price) {
       return res.status(400).json({ message: "Insufficient balance" });
     }
 
-    // Update the user's wallet
-    user.wallet -= caseData.price;
+    user.walletBalance -= caseData.price;
     await user.save();
 
-    // Calculate the rarity ranges for items based on rarity
-    const rarityRanges = caseData.items.reduce((acc, item) => {
-      const rarity = Rarities.find((r) => r.id === item.rarity);
-      acc.push({ ...item, range: rarity.chance });
-      return acc;
-    }, []);
+    const itemsByRarity = groupItemsByRarity(caseData.items);
+    const winningRarity = getRandomWeightedItem(Rarities, "chance"); // Fix the argument here
+    const winningItem = getRandomItemFromRarity(
+      itemsByRarity,
+      winningRarity.id
+    );
 
-    // Sort the rarity ranges in descending order
-    rarityRanges.sort((a, b) => b.range - a.range);
-
-    // Get the winning item based on the rarity ranges
-    const randomNumber = Math.random();
-    let cumulativerarity = 0;
-    const winningItem = rarityRanges.find((item) => {
-      cumulativerarity += item.range;
-      return randomNumber <= cumulativerarity;
-    });
-
-    // Add the winning item to the user's inventory
-    user.inventory.push(winningItem._doc._id);
+    user.inventory.push(winningItem._id);
     await user.save();
 
-    // Return the winning item
-    res.json({ item: winningItem._doc });
+    res.json({ item: winningItem });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
