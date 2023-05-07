@@ -14,6 +14,7 @@ const CasePage = () => {
   const [showPrize, setShowPrize] = useState<boolean>(false);
   const [hasSpinned, setHasSpinned] = useState<boolean>(false);
   const [animationAux, setAnimationAux] = useState<boolean>(false);
+  const [animationAux2, setAnimationAux2] = useState<boolean>(false);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -37,6 +38,8 @@ const CasePage = () => {
 
   const openCase = () => {
     setShowPrize(false);
+    setAnimationAux2(false);
+
     setAnimationAux(!animationAux);
     setOpenedItem(data.items[Math.floor(Math.random() * data.items.length)]);
 
@@ -49,6 +52,10 @@ const CasePage = () => {
       setStarted(false);
       setShowPrize(true);
     }, 7500);
+
+    setTimeout(() => {
+      setAnimationAux2(true);
+    }, 8000);
   };
 
   return (
@@ -95,7 +102,7 @@ const CasePage = () => {
                     className={classNames({ "animate-fade-in-down": started })}
                   />
                 ) : (
-                  <div id="prize" className={` animate-fade-in`}>
+                  <div id="prize" className={`animate-fade-in flex  relative`}>
                     <img
                       src={openedItem.image}
                       alt={openedItem.name}
@@ -103,6 +110,18 @@ const CasePage = () => {
                         showPrize ? "opacity-100" : "opacity-0"
                       }`}
                     />
+                    {animationAux2 && (
+                      <div
+                        className={`notched h-48 w-48 transition-all animate-fade-in-left absolute left-[210px]`}
+                        style={{
+                          background: Rarities.find(
+                            (rarity) => rarity.id == openedItem.rarity
+                          )?.color,
+                        }}
+                      >
+                        a
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
