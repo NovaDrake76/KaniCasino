@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Banner from "../components/home/Banner";
 import CaseListing from "../components/home/CaseListing";
 import { getCases } from "../services/cases/CaseServices";
+import Skeleton from "react-loading-skeleton";
 
 interface BannerProps {
   left: {
@@ -46,7 +47,23 @@ const Home = () => {
       <div className="flex flex-col max-w-[1920px]">
         <Banner left={leftContent} />
         {loading ? (
-          "Loading..."
+          <div className="flex items-center justify-center w-full mt-[164px]">
+            <div className="flex justiy-center gap-8 max-w-[1600px]">
+              {Array(4)
+                .fill(0)
+                .map((e, index) => (
+                  <div key={index}>
+                    <Skeleton
+                      width={256}
+                      height={348}
+                      highlightColor="#161427"
+                      baseColor="#1c1a31"
+                      key={e + index}
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
         ) : (
           <CaseListing
             name="NEW CASES"

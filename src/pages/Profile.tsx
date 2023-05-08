@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { getUser, getInventory, fixItem } from "../services/users/UserServices";
+import { getUser, getInventory } from "../services/users/UserServices";
 import UserInfo from "../components/profile/UserInfo";
 import Item from "../components/Item";
 import UserContext from "../UserContext";
+import Skeleton from "react-loading-skeleton";
 
 interface User {
   id: number;
@@ -19,6 +20,8 @@ interface User {
 }
 
 interface Inventory {
+  totalPages: number;
+  currentPage: number;
   items: any[];
 }
 
@@ -27,6 +30,7 @@ const Profile = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
   const [inventory, setInventory] = useState<Inventory>();
+  const [invItems, setInvItems] = useState<any[]>([]);
   const { userData } = useContext(UserContext);
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -37,6 +41,7 @@ const Profile = () => {
   useEffect(() => {
     getUserInfo();
     getInventoryInfo();
+    console.log("1");
   }, []);
 
   const getUserInfo = async () => {
@@ -49,10 +54,14 @@ const Profile = () => {
     setLoading(false);
   };
 
-  const getInventoryInfo = async () => {
+  const getInventoryInfo = async (newPage?: boolean) => {
     try {
-      const response = await getInventory(id);
+      const response = await getInventory(
+        id,
+        newPage ? inventory && inventory.currentPage + 1 : 1
+      );
       setInventory(response);
+      setInvItems((prev) => [...prev, ...response.items]);
     } catch (error) {
       console.log(error);
     }
@@ -72,6 +81,7 @@ const Profile = () => {
       getUserInfo();
       getInventoryInfo();
       setRefresh(false);
+      console.log("refresh");
     }
   }, [refresh]);
 
@@ -79,8 +89,14 @@ const Profile = () => {
     <div className="flex flex-col items-center w-screen">
       <div className="flex flex-col max-w-[1312px] py-4 w-full">
         {loading ? (
-          <div>
-            <h1>Loading...</h1>
+          <div className="flex items-center justify-start pb-7">
+            <Skeleton
+              circle={true}
+              height={144}
+              width={144}
+              highlightColor="#161427"
+              baseColor="#1c1a31"
+            />
           </div>
         ) : (
           user && (
@@ -92,31 +108,44 @@ const Profile = () => {
           )
         )}
       </div>
-      {loadingInventory ? (
-        <div>
-          <h1>Loading...</h1>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center w-full bg-[#141225]">
-          <div className="flex flex-col p-8 gap-2 items-center max-w-[1312px]">
-            <h2 className="text-2xl font-bold py-4">Inventory</h2>
-            <div className="flex flex-wrap gap-6  justify-center ">
-              {inventory && inventory.items.length > 0 ? (
-                inventory.items.map((item: any) => (
-                  <Item
-                    item={item}
-                    key={item.name + Math.random()}
-                    fixable={isSameUser}
-                    setRefresh={setRefresh}
-                  />
-                ))
-              ) : (
-                <h2>No items</h2>
-              )}
-            </div>
+
+      <div className="flex flex-col items-center w-full bg-[#141225]">
+        <div className="flex flex-col p-8 gap-2 items-center max-w-[1312px]">
+          <h2 className="text-2xl font-bold py-4">Inventory</h2>
+          <div className="flex flex-wrap gap-6  justify-center ">
+            {loadingInventory ? (
+              { array: Array(12).fill(0) }.array.map((_, i) => (
+                <Skeleton
+                  width={176}
+                  height={216}
+                  highlightColor="#161427"
+                  baseColor="#1c1a31"
+                  key={i}
+                />
+              ))
+            ) : invItems && invItems.length > 0 ? (
+              invItems.map((item: any) => (
+                <Item
+                  item={item}
+                  key={item.name + Math.random()}
+                  fixable={isSameUser}
+                  setRefresh={setRefresh}
+                />
+              ))
+            ) : (
+              <h2>No items</h2>
+            )}
           </div>
+          {inventory && inventory.currentPage !== inventory.totalPages && (
+            <button
+              className="bg-[#e1dde9] text-[#141225] rounded-md px-4 py-2"
+              onClick={() => getInventoryInfo(true)}
+            >
+              Load more
+            </button>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

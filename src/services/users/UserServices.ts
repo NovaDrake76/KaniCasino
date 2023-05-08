@@ -8,8 +8,8 @@ export async function getUser(id: string) {
     return response.data;
 }
 
-export async function getInventory(id: string) {
-    const response = await api.get(`/users/inventory/${id}`, {
+export async function getInventory(id: string, page?: number) {
+    const response = await api.get(`/users/inventory/${id}${page && `?page=` + page}`, {
     });
     return response.data;
 }

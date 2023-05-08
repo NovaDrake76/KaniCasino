@@ -123,11 +123,11 @@ const UserInfo: React.FC<UserProps> = ({
       </div>
       {fixedItem && (
         <div
-          className="flex p-4 rounded border border-gray-800 min-w-[350px] h-44"
+          className="flex p-4 rounded  border-gray-800 min-w-[350px] h-44 notched"
           style={{
             backgroundImage: `linear-gradient(270deg, ${
               Rarities.find((rarity) => rarity.id == fixedItem.rarity)?.color
-            } 0%, rgba(0,0,0,0) 100%)`,
+            } 20%, rgba(0,0,0,0) 100%)`,
           }}
         >
           <div className="flex items-center justify-between px-4 w-full">

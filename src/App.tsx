@@ -4,6 +4,7 @@ import Header from "./components/header/index";
 import { useEffect, useState } from "react";
 import UserContext from "./UserContext";
 import io from "socket.io-client";
+import { SkeletonTheme } from "react-loading-skeleton";
 
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
@@ -48,10 +49,12 @@ function App() {
         }}
       >
         <Router>
-          <Header onlineUsers={onlineUsers} />
-          <div className="flex">
-            <AppRoutes />
-          </div>
+          <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
+            <Header onlineUsers={onlineUsers} />
+            <div className="flex">
+              <AppRoutes />
+            </div>
+          </SkeletonTheme>
         </Router>
       </UserContext.Provider>
       <div>footer</div>
