@@ -118,8 +118,8 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
                 </Link>
               )}
               {!loading && (
-                <div className="rounded-full bg-blue-500 min-w-[20px] h-5 flex justify-center items-center -ml-7 -mb-7">
-                  {data?.level}
+                <div className="rounded-full text-xs font-semibold bg-blue-500 min-w-[20px] h-5 flex justify-center items-center -ml-7 -mb-7">
+                  {userData?.level}
                 </div>
               )}
 

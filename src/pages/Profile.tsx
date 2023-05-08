@@ -71,7 +71,7 @@ const Profile = () => {
             <div className="flex flex-wrap gap-6  justify-center ">
               {inventory && inventory.items.length > 0 ? (
                 inventory.items.map((item: any) => (
-                  <Item item={item} key={item.name} />
+                  <Item item={item} key={item.name + Math.random()} />
                 ))
               ) : (
                 <h2>No items</h2>

@@ -77,7 +77,16 @@ router.post("/openCase/:id", isAuthenticated, async (req, res) => {
     );
 
     // Add the entire winning item object to the user's inventory
-    user.inventory.push(winningItem);
+    user.inventory.unshift(winningItem);
+
+    //update user xp by +10*case price
+    user.xp += 10 * caseData.price;
+
+    //update user level
+    if (user.xp >= (user.level + 1) * 1000) {
+      user.level += 1;
+    }
+
     await user.save();
 
     res.json({ item: winningItem });

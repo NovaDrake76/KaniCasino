@@ -7,6 +7,7 @@ import classNames from "classnames";
 import Rarities from "../components/Rarities";
 import { openBox } from "../services/games/GamesServices";
 import UserContext from "../UserContext";
+import MainButton from "../components/MainButton";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -17,6 +18,7 @@ const CasePage = () => {
   const [hasSpinned, setHasSpinned] = useState<boolean>(false);
   const [animationAux, setAnimationAux] = useState<boolean>(false);
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
+  const [loadingButton, setLoadingButton] = useState<boolean>(false);
   const { userData, toogleUserData } = useContext(UserContext);
 
   //get id from url
@@ -40,15 +42,22 @@ const CasePage = () => {
   }, []);
 
   const openCase = async () => {
+    setLoadingButton(true);
     try {
       const response = await openBox(id, userData.id);
       toogleUserData({
         ...userData,
         walletBalance: userData.walletBalance - data.price,
+        xp: userData.xp + 10 * data.price,
+        level:
+          userData.xp + 10 * data.price >= (userData.level + 1) * 1000
+            ? userData.level + 1
+            : userData.level,
       });
       setOpenedItem(response);
     } catch (error) {
       console.log(error);
+      setLoadingButton(false);
       return;
     }
 
@@ -69,6 +78,7 @@ const CasePage = () => {
 
     setTimeout(() => {
       setAnimationAux2(true);
+      setLoadingButton(false);
     }, 8000);
   };
 
@@ -179,15 +189,27 @@ const CasePage = () => {
                 }}
               />
             </div>
-            <button onClick={openCase} className="mt-4">
-              Open Case
-            </button>
+
+            <div
+              className={`w-60 mt-8 ${
+                started ? "opacity-0" : "opacity-100"
+              } transition-all
+
+            `}
+            >
+              <MainButton
+                text="Open case"
+                onClick={openCase}
+                loading={loadingButton}
+                disabled={loadingButton}
+              />
+            </div>
 
             <div className="flex flex-col p-8 gap-2 items-center ">
               <Title title="Items in this case" />
               <div className="flex flex-wrap gap-6  justify-center ">
                 {data.items.map((item: any) => (
-                  <Item item={item} key={item.name} />
+                  <Item item={item} key={item.name + Math.random()} />
                 ))}
               </div>
             </div>

@@ -122,12 +122,13 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
   try {
     const {
       _id: id,
-      nickname,
+      username,
       profilePicture,
+      xp,
       level,
       walletBalance,
     } = req.user;
-    res.json({ id, nickname, profilePicture, level, walletBalance });
+    res.json({ id, username, profilePicture, xp, level, walletBalance });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

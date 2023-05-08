@@ -12,7 +12,7 @@ const Item: React.FC<itemProps> = ({ item }) => {
   return (
     <div
       className="flex flex-col w-44 items-center justify-center bg-[#212031] rounded"
-      key={item.name}
+      key={item.name + Math.random()}
     >
       <div className="overflow-hidden">
         <img
