@@ -1,4 +1,7 @@
+import { useState } from "react";
 import Rarities from "./Rarities";
+import { BsPinAngleFill } from "react-icons/bs";
+import { fixItem } from "../services/users/UserServices";
 
 interface itemProps {
   item: {
@@ -6,13 +9,29 @@ interface itemProps {
     image: string;
     rarity: number;
   };
+  fixable?: boolean;
+  setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Item: React.FC<itemProps> = ({ item }) => {
+const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
+  const [hovering, setHovering] = useState<boolean>(false);
+
+  const fixPlayerItem = async (name: string, image: string, rarity: string) => {
+    try {
+      const response = await fixItem(name, image, rarity);
+      setRefresh && setRefresh((prev) => !prev);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
-      className="flex flex-col w-44 items-center justify-center bg-[#212031] rounded"
+      className="flex flex-col w-44 items-center justify-center bg-[#212031] rounded relative"
       key={item.name + Math.random()}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
       <div className="overflow-hidden">
         <img
@@ -29,7 +48,18 @@ const Item: React.FC<itemProps> = ({ item }) => {
           }}
         />
       </div>
-
+      {fixable && (
+        <div
+          className={`absolute top-1 right-1 transition-all ${
+            hovering ? "opacity-100 " : "opacity-0 -translate-y-2"
+          }`}
+          onClick={() =>
+            fixPlayerItem(item.name, item.image, item.rarity.toString())
+          }
+        >
+          <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
+        </div>
+      )}
       <p className="text-base py-2">{item.name}</p>
     </div>
   );

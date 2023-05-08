@@ -146,7 +146,7 @@ const CasePage = () => {
                         <div
                           className={`notched h-[184px] w-[184px] transition-all bg-[#151225] z-30 flex flex-col items-center justify-center`}
                         >
-                          <span className="text-2xl font-bold color-[#e1dde9]">
+                          <span className="text-xl font-bold color-[#e1dde9]">
                             {openedItem.item.name}
                           </span>
                           <span
@@ -198,7 +198,7 @@ const CasePage = () => {
             `}
             >
               <MainButton
-                text="Open case"
+                text={`Open Case - C₽${data.price}`}
                 onClick={openCase}
                 loading={loadingButton}
                 disabled={loadingButton}

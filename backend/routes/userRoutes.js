@@ -252,4 +252,58 @@ router.get("/inventory/:userId", async (req, res) => {
   }
 });
 
+// Set fixed item
+router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const { name, image, rarity } = req.body;
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update fixed item, keeping the same description
+    user.fixedItem = {
+      name,
+      image,
+      rarity,
+      description: user.fixedItem.description,
+    };
+    await user.save();
+
+    res.json(user.fixedItem);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// update fixed item description
+router.put(
+  "/fixedItem/description",
+  authMiddleware.isAuthenticated,
+  async (req, res) => {
+    try {
+      const { description } = req.body;
+
+      const user = await User.findById(req.user._id);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Update fixed item description (crop to 50 characters)
+      user.fixedItem.description = description.substring(0, 50);
+
+      await user.save();
+
+      res.json(user.fixedItem);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server error");
+    }
+  }
+);
+
 module.exports = router;

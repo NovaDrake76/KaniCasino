@@ -1,3 +1,9 @@
+import Rarities from "../Rarities";
+import { RiDoubleQuotesL } from "react-icons/ri";
+import { BiEditAlt } from "react-icons/bi";
+import { putFixDescription } from "../../services/users/UserServices";
+import { useState } from "react";
+
 interface UserProps {
   user: {
     id: number;
@@ -5,7 +11,15 @@ interface UserProps {
     profilePicture: string;
     level: number;
     xp: number;
+    fixedItem: {
+      name: string;
+      image: string;
+      rarity: number;
+      description: string;
+    };
   };
+  isSameUser: boolean;
+  setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const getPercentX = (x: number, y: number) => {
@@ -19,8 +33,46 @@ const getPercentY = (x: number, y: number) => {
 };
 
 const UserInfo: React.FC<UserProps> = ({
-  user: { profilePicture, level, username, xp },
+  user: { profilePicture, level, username, xp, fixedItem },
+  isSameUser,
+  setRefresh,
 }) => {
+  const [description, setDescription] = useState<string>(fixedItem.description);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const updateFixDescription = async (description: string) => {
+    try {
+      await putFixDescription(description);
+      setRefresh && setRefresh((prev) => !prev);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const TextArea = () => {
+    return (
+      <div className="flex flex-col items-center justify-center ">
+        <textarea
+          className="w-36 h-16 rounded-lg bg-white p-2 text-black resize-none "
+          maxLength={50}
+          value={description}
+          onChange={(e) => {
+            setDescription(e.target.value);
+          }}
+        />
+        <button
+          className="bg-blue-500 rounded-lg px-4 py-2 mt-2"
+          onClick={() => {
+            updateFixDescription(description);
+            setIsEditing(false);
+          }}
+        >
+          Save
+        </button>
+      </div>
+    );
+  };
+
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex items-center gap-7">
@@ -69,9 +121,74 @@ const UserInfo: React.FC<UserProps> = ({
           </div>
         </div>
       </div>
-      <div className="flex p-4 rounded border border-gray-800 w-80 h-44 bg-gradient-to-tr from-[#161429] to-[#291414] ">
-        a
-      </div>
+      {fixedItem && (
+        <div
+          className="flex p-4 rounded border border-gray-800 min-w-[350px] h-44"
+          style={{
+            backgroundImage: `linear-gradient(270deg, ${
+              Rarities.find((rarity) => rarity.id == fixedItem.rarity)?.color
+            } 0%, rgba(0,0,0,0) 100%)`,
+          }}
+        >
+          <div className="flex items-center justify-between px-4 w-full">
+            <div>
+              {fixedItem.description ? (
+                <div className="flex items-center justify-center">
+                  <RiDoubleQuotesL className="text-2xl text-[#dddcfc]" />
+                  {isEditing ? (
+                    TextArea()
+                  ) : (
+                    <div className="max-w-[160px] overflow-auto flex items-center">
+                      <span className="text-center  overflow-auto max-w-[140px]">
+                        {fixedItem.description ? description : "No description"}
+                      </span>
+                      {isSameUser && (
+                        <BiEditAlt
+                          className="text-2xl text-[#dddcfc] cursor-pointer"
+                          onClick={() => {
+                            setIsEditing(true);
+                          }}
+                        />
+                      )}
+                    </div>
+                  )}
+                  <RiDoubleQuotesL className="text-2xl text-[#dddcfc] rotate-180" />
+                </div>
+              ) : (
+                isSameUser && (
+                  <div className="flex items-center justify-center">
+                    <RiDoubleQuotesL className="text-2xl text-[#dddcfc]" />
+                    {isEditing ? (
+                      TextArea()
+                    ) : (
+                      <span
+                        className="text-center flex items-center cursor-pointer"
+                        onClick={() => {
+                          setIsEditing(true);
+                        }}
+                      >
+                        Edit Description <BiEditAlt />
+                      </span>
+                    )}
+
+                    <RiDoubleQuotesL className="text-2xl text-[#dddcfc] rotate-180" />
+                  </div>
+                )
+              )}
+            </div>
+            <div className="flex flex-col items-center justify-center justify-self-end">
+              <img
+                src={fixedItem.image}
+                alt={fixedItem.name}
+                className="w-24 h-24 object-contain"
+              />
+              <div className="w-auto" />
+
+              <p className="text-base py-2 font-semibold ">{fixedItem.name}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

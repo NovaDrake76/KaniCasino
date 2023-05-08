@@ -30,6 +30,12 @@ const UserSchema = new mongoose.Schema({
       case: mongoose.Schema.Types.ObjectId,
     },
   ],
+  fixedItem: {
+    name: String,
+    image: String,
+    rarity: String,
+    description: String,
+  },
   xp: {
     type: Number,
     default: 0,

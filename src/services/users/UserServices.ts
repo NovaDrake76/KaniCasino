@@ -13,3 +13,19 @@ export async function getInventory(id: string) {
     });
     return response.data;
 }
+
+export async function fixItem(name: string, image: string, rarity: string) {
+    const response = await api.put(`/users/fixedItem/`, {
+        name,
+        image,
+        rarity
+    });
+    return response.data;
+}
+
+export async function putFixDescription(description: string) {
+    const response = await api.put(`/users/fixedItem/description`, {
+        description
+    });
+    return response.data;
+}

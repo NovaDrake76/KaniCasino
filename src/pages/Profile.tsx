@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { getUser, getInventory } from "../services/users/UserServices";
+import { useContext, useEffect, useState } from "react";
+import { getUser, getInventory, fixItem } from "../services/users/UserServices";
 import UserInfo from "../components/profile/UserInfo";
 import Item from "../components/Item";
+import UserContext from "../UserContext";
 
 interface User {
   id: number;
@@ -9,6 +10,12 @@ interface User {
   profilePicture: string;
   level: number;
   xp: number;
+  fixedItem: {
+    name: string;
+    image: string;
+    rarity: number;
+    description: string;
+  };
 }
 
 interface Inventory {
@@ -20,6 +27,9 @@ const Profile = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
   const [inventory, setInventory] = useState<Inventory>();
+  const { userData } = useContext(UserContext);
+  const [isSameUser, setIsSameUser] = useState<boolean>(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -49,6 +59,22 @@ const Profile = () => {
     setLoadingInventory(false);
   };
 
+  useEffect(() => {
+    if (userData) {
+      if (userData.id == id) {
+        setIsSameUser(true);
+      }
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    if (refresh) {
+      getUserInfo();
+      getInventoryInfo();
+      setRefresh(false);
+    }
+  }, [refresh]);
+
   return (
     <div className="flex flex-col items-center w-screen">
       <div className="flex flex-col max-w-[1312px] py-4 w-full">
@@ -57,7 +83,13 @@ const Profile = () => {
             <h1>Loading...</h1>
           </div>
         ) : (
-          user && <UserInfo user={user} />
+          user && (
+            <UserInfo
+              user={user}
+              isSameUser={isSameUser}
+              setRefresh={setRefresh}
+            />
+          )
         )}
       </div>
       {loadingInventory ? (
@@ -71,7 +103,12 @@ const Profile = () => {
             <div className="flex flex-wrap gap-6  justify-center ">
               {inventory && inventory.items.length > 0 ? (
                 inventory.items.map((item: any) => (
-                  <Item item={item} key={item.name + Math.random()} />
+                  <Item
+                    item={item}
+                    key={item.name + Math.random()}
+                    fixable={isSameUser}
+                    setRefresh={setRefresh}
+                  />
                 ))
               ) : (
                 <h2>No items</h2>
