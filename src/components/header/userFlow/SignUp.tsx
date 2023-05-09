@@ -39,13 +39,13 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const handleGoogleSuccess = (response: any) => {
-    // Handle Google sign-up logic here
-  };
+  // const handleGoogleSuccess = (response: any) => {
+  //   // Handle Google sign-up logic here
+  // };
 
-  const handleGoogleFailure = (error: any) => {
-    // Handle Google sign-up failure here
-  };
+  // const handleGoogleFailure = (error: any) => {
+  //   // Handle Google sign-up failure here
+  // };
 
   const handleProfilePictureChange = (
     e: React.ChangeEvent<HTMLInputElement>
