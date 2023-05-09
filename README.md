@@ -1,11 +1,11 @@
 # KaniCasino
 
 # To-Do
-- [ ] Fix PFP upload.
-- [ ] Fix Inventory.
-- [ ] Fix Netlify URL.
-- [ ] Scroll history.
-- [ ] Profile Inventory Height.
+- [x] Fix PFP upload.
+- [x] Fix Inventory.
+- [x] Fix Netlify URL.
+- [x] Scroll history.
+- [x] Profile Inventory Height.
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Right Banner content.
