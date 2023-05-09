@@ -39,6 +39,7 @@ const UserInfo: React.FC<UserProps> = ({
 }) => {
   const [description, setDescription] = useState<string>(fixedItem.description);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isHovering, setIsHovering] = useState<boolean>(false);
 
   const updateFixDescription = async (description: string) => {
     try {
@@ -138,11 +139,19 @@ const UserInfo: React.FC<UserProps> = ({
                   {isEditing ? (
                     TextArea()
                   ) : (
-                    <div className="max-w-[160px] overflow-auto flex items-center">
+                    <div
+                      className="max-w-[160px] overflow-auto flex items-center transition-all"
+                      onMouseEnter={() => {
+                        setIsHovering(true);
+                      }}
+                      onMouseLeave={() => {
+                        setIsHovering(false);
+                      }}
+                    >
                       <span className="text-center  overflow-auto max-w-[140px]">
                         {fixedItem.description ? description : "No description"}
                       </span>
-                      {isSameUser && (
+                      {isSameUser && isHovering && (
                         <BiEditAlt
                           className="text-2xl text-[#dddcfc] cursor-pointer"
                           onClick={() => {
@@ -180,7 +189,7 @@ const UserInfo: React.FC<UserProps> = ({
               <img
                 src={fixedItem.image}
                 alt={fixedItem.name}
-                className="w-24 h-24 object-contain"
+                className="w-24 h-24 object-contain rounded"
               />
               <div className="w-auto" />
 

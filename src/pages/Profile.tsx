@@ -4,6 +4,7 @@ import UserInfo from "../components/profile/UserInfo";
 import Item from "../components/Item";
 import UserContext from "../UserContext";
 import Skeleton from "react-loading-skeleton";
+import MainButton from "../components/MainButton";
 
 interface User {
   id: number;
@@ -41,7 +42,6 @@ const Profile = () => {
   useEffect(() => {
     getUserInfo();
     getInventoryInfo();
-    console.log("1");
   }, []);
 
   const getUserInfo = async () => {
@@ -81,7 +81,6 @@ const Profile = () => {
       getUserInfo();
       getInventoryInfo();
       setRefresh(false);
-      console.log("refresh");
     }
   }, [refresh]);
 
@@ -137,12 +136,13 @@ const Profile = () => {
             )}
           </div>
           {inventory && inventory.currentPage !== inventory.totalPages && (
-            <button
-              className="bg-[#e1dde9] text-[#141225] rounded-md px-4 py-2"
-              onClick={() => getInventoryInfo(true)}
-            >
-              Load more
-            </button>
+            <div className="w-40 mt-4">
+              <MainButton
+                text={`Load more`}
+                onClick={() => getInventoryInfo(true)}
+                loading={loadingInventory}
+              />
+            </div>
           )}
         </div>
       </div>

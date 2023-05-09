@@ -22,7 +22,7 @@ const itemRoutes = require("./routes/itemRoutes");
 const userRoutes = require("./routes/userRoutes");
 const marketplaceRoutes = require("./routes/marketplaceRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const gamesRoutes = require("./routes/gamesRoutes");
+const gamesRoutes = require("./routes/gamesRoutes")(io);
 
 // Connect to MongoDB
 mongoose

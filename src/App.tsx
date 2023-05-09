@@ -10,12 +10,20 @@ function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [onlineUsers, setOnlineUsers] = useState<number>(0);
   const [userData, setUserData] = useState<any>(null);
+  const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
 
   useEffect(() => {
     const socket = io("http://localhost:5000");
 
     socket.on("onlineUsers", (count) => {
       setOnlineUsers(count);
+    });
+
+    socket.on("caseOpened", (data) => {
+      //wait 7 seconds to remove the notification
+      setTimeout(() => {
+        setRecentCaseOpenings((prevOpenings: any) => [data, ...prevOpenings]);
+      }, 7500);
     });
 
     return () => {
@@ -38,6 +46,16 @@ function App() {
     setUserData(data);
   };
 
+  //if there's more than 20 items, remove the last one from the array
+  useEffect(() => {
+    if (recentCaseOpenings.length > 20) {
+      setRecentCaseOpenings((prevOpenings: any) => {
+        prevOpenings.pop();
+        return prevOpenings;
+      });
+    }
+  }, [recentCaseOpenings]);
+
   return (
     <div className="flex flex-col h-screen items-start justify-start">
       <UserContext.Provider
@@ -50,7 +68,10 @@ function App() {
       >
         <Router>
           <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
-            <Header onlineUsers={onlineUsers} />
+            <Header
+              onlineUsers={onlineUsers}
+              recentCaseOpenings={recentCaseOpenings}
+            />
             <div className="flex">
               <AppRoutes />
             </div>

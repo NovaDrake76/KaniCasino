@@ -18,9 +18,8 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
 
   const fixPlayerItem = async (name: string, image: string, rarity: string) => {
     try {
-      const response = await fixItem(name, image, rarity);
+      await fixItem(name, image, rarity);
       setRefresh && setRefresh((prev) => !prev);
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

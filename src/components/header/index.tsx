@@ -3,12 +3,14 @@ import UserFlow from "./userFlow";
 import Navbar from "./Navbar";
 import UserContext from "../../UserContext";
 import { ImConnection } from "react-icons/im";
+import CaseOpenedNotification from "./CaseOpenedNotification";
 
 interface Header {
   onlineUsers: number;
+  recentCaseOpenings: Array<any>;
 }
 
-const Header: React.FC<Header> = ({ onlineUsers }) => {
+const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings }) => {
   const [openUserFlow, setOpenUserFlow] = useState<boolean>(false);
   const isLogged = useContext(UserContext);
 
@@ -50,6 +52,23 @@ const Header: React.FC<Header> = ({ onlineUsers }) => {
       >
         <UserFlow />
       </div>
+      {recentCaseOpenings.length > 0 && (
+        <div className="flex flex-col gap-1 pt-1 items-center justify-center ">
+          <div className="flex flex-col max-w-[1920px] w-full">
+            <span className="text-[#9793ba] text-[10px] ">LIVE DROP</span>
+
+            <div className="flex overflow-x-auto  py-2 justify-start ">
+              {recentCaseOpenings.map((opening, index) => (
+                <CaseOpenedNotification
+                  key={index}
+                  item={opening.item}
+                  username={"a"}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
