@@ -108,7 +108,7 @@ const Profile = () => {
         )}
       </div>
 
-      <div className="flex flex-col items-center w-full bg-[#141225]">
+      <div className="flex flex-col items-center w-full bg-[#141225] h-screen">
         <div className="flex flex-col p-8 gap-2 items-center max-w-[1312px]">
           <h2 className="text-2xl font-bold py-4">Inventory</h2>
           <div className="flex flex-wrap gap-6  justify-center ">
@@ -135,15 +135,17 @@ const Profile = () => {
               <h2>No items</h2>
             )}
           </div>
-          {inventory && inventory.currentPage !== inventory.totalPages && (
-            <div className="w-40 mt-4">
-              <MainButton
-                text={`Load more`}
-                onClick={() => getInventoryInfo(true)}
-                loading={loadingInventory}
-              />
-            </div>
-          )}
+          {inventory &&
+            inventory.currentPage !== inventory.totalPages &&
+            invItems.length > 0 && (
+              <div className="w-40 mt-4">
+                <MainButton
+                  text={`Load more`}
+                  onClick={() => getInventoryInfo(true)}
+                  loading={loadingInventory}
+                />
+              </div>
+            )}
         </div>
       </div>
     </div>

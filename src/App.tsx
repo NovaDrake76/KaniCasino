@@ -57,7 +57,7 @@ function App() {
   }, [recentCaseOpenings]);
 
   return (
-    <div className="flex flex-col h-screen items-start justify-start">
+    <div className="flex flex-col min-h-screen items-start justify-start">
       <UserContext.Provider
         value={{
           isLogged,
@@ -75,10 +75,10 @@ function App() {
             <div className="flex">
               <AppRoutes />
             </div>
+            <div className="">footer</div>
           </SkeletonTheme>
         </Router>
       </UserContext.Provider>
-      <div>footer</div>
     </div>
   );
 }

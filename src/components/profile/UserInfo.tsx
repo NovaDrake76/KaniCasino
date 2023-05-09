@@ -37,7 +37,9 @@ const UserInfo: React.FC<UserProps> = ({
   isSameUser,
   setRefresh,
 }) => {
-  const [description, setDescription] = useState<string>(fixedItem.description);
+  const [description, setDescription] = useState<string>(
+    fixedItem ? fixedItem.description : ""
+  );
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
@@ -76,7 +78,7 @@ const UserInfo: React.FC<UserProps> = ({
 
   return (
     <div className="flex flex-col lg:flex-row items-center justify-between w-full">
-      <div className="flex items-center gap-7">
+      <div className="flex flex-col lg:flex-row items-center gap-7">
         <div className="flex relative">
           <img
             src={
