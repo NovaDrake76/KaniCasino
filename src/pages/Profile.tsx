@@ -61,7 +61,9 @@ const Profile = () => {
         newPage ? inventory && inventory.currentPage + 1 : 1
       );
       setInventory(response);
-      setInvItems((prev) => [...prev, ...response.items]);
+      newPage
+        ? setInvItems((prev) => [...prev, ...response.items])
+        : setInvItems(response.items);
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +110,7 @@ const Profile = () => {
         )}
       </div>
 
-      <div className="flex flex-col items-center w-full bg-[#141225] h-screen">
+      <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
         <div className="flex flex-col p-8 gap-2 items-center max-w-[1312px]">
           <h2 className="text-2xl font-bold py-4">Inventory</h2>
           <div className="flex flex-wrap gap-6  justify-center ">

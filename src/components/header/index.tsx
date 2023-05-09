@@ -62,7 +62,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings }) => {
             <span className="text-[#9793ba] text-[10px] ">LIVE DROP</span>
 
             <div className="flex h-28 bg-[#141225] ">
-              <div className="flex overflow-x-auto  justify-start ">
+              <div className="flex overflow-hidden justify-start transition-all">
                 {recentCaseOpenings.map((opening, index) => (
                   <CaseOpenedNotification
                     key={index}

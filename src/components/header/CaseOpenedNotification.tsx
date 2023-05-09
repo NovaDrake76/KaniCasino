@@ -19,15 +19,19 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
     setTransition(true);
   }, [item]);
 
+  const getColor = (e: number) => {
+    return Rarities.find((rarity) => rarity.id == e)?.color;
+  };
+
   return (
     <div
       className={`flex flex-col min-w-[160px] h-28 items-center transition-opacity duration-10 border bg-[#141225] ${
         transition ? "opacity-100" : "opacity-0 -translate-y-2"
       }`}
       style={{
-        borderColor: Rarities.find((rarity) => rarity.id == item.rarity)?.color,
-        borderLeft: `1px solid #1e1b38`,
-        borderRight: "none",
+        borderColor: `${getColor(item.rarity)} transparent ${getColor(
+          item.rarity
+        )}  #1e1b38 `,
       }}
     >
       <div className="flex flex-col  items-center space-x-2 relative">
