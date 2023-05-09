@@ -2,6 +2,8 @@
 
 # To-Do
 - [ ] Fix PFP upload.
+- [ ] Fix Inventory.
+- [ ] Fix Netlify URL.
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Right Banner content.
