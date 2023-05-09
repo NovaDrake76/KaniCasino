@@ -4,6 +4,7 @@
 - [ ] Fix PFP upload.
 - [ ] Fix Inventory.
 - [ ] Fix Netlify URL.
+- [ ] Scroll history.
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Right Banner content.
