@@ -21,7 +21,7 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
 
   return (
     <div
-      className={`flex flex-col w-40 h-28 items-center transition-opacity duration-10 border bg-[#141225] ${
+      className={`flex flex-col min-w-[160px] h-28 items-center transition-opacity duration-10 border bg-[#141225] ${
         transition ? "opacity-100" : "opacity-0 -translate-y-2"
       }`}
       style={{

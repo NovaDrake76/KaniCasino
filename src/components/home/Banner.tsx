@@ -13,7 +13,7 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({ left }) => {
   return (
     <div
-      className={`flex w-screen max-w-[1920px] h-[460px]  bg-no-repeat`}
+      className={` w-screen max-w-[1920px] h-[460px]  bg-no-repeat hidden md:flex`}
       style={{ backgroundImage: `url(${left.image})` }}
     >
       <div className="flex items-center justify-center w-full ">

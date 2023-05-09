@@ -54,16 +54,16 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
         <div className="flex items-center justify-between w-full ">
           <Link to="/">
             <div
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-0 md:w-auto"
               onMouseEnter={handleHover}
               onMouseLeave={handleHover}
             >
               <img
                 src="https://i.imgur.com/cVLsYjJ.png"
                 alt="logo"
-                className="w-12 h-12"
+                className="md:w-12 h-12 invisible md:visible"
               />
-              <div className="flex flex-col justify-center">
+              <div className="flex flex-col justify-center invisible md:visible">
                 <div className="font-normal text-xl text-white">KaniCasino</div>
 
                 <div className="absolute">

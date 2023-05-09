@@ -75,7 +75,7 @@ const UserInfo: React.FC<UserProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex flex-col lg:flex-row items-center justify-between w-full">
       <div className="flex items-center gap-7">
         <div className="flex relative">
           <img

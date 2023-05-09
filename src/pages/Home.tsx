@@ -44,7 +44,7 @@ const Home = () => {
 
   return (
     <div className="w-screen flex justify-center">
-      <div className="flex flex-col max-w-[1920px]">
+      <div className=" flex-col max-w-[1920px] ">
         <Banner left={leftContent} />
         {loading ? (
           <div className="flex items-center justify-center w-full mt-[164px]">

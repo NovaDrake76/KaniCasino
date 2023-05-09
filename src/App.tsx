@@ -13,7 +13,7 @@ function App() {
   const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
 
   useEffect(() => {
-    const socket = io("http://localhost:5000");
+    const socket = io("https://kaniback.onrender.com");
 
     socket.on("onlineUsers", (count) => {
       setOnlineUsers(count);
