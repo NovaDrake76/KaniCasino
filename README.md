@@ -2,6 +2,10 @@
 
 # To-Do
 - [ ] Fix PFP upload.
+- [ ] Fix Inventory.
+- [ ] Fix Netlify URL.
+- [ ] Scroll history.
+- [ ] Profile Inventory Height.
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Right Banner content.
