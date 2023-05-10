@@ -13,7 +13,7 @@ function App() {
   const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
 
   useEffect(() => {
-    const socket = io("https://kaniback.onrender.com");
+    const socket = io(import.meta.env.VITE_BASE_URL);
 
     socket.on("onlineUsers", (count) => {
       setOnlineUsers(count);

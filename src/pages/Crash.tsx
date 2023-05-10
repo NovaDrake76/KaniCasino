@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("https://kaniback.onrender.com");
+const socket = io(import.meta.env.VITE_BASE_URL);
 
 const CoinFlip = () => {
   useEffect(() => {

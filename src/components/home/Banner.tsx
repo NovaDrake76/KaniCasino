@@ -35,7 +35,11 @@ const Banner: React.FC<BannerProps> = ({ left }) => {
               </div>
             </div>
           </div>
-          <div>b</div>
+          <div>
+            {
+              //right content
+            }
+          </div>
         </div>
       </div>
     </div>
