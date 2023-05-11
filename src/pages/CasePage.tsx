@@ -44,6 +44,12 @@ const CasePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // let audio = new Audio("/open.mp3");
+
+  // const playAudio = () => {
+  //   audio.play();
+  // };
+
   const openCase = async () => {
     setLoadingButton(true);
     try {
@@ -58,6 +64,7 @@ const CasePage = () => {
             : userData.level,
       });
       setOpenedItem(response);
+      // playAudio();
     } catch (error) {
       console.log(error);
       setLoadingButton(false);

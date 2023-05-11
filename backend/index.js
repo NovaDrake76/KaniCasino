@@ -42,7 +42,7 @@ app.use(express.json());
 app.use("/cases", caseRoutes);
 app.use("/items", itemRoutes);
 app.use("/users", userRoutes);
-app.use("/api/marketplace", marketplaceRoutes);
+app.use("/marketplace", marketplaceRoutes);
 app.use("/admin", adminRoutes);
 app.use("/games", gamesRoutes);
 

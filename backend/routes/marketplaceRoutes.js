@@ -1,78 +1,103 @@
+// routes/marketplaceRoutes.js
+
 const express = require("express");
 const router = express.Router();
-const MarketplaceItem = require("../models/marketplaceItem");
 const { isAuthenticated } = require("../middleware/authMiddleware");
 
-router.get("/", async (req, res) => {
-  try {
-    const items = await MarketplaceItem.find()
-      .populate("item")
-      .populate("seller");
-    res.json(items);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+const User = require("../models/User");
+const Item = require("../models/Item");
+const Marketplace = require("../models/Marketplace");
 
+// Create new listing
 router.post("/", isAuthenticated, async (req, res) => {
   const { item, price } = req.body;
+  const user = await User.findById(req.user._id);
 
-  const newMarketplaceItem = new MarketplaceItem({
+  // Check if the item is in the user's inventory
+  const inventoryItemIndex = user.inventory.findIndex(
+    (i) => i._id.toString() === item._id
+  );
+
+  if (inventoryItemIndex === -1) {
+    return res.status(404).json({ message: "Item not found" });
+  }
+
+  // Create a new marketplace item with the item object
+  const marketplaceItem = new Marketplace({
+    sellerId: user._id,
     item,
-    seller: req.user._id,
     price,
+    itemName: item.name,
+    itemImage: item.image,
   });
 
-  try {
-    const savedMarketplaceItem = await newMarketplaceItem.save();
-    res.status(201).json(savedMarketplaceItem);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+  await marketplaceItem.save();
+
+  // Remove the item from the user's inventory
+  user.inventory.splice(inventoryItemIndex, 1);
+  await user.save();
+
+  res.json(marketplaceItem);
 });
 
-router.put("/buy/:id", isAuthenticated, async (req, res) => {
-  try {
-    const marketplaceItem = await MarketplaceItem.findById(req.params.id)
-      .populate("item")
-      .populate("seller");
-    if (!marketplaceItem) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-
-    // Implement the necessary logic to update the buyer's and seller's wallet balances and inventory.
-    // For example, check if the buyer has enough CP, update wallet balances, and transfer the item to the buyer's inventory.
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
+// Get all listings
 router.get("/", async (req, res) => {
-  // Get query parameters from the request, e.g., req.query.price, req.query.rarity, req.query.name
-  // Modify the MongoDB query based on the query parameters.
-  // For example, you can use .find() with conditions and .sort() to filter and sort the results.
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 30;
+  const skip = (page - 1) * limit;
 
-  try {
-    let query = MarketplaceItem.find().populate("item").populate("seller");
+  const total = await Marketplace.countDocuments();
+  const items = await Marketplace.find()
+    .populate("sellerId", "username")
+    .skip(skip)
+    .limit(limit);
 
-    if (req.query.price) {
-      query = query.where("price").lte(req.query.price);
-    }
+  res.json({
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+    items,
+  });
+});
 
-    if (req.query.rarity) {
-      query = query.where("item.rarity").equals(req.query.rarity);
-    }
+// Delete listing
+router.delete("/:id", isAuthenticated, async (req, res) => {
+  const item = await Marketplace.findOne({
+    _id: req.params.id,
+    sellerId: req.user._id,
+  });
 
-    if (req.query.name) {
-      query = query.where("item.name").regex(new RegExp(req.query.name, "i"));
-    }
-
-    const items = await query.exec();
-
-    res.json(items);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  if (!item) {
+    return res.status(404).json({ message: "Item not found" });
   }
+
+  await item.remove();
+  res.json({ message: "Item removed" });
+});
+
+// Buy an item
+router.post("/buy/:id", isAuthenticated, async (req, res) => {
+  const item = await Marketplace.findById(req.params.id);
+  const user = await User.findById(req.user._id);
+
+  if (!item) {
+    return res.status(404).json({ message: "Item not found" });
+  }
+
+  if (user.walletBalance < item.price) {
+    return res.status(400).json({ message: "Insufficient balance" });
+  }
+
+  user.walletBalance -= item.price;
+  user.inventory.unshift(item.item);
+  await user.save();
+
+  const seller = await User.findById(item.sellerId);
+  seller.walletBalance += item.price;
+  await seller.save();
+
+  await Marketplace.deleteOne({ _id: req.params.id });
+
+  res.json({ message: "Item purchased" });
 });
 
 module.exports = router;

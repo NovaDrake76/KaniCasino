@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import UserContext from "./UserContext";
 import io from "socket.io-client";
 import { SkeletonTheme } from "react-loading-skeleton";
+import "react-tooltip/dist/react-tooltip.css";
 
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);

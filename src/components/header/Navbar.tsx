@@ -8,6 +8,7 @@ import { IoMdExit } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { BiWallet } from "react-icons/bi";
+import { MdOutlineSell } from "react-icons/md";
 
 interface Navbar {
   openUserFlow: boolean;
@@ -48,38 +49,68 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
     isLogged && getUserInfo();
   }, [isLogged]);
 
+  const links = [
+    {
+      name: "Market",
+      path: "/marketplace",
+      icon: <MdOutlineSell className="text-2xl" />,
+    },
+  ];
+
   return (
     <div className="w-full flex justify-center">
       <nav className=" py-4 px-8 bg-[#19172D] w-[calc(100vw-2rem)] max-w-[1920px] flex justify-center notched ">
         <div className="flex items-center justify-between w-full ">
-          <Link to="/">
-            <div
-              className="flex items-center gap-2 w-0 md:w-auto"
-              onMouseEnter={handleHover}
-              onMouseLeave={handleHover}
-            >
-              <img
-                src="https://i.imgur.com/cVLsYjJ.png"
-                alt="logo"
-                className="md:w-12 h-12 invisible md:visible"
-              />
-              <div className="flex flex-col justify-center invisible md:visible">
-                <div className="font-normal text-xl text-white">KaniCasino</div>
+          <div className="flex">
+            <Link to="/">
+              <div
+                className="flex items-center gap-2 w-0 md:w-auto"
+                onMouseEnter={handleHover}
+                onMouseLeave={handleHover}
+              >
+                <img
+                  src="https://i.imgur.com/cVLsYjJ.png"
+                  alt="logo"
+                  className="md:w-12 h-12 invisible md:visible"
+                />
+                <div className="flex flex-col justify-center invisible md:visible">
+                  <div className="font-normal text-xl text-white">
+                    KaniCasino
+                  </div>
 
-                <div className="absolute">
-                  <div
-                    className={`flex items-center justify-center transition-all duration-300 text-[#9793ba]  text-[10px] ${
-                      isHovering === false
-                        ? "opacity-0 -mt-2"
-                        : "opacity-100 mt-10"
-                    }`}
-                  >
-                    REIMU FUMO ᗜ˰ᗜ
+                  <div className="absolute">
+                    <div
+                      className={`flex items-center justify-center transition-all duration-300 text-[#9793ba]  text-[10px] ${
+                        isHovering === false
+                          ? "opacity-0 -mt-2"
+                          : "opacity-100 mt-10"
+                      }`}
+                    >
+                      REIMU FUMO ᗜ˰ᗜ
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+            {
+              <div className="hidden md:flex items-center gap-4 ml-8">
+                {links.map((link, index) => (
+                  <Link
+                    to={link.path}
+                    key={index}
+                    className="flex items-center gap-2 font-normal text-lg cursor-pointer "
+                  >
+                    <span className="text-[#625F7E] hover:text-gray-200 transition-all ">
+                      {link.icon}
+                    </span>
+                    <span className="text-white hover:text-gray-200 transition-all ">
+                      {link.name}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            }
+          </div>
 
           {isLogged === true ? (
             <div className="flex items-center gap-4">

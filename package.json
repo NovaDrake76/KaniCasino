@@ -20,6 +20,8 @@
     "react-loader-spinner": "^5.3.4",
     "react-loading-skeleton": "^3.2.1",
     "react-router-dom": "^6.11.0",
+    "react-toastify": "^9.1.2",
+    "react-tooltip": "^5.11.2",
     "socket.io-client": "^4.6.1"
   },
   "devDependencies": {

@@ -81,8 +81,8 @@ module.exports = (io) => {
       // Add the entire winning item object to the user's inventory
       user.inventory.unshift(winningItem);
 
-      // Update user xp by +10*case price
-      user.xp += 10 * caseData.price;
+      // Update user xp by +5*case price
+      user.xp += 5 * caseData.price;
 
       // Update user level
       if (user.xp >= (user.level + 1) * 1000) {

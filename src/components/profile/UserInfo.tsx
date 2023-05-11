@@ -3,6 +3,7 @@ import { RiDoubleQuotesL } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
 import { putFixDescription } from "../../services/users/UserServices";
 import { useState } from "react";
+import { Tooltip } from "react-tooltip";
 
 interface UserProps {
   user: {
@@ -117,7 +118,13 @@ const UserInfo: React.FC<UserProps> = ({
               <span className="text-[#dddcfc] font-semibold">{`XP ${xp} / ${
                 (level + 1) * 1000
               }`}</span>
-              <span className="text-[#3a365a] underline -translate-x-1">
+              <Tooltip id="my-tooltip" />
+
+              <span
+                className="text-[#3a365a] underline -translate-x-1 cursor-help"
+                data-tooltip-id="my-tooltip"
+                data-tooltip-content="To every 1C₽ spent, you get 5 XP."
+              >
                 How XP works?
               </span>
             </div>
