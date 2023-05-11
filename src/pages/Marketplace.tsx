@@ -5,6 +5,7 @@ import SellItemModal from "../components/market/SellItemModal";
 import MainButton from "../components/MainButton";
 import Title from "../components/Title";
 import ConfirmPurchaseModal from "../components/market/ConfirmPuchaseModal";
+import Skeleton from "react-loading-skeleton";
 
 interface MarketItem {
   _id: string;
@@ -95,10 +96,18 @@ const Marketplace: React.FC = () => {
         </div>
       </div>
       {loading ? (
-        <div>Loading...</div>
+        <div className="flex flex-wrap items-center gap-4 justify-center">
+          {Array(4)
+            .fill(0)
+            .map((_, i) => (
+              <div key={i} className="w-[226px] h-[334px]  ">
+                <Skeleton height={334} width={226} />
+              </div>
+            ))}
+        </div>
       ) : (
         <div className="flex flex-wrap items-center gap-4 justify-center">
-          {items &&
+          {items ? (
             items.items.map((item) => (
               <ItemCard
                 key={item._id}
@@ -108,7 +117,10 @@ const Marketplace: React.FC = () => {
                   setOpenBuyModal(true);
                 }}
               />
-            ))}
+            ))
+          ) : (
+            <div>No items found</div>
+          )}
         </div>
       )}
     </div>
