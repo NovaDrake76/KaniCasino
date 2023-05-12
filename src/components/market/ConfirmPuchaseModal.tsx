@@ -1,6 +1,7 @@
 import React from "react";
 import { buyItem } from "../../services/market/MarketSercive";
 import MainButton from "../MainButton";
+import { toast } from "react-toastify";
 
 interface MarketItem {
   _id: string;
@@ -35,8 +36,28 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
     try {
       await buyItem(item._id as unknown as number);
       setRefresh && setRefresh(true);
+      toast.success("Purchase successful!", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
       onClose();
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
       console.log(error);
     }
     setLoading(false);
@@ -47,18 +68,18 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   }
 
   return (
-    <div className="fixed flex items-center justify-center w-screen z-50">
-      <div className="bg-[#17132B] p-8 rounded w-[600px] h-[300px]">
+    <div className="fixed flex items-center justify-center w-screen z-50 ">
+      <div className="bg-[#17132B] p-8 rounded w-[600px] h-[290px]">
         <h2 className="text-lg font-semibold mb-2">Confirm Purchase</h2>
         <div className="flex justify-between items-center">
           <p className="text-white text-lg">
             Are you sure you want to buy the {item.item.name} for {item.price}{" "}
             CP?
           </p>
-          <img src={item.item.image} alt="" className="h-20" />
+          <img src={item.item.image} alt="" className="h-28" />
         </div>
 
-        <div className="flex items-center justify-end gap-4 mt-4">
+        <div className="flex items-center justify-end gap-4 mt-12">
           <button
             className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
             onClick={onClose}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ItemCard from "../components/market/MarketItem";
 import { getItems } from "../services/market/MarketSercive";
 import SellItemModal from "../components/market/SellItemModal";
@@ -6,6 +6,7 @@ import MainButton from "../components/MainButton";
 import Title from "../components/Title";
 import ConfirmPurchaseModal from "../components/market/ConfirmPuchaseModal";
 import Skeleton from "react-loading-skeleton";
+import UserContext from "../UserContext";
 
 interface MarketItem {
   _id: string;
@@ -33,6 +34,9 @@ const Marketplace: React.FC = () => {
   const [openSellModal, setOpenSellModal] = useState<boolean>(false);
   const [openBuyModal, setOpenBuyModal] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+
+  const { isLogged } = useContext(UserContext);
+
   const defaultItem: MarketItem = {
     _id: "",
     sellerId: "",
@@ -86,13 +90,15 @@ const Marketplace: React.FC = () => {
       <div className="flex items-center justify-center w-full max-w-[1600px] relative">
         <Title title="Marketplace" />
         <div className="absolute right-0">
-          <div className="w-52">
-            {" "}
-            <MainButton
-              onClick={() => setOpenSellModal(true)}
-              text="Sell an item"
-            />
-          </div>
+          {isLogged && (
+            <div className="w-52">
+              {" "}
+              <MainButton
+                onClick={() => setOpenSellModal(true)}
+                text="Sell an item"
+              />
+            </div>
+          )}
         </div>
       </div>
       {loading ? (

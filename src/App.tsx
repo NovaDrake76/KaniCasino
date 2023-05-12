@@ -6,6 +6,8 @@ import UserContext from "./UserContext";
 import io from "socket.io-client";
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-tooltip/dist/react-tooltip.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
@@ -21,7 +23,7 @@ function App() {
     });
 
     socket.on("caseOpened", (data) => {
-      //wait 7 seconds to remove the notification
+      //wait 7.5 seconds to remove the notification
       setTimeout(() => {
         setRecentCaseOpenings((prevOpenings: any) => [data, ...prevOpenings]);
       }, 7500);
@@ -69,6 +71,7 @@ function App() {
       >
         <Router>
           <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
+            <ToastContainer />
             <Header
               onlineUsers={onlineUsers}
               recentCaseOpenings={recentCaseOpenings}

@@ -4,6 +4,7 @@ import { getInventory } from "../../services/users/UserServices";
 import UserContext from "../../UserContext";
 import Item from "../Item";
 import MainButton from "../MainButton";
+import { toast } from "react-toastify";
 
 interface Props {
   isOpen: boolean;
@@ -39,9 +40,29 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     try {
       await sellItem(selectedItem, price);
       setRefresh && setRefresh(true);
+      toast.success("Item listed for sale!", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      toast.error(error.response.data.message, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
     }
     setLoadingButton(false);
   };
@@ -49,11 +70,13 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const getInventoryInfo = async (newPage?: boolean) => {
     try {
       !newPage && setLoadingInventory(true);
+
       const response = await getInventory(
         userData.id,
         newPage ? (inventory && inventory.currentPage + 1) || 1 : 1
       );
       setInventory(response);
+
       newPage
         ? setInvItems((prev) => [...prev, ...response.items])
         : setInvItems(response.items);
@@ -144,6 +167,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               text="Sell Item"
               onClick={handleSubmit}
               loading={loadingButton}
+              disabled={!selectedItem || !price}
             />
           </div>
         </div>
