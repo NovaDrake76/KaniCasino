@@ -29,6 +29,7 @@ router.post("/", isAuthenticated, async (req, res) => {
     price,
     itemName: item.name,
     itemImage: item.image,
+    rarity: item.rarity,
   });
 
   await marketplaceItem.save();
@@ -49,6 +50,7 @@ router.get("/", async (req, res) => {
   const total = await Marketplace.countDocuments();
   const items = await Marketplace.find()
     .populate("sellerId", "username")
+    .sort({ createdAt: -1 }) // sort in descending order of creation time
     .skip(skip)
     .limit(limit);
 
