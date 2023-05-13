@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { buyItem } from "../../services/market/MarketSercive";
 import MainButton from "../MainButton";
 import { toast } from "react-toastify";
+import UserContext from "../../UserContext";
 
 interface MarketItem {
   _id: string;
@@ -31,11 +32,18 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   setRefresh,
 }) => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { userData, toogleUserData } = useContext(UserContext);
+
   const handleConfirm = async () => {
     setLoading(true);
     try {
       await buyItem(item._id as unknown as number);
       setRefresh && setRefresh(true);
+      toogleUserData({
+        ...userData,
+        walletBalance: userData.walletBalance - item.price,
+      });
+
       toast.success("Purchase successful!", {
         position: "top-right",
         autoClose: 4000,

@@ -16,7 +16,7 @@ interface InventoryItem {
   _id: string;
   name: string;
   image: string;
-  rarity: number;
+  rarity: string;
 }
 
 interface Inventory {
@@ -97,7 +97,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   }
 
   return (
-    <div className="fixed  flex items-center justify-center w-screen z-50 ">
+    <div className="fixed  flex items-center justify-center w-screen top-[40px] z-50 ">
       <div className="bg-[#17132B] p-8 rounded w-[800px] h-[680px]">
         <h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
         <div className="flex justify-between">
@@ -167,7 +167,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               text="Sell Item"
               onClick={handleSubmit}
               loading={loadingButton}
-              disabled={!selectedItem || !price}
+              disabled={!selectedItem || !price || loadingButton}
             />
           </div>
         </div>

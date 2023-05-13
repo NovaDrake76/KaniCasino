@@ -7,7 +7,7 @@ interface itemProps {
   item: {
     name: string;
     image: string;
-    rarity: number;
+    rarity: string;
   };
   fixable?: boolean;
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,7 +42,8 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
           className="w-auto"
           style={{
             boxShadow: `0px 0px 120px 80px ${
-              Rarities.find((rarity) => rarity.id == item.rarity)?.color
+              Rarities.find((rarity) => rarity.id.toString() == item.rarity)
+                ?.color
             }`,
           }}
         />
