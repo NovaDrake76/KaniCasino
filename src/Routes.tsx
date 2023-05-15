@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import CasePage from "./pages/CasePage";
 import Marketplace from "./pages/Marketplace";
+import CoinFlip from "./pages/CoinFlip";
 
 const defaultRoutes = (
   <>
@@ -10,6 +11,7 @@ const defaultRoutes = (
     <Route path="/profile/:id" element={<Profile />} />
     <Route path="/case/:id" element={<CasePage />} />
     <Route path="/marketplace" element={<Marketplace />} />
+    <Route path="/coinflip" element={<CoinFlip />} />
   </>
 );
 
