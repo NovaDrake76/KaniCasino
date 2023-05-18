@@ -40,7 +40,7 @@ const coinFlip = (io) => {
       };
 
       setTimeout(startGame, 7000);
-    }, 15000);
+    }, 7000);
   };
 
   startGame();
