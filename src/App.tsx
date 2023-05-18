@@ -3,20 +3,20 @@ import AppRoutes from "./Routes";
 import Header from "./components/header/index";
 import { useEffect, useState } from "react";
 import UserContext from "./UserContext";
-import io from "socket.io-client";
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-tooltip/dist/react-tooltip.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import SocketConnection from "./services/socket"
 
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [onlineUsers, setOnlineUsers] = useState<number>(0);
   const [userData, setUserData] = useState<any>(null);
   const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
+  const socket = SocketConnection.getInstance();
 
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_BASE_URL);
 
     socket.on("onlineUsers", (count) => {
       setOnlineUsers(count);

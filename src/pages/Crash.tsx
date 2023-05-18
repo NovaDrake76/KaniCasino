@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { io } from "socket.io-client";
 
-const socket = io(import.meta.env.VITE_BASE_URL);
+import SocketConnection from "../services/socket"
 
 const CoinFlip = () => {
+  const socket = SocketConnection.getInstance();
+
   useEffect(() => {
     socket.on("crash:start", () => {
       console.log("Crash game started");

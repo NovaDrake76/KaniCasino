@@ -6,16 +6,23 @@
 
 @layer utilities {
   .notched {
-    clip-path: polygon(
-      0% 10px,
-      /* top left */ 10px 0%,
-      /* top left */ calc(100% - 10px) 0%,
-      /* top right */ 100% 10px,
-      /* top right */ 100% calc(100% - 10px),
-      /* bottom right */ calc(100% - 10px) 100%,
-      /* bottom right */ 10px 100%,
-      /* bottom left */ 0 calc(100% - 10px) /* bottom left */
-    );
+    clip-path: polygon(0% 10px,
+        /* top left */
+        10px 0%,
+        /* top left */
+        calc(100% - 10px) 0%,
+        /* top right */
+        100% 10px,
+        /* top right */
+        100% calc(100% - 10px),
+        /* bottom right */
+        calc(100% - 10px) 100%,
+        /* bottom right */
+        10px 100%,
+        /* bottom left */
+        0 calc(100% - 10px)
+        /* bottom left */
+      );
   }
 }
 
@@ -40,10 +47,12 @@
     opacity: 1;
     transform: translateY(0);
   }
+
   50% {
     opacity: 0.5;
     transform: translateY(-20px);
   }
+
   100% {
     opacity: 0;
     transform: translateY(-40px);
@@ -55,6 +64,7 @@
     opacity: 0;
     transform: translateY(-40px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -66,6 +76,7 @@
     opacity: 0;
     transform: translateX(-40px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -76,10 +87,35 @@
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
+
+.coin {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  transform-style: preserve-3d;
+}
+
+.face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-size: cover;
+}
+
+.front {
+  transform: rotateY(180deg) translateZ(1em);
+}
+
+.back {
+  transform: rotateY(0deg) translateZ(1em);
+}
+
 
 :root {
   font-family: "Montserrat", sans-serif;
@@ -90,7 +126,7 @@
   color: rgba(255, 255, 255, 0.87);
   background: rgb(21, 18, 37);
 
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#151225",endColorstr="#3e2a5c",GradientType=1);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#151225", endColorstr="#3e2a5c", GradientType=1);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -103,6 +139,7 @@ a {
   color: #646cff;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -114,21 +151,15 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: rgb(21, 18, 37);
-  background: -moz-linear-gradient(
-    322deg,
-    rgba(21, 18, 37, 1) 71%,
-    rgba(62, 42, 92, 1) 100%
-  );
-  background: -webkit-linear-gradient(
-    322deg,
-    rgba(21, 18, 37, 1) 71%,
-    rgba(62, 42, 92, 1) 100%
-  );
-  background: linear-gradient(
-    322deg,
-    rgba(21, 18, 37, 1) 71%,
-    rgba(62, 42, 92, 1) 100%
-  );
+  background: -moz-linear-gradient(322deg,
+      rgba(21, 18, 37, 1) 71%,
+      rgba(62, 42, 92, 1) 100%);
+  background: -webkit-linear-gradient(322deg,
+      rgba(21, 18, 37, 1) 71%,
+      rgba(62, 42, 92, 1) 100%);
+  background: linear-gradient(322deg,
+      rgba(21, 18, 37, 1) 71%,
+      rgba(62, 42, 92, 1) 100%);
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -149,9 +180,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -162,9 +195,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
