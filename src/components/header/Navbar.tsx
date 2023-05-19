@@ -9,6 +9,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { BiWallet } from "react-icons/bi";
 import { MdOutlineSell } from "react-icons/md";
+import { BsCoin } from "react-icons/bs";
 
 interface Navbar {
   openUserFlow: boolean;
@@ -19,8 +20,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const { isLogged, toggleLogin, toogleUserData, userData } =
-    useContext(UserContext);
+  const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -55,6 +55,11 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
       path: "/marketplace",
       icon: <MdOutlineSell className="text-2xl" />,
     },
+    {
+      name: "Coin Flip",
+      path: "/coinflip",
+      icon: <BsCoin className="text-2xl" />,
+    },
   ];
 
   return (
@@ -80,11 +85,10 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
 
                   <div className="absolute">
                     <div
-                      className={`flex items-center justify-center transition-all duration-300 text-[#9793ba]  text-[10px] ${
-                        isHovering === false
-                          ? "opacity-0 -mt-2"
-                          : "opacity-100 mt-10"
-                      }`}
+                      className={`flex items-center justify-center transition-all duration-300 text-[#9793ba]  text-[10px] ${isHovering === false
+                        ? "opacity-0 -mt-2"
+                        : "opacity-100 mt-10"
+                        }`}
                     >
                       REIMU FUMO ᗜ˰ᗜ
                     </div>

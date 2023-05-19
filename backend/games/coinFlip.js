@@ -39,8 +39,8 @@ const coinFlip = (io) => {
         choices: {},
       };
 
-      setTimeout(startGame, 7000);
-    }, 7000);
+      setTimeout(startGame, 14000);
+    }, 5000);
   };
 
   startGame();
