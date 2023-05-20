@@ -3,6 +3,7 @@ import SocketConnection from "../services/socket"
 import Coin from "../components/coin/Coin"
 import { motion } from "framer-motion";
 import UserContext from "../UserContext";
+import LiveBets from "../components/coin/LiveBets";
 
 const socket = SocketConnection.getInstance();
 
@@ -19,11 +20,30 @@ const CoinFlip = () => {
   const [gameEnded, setGameEnded] = useState(false);
   const [countDown, setCountDown] = useState(0);
   const [userGambled, setUserGambled] = useState(false);
+  const [gameState, setGameState] = useState<any>({
+    heads: {
+      players: {},
+      bets: {},
+      choices: {},
+    },
+    tails: {
+      players: {},
+      bets: {},
+      choices: {},
+    }
+  });
   const { isLogged, toogleUserData, userData } = useContext(UserContext);
 
   const handleBet = () => {
-    socket.emit("coinFlip:bet", bet);
-    socket.emit("coinFlip:choice", choice);
+    const user = [{
+      id: userData?.id,
+      name: userData?.username,
+      profilePicture: userData?.profilePicture,
+      level: userData?.level,
+    }]
+
+    socket.emit("coinFlip:bet", user[0], bet, choice);
+    socket.emit("coinFlip:choice", user[0], choice);
 
     toogleUserData({ ...userData, walletBalance: userData.walletBalance - bet });
     setUserGambled(true);
@@ -39,23 +59,34 @@ const CoinFlip = () => {
 
     const resultListener = (result: number) => {
       setResult(result);
-      setSpinning(false); // Stop spinning when the result is known
+      setSpinning(false);
 
       // Update the user's balance based on whether they won or lost
       if (userGambled && result == choice) {
         // The user won the game, double their bet
         toogleUserData({ ...userData, walletBalance: userData.walletBalance + (bet * 2) });
       }
-      setChoice(null);
 
       //wait 1 second before adding the result to the history
       setTimeout(() => {
         setHistory((prevHistory) => [...prevHistory, { result }]);
-        setGameEnded(true); // The game has ended
-        setCountDown(11.7); // Start the countdown until the next game starts
+        setGameEnded(true);
+        setCountDown(11.4);
+        setGameState({
+          heads: {
+            players: {},
+            bets: {},
+            choices: {},
+          },
+          tails: {
+            players: {},
+            bets: {},
+            choices: {},
+          }
+        });
       }, 1200);
 
-      setUserGambled(false); // Reset after each game
+      setUserGambled(false);
     };
 
     socket.on("coinFlip:start", startListener);
@@ -68,6 +99,20 @@ const CoinFlip = () => {
     };
   }, [choice, bet, userGambled]);
 
+  useEffect(() => {
+    const gameStateListener = (gameState: any) => {
+      setGameState(gameState);
+
+    };
+
+    socket.on("coinFlip:gameState", gameStateListener);
+
+
+    return () => {
+      socket.off("coinFlip:gameState", gameStateListener);
+    };
+  }, []);
+
 
   useEffect(() => {
     if (countDown > 0 && !spinning) {
@@ -78,19 +123,19 @@ const CoinFlip = () => {
   }, [countDown]);
 
   return (
-    <div className="w-screen flex flex-col items-center justify-center">
-      <div className="flex bg-[#212031]  rounded">
-        <div className="w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
+    <div className="w-screen flex flex-col items-center justify-center gap-12">
+      <div className="flex bg-[#212031] rounded flex-col md:flex-row">
+        <div className="md:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
           <input
             type="number"
             value={bet}
             onChange={(e) => setBet(Number(e.target.value))}
-            className="p-2 border rounded w-full"
+            className="p-2 border rounded w-1/2 md:w-full"
           />
 
           <div className="flex flex-col gap-2 w-full">
             <label className="text-lg font-semibold">Choose a side</label>
-            <div className="flex items-center justify-between gap-2 w-full">
+            <div className="flex items-center justify-between gap-2 w-full flex-col md:flex-row">
               {
                 [{
                   name: "Heads",
@@ -121,21 +166,19 @@ const CoinFlip = () => {
           </button>
         </div>
         <div className="flex flex-col">
-          <div className="flex w-[800px] border-b border-gray-700  p-4">
+          <div className="flex md:w-[800px] border-b border-gray-700  p-4">
             <div className="flex bg-[#19172D] rounded items-center justify-center w-full h-[340px] relative ">
               {
-                //div absolute to when the game ends, show how many seconds until the next game
-                gameEnded && <div className="absolute top-0 left-0">
+                gameEnded && <div className="absolute top-0 left-0 p-2">
                   <span>
                     Next game in: {countDown.toFixed(1)}
                   </span>
                 </div>
-
               }
               <Coin spinning={spinning} result={result} />
             </div>
           </div>
-          <div className="flex  w-[800px] p-4 flex-col">
+          <div className="flex w-screen md:w-[800px] p-4 flex-col">
             <h3 className="mb-2 text-lg font-semibold">Game History:</h3>
             <div className="flex items-center gap-2 justify-end w-full  overflow-hidden h-[24px]">
               {history.map((e, i) => (
@@ -148,10 +191,17 @@ const CoinFlip = () => {
                 />
               ))}
             </div>
-
           </div>
         </div>
-      </div >
+      </div>
+      <div className="flex gap-8 flex-col md:flex-row">
+        {gameState &&
+          ["Heads", "Tails"].map((e, i) => (
+            <LiveBets gameState={gameState} type={e} key={i} />
+          ))
+        }
+      </div>
+
     </div >
   );
 };

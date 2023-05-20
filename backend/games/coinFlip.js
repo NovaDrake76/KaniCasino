@@ -1,42 +1,99 @@
+const User = require("../models/User");
+
 const coinFlip = (io) => {
   let gameState = {
-    bets: {},
-    choices: {},
+    heads: {
+      players: {},
+      bets: {},
+      choices: {},
+    },
+    tails: {
+      players: {},
+      bets: {},
+      choices: {},
+    }
   };
 
+
   io.on("connection", (socket) => {
-    socket.on("coinFlip:bet", (userId, bet) => {
-      // Handle player bet
-      gameState.bets[userId] = bet;
+    socket.on("coinFlip:bet", async (user, bet, choice) => {
+      try {
+        // Handle player bet
+        const betType = choice === 0 ? "heads" : "tails";
+        gameState[betType].bets[user.id] = bet;
+
+        // Update player balance
+        const updatedUser = await User.findByIdAndUpdate(
+          user.id,
+          { $inc: { walletBalance: -bet } },
+          { new: true }
+        ).select("-password").select("-email").select("-fixedItem").select("-inventory").select("-walletBalance");
+
+        // After updating the user, add them to the game state
+        gameState[betType].players[user.id] = updatedUser;  // Fixed this line
+
+        // Emit the updated game state to all clients
+        io.emit("coinFlip:gameState", gameState);
+      } catch (err) {
+        console.log(err);
+      }
     });
 
-    socket.on("coinFlip:choice", (userId, choice) => {
+
+
+    socket.on("coinFlip:choice", (user, choice) => {
       // Handle player choice
-      gameState.choices[userId] = choice;
+      const choiceType = choice === 0 ? "heads" : "tails";
+      gameState[choiceType].choices[user.id] = choice;
+
+      // Emit the updated game state to all clients
+      io.emit("coinFlip:gameState", gameState);
     });
+
   });
 
-  const startGame = () => {
+  const calculatePayout = async (result) => {
+    let winningChoice = result === 0 ? "heads" : "tails";
+
+    for (let userId in gameState[winningChoice].choices) {
+      // Player wins, update their balance
+      try {
+        const betAmount = gameState[winningChoice].bets[userId];
+        await User.findByIdAndUpdate(
+          userId,
+          { $inc: { walletBalance: betAmount * 2 } },
+          { new: true }
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+
+  const startGame = async () => {
     io.emit("coinFlip:start");
 
     const result = Math.floor(Math.random() * 2);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       io.emit("coinFlip:result", result);
 
       // Calculate payouts based on game result and player choices
-      for (let userId in gameState.choices) {
-        if (gameState.choices[userId] === result) {
-          // Player wins, update their balance
-        } else {
-          // Player loses, update their balance
-        }
-      }
+      await calculatePayout(result);
 
       // Reset game state
       gameState = {
-        bets: {},
-        choices: {},
+        heads: {
+          players: {},
+          bets: {},
+          choices: {},
+        },
+        tails: {
+          players: {},
+          bets: {},
+          choices: {},
+        }
       };
 
       setTimeout(startGame, 14000);
