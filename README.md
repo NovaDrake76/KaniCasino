@@ -6,6 +6,7 @@
 - [x] Fix Netlify URL.
 - [x] Scroll history.
 - [x] Profile Inventory Height.
+- [ ] Fix Level
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Right Banner content.
