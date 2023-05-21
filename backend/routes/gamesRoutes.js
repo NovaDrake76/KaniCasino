@@ -73,10 +73,19 @@ module.exports = (io) => {
 
       const itemsByRarity = groupItemsByRarity(caseData.items);
       const winningRarity = getRandomWeightedItem(Rarities, "chance");
-      const winningItem = getRandomItemFromRarity(
-        itemsByRarity,
-        winningRarity.id
-      );
+      let winningItem = getRandomItemFromRarity(itemsByRarity, winningRarity.id);
+
+      // If winningItem is null, get an item from another rarity
+      if (!winningItem) {
+        // Get array of all rarities that exist in the case
+        const existingRarities = Object.keys(itemsByRarity);
+
+        // Select a random rarity from existingRarities
+        const randomExistingRarity = existingRarities[Math.floor(Math.random() * existingRarities.length)];
+
+        // Select a random item from the chosen rarity
+        winningItem = getRandomItemFromRarity(itemsByRarity, randomExistingRarity);
+      }
 
       // Add the entire winning item object to the user's inventory
       user.inventory.unshift(winningItem);
@@ -92,7 +101,7 @@ module.exports = (io) => {
       await user.save();
 
       // Emit the caseOpened event
-      io.emit("caseOpened", { user: user.username, item: winningItem });
+      // io.emit("caseOpened", { user: user.username, item: winningItem });
 
       res.json({ item: winningItem });
     } catch (error) {

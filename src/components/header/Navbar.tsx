@@ -168,7 +168,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
           ) : (
             <div className="flex items-center gap-4">
               <MainButton
-                text="Login"
+                text="Sign In"
                 onClick={() => setOpenUserFlow(!openUserFlow)}
               />
             </div>

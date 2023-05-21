@@ -142,9 +142,8 @@ const CasePage = () => {
                 <img
                   src={openedItem.item.image}
                   alt={openedItem.item.name}
-                  className={`w-48 h-48 object-contain rounded ${
-                    showPrize ? "opacity-100" : "opacity-0"
-                  }`}
+                  className={`w-48 h-48 object-contain rounded ${showPrize ? "opacity-100" : "opacity-0"
+                    }`}
                 />
                 {animationAux2 && (
                   <div
@@ -178,11 +177,10 @@ const CasePage = () => {
                       <div
                         style={{
                           width: "1px",
-                          boxShadow: `0px 0px 80px 30px ${
-                            Rarities.find(
-                              (rarity) => rarity.id == openedItem.item.rarity
-                            )?.color
-                          }`,
+                          boxShadow: `0px 0px 80px 30px ${Rarities.find(
+                            (rarity) => rarity.id == openedItem.item.rarity
+                          )?.color
+                            }`,
                         }}
                       />
                     </div>
@@ -203,9 +201,8 @@ const CasePage = () => {
         </div>
 
         <div
-          className={`w-60 mt-8 ${
-            started ? "opacity-0" : "opacity-100"
-          } transition-all
+          className={`w-60 mt-8 ${started ? "opacity-0" : "opacity-100"
+            } transition-all
 
             `}
         >
@@ -230,17 +227,17 @@ const CasePage = () => {
           <div className="flex flex-col lg:flex-row flex-wrap gap-6  justify-center ">
             {loading
               ? { array: Array(12).fill(0) }.array.map((_, i) => (
-                  <Skeleton
-                    width={176}
-                    height={216}
-                    highlightColor="#161427"
-                    baseColor="#1c1a31"
-                    key={i}
-                  />
-                ))
+                <Skeleton
+                  width={176}
+                  height={216}
+                  highlightColor="#161427"
+                  baseColor="#1c1a31"
+                  key={i}
+                />
+              ))
               : data.items.map((item: any) => (
-                  <Item item={item} key={item.name + Math.random()} />
-                ))}
+                <Item item={item} key={item.name + Math.random()} />
+              ))}
           </div>
         </div>
       </div>

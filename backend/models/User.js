@@ -48,6 +48,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "", // default "" to a default image URL
   },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
+
 });
 
 module.exports = User = mongoose.model("User", UserSchema);

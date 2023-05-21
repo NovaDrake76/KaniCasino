@@ -12,6 +12,7 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
   const [rouletteItems, setRouletteItems] = useState<any[]>([]);
   const rouletteRef = useRef<HTMLDivElement | null>(null);
 
+
   useEffect(() => {
     const createRouletteItems = () => {
       let newItems = items.slice();
@@ -66,8 +67,8 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
         {rouletteItems.map((item: any, index: number) => (
           <img
             key={index}
-            src={item.image}
-            alt={item.name}
+            src={item && item.image}
+            alt={item && item.name}
             className="w-44 h-44 object-contain"
           />
         ))}
