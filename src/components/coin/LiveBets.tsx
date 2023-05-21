@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 interface GameHistory {
     gameState: any;
@@ -40,10 +41,12 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
                     const bet = betsInfo.bets[playerId];
                     return (
                         <div className="flex items-center justify-between py-2" key={playerId}>
-                            <div className="flex items-center gap-2">
-                                <img src={player.profilePicture} className="w-8 h-8 rounded-full" />
-                                <span className="font-bold text-sm">{player.username}</span>
-                            </div>
+                            <a href={`/profile/${playerId}`} target="_blank" rel="noreferrer" className="text-white transition-all">
+                                <div className="flex items-center gap-2">
+                                    <img src={player.profilePicture} className="w-8 h-8 rounded-full" />
+                                    <span className="font-bold text-sm">{player.username}</span>
+                                </div>
+                            </a>
                             <span className="font-bold text-sm">C₽{bet}</span>
                         </div>
                     );

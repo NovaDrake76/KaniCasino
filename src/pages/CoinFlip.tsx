@@ -158,7 +158,7 @@ const CoinFlip = () => {
               }
             </div></div>
           <button onClick={handleBet} className=" p-2 border rounded bg-indigo-600 hover:bg-indigo-700 w-full mt-4" disabled={
-            choice === null || bet === 0 || !isLogged || userGambled || userData.walletBalance < bet || spinning
+            choice === null || bet === 0 || !isLogged || userGambled || (userData && userData.walletBalance < bet) || spinning
           }>
             {
               !isLogged ? "Login to play" : spinning ? "Spinning..." : choice === null ? "Choose a side" : bet === 0 ? "Place a bet" : userGambled ? "You're in!" : userData.walletBalance < bet ? "Not enough money" : "Enter the Game"
