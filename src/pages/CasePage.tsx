@@ -147,7 +147,7 @@ const CasePage = () => {
                 />
                 {animationAux2 && (
                   <div
-                    className={`notched h-48 w-48 transition-all animate-fade-in-left absolute left-[210px] flex items-center justify-center z-20 hidden md:flex`}
+                    className={`notched h-48 w-48 transition-all animate-fade-in-left absolute left-[210px] items-center justify-center z-20 hidden md:flex`}
                     style={{
                       background: Rarities.find(
                         (rarity) => rarity.id == openedItem.item.rarity
@@ -236,7 +236,7 @@ const CasePage = () => {
                 />
               ))
               : data.items.map((item: any) => (
-                <Item item={item} key={item.name + Math.random()} />
+                <Item item={item} key={item.name} />
               ))}
           </div>
         </div>

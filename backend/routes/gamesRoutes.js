@@ -101,7 +101,7 @@ module.exports = (io) => {
       await user.save();
 
       // Emit the caseOpened event
-      // io.emit("caseOpened", { user: user.username, item: winningItem });
+      io.emit("caseOpened", { user: user.username, item: winningItem });
 
       res.json({ item: winningItem });
     } catch (error) {

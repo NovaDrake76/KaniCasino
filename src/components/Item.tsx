@@ -2,6 +2,8 @@ import { useState } from "react";
 import Rarities from "./Rarities";
 import { BsPinAngleFill } from "react-icons/bs";
 import { fixItem } from "../services/users/UserServices";
+import { RotatingLines } from "react-loader-spinner";
+
 
 interface itemProps {
   item: {
@@ -15,6 +17,7 @@ interface itemProps {
 
 const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
   const [hovering, setHovering] = useState<boolean>(false);
+  const [loaded, setLoaded] = useState<boolean>(false);
 
   const fixPlayerItem = async (name: string, image: string, rarity: string) => {
     try {
@@ -33,26 +36,34 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
       onMouseLeave={() => setHovering(false)}
     >
       <div className="overflow-hidden">
+        {!loaded && <div className="flex w-44 h-44 items-center justify-center">
+          <RotatingLines
+            strokeColor="grey"
+            strokeWidth="5"
+            animationDuration="0.75"
+            width="96"
+            visible={true}
+          />
+        </div>}
         <img
           src={item.image}
           alt={item.name}
-          className="w-44 h-44 hover:scale-105 transition-all object-contain "
+          className={`w-44 h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
+          onLoad={() => setLoaded(true)}
         />
         <div
           className="w-auto"
           style={{
-            boxShadow: `0px 0px 120px 80px ${
-              Rarities.find((rarity) => rarity.id.toString() == item.rarity)
-                ?.color
-            }`,
+            boxShadow: `0px 0px 120px 80px ${Rarities.find((rarity) => rarity.id.toString() == item.rarity)
+              ?.color
+              }`,
           }}
         />
       </div>
       {fixable && (
         <div
-          className={`absolute top-1 right-1 transition-all ${
-            hovering ? "opacity-100 " : "opacity-0 -translate-y-2"
-          }`}
+          className={`absolute top-1 right-1 transition-all ${hovering ? "opacity-100 " : "opacity-0 -translate-y-2"
+            }`}
           onClick={() =>
             fixPlayerItem(item.name, item.image, item.rarity.toString())
           }
