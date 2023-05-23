@@ -74,7 +74,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
                 onMouseLeave={handleHover}
               >
                 <img
-                  src="https://i.imgur.com/cVLsYjJ.png"
+                  src="/images/logo.webp"
                   alt="logo"
                   className="md:w-12 h-12 invisible md:visible"
                 />
@@ -97,7 +97,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
               </div>
             </Link>
             {
-              <div className="hidden md:flex items-center gap-4 ml-8">
+              <div className="hidden md:flex items-center gap-6 ml-8">
                 {links.map((link, index) => (
                   <Link
                     to={link.path}

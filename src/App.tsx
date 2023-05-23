@@ -1,13 +1,15 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import AppRoutes from "./Routes";
-import Header from "./components/header/index";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import UserContext from "./UserContext";
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-tooltip/dist/react-tooltip.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import SocketConnection from "./services/socket"
+
+
+const Header = lazy(() => import("./components/header/index"));
+const AppRoutes = lazy(() => import("./Routes"));
 
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
@@ -69,19 +71,24 @@ function App() {
           toogleUserData,
         }}
       >
-        <Router>
-          <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
-            <ToastContainer />
-            <Header
-              onlineUsers={onlineUsers}
-              recentCaseOpenings={recentCaseOpenings}
-            />
-            <div className="flex">
-              <AppRoutes />
-            </div>
-            <div className="">footer</div>
-          </SkeletonTheme>
-        </Router>
+        <Suspense fallback={
+          <div />
+        }>
+          <Router>
+            <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
+              <ToastContainer />
+              <Header
+                onlineUsers={onlineUsers}
+                recentCaseOpenings={recentCaseOpenings}
+              />
+              <div className="flex">
+                <AppRoutes />
+              </div>
+              <div className="">footer</div>
+            </SkeletonTheme>
+          </Router>
+        </Suspense>
+
       </UserContext.Provider>
     </div>
   );

@@ -11,7 +11,6 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
     const [totalBets, setTotalBets] = useState<number>(0);
 
     useEffect(() => {
-        console.log(gameState)
         if (gameState) {
             let tempBetsInfo = type === "Heads" ? gameState.heads : gameState.tails;
             setBetsInfo(tempBetsInfo);

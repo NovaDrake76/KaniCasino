@@ -115,7 +115,7 @@ const CoinFlip = () => {
 
 
   useEffect(() => {
-    if (countDown > 0 && !spinning) {
+    if (countDown > 0.1 && !spinning) {
       setTimeout(() => {
         setCountDown(countDown - 0.1);
       }, 100);
@@ -161,7 +161,7 @@ const CoinFlip = () => {
             choice === null || bet === 0 || !isLogged || userGambled || (userData && userData.walletBalance < bet) || spinning
           }>
             {
-              !isLogged ? "Login to play" : spinning ? "Spinning..." : choice === null ? "Choose a side" : bet === 0 ? "Place a bet" : userGambled ? "You're in!" : userData.walletBalance < bet ? "Not enough money" : "Enter the Game"
+              !isLogged ? "Login to play" : spinning ? "Spinning..." : choice === null ? "Choose a side" : bet === 0 ? "Place the bet value" : userGambled ? "You're in!" : userData.walletBalance < bet ? "Not enough money" : "Enter the Game"
             }
           </button>
         </div>

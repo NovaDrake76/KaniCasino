@@ -42,6 +42,35 @@
   animation: fade-in-left 0.5s ease-out forwards;
 }
 
+.fadeIn {
+  animation: fadeIn 2s ease-in-out forwards;
+}
+
+.fadeOut {
+  animation: fadeOut 2s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+
 @keyframes bounce-up-fade {
   0% {
     opacity: 1;
@@ -109,11 +138,11 @@
 }
 
 .front {
-  transform: rotateY(180deg) translateZ(1em);
+  transform: rotateY(180deg) translateZ(0.7em);
 }
 
 .back {
-  transform: rotateY(0deg) translateZ(1em);
+  transform: rotateY(0deg) translateZ(0.7em);
 }
 
 

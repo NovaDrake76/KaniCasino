@@ -125,10 +125,10 @@ const Profile = () => {
                 />
               ))
             ) : invItems && invItems.length > 0 ? (
-              invItems.map((item: any) => (
+              invItems.map((item: any, i: number) => (
                 <Item
                   item={item}
-                  key={item.name + Math.random()}
+                  key={item.name + i}
                   fixable={isSameUser}
                   setRefresh={setRefresh}
                 />

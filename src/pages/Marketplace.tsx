@@ -113,19 +113,22 @@ const Marketplace: React.FC = () => {
         </div>
       ) : (
         <div className="flex flex-wrap items-center gap-4 justify-center">
-          {items ? (
-            items.items.map((item) => (
-              <ItemCard
-                key={item._id}
-                item={item}
-                click={() => {
-                  setSelectedItem(item);
-                  setOpenBuyModal(true);
-                }}
-              />
-            ))
-          ) : (
-            <div>No items found</div>
+
+          {items && items.items && items.items.length > 0 ? (items.items.map((item) => (
+            <ItemCard
+              key={item._id}
+              item={item}
+              click={() => {
+                setSelectedItem(item);
+                setOpenBuyModal(true);
+              }}
+            />
+          ))) : (
+            <div className="flex flex-col items-center justify-center w-full">
+              <h1 className="text-2xl font-bold text-center">
+                There's no items for sale, try again later
+              </h1>
+            </div>
           )}
         </div>
       )}

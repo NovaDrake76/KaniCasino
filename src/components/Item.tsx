@@ -30,25 +30,25 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
 
   return (
     <div
-      className="flex flex-col w-44 items-center justify-center bg-[#212031] rounded relative"
+      className="flex flex-col w-20 md:w-44  items-center justify-center bg-[#212031] rounded relative"
       key={item.name + Math.random()}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
       <div className="overflow-hidden">
-        {!loaded && <div className="flex w-44 h-44 items-center justify-center">
+        {!loaded && <div className="flex w-20 md:w-44 h-20 md:h-44 items-center justify-center">
           <RotatingLines
             strokeColor="grey"
             strokeWidth="5"
             animationDuration="0.75"
-            width="96"
+            width="50px"
             visible={true}
           />
         </div>}
         <img
           src={item.image}
           alt={item.name}
-          className={`w-44 h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
+          className={`w-20 md:w-44 h-20 md:h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
           onLoad={() => setLoaded(true)}
         />
         <div
@@ -71,7 +71,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
           <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
         </div>
       )}
-      <p className="text-base py-2">{item.name}</p>
+      <p className="text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden">{item.name}</p>
     </div>
   );
 };
