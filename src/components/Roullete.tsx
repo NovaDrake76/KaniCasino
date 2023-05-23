@@ -43,7 +43,7 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
 
-        if (currentIndex === 37) {
+        if (currentIndex === 36) {
           array[currentIndex] = opened.item;
         }
       }
@@ -70,7 +70,7 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
             key={index}
             src={item && item.image}
             alt={item && item.name}
-            className={`w-44 h-44 object-contain`}
+            className={`min-w-[176px] h-44 object-contain`}
             style={{
               borderBottom: Rarities.find((rarity) => rarity.id.toString() == item.rarity)?.color + " solid 4px",
             }}

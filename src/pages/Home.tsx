@@ -39,7 +39,7 @@ const Home = () => {
     image: "/images/paris.webp",
     title: "NEW MAJOR CASE",
     description: "Check out our new case for Paris 2023 Major!",
-    link: "/case/6454fc0436a60f47a8aa9838",
+    link: "/case/646ca0a4e9b0e208f5ddcfa6",
   };
 
   return (
