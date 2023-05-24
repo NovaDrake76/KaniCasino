@@ -19,6 +19,12 @@ const coinFlip = (io) => {
     socket.on("coinFlip:bet", async (user, bet, choice) => {
       try {
         // Handle player bet
+
+        //if bet is not a number or is less than 0, return error
+        if (isNaN(bet) || bet < 0) {
+          return res.status(400).json({ message: "Invalid bet" });
+        }
+
         const betType = choice === 0 ? "heads" : "tails";
         gameState[betType].bets[user.id] = bet;
 

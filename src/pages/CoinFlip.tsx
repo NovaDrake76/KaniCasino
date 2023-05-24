@@ -129,6 +129,11 @@ const CoinFlip = () => {
           <input
             type="number"
             value={bet}
+            onKeyDown={(event) => {
+              if (!/[0-9]/.test(event.key)) {
+                event.preventDefault();
+              }
+            }}
             onChange={(e) => setBet(Number(e.target.value))}
             className="p-2 border rounded w-1/2 md:w-full"
           />

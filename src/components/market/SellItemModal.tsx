@@ -5,6 +5,7 @@ import UserContext from "../../UserContext";
 import Item from "../Item";
 import MainButton from "../MainButton";
 import { toast } from "react-toastify";
+import { AiOutlineClose } from 'react-icons/ai'
 
 interface Props {
   isOpen: boolean;
@@ -27,7 +28,7 @@ interface Inventory {
 
 const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [selectedItem, setSelectedItem] = useState<any>();
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<any>(null);
   const [inventory, setInventory] = useState<Inventory>();
   const [invItems, setInvItems] = useState<InventoryItem[]>([]);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -97,9 +98,17 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   }
 
   return (
-    <div className="fixed  flex items-center justify-center w-screen top-[40px] z-50 ">
-      <div className="bg-[#17132B] p-8 rounded w-[800px] h-[680px]">
-        <h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
+    <div className="fixed flex items-center justify-center w-screen h-screen top-[1px] z-50 bg-[#212121]/[.46]">
+      <div className="bg-[#17132B] p-8 rounded w-[800px] h-[60%]">
+        <div className="flex"><h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
+          <div className="ml-auto">
+            <AiOutlineClose className="text-white text-2xl cursor-pointer"
+              onClick={onClose}
+            />
+
+          </div>
+
+        </div>
         <div className="flex justify-between">
           <div className="mb-4 w-1/2">
             <label
@@ -115,7 +124,14 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               min={0}
               placeholder="Price in CP"
               value={price}
-              onChange={(e) => setPrice(Number(e.target.value))}
+              onKeyDown={(event) => {
+                if (!/[0-9]/.test(event.key)) {
+                  event.preventDefault();
+                }
+              }}
+              onChange={
+                (e) => setPrice(e.target.value)
+              }
             />
           </div>
           {selectedItem && (

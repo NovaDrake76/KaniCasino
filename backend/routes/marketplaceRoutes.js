@@ -11,6 +11,12 @@ const Marketplace = require("../models/Marketplace");
 // Create new listing
 router.post("/", isAuthenticated, async (req, res) => {
   const { item, price } = req.body;
+
+  //if price is not a number or is less than 0, return error
+  if (isNaN(price) || price < 0) {
+    return res.status(400).json({ message: "Invalid price" });
+  }
+
   const user = await User.findById(req.user._id);
 
   // Check if the item is in the user's inventory
