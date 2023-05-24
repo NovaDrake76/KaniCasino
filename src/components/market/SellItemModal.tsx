@@ -98,8 +98,8 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   }
 
   return (
-    <div className="fixed flex items-center justify-center w-screen h-screen top-[1px] z-50 bg-[#212121]/[.46]">
-      <div className="bg-[#17132B] p-8 rounded w-[800px] h-[60%]">
+    <div className="fixed flex items-center justify-center w-screen h-screen top-[40px] z-50 bg-[#212121]/[.46]">
+      <div className="bg-[#17132B] p-8 rounded w-[800px] h-[680px]">
         <div className="flex"><h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
           <div className="ml-auto">
             <AiOutlineClose className="text-white text-2xl cursor-pointer"
@@ -125,7 +125,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               placeholder="Price in CP"
               value={price}
               onKeyDown={(event) => {
-                if (!/[0-9]/.test(event.key)) {
+                if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
                   event.preventDefault();
                 }
               }}

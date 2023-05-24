@@ -13,6 +13,7 @@ interface GameHistory {
 
 const CoinFlip = () => {
   const [bet, setBet] = useState(0);
+  const [betAux, setBetAux] = useState(0);
   const [choice, setChoice] = useState(null as number | null);
   const [result, setResult] = useState(null as number | null);
   const [history, setHistory] = useState<GameHistory[]>([]);
@@ -47,6 +48,7 @@ const CoinFlip = () => {
 
     toogleUserData({ ...userData, walletBalance: userData.walletBalance - bet });
     setUserGambled(true);
+    setBetAux(bet);
   };
 
   useEffect(() => {
@@ -64,7 +66,7 @@ const CoinFlip = () => {
       // Update the user's balance based on whether they won or lost
       if (userGambled && result == choice) {
         // The user won the game, double their bet
-        toogleUserData({ ...userData, walletBalance: userData.walletBalance + (bet * 2) });
+        toogleUserData({ ...userData, walletBalance: userData.walletBalance + (betAux * 2) });
       }
 
       //wait 1 second before adding the result to the history
@@ -130,7 +132,7 @@ const CoinFlip = () => {
             type="number"
             value={bet}
             onKeyDown={(event) => {
-              if (!/[0-9]/.test(event.key)) {
+              if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
                 event.preventDefault();
               }
             }}

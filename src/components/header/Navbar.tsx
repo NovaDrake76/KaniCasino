@@ -21,6 +21,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
+  const [loaded, setLoaded] = useState<boolean>(false);
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -141,6 +142,15 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
                 />
               ) : (
                 <Link to={`profile/${data?.id}`}>
+                  {!loaded && (
+                    <Skeleton
+                      circle={true}
+                      height={40}
+                      width={40}
+                      highlightColor="#161427"
+                      baseColor="#1c1a31"
+                    />
+                  )}
                   <img
                     src={
                       data?.profilePicture
@@ -148,7 +158,8 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
                         : "https://i.imgur.com/uUfJSwW.png"
                     }
                     alt="avatar"
-                    className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+                    className={`w-12 h-12 rounded-full object-cover border-2 border-blue-500 ${loaded ? '' : 'hidden'}`}
+                    onLoad={() => setLoaded(true)}
                   />
                 </Link>
               )}
