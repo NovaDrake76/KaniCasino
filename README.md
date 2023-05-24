@@ -6,8 +6,8 @@
 - [x] Fix Netlify URL.
 - [x] Scroll history.
 - [x] Profile Inventory Height.
-- [ ] Negative Sell.
-- [ ] Market Modal.
+- [x] Fix Negative Sell.
+- [ ] Fix Market Modal.
 - [ ] CoinFlip Input.
 - [ ] Fix Level
 - [ ] Refresh Token.
