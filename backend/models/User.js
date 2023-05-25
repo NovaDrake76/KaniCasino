@@ -52,6 +52,14 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  nextBonus: {
+    type: Date,
+    default: Date.now, // sets default time to current time
+  },
+  bonusAmount: {
+    type: Number,
+    default: 1000, // sets the initial bonus amount to 1000
+  },
 
 });
 

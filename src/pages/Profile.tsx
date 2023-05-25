@@ -26,6 +26,7 @@ interface Inventory {
   items: any[];
 }
 
+
 const Profile = () => {
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -60,15 +61,17 @@ const Profile = () => {
         id,
         newPage ? inventory && inventory.currentPage + 1 : 1
       );
+      const aggregatedInventory = aggregateInventory(response.items);
       setInventory(response);
       newPage
-        ? setInvItems((prev) => [...prev, ...response.items])
-        : setInvItems(response.items);
+        ? setInvItems((prev) => ({ ...prev, ...aggregatedInventory }))
+        : setInvItems(aggregatedInventory);
     } catch (error) {
       console.log(error);
     }
     setLoadingInventory(false);
   };
+
 
   useEffect(() => {
     if (userData) {
@@ -85,6 +88,23 @@ const Profile = () => {
       setRefresh(false);
     }
   }, [refresh]);
+
+  const aggregateInventory = (items: any) => {
+    const inventory: any = {};
+
+    items.forEach((item: any) => {
+      const id = item.name; // use item's name as unique identifier
+
+      if (inventory[id]) {
+        inventory[id].quantity += 1; // increment quantity if item already exists
+      } else {
+        inventory[id] = { ...item, quantity: 1 }; // add item with quantity 1 if it doesn't exist
+      }
+    });
+
+    return inventory;
+  };
+
 
   return (
     <div className="flex flex-col items-center w-screen">
@@ -124,11 +144,12 @@ const Profile = () => {
                   key={i}
                 />
               ))
-            ) : invItems && invItems.length > 0 ? (
-              invItems.map((item: any, i: number) => (
+            ) : invItems && Object.keys(invItems).length > 0 ? (
+              Object.entries(invItems).map(([key, value]: [string, any]) => (
                 <Item
-                  item={item}
-                  key={item.name + i}
+                  item={value}
+                  quantity={value.quantity}
+                  key={key}
                   fixable={isSameUser}
                   setRefresh={setRefresh}
                 />
@@ -139,7 +160,7 @@ const Profile = () => {
           </div>
           {inventory &&
             inventory.currentPage !== inventory.totalPages &&
-            invItems.length > 0 && (
+            Object.keys(invItems).length > 0 && (
               <div className="w-40 mt-4">
                 <MainButton
                   text={`Load more`}

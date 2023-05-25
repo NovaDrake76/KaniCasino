@@ -29,3 +29,11 @@ export async function putFixDescription(description: string) {
     });
     return response.data;
 }
+
+export async function claimBonus(id: string) {
+    const response = await api.post(`/users/claimBonus`, {
+        id: id
+
+    });
+    return response.data;
+}

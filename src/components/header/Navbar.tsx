@@ -10,6 +10,9 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { BiWallet } from "react-icons/bi";
 import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
+import { claimBonus } from "../../services/users/UserServices";
+import { toast } from "react-toastify";
+
 
 interface Navbar {
   openUserFlow: boolean;
@@ -22,6 +25,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [haveBonus, setHaveBonus] = useState<boolean>(false);
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -46,9 +50,52 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
       });
   };
 
+  const claimUserBonus = async () => {
+    try {
+      let res = await claimBonus(userData?.id);
+      setOpenUserFlow(false);
+      setHaveBonus(false);
+      console.log(res)
+      toast.success(res.message, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+      toogleUserData(
+        {
+          ...userData,
+          walletBalance: userData?.walletBalance + res.value,
+          nextBonus: res.nextBonus
+        }
+      )
+    } catch (error: any) {
+      toast.error(`${error.response.data.message}!`, {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  }
+
   useEffect(() => {
     isLogged && getUserInfo();
   }, [isLogged]);
+
+  useEffect(() => {
+    if (userData?.nextBonus && Date.parse(userData?.nextBonus) <= Date.now()) {
+      setHaveBonus(true);
+    }
+  }, [userData])
 
   const links = [
     {
@@ -119,6 +166,16 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
 
           {isLogged === true ? (
             <div className="flex items-center gap-4">
+              {
+                !loading && haveBonus && (
+                  //button to claim bonus 
+                  <MainButton
+                    text="Claim Bonus"
+                    onClick={() => claimUserBonus()}
+                  />
+                )
+
+              }
               {!loading && (
                 <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all ">
                   <BiWallet className="text-2xl" />
@@ -158,7 +215,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
                         : "https://i.imgur.com/uUfJSwW.png"
                     }
                     alt="avatar"
-                    className={`w-12 h-12 rounded-full object-cover border-2 border-blue-500 ${loaded ? '' : 'hidden'}`}
+                    className={`min-w-[48px] h-12 rounded-full object-cover border-2 border-blue-500 aspect-square ${loaded ? '' : 'hidden'}`}
                     onLoad={() => setLoaded(true)}
                   />
                 </Link>

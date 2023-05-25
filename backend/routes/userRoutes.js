@@ -31,9 +31,13 @@ router.post(
 
     try {
       // Check if user already exists
-      let user = await User.findOne({ $or: [{ email }, { username }] });
-      if (user) {
-        return res.status(400).json({ message: "User already exists" });
+      let userMail = await User.findOne({ email });
+      if (userMail) {
+        return res.status(400).json({ message: "Email already registered" });
+      }
+      let userName = await User.findOne({ username });
+      if (userName) {
+        return res.status(400).json({ message: "Username already registered" });
       }
 
       // Create new user
@@ -127,8 +131,9 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
       xp,
       level,
       walletBalance,
+      nextBonus
     } = req.user;
-    res.json({ id, username, profilePicture, xp, level, walletBalance });
+    res.json({ id, username, profilePicture, xp, level, walletBalance, nextBonus });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -306,5 +311,40 @@ router.put(
     }
   }
 );
+
+router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.body; // Get user id from request body
+
+    // Fetch user from database
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const currentTime = new Date();
+    const nextBonusTime = new Date(user.nextBonus);
+
+    // Check if bonus is available
+    if (currentTime >= nextBonusTime) {
+      let currentBonus = user.bonusAmount; // Get current bonus amount
+      user.walletBalance += user.bonusAmount; // Add bonus to wallet
+      user.nextBonus = new Date(currentTime.getTime() + 60 * 60 * 1000); // Set next bonus time to 1 hour later
+      user.bonusAmount = 50; // Set bonus amount to 50 for next time
+
+      // Save updated user
+      await user.save();
+
+      res.json({ message: `Claimed C₽${currentBonus}!`, value: currentBonus, nextBonus: user.nextBonus });
+
+    } else {
+      res.status(400).json({ message: 'Bonus not yet available' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;

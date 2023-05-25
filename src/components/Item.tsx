@@ -12,10 +12,11 @@ interface itemProps {
     rarity: string;
   };
   fixable?: boolean;
+  quantity?: number;
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
+const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
   const [hovering, setHovering] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -51,6 +52,11 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
           className={`w-20 md:w-44 h-20 md:h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
           onLoad={() => setLoaded(true)}
         />
+        {quantity && quantity > 1 && (
+          <div className="absolute top-1 left-1 bg-[#212031] e text-xs rounded-full w-6 h-6 p-1 flex items-center justify-center">
+            {quantity}
+          </div>
+        )}
         <div
           className="w-auto"
           style={{

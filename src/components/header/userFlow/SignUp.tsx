@@ -10,7 +10,7 @@ const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
-  const [profilePicture, setProfilePicture] = useState<any>(null);
+  const [profilePicture, _setProfilePicture] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { toggleLogin } = useContext(UserContext);
@@ -47,17 +47,17 @@ const SignUpPage: React.FC = () => {
   //   // Handle Google sign-up failure here
   // };
 
-  const handleProfilePictureChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePicture(reader.result as string);
-      };
-      reader.readAsDataURL(e.target.files[0]);
-    }
-  };
+  // const handleProfilePictureChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setProfilePicture(reader.result as string);
+  //     };
+  //     reader.readAsDataURL(e.target.files[0]);
+  //   }
+  // };
 
   return (
     <div className="flex flex-col justify-center ">
@@ -125,7 +125,7 @@ const SignUpPage: React.FC = () => {
                       </label>
                     </div>
                   ))}
-
+                  {/* 
                   <div className="relative">
                     <input
                       id="profilePicture"
@@ -142,12 +142,12 @@ const SignUpPage: React.FC = () => {
                     >
                       Profile Picture
                     </label>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="flex flex-col ">
                   <MainButton
                     text="Sign up"
-                    onClick={() => {}}
+                    onClick={() => { }}
                     disabled={loading}
                     loading={loading}
                     submit
