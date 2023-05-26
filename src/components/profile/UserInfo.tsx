@@ -1,9 +1,11 @@
 import Rarities from "../Rarities";
 import { RiDoubleQuotesL } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
-import { putFixDescription } from "../../services/users/UserServices";
+import { putFixDescription, updateProfilePicture } from "../../services/users/UserServices";
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
+import { useRef } from "react";
+import { toast } from "react-toastify";
 
 interface UserProps {
   user: {
@@ -48,9 +50,52 @@ const UserInfo: React.FC<UserProps> = ({
     try {
       await putFixDescription(description);
       setRefresh && setRefresh((prev) => !prev);
+
     } catch (error) {
       console.log(error);
     }
+  };
+
+  // Create a reference to the file input element
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  // This function will be called when the user selects a new profile picture
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const fileSizeMB = file.size / 1024 / 1024; // size in MB
+      const validFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      const isValidFileType = validFileTypes.includes(file.type);
+
+      if (fileSizeMB > 3) {
+        toast.error('File size must be less than 3MB');
+        return;
+      }
+
+      if (!isValidFileType) {
+        toast.error('File type must be jpeg, jpg or png');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          const res = await updateProfilePicture(reader.result as string);
+          setRefresh && setRefresh(true);
+          toast.success(res.message);
+
+
+        } catch (error: any) {
+          console.log(error);
+          toast.error(error.message);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleChangePictureClick = () => {
+    fileInput.current?.click();
   };
 
   const TextArea = () => {
@@ -80,17 +125,27 @@ const UserInfo: React.FC<UserProps> = ({
   return (
     <div className="flex flex-col lg:flex-row items-center justify-between w-full">
       <div className="flex flex-col lg:flex-row items-center gap-7">
-        <div className="flex relative">
+        <div className="relative group">
           <img
-            src={
-              profilePicture
-                ? profilePicture
-                : "https://i.imgur.com/uUfJSwW.png"
-            }
+            src={profilePicture ? profilePicture : "https://i.imgur.com/uUfJSwW.png"}
             alt="avatar"
             className="w-36 h-36 rounded-full object-cover border-2 border-blue-500 p-1"
           />
-
+          {isSameUser && (
+            <button
+              className="absolute inset-0 w-full h-full opacity-0 hover:opacity-70 bg-blue-500 transition-all flex items-center justify-center rounded-full cursor-pointer group-hover:opacity-70"
+              onClick={handleChangePictureClick}
+            >
+              <span className="text-white">Change Picture</span>
+            </button>
+          )}
+          <input
+            type="file"
+            className="hidden"
+            onChange={handleProfilePictureChange}
+            ref={fileInput}
+            accept="image/png, image/jpeg, image/jpg"
+          />
           <div className="absolute text-base font-semibold top-28 left-28 rounded-full bg-blue-500 min-w-[24px] h-6 flex justify-center items-center ">
             {level}
           </div>
@@ -115,9 +170,8 @@ const UserInfo: React.FC<UserProps> = ({
               />
             </div>
             <div className="flex w-full items-center justify-between">
-              <span className="text-[#dddcfc] font-semibold">{`XP ${xp} / ${
-                (level + 1) * 1000
-              }`}</span>
+              <span className="text-[#dddcfc] font-semibold">{`XP ${xp} / ${(level + 1) * 1000
+                }`}</span>
               <Tooltip id="my-tooltip" />
 
               <span
@@ -135,9 +189,8 @@ const UserInfo: React.FC<UserProps> = ({
         <div
           className="flex p-4 rounded  border-gray-800 min-w-[350px] h-44 notched"
           style={{
-            backgroundImage: `linear-gradient(270deg, ${
-              Rarities.find((rarity) => rarity.id == fixedItem.rarity)?.color
-            } 20%, rgba(0,0,0,0) 100%)`,
+            backgroundImage: `linear-gradient(270deg, ${Rarities.find((rarity) => rarity.id == fixedItem.rarity)?.color
+              } 20%, rgba(0,0,0,0) 100%)`,
           }}
         >
           <div className="flex items-center justify-between px-4 w-full">

@@ -30,10 +30,16 @@ export async function putFixDescription(description: string) {
     return response.data;
 }
 
-export async function claimBonus(id: string) {
-    const response = await api.post(`/users/claimBonus`, {
-        id: id
+export async function claimBonus() {
+    const response = await api.post(`/users/claimBonus`);
+    return response.data;
+}
 
-    });
+export async function updateProfilePicture(image: string) {
+    const response = await api.put(`/users/profilePicture/`, //put image on body
+        {
+            image
+        });
+
     return response.data;
 }

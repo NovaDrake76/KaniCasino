@@ -52,7 +52,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
 
   const claimUserBonus = async () => {
     try {
-      let res = await claimBonus(userData?.id);
+      let res = await claimBonus();
       setOpenUserFlow(false);
       setHaveBonus(false);
       console.log(res)

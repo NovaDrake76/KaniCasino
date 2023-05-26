@@ -40,6 +40,8 @@ router.post(
         return res.status(400).json({ message: "Username already registered" });
       }
 
+      if (!isValidBase64(profilePicture)) return res.status(400).json({ message: "Invalid profile picture" })
+
       // Create new user
       user = new User({ email, password, username, profilePicture, isAdmin });
 
@@ -314,10 +316,8 @@ router.put(
 
 router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
   try {
-    const { id } = req.body; // Get user id from request body
+    const user = await User.findById(req.user._id);
 
-    // Fetch user from database
-    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -340,6 +340,39 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
     } else {
       res.status(400).json({ message: 'Bonus not yet available' });
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
+const isValidBase64 = (str) => {
+  const base64Regex = /^data:image\/(png|jpeg|jpg);base64,/;
+  return base64Regex.test(str);
+};
+
+
+router.put('/profilePicture', authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const newProfilePicture = req.body.image;
+
+    if (!isValidBase64(newProfilePicture)) {
+      return res.status(400).json({ message: 'Invalid image format' });
+    }
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.profilePicture = newProfilePicture;
+
+    await user.save();
+
+    res.json({ message: 'Profile picture updated' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

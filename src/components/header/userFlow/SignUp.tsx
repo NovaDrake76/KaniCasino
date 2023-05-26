@@ -6,6 +6,7 @@ import MainButton from "../../MainButton";
 import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
 import { FaImage } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -50,20 +51,37 @@ const SignUpPage: React.FC = () => {
   //   // Handle Google sign-up failure here
   // };
 
-  const handleProfilePictureChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const fileSizeMB = file.size / 1024 / 1024; // size in MB
+      const validFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      const isValidFileType = validFileTypes.includes(file.type);
+
+      if (fileSizeMB > 3) {
+        toast.error('File size must be less than 3MB');
+        return;
+      }
+
+      if (!isValidFileType) {
+        toast.error('File type must be jpeg, jpg or png');
+        return;
+      }
+
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePicture(reader.result as string);
-        setImagePreview(reader.result as string);
+      reader.onloadend = async () => {
+        try {
+          setProfilePicture(reader.result as string);
+          setImagePreview(reader.result as string);
+        } catch (error: any) {
+          console.log(error);
+          toast.error(error.message);
+        }
       };
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
     }
-
-
   };
+
 
   return (
     <div className="flex flex-col justify-center ">
@@ -82,12 +100,15 @@ const SignUpPage: React.FC = () => {
                     <p className="lowercase text-sm tracking-wider text-center">Select a profile picture</p>
                   </div>
                 )}
-                <input type="file" className="hidden" onChange={handleProfilePictureChange} />
+                <input type="file" className="hidden" onChange={handleProfilePictureChange} accept="
+                image/png,
+                image/jpeg,
+                image/jpg" />
               </label>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200 mt-2">
                 <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                   {[
                     {
