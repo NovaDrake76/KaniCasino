@@ -10,8 +10,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { BiWallet } from "react-icons/bi";
 import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
-import { claimBonus } from "../../services/users/UserServices";
-import { toast } from "react-toastify";
+import ClaimBonus from "./ClaimBonus";
 
 
 interface Navbar {
@@ -50,42 +49,6 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
       });
   };
 
-  const claimUserBonus = async () => {
-    try {
-      let res = await claimBonus();
-      setOpenUserFlow(false);
-      setHaveBonus(false);
-      console.log(res)
-      toast.success(res.message, {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
-      });
-      toogleUserData(
-        {
-          ...userData,
-          walletBalance: userData?.walletBalance + res.value,
-          nextBonus: res.nextBonus
-        }
-      )
-    } catch (error: any) {
-      toast.error(`${error.response.data.message}!`, {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
-      });
-    }
-  }
 
   useEffect(() => {
     isLogged && getUserInfo();
@@ -169,10 +132,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
               {
                 !loading && haveBonus && (
                   //button to claim bonus 
-                  <MainButton
-                    text="Claim Bonus"
-                    onClick={() => claimUserBonus()}
-                  />
+                  <ClaimBonus setHaveBonus={setHaveBonus} setOpenUserFlow={setOpenUserFlow} toogleUserData={toogleUserData} userData={userData} />
                 )
 
               }

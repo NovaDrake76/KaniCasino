@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { useRef } from "react";
 import { toast } from "react-toastify";
+import Countdown from "./Countdown";
 
 interface UserProps {
   user: {
@@ -14,6 +15,7 @@ interface UserProps {
     profilePicture: string;
     level: number;
     xp: number;
+    nextBonus?: any;
     fixedItem: {
       name: string;
       image: string;
@@ -36,7 +38,7 @@ const getPercentY = (x: number, y: number) => {
 };
 
 const UserInfo: React.FC<UserProps> = ({
-  user: { profilePicture, level, username, xp, fixedItem },
+  user: { profilePicture, level, username, xp, fixedItem, nextBonus },
   isSameUser,
   setRefresh,
 }) => {
@@ -98,6 +100,7 @@ const UserInfo: React.FC<UserProps> = ({
     fileInput.current?.click();
   };
 
+
   const TextArea = () => {
     return (
       <div className="flex flex-col items-center justify-center ">
@@ -151,9 +154,16 @@ const UserInfo: React.FC<UserProps> = ({
           </div>
         </div>
         <div className="flex flex-col w-[686px]">
-          <span className="text-2xl font-semibold color-[#dddcfc]">
+          <div className="flex gap-4 items-center"> <span className="text-2xl font-semibold color-[#dddcfc]">
             {username}
           </span>
+            {
+              nextBonus && new Date(nextBonus).getTime() > Date.now() && (
+                <Countdown nextBonus={nextBonus} />
+              )
+            }
+
+          </div>
           <div className="flex flex-col gap-2 mt-5">
             <div className="flex w-full">
               <div
