@@ -5,14 +5,17 @@ import { register } from "../../../services/auth/auth";
 import MainButton from "../../MainButton";
 import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
+import { FaImage } from "react-icons/fa";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
-  const [profilePicture, _setProfilePicture] = useState<any>(null);
+  const [profilePicture, setProfilePicture] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<any>(null);
+
   const { toggleLogin } = useContext(UserContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,17 +50,20 @@ const SignUpPage: React.FC = () => {
   //   // Handle Google sign-up failure here
   // };
 
-  // const handleProfilePictureChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setProfilePicture(reader.result as string);
-  //     };
-  //     reader.readAsDataURL(e.target.files[0]);
-  //   }
-  // };
+  const handleProfilePictureChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicture(reader.result as string);
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+
+
+  };
 
   return (
     <div className="flex flex-col justify-center ">
@@ -65,9 +71,21 @@ const SignUpPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-indigo-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative bg-white shadow-lg sm:rounded-3xl p-10">
           <div className="max-w-md mx-auto">
-            <div>
-              <h1 className="text-2xl font-semibold">Sign up</h1>
+
+            <div className="flex justify-center items-center w-full">
+              <label className="flex flex-col items-center justify-center w-32 h-32 rounded-full group bg-gray-200 hover:bg-gray-400 transition-all text-gray-700 hover:text-white cursor-pointer overflow-hidden">
+                {imagePreview ? (
+                  <img className="object-cover w-full h-full" src={imagePreview} alt="Profile preview" />
+                ) : (
+                  <div className="flex flex-col items-center justify-center">
+                    <FaImage className="w-6 h-6" />
+                    <p className="lowercase text-sm tracking-wider text-center">Select a profile picture</p>
+                  </div>
+                )}
+                <input type="file" className="hidden" onChange={handleProfilePictureChange} />
+              </label>
             </div>
+
             <form onSubmit={handleSubmit}>
               <div className="divide-y divide-gray-200">
                 <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
@@ -125,24 +143,7 @@ const SignUpPage: React.FC = () => {
                       </label>
                     </div>
                   ))}
-                  {/* 
-                  <div className="relative">
-                    <input
-                      id="profilePicture"
-                      name="profilePicture"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleProfilePictureChange}
-                      className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-500"
-                      placeholder="Profile Picture"
-                    />
-                    <label
-                      htmlFor="profilePicture"
-                      className="absolute left-0  -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-indigo-500"
-                    >
-                      Profile Picture
-                    </label>
-                  </div> */}
+
                 </div>
                 <div className="flex flex-col ">
                   <MainButton
