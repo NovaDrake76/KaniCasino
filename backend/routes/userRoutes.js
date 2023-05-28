@@ -40,7 +40,7 @@ router.post(
         return res.status(400).json({ message: "Username already registered" });
       }
 
-      if (!isValidBase64(profilePicture)) return res.status(400).json({ message: "Invalid profile picture" })
+      if (!isValidBase64(profilePicture) && profilePicture !== "") return res.status(400).json({ message: "Invalid profile picture" })
 
       // Create new user
       user = new User({ email, password, username, profilePicture, isAdmin });

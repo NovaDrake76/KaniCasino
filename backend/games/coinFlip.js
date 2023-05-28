@@ -33,10 +33,10 @@ const coinFlip = (io) => {
           user.id,
           { $inc: { walletBalance: -bet } },
           { new: true }
-        ).select("-password").select("-email").select("-fixedItem").select("-inventory").select("-walletBalance");
+        ).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-xp").select("-inventory").select("-walletBalance");
 
         // After updating the user, add them to the game state
-        gameState[betType].players[user.id] = updatedUser;  // Fixed this line
+        gameState[betType].players[user.id] = updatedUser;
 
         // Emit the updated game state to all clients
         io.emit("coinFlip:gameState", gameState);

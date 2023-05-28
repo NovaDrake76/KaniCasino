@@ -57,9 +57,9 @@ const CasePage = () => {
       toogleUserData({
         ...userData,
         walletBalance: userData.walletBalance - data.price,
-        xp: userData.xp + 10 * data.price,
+        xp: userData.xp + 5 * data.price,
         level:
-          userData.xp + 10 * data.price >= (userData.level + 1) * 1000
+          userData.xp + 5 * data.price >= (userData.level + 1) * 1000
             ? userData.level + 1
             : userData.level,
       });
