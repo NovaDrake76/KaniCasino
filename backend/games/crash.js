@@ -38,10 +38,13 @@ const crashGame = (io) => {
       }
     });
 
-    socket.on("crash:cashout", (user) => {
-      // Handle player cashout
+    socket.on("crash:cashout", async (user) => {
+      // Check if the user has an existing bet
+      if (!gameState.gameBets.hasOwnProperty(user.id)) {
+        return; // If no bet exists for the user, exit the function
+      }
 
-      // Calculate payout based on the current multiplier (should be real time from the client's view)
+      // Calculate payout based on the current multiplier
       let multiplier = calculateMultiplier();
 
       if (multiplier < gameState.crashPoint) {
@@ -49,11 +52,19 @@ const crashGame = (io) => {
         const betAmount = gameState.gameBets[user.id];
         const payout = betAmount * multiplier;
 
-        User.findByIdAndUpdate(
+        // Update the user's wallet balance and handle the returned updated user
+        const updatedUser = await User.findByIdAndUpdate(
           user.id,
           { $inc: { walletBalance: payout } },
           { new: true }
         );
+
+        // Remove the player's bet from the game state
+        delete gameState.gameBets[user.id];
+        delete gameState.gamePlayers[user.id];
+
+        // Emit an event to let the client know that the cashout was successful
+        socket.emit("crash:cashoutSuccess", { userId: user.id, payout, multiplier, updatedUser });
       }
     });
   });

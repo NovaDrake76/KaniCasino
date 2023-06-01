@@ -10,6 +10,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { BiWallet } from "react-icons/bi";
 import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
+import { SlPlane } from "react-icons/sl";
 import ClaimBonus from "./ClaimBonus";
 
 
@@ -71,6 +72,11 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
       path: "/coinflip",
       icon: <BsCoin className="text-2xl" />,
     },
+    {
+      name: "Crash",
+      path: "/crash",
+      icon: <SlPlane className="text-2xl" />,
+    }
   ];
 
   return (

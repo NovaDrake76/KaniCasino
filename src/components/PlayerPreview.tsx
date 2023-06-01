@@ -17,7 +17,11 @@ interface PlayerPreview {
 
 const PlayerPreview: React.FC<PlayerPreview> = ({ player }) => {
     return (
-        <div className="flex items-center min-w-[370px] justify-between gap-2 absolute -top-48 bg-[#281D3F]  rounded">
+        <div className={`flex items-center min-w-[370px] justify-between gap-2 absolute -top-48 bg-[#281D3F]  rounded ${player.fixedItem && "border-2"} `}
+            style={{
+                borderColor: Rarities.find((rarity) => rarity.id.toString() == player.fixedItem?.rarity)?.color
+            }}
+        >
             <div className="flex items-center gap-2 p-6"><img src={player.profilePicture} className="w-20 h-20 rounded-full object-cover border-2 border-blue-500 p-1" />
                 <div className="flex flex-col ">
                     <span className="font-bold text-lg">{player.username}</span>
