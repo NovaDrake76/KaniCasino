@@ -11,6 +11,7 @@ const crashGame = (io) => {
 
   io.on("connection", (socket) => {
     socket.on("crash:bet", async (user, bet) => {
+
       try {
         // Handle player bet
 
@@ -41,6 +42,7 @@ const crashGame = (io) => {
     socket.on("crash:cashout", async (user) => {
       // Check if the user has an existing bet
       if (!gameState.gameBets.hasOwnProperty(user.id)) {
+        console.log("No bet")
         return; // If no bet exists for the user, exit the function
       }
 
@@ -96,16 +98,16 @@ const crashGame = (io) => {
         clearInterval(multiplierInterval); // stop emitting the multiplier when the game ends
         io.emit("crash:result", gameState.crashPoint);
 
-        setTimeout(async () => {
-          // Reset game state
-          gameState = {
-            gameBets: {},
-            gamePlayers: {},
-            crashPoint: 1.0
-          };
 
-          setTimeout(startGame, 7000); // Delay before the next game
-        }, 5000); // Delay before resetting the game state
+        // Reset game state
+        gameState = {
+          gameBets: {},
+          gamePlayers: {},
+          crashPoint: 1.0
+        };
+
+        setTimeout(startGame, 12000); // Delay before the next game
+
       } else {
         io.emit("crash:multiplier", currentMultiplier);
       }
@@ -121,5 +123,6 @@ const crashGame = (io) => {
 
   startGame();
 };
+
 
 module.exports = crashGame;

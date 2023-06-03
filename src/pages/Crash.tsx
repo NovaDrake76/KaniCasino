@@ -7,6 +7,7 @@ import flying from "/images/crash/flying.mp4";
 import idle from "/images/crash/idle.mp4";
 import up from "/images/crash/up.mp4";
 
+import Videos from "../components/crash/Videos";
 const socket = SocketConnection.getInstance();
 
 interface GameHistory {
@@ -14,7 +15,7 @@ interface GameHistory {
 }
 
 const CrashGame = () => {
-  const [bet, setBet] = useState(0);
+  const [bet, setBet] = useState<number | null>(null);
   const [multiplier, setMultiplier] = useState(1.0);
   const [crashPoint, setCrashPoint] = useState(null as number | null);
   const [history, setHistory] = useState<GameHistory[]>([]);
@@ -35,6 +36,7 @@ const CrashGame = () => {
 
 
   const handleBet = () => {
+    if (bet === null || bet < 1) return;
     const user = [{
       id: userData?.id,
       name: userData?.username,
@@ -46,7 +48,7 @@ const CrashGame = () => {
 
     socket.emit("crash:bet", user[0], bet);
 
-    toogleUserData({ ...userData, walletBalance: userData.walletBalance - bet });
+    toogleUserData({ ...userData, walletBalance: userData.walletBalance - bet! });
     setUserCashedOut(false);
   };
 
@@ -60,16 +62,14 @@ const CrashGame = () => {
     };
 
     socket.emit("crash:cashout", user);
-    // Don't set userCashedOut to true here
   };
 
-  // Add a listener for the "crash:cashoutSuccess" event
   useEffect(() => {
     const cashoutSuccessListener = (data: any) => {
+      console.log("cashout success")
       setUserMultiplier(data.multiplier);
       setUserCashedOut(true);  // Set userCashedOut to true here
 
-      // Update the client-side wallet balance using the returned updated user
       toogleUserData({ ...userData, walletBalance: data.updatedUser.walletBalance });
     };
 
@@ -154,7 +154,7 @@ const CrashGame = () => {
         <div className="md:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
           <input
             type="number"
-            value={bet}
+            value={bet || ""}
             onKeyDown={(event) => {
               if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
                 event.preventDefault();
@@ -180,9 +180,9 @@ const CrashGame = () => {
                   ? (gameStarted ? "Cash Out" : "You're in!")
                   : gameStarted
                     ? "Wait for next round"
-                    : bet === 0
+                    : bet === 0 || !bet || bet < 1
                       ? "Place the bet value"
-                      : userData.walletBalance < bet
+                      : userData.walletBalance < bet!
                         ? "Not enough money"
                         : "Place Bet"
             }
@@ -206,58 +206,17 @@ const CrashGame = () => {
                       <span>Multiplier:</span> {multiplier.toFixed(2)}X</div>}
 
               </div>
-              <video
-                ref={flyingVideoRef}
-                src={flying}
-                muted
-                preload="auto"
-                playsInline
-                onLoadedData={() => flyingVideoRef.current?.play()} // start playback after video is loaded
-                onEnded={() => {
-                  upVideoRef.current?.play();
-                  setAnimationSrc(up);
-                  upVideoRef.current && (upVideoRef.current.currentTime = 0);
-                }}
-                style={{ visibility: animationSrc === flying ? 'visible' : 'hidden' }}
-                className="w-[250px] h-[250px] absolute bottom-0"
-              />
-              <video
-                ref={upVideoRef}
-                src={up}
-                loop
-                preload="auto"
-                muted
-                playsInline
-                onLoadedData={() => upVideoRef.current?.play()} // start playback after video is loaded
-                style={{ visibility: animationSrc === up ? 'visible' : 'hidden' }}
-                className="w-[250px] h-[250px] absolute bottom-0"
-              />
-              <video
-                ref={fallingVideoRef}
-                src={falling}
-                muted
-                preload="auto"
-                playsInline
-                onLoadedData={() => fallingVideoRef.current?.play()} // start playback after video is loaded
-                onEnded={() => {
-                  setAnimationSrc(idle);
-                  idleVideoRef.current && (idleVideoRef.current.currentTime = 0)
-                  idleVideoRef.current?.play();
-                }}
-                style={{ visibility: animationSrc === falling ? 'visible' : 'hidden' }}
-                className="w-[250px] h-[250px] absolute bottom-0"
-              />
-              <video
-                ref={idleVideoRef}
-                src={idle}
-                loop
-                muted
-                preload="auto"
-                playsInline
-                onLoadedData={() => idleVideoRef.current?.play()} // start playback after video is loaded
-                style={{ visibility: animationSrc === idle ? 'visible' : 'hidden' }}
-                className="w-[250px] h-[250px] absolute bottom-0"
-              />
+              <Videos
+                animationSrc={animationSrc}
+                flyingVideoRef={flyingVideoRef}
+                fallingVideoRef={fallingVideoRef}
+                idleVideoRef={idleVideoRef}
+                upVideoRef={upVideoRef}
+                setAnimationSrc={setAnimationSrc}
+                up={up}
+                flying={flying}
+                idle={idle}
+                falling={falling} />
             </div>
           </div>
           <div className="flex w-screen md:w-[800px] p-4 flex-col">
