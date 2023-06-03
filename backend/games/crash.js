@@ -1,4 +1,5 @@
 const User = require("../models/User");
+import crypto from "crypto"
 
 const crashGame = (io) => {
   let gameState = {
