@@ -6,6 +6,7 @@ import falling from "/images/crash/falling.mp4";
 import flying from "/images/crash/flying.mp4";
 import idle from "/images/crash/idle.mp4";
 import up from "/images/crash/up.mp4";
+import LiveBets from "../components/crash/LiveBets";
 
 import Videos from "../components/crash/Videos";
 const socket = SocketConnection.getInstance();
@@ -26,14 +27,18 @@ const CrashGame = () => {
   const [userMultiplier, setUserMultiplier] = useState(0);
   const [animationSrc, setAnimationSrc] = useState(idle);
   const [userCashedOut, setUserCashedOut] = useState(false);
+  const [gameState, setGameState] = useState<any>({
+    gameBets: {},
+    gamePlayers: {},
+    crashPoint: 1.0,
+    gameStartTime: null,
+  });
 
   const { isLogged, toogleUserData, userData } = useContext(UserContext);
   const idleVideoRef = useRef<HTMLVideoElement | null>(null);
   const flyingVideoRef = useRef<HTMLVideoElement | null>(null);
   const fallingVideoRef = useRef<HTMLVideoElement | null>(null);
   const upVideoRef = useRef<HTMLVideoElement | null>(null);
-
-
 
   const handleBet = () => {
     if (bet === null || bet < 1) return;
@@ -80,6 +85,18 @@ const CrashGame = () => {
     };
   }, [userData, toogleUserData]);
 
+  useEffect(() => {
+    const gameStateListener = (gameState: any) => {
+      setGameState(gameState);
+    };
+
+    socket.on("crash:gameState", gameStateListener);
+
+
+    return () => {
+      socket.off("crash:gameState", gameStateListener);
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -105,6 +122,13 @@ const CrashGame = () => {
       setCrashPoint(crashPoint);
 
       setGameStarted(false);
+      setGameState({
+        gameBets: {},
+        gamePlayers: {},
+        crashPoint: 1.0,
+        gameStartTime: null,
+      });
+
       setUserGambled(false);
 
       if (!userCashedOut && multiplier >= crashPoint) {
@@ -147,6 +171,7 @@ const CrashGame = () => {
       }, 100);
     }
   }, [countDown]);
+
 
   return (
     <div className="w-screen flex flex-col items-center justify-center gap-12">
@@ -236,7 +261,8 @@ const CrashGame = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>          <LiveBets gameState={gameState} />
+
     </div >
   );
 };
