@@ -1,73 +1,54 @@
+import React from 'react';
+
 interface VideosProps {
-    idleVideoRef: React.RefObject<HTMLVideoElement>;
-    flyingVideoRef: React.RefObject<HTMLVideoElement>;
-    upVideoRef: React.RefObject<HTMLVideoElement>;
-    fallingVideoRef: React.RefObject<HTMLVideoElement>;
+    idleImgRef: React.RefObject<HTMLImageElement>;
+    upImgRef: React.RefObject<HTMLImageElement>;
+    fallingImgRef: React.RefObject<HTMLImageElement>;
     animationSrc: string;
     setAnimationSrc: React.Dispatch<React.SetStateAction<string>>;
     falling: string;
-    flying: string;
     idle: string;
     up: string;
 }
 
+const Videos: React.FC<VideosProps> = ({ idleImgRef, upImgRef, fallingImgRef, animationSrc, setAnimationSrc, falling, idle, up }) => {
+    const [key, setKey] = React.useState<number>(0);
 
-const Videos: React.FC<VideosProps> = ({ idleVideoRef, flyingVideoRef, upVideoRef, fallingVideoRef, animationSrc, setAnimationSrc, falling, flying, idle, up }) => {
+    React.useEffect(() => {
+        idleImgRef.current?.addEventListener('ended', () => setAnimationSrc(idle));
+        upImgRef.current?.addEventListener('ended', () => setAnimationSrc(falling));
+        fallingImgRef.current?.addEventListener('ended', () => {
+            setAnimationSrc(idle);
+            setKey(prevKey => prevKey + 1); // Increase key to force re-render
+        });
+
+        return () => {
+            idleImgRef.current?.removeEventListener('ended', () => setAnimationSrc(idle));
+            upImgRef.current?.removeEventListener('ended', () => setAnimationSrc(falling));
+            fallingImgRef.current?.removeEventListener('ended', () => setAnimationSrc(idle));
+        }
+    }, [idleImgRef, upImgRef, fallingImgRef]);
+
     return (
-        <>
-            <video
-                ref={flyingVideoRef}
-                src={flying}
-                muted
-                preload="auto"
-                playsInline
-                onLoadedData={() => flyingVideoRef.current?.play()} // start playback after video is loaded
-                onEnded={() => {
-                    upVideoRef.current?.play();
-                    setAnimationSrc(up);
-                    upVideoRef.current && (upVideoRef.current.currentTime = 0);
-                }}
-                style={{ visibility: animationSrc === flying ? 'visible' : 'hidden' }}
-                className="w-[250px] h-[250px] absolute bottom-0"
-            />
-            <video
-                ref={upVideoRef}
-                src={up}
-                loop
-                preload="auto"
-                muted
-                playsInline
-                onLoadedData={() => upVideoRef.current?.play()} // start playback after video is loaded
-                style={{ visibility: animationSrc === up ? 'visible' : 'hidden' }}
-                className="w-[250px] h-[250px] absolute bottom-0"
-            />
-            <video
-                ref={fallingVideoRef}
-                src={falling}
-                muted
-                preload="auto"
-                playsInline
-                onLoadedData={() => fallingVideoRef.current?.play()} // start playback after video is loaded
-                onEnded={() => {
-                    setAnimationSrc(idle);
-                    idleVideoRef.current && (idleVideoRef.current.currentTime = 0)
-                    idleVideoRef.current?.play();
-                }}
-                style={{ visibility: animationSrc === falling ? 'visible' : 'hidden' }}
-                className="w-[250px] h-[250px] absolute bottom-0"
-            />
-            <video
-                ref={idleVideoRef}
+        <div>
+            <img
+                style={{ display: animationSrc === idle ? 'block' : 'none' }}
                 src={idle}
-                loop
-                muted
-                preload="auto"
-                playsInline
-                onLoadedData={() => idleVideoRef.current?.play()} // start playback after video is loaded
-                style={{ visibility: animationSrc === idle ? 'visible' : 'hidden' }}
-                className="w-[250px] h-[250px] absolute bottom-0"
-            /></>
-    )
-}
+                ref={idleImgRef}
+            />
+            <img
+                style={{ display: animationSrc === up ? 'block' : 'none' }}
+                src={up}
+                ref={upImgRef}
+            />
+            <img
+                key={key} // Force re-render with new key
+                style={{ display: animationSrc === falling ? 'block' : 'none' }}
+                src={falling}
+                ref={fallingImgRef}
+            />
+        </div>
+    );
+};
 
-export default Videos
+export default Videos;

@@ -3,6 +3,7 @@ import Banner from "../components/home/Banner";
 import CaseListing from "../components/home/CaseListing";
 import { getCases } from "../services/cases/CaseServices";
 import Skeleton from "react-loading-skeleton";
+import { toast } from "react-toastify";
 
 interface BannerProps {
   left: {
@@ -19,16 +20,15 @@ const Home = () => {
 
   const getNewCases = async () => {
     setLoading(true);
-    getCases()
-      .then((response) => {
-        setCases(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response = await getCases()
+      setCases(response);
+    } catch {
+      setCases([])
+      toast.error("Error while connecting to the server")
+    }
+    setLoading(false);
+
   };
 
   useEffect(() => {

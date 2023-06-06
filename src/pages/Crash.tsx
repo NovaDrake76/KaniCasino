@@ -2,10 +2,9 @@ import { useContext, useEffect, useState, useRef } from "react";
 import SocketConnection from "../services/socket"
 import { motion } from "framer-motion";
 import UserContext from "../UserContext";
-import falling from "/images/crash/falling.mp4";
-import flying from "/images/crash/flying.mp4";
-import idle from "/images/crash/idle.mp4";
-import up from "/images/crash/up.mp4";
+import falling from "/images/crash/falling.gif";
+import idle from "/images/crash/idle.gif";
+import up from "/images/crash/up.gif";
 import LiveBets from "../components/crash/LiveBets";
 
 import Videos from "../components/crash/Videos";
@@ -35,10 +34,9 @@ const CrashGame = () => {
   });
 
   const { isLogged, toogleUserData, userData } = useContext(UserContext);
-  const idleVideoRef = useRef<HTMLVideoElement | null>(null);
-  const flyingVideoRef = useRef<HTMLVideoElement | null>(null);
-  const fallingVideoRef = useRef<HTMLVideoElement | null>(null);
-  const upVideoRef = useRef<HTMLVideoElement | null>(null);
+  const idleVideoRef = useRef<HTMLImageElement | null>(null);
+  const fallingVideoRef = useRef<HTMLImageElement | null>(null);
+  const upVideoRef = useRef<HTMLImageElement | null>(null);
 
   const handleBet = () => {
     if (bet === null || bet < 1) return;
@@ -101,9 +99,7 @@ const CrashGame = () => {
 
   useEffect(() => {
     const startListener = () => {
-      setAnimationSrc(flying);
-      flyingVideoRef.current && (flyingVideoRef.current.currentTime = 0);
-      flyingVideoRef.current?.play();
+      setAnimationSrc(up);
 
       setMultiplier(1.0);
       setCrashPoint(null);
@@ -115,10 +111,10 @@ const CrashGame = () => {
 
     };
 
+    let timeoutId: NodeJS.Timeout;
+
     const resultListener = (crashPoint: number) => {
       setAnimationSrc(falling);
-      fallingVideoRef.current && (fallingVideoRef.current.currentTime = 0);
-      fallingVideoRef.current?.play();
       setCrashPoint(crashPoint);
 
       setGameStarted(false);
@@ -139,7 +135,10 @@ const CrashGame = () => {
       setHistory((prevHistory) => [...prevHistory, { crashPoint }]);
       setGameEnded(true);
       setCountDown(10.7);
+
+      timeoutId = setTimeout(() => setAnimationSrc(idle), 700);
     };
+
 
     socket.on("crash:start", startListener);
     socket.on("crash:result", resultListener);
@@ -148,6 +147,10 @@ const CrashGame = () => {
       // Clean up listeners when the component is unmounted
       socket.off("crash:start", startListener);
       socket.off("crash:result", resultListener);
+
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [multiplier, userCashedOut]);
 
@@ -224,7 +227,7 @@ const CrashGame = () => {
                   </span>
                 </div>
               }
-              <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center -mt-32 ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
+              <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center  ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
                 {
                   gameEnded ? <span>Crashed at {crashPoint && crashPoint.toFixed(2)}X</span>
                     : <div className="flex items-center justify-between w-[93%] ">
@@ -233,13 +236,11 @@ const CrashGame = () => {
               </div>
               <Videos
                 animationSrc={animationSrc}
-                flyingVideoRef={flyingVideoRef}
-                fallingVideoRef={fallingVideoRef}
-                idleVideoRef={idleVideoRef}
-                upVideoRef={upVideoRef}
+                fallingImgRef={fallingVideoRef}
+                idleImgRef={idleVideoRef}
+                upImgRef={upVideoRef}
                 setAnimationSrc={setAnimationSrc}
                 up={up}
-                flying={flying}
                 idle={idle}
                 falling={falling} />
             </div>
