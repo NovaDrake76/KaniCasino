@@ -136,7 +136,7 @@ const CrashGame = () => {
       setGameEnded(true);
       setCountDown(10.7);
 
-      timeoutId = setTimeout(() => setAnimationSrc(idle), 700);
+      timeoutId = setTimeout(() => setAnimationSrc(idle), 400);
     };
 
 
