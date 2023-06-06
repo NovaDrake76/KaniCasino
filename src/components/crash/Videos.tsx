@@ -1,9 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface VideosProps {
-    idleImgRef: React.RefObject<HTMLImageElement>;
-    upImgRef: React.RefObject<HTMLImageElement>;
-    fallingImgRef: React.RefObject<HTMLImageElement>;
     animationSrc: string;
     setAnimationSrc: React.Dispatch<React.SetStateAction<string>>;
     falling: string;
@@ -11,42 +8,47 @@ interface VideosProps {
     up: string;
 }
 
-const Videos: React.FC<VideosProps> = ({ idleImgRef, upImgRef, fallingImgRef, animationSrc, setAnimationSrc, falling, idle, up }) => {
-    const [key, setKey] = React.useState<number>(0);
+const Videos: React.FC<VideosProps> = ({ animationSrc, setAnimationSrc, falling, idle, up }) => {
+    const [elements, setElements] = useState<JSX.Element[]>([]);
+    const idleRef = useRef<HTMLImageElement>(null);
+    const upRef = useRef<HTMLImageElement>(null);
+    const fallingRef = useRef<HTMLImageElement>(null);
+    const animationEndHandler = () => {
+        if (animationSrc === idle) setAnimationSrc(falling);
+        else if (animationSrc === falling) setAnimationSrc(up);
+        else if (animationSrc === up) setAnimationSrc(idle);
+    };
 
-    React.useEffect(() => {
-        idleImgRef.current?.addEventListener('ended', () => setAnimationSrc(idle));
-        upImgRef.current?.addEventListener('ended', () => setAnimationSrc(falling));
-        fallingImgRef.current?.addEventListener('ended', () => {
-            setAnimationSrc(idle);
-            setKey(prevKey => prevKey + 1); // Increase key to force re-render
-        });
+    useEffect(() => {
+        const newElement = (
+            <img
+                style={{ display: 'block' }}
+                src={animationSrc}
+                ref={animationSrc === idle ? idleRef : animationSrc === up ? upRef : fallingRef}
+                onEnded={animationEndHandler}
+            />
+        );
+        setElements(prevElements => [...prevElements, newElement]);
+    }, [animationSrc]);
 
+    useEffect(() => {
+        if (idleRef.current) idleRef.current.addEventListener('ended', animationEndHandler);
+        if (upRef.current) upRef.current.addEventListener('ended', animationEndHandler);
+        if (fallingRef.current) fallingRef.current.addEventListener('ended', animationEndHandler);
         return () => {
-            idleImgRef.current?.removeEventListener('ended', () => setAnimationSrc(idle));
-            upImgRef.current?.removeEventListener('ended', () => setAnimationSrc(falling));
-            fallingImgRef.current?.removeEventListener('ended', () => setAnimationSrc(idle));
-        }
-    }, [idleImgRef, upImgRef, fallingImgRef]);
+            if (idleRef.current) idleRef.current.removeEventListener('ended', animationEndHandler);
+            if (upRef.current) upRef.current.removeEventListener('ended', animationEndHandler);
+            if (fallingRef.current) fallingRef.current.removeEventListener('ended', animationEndHandler);
+        };
+    }, [idleRef, upRef, fallingRef]);
 
     return (
         <div>
-            <img
-                style={{ display: animationSrc === idle ? 'block' : 'none' }}
-                src={idle}
-                ref={idleImgRef}
-            />
-            <img
-                style={{ display: animationSrc === up ? 'block' : 'none' }}
-                src={up}
-                ref={upImgRef}
-            />
-            <img
-                key={key} // Force re-render with new key
-                style={{ display: animationSrc === falling ? 'block' : 'none' }}
-                src={falling}
-                ref={fallingImgRef}
-            />
+            {elements.map((element, index) => (
+                <div key={index} style={{ display: index === elements.length - 1 ? 'block' : 'none' }}>
+                    {element}
+                </div>
+            ))}
         </div>
     );
 };

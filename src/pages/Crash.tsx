@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
 import SocketConnection from "../services/socket"
 import { motion } from "framer-motion";
 import UserContext from "../UserContext";
@@ -34,9 +34,6 @@ const CrashGame = () => {
   });
 
   const { isLogged, toogleUserData, userData } = useContext(UserContext);
-  const idleVideoRef = useRef<HTMLImageElement | null>(null);
-  const fallingVideoRef = useRef<HTMLImageElement | null>(null);
-  const upVideoRef = useRef<HTMLImageElement | null>(null);
 
   const handleBet = () => {
     if (bet === null || bet < 1) return;
@@ -136,7 +133,7 @@ const CrashGame = () => {
       setGameEnded(true);
       setCountDown(10.7);
 
-      timeoutId = setTimeout(() => setAnimationSrc(idle), 400);
+      timeoutId = setTimeout(() => setAnimationSrc(idle), 700);
     };
 
 
@@ -236,9 +233,7 @@ const CrashGame = () => {
               </div>
               <Videos
                 animationSrc={animationSrc}
-                fallingImgRef={fallingVideoRef}
-                idleImgRef={idleVideoRef}
-                upImgRef={upVideoRef}
+
                 setAnimationSrc={setAnimationSrc}
                 up={up}
                 idle={idle}

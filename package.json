@@ -24,7 +24,8 @@
     "react-router-dom": "^6.11.0",
     "react-toastify": "^9.1.2",
     "react-tooltip": "^5.11.2",
-    "socket.io-client": "^4.6.1"
+    "socket.io-client": "^4.6.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
