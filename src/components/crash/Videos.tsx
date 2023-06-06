@@ -19,6 +19,16 @@ const Videos: React.FC<VideosProps> = ({ animationSrc, setAnimationSrc, falling,
         else if (animationSrc === up) setAnimationSrc(idle);
     };
 
+    // Preload images
+    useEffect(() => {
+        const imgIdle = new Image();
+        imgIdle.src = idle;
+        const imgUp = new Image();
+        imgUp.src = up;
+        const imgFalling = new Image();
+        imgFalling.src = falling;
+    }, [idle, up, falling]);
+
     useEffect(() => {
         const newElement = (
             <img
