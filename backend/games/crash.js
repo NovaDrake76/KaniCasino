@@ -27,7 +27,7 @@ const crashGame = (io) => {
           user.id,
           { $inc: { walletBalance: -bet } },
           { new: true }
-        ).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-xp").select("-inventory").select("-walletBalance");
+        ).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-xp").select("-inventory").select("-walletBalance").select("-bonusAmount");
 
         // After updating the user, add them to the game state
         gameState.gamePlayers[user.id] = updatedUser;
@@ -60,6 +60,11 @@ const crashGame = (io) => {
           { $inc: { walletBalance: payout } },
           { new: true }
         );
+
+        gameState.gamePlayers[user.id] = { ...gameState.gamePlayers[user.id], payout: multiplier }
+
+        //update the game state
+        io.emit("crash:gameState", gameState);
 
         // Remove the player's bet from the game state
         delete gameState.gameBets[user.id];

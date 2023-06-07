@@ -53,7 +53,7 @@ const Videos: React.FC<VideosProps> = ({ animationSrc, setAnimationSrc, falling,
     }, [idleRef, upRef, fallingRef]);
 
     return (
-        <div>
+        <div className='absolute bottom-0'>
             {elements.map((element, index) => (
                 <div key={index} style={{ display: index === elements.length - 1 ? 'block' : 'none' }}>
                     {element}

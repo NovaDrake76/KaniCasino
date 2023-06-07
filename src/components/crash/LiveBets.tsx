@@ -24,18 +24,32 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
     };
 
     return (
-        <div className="flex flex-col p-4 bg-[#212031] rounded w-72 h-min ">
+        <div className="flex flex-col px-8 py-4 bg-[#212031] rounded w-72 h-min lg:w-[1140px]">
 
-            <div className="flex border-t border-gray-700 flex-col ">
+            <div className="flex flex-col ">
                 <div className="flex items-center justify-between py-4">
                     <span className="font-bold text-sm">Total Bets</span>
                     <span className="font-bold text-sm">C₽{totalBets}</span>
                 </div>
+
+                <div className="flex items-center w-full justify-between p-2 bg-[#1A152B] rounded">
+                    <span className="font-bold text-sm">User</span>
+                    <div className="flex w-1/4 justify-between">
+                        {
+                            ["Bet", "Payout", "Profit"].map((item) => (
+                                <span key={item} className="font-bold text-sm">{item}</span>
+                            ))
+
+                        }
+                    </div>
+                </div>
+
                 {gameState && gameState.gamePlayers && Object.keys(gameState.gamePlayers).map(playerId => {
                     const player = gameState.gamePlayers[playerId];
                     const bet = gameState.gameBets[playerId];
                     return (
-                        <div className="flex items-center justify-between py-2 relative" key={playerId}
+
+                        <div className="flex items-center justify-between p-2 relative  border-b border-gray-700 " key={playerId}
                             onMouseEnter={handleHover}
                             onMouseLeave={handleHover}>
                             {
@@ -49,8 +63,14 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
                                     <span className="font-bold text-sm">{player.username}</span>
                                 </div>
                             </a>
-                            <span className="font-bold text-sm">C₽{bet}</span>
+
+                            <div className="flex justify-between w-1/4">
+                                <span className="font-bold text-sm">C₽{bet}</span>
+                                <span className="font-bold text-sm">{player.payout ? player.payout : '-'}</span>
+                                <span className="font-bold text-sm">{player.payout ? (player.payout * bet).toFixed(2) : ' -'}</span>
+                            </div>
                         </div>
+
                     );
                 })}
             </div>

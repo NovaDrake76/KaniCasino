@@ -43,6 +43,7 @@ const CrashGame = () => {
       profilePicture: userData?.profilePicture,
       level: userData?.level,
       fixedItem: userData?.fixedItem,
+      payout: null
     }]
     setUserGambled(true);
 
@@ -59,6 +60,7 @@ const CrashGame = () => {
       profilePicture: userData?.profilePicture,
       level: userData?.level,
       fixedItem: userData?.fixedItem,
+      payout: null
     };
 
     socket.emit("crash:cashout", user);
@@ -68,7 +70,7 @@ const CrashGame = () => {
     const cashoutSuccessListener = (data: any) => {
       console.log("cashout success")
       setUserMultiplier(data.multiplier);
-      setUserCashedOut(true);  // Set userCashedOut to true here
+      setUserCashedOut(true);
 
       toogleUserData({ ...userData, walletBalance: data.updatedUser.walletBalance });
     };
@@ -224,7 +226,7 @@ const CrashGame = () => {
                   </span>
                 </div>
               }
-              <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center  ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
+              <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center -mt-32 ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
                 {
                   gameEnded ? <span>Crashed at {crashPoint && crashPoint.toFixed(2)}X</span>
                     : <div className="flex items-center justify-between w-[93%] ">
@@ -233,7 +235,6 @@ const CrashGame = () => {
               </div>
               <Videos
                 animationSrc={animationSrc}
-
                 setAnimationSrc={setAnimationSrc}
                 up={up}
                 idle={idle}
