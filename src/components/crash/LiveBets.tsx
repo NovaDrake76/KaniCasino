@@ -67,8 +67,8 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
 
                             <div className="flex justify-between w-1/4">
                                 <span className="font-bold text-sm">C₽{bet}</span>
-                                <span className="font-bold text-sm">{player.payout ? player.payout.toFixed(2) : '-'}</span>
-                                <span className="font-bold text-sm">{player.payout ? `${(player.payout * bet).toFixed(2)}X ` : ' -'}</span>
+                                <span className={`font-bold text-sm ${player.payout && "text-green-500"}`}>{player.payout ? player.payout.toFixed(2) : '-'}</span>
+                                <span className={`font-bold text-sm ${player.payout && "text-green-500"}`}>{player.payout ? `${(player.payout * bet).toFixed(2)}X ` : ' -'}</span>
                             </div>
                         </div>
 

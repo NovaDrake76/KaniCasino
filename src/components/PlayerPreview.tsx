@@ -1,4 +1,7 @@
+import { useState } from "react";
 import Rarities from "../components/Rarities";
+import { RotatingLines } from "react-loader-spinner";
+
 
 interface PlayerPreview {
     player: {
@@ -16,6 +19,7 @@ interface PlayerPreview {
 }
 
 const PlayerPreview: React.FC<PlayerPreview> = ({ player }) => {
+    const [loadingImage, setLoadingImage] = useState<boolean>(true);
     return (
         <div className={`flex items-center min-w-[370px] justify-between gap-2 absolute -top-48 bg-[#281D3F]  rounded ${player.fixedItem && "border-2"} `}
             style={{
@@ -35,7 +39,20 @@ const PlayerPreview: React.FC<PlayerPreview> = ({ player }) => {
                     }}>
 
                         <div className="flex flex-col items-center" >
-                            <img src={player.fixedItem.image} className="w-24 h-24 object-contain" />
+                            <img src={player.fixedItem.image} className="w-24 h-24 object-contain" onLoad={() => setLoadingImage(false)} />
+                            {
+                                loadingImage && (
+                                    <div className="absolute w-full h-full flex items-center justify-center">
+                                        <RotatingLines
+                                            strokeColor="grey"
+                                            strokeWidth="5"
+                                            animationDuration="0.75"
+                                            width="50px"
+                                            visible={true}
+                                        />
+                                    </div>
+                                )
+                            }
 
                             <span className="font-bold text-lg">{player.fixedItem.name}</span>
                         </div>
