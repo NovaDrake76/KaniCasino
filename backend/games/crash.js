@@ -61,7 +61,7 @@ const crashGame = (io) => {
           { new: true }
         );
 
-        gameState.gamePlayers[user.id] = { ...gameState.gamePlayers[user.id], payout: multiplier }
+        gameState.gamePlayers[user.id] = { ...gameState.gamePlayers[user.id]._doc, payout: multiplier }
 
         //update the game state
         io.emit("crash:gameState", gameState);

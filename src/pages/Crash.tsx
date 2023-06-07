@@ -68,7 +68,6 @@ const CrashGame = () => {
 
   useEffect(() => {
     const cashoutSuccessListener = (data: any) => {
-      console.log("cashout success")
       setUserMultiplier(data.multiplier);
       setUserCashedOut(true);
 

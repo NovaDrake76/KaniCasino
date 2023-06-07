@@ -23,6 +23,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
         setIsHovering(!isHovering);
     };
 
+
     return (
         <div className="flex flex-col px-8 py-4 bg-[#212031] rounded w-72 h-min lg:w-[1140px]">
 
@@ -49,7 +50,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
                     const bet = gameState.gameBets[playerId];
                     return (
 
-                        <div className="flex items-center justify-between p-2 relative  border-b border-gray-700 " key={playerId}
+                        <div className="flex items-center justify-between px-2 py-4 relative  border-b border-gray-700 " key={playerId}
                             onMouseEnter={handleHover}
                             onMouseLeave={handleHover}>
                             {
@@ -66,8 +67,8 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
 
                             <div className="flex justify-between w-1/4">
                                 <span className="font-bold text-sm">C₽{bet}</span>
-                                <span className="font-bold text-sm">{player.payout ? player.payout : '-'}</span>
-                                <span className="font-bold text-sm">{player.payout ? (player.payout * bet).toFixed(2) : ' -'}</span>
+                                <span className="font-bold text-sm">{player.payout ? player.payout.toFixed(2) : '-'}</span>
+                                <span className="font-bold text-sm">{player.payout ? `${(player.payout * bet).toFixed(2)}X ` : ' -'}</span>
                             </div>
                         </div>
 
