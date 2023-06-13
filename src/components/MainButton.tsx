@@ -17,9 +17,8 @@ const MainButton: React.FC<MainButton> = ({
 }) => {
   return (
     <button
-      className={`flex items-center justify-center w-full h-10 bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-md text-white font-medium text-lg ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
+      className={`flex items-center justify-center w-full h-10 bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-md text-white font-medium md:text-lg ${disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       onClick={onClick}
       disabled={disabled}
       type={submit ? "submit" : "button"}

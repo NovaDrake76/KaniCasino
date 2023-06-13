@@ -23,9 +23,21 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [haveBonus, setHaveBonus] = useState<boolean>(false);
+  const [visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
+  const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
+
+  const calculateVisibleLinksCount = () => {
+    let availableWidth = window.innerWidth;
+
+    availableWidth = availableWidth > 500 ? availableWidth - 500 : 0;
+
+    const count = Math.floor(availableWidth / 220);
+
+    setVisibleLinksCount(count);
+  };
+
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -49,6 +61,17 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    calculateVisibleLinksCount();
+
+    window.addEventListener('resize', calculateVisibleLinksCount);
+
+    return () => {
+      window.removeEventListener('resize', calculateVisibleLinksCount);
+    };
+  }, []);
+
 
 
   useEffect(() => {
@@ -114,20 +137,19 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
               </div>
             </Link>
             {
-              <div className="hidden md:flex items-center gap-6 ml-8">
-                {links.map((link, index) => (
-                  <Link
-                    to={link.path}
-                    key={index}
-                    className="flex items-center gap-2 font-normal text-lg cursor-pointer "
-                  >
-                    <span className="text-[#625F7E] hover:text-gray-200 transition-all ">
-                      {link.icon}
-                    </span>
-                    <span className="text-white hover:text-gray-200 transition-all ">
-                      {link.name}
-                    </span>
-                  </Link>
+              <div className="hidden md:flex items-center gap-6 ml-8 overflow-hidden">
+                {links.slice(0, visibleLinksCount).map((link, index) => (<Link
+                  to={link.path}
+                  key={index}
+                  className="flex items-center gap-2 font-normal text-lg cursor-pointer "
+                >
+                  <span className="text-[#625F7E] hover:text-gray-200 transition-all ">
+                    {link.icon}
+                  </span>
+                  <span className="text-white hover:text-gray-200 transition-all ">
+                    {link.name}
+                  </span>
+                </Link>
                 ))}
               </div>
             }
@@ -145,7 +167,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
               {!loading && (
                 <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all ">
                   <BiWallet className="text-2xl" />
-                  <div>
+                  <div className="max-w-[80px] md:max-w-none overflow-hidden truncate">
                     {new Intl.NumberFormat("en-US", {
                       style: "currency",
                       currency: "DOL",

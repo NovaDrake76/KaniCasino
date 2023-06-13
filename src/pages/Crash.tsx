@@ -176,8 +176,8 @@ const CrashGame = () => {
 
   return (
     <div className="w-screen flex flex-col items-center justify-center gap-12">
-      <div className="flex bg-[#212031] rounded flex-col md:flex-row">
-        <div className="md:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
+      <div className="flex bg-[#212031] rounded flex-col lg:flex-row">
+        <div className="lg:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
           <input
             type="number"
             value={bet || ""}
@@ -187,7 +187,7 @@ const CrashGame = () => {
               }
             }}
             onChange={(e) => setBet(Number(e.target.value))}
-            className="p-2 border rounded w-1/2 md:w-full"
+            className="p-2 border rounded w-1/2 lg:w-full"
           />
           <button
             onClick={gameStarted ? handleCashout : handleBet}
@@ -216,7 +216,7 @@ const CrashGame = () => {
 
         </div>
         <div className="flex flex-col">
-          <div className="flex md:w-[800px] border-b border-gray-700  p-4">
+          <div className="flex lg:w-[800px] border-b border-gray-700  p-4">
             <div className="flex bg-[#19172D] rounded items-center flex-col  justify-center w-full h-[340px] relative ">
               {
                 gameEnded && <div className="absolute top-0 left-0 p-2">
@@ -240,7 +240,7 @@ const CrashGame = () => {
                 falling={falling} />
             </div>
           </div>
-          <div className="flex w-screen md:w-[800px] p-4 flex-col">
+          <div className="flex w-screen lg:w-[800px] p-4 flex-col">
             <h3 className="mb-2 text-lg font-semibold">Game History:</h3>
             <div className="flex items-center gap-2 justify-end w-full overflow-hidden h-[24px]">
               {history.map((e, i) => (

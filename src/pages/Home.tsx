@@ -48,7 +48,7 @@ const Home = () => {
         <Banner left={leftContent} />
         {loading ? (
           <div className="flex items-center justify-center w-full mt-[164px]">
-            <div className="flex justiy-center gap-8 max-w-[1600px]">
+            <div className="flex justiy-center gap-8 max-w-[1600px] flex-col md:flex-row">
               {Array(4)
                 .fill(0)
                 .map((e, index) => (

@@ -84,7 +84,7 @@ function App() {
               <div className="flex">
                 <AppRoutes />
               </div>
-              <div className="">footer</div>
+              {/* <div className="">footer</div> */}
             </SkeletonTheme>
           </Router>
         </Suspense>

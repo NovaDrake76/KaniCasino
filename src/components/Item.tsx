@@ -77,7 +77,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
           <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
         </div>
       )}
-      <p className="text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden">{item.name}</p>
+      <p className="text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full">{item.name}</p>
     </div>
   );
 };

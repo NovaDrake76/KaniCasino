@@ -23,11 +23,10 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
         setIsHovering(!isHovering);
     };
 
-
     return (
-        <div className="flex flex-col px-8 py-4 bg-[#212031] rounded w-72 h-min lg:w-[1140px]">
+        <div className="flex flex-col px-8 py-4 bg-[#212031] rounded file:h-min lg:w-[1140px] w-full">
 
-            <div className="flex flex-col ">
+            <div className="flex flex-col">
                 <div className="flex items-center justify-between py-4">
                     <span className="font-bold text-sm">Total Bets</span>
                     <span className="font-bold text-sm">C₽{totalBets}</span>
@@ -35,7 +34,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
 
                 <div className="flex items-center w-full justify-between p-2 bg-[#1A152B] rounded">
                     <span className="font-bold text-sm">User</span>
-                    <div className="flex w-1/4 justify-between">
+                    <div className="hidden w-1/4 justify-between md:flex">
                         {
                             ["Bet", "Payout", "Profit"].map((item) => (
                                 <span key={item} className="font-bold text-sm">{item}</span>

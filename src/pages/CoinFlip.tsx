@@ -128,8 +128,8 @@ const CoinFlip = () => {
 
   return (
     <div className="w-screen flex flex-col items-center justify-center gap-12">
-      <div className="flex bg-[#212031] rounded flex-col md:flex-row">
-        <div className="md:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
+      <div className="flex bg-[#212031] rounded flex-col lg:flex-row">
+        <div className="lg:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
           <input
             type="number"
             value={bet}
@@ -139,12 +139,12 @@ const CoinFlip = () => {
               }
             }}
             onChange={(e) => setBet(Number(e.target.value))}
-            className="p-2 border rounded w-1/2 md:w-full"
+            className="p-2 border rounded w-1/2 lg:w-full"
           />
 
           <div className="flex flex-col gap-2 w-full">
             <label className="text-lg font-semibold">Choose a side</label>
-            <div className="flex items-center justify-between gap-2 w-full flex-col md:flex-row">
+            <div className="flex items-center justify-between gap-2 w-full flex-col lg:flex-row">
               {
                 [{
                   name: "Heads",
@@ -175,7 +175,7 @@ const CoinFlip = () => {
           </button>
         </div>
         <div className="flex flex-col">
-          <div className="flex md:w-[800px] border-b border-gray-700  p-4">
+          <div className="flex lg:w-[800px] border-b border-gray-700  p-4">
             <div className="flex bg-[#19172D] rounded items-center justify-center w-full h-[340px] relative ">
               {
                 gameEnded && <div className="absolute top-0 left-0 p-2">
@@ -187,7 +187,7 @@ const CoinFlip = () => {
               <Coin spinning={spinning} result={result} />
             </div>
           </div>
-          <div className="flex w-screen md:w-[800px] p-4 flex-col">
+          <div className="flex w-screen lg:w-[800px] p-4 flex-col">
             <h3 className="mb-2 text-lg font-semibold">Game History:</h3>
             <div className="flex items-center gap-2 justify-end w-full  overflow-hidden h-[24px]">
               {history.map((e, i) => (
@@ -203,7 +203,7 @@ const CoinFlip = () => {
           </div>
         </div>
       </div>
-      <div className="flex gap-8 flex-col md:flex-row">
+      <div className="flex gap-8 flex-col lg:flex-row">
         {gameState &&
           ["Heads", "Tails"].map((e, i) => (
             <LiveBets gameState={gameState} type={e} key={i} />
