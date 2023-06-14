@@ -70,7 +70,7 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
             key={index}
             src={item && item.image}
             alt={item && item.name}
-            className={`min-w-[176px] h-44 object-contain`}
+            className={`min-w-[176px]  h-44 object-cover`}
             style={{
               borderBottom: Rarities.find((rarity) => rarity.id.toString() == item.rarity)?.color + " solid 4px",
             }}
