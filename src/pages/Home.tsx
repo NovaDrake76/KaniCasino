@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Banner from "../components/home/Banner";
 import CaseListing from "../components/home/CaseListing";
+import GameListing from "../components/home/GamesListing";
 import { getCases } from "../services/cases/CaseServices";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
@@ -70,6 +71,7 @@ const Home = () => {
             cases={cases.length > 5 ? cases.slice(0, 5) : cases}
           />
         )}
+        {/* <GameListing name="TRY YOUR LUCK" /> */}
       </div>
     </div>
   );
