@@ -7,14 +7,15 @@
 - [x] Scroll history.
 - [x] Profile Inventory Height.
 - [x] Fix Negative Sell.
-- [ ] Fix Market Modal.
-- [ ] CoinFlip Input.
+- [x] Coin Flip.
+- [x] Marketplace.
+- [x] Crash.
+- [x] CoinFlip Input.
 - [ ] Fix Level
+- [ ] Fix Market Modal.
 - [ ] Refresh Token.
 - [ ] Responsivity.
-- [ ] Right Banner content.
-- [x] Marketplace.
-- [ ] Crash.
-- [x] Coin Flip.
+- [ ] Banner content.
+
 
 ![image](https://user-images.githubusercontent.com/65428910/235279117-30bfaaa1-b8c5-46ae-9880-2b8b209c35c4.png)
