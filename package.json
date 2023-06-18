@@ -5,9 +5,9 @@
   "type": "module",
   "homepage": "/",
   "scripts": {
-    "init-client": "vite",
+    "dev": "vite",
     "init-server": "cd backend && node index.js",
-    "dev": "npm-run-all -p init-client init-server",
+    "start": "npm-run-all -p dev init-server",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
