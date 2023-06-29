@@ -134,7 +134,7 @@ const CrashGame = () => {
       setGameEnded(true);
       setCountDown(10.7);
 
-      timeoutId = setTimeout(() => setAnimationSrc(idle), 700);
+      timeoutId = setTimeout(() => setAnimationSrc(idle), 4000);
     };
 
 
@@ -225,7 +225,7 @@ const CrashGame = () => {
                   </span>
                 </div>
               }
-              <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center -mt-32 ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
+              <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center  ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
                 {
                   gameEnded ? <span>Crashed at {crashPoint && crashPoint.toFixed(2)}X</span>
                     : <div className="flex items-center justify-between w-[93%] ">
