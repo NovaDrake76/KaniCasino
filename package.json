@@ -5,7 +5,7 @@
   "type": "module",
   "homepage": "/",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "init-server": "cd backend && node index.js",
     "start": "npm-run-all -p dev init-server",
     "build": "tsc && vite build",
