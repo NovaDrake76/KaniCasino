@@ -35,7 +35,7 @@ const Case: React.FC<CaseProps> = ({ id, title, image, price }) => {
       />
       <div className="flex flex-col gap-2 p-4 items-center">
         <div className="font-bold text-lg ">{title}</div>
-        <div className="font-medium text-md text-green-400">C₽ {price}</div>
+        <div className="flex items-center gap-2 font-medium text-md text-green-400"><img src={"/images/crude.webp"} width={30} /> {price}</div>
       </div>
     </div>
   );

@@ -210,7 +210,7 @@ const CasePage = () => {
             <Skeleton width={240} height={40} />
           ) : (
             <MainButton
-              text={`Open Case - C₽${data.price}`}
+              text={`Open Case - ₵R ${data.price}`}
               onClick={openCase}
               loading={loadingButton}
               disabled={

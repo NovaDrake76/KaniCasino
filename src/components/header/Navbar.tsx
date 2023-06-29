@@ -166,14 +166,15 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
               }
               {!loading && (
                 <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all ">
-                  <BiWallet className="text-2xl" />
+                  {/* <BiWallet className="text-2xl" /> */}
+                  <img src={"/images/crude.webp"} width={30} />
                   <div className="max-w-[80px] md:max-w-none overflow-hidden truncate">
                     {new Intl.NumberFormat("en-US", {
                       style: "currency",
                       currency: "DOL",
                     })
                       .format(userData?.walletBalance)
-                      .replace("DOL", "C₽")}
+                      .replace("DOL", "₵R")}
                   </div>
                 </div>
               )}

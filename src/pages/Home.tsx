@@ -40,7 +40,7 @@ const Home = () => {
     image: "/images/paris.webp",
     title: "FIRST DEPOSIT BONUS",
     description: "Check out our new cases for the best skins!",
-    link: "/case/646ca0a4e9b0e208f5ddcfa6",
+    link: "/case/649d9d0630beb3dc0db1dc2e",
   };
 
   return (
