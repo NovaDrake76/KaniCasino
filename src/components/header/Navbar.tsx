@@ -114,13 +114,13 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
                 onMouseLeave={handleHover}
               >
                 <img
-                  src="/images/logo.webp"
+                  src="/images/logo.png"
                   alt="logo"
                   className="md:w-12 h-12 invisible md:visible"
                 />
                 <div className="flex flex-col justify-center invisible md:visible">
                   <div className="font-normal text-xl text-white">
-                    KaniCasino
+                    GambleRUST
                   </div>
 
                   <div className="absolute">

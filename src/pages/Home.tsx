@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Banner from "../components/home/Banner";
 import CaseListing from "../components/home/CaseListing";
-import GameListing from "../components/home/GamesListing";
+// import GameListing from "../components/home/GamesListing";
 import { getCases } from "../services/cases/CaseServices";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
