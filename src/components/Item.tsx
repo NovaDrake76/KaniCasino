@@ -31,7 +31,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
 
   return (
     <div
-      className="flex flex-col w-20 md:w-44  items-center justify-center bg-[#212031] rounded relative"
+      className="flex flex-col w-20 md:w-40  items-center justify-center bg-[#212031] rounded relative"
       key={item.name + Math.random()}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
@@ -49,7 +49,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
         <img
           src={item.image}
           alt={item.name}
-          className={`w-20 md:w-44 h-20 md:h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
+          className={`w-20 md:w-40 h-20 md:h-40 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
           onLoad={() => setLoaded(true)}
         />
         {quantity && quantity > 1 && (
@@ -77,7 +77,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
           <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
         </div>
       )}
-      <p className="text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full">{item.name}</p>
+      <p className="text-base p-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full">{item.name}</p>
     </div>
   );
 };

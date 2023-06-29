@@ -86,18 +86,18 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
 
   const links = [
     {
-      name: "Market",
-      path: "/marketplace",
+      name: "Vending Machine",
+      path: "/vendingmachine",
       icon: <MdOutlineSell className="text-2xl" />,
     },
     {
-      name: "Coin Flip",
-      path: "/coinflip",
+      name: "Bandit",
+      path: "/bandit",
       icon: <BsCoin className="text-2xl" />,
     },
     {
-      name: "Crash",
-      path: "/crash",
+      name: "Oilrig",
+      path: "/oilrig",
       icon: <SlPlane className="text-2xl" />,
     }
   ];

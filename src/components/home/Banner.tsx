@@ -21,7 +21,7 @@ const Banner: React.FC<BannerProps> = ({ left }) => {
           <div className="w-72 h-56 notched bg-[#CF3464] flex items-center justify-center">
             <div className="w-[calc(100%-4px)] h-[calc(100%-4px)] notched bg-[#111121] hover:bg-opacity-95 transition-all flex flex-col items-center justify-center px-6">
               <div className="flex flex-col ">
-                <span className="text-xl font-semibold text-white ">
+                <span className="text-lg font-semibold text-white ">
                   {left?.title}
                 </span>
                 <span className="text-base text-[#dfddef]">

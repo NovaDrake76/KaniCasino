@@ -11,9 +11,9 @@ const defaultRoutes = (
     <Route path="/" element={<Home />} />
     <Route path="/profile/:id" element={<Profile />} />
     <Route path="/case/:id" element={<CasePage />} />
-    <Route path="/marketplace" element={<Marketplace />} />
-    <Route path="/coinflip" element={<CoinFlip />} />
-    <Route path="/crash" element={<CrashGame />} />
+    <Route path="/vendingmachine" element={<Marketplace />} />
+    <Route path="/bandit" element={<CoinFlip />} />
+    <Route path="/oilrig" element={<CrashGame />} />
   </>
 );
 

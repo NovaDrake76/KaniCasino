@@ -38,8 +38,8 @@ const Home = () => {
 
   const leftContent: BannerProps["left"] = {
     image: "/images/paris.webp",
-    title: "NEW MAJOR CASE",
-    description: "Check out our new case for Paris 2023 Major!",
+    title: "FIRST DEPOSIT BONUS",
+    description: "Check out our new cases for the best skins!",
     link: "/case/646ca0a4e9b0e208f5ddcfa6",
   };
 
