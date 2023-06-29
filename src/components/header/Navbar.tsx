@@ -7,7 +7,7 @@ import { me } from "../../services/auth/auth";
 import { IoMdExit } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { BiWallet } from "react-icons/bi";
+// import { BiWallet } from "react-icons/bi";
 import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";

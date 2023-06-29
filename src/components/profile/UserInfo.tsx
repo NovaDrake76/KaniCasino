@@ -145,7 +145,7 @@ const UserInfo: React.FC<UserProps> = ({
               <span
                 className="text-[#3a365a] underline -translate-x-1 cursor-help"
                 data-tooltip-id="my-tooltip"
-                data-tooltip-content="To every 1C₽ spent, you get 5 XP."
+                data-tooltip-content="To every 1₵R spent, you get 5 XP."
               >
                 How XP works?
               </span>
