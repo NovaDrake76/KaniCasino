@@ -228,7 +228,7 @@ const CrashGame = () => {
               <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center  ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
                 {
                   gameEnded ? <span>Crashed at {crashPoint && crashPoint.toFixed(2)}X</span>
-                    : <div className="flex items-center justify-between w-[93%] ">
+                    : <div className="flex items-center justify-between w-[93%] text-white">
                       <span>Multiplier:</span> {multiplier.toFixed(2)}X</div>}
 
               </div>
