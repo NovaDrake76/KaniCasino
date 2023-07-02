@@ -12,6 +12,7 @@ import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import ClaimBonus from "./ClaimBonus";
+import CashFlow from "./userFlow/CashFlow";
 
 
 interface Navbar {
@@ -26,6 +27,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [haveBonus, setHaveBonus] = useState<boolean>(false);
   const [visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
+  const [openCashFlow, setOpenCashFlow] = useState<boolean>(false);
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
 
   const calculateVisibleLinksCount = () => {
@@ -104,6 +106,9 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
 
   return (
     <div className="w-full flex justify-center">
+      {
+        openCashFlow && <CashFlow />
+      }
       <nav className=" py-4 px-8 bg-[#19172D] w-[calc(100vw-2rem)] max-w-[1920px] flex justify-center notched ">
         <div className="flex items-center justify-between w-full ">
           <div className="flex">
@@ -130,7 +135,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
                         : "opacity-100 mt-10"
                         }`}
                     >
-                      REIMU FUMO ᗜ˰ᗜ
+                      GET THE BEST ITEMS
                     </div>
                   </div>
                 </div>
@@ -165,7 +170,12 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
 
               }
               {!loading && (
-                <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all ">
+                <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all cursor-pointer" onClick={
+                  () => {
+                    setOpenCashFlow(!openCashFlow)
+                  }
+                }>
+
                   {/* <BiWallet className="text-2xl" /> */}
                   <img src={"/images/crude.webp"} width={30} />
                   <div className="max-w-[80px] md:max-w-none overflow-hidden truncate">

@@ -5,6 +5,8 @@ import CaseListing from "../components/home/CaseListing";
 import { getCases } from "../services/cases/CaseServices";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
 
 interface BannerProps {
   left: {
@@ -46,7 +48,10 @@ const Home = () => {
   return (
     <div className="w-screen flex justify-center">
       <div className=" flex-col max-w-[1920px] ">
-        <Banner left={leftContent} />
+        <Carousel>
+          <Banner left={leftContent} />
+          <Banner left={leftContent} />
+        </Carousel>
         {loading ? (
           <div className="flex items-center justify-center w-full mt-[164px]">
             <div className="flex justiy-center gap-8 max-w-[1600px] flex-col md:flex-row">
