@@ -8,14 +8,6 @@ import { toast } from "react-toastify";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 
-interface BannerProps {
-  left: {
-    image: string;
-    title: string;
-    description: string;
-    link: string;
-  };
-}
 
 const Home = () => {
   const [cases, setCases] = useState<any>();
