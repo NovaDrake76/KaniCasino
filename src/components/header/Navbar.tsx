@@ -11,8 +11,10 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
+import { AiOutlinePlus } from "react-icons/ai";
 import ClaimBonus from "./ClaimBonus";
 import CashFlow from "./userFlow/CashFlow";
+import DepositModal from "../DepositModal/DepositModal";
 
 
 interface Navbar {
@@ -28,6 +30,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
   const [haveBonus, setHaveBonus] = useState<boolean>(false);
   const [visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
   const [openCashFlow, setOpenCashFlow] = useState<boolean>(false);
+  const [openDepositModal, setOpenDepositModal] = useState<boolean>(false);
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
 
   const calculateVisibleLinksCount = () => {
@@ -86,6 +89,13 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
     }
   }, [userData])
 
+  useEffect(() => {
+    if (openDepositModal) {
+      setOpenCashFlow(false);
+    }
+  }
+    , [openDepositModal])
+
   const links = [
     {
       name: "Vending Machine",
@@ -104,14 +114,50 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
     }
   ];
 
+  const options = [
+    {
+      id: 'option1',
+      label: 'Paypal',
+      content: (
+        <div>
+          <p>Custom paypal deposit</p>
+        </div>
+      ),
+    },
+    {
+      id: 'option2',
+      label: 'SkinsBack',
+      content: (
+        <div>
+          <p>Custom skinsback form</p>
+        </div>
+      ),
+    },
+    {
+      id: 'option3',
+      label: 'Option 3',
+      content: (
+        <div>
+          <p>Option 3 content</p>
+        </div>
+      ),
+    },
+  ];
+
+
+
   return (
     <div className="w-full flex justify-center">
       {
-        openCashFlow && <CashFlow />
+        openCashFlow && <CashFlow setOpenDepositModal={setOpenDepositModal} />
       }
+      {openDepositModal && (
+        <DepositModal setOpenDepositModal={setOpenDepositModal} options={options} />
+      )}
       <nav className=" py-4 px-8 bg-[#19172D] w-[calc(100vw-2rem)] max-w-[1920px] flex justify-center notched ">
         <div className="flex items-center justify-between w-full ">
           <div className="flex">
+
             <Link to="/">
               <div
                 className="flex items-center gap-2 w-0 md:w-auto"
@@ -185,6 +231,9 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
                     })
                       .format(userData?.walletBalance)
                       .replace("DOL", "₵R")}
+                  </div>
+                  <div className="flex items-center justify-center rounded-full bg-green-500 w-6 h-6 text-white">
+                    <AiOutlinePlus />
                   </div>
                 </div>
               )}

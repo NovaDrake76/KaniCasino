@@ -38,19 +38,52 @@ const Home = () => {
     getNewCases();
   }, []);
 
-  const leftContent: BannerProps["left"] = {
+  const leftContent = [{
     image: "/images/paris.webp",
     title: "FIRST DEPOSIT BONUS",
     description: "Check out our new cases for the best skins!",
     link: "/case/649d9d0630beb3dc0db1dc2e",
-  };
+  }, {
+    image: "https://images.squarespace-cdn.com/content/v1/602d246245658135031e4b2a/1618237559728-PL0IR64SPZ3WQMCOWTE7/Banner+beta+end+1.png?format=1000w",
+    title: "UPGRADE YOUR GAME",
+    description: "Check out our new cases for the best skins!",
+    link: "/case/649d9d0630beb3dc0db1dc2e",
+  }, {
+    image: "/images/summer.webp",
+    title: "USE YOUR BONUS",
+    description: "Check out our new cases for the best skins!",
+    link: "/case/649d9d0630beb3dc0db1dc2e",
+  },
+  {
+    image: "https://mmos.com/wp-content/uploads/2021/08/rust-going-deep-underwater-lab-banner.jpg",
+    title: "COMPLETE YOUR COLLECTION",
+    description: "Check out our new cases for the best skins!",
+    link: "/case/649d9d0630beb3dc0db1dc2e",
+  }
+  ]
+
 
   return (
     <div className="w-screen flex justify-center">
       <div className=" flex-col max-w-[1920px] ">
-        <Carousel>
-          <Banner left={leftContent} />
-          <Banner left={leftContent} />
+        <Carousel
+          autoPlay={true}
+          infiniteLoop={true}
+          showThumbs={false}
+          showStatus={false}
+          showIndicators={false}
+          showArrows={false}
+          interval={7000}
+          stopOnHover={false}
+
+        >
+          {
+            leftContent.map((_item, index) => (
+              <Banner left={leftContent[index]} />
+            ))
+
+          }
+
         </Carousel>
         {loading ? (
           <div className="flex items-center justify-center w-full mt-[164px]">
