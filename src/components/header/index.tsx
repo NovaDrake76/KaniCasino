@@ -29,8 +29,8 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings }) => {
   ];
 
   return (
-    <div className="flex flex-col p-4 w-screen justify-center ">
-      <div className="flex pb-2 items-center">
+    <div className="flex flex-col p-4 w-screen justify-center items-center">
+      <div className="flex w-full max-w-[1920px] pb-2 items-center ">
         {items.map((item, index) => (
           <div
             key={index}
@@ -46,11 +46,10 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings }) => {
       <div className="flex  items-center justify-center ">
         <div className="flex items-center justify-center relative w-full max-w-[1920px]">
           <div
-            className={`absolute flex justify-end mt-16 left-[99%] transition-all duration-300 ${
-              openUserFlow === false
-                ? "opacity-0 -z-10 h-0 overflow-hidden -mt-36"
-                : "opacity-100 z-20 "
-            }`}
+            className={`absolute flex justify-end mt-16 left-[99%] transition-all duration-300 ${openUserFlow === false
+              ? "opacity-0 -z-10 h-0 overflow-hidden -mt-36"
+              : "opacity-100 z-20 "
+              }`}
           >
             <UserFlow />
           </div>

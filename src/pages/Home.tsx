@@ -57,7 +57,7 @@ const Home = () => {
 
   return (
     <div className="w-screen flex justify-center">
-      <div className=" flex-col max-w-[1920px] ">
+      <div className=" flex-col w-full max-w-[1920px] ">
         <Carousel
           autoPlay={true}
           infiniteLoop={true}
