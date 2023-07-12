@@ -157,7 +157,7 @@ const CasePage = () => {
                     <div
                       className={`notched h-[184px] w-[184px] transition-all bg-[#151225] z-30 flex flex-col items-center justify-center`}
                     >
-                      <span className="text-xl font-bold color-[#e1dde9] text-center">
+                      <span className="text-xl font-bold color-[#e1dde9] text-center text-white">
                         {openedItem.item.name}
                       </span>
                       <span
@@ -210,7 +210,7 @@ const CasePage = () => {
             <Skeleton width={240} height={40} />
           ) : (
             <MainButton
-              text={`Open Case - C₽${data.price}`}
+              text={`Open Case - ₵R ${data.price}`}
               onClick={openCase}
               loading={loadingButton}
               disabled={
@@ -224,7 +224,7 @@ const CasePage = () => {
 
         <div className="flex flex-col p-8 gap-2 items-center ">
           <Title title="Items in this case" />
-          <div className="flex flex-wrap gap-6 justify-center w-screen max-w-[1920px]">
+          <div className="flex flex-wrap gap-6 justify-center w-screen max-w-[1800px]">
             {loading
               ? { array: Array(12).fill(0) }.array.map((_, i) => (
                 <Skeleton

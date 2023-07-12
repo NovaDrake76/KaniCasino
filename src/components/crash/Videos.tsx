@@ -32,7 +32,7 @@ const Videos: React.FC<VideosProps> = ({ animationSrc, setAnimationSrc, falling,
     useEffect(() => {
         const newElement = (
             <img
-                style={{ display: 'block' }}
+                style={{ display: 'block', height: 340, objectFit: 'contain' }}
                 src={animationSrc}
                 ref={animationSrc === idle ? idleRef : animationSrc === up ? upRef : fallingRef}
                 onEnded={animationEndHandler}

@@ -139,7 +139,7 @@ const CoinFlip = () => {
               }
             }}
             onChange={(e) => setBet(Number(e.target.value))}
-            className="p-2 border rounded w-1/2 lg:w-full"
+            className="p-2 border rounded w-1/2 lg:w-full bg-[#2B2A33]"
           />
 
           <div className="flex flex-col gap-2 w-full">

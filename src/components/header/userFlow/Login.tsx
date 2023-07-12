@@ -81,7 +81,7 @@ const LoginPage = () => {
             </div>{" "}
           </div>
 
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <div className="text-sm">
               <a
                 href="#"
@@ -90,12 +90,12 @@ const LoginPage = () => {
                 Forgot your password?
               </a>
             </div>
-          </div>
+          </div> */}
 
           <div>
             <MainButton
               text="Sign in"
-              onClick={() => {}}
+              onClick={() => { }}
               disabled={loadingButton}
               loading={loadingButton}
               submit

@@ -31,7 +31,7 @@ const SignUpPage: React.FC = () => {
         .catch((error) => {
           console.log(error);
           setError(
-            error.response.data.message || "Invalid format. Please try again."
+            error.response.data.message || error.response.data.errors[0].msg || "Invalid format. Please try again."
           );
         })
         .then(() => {
@@ -89,7 +89,7 @@ const SignUpPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-indigo-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative bg-white shadow-lg sm:rounded-3xl p-10">
           <div className="max-w-md mx-auto">
-
+            {/* 
             <div className="flex justify-center items-center w-full">
               <label className="flex flex-col items-center justify-center w-32 h-32 rounded-full group bg-gray-200 hover:bg-gray-400 transition-all text-gray-700 hover:text-white cursor-pointer overflow-hidden">
                 {imagePreview ? (
@@ -105,7 +105,7 @@ const SignUpPage: React.FC = () => {
                 image/jpeg,
                 image/jpg" />
               </label>
-            </div>
+            </div> */}
 
             <form onSubmit={handleSubmit}>
               <div className="divide-y divide-gray-200 mt-2">

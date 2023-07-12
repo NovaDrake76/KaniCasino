@@ -33,9 +33,9 @@ const MarketItem: React.FC<Props> = ({ item, click }) => {
       <img
         src={item.itemImage}
         alt={item.itemName}
-        className="mb-2 w-full h-48 object-cover rounded"
+        className="mb-2 w-full h-40 object-cover rounded"
       />
-      <p className="text-blue-500 text-center py-1">{item.price} C₽</p>
+      <p className="flex gap-2 items-center w-full justify-center  text-blue-500 text-center py-2"> <img src={"/images/crude.webp"} width={30} />{item.price}</p>
 
       <MainButton text="Buy" onClick={click} disabled={!isLogged} />
     </div>
