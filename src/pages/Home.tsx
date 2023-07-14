@@ -71,7 +71,7 @@ const Home = () => {
             cases={cases.length > 5 ? cases.slice(0, 5) : cases}
           />
         )}
-        {/* <GameListing name="TRY YOUR LUCK" /> */}
+        { <GameListing name="Our Games" /> }
       </div>
     </div>
   );

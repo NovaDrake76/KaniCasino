@@ -15,13 +15,13 @@ const GameListing: React.FC<GameListingProps> = ({
         {
             id: "1",
             title: "Crash",
-            image: "/images/crash.webp",
+            image: "/images/crash/idle.gif",
             link: "/crash"
         },
         {
             id: "2",
             title: "CoinFlip",
-            image: "/images/coinFlip.webp",
+            image: "/images/coinHeads.webp",
             link: "/coinflip"
         }
     ]
