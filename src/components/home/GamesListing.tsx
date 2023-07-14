@@ -36,7 +36,7 @@ const GameListing: React.FC<GameListingProps> = ({
                             games.map((item: any) => (
                                 <Link to={item.link} key={item.id}>
                                     <div className="flex flex-col">
-                                        <img src={item.image} alt={item.title} className="w-[256px] h-[348px]" />
+                                        <img src={item.image} alt={item.title} className="w-[256px] h-[348px] object-contain" />
                                         <div className="text text-center">Play {item.title}</div>
 
                                     </div>
