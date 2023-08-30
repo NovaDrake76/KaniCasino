@@ -76,10 +76,10 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   }
 
   return (
-    <div className="fixed flex items-center justify-center w-screen z-50 ">
-      <div className="bg-[#17132B] p-8 rounded w-[600px] h-[290px]">
+    <div className="fixed flex items-center justify-center h-screen w-screen z-50 top-[40px] bg-black/40">
+      <div className="bg-[#17132B] p-8 rounded w-[600px] min-h-[290px] ">
         <h2 className="text-lg font-semibold mb-2">Confirm Purchase</h2>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-white text-lg">
             Are you sure you want to buy the {item.item.name} for {item.price}{" "}
             CP?

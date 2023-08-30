@@ -25,7 +25,7 @@ const MarketItem: React.FC<Props> = ({ item, click }) => {
   return (
     <div className="border  border-[#161448] rounded-lg p-4 bg-gradient-to-tr from-[#1D1730] to-[#141333] transition-all duration-500 ease-in-out w-[226px]">
       <div className="flex items-center gap-2">
-        <span className="text-lg font-semibold text-white ">
+        <span className="text-lg font-semibold text-white truncate">
           {item.item.name}
         </span>
         <span className="text-xs  text-white ">({item.sellerId.username})</span>

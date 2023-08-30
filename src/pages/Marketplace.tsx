@@ -87,7 +87,7 @@ const Marketplace: React.FC = () => {
         item={selectedItem}
         setRefresh={setRefresh}
       />
-      <div className="flex items-center justify-center w-full max-w-[1600px] relative">
+      <div className="flex items-center justify-center w-full max-w-[1600px] relative ">
         <Title title="Marketplace" />
         <div className="absolute right-0">
           {isLogged && (
@@ -102,8 +102,8 @@ const Marketplace: React.FC = () => {
         </div>
       </div>
       {loading ? (
-        <div className="flex flex-wrap items-center gap-4 justify-center">
-          {Array(4)
+        <div className="flex flex-wrap items-center gap-4 justify-center px-8">
+          {Array(7)
             .fill(0)
             .map((_, i) => (
               <div key={i} className="w-[226px] h-[334px]  ">
@@ -112,7 +112,7 @@ const Marketplace: React.FC = () => {
             ))}
         </div>
       ) : (
-        <div className="flex flex-wrap items-center gap-4 justify-center">
+        <div className="flex flex-wrap items-center gap-4 justify-center px-8">
 
           {items && items.items && items.items.length > 0 ? (items.items.map((item) => (
             <ItemCard

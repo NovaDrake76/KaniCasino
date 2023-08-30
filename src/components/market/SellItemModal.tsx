@@ -98,7 +98,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   }
 
   return (
-    <div className="fixed flex items-center justify-center w-screen h-screen top-[40px] z-50 bg-[#212121]/[.46]">
+    <div className="fixed flex items-center justify-center w-screen h-screen top-[40px] z-50 bg-black/40">
       <div className="bg-[#17132B] p-8 rounded w-[800px] h-[680px]">
         <div className="flex"><h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
           <div className="ml-auto">
