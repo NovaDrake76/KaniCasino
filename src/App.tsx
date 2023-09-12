@@ -62,7 +62,7 @@ function App() {
   }, [recentCaseOpenings]);
 
   return (
-    <div className="flex flex-col min-h-screen items-start justify-start bg-[#151225]">
+    <div className="flex flex-col min-h-screen items-start justify-start bg-[#151225] text-white">
       <UserContext.Provider
         value={{
           isLogged,
