@@ -26,6 +26,7 @@ Please note that the database access is not public; you can make your own databa
 - [ ] Banner content.
 - [ ] Migrate to AWS, render sucks
 - [ ] Fix login modal rerender on live history
+- [ ] Fix profile picture file error
 
 
 ![image](https://user-images.githubusercontent.com/65428910/235279117-30bfaaa1-b8c5-46ae-9880-2b8b209c35c4.png)
