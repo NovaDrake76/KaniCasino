@@ -24,7 +24,7 @@ Please note that the database access is not public; you can make your own databa
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Banner content.
-- [ ] Migrate to AWS, render sucks
+- [x] Migrate to AWS, render sucks
 - [ ] Fix login modal rerender on live history
 - [ ] Fix profile picture file error
 
