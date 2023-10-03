@@ -4,7 +4,11 @@
 If you want to run only the Front-end, please run `npm install` to install the dependencies, then use `npm run dev`.
 
 
-If you want to run the Back-end and the Front-end, change the `VITE_BASE_URL` to localhost in the `.env` on the root folder, install the dependencies on the root folder and in the backend folder, then use `npm run start`.
+If you want to run the Back-end and the Front-end, change the `VITE_BASE_URL` to localhost in the `.env` on the root folder, install the dependencies on the root folder and in the backend folder, then create a .env on your backend folder, create the following variables (adjust as you wish):
+JWT_SECRET
+MONGO_URI
+PORT
+then, use `npm run start`.
 
 Please note that the database access is not public; you can make your own database using MongoDB, or anything else. 
 
@@ -29,4 +33,5 @@ Please note that the database access is not public; you can make your own databa
 - [ ] Fix profile picture file error
 
 
-![image](https://user-images.githubusercontent.com/65428910/235279117-30bfaaa1-b8c5-46ae-9880-2b8b209c35c4.png)
+![image](https://github.com/NovaDrake76/KaniCasino/assets/65428910/b7e025e1-25ad-46b6-a7d8-ace72d5804e2)
+
