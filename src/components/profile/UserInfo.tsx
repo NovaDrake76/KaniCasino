@@ -78,9 +78,9 @@ const UserInfo: React.FC<UserProps> = ({
     }
   };
 
-  const handleChangePictureClick = () => {
-    fileInput.current?.click();
-  };
+  // const handleChangePictureClick = () => {
+  //   fileInput.current?.click();
+  // };
 
 
   return (

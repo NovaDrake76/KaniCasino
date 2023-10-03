@@ -5,17 +5,17 @@ import { register } from "../../../services/auth/auth";
 import MainButton from "../../MainButton";
 import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
-import { FaImage } from "react-icons/fa";
-import { toast } from "react-toastify";
+// import { FaImage } from "react-icons/fa";
+// import { toast } from "react-toastify";
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
-  const [profilePicture, setProfilePicture] = useState<any>(null);
+  const [profilePicture, _setProfilePicture] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [imagePreview, setImagePreview] = useState<any>(null);
+  // const [imagePreview, setImagePreview] = useState<any>(null);
 
   const { toggleLogin } = useContext(UserContext);
 
@@ -51,36 +51,36 @@ const SignUpPage: React.FC = () => {
   //   // Handle Google sign-up failure here
   // };
 
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const fileSizeMB = file.size / 1024 / 1024; // size in MB
-      const validFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-      const isValidFileType = validFileTypes.includes(file.type);
+  // const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     const file = e.target.files[0];
+  //     const fileSizeMB = file.size / 1024 / 1024; // size in MB
+  //     const validFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  //     const isValidFileType = validFileTypes.includes(file.type);
 
-      if (fileSizeMB > 3) {
-        toast.error('File size must be less than 3MB');
-        return;
-      }
+  //     if (fileSizeMB > 3) {
+  //       toast.error('File size must be less than 3MB');
+  //       return;
+  //     }
 
-      if (!isValidFileType) {
-        toast.error('File type must be jpeg, jpg or png');
-        return;
-      }
+  //     if (!isValidFileType) {
+  //       toast.error('File type must be jpeg, jpg or png');
+  //       return;
+  //     }
 
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          setProfilePicture(reader.result as string);
-          setImagePreview(reader.result as string);
-        } catch (error: any) {
-          console.log(error);
-          toast.error(error.message);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  //     const reader = new FileReader();
+  //     reader.onloadend = async () => {
+  //       try {
+  //         setProfilePicture(reader.result as string);
+  //         setImagePreview(reader.result as string);
+  //       } catch (error: any) {
+  //         console.log(error);
+  //         toast.error(error.message);
+  //       }
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
 
   return (
