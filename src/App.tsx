@@ -25,11 +25,14 @@ function App() {
     });
 
     socket.on("caseOpened", (data) => {
-      //wait 7.5 seconds to remove the notification
+      data.timestamp = Date.now();
+
+      // Wait 7.5 seconds to show the notification
       setTimeout(() => {
         setRecentCaseOpenings((prevOpenings: any) => [data, ...prevOpenings]);
       }, 7500);
     });
+
 
     return () => {
       socket.disconnect();
@@ -84,7 +87,7 @@ function App() {
               <div className="flex">
                 <AppRoutes />
               </div>
-              {/* <div className="">footer</div> */}
+              <footer className="h-8"></footer>
             </SkeletonTheme>
           </Router>
         </Suspense>

@@ -91,7 +91,7 @@ const SignUpPage: React.FC = () => {
           <div className="max-w-md mx-auto">
 
             <div className="flex justify-center items-center w-full">
-              <label className="flex flex-col items-center justify-center w-32 h-32 rounded-full group bg-gray-200 hover:bg-gray-400 transition-all text-gray-700 hover:text-white cursor-pointer overflow-hidden">
+              {/* <label className="flex flex-col items-center justify-center w-32 h-32 rounded-full group bg-gray-200 hover:bg-gray-400 transition-all text-gray-700 hover:text-white cursor-pointer overflow-hidden">
                 {imagePreview ? (
                   <img className="object-cover w-full h-full" src={imagePreview} alt="Profile preview" />
                 ) : (
@@ -104,7 +104,7 @@ const SignUpPage: React.FC = () => {
                 image/png,
                 image/jpeg,
                 image/jpg" />
-              </label>
+              </label> */}
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -169,6 +169,7 @@ const SignUpPage: React.FC = () => {
                 <div className="flex flex-col ">
                   <MainButton
                     text="Sign up"
+                    // eslint-disable-next-line @typescript-eslint/no-empty-function
                     onClick={() => { }}
                     disabled={loading}
                     loading={loading}

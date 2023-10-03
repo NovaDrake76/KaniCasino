@@ -61,11 +61,10 @@ const Profile = () => {
         id,
         newPage ? inventory && inventory.currentPage + 1 : 1
       );
-      const aggregatedInventory = aggregateInventory(response.items);
       setInventory(response);
       newPage
-        ? setInvItems((prev) => ({ ...prev, ...aggregatedInventory }))
-        : setInvItems(aggregatedInventory);
+        ? setInvItems((prev) => [...prev, ...response.items])
+        : setInvItems(response.items);
     } catch (error) {
       console.log(error);
     }
@@ -88,22 +87,6 @@ const Profile = () => {
       setRefresh(false);
     }
   }, [refresh]);
-
-  const aggregateInventory = (items: any) => {
-    const inventory: any = {};
-
-    items.forEach((item: any) => {
-      const id = item.name; // use item's name as unique identifier
-
-      if (inventory[id]) {
-        inventory[id].quantity += 1; // increment quantity if item already exists
-      } else {
-        inventory[id] = { ...item, quantity: 1 }; // add item with quantity 1 if it doesn't exist
-      }
-    });
-
-    return inventory;
-  };
 
 
   return (
@@ -145,11 +128,10 @@ const Profile = () => {
                 />
               ))
             ) : invItems && Object.keys(invItems).length > 0 ? (
-              Object.entries(invItems).map(([key, value]: [string, any]) => (
+              invItems.map((item: any, i: number) => (
                 <Item
-                  item={value}
-                  quantity={value.quantity}
-                  key={key}
+                  item={item}
+                  key={item.name + i}
                   fixable={isSameUser}
                   setRefresh={setRefresh}
                 />
@@ -160,7 +142,7 @@ const Profile = () => {
           </div>
           {inventory &&
             inventory.currentPage !== inventory.totalPages &&
-            Object.keys(invItems).length > 0 && (
+            invItems.length > 0 && (
               <div className="w-40 mt-4">
                 <MainButton
                   text={`Load more`}

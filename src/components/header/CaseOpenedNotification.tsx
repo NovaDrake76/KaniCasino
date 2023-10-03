@@ -17,7 +17,8 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
 
   useEffect(() => {
     setTransition(true);
-  }, [item]);
+  }, []);
+
 
   const getColor = (e: number) => {
     return Rarities.find((rarity) => rarity.id == e)?.color;
@@ -25,9 +26,8 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
 
   return (
     <div
-      className={`flex flex-col min-w-[160px] h-28 items-center transition-opacity duration-10 border bg-[#141225] ${
-        transition ? "opacity-100" : "opacity-0 -translate-y-2"
-      }`}
+      className={`flex flex-col min-w-[160px] h-28 items-center transition-opacity duration-500 border bg-[#141225] ${transition ? "opacity-100" : "opacity-0 -translate-y-20"
+        }`}
       style={{
         borderColor: `${getColor(item.rarity)} transparent ${getColor(
           item.rarity
@@ -44,9 +44,8 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
           className="absolute top-1/2 left-1/2"
           style={{
             width: "1px",
-            boxShadow: `0px 0px 40px 25px ${
-              Rarities.find((rarity) => rarity.id == item.rarity)?.color
-            }`,
+            boxShadow: `0px 0px 40px 25px ${Rarities.find((rarity) => rarity.id == item.rarity)?.color
+              }`,
           }}
         />
         <div className="text-white z-10">{item.name}</div>

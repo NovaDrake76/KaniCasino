@@ -44,8 +44,8 @@ const Home = () => {
   };
 
   return (
-    <div className="w-screen flex justify-center">
-      <div className=" flex-col max-w-[1920px] ">
+    <div className="w-full flex justify-center ">
+      <div className=" flex-col max-w-[1920px]">
         <Banner left={leftContent} />
         {loading ? (
           <div className="flex items-center justify-center w-full mt-[164px]">
@@ -71,7 +71,7 @@ const Home = () => {
             cases={cases.length > 5 ? cases.slice(0, 5) : cases}
           />
         )}
-        { <GameListing name="Our Games" /> }
+        {<GameListing name="Our Games" />}
       </div>
     </div>
   );

@@ -98,8 +98,8 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   }
 
   return (
-    <div className="fixed flex items-center justify-center w-screen h-screen top-[40px] z-50 bg-black/40">
-      <div className="bg-[#17132B] p-8 rounded w-[800px] h-[680px]">
+    <div className="fixed flex items-center justify-center w-screen h-screen top-10 z-50 bg-black/40">
+      <div className="bg-[#17132B] p-4 sm:p-6 lg:p-8 rounded max-w-screen-md mx-2 sm:mx-4 h-auto max-h-[80vh]">
         <div className="flex"><h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
           <div className="ml-auto">
             <AiOutlineClose className="text-white text-2xl cursor-pointer"
@@ -144,7 +144,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           )}
         </div>
 
-        <div className="flex flex-wrap justify-center overflow-auto max-h-[450px]">
+        <div className="flex flex-wrap justify-center overflow-auto max-h-[300px] overflow-x-hidden gap-4">
           {loadingInventory ? (
             <div>Loading...</div>
           ) : (
@@ -161,7 +161,6 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
 
           {inventory && inventory.currentPage < inventory.totalPages && (
             <div className="w-60 self-center">
-              {" "}
               <MainButton
                 onClick={() => getInventoryInfo(true)}
                 text="Load More"
@@ -171,13 +170,13 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
         </div>
 
         <div className="flex items-center justify-end gap-4 mt-4">
-          {" "}
+
           <button
             className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
             onClick={onClose}
           >
             Close
-          </button>{" "}
+          </button>
           <div className="w-44">
             <MainButton
               text="Sell Item"

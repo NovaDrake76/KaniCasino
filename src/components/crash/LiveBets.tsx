@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PlayerPreview from "../PlayerPreview";
 
 interface GameHistory {
@@ -7,20 +7,33 @@ interface GameHistory {
 
 const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
     const [totalBets, setTotalBets] = useState<number>(0);
-    const [isHovering, setIsHovering] = useState<boolean>(false);
+    const [hoveredPlayerId, setHoveredPlayerId] = useState<string | null>(null);
+    const hoverTimeoutRef = useRef<any>(null);
 
     useEffect(() => {
         if (gameState) {
             let totalBets = 0;
-            for (let player in gameState.gameBets) {
+            for (const player in gameState.gameBets) {
                 totalBets += gameState.gameBets[player];
             }
             setTotalBets(totalBets);
         }
     }, [gameState]);
+    const handleMouseEnter = (playerId: string) => {
+        if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+        }
 
-    const handleHover = () => {
-        setIsHovering(!isHovering);
+        hoverTimeoutRef.current = setTimeout(() => {
+            setHoveredPlayerId(playerId);
+        }, 500);
+    };
+
+    const handleMouseLeave = () => {
+        if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+        }
+        setHoveredPlayerId(null);
     };
 
     return (
@@ -48,15 +61,12 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
                     const player = gameState.gamePlayers[playerId];
                     const bet = gameState.gameBets[playerId];
                     return (
+                        <div className="flex items-center justify-between px-2 py-4 relative border-b border-gray-700" key={playerId}
+                            onMouseEnter={() => handleMouseEnter(playerId)}
+                            onMouseLeave={handleMouseLeave}
+                        >
+                            {playerId === hoveredPlayerId && <PlayerPreview player={player} />}
 
-                        <div className="flex items-center justify-between px-2 py-4 relative  border-b border-gray-700 " key={playerId}
-                            onMouseEnter={handleHover}
-                            onMouseLeave={handleHover}>
-                            {
-                                isHovering && (
-                                    <PlayerPreview player={player} />
-                                )
-                            }
                             <a href={`/profile/${playerId}`} target="_blank" rel="noreferrer" className="text-white transition-all">
                                 <div className="flex items-center gap-2">
                                     <img src={player.profilePicture} className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 " />
@@ -66,8 +76,8 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
 
                             <div className="flex justify-between w-1/4">
                                 <span className="font-bold text-sm">C₽{bet}</span>
-                                <span className={`font-bold text-sm ${player.payout && "text-green-500"}`}>{player.payout ? player.payout.toFixed(2) : '-'}</span>
-                                <span className={`font-bold text-sm ${player.payout && "text-green-500"}`}>{player.payout ? `${(player.payout * bet).toFixed(2)}X ` : ' -'}</span>
+                                <span className={`font-bold text-sm ${player.payout && "text-green-500"}`}>{player.payout ? player.payout.toFixed(2) + 'X' : '-'}</span>
+                                <span className={`font-bold text-sm ${player.payout && "text-green-500"}`}>{player.payout ? `${(player.payout * bet).toFixed(2)} ` : ' -'}</span>
                             </div>
                         </div>
 

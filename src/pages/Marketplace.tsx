@@ -75,7 +75,7 @@ const Marketplace: React.FC = () => {
   }, [refresh]);
 
   return (
-    <div className="flex flex-col w-screen items-center justify-center">
+    <div className="flex flex-col w-screen items-center justify-center ">
       <SellItemModal
         isOpen={openSellModal}
         onClose={() => setOpenSellModal(false)}
@@ -89,10 +89,10 @@ const Marketplace: React.FC = () => {
       />
       <div className="flex items-center justify-center w-full max-w-[1600px] relative ">
         <Title title="Marketplace" />
-        <div className="absolute right-0">
+        <div className="absolute right-24">
           {isLogged && (
             <div className="w-52">
-              {" "}
+
               <MainButton
                 onClick={() => setOpenSellModal(true)}
                 text="Sell an item"
@@ -102,7 +102,7 @@ const Marketplace: React.FC = () => {
         </div>
       </div>
       {loading ? (
-        <div className="flex flex-wrap items-center gap-4 justify-center px-8">
+        <div className="flex flex-wrap items-center gap-4 justify-center px-8 ">
           {Array(7)
             .fill(0)
             .map((_, i) => (
@@ -112,7 +112,7 @@ const Marketplace: React.FC = () => {
             ))}
         </div>
       ) : (
-        <div className="flex flex-wrap items-center gap-4 justify-center px-8">
+        <div className="flex flex-wrap items-center gap-4 justify-center px-8  max-w-[1600px]">
 
           {items && items.items && items.items.length > 0 ? (items.items.map((item) => (
             <ItemCard

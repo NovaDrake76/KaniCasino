@@ -11,8 +11,8 @@ interface Roulette {
 
 const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
   const [rouletteItems, setRouletteItems] = useState<any[]>([]);
+  const [translateValue, setTranslateValue] = useState<string>("-6180px");
   const rouletteRef = useRef<HTMLDivElement | null>(null);
-
 
   useEffect(() => {
     const createRouletteItems = () => {
@@ -55,15 +55,24 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
   }, [items]);
 
   useEffect(() => {
+    if (spin) {
+      // Generate a random translateX value between -6090px and -6240px
+      const randomTranslateX = -6090 - Math.floor(Math.random() * 151);
+      setTranslateValue(`${randomTranslateX}px`);
+    }
+  }, [spin]);
+
+  useEffect(() => {
     if (rouletteRef.current && spin) {
       rouletteRef.current.style.animation =
-        "spin 7.1s cubic-bezier(0.1, 0, 0.2, 1)";
+        `spin 7.1s cubic-bezier(0.1, 0, 0.2, 1)`;
     } else if (rouletteRef.current) {
       rouletteRef.current.style.animation = "";
     }
-  }, [spin]);
+  }, [spin, translateValue]);
+
   return (
-    <div className={`flex max-w-[1100px] overflow-hidden ${className}`}>
+    <div className={`flex  max-w-[1100px] overflow-hidden ${className}`}>
       <div className="flex items-center gap-2" ref={rouletteRef}>
         {rouletteItems.map((item: any, index: number) => (
           <img
@@ -82,7 +91,7 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
               transform: translateX(0%);
             }
             to {
-              transform: translateX(-6200px);
+              transform: translateX(${translateValue});
             }
           }
         `}</style>
@@ -94,3 +103,8 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
 };
 
 export default Roulette;
+
+
+
+
+

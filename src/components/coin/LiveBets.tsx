@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PlayerPreview from "../PlayerPreview";
 
 interface GameHistory {
@@ -9,23 +9,37 @@ interface GameHistory {
 const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
     const [betsInfo, setBetsInfo] = useState<any>(null);
     const [totalBets, setTotalBets] = useState<number>(0);
-    const [isHovering, setIsHovering] = useState<boolean>(false);
+    const [hoveredPlayerId, setHoveredPlayerId] = useState<string | null>(null);
+    const hoverTimeoutRef = useRef<any>(null);
 
     useEffect(() => {
         if (gameState) {
-            let tempBetsInfo = type === "Heads" ? gameState.heads : gameState.tails;
+            const tempBetsInfo = type === "Heads" ? gameState.heads : gameState.tails;
             setBetsInfo(tempBetsInfo);
 
             let totalBets = 0;
-            for (let player in tempBetsInfo.bets) {
+            for (const player in tempBetsInfo.bets) {
                 totalBets += tempBetsInfo.bets[player];
             }
             setTotalBets(totalBets);
         }
     }, [gameState]);
 
-    const handleHover = () => {
-        setIsHovering(!isHovering);
+    const handleMouseEnter = (playerId: string) => {
+        if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+        }
+
+        hoverTimeoutRef.current = setTimeout(() => {
+            setHoveredPlayerId(playerId);
+        }, 500);
+    };
+
+    const handleMouseLeave = () => {
+        if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+        }
+        setHoveredPlayerId(null);
     };
 
     return (
@@ -44,10 +58,10 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
                     const bet = betsInfo.bets[playerId];
                     return (
                         <div className="flex items-center justify-between py-2 relative" key={playerId}
-                            onMouseEnter={handleHover}
-                            onMouseLeave={handleHover}>
+                            onMouseEnter={() => handleMouseEnter(playerId)}
+                            onMouseLeave={handleMouseLeave}>
                             {
-                                isHovering && (
+                                playerId === hoveredPlayerId && (
                                     <PlayerPreview player={player} />
                                 )
                             }

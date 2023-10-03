@@ -20,7 +20,7 @@ Please note that the database access is not public; you can make your own databa
 - [x] Crash.
 - [x] CoinFlip Input.
 - [ ] Fix Level
-- [ ] Fix Market Modal.
+- [X] Fix Market Modal.
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Banner content.

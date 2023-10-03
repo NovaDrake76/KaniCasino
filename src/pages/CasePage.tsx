@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { getCase } from "../services/cases/CaseServices";
 import Title from "../components/Title";
 import Item from "../components/Item";
-import Roulette from "../components/Roullete";
+import Roulette from "../components/Roulette";
 import classNames from "classnames";
 import Rarities from "../components/Rarities";
 import { openBox } from "../services/games/GamesServices";

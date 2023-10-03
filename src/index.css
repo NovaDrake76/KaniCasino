@@ -191,6 +191,7 @@ body {
       rgba(62, 42, 92, 1) 100%);
   background-repeat: no-repeat;
   background-size: cover;
+  overflow-x: hidden;
 }
 
 h1 {

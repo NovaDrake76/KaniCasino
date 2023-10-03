@@ -95,9 +95,9 @@ const UserInfo: React.FC<UserProps> = ({
           {isSameUser && (
             <button
               className="absolute inset-0 w-full h-full opacity-0 hover:opacity-70 bg-blue-500 transition-all flex items-center justify-center rounded-full cursor-pointer group-hover:opacity-70"
-              onClick={handleChangePictureClick}
+            // onClick={handleChangePictureClick}
             >
-              <span className="text-white">Change Picture</span>
+              <span className="text-white">It's you!</span>
             </button>
           )}
           <input

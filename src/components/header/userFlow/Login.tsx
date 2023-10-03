@@ -3,6 +3,7 @@ import { login } from "../../../services/auth/auth";
 import { saveTokens } from "../../../services/auth/authUtils";
 import MainButton from "../../MainButton";
 import UserContext from "../../../UserContext";
+import { Tooltip } from "react-tooltip";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -78,12 +79,15 @@ const LoginPage = () => {
               ].map((props, index) => {
                 return <input key={index} {...props} />;
               })}
-            </div>{" "}
+            </div>
           </div>
 
           <div className="flex items-center justify-between">
+            <Tooltip id="my-tooltip" />
+
             <div className="text-sm">
-              <a
+              <a data-tooltip-id="my-tooltip"
+                data-tooltip-content="Too bad for you 🙁"
                 href="#"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
@@ -95,7 +99,8 @@ const LoginPage = () => {
           <div>
             <MainButton
               text="Sign in"
-              onClick={() => {}}
+              // eslint-disable-next-line @typescript-eslint/no-empty-function
+              onClick={() => { }}
               disabled={loadingButton}
               loading={loadingButton}
               submit
