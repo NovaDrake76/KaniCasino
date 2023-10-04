@@ -1,8 +1,0 @@
-staticSites:
-  - name: kanicasino
-    buildCommand: npm run build
-    publishDir: build
-    redirects:
-      - source: /.*
-        destination: /index.html
-        type: 200
