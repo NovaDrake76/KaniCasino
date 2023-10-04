@@ -224,7 +224,7 @@ const CasePage = () => {
 
         <div className="flex flex-col p-8 gap-2 items-center ">
           <Title title="Items in this case" />
-          <div className="flex flex-wrap gap-6 justify-center w-screen max-w-[1920px]">
+          <div className="flex flex-wrap gap-6 px-8 justify-center w-screen max-w-[1920px]">
             {loading
               ? { array: Array(12).fill(0) }.array.map((_, i) => (
                 <Skeleton
