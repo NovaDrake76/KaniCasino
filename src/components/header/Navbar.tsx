@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import UserContext from "../../UserContext";
 import MainButton from "../MainButton";
 import { clearTokens } from "../../services/auth/authUtils";
@@ -72,8 +72,6 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
     };
   }, []);
 
-
-
   useEffect(() => {
     isLogged && getUserInfo();
   }, [isLogged]);
@@ -101,6 +99,10 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
       icon: <SlPlane className="text-2xl" />,
     }
   ];
+
+  const toggleUserFlow = useCallback(() => {
+    setOpenUserFlow(prevState => !prevState);
+  }, []);
 
   return (
     <div className="w-full flex justify-center">
@@ -225,8 +227,7 @@ const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
             <div className="flex items-center gap-4">
               <MainButton
                 text="Sign In"
-                onClick={() => setOpenUserFlow(!openUserFlow)}
-              />
+                onClick={toggleUserFlow} />
             </div>
           )}
         </div>

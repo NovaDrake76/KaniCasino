@@ -8,14 +8,15 @@ import CaseOpenedNotification from "./CaseOpenedNotification";
 interface Header {
   onlineUsers: number;
   recentCaseOpenings: Array<any>;
+  openUserFlow: boolean;
+  setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings }) => {
-  const [openUserFlow, setOpenUserFlow] = useState<boolean>(false);
+const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlow, setOpenUserFlow }) => {
   const isLogged = useContext(UserContext);
 
   useEffect(() => {
-    if (isLogged) {
+    if (isLogged.isLogged == true) {
       setOpenUserFlow(false);
     }
   }, [isLogged]);
@@ -47,8 +48,8 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings }) => {
         <div className="flex items-center justify-center relative w-full max-w-[1920px]">
           <div
             className={`absolute flex justify-end mt-16 left-[99%] transition-all duration-300 ${openUserFlow === false
-                ? "opacity-0 -z-10 h-0 overflow-hidden -mt-36"
-                : "opacity-100 z-20 "
+              ? "opacity-0 -z-10 h-0 overflow-hidden -mt-36"
+              : "opacity-100 z-20 "
               }`}
           >
             <UserFlow />

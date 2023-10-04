@@ -16,6 +16,7 @@ function App() {
   const [onlineUsers, setOnlineUsers] = useState<number>(0);
   const [userData, setUserData] = useState<any>(null);
   const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
+  const [openUserFlow, setOpenUserFlow] = useState<boolean>(false);
   const socket = SocketConnection.getInstance();
 
   useEffect(() => {
@@ -83,6 +84,8 @@ function App() {
               <Header
                 onlineUsers={onlineUsers}
                 recentCaseOpenings={recentCaseOpenings}
+                openUserFlow={openUserFlow}
+                setOpenUserFlow={setOpenUserFlow}
               />
               <div className="flex">
                 <AppRoutes />
