@@ -19,7 +19,7 @@ interface Navbar {
   setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Navbar: React.FC<Navbar> = ({ openUserFlow, setOpenUserFlow }) => {
+const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
