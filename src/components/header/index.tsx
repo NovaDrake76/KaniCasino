@@ -66,8 +66,9 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
                 {recentCaseOpenings.map((opening) => (
                   <CaseOpenedNotification
                     key={opening.timestamp}
-                    item={opening.item}
-                    username={"a"}
+                    item={opening.winningItem}
+                    user={opening.user}
+                    caseImage={opening.caseImage}
                   />
                 ))}
 

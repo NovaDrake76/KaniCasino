@@ -23,13 +23,15 @@ Please note that the database access is not public; you can make your own databa
 - [x] Marketplace.
 - [x] Crash.
 - [x] CoinFlip Input.
-- [ ] Fix Level
 - [X] Fix Market Modal.
+- [x] Migrate to AWS, render sucks
+- [x] Fix login modal rerender on live history
+- [ ] Search on profile.
+- [ ] Item notification information.
+- [ ] Fix Level
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Banner content.
-- [x] Migrate to AWS, render sucks
-- [ ] Fix login modal rerender on live history
 - [ ] Fix profile picture file error
 
 

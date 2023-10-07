@@ -100,8 +100,18 @@ module.exports = (io) => {
 
       await user.save();
 
+      const winnerUser = {
+        name: user.username,
+        id: user._id,
+        profilePicture: user.profilePicture
+      }
+
       // Emit the caseOpened event
-      io.emit("caseOpened", { user: user.username, item: winningItem });
+      io.emit("caseOpened", {
+        winningItem: winningItem,
+        user: winnerUser,
+        caseImage: caseData.image,
+      });
 
       res.json({ item: winningItem });
     } catch (error) {
