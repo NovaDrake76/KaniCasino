@@ -144,23 +144,24 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           )}
         </div>
 
-        <div className="flex flex-wrap justify-center overflow-auto max-h-[300px] overflow-x-hidden gap-4">
-          {loadingInventory ? (
-            <div>Loading...</div>
-          ) : (
-            invItems.map((item, index) => (
-              <div
-                className="w-1/4 p-2 cursor-pointer"
-                key={item._id + index}
-                onClick={() => setSelectedItem(item)}
-              >
-                <Item item={item} />
-              </div>
-            ))
-          )}
-
+        <div className="flex flex-col justify-center overflow-auto max-h-[300px] overflow-x-hidden gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
+            {loadingInventory ? (
+              <div>Loading...</div>
+            ) : (
+              invItems.map((item, index) => (
+                <div
+                  className="w-1/4 p-2 cursor-pointer"
+                  key={item._id + index}
+                  onClick={() => setSelectedItem(item)}
+                >
+                  <Item item={item} />
+                </div>
+              ))
+            )}
+          </div>
           {inventory && inventory.currentPage < inventory.totalPages && (
-            <div className="w-60 self-center">
+            <div className="w-60 self-center mt-4">
               <MainButton
                 onClick={() => getInventoryInfo(true)}
                 text="Load More"
@@ -168,6 +169,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             </div>
           )}
         </div>
+
 
         <div className="flex items-center justify-end gap-4 mt-4">
 

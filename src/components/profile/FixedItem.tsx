@@ -77,9 +77,13 @@ const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) =>
                                         setIsHovering(false);
                                     }}
                                 >
-                                    <span className="text-center  overflow-auto max-w-[140px]">
+                                    <span
+                                        className="text-center  overflow-auto max-w-[140px]"
+                                        style={{ textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000' }}
+                                    >
                                         {fixedItem.description ? description : "No description"}
                                     </span>
+
                                     {isSameUser && isHovering && (
                                         <BiEditAlt
                                             className="text-2xl text-[#dddcfc] cursor-pointer"
@@ -122,7 +126,9 @@ const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) =>
                     />
                     <div className="w-auto" />
 
-                    <p className="text-base py-2 font-semibold ">{fixedItem.name}</p>
+                    <p className="text-base py-2 font-semibold"
+                        style={{ textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000' }}
+                    >{fixedItem.name}</p>
                 </div>
             </div>
         </div>

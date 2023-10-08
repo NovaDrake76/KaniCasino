@@ -87,7 +87,7 @@ function App() {
                 openUserFlow={openUserFlow}
                 setOpenUserFlow={setOpenUserFlow}
               />
-              <div className="flex">
+              <div className="flex w-full">
                 <AppRoutes />
               </div>
               <footer className="h-8"></footer>

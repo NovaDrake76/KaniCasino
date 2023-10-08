@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import CasePage from "./pages/CasePage";
@@ -18,7 +18,13 @@ const defaultRoutes = (
 );
 
 const AppRoutes = () => {
-  return <Routes>{defaultRoutes}</Routes>;
+  return (
+    <Routes>
+      {defaultRoutes}
+      {/* Fallback route */}
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
+  );
 };
 
 export default AppRoutes;

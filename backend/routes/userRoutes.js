@@ -234,6 +234,7 @@ const ITEMS_PER_PAGE = 20;
 router.get("/inventory/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
+    const { name, rarity, sortBy, order } = req.query;
     const page = parseInt(req.query.page) || 1;
 
     const user = await User.findById(userId);
@@ -241,13 +242,28 @@ router.get("/inventory/:userId", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const totalItems = user.inventory.length;
-    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    let query = { _id: user._id };  // Default to filtering by user ID
+    if (name) {
+      query["inventory.name"] = new RegExp(name, "i");  // case-insensitive search
+    }
+    if (rarity) {
+      query["inventory.rarity"] = rarity;
+    }
 
-    const inventoryItems = user.inventory.slice(
-      (page - 1) * ITEMS_PER_PAGE,
-      page * ITEMS_PER_PAGE
-    );
+    let sortQuery = {};
+    if (sortBy) {
+      sortQuery[`inventory.${sortBy}`] = order === 'asc' ? 1 : -1;
+    }
+
+    const userWithFilteredInventory = await User.findOne(query)
+      .sort(sortQuery)
+      .select("inventory")
+      .slice("inventory", [(page - 1) * ITEMS_PER_PAGE, ITEMS_PER_PAGE]);
+
+    const inventoryItems = userWithFilteredInventory.inventory;
+
+    const totalItems = inventoryItems.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
     res.json({
       items: inventoryItems,
@@ -259,6 +275,7 @@ router.get("/inventory/:userId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 // Set fixed item
 router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {

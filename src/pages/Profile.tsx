@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { getUser, getInventory } from "../services/users/UserServices";
+import { FiFilter } from 'react-icons/fi'
 import UserInfo from "../components/profile/UserInfo";
 import Item from "../components/Item";
 import UserContext from "../UserContext";
 import Skeleton from "react-loading-skeleton";
 import MainButton from "../components/MainButton";
+import Filters from "../components/profile/Filters";
 
 interface User {
   id: number;
@@ -36,14 +38,30 @@ const Profile = () => {
   const { userData } = useContext(UserContext);
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [openFilters, setOpenFilters] = useState<boolean>(false);
+  const [filters, setFilters] = useState({
+    name: '',
+    rarity: '',
+    sortBy: '',
+    order: 'asc'
+  });
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
 
   useEffect(() => {
     getUserInfo();
-    getInventoryInfo();
   }, []);
+
+  useEffect(() => {
+    //1.5 second delay. If other filter is selected, it will wait for 1.5 seconds before calling the api
+    const delayDebounceFn = setTimeout(() => {
+      getInventoryInfo();
+    }, 1000);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [filters]);
+
 
   const getUserInfo = async () => {
     try {
@@ -59,7 +77,8 @@ const Profile = () => {
     try {
       const response = await getInventory(
         id,
-        newPage ? inventory && inventory.currentPage + 1 : 1
+        newPage ? inventory && inventory.currentPage + 1 : 1,
+        filters
       );
       setInventory(response);
       newPage
@@ -114,8 +133,14 @@ const Profile = () => {
       </div>
 
       <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
-        <div className="flex flex-col p-8 gap-2 items-center max-w-[1312px]">
-          <h2 className="text-2xl font-bold py-4">Inventory</h2>
+        <div className="flex flex-col p-8 gap-2 items-center w-full max-w-[1312px]">
+          <h2 className="text-2xl font-bold py-4 ">Inventory</h2>
+          <div className="flex flex-col w-full items-end mr-[70px] gap-4 -mt-10">
+            <div onClick={() => setOpenFilters(!openFilters)} className="border p-2 rounded-md cursor-pointer"><FiFilter className="text-2xl " />
+            </div>
+            {openFilters && <Filters filters={filters} setFilters={setFilters} />}
+
+          </div>
           <div className="flex flex-wrap gap-6  justify-center ">
             {loadingInventory ? (
               { array: Array(12).fill(0) }.array.map((_, i) => (
@@ -142,7 +167,7 @@ const Profile = () => {
           </div>
           {inventory &&
             inventory.currentPage !== inventory.totalPages &&
-            invItems.length > 0 && (
+            invItems.length > 19 && (
               <div className="w-40 mt-4">
                 <MainButton
                   text={`Load more`}

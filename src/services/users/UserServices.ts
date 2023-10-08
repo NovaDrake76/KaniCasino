@@ -8,9 +8,8 @@ export async function getUser(id: string) {
     return response.data;
 }
 
-export async function getInventory(id: string, page?: number) {
-    const response = await api.get(`/users/inventory/${id}${page && `?page=` + page}`, {
-    });
+export async function getInventory(id: string, page?: number, filters?: any) {
+    const response = await api.get(`/users/inventory/${id}?page=${page}&name=${filters.name}&rarity=${filters.rarity}&sortBy=${filters.sortBy}&order=${filters.order}`);
     return response.data;
 }
 
