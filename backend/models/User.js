@@ -54,7 +54,7 @@ const UserSchema = new mongoose.Schema({
   },
   nextBonus: {
     type: Date,
-    default: Date.now, // sets default time to current time
+    default: () => Date.now() - 86400000 // now - 24 hours
   },
   bonusAmount: {
     type: Number,

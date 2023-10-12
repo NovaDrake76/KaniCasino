@@ -31,7 +31,7 @@ const SignUpPage: React.FC = () => {
         .catch((error) => {
           console.log(error);
           setError(
-            error.response.data.message || "Invalid format. Please try again."
+            error.response.data.message || error.response.data.errors[0].msg || "Invalid format. Please try again."
           );
         })
         .then(() => {
