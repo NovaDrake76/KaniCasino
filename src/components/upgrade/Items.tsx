@@ -86,20 +86,19 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems }) => {
                             ) : (
                                 inventory.map((item: any, index: number) => {
                                     return (
-                                        <div key={index} ref={el => {
-                                            if (index === 0) inventoryRef.current = el;
-                                        }} onClick={
-                                            () => {
-                                                const itemExists = selectedItems.some((selectedItem: { _id: string; }) => selectedItem._id === item._id);
+                                        <div key={index} onClick={() => {
+                                            const itemIdentifier = `${item._id}-${index}`;
+                                            const itemExists = selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === itemIdentifier);
 
-                                                setSelectedItems(
-                                                    itemExists ?
-                                                        selectedItems.filter((selectedItem: { _id: string; }) => selectedItem._id !== item._id)
-                                                        :
-                                                        [...selectedItems, item]
-                                                );
-                                            }
-                                        }><Item item={item} />
+                                            setSelectedItems(
+                                                itemExists ?
+                                                    selectedItems.filter((selectedItem: { identifier: string; }) => selectedItem.identifier !== itemIdentifier)
+                                                    :
+                                                    [...selectedItems, { _id: item._id, identifier: itemIdentifier }]
+                                            );
+                                        }}
+                                            className={`cursor-pointer border-2 ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === `${item._id}-${index}`) ? ' border-[#606bc7]' : 'border-transparent'}`}>
+                                            <Item item={item} />
                                         </div>
                                     )
                                 })
