@@ -12,7 +12,7 @@ import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import ClaimBonus from "./ClaimBonus";
-import { GiUpgrade } from 'react-icons/gi';
+// import { GiUpgrade } from 'react-icons/gi';
 
 interface Navbar {
   openUserFlow: boolean;
