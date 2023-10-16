@@ -12,7 +12,7 @@ export async function getInventory(id: string, page = 1, filters?: any) {
     let url = `/users/inventory/${id}?page=${page}`;
 
     if (filters) {
-        url += `&name=${filters.name}&rarity=${filters.rarity}&sortBy=${filters.sortBy}&order=${filters.order}`;
+        url += `&name=${filters.name}&rarity=${filters.rarity}&sortBy=${filters.sortBy}&order=${filters.order}&caseId=${filters.caseId}`;
     }
 
     const response = await api.get(url);

@@ -33,13 +33,14 @@ const Upgrade: React.FC = () => {
     }
 
     const renderSelectedItems = (items: any[]) => {
+        console.log(items);
         const heightPercent = 80 / items.length;
         return (
             <div className="flex flex-wrap items-center justify-center gap-2 text-center w-[333px] h-[336px]">
-                {items.map((item, index) => (
+                {items.map((selectedItems, index) => (
                     <img
                         key={index}
-                        src={item.image}
+                        src={selectedItems.item?.image ? selectedItems.item?.image : selectedItems.image}
                         alt="selected-item"
                         style={{ width: `${heightPercent}%` }}
                         className="object-contain"
