@@ -12,7 +12,7 @@ import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import ClaimBonus from "./ClaimBonus";
-
+import { GiUpgrade } from 'react-icons/gi';
 
 interface Navbar {
   openUserFlow: boolean;
@@ -97,6 +97,11 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
       name: "Crash",
       path: "/crash",
       icon: <SlPlane className="text-2xl" />,
+    },
+    {
+      name: "Upgrade",
+      path: "/upgrade",
+      icon: <GiUpgrade className="text-2xl" />,
     }
   ];
 
@@ -140,7 +145,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
             </Link>
             {
               <div className="hidden md:flex items-center gap-6 ml-8 overflow-hidden">
-                {links.slice(0, visibleLinksCount).map((link, index) => (<Link
+                {links.map((link, index) => (<Link
                   to={link.path}
                   key={index}
                   className="flex items-center gap-2 font-normal text-lg cursor-pointer "

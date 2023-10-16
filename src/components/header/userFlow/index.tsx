@@ -11,7 +11,7 @@ const UserFlow: React.FC<UserFlowProps> = () => {
   return (
     <div className="absolute p-8 bg-[#1C1A32] rounded w-80 shadow-sm ">
       <div
-        className={`flex flex-col justify-center transition-all ${isLogin ? "h-[320px]" : "h-[440px]"
+        className={`flex flex-col justify-center transition-all ${isLogin ? "h-[320px]" : "h-[380px]"
           }`}
       >
         {isLogin ? <Login /> : <SignUp />}
@@ -22,9 +22,9 @@ const UserFlow: React.FC<UserFlowProps> = () => {
           }}
         >
           {isLogin ? (
-            <div className="text-blue-500">Or sign Up</div>
+            <div className="text-blue-500 underline">Or create an account</div>
           ) : (
-            <div className="text-blue-500">Or Login</div>
+            <div className="text-blue-500 underline">Or Login</div>
           )}
         </div>
       </div>

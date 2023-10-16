@@ -47,7 +47,7 @@ const Filters: React.FC<Filters> = ({ filters, setFilters }) => (
             {/* Add other rarities as needed */}
         </select>
 
-        {/* Sort by recent or older
+        {/* Sort by */}
         <select
             value={filters.sortBy}
             onChange={(e) => setFilters((prev) => ({ ...prev, sortBy: e.target.value }))}
@@ -56,7 +56,10 @@ const Filters: React.FC<Filters> = ({ filters, setFilters }) => (
             <option value="">Sort By</option>
             <option value="recent">Most Recent</option>
             <option value="older">Oldest First</option>
-        </select> */}
+            <option value="mostRare">Most Rare First</option>
+            <option value="mostCommon">Most Common First</option>
+        </select>
+
 
         {/* Order Ascending or Descending */}
         {/* <select
@@ -67,6 +70,8 @@ const Filters: React.FC<Filters> = ({ filters, setFilters }) => (
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
         </select> */}
+
+
 
         {/* Button to clear all filters */}
         <button

@@ -103,7 +103,7 @@ const Marketplace: React.FC = () => {
       </div>
       {loading ? (
         <div className="flex flex-wrap items-center gap-4 justify-center px-8 ">
-          {Array(7)
+          {Array(10)
             .fill(0)
             .map((_, i) => (
               <div key={i} className="w-[226px] h-[334px]  ">

@@ -5,6 +5,7 @@ import CasePage from "./pages/CasePage";
 import Marketplace from "./pages/Marketplace";
 import CoinFlip from "./pages/CoinFlip";
 import CrashGame from "./pages/Crash";
+import Upgrade from "./pages/Upgrade";
 
 const defaultRoutes = (
   <>
@@ -14,6 +15,7 @@ const defaultRoutes = (
     <Route path="/marketplace" element={<Marketplace />} />
     <Route path="/coinflip" element={<CoinFlip />} />
     <Route path="/crash" element={<CrashGame />} />
+    <Route path="/upgrade" element={<Upgrade />} />
   </>
 );
 
