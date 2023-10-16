@@ -98,11 +98,11 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
       path: "/crash",
       icon: <SlPlane className="text-2xl" />,
     },
-    {
-      name: "Upgrade",
-      path: "/upgrade",
-      icon: <GiUpgrade className="text-2xl" />,
-    }
+    // {
+    //   name: "Upgrade",
+    //   path: "/upgrade",
+    //   icon: <GiUpgrade className="text-2xl" />,
+    // }
   ];
 
   const toggleUserFlow = useCallback(() => {
