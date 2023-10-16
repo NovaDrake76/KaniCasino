@@ -25,7 +25,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [haveBonus, setHaveBonus] = useState<boolean>(false);
-  const [visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
+  const [_visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
 
   const calculateVisibleLinksCount = () => {
