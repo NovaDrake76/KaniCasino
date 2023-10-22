@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { getUser, getInventory } from "../services/users/UserServices";
+import { getUser, getInventory } from "../../services/users/UserServices";
 import { FiFilter } from 'react-icons/fi'
-import UserInfo from "../components/profile/UserInfo";
-import Item from "../components/Item";
-import UserContext from "../UserContext";
+import UserInfo from "./UserInfo";
+import Item from "../../components/Item";
+import UserContext from "../../UserContext";
 import Skeleton from "react-loading-skeleton";
-import MainButton from "../components/MainButton";
-import Filters from "../components/profile/Filters";
+import MainButton from "../../components/MainButton";
+import Filters from "./Filters";
 
 interface User {
   id: number;

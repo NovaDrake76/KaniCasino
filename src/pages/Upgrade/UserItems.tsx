@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AiOutlineArrowDown } from "react-icons/ai";
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
-import Item from "../Item";
+import Item from "../../components/Item";
 import UserContext from "../../UserContext";
 import { getInventory } from "../../services/users/UserServices";
 
@@ -22,7 +22,8 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
         name: '',
         rarity: '',
         sortBy: '',
-        order: 'asc'
+        order: 'asc',
+        case: ''
     });
     const inventoryRef = useRef<HTMLDivElement | null>(null);
     const { userData } = useContext(UserContext);
@@ -31,7 +32,14 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
         setLoading(true);
         if (userData) {
             try {
-                const newFilters = { ...inventoryFilters, caseId: selectedCase };
+                const newFilters = { ...inventoryFilters };
+                if (selectedCase) {
+                    if (selectedCase._id) {
+                        newFilters.case = selectedCase._id;
+                    } else {
+                        newFilters.case = selectedCase;
+                    }
+                }
                 const inventory = await getInventory(userData.id, currentPage, newFilters);
                 setInventory(inventory.items);
                 setPageLimit(inventory.totalPages);
@@ -43,9 +51,25 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
         setLoading(false);
     }
 
+    const handleItemClick = (item: any, index: number) => {
+        const itemIdentifier = item.uniqueId;
+        const itemExists = selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === itemIdentifier);
+        console.log(item);
+
+        setSelectedItems(
+            itemExists ?
+                selectedItems.filter((selectedItem: { identifier: string; }) => selectedItem.identifier !== itemIdentifier)
+                :
+                [...selectedItems, { item: item, identifier: itemIdentifier }]
+        );
+
+        setSelectedCase(item.case);
+    }
+
     useEffect(() => {
         getInventoryInfo();
-    }, [currentPage, inventoryFilters, userData]);
+    }, [currentPage, inventoryFilters, userData, selectedCase]);
+
 
     return (
         <div className="flex flex-col w-1/2  gap-2">
@@ -86,17 +110,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                                 <div key={index} ref={
                                     index === 0 ? inventoryRef : null
                                 }
-                                    onClick={() => {
-                                        const itemIdentifier = `${item._id}-${index}`;
-                                        const itemExists = selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === itemIdentifier);
-
-                                        setSelectedItems(
-                                            itemExists ?
-                                                selectedItems.filter((selectedItem: { identifier: string; }) => selectedItem.identifier !== itemIdentifier)
-                                                :
-                                                [...selectedItems, { item: item, identifier: itemIdentifier }]
-                                        );
-                                    }}
+                                    onClick={() => handleItemClick(item, index)}
                                     className={`cursor-pointer border-2 ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === `${item._id}-${index}`) ? ' border-[#606bc7]' : 'border-transparent'}`}>
                                     <Item item={item} />
                                 </div>

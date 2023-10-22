@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import SocketConnection from "../services/socket"
-import Coin from "../components/coin/Coin"
+import SocketConnection from "../../services/socket"
+import Coin from "./Coin"
 import { motion } from "framer-motion";
-import UserContext from "../UserContext";
-import LiveBets from "../components/coin/LiveBets";
+import UserContext from "../../UserContext";
+import LiveBets from "./LiveBets";
 
 const socket = SocketConnection.getInstance();
 

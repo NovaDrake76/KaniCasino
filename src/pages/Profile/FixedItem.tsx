@@ -1,4 +1,4 @@
-import Rarities from "../Rarities";
+import Rarities from "../../components/Rarities";
 import { RiDoubleQuotesL } from "react-icons/ri";
 import { putFixDescription } from "../../services/users/UserServices";
 import { useState } from "react";

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import ItemCard from "../components/market/MarketItem";
-import { getItems } from "../services/market/MarketSercive";
-import SellItemModal from "../components/market/SellItemModal";
-import MainButton from "../components/MainButton";
-import Title from "../components/Title";
-import ConfirmPurchaseModal from "../components/market/ConfirmPuchaseModal";
+import ItemCard from "./MarketItem";
+import { getItems } from "../../services/market/MarketSercive";
+import SellItemModal from "./SellItemModal";
+import MainButton from "../../components/MainButton";
+import Title from "../../components/Title";
+import ConfirmPurchaseModal from "./ConfirmPuchaseModal";
 import Skeleton from "react-loading-skeleton";
-import UserContext from "../UserContext";
+import UserContext from "../../UserContext";
 
 interface MarketItem {
   _id: string;

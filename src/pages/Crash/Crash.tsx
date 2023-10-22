@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import SocketConnection from "../services/socket"
+import SocketConnection from "../../services/socket"
 import { motion } from "framer-motion";
-import UserContext from "../UserContext";
+import UserContext from "../../UserContext";
 import falling from "/images/crash/falling.gif";
 import idle from "/images/crash/idle.gif";
 import up from "/images/crash/up.gif";
-import LiveBets from "../components/crash/LiveBets";
+import LiveBets from "./LiveBets";
 
-import Videos from "../components/crash/Videos";
+import Videos from "./Videos";
 const socket = SocketConnection.getInstance();
 
 interface GameHistory {

@@ -2,9 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import { AiOutlineArrowDown } from "react-icons/ai"
 import UserContext from "../../UserContext";
 import { getCases, getCase } from "../../services/cases/CaseServices";
-import Item from "../Item";  // Import your Item component if you have one
-import Case from "../Case";
+import Item from "../../components/Item";  // Import your Item component if you have one
 import Skeleton from "react-loading-skeleton";
+import { AiOutlineArrowLeft } from "react-icons/ai";
 
 interface AllItems {
     selectedItems: any;
@@ -30,7 +30,6 @@ const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelected
         setLoadingItems(true);
         if (userData) {
             try {
-                const newFilters = { ...itemFilters, caseId: selectedCase };
                 const items = await getCases();
                 setAllCases(items);
             }
@@ -45,8 +44,14 @@ const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelected
         setLoadingItems(true);
         if (userData) {
             try {
-                const items = await getCase(selectedCase?._id);
-                setSelectedCaseItems(items.items);
+
+                if (selectedCase._id) {
+                    const items = await getCase(selectedCase._id);
+                    setSelectedCaseItems(items.items);
+                } else {
+                    const items = await getCase(selectedCase);
+                    setSelectedCaseItems(items.items);
+                }
             }
             catch (error) {
                 console.log(error);
@@ -64,7 +69,7 @@ const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelected
     }, [selectedCase]);
 
     return (
-        <div className="flex flex-col w-1/2 gap-2 mb-8">
+        <div className="flex flex-col w-1/2 gap-2 ">
             <div className="flex w-full items-center justify-between border px-6 h-24">
                 <span>Get one Item</span>
                 <div className="flex items-center justify-between cursor-pointer" onClick={() => {
@@ -123,10 +128,23 @@ const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelected
                         )
                     )
                 }
-
-
             </div>
+            <div className="h-6">
+                {
+                    selectedCase !== null && (
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={
+                            () => {
+                                setSelectedCase(null);
+                                setSelectedCaseItems([]);
+                            }
+                        }>
+                            <AiOutlineArrowLeft />
+                            <span>Back</span>
 
+                        </div>
+                    )
+                }
+            </div>
         </div>
     )
 }

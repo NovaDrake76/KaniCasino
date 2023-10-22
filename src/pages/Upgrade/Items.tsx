@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import UserContext from "../../UserContext";
 import UserItems from "./UserItems";
-import AllItems from "./AllItems";
+import AllItems from "./ChooseUpgradeItems";
 
 interface Inventory {
     selectedItems: any;

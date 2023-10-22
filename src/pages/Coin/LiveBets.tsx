@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import PlayerPreview from "../PlayerPreview";
+import PlayerPreview from "../../components/PlayerPreview";
 
 interface GameHistory {
     gameState: any;

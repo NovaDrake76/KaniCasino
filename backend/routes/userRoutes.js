@@ -7,6 +7,8 @@ const { check, validationResult } = require("express-validator");
 const User = require("../models/User");
 const authMiddleware = require("../middleware/authMiddleware");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
+const { ObjectId } = require('mongodb'); // or however you're importing MongoDB
+
 
 // Register user
 router.post(
@@ -235,7 +237,7 @@ router.get("/inventory/:userId", async (req, res) => {
 
   try {
     const { userId } = req.params;
-    const { name, rarity, sortBy, order } = req.query;
+    const { name, rarity, sortBy, order, caseId } = req.query;
     const page = parseInt(req.query.page) || 1;
 
     const user = await User.findById(userId);
@@ -251,6 +253,10 @@ router.get("/inventory/:userId", async (req, res) => {
       { $project: { inventory: 1 } },
       { $unwind: "$inventory" }
     ];
+
+    if (caseId) {
+      countPipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
+    }
 
     if (name) {
       countPipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
@@ -271,6 +277,11 @@ router.get("/inventory/:userId", async (req, res) => {
       { $project: { inventory: 1 } },
       { $unwind: "$inventory" }
     ];
+
+    if (caseId) {
+      pipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
+    }
+
 
     if (name) {
       pipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });

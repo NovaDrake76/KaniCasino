@@ -18,6 +18,7 @@ const MarketplaceSchema = new mongoose.Schema(
       type: ItemSchema, // use Item sub-schema
       required: true,
     },
+    uniqueId: String,
     price: {
       type: Number,
       required: true,

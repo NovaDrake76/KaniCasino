@@ -1,8 +1,11 @@
 
 import React, { useState } from "react";
-import Title from "../components/Title";
+import Title from "../../components/Title";
 import { Tooltip } from "react-tooltip";
-import Items from "../components/upgrade/Items";
+import Items from "./Items";
+import MainButton from "../../components/MainButton";
+import { AiOutlineClose } from "react-icons/ai";
+import { GiUpgrade } from "react-icons/gi";
 
 const Upgrade: React.FC = () => {
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
@@ -33,7 +36,6 @@ const Upgrade: React.FC = () => {
     }
 
     const renderSelectedItems = (items: any[]) => {
-        console.log(items);
         const heightPercent = 80 / items.length;
         return (
             <div className="flex flex-wrap items-center justify-center gap-2 text-center w-[333px] h-[336px]">
@@ -70,15 +72,44 @@ const Upgrade: React.FC = () => {
                     </span>
                 </div>
 
-                <div className="flex items-center justify-around px-5 ">
+                <div className="flex items-center justify-around px-5 h-[333px] ">
                     {
-                        selectedItems.length > 0 ? renderSelectedItems(selectedItems) : renderPlaceholder(0)
+                        selectedItems.length > 0 ? <div className="flex flex-col relative">
+                            {renderSelectedItems(selectedItems)}
+                            <MainButton text="Clear Items" icon={<AiOutlineClose />} onClick={
+                                () => {
+                                    setSelectedItems([]);
+                                }
+                            }
+                            />
+                            <div className="absolute -right-10 top-10 p-4 bg-gray-400/10 hover:bg-gray-500/60 rounded-full cursor-pointer transition-all" onClick={
+                                () => {
+                                    setSelectedItems([]);
+                                }}>
+                                <AiOutlineClose />
+                            </div>
+                        </div> : renderPlaceholder(0)
                     }
-                    <div className="w-[420px] flex justify-center">
+                    <div className="w-[420px] flex justify-center h-[333px]">
                         roulette
                     </div>
                     {
-                        selectedTarget ? renderSelectedItems([selectedTarget]) : renderPlaceholder(1)
+                        selectedTarget ? <div className="flex flex-col relative">
+                            {renderSelectedItems([selectedTarget])}
+                            <MainButton text="Upgrade" icon={<GiUpgrade />} type="danger" iconPosition="right" onClick={
+                                () => {
+                                    setSelectedItems([]);
+                                    setSelectedTarget(null);
+                                }
+                            }
+                            />
+                            <div className="absolute -left-10 top-10 p-4 bg-gray-400/10 hover:bg-gray-500/60 rounded-full cursor-pointer transition-all" onClick={
+                                () => {
+                                    setSelectedTarget(null);
+                                }}>
+                                <AiOutlineClose />
+                            </div>
+                        </div> : renderPlaceholder(1)
                     }
                 </div>
                 <div className="flex justify-center">

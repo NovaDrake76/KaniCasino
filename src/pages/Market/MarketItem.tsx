@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import MainButton from "../MainButton";
+import MainButton from "../../components/MainButton";
 import UserContext from "../../UserContext";
 
 interface Props {
