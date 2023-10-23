@@ -106,7 +106,7 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
                     </div>
                 </div>
             </div>
-            <div className="flex h-[500px] border flex-wrap gap-2 p-4 overflow-y-auto justify-around">
+            <div className="flex h-[500px] border-2 border-[#1C1A33] flex-wrap gap-2 p-4 overflow-y-auto justify-around">
                 {
                     loadingItems ? (
                         { array: Array(12).fill(0) }.array.map((_, i) => (

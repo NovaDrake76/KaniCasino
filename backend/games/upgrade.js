@@ -19,7 +19,7 @@ const calculateSuccessRate = (selectedItems, targetRarity) => {
     }
 
     // Apply diminishing returns
-    totalChance = 1 - Math.pow(1 - totalChance, 1.25);
+    totalChance = 1 - Math.pow(1 - totalChance, 1.25)
 
     // Cap the chance at 80%
     return Math.min(totalChance, 0.8);
@@ -64,7 +64,7 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
         );
 
         // Calculate the success rate and attempt the upgrade
-        const successRate = calculateSuccessRate(selectedItems, targetItem);
+        const successRate = calculateSuccessRate(selectedItems, targetItem.rarity);
         const isSuccess = Math.random() < successRate;
 
         if (isSuccess) {

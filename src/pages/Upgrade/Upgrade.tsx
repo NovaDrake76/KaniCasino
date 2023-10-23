@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Title from "../../components/Title";
 import { Tooltip } from "react-tooltip";
 import Items from "./Items";
@@ -15,6 +15,8 @@ const Upgrade: React.FC = () => {
     const [selectedCase, setSelectedCase] = useState<string | null>(null);
     const [successRate, setSuccessRate] = useState<number>(0);
     const [success, setSuccess] = useState<boolean>(false);
+    const [loadingUpgrade, setLoadingUpgrade] = useState<boolean>(false);
+    const [toggleReload, setToggleReload] = useState<boolean>(false);
 
     const itemPlaceholder = [
         {
@@ -60,7 +62,6 @@ const Upgrade: React.FC = () => {
     const ClearItems = () => {
         setSelectedItems([]);
         setSelectedCase(null);
-
     }
 
     const UpgradeItems = async () => {
@@ -68,11 +69,13 @@ const Upgrade: React.FC = () => {
             selectedItemIds: selectedItems.map(item => item.identifier),
             targetItemId: selectedTarget
         };
-
+        setLoadingUpgrade(true)
         try {
+
             const response = await upgradeItem(payload.selectedItemIds, payload.targetItemId);
             setSuccess(response.success)
             setSelectedItems([]);
+            setToggleReload(!toggleReload);
             if (response.success) {
                 setSelectedCase(null);
                 setSelectedTarget(null);
@@ -84,10 +87,16 @@ const Upgrade: React.FC = () => {
                 theme: "dark",
             });
             console.log(err);
+        } finally {
+            setLoadingUpgrade(false)
         }
+
     };
 
-
+    useEffect(() => {
+        console.log(selectedCase)
+    }
+        , [selectedCase])
 
     return (
         <div className="w-screen flex justify-center">
@@ -122,16 +131,17 @@ const Upgrade: React.FC = () => {
                             </div>
                         </div> : renderPlaceholder(0)
                     }
-                    <div className="w-[420px] flex justify-center h-[333px]">
+                    <div className="w-[420px] flex flex-col justify-center items-center h-[333px]">
 
-                        Success Rate: {(successRate * 100).toFixed(2)}%
+                        <span>Success Rate: {(successRate * 100).toFixed(2)}%</span>
+                        <span>{success && "success yay"}</span>
 
                     </div>
                     {
                         selectedTarget ? <div className="flex flex-col relative">
                             {renderSelectedItems([selectedTarget])}
                             <MainButton text="Upgrade" icon={<GiUpgrade />} type="danger" iconPosition="right" onClick={UpgradeItems}
-                            />
+                                disabled={loadingUpgrade || selectedItems.length < 1} />
                             <div className="absolute -left-10 top-10 p-4 bg-gray-400/10 hover:bg-gray-500/60 rounded-full cursor-pointer transition-all" onClick={
                                 () => {
                                     setSelectedTarget(null);
@@ -146,7 +156,8 @@ const Upgrade: React.FC = () => {
                 </div>
                 <Items selectedItems={selectedItems} setSelectedItems={setSelectedItems}
                     selectedTarget={selectedTarget} setSelectedTarget={setSelectedTarget}
-                    selectedCase={selectedCase} setSelectedCase={setSelectedCase} setSuccessRate={setSuccessRate} />
+                    selectedCase={selectedCase} setSelectedCase={setSelectedCase}
+                    setSuccessRate={setSuccessRate} toggleReload={toggleReload} />
             </div>
         </div>
     );

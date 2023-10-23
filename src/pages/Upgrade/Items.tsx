@@ -11,9 +11,10 @@ interface Inventory {
     selectedCase: string | null;
     setSelectedCase: React.Dispatch<React.SetStateAction<string | null>>;
     setSuccessRate: React.Dispatch<React.SetStateAction<number>>;
+    toggleReload: boolean;
 }
 
-const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedTarget, setSelectedTarget, selectedCase, setSelectedCase, setSuccessRate }) => {
+const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedTarget, setSelectedTarget, selectedCase, setSelectedCase, setSuccessRate, toggleReload }) => {
     const { userData } = useContext(UserContext);
 
 
@@ -55,7 +56,7 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
     if (userData) {
         return (
             <div className="flex items-center justify-around gap-4 px-14">
-                <UserItems selectedItems={selectedItems} setSelectedItems={setSelectedItems} selectedCase={selectedCase} setSelectedCase={setSelectedCase} />
+                <UserItems selectedItems={selectedItems} setSelectedItems={setSelectedItems} selectedCase={selectedCase} setSelectedCase={setSelectedCase} toggleReload={toggleReload} />
                 <ChooseUpgradeItems setSelectedItems={setSelectedItems} selectedCase={selectedCase} setSelectedCase={setSelectedCase} selectedTarget={selectedTarget} setSelectedTarget={setSelectedTarget} />
             </div >
         )

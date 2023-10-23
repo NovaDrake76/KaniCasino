@@ -13,9 +13,10 @@ interface Inventory {
     setSelectedItems: React.Dispatch<React.SetStateAction<any>>;
     selectedCase: any;
     setSelectedCase: React.Dispatch<React.SetStateAction<any>>;
+    toggleReload: boolean;
 }
 
-const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedCase, setSelectedCase }) => {
+const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedCase, setSelectedCase, toggleReload }) => {
     const [inventory, setInventory] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [pageLimit, setPageLimit] = useState<number>(0);
@@ -58,14 +59,14 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                 selectedItems.filter((selectedItem: { identifier: string; }) => selectedItem.identifier !== itemIdentifier)
                 :
                 [...selectedItems, { item: item, identifier: itemIdentifier }]
-        );
-
+        )
+        console.log(item)
         setSelectedCase(item.case);
     }
 
     useEffect(() => {
         getInventoryInfo();
-    }, [currentPage, inventoryFilters, userData, selectedCase]);
+    }, [currentPage, inventoryFilters, userData, selectedCase, toggleReload]);
 
 
     return (
@@ -112,7 +113,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                 </div>
 
             </div>
-            <div className="flex h-[500px] border border-[#1C1A33] flex-wrap gap-2 p-4 overflow-y-auto justify-around" >
+            <div className="flex h-[500px] border-2 border-[#1C1A33] flex-wrap gap-2 p-4 overflow-y-auto justify-around" >
                 {
                     loading ? (
                         { array: Array(12).fill(0) }.array.map((_, i) => (
