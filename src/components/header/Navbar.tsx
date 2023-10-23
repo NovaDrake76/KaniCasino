@@ -180,7 +180,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
                       currency: "DOL",
                     })
                       .format(userData?.walletBalance)
-                      .replace("DOL", "C₽")}
+                      .replace("DOL", "K₽")}
                   </div>
                 </div>
               )}

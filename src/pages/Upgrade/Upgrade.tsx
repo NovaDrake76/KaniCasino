@@ -13,6 +13,8 @@ const Upgrade: React.FC = () => {
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
     const [selectedTarget, setSelectedTarget] = useState<any>(null);
     const [selectedCase, setSelectedCase] = useState<string | null>(null);
+    const [successRate, setSuccessRate] = useState<number>(0);
+    const [success, setSuccess] = useState<boolean>(false);
 
     const itemPlaceholder = [
         {
@@ -57,9 +59,8 @@ const Upgrade: React.FC = () => {
 
     const ClearItems = () => {
         setSelectedItems([]);
-        if (!selectedTarget) {
-            setSelectedCase(null);
-        }
+        setSelectedCase(null);
+
     }
 
     const UpgradeItems = async () => {
@@ -68,12 +69,15 @@ const Upgrade: React.FC = () => {
             targetItemId: selectedTarget
         };
 
-        console.log(payload);
-
         try {
-            // Make the API call
             const response = await upgradeItem(payload.selectedItemIds, payload.targetItemId);
-            console.log(response);
+            setSuccess(response.success)
+            setSelectedItems([]);
+            if (response.success) {
+                setSelectedCase(null);
+                setSelectedTarget(null);
+            }
+
         } catch (err: any) {
             const errorMessage = err.response && err.response.data ? err.response.data.message : "An error occurred";
             toast.error(errorMessage, {
@@ -119,7 +123,9 @@ const Upgrade: React.FC = () => {
                         </div> : renderPlaceholder(0)
                     }
                     <div className="w-[420px] flex justify-center h-[333px]">
-                        roulette
+
+                        Success Rate: {(successRate * 100).toFixed(2)}%
+
                     </div>
                     {
                         selectedTarget ? <div className="flex flex-col relative">
@@ -140,7 +146,7 @@ const Upgrade: React.FC = () => {
                 </div>
                 <Items selectedItems={selectedItems} setSelectedItems={setSelectedItems}
                     selectedTarget={selectedTarget} setSelectedTarget={setSelectedTarget}
-                    selectedCase={selectedCase} setSelectedCase={setSelectedCase} />
+                    selectedCase={selectedCase} setSelectedCase={setSelectedCase} setSuccessRate={setSuccessRate} />
             </div>
         </div>
     );

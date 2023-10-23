@@ -47,7 +47,7 @@ const MarketItem: React.FC<Props> = ({ item, click }) => {
           }`}
         onLoad={handleImageLoad}
       />
-      <p className="text-blue-500 text-center py-1">{item.price} C₽</p>
+      <p className="text-blue-500 text-center py-1">{item.price} K₽</p>
 
       <MainButton text="Buy" onClick={click} disabled={!isLogged} />
     </div>

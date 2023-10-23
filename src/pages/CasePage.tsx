@@ -214,7 +214,7 @@ const CasePage = () => {
             <Skeleton width={240} height={40} />
           ) : (
             <MainButton
-              text={!userData ? "Sign in to play" : `Open Case - C₽${data.price}`}
+              text={!userData ? "Sign in to play" : `Open Case - K₽${data.price}`}
               onClick={openCase}
               loading={loadingButton}
               disabled={

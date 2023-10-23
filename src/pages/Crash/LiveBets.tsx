@@ -42,7 +42,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
             <div className="flex flex-col">
                 <div className="flex items-center justify-between py-4">
                     <span className="font-bold text-sm">Total Bets</span>
-                    <span className="font-bold text-sm">C₽{totalBets}</span>
+                    <span className="font-bold text-sm">K₽{totalBets}</span>
                 </div>
 
                 <div className="flex items-center w-full justify-between p-2 bg-[#1A152B] rounded">
@@ -75,7 +75,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
                             </a>
 
                             <div className="flex justify-between w-1/4">
-                                <span className="font-bold text-sm">C₽{bet}</span>
+                                <span className="font-bold text-sm">K₽{bet}</span>
                                 <span className={`font-bold text-sm ${player.payout && "text-green-500"}`}>{player.payout ? player.payout.toFixed(2) + 'X' : '-'}</span>
                                 <span className={`font-bold text-sm ${player.payout && "text-green-500"}`}>{player.payout ? `${(player.payout * bet).toFixed(2)} ` : ' -'}</span>
                             </div>
