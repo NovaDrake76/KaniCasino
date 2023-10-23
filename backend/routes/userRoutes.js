@@ -399,7 +399,7 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
       // Save updated user
       await user.save();
 
-      res.json({ message: `Claimed C₽${currentBonus}!`, value: currentBonus, nextBonus: user.nextBonus });
+      res.json({ message: `Claimed K₽${currentBonus}!`, value: currentBonus, nextBonus: user.nextBonus });
 
     } else {
       res.status(400).json({ message: 'Bonus not yet available' });

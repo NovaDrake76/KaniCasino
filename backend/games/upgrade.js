@@ -1,17 +1,34 @@
 const User = require("../models/User");
 const Item = require("../models/Item");
 
+// not necessarelly the same as the used in cases
+const baseChances = {
+    "1": { "1": 0.5, "2": 0.2, "3": 0.1, "4": 0.05, "5": 0.002 },
+    "2": { "1": 0.2, "2": 0.5, "3": 0.2, "4": 0.1, "5": 0.01 },
+    "3": { "1": 0.1, "2": 0.2, "3": 0.5, "4": 0.2, "5": 0.05 },
+    "4": { "1": 0.05, "2": 0.1, "3": 0.2, "4": 0.5, "5": 0.1 },
+    "5": { "1": 0.002, "2": 0.01, "3": 0.05, "4": 0.1, "5": 0.5 }
+};
+
+const calculateSuccessRate = (selectedItems, targetRarity) => {
+    let totalChance = 0;
+
+    for (let item of selectedItems) {
+        const baseChance = baseChances[item.rarity][targetRarity];
+        totalChance += baseChance;
+    }
+
+    // Apply diminishing returns
+    totalChance = 1 - Math.pow(1 - totalChance, 1.25);
+
+    // Cap the chance at 80%
+    return Math.min(totalChance, 0.8);
+};
+
 // Helper function to validate if all items belong to the same case
 const allItemsFromSameCase = (items) => {
     const caseId = items[0].case;
     return items.every((item) => item.case.toString() === caseId.toString());
-};
-
-// Helper function to calculate success rate
-const calculateSuccessRate = (selectedItems, targetItem) => {
-    // Implement your logic to calculate success rate
-    // For example: based on the rarity of selectedItems and targetItem
-    return 0.5; // 50% success rate
 };
 
 const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
