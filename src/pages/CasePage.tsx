@@ -9,6 +9,7 @@ import { openBox } from "../services/games/GamesServices";
 import UserContext from "../UserContext";
 import MainButton from "../components/MainButton";
 import Skeleton from "react-loading-skeleton";
+import { toast } from "react-toastify";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -53,7 +54,7 @@ const CasePage = () => {
   const openCase = async () => {
     setLoadingButton(true);
     try {
-      const response = await openBox(id, userData.id);
+      const response = await openBox(id);
       toogleUserData({
         ...userData,
         walletBalance: userData.walletBalance - data.price,
@@ -65,9 +66,12 @@ const CasePage = () => {
       });
       setOpenedItem(response);
       // playAudio();
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       setLoadingButton(false);
+      toast.error(`${error.response.data.message}!`, {
+        theme: "dark",
+      });
       return;
     }
 

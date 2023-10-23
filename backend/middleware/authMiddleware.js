@@ -3,12 +3,20 @@ require("dotenv").config();
 const User = require("../models/User");
 
 const isAuthenticated = async (req, res, next) => {
-  const token = req.header("Authorization");
-
-  if (!token) {
-    return res.status(401).json({ message: "No token, authorization denied" });
+  // Extract the token from the Authorization header
+  const authHeader = req.header("Authorization");
+  if (!authHeader) {
+    return res.status(401).json({ message: "No authorization header provided" });
   }
 
+  const tokenParts = authHeader.split(' ');
+  if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+    return res.status(401).json({ message: "Authorization header format is 'Bearer [token]'" });
+  }
+
+  const token = tokenParts[1];
+
+  // Verify the token
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.userId).select("-password");

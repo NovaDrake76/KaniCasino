@@ -4,17 +4,17 @@ import UserContext from "../../UserContext";
 import { getCases, getCase } from "../../services/cases/CaseServices";
 import Item from "../../components/Item";  // Import your Item component if you have one
 import Skeleton from "react-loading-skeleton";
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 
-interface AllItems {
-    selectedItems: any;
+interface ChooseUpgradeItems {
+    setSelectedItems: React.Dispatch<React.SetStateAction<any>>;
     selectedCase: any;
     setSelectedCase: React.Dispatch<React.SetStateAction<any>>;
     selectedTarget: any;
     setSelectedTarget: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelectedCase, selectedTarget, setSelectedTarget }) => {
+const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, selectedCase, setSelectedCase, selectedTarget, setSelectedTarget }) => {
     const [allCases, setAllCases] = useState<any[]>([]);
     const [selectedCaseItems, setSelectedCaseItems] = useState<any[]>([]);
     const [loadingItems, setLoadingItems] = useState<boolean>(true);
@@ -70,21 +70,40 @@ const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelected
 
     return (
         <div className="flex flex-col w-1/2 gap-2 ">
-            <div className="flex w-full items-center justify-between border px-6 h-24">
+            <div className="flex w-full items-center justify-between bg-[#1C1A33] rounded px-6 h-24">
                 <span>Get one Item</span>
-                <div className="flex items-center justify-between cursor-pointer" onClick={() => {
-                    setItemFilters(prev => {
-                        return {
-                            ...prev,
-                            sortBy: prev.sortBy === '' ? 'mostRare' : ''
-                        }
-                    })
-                }}>
-                    <span>Rarity</span>
-                    <AiOutlineArrowDown style={{
-                        transform: itemFilters.sortBy === 'mostRare' ? 'rotate(180deg)' : '',
-                        transition: 'transform 0.2s ease-in-out'
-                    }} />
+                <div className="flex gap-4">
+                    {
+                        selectedCase !== null && (
+                            <div className="flex items-center gap-1 cursor-pointer border-b border-gray-500 text-gray-500" onClick={
+                                () => {
+                                    setSelectedCase(null);
+                                    setSelectedCaseItems([]);
+                                    setSelectedTarget(null);
+                                    setSelectedItems([]);
+                                }
+                            }>
+                                <AiOutlineClose />
+                                <span>Clear</span>
+
+                            </div>
+                        )
+                    }
+                    <div className="flex items-center justify-between cursor-pointer" onClick={() => {
+                        setItemFilters(prev => {
+                            return {
+                                ...prev,
+                                sortBy: prev.sortBy === '' ? 'mostRare' : ''
+                            }
+                        })
+                    }}>
+
+                        <span>Rarity</span>
+                        <AiOutlineArrowDown style={{
+                            transform: itemFilters.sortBy === 'mostRare' ? 'rotate(180deg)' : '',
+                            transition: 'transform 0.2s ease-in-out'
+                        }} />
+                    </div>
                 </div>
             </div>
             <div className="flex h-[500px] border flex-wrap gap-2 p-4 overflow-y-auto justify-around">
@@ -104,7 +123,7 @@ const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelected
                             allCases.map((item: any, index: number) => {
                                 return (
                                     <div key={index} onClick={() => {
-                                        setSelectedCase(item);
+                                        setSelectedCase(item._id);
                                     }} className="cursor-pointer">
                                         <div className="flex flex-col items-center">
                                             <img src={item.image} alt={`Select items from ${item.title}`} className="object-contain h-40" />
@@ -116,8 +135,12 @@ const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelected
                         ) : (
                             selectedCaseItems.map((item: any, index: number) => {
                                 return (
-                                    <div key={index} onClick={() => {
-                                        setSelectedTarget(item)
+                                    <div key={index} className={`cursor-pointer border-2 ${selectedTarget?._id === item._id ? ' border-[#606bc7]' : 'border-transparent'}`} onClick={() => {
+                                        if (selectedTarget?._id === item._id) {
+                                            setSelectedTarget(null);
+                                        } else {
+                                            setSelectedTarget(item);
+                                        }
                                     }}>
                                         <Item item={item} />
 
@@ -130,23 +153,10 @@ const AllItems: React.FC<AllItems> = ({ selectedItems, selectedCase, setSelected
                 }
             </div>
             <div className="h-6">
-                {
-                    selectedCase !== null && (
-                        <div className="flex items-center gap-2 cursor-pointer" onClick={
-                            () => {
-                                setSelectedCase(null);
-                                setSelectedCaseItems([]);
-                            }
-                        }>
-                            <AiOutlineArrowLeft />
-                            <span>Back</span>
 
-                        </div>
-                    )
-                }
             </div>
         </div>
     )
 }
 
-export default AllItems;
+export default ChooseUpgradeItems;

@@ -5,6 +5,8 @@ import Skeleton from "react-loading-skeleton";
 import Item from "../../components/Item";
 import UserContext from "../../UserContext";
 import { getInventory } from "../../services/users/UserServices";
+import { AiOutlineClose } from "react-icons/ai";
+
 
 interface Inventory {
     selectedItems: any;
@@ -23,7 +25,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
         rarity: '',
         sortBy: '',
         order: 'asc',
-        case: ''
+        caseId: ''
     });
     const inventoryRef = useRef<HTMLDivElement | null>(null);
     const { userData } = useContext(UserContext);
@@ -34,11 +36,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
             try {
                 const newFilters = { ...inventoryFilters };
                 if (selectedCase) {
-                    if (selectedCase._id) {
-                        newFilters.case = selectedCase._id;
-                    } else {
-                        newFilters.case = selectedCase;
-                    }
+                    newFilters.caseId = selectedCase;
                 }
                 const inventory = await getInventory(userData.id, currentPage, newFilters);
                 setInventory(inventory.items);
@@ -54,7 +52,6 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
     const handleItemClick = (item: any, index: number) => {
         const itemIdentifier = item.uniqueId;
         const itemExists = selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === itemIdentifier);
-        console.log(item);
 
         setSelectedItems(
             itemExists ?
@@ -73,26 +70,49 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
 
     return (
         <div className="flex flex-col w-1/2  gap-2">
-            <div className="flex w-full items-center justify-between border px-6 h-24">
+            <div className="flex w-full items-center justify-between bg-[#1C1A33] rounded px-6 h-24">
                 <span>Inventory</span>
-                <div className="flex items-center justify-between cursor-pointer" onClick={() => {
-                    setInventoryFilters(prev => {
-                        return {
-                            ...prev,
-                            sortBy: prev.sortBy === '' ? 'mostRare' : ''
-                        }
-                    })
-                }
-                }>
-                    <span>Rarity</span>
-                    <AiOutlineArrowDown style={{
-                        transform: inventoryFilters.sortBy === 'mostRare' ? 'rotate(180deg)' : '',
-                        transition: 'transform 0.2s ease-in-out'
+                <div className="flex gap-4 ">
+                    {
+                        selectedCase !== null && (
+                            <div className="flex items-center gap-1 cursor-pointer border-b border-gray-500 text-gray-500" onClick={
+                                () => {
+                                    setSelectedCase(null);
+                                    setSelectedItems([]);
+                                    setInventoryFilters(prev => {
+                                        return {
+                                            ...prev,
+                                            caseId: ''
+                                        }
+                                    })
+                                }
+                            }>
+                                <AiOutlineClose />
+                                <span>Clear</span>
 
-                    }} />
+                            </div>
+                        )
+                    }
+                    <div className="flex items-center justify-between cursor-pointer" onClick={() => {
+                        setInventoryFilters(prev => {
+                            return {
+                                ...prev,
+                                sortBy: prev.sortBy === '' ? 'mostRare' : ''
+                            }
+                        })
+                    }
+                    }>
+                        <span>Rarity</span>
+                        <AiOutlineArrowDown style={{
+                            transform: inventoryFilters.sortBy === 'mostRare' ? 'rotate(180deg)' : '',
+                            transition: 'transform 0.2s ease-in-out'
+
+                        }} />
+                    </div>
                 </div>
+
             </div>
-            <div className="flex h-[500px] border flex-wrap gap-2 p-4 overflow-y-auto justify-around" >
+            <div className="flex h-[500px] border border-[#1C1A33] flex-wrap gap-2 p-4 overflow-y-auto justify-around" >
                 {
                     loading ? (
                         { array: Array(12).fill(0) }.array.map((_, i) => (
@@ -111,7 +131,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                                     index === 0 ? inventoryRef : null
                                 }
                                     onClick={() => handleItemClick(item, index)}
-                                    className={`cursor-pointer border-2 ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === `${item._id}-${index}`) ? ' border-[#606bc7]' : 'border-transparent'}`}>
+                                    className={`cursor-pointer border-2 ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === item.uniqueId) ? ' border-[#606bc7]' : 'border-transparent'}`}>
                                     <Item item={item} />
                                 </div>
                             )

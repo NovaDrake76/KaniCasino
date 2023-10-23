@@ -6,10 +6,13 @@ import Items from "./Items";
 import MainButton from "../../components/MainButton";
 import { AiOutlineClose } from "react-icons/ai";
 import { GiUpgrade } from "react-icons/gi";
+import { upgradeItem } from "../../services/games/GamesServices";
+import { toast } from "react-toastify";
 
 const Upgrade: React.FC = () => {
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
     const [selectedTarget, setSelectedTarget] = useState<any>(null);
+    const [selectedCase, setSelectedCase] = useState<string | null>(null);
 
     const itemPlaceholder = [
         {
@@ -52,6 +55,35 @@ const Upgrade: React.FC = () => {
         );
     }
 
+    const ClearItems = () => {
+        setSelectedItems([]);
+        if (!selectedTarget) {
+            setSelectedCase(null);
+        }
+    }
+
+    const UpgradeItems = async () => {
+        const payload = {
+            selectedItemIds: selectedItems.map(item => item.identifier),
+            targetItemId: selectedTarget
+        };
+
+        console.log(payload);
+
+        try {
+            // Make the API call
+            const response = await upgradeItem(payload.selectedItemIds, payload.targetItemId);
+            console.log(response);
+        } catch (err: any) {
+            const errorMessage = err.response && err.response.data ? err.response.data.message : "An error occurred";
+            toast.error(errorMessage, {
+                theme: "dark",
+            });
+            console.log(err);
+        }
+    };
+
+
 
     return (
         <div className="w-screen flex justify-center">
@@ -76,11 +108,7 @@ const Upgrade: React.FC = () => {
                     {
                         selectedItems.length > 0 ? <div className="flex flex-col relative">
                             {renderSelectedItems(selectedItems)}
-                            <MainButton text="Clear Items" icon={<AiOutlineClose />} onClick={
-                                () => {
-                                    setSelectedItems([]);
-                                }
-                            }
+                            <MainButton text="Clear Items" icon={<AiOutlineClose />} onClick={ClearItems}
                             />
                             <div className="absolute -right-10 top-10 p-4 bg-gray-400/10 hover:bg-gray-500/60 rounded-full cursor-pointer transition-all" onClick={
                                 () => {
@@ -96,12 +124,7 @@ const Upgrade: React.FC = () => {
                     {
                         selectedTarget ? <div className="flex flex-col relative">
                             {renderSelectedItems([selectedTarget])}
-                            <MainButton text="Upgrade" icon={<GiUpgrade />} type="danger" iconPosition="right" onClick={
-                                () => {
-                                    setSelectedItems([]);
-                                    setSelectedTarget(null);
-                                }
-                            }
+                            <MainButton text="Upgrade" icon={<GiUpgrade />} type="danger" iconPosition="right" onClick={UpgradeItems}
                             />
                             <div className="absolute -left-10 top-10 p-4 bg-gray-400/10 hover:bg-gray-500/60 rounded-full cursor-pointer transition-all" onClick={
                                 () => {
@@ -116,7 +139,8 @@ const Upgrade: React.FC = () => {
                     <Title title="Upgrade Items" />
                 </div>
                 <Items selectedItems={selectedItems} setSelectedItems={setSelectedItems}
-                    selectedTarget={selectedTarget} setSelectedTarget={setSelectedTarget} />
+                    selectedTarget={selectedTarget} setSelectedTarget={setSelectedTarget}
+                    selectedCase={selectedCase} setSelectedCase={setSelectedCase} />
             </div>
         </div>
     );

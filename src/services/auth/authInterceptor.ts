@@ -5,7 +5,7 @@ import { refreshToken } from './auth';
 function authInterceptor(config: { headers: any }) {
     const token = getAccessToken();
     if (token) {
-        config.headers.Authorization = `${token}`;
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
 }
