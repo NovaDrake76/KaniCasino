@@ -8,6 +8,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { GiUpgrade } from "react-icons/gi";
 import { upgradeItem } from "../../services/games/GamesServices";
 import { toast } from "react-toastify";
+import ClockPointer from './ClockPointer';
 
 const Upgrade: React.FC = () => {
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
@@ -17,6 +18,8 @@ const Upgrade: React.FC = () => {
     const [success, setSuccess] = useState<boolean>(false);
     const [loadingUpgrade, setLoadingUpgrade] = useState<boolean>(false);
     const [toggleReload, setToggleReload] = useState<boolean>(false);
+    const [spinning, setSpinning] = useState(false);
+
 
     const itemPlaceholder = [
         {
@@ -65,21 +68,29 @@ const Upgrade: React.FC = () => {
     }
 
     const UpgradeItems = async () => {
+        setLoadingUpgrade(true)
+        setSuccess(false);
+
         const payload = {
             selectedItemIds: selectedItems.map(item => item.identifier),
             targetItemId: selectedTarget
         };
-        setLoadingUpgrade(true)
         try {
-
             const response = await upgradeItem(payload.selectedItemIds, payload.targetItemId);
+            setSpinning(true);
             setSuccess(response.success)
-            setSelectedItems([]);
-            setToggleReload(!toggleReload);
+            setTimeout(() => {
+                setLoadingUpgrade(false)
+                setSpinning(false);
+                setSelectedItems([]);
+                setToggleReload(!toggleReload);
+            }, 8000);
+
             if (response.success) {
                 setSelectedCase(null);
                 setSelectedTarget(null);
             }
+
 
         } catch (err: any) {
             const errorMessage = err.response && err.response.data ? err.response.data.message : "An error occurred";
@@ -87,16 +98,8 @@ const Upgrade: React.FC = () => {
                 theme: "dark",
             });
             console.log(err);
-        } finally {
-            setLoadingUpgrade(false)
         }
-
     };
-
-    useEffect(() => {
-        console.log(selectedCase)
-    }
-        , [selectedCase])
 
     return (
         <div className="w-screen flex justify-center">
@@ -132,9 +135,7 @@ const Upgrade: React.FC = () => {
                         </div> : renderPlaceholder(0)
                     }
                     <div className="w-[420px] flex flex-col justify-center items-center h-[333px]">
-
-                        <span>Success Rate: {(successRate * 100).toFixed(2)}%</span>
-                        <span>{success && "success yay"}</span>
+                        <ClockPointer successRate={successRate} spinning={spinning} success={success} />
 
                     </div>
                     {

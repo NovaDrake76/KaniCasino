@@ -14,9 +14,10 @@ interface Inventory {
     selectedCase: any;
     setSelectedCase: React.Dispatch<React.SetStateAction<any>>;
     toggleReload: boolean;
+    setSelectedTarget: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedCase, setSelectedCase, toggleReload }) => {
+const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedCase, setSelectedCase, toggleReload, setSelectedTarget }) => {
     const [inventory, setInventory] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [pageLimit, setPageLimit] = useState<number>(0);
@@ -60,7 +61,6 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                 :
                 [...selectedItems, { item: item, identifier: itemIdentifier }]
         )
-        console.log(item)
         setSelectedCase(item.case);
     }
 
@@ -80,6 +80,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                                 () => {
                                     setSelectedCase(null);
                                     setSelectedItems([]);
+                                    setSelectedTarget(null);
                                     setInventoryFilters(prev => {
                                         return {
                                             ...prev,
@@ -127,15 +128,17 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                         ))
                     ) : (
                         inventory.map((item: any, index: number) => {
-                            return (
-                                <div key={index} ref={
-                                    index === 0 ? inventoryRef : null
-                                }
-                                    onClick={() => handleItemClick(item, index)}
-                                    className={`cursor-pointer border-2 ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === item.uniqueId) ? ' border-[#606bc7]' : 'border-transparent'}`}>
-                                    <Item item={item} />
-                                </div>
-                            )
+                            if (item.case) {
+                                return (
+                                    <div key={index} ref={
+                                        index === 0 ? inventoryRef : null
+                                    }
+                                        onClick={() => handleItemClick(item, index)}
+                                        className={`cursor-pointer border-2 ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === item.uniqueId) ? ' border-[#606bc7]' : 'border-transparent'}`}>
+                                        <Item item={item} />
+                                    </div>
+                                )
+                            }
                         })
                     )
                 }
