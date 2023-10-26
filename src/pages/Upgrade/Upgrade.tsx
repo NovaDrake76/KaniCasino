@@ -118,6 +118,8 @@ const Upgrade: React.FC = () => {
             toast.error(errorMessage, {
                 theme: "dark",
             });
+            setLoadingUpgrade(false)
+            setSpinning(false);
             console.log(err);
         }
     };

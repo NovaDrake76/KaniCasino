@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const Item = require("../models/Item");
 
-// not necessarelly the same as the used in cases
 const baseChances = {
     "1": { "1": 0.5, "2": 0.2, "3": 0.1, "4": 0.05, "5": 0.002 },
     "2": { "1": 0.2, "2": 0.5, "3": 0.2, "4": 0.1, "5": 0.01 },
@@ -11,15 +10,15 @@ const baseChances = {
 };
 
 const calculateSuccessRate = (selectedItems, targetRarity) => {
-    let totalChance = 0;
+    let totalChance = 1;
 
-    for (let item of selectedItems) {
+    for (const item of selectedItems) {
         const baseChance = baseChances[item.rarity][targetRarity];
-        totalChance += baseChance;
+        totalChance *= (1 - baseChance);
     }
 
     // Apply diminishing returns
-    totalChance = 1 - Math.pow(1 - totalChance, 1.25)
+    totalChance = 1 - totalChance;
 
     // Cap the chance at 80%
     return Math.min(totalChance, 0.8);

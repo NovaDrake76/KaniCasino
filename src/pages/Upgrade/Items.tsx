@@ -26,16 +26,16 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
         "5": { "1": 0.002, "2": 0.01, "3": 0.05, "4": 0.1, "5": 0.5 }
     };
 
-    const calculateSuccessRate = (selectedItems: any[], targetRarity: string) => {
-        let totalChance = 0;
+    const calculateSuccessRate = (selectedItems: any, targetRarity: string | number) => {
+        let totalChance = 1;
 
         for (const item of selectedItems) {
             const baseChance = baseChances[item.item.rarity][targetRarity];
-            totalChance += baseChance;
+            totalChance *= (1 - baseChance);
         }
 
         // Apply diminishing returns
-        totalChance = 1 - Math.pow(1 - totalChance, 1.25);
+        totalChance = 1 - totalChance;
 
         // Cap the chance at 80%
         return Math.min(totalChance, 0.8);
@@ -55,7 +55,7 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
 
     if (userData) {
         return (
-            <div className="flex items-center justify-around gap-4 px-14">
+            <div className="flex flex-col md:flex-row items-center justify-around gap-4 px-14">
                 <UserItems selectedItems={selectedItems} setSelectedItems={setSelectedItems} selectedCase={selectedCase} setSelectedCase={setSelectedCase} toggleReload={toggleReload} setSelectedTarget={setSelectedTarget} />
                 <ChooseUpgradeItems setSelectedItems={setSelectedItems} selectedCase={selectedCase} setSelectedCase={setSelectedCase} selectedTarget={selectedTarget} setSelectedTarget={setSelectedTarget} />
             </div >
