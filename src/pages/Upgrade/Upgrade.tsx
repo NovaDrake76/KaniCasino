@@ -19,6 +19,7 @@ const Upgrade: React.FC = () => {
     const [loadingUpgrade, setLoadingUpgrade] = useState<boolean>(false);
     const [toggleReload, setToggleReload] = useState<boolean>(false);
     const [spinning, setSpinning] = useState(false);
+    const [stopAngle, setStopAngle] = useState(0);
 
 
     const itemPlaceholder = [
@@ -62,9 +63,24 @@ const Upgrade: React.FC = () => {
         );
     }
 
+    const renderCloseButton = (type: string) => {
+        return (
+            <div className={`absolute ${type === "target" ? "-left-10" : "-right-10"} top-10 p-4 bg-gray-400/10 hover:bg-gray-500/60 rounded-full cursor-pointer transition-all`}
+                onClick={
+                    () => {
+                        if (type === "target") {
+                            setSelectedTarget(null);
+                        } else {
+                            setSelectedItems([]);
+                        }
+                    }}>
+                <AiOutlineClose />
+            </div>
+        )
+    }
+
     const ClearItems = () => {
         setSelectedItems([]);
-        setSelectedCase(null);
     }
 
     const UpgradeItems = async () => {
@@ -78,19 +94,24 @@ const Upgrade: React.FC = () => {
         try {
             const response = await upgradeItem(payload.selectedItemIds, payload.targetItemId);
             setSpinning(true);
-            setSuccess(response.success)
+            if (response.success) {
+                // stop anywhere in the success chance area
+                setStopAngle(Math.random() * (successRate * 360))
+            } else {
+                setStopAngle(successRate * 360 + Math.random() * ((1 - successRate) * 360))
+            }
             setTimeout(() => {
                 setLoadingUpgrade(false)
                 setSpinning(false);
                 setSelectedItems([]);
                 setToggleReload(!toggleReload);
+                setSuccess(response.success)
+
+                if (response.success) {
+                    setSelectedCase(null);
+                    setSelectedTarget(null);
+                }
             }, 8000);
-
-            if (response.success) {
-                setSelectedCase(null);
-                setSelectedTarget(null);
-            }
-
 
         } catch (err: any) {
             const errorMessage = err.response && err.response.data ? err.response.data.message : "An error occurred";
@@ -126,16 +147,13 @@ const Upgrade: React.FC = () => {
                             {renderSelectedItems(selectedItems)}
                             <MainButton text="Clear Items" icon={<AiOutlineClose />} onClick={ClearItems}
                             />
-                            <div className="absolute -right-10 top-10 p-4 bg-gray-400/10 hover:bg-gray-500/60 rounded-full cursor-pointer transition-all" onClick={
-                                () => {
-                                    setSelectedItems([]);
-                                }}>
-                                <AiOutlineClose />
-                            </div>
+                            {
+                                !spinning && renderCloseButton("selected")
+                            }
                         </div> : renderPlaceholder(0)
                     }
                     <div className="w-[420px] flex flex-col justify-center items-center h-[333px]">
-                        <ClockPointer successRate={successRate} spinning={spinning} success={success} />
+                        <ClockPointer successRate={successRate} spinning={spinning} success={success} stopAngle={stopAngle} />
 
                     </div>
                     {
@@ -143,12 +161,9 @@ const Upgrade: React.FC = () => {
                             {renderSelectedItems([selectedTarget])}
                             <MainButton text="Upgrade" icon={<GiUpgrade />} type="danger" iconPosition="right" onClick={UpgradeItems}
                                 disabled={loadingUpgrade || selectedItems.length < 1} />
-                            <div className="absolute -left-10 top-10 p-4 bg-gray-400/10 hover:bg-gray-500/60 rounded-full cursor-pointer transition-all" onClick={
-                                () => {
-                                    setSelectedTarget(null);
-                                }}>
-                                <AiOutlineClose />
-                            </div>
+                            {
+                                !spinning && renderCloseButton("target")
+                            }
                         </div> : renderPlaceholder(1)
                     }
                 </div>

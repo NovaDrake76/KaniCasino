@@ -8,14 +8,15 @@ interface SpinningLogicProps {
 
 const SpinningLogic: React.FC<SpinningLogicProps> = ({ stopAngle, spinning, totalDuration = 8000 }) => {
     const [angle, setAngle] = useState(0);
+    const fullSpins = 3;
+    const totalDegrees = fullSpins * 360 + stopAngle;
 
     useEffect(() => {
         if (!spinning) {
             return;
         }
+
         const startTime = Date.now();
-        const fullSpins = 4; // Total 4 spins
-        let hasSlowedDown = false; // To control the slowing down of the last spin
 
         const frame = () => {
             const timeElapsed = Date.now() - startTime;
@@ -25,21 +26,14 @@ const SpinningLogic: React.FC<SpinningLogicProps> = ({ stopAngle, spinning, tota
                 progress = 1;
             }
 
-            let spinSpeedFactor = 1;
-            if (progress >= (3 / 4) && !hasSlowedDown) {
-                hasSlowedDown = true;
-                spinSpeedFactor = 0.5; // slow down the last spin
-            }
+            const easeOut = (t: number) => t * (2 - t);
 
-            let newAngle = fullSpins * 360 * progress * spinSpeedFactor + stopAngle * progress;
-            newAngle *= Math.sin((progress * Math.PI) / 2);
+            const newAngle = easeOut(progress) * totalDegrees;
 
             setAngle(newAngle);
 
             if (progress < 1) {
                 requestAnimationFrame(frame);
-            } else {
-                setTimeout(() => setAngle(0), 1000); // Reset to the initial position
             }
         };
 
@@ -57,7 +51,6 @@ const SpinningLogic: React.FC<SpinningLogicProps> = ({ stopAngle, spinning, tota
                 backgroundColor: 'blue',
                 transformOrigin: 'bottom',
                 transform: `rotate(${angle}deg)`,
-                transition: !spinning ? 'transform 2s ease-out' : undefined,
             }}
         />
     );
