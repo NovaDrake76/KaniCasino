@@ -51,7 +51,7 @@ const ClockPointer: React.FC<ClockPointerProps> = ({ successRate, spinning, succ
                 <div className="absolute top-[calc(50%-35px)] left-[calc(50%-60px)] flex flex-col h-44 items-center justify-center">
                     {
                         success ? (
-                            <div className="flex flex-col items-center justify-center gap-4">
+                            <div className="flex flex-col items-center justify-center gap-4 -ml-2">
                                 <span className="font-semibold">Upgrade Success</span>
                             </div>
                         ) : (
