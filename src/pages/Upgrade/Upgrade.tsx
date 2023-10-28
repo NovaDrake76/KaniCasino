@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Title from "../../components/Title";
 import { Tooltip } from "react-tooltip";
 import Items from "./Items";

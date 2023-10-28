@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import UserContext from "../../UserContext";
 import UserItems from "./UserItems";
 import ChooseUpgradeItems from "./ChooseUpgradeItems";
