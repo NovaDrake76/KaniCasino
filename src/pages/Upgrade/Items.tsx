@@ -12,9 +12,10 @@ interface Inventory {
     setSelectedCase: React.Dispatch<React.SetStateAction<string | null>>;
     setSuccessRate: React.Dispatch<React.SetStateAction<number>>;
     toggleReload: boolean;
+    setFinished: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedTarget, setSelectedTarget, selectedCase, setSelectedCase, setSuccessRate, toggleReload }) => {
+const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedTarget, setSelectedTarget, selectedCase, setSelectedCase, setSuccessRate, toggleReload, setFinished }) => {
     const { userData } = useContext(UserContext);
 
 
@@ -43,6 +44,7 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
 
 
     useEffect(() => {
+        setFinished(false)
         if (selectedTarget && selectedItems.length > 0) {
 
             const rate = calculateSuccessRate(selectedItems, selectedTarget.rarity);

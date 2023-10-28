@@ -46,13 +46,26 @@ const SpinningLogic: React.FC<SpinningLogicProps> = ({ stopAngle, spinning, tota
                 position: 'absolute',
                 bottom: '50%',
                 left: '50%',
-                width: '2px',
+                width: '14px',
                 height: '50%',
-                backgroundColor: 'blue',
                 transformOrigin: 'bottom',
                 transform: `rotate(${angle}deg)`,
             }}
-        />
+        >
+            <div
+                style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: '50%',
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(to top, transparent, #FF0E65)',
+                    clipPath: 'polygon(50% 0, 100% 100%, 0% 100%)',
+                    transform: 'translateX(-50%)',
+                }}
+            ></div>
+        </div>
+
     );
 };
 

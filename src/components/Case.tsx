@@ -20,6 +20,7 @@ const Case: React.FC<CaseProps> = ({ id, title, image, price }) => {
       onMouseLeave={() => setHover(false)}
       style={{
         boxShadow: hover ? `0px 0px 20px 10px #3D2A5B` : "none",
+        transform: hover ? "scale(1.01)" : "scale(1)",
       }}
     >
       {!loaded && (

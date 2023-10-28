@@ -20,6 +20,7 @@ const Upgrade: React.FC = () => {
     const [toggleReload, setToggleReload] = useState<boolean>(false);
     const [spinning, setSpinning] = useState(false);
     const [stopAngle, setStopAngle] = useState(0);
+    const [finished, setFinished] = useState(false);
 
 
     const itemPlaceholder = [
@@ -85,6 +86,7 @@ const Upgrade: React.FC = () => {
 
     const UpgradeItems = async () => {
         setLoadingUpgrade(true)
+        setFinished(false);
         setSuccess(false);
 
         const payload = {
@@ -106,6 +108,7 @@ const Upgrade: React.FC = () => {
                 setSelectedItems([]);
                 setToggleReload(!toggleReload);
                 setSuccess(response.success)
+                setFinished(true);
 
                 if (response.success) {
                     setSelectedCase(null);
@@ -127,7 +130,7 @@ const Upgrade: React.FC = () => {
     return (
         <div className="w-screen flex justify-center">
             <div className=" flex-col w-full max-w-[1920px]">
-                <div className="w-full flex justify-center">
+                <div className="w-full flex justify-center ml-1">
                     <Tooltip id="my-tooltip" style={{
                         width: "300px",
                     }} />
@@ -143,7 +146,7 @@ const Upgrade: React.FC = () => {
                     </span>
                 </div>
 
-                <div className="flex items-center justify-around px-5 h-[333px] ">
+                <div className="flex flex-col md:flex-row items-center justify-around px-5  ">
                     {
                         selectedItems.length > 0 ? <div className="flex flex-col relative">
                             {renderSelectedItems(selectedItems)}
@@ -154,9 +157,13 @@ const Upgrade: React.FC = () => {
                             }
                         </div> : renderPlaceholder(0)
                     }
-                    <div className="w-[420px] flex flex-col justify-center items-center h-[333px]">
-                        <ClockPointer successRate={successRate} spinning={spinning} success={success} stopAngle={stopAngle} />
-
+                    <div className="flex flex-col justify-center items-center relative">
+                        <div className="absolute top-1/2 left-1/2 z-10" style={{
+                            boxShadow: `0px 0px 500px 200px #1c133d`,
+                        }}></div>
+                        <div className="z-20">
+                            <ClockPointer successRate={successRate} spinning={spinning} success={success} stopAngle={stopAngle} finished={finished} />
+                        </div>
                     </div>
                     {
                         selectedTarget ? <div className="flex flex-col relative">
@@ -175,7 +182,7 @@ const Upgrade: React.FC = () => {
                 <Items selectedItems={selectedItems} setSelectedItems={setSelectedItems}
                     selectedTarget={selectedTarget} setSelectedTarget={setSelectedTarget}
                     selectedCase={selectedCase} setSelectedCase={setSelectedCase}
-                    setSuccessRate={setSuccessRate} toggleReload={toggleReload} />
+                    setSuccessRate={setSuccessRate} toggleReload={toggleReload} setFinished={setFinished} />
             </div>
         </div>
     );

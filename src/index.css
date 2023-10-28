@@ -234,3 +234,53 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.corner-borders {
+  position: relative;
+}
+
+.corner-borders:before,
+.corner-borders:after,
+.corner-borders> :first-child:before,
+.corner-borders> :first-child:after {
+  content: '';
+  position: absolute;
+  background: #000;
+  /* Border color */
+}
+
+.corner-borders:before {
+  top: 0;
+  left: 0;
+  width: 15px;
+  /* Length of the corner border */
+  height: 2px;
+  /* Border width */
+}
+
+.corner-borders:after {
+  top: 0;
+  left: 0;
+  width: 2px;
+  /* Border width */
+  height: 15px;
+  /* Length of the corner border */
+}
+
+.corner-borders> :first-child:before {
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  /* Length of the corner border */
+  height: 2px;
+  /* Border width */
+}
+
+.corner-borders> :first-child:after {
+  bottom: 0;
+  right: 0;
+  width: 2px;
+  /* Border width */
+  height: 15px;
+  /* Length of the corner border */
+}

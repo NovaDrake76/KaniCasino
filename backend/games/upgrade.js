@@ -30,6 +30,15 @@ const allItemsFromSameCase = (items) => {
     return items.every((item) => item.case.toString() === caseId.toString());
 };
 
+const verifyLesserRarity = (selectedItems, targetItem) => {
+    for (const item of selectedItems) {
+        if (Number(item.rarity) > Number(targetItem.rarity)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
     try {
         // Fetch the user
@@ -55,6 +64,10 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
 
         if (!allItemsFromSameCase([...selectedItems, targetItem])) {
             return { status: 400, message: "All items must be from the same case" };
+        }
+
+        if (!verifyLesserRarity(selectedItems, targetItem)) {
+            return { status: 400, message: "You can't upgrade to a lesser rarity" };
         }
 
         // Remove the selected items from the user's inventory

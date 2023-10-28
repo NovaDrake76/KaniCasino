@@ -70,7 +70,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
 
 
     return (
-        <div className="flex flex-col w-1/2  gap-2">
+        <div className="flex flex-col md:w-1/2  gap-2">
             <div className="flex w-full items-center justify-between bg-[#1C1A33] rounded px-6 h-24">
                 <span>Inventory</span>
                 <div className="flex gap-4 ">

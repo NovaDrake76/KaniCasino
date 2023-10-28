@@ -69,7 +69,7 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
     }, [selectedCase]);
 
     return (
-        <div className="flex flex-col w-1/2 gap-2 ">
+        <div className="flex flex-col md:w-1/2 gap-2 ">
             <div className="flex w-full items-center justify-between bg-[#1C1A33] rounded px-6 h-24">
                 <span>Get one Item</span>
                 <div className="flex gap-4">

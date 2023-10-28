@@ -57,15 +57,17 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
                     const player = betsInfo.players[playerId];
                     const bet = betsInfo.bets[playerId];
                     return (
+
                         <div className="flex items-center justify-between py-2 relative" key={playerId}
-                            onMouseEnter={() => handleMouseEnter(playerId)}
-                            onMouseLeave={handleMouseLeave}>
+                        >
                             {
                                 playerId === hoveredPlayerId && (
                                     <PlayerPreview player={player} />
                                 )
                             }
-                            <a href={`/profile/${playerId}`} target="_blank" rel="noreferrer" className="text-white transition-all">
+                            <a href={`/profile/${playerId}`} target="_blank" rel="noreferrer" className="text-white transition-all"
+                                onMouseEnter={() => handleMouseEnter(playerId)}
+                                onMouseLeave={handleMouseLeave}>
                                 <div className="flex items-center gap-2">
                                     <img src={player.profilePicture} className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 " />
                                     <span className="font-bold text-sm">{player.username}</span>
