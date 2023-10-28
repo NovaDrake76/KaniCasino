@@ -134,7 +134,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                                         index === 0 ? inventoryRef : null
                                     }
                                         onClick={() => handleItemClick(item)}
-                                        className={`cursor-pointer border-2 ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === item.uniqueId) ? ' border-[#606bc7]' : 'border-transparent'}`}>
+                                        className={`cursor-pointer border-2 h-min ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === item.uniqueId) ? ' border-[#606bc7]' : 'border-transparent'}`}>
                                         <Item item={item} />
                                     </div>
                                 )

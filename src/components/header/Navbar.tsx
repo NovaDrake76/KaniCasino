@@ -58,7 +58,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
       })
       .catch((error: any) => {
         console.log(error);
-        toast.error("Error while getting user info");
+        toast.error("Please, login again");
         Logout();
         setLoading(false);
       });

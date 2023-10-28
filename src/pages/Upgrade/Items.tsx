@@ -27,32 +27,67 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
         "5": { "1": 0.002, "2": 0.01, "3": 0.05, "4": 0.1, "5": 0.5 }
     };
 
-    const calculateSuccessRate = (selectedItems: any, targetRarity: string | number) => {
+    const calculateSuccessRate = (selectedItems: any, targetRarity: string) => {
         let totalChance = 1;
+        let diminishingFactor = 1;  // Initialize a diminishing factor
+        let rarityFactor = 1;  // Initialize a rarity factor
+
+        const diminishingRate = 0.9; // 90% effectiveness for each subsequent item
+
+        // Apply a rarity factor to make it harder to get higher rarities
+        if (targetRarity == "4") {
+            rarityFactor = 0.7;
+        } else if (targetRarity == "5") {
+            rarityFactor = 0.5;
+        }
 
         for (const item of selectedItems) {
             const baseChance = baseChances[item.item.rarity][targetRarity];
-            totalChance *= (1 - baseChance);
+
+            // Apply rarity factor conditionally
+            if (parseInt((targetRarity), 10) >= 3 && selectedItems.length > 1) {
+                totalChance *= (1 - (baseChance * diminishingFactor * rarityFactor));
+                rarityFactor = rarityFactor / 1.11;
+            } else {
+                totalChance *= (1 - (baseChance * diminishingFactor));
+            }
+
+            diminishingFactor *= diminishingRate;  // Reduce the effectiveness for the next item
         }
 
         // Apply diminishing returns
         totalChance = 1 - totalChance;
 
-        // Cap the chance at 80%
-        return Math.min(totalChance, 0.8);
+
+        // Cap the chance by rarity
+        if (targetRarity == "2") {
+            return Math.min(totalChance, 0.7);
+        }
+        else if (targetRarity == "3") {
+            return Math.min(totalChance, 0.6);
+
+        }
+        else if (targetRarity == "4") {
+            return Math.min(totalChance, 0.45);
+
+        }
+        else if (targetRarity == "5") {
+            return Math.min(totalChance, 0.2);
+        } else {
+            return 0.8;
+        }
     };
 
-
     useEffect(() => {
-        setFinished(false)
         if (selectedTarget && selectedItems.length > 0) {
-
+            setFinished(false)
             const rate = calculateSuccessRate(selectedItems, selectedTarget.rarity);
             setSuccessRate(rate);
 
         } else {
             setSuccessRate(0);
         }
+
     }, [selectedItems, selectedTarget]);
 
     if (userData) {

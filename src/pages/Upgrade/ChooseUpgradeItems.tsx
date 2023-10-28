@@ -62,7 +62,7 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
 
     useEffect(() => {
         getAllItemsInfo();
-    }, [itemFilters, userData]);
+    }, [userData]);
 
     useEffect(() => {
         selectedCase && getSelectedCaseItems();
@@ -96,6 +96,11 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
                                 sortBy: prev.sortBy === '' ? 'mostRare' : ''
                             }
                         })
+                        setSelectedCaseItems(prev => {
+                            // Items are sorted by most rare by default!
+                            return prev.reverse();
+                        }
+                        )
                     }}>
 
                         <span>Rarity</span>
@@ -135,7 +140,7 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
                         ) : (
                             selectedCaseItems.map((item: any, index: number) => {
                                 return (
-                                    <div key={index} className={`cursor-pointer border-2 ${selectedTarget?._id === item._id ? ' border-[#606bc7]' : 'border-transparent'}`} onClick={() => {
+                                    <div key={index} className={`cursor-pointer border-2 h-min ${selectedTarget?._id === item._id ? ' border-[#606bc7]' : 'border-transparent'}`} onClick={() => {
                                         if (selectedTarget?._id === item._id) {
                                             setSelectedTarget(null);
                                         } else {

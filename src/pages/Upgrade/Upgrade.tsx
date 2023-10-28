@@ -36,7 +36,7 @@ const Upgrade: React.FC = () => {
 
     const renderPlaceholder = (i: any) => {
         return (
-            <div className="flex flex-col items-center justify-center gap-2 text-center">
+            <div className="flex flex-col items-center justify-center gap-2 text-center w-[333px]">
                 <img
                     src={itemPlaceholder[i].imgSrc}
                     alt="upgrade"
@@ -109,6 +109,7 @@ const Upgrade: React.FC = () => {
                 setToggleReload(!toggleReload);
                 setSuccess(response.success)
                 setFinished(true);
+                setStopAngle(0);
 
                 if (response.success) {
                     setSelectedCase(null);
@@ -150,7 +151,7 @@ const Upgrade: React.FC = () => {
                     {
                         selectedItems.length > 0 ? <div className="flex flex-col relative">
                             {renderSelectedItems(selectedItems)}
-                            <MainButton text="Clear Items" icon={<AiOutlineClose />} onClick={ClearItems}
+                            <MainButton text={`Clear Items ${selectedItems.length > 1 ? `(${selectedItems.length})` : ''}`} icon={<AiOutlineClose />} onClick={ClearItems}
                             />
                             {
                                 !spinning && renderCloseButton("selected")
