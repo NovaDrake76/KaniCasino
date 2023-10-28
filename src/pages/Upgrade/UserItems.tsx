@@ -51,7 +51,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
         setLoading(false);
     }
 
-    const handleItemClick = (item: any, index: number) => {
+    const handleItemClick = (item: any) => {
         const itemIdentifier = item.uniqueId;
         const itemExists = selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === itemIdentifier);
 
@@ -133,7 +133,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                                     <div key={index} ref={
                                         index === 0 ? inventoryRef : null
                                     }
-                                        onClick={() => handleItemClick(item, index)}
+                                        onClick={() => handleItemClick(item)}
                                         className={`cursor-pointer border-2 ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === item.uniqueId) ? ' border-[#606bc7]' : 'border-transparent'}`}>
                                         <Item item={item} />
                                     </div>
