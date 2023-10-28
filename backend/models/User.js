@@ -1,3 +1,4 @@
+const uuid = require('uuid');
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
@@ -23,6 +24,10 @@ const UserSchema = new mongoose.Schema({
   },
   inventory: [
     {
+      uniqueId: {
+        type: String,
+        default: () => uuid.v4(),
+      },
       _id: mongoose.Schema.Types.ObjectId,
       name: String,
       image: String,

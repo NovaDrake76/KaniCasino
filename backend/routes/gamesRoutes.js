@@ -4,6 +4,8 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 
 const User = require("../models/User");
 const Case = require("../models/Case");
+const upgradeItems = require("../games/upgrade");
+
 
 // Rarities array
 const Rarities = [
@@ -51,10 +53,9 @@ module.exports = (io) => {
   router.post("/openCase/:id", isAuthenticated, async (req, res) => {
     try {
       const { id } = req.params;
-      const { userId } = req.body;
+      const user = req.user;
 
       const caseData = await Case.findById(id).populate("items");
-      const user = await User.findById(userId);
 
       if (!caseData || !user) {
         if (!caseData) {
@@ -120,5 +121,18 @@ module.exports = (io) => {
     }
   });
 
+  router.post("/upgrade", isAuthenticated, async (req, res) => {
+    const { selectedItemIds, targetItemId } = req.body;
+    const user = req.user._id;
+
+
+    const result = await upgradeItems(user, selectedItemIds, targetItemId);
+    res.status(result.status).json(result);
+  });
+
+
   return router;
 };
+
+
+

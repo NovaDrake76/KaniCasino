@@ -5,10 +5,7 @@ export async function getCases() {
     return response.data;
 }
 
-
 export async function getCase(id: string) {
-    const response = await api.get(`/cases/${id}`);;
-
-
+    const response = await api.get(`/cases/${id}`);
     return response.data;
 }

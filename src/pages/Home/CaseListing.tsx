@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import Case from "../Case";
-import Title from "../Title";
+import Case from "../../components/Case";
+import Title from "../../components/Title";
 
 interface CaseListingProps {
   name: string;

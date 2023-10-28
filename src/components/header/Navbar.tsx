@@ -12,7 +12,7 @@ import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import ClaimBonus from "./ClaimBonus";
-// import { GiUpgrade } from 'react-icons/gi';
+import { GiUpgrade } from 'react-icons/gi';
 
 interface Navbar {
   openUserFlow: boolean;
@@ -98,11 +98,11 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
       path: "/crash",
       icon: <SlPlane className="text-2xl" />,
     },
-    // {
-    //   name: "Upgrade",
-    //   path: "/upgrade",
-    //   icon: <GiUpgrade className="text-2xl" />,
-    // }
+    {
+      name: "Upgrade",
+      path: "/upgrade",
+      icon: <GiUpgrade className="text-2xl" />,
+    }
   ];
 
   const toggleUserFlow = useCallback(() => {
@@ -180,7 +180,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
                       currency: "DOL",
                     })
                       .format(userData?.walletBalance)
-                      .replace("DOL", "C₽")}
+                      .replace("DOL", "K₽")}
                   </div>
                 </div>
               )}

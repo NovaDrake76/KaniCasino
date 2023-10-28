@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { buyItem } from "../../services/market/MarketSercive";
-import MainButton from "../MainButton";
+import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 

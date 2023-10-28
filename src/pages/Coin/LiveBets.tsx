@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import PlayerPreview from "../PlayerPreview";
+import PlayerPreview from "../../components/PlayerPreview";
 
 interface GameHistory {
     gameState: any;
@@ -51,27 +51,29 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
             <div className="flex border-t border-gray-700 flex-col ">
                 <div className="flex items-center justify-between py-4">
                     <span className="font-bold text-sm">Total Bets</span>
-                    <span className="font-bold text-sm">C₽{totalBets}</span>
+                    <span className="font-bold text-sm">K₽{totalBets}</span>
                 </div>
                 {betsInfo && betsInfo.players && Object.keys(betsInfo.players).map(playerId => {
                     const player = betsInfo.players[playerId];
                     const bet = betsInfo.bets[playerId];
                     return (
+
                         <div className="flex items-center justify-between py-2 relative" key={playerId}
-                            onMouseEnter={() => handleMouseEnter(playerId)}
-                            onMouseLeave={handleMouseLeave}>
+                        >
                             {
                                 playerId === hoveredPlayerId && (
                                     <PlayerPreview player={player} />
                                 )
                             }
-                            <a href={`/profile/${playerId}`} target="_blank" rel="noreferrer" className="text-white transition-all">
+                            <a href={`/profile/${playerId}`} target="_blank" rel="noreferrer" className="text-white transition-all"
+                                onMouseEnter={() => handleMouseEnter(playerId)}
+                                onMouseLeave={handleMouseLeave}>
                                 <div className="flex items-center gap-2">
                                     <img src={player.profilePicture} className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 " />
                                     <span className="font-bold text-sm">{player.username}</span>
                                 </div>
                             </a>
-                            <span className="font-bold text-sm">C₽{bet}</span>
+                            <span className="font-bold text-sm">K₽{bet}</span>
                         </div>
                     );
                 })}

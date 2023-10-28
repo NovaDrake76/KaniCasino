@@ -3,9 +3,10 @@ const router = express.Router();
 const Case = require("../models/Case");
 const Item = require("../models/Item");
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
+
 router.get("/", async (req, res) => {
   try {
-    const cases = await Case.find().populate("items");
+    const cases = await Case.find().select('-items');
     res.json(cases);
   } catch (err) {
     res.status(500).json({ message: err.message });

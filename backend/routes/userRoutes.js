@@ -7,6 +7,8 @@ const { check, validationResult } = require("express-validator");
 const User = require("../models/User");
 const authMiddleware = require("../middleware/authMiddleware");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
+const { ObjectId } = require('mongodb'); // or however you're importing MongoDB
+
 
 // Register user
 router.post(
@@ -235,7 +237,7 @@ router.get("/inventory/:userId", async (req, res) => {
 
   try {
     const { userId } = req.params;
-    const { name, rarity, sortBy, order } = req.query;
+    const { name, rarity, sortBy, order, caseId } = req.query;
     const page = parseInt(req.query.page) || 1;
 
     const user = await User.findById(userId);
@@ -251,6 +253,10 @@ router.get("/inventory/:userId", async (req, res) => {
       { $project: { inventory: 1 } },
       { $unwind: "$inventory" }
     ];
+
+    if (caseId) {
+      countPipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
+    }
 
     if (name) {
       countPipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
@@ -271,6 +277,11 @@ router.get("/inventory/:userId", async (req, res) => {
       { $project: { inventory: 1 } },
       { $unwind: "$inventory" }
     ];
+
+    if (caseId) {
+      pipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
+    }
+
 
     if (name) {
       pipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
@@ -388,7 +399,7 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
       // Save updated user
       await user.save();
 
-      res.json({ message: `Claimed C₽${currentBonus}!`, value: currentBonus, nextBonus: user.nextBonus });
+      res.json({ message: `Claimed K₽${currentBonus}!`, value: currentBonus, nextBonus: user.nextBonus });
 
     } else {
       res.status(400).json({ message: 'Bonus not yet available' });

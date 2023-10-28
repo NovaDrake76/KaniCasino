@@ -15,7 +15,7 @@ const ClaimBonus: React.FC<IBonus> = ({ setHaveBonus, setOpenUserFlow, toogleUse
 
     const claimUserBonus = async () => {
         try {
-            let res = await claimBonus();
+            const res = await claimBonus();
             setOpenUserFlow(false);
             setHaveBonus(false);
             console.log(res)

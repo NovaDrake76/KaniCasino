@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { sellItem } from "../../services/market/MarketSercive";
 import { getInventory } from "../../services/users/UserServices";
 import UserContext from "../../UserContext";
-import Item from "../Item";
-import MainButton from "../MainButton";
+import Item from "../../components/Item";
+import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import { AiOutlineClose } from 'react-icons/ai'
 

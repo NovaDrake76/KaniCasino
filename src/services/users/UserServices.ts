@@ -12,13 +12,16 @@ export async function getInventory(id: string, page = 1, filters?: any) {
     let url = `/users/inventory/${id}?page=${page}`;
 
     if (filters) {
-        url += `&name=${filters.name}&rarity=${filters.rarity}&sortBy=${filters.sortBy}&order=${filters.order}`;
+        for (const key in filters) {
+            if (filters[key]) {
+                url += `&${key}=${filters[key]}`;
+            }
+        }
     }
 
     const response = await api.get(url);
     return response.data;
 }
-
 export async function fixItem(name: string, image: string, rarity: string) {
     const response = await api.put(`/users/fixedItem/`, {
         name,
