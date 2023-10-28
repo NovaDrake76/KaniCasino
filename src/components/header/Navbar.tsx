@@ -13,6 +13,7 @@ import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import ClaimBonus from "./ClaimBonus";
 import { GiUpgrade } from 'react-icons/gi';
+import { toast } from "react-toastify";
 
 interface Navbar {
   openUserFlow: boolean;
@@ -57,6 +58,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
       })
       .catch((error: any) => {
         console.log(error);
+        toast.error("Error while getting user info");
         Logout();
         setLoading(false);
       });
