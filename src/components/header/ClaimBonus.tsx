@@ -40,6 +40,8 @@ const ClaimBonus: React.FC<IBonus> = ({ setHaveBonus, setOpenUserFlow, toogleUse
         <MainButton
             text="Claim Bonus"
             onClick={() => claimUserBonus()}
+            pulse={true}
+
         />
     )
 }
