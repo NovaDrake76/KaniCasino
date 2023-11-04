@@ -9,6 +9,7 @@ interface MainButton {
   icon?: any;
   iconPosition?: "left" | "right";
   type?: "button" | "danger" | "success" | "warning" | "info" | "dark";
+  pulse?: boolean;
 }
 
 const MainButton: React.FC<MainButton> = ({
@@ -20,6 +21,8 @@ const MainButton: React.FC<MainButton> = ({
   icon,
   iconPosition = "left",
   type = "button",
+  pulse,
+
 }) => {
 
   const colorClasses = {
@@ -31,9 +34,11 @@ const MainButton: React.FC<MainButton> = ({
     dark: "bg-gray-800 hover:bg-gray-900 focus:ring-gray-500",
   };
 
+  const pulseClass = pulse ? "animate-pulse" : "";
+
   return (
     <button
-      className={`flex items-center justify-center w-full h-10 ${colorClasses[type]} focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md text-white font-medium md:text-lg ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+      className={`flex items-center justify-center w-full h-10 ${colorClasses[type]} focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md text-white font-medium md:text-lg ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${pulseClass}`} // Include the pulseClass in the class list
       onClick={onClick}
       disabled={disabled}
       type={submit ? "submit" : "button"}
