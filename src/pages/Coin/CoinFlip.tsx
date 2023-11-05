@@ -138,10 +138,12 @@ const CoinFlip = () => {
                 event.preventDefault();
               }
             }}
-            onChange={(e) => setBet(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setBet(value < 0 ? 0 : value);
+            }}
             className="p-2 border rounded w-1/2 lg:w-full"
           />
-
           <div className="flex flex-col gap-2 w-full">
             <label className="text-lg font-semibold">Choose a side</label>
             <div className="flex items-center justify-between gap-2 w-full flex-col lg:flex-row">

@@ -54,7 +54,9 @@ const PlayerPreview: React.FC<PlayerPreview> = ({ player }) => {
                                 )
                             }
 
-                            <span className="font-bold text-lg">{player.fixedItem.name}</span>
+
+                            <span className="text-base py-2 font-semibold"
+                                style={{ textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000' }}>{player.fixedItem.name}</span>
                         </div>
                     </div>
                 )

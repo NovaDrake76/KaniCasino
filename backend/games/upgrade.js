@@ -23,8 +23,6 @@ const calculateSuccessRate = (selectedItems, targetRarity) => {
         rarityFactor = 0.5;
     }
 
-    console.log(selectedItems)
-
     for (const item of selectedItems) {
         const baseChance = baseChances[item.rarity][targetRarity];
 
