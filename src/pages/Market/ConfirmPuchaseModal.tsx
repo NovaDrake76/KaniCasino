@@ -82,7 +82,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-white text-lg">
             Are you sure you want to buy the {item.item.name} for {item.price}{" "}
-            CP?
+            KP?
           </p>
           <img src={item.item.image} alt="" className="h-28" />
         </div>

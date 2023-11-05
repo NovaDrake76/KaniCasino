@@ -186,7 +186,10 @@ const CrashGame = () => {
                 event.preventDefault();
               }
             }}
-            onChange={(e) => setBet(Number(e.target.value))}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setBet(value < 0 ? 0 : value);
+            }}
             className="p-2 border rounded w-1/2 lg:w-full"
           />
           <button
@@ -208,7 +211,7 @@ const CrashGame = () => {
                     ? "Wait for next round"
                     : bet === 0 || !bet || bet < 1
                       ? "Place the bet value"
-                      : userData.walletBalance < bet!
+                      : userData.walletBalance < (bet ?? 0)
                         ? "Not enough money"
                         : "Place Bet"
             }

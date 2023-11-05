@@ -122,7 +122,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               id="price"
               type="number"
               min={0}
-              placeholder="Price in CP"
+              placeholder="Price in KP"
               value={price}
               onKeyDown={(event) => {
                 if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
@@ -144,8 +144,8 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           )}
         </div>
 
-        <div className="flex flex-col justify-center overflow-auto max-h-[300px] overflow-x-hidden gap-4">
-          <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-col justify-center max-h-[300px] overflow-x-hidden gap-4">
+          <div className="flex flex-wrap justify-center gap-4  overflow-auto mt-4 ">
             {loadingInventory ? (
               <div>Loading...</div>
             ) : (

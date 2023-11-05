@@ -84,9 +84,9 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
       {
         !isHome && (
           <div className="p-4">
-            <div className="flex items-center gap-2 text-gray-400">
-              <BiArrowBack className="text-[#84819a] cursor-pointer" onClick={() => navigate(-1)} />
-              <span className="text-[#84819a] cursor-pointer" onClick={() => navigate(-1)}>Back</span>
+            <div className="flex items-center gap-2 text-[#84819a] cursor-pointer w-fit" onClick={() => navigate(-1)}>
+              <BiArrowBack />
+              <span>Back</span>
             </div>
           </div>
         )
