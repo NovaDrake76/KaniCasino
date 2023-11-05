@@ -1,4 +1,3 @@
-import { cubicBezier } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 
 const getInitialAngles = () => {
