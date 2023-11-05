@@ -89,26 +89,30 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
                             </div>
                         )
                     }
-                    <div className="flex items-center justify-between cursor-pointer" onClick={() => {
-                        setItemFilters(prev => {
-                            return {
-                                ...prev,
-                                sortBy: prev.sortBy === '' ? 'mostRare' : ''
-                            }
-                        })
-                        setSelectedCaseItems(prev => {
-                            // Items are sorted by most rare by default!
-                            return prev.reverse();
-                        }
-                        )
-                    }}>
+                    {
+                        selectedCase !== null && (
+                            <div className="flex items-center justify-between cursor-pointer" onClick={() => {
+                                setItemFilters(prev => {
+                                    return {
+                                        ...prev,
+                                        sortBy: prev.sortBy === '' ? 'mostRare' : ''
+                                    }
+                                })
+                                setSelectedCaseItems(prev => {
+                                    // Items are sorted by most rare by default!
+                                    return prev.reverse();
+                                }
+                                )
+                            }}>
 
-                        <span>Rarity</span>
-                        <AiOutlineArrowDown style={{
-                            transform: itemFilters.sortBy === 'mostRare' ? 'rotate(180deg)' : '',
-                            transition: 'transform 0.2s ease-in-out'
-                        }} />
-                    </div>
+                                <span>Rarity</span>
+                                <AiOutlineArrowDown style={{
+                                    transform: itemFilters.sortBy === 'mostRare' ? 'rotate(180deg)' : '',
+                                    transition: 'transform 0.2s ease-in-out'
+                                }} />
+                            </div>
+                        )
+                    }
                 </div>
             </div>
             <div className="flex h-[500px] border-2 border-[#1C1A33] flex-wrap gap-2 p-4 overflow-y-auto justify-around">

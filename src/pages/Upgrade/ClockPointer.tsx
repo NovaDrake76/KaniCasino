@@ -43,15 +43,15 @@ const ClockPointer: React.FC<ClockPointerProps> = ({ successRate, spinning, succ
                 <div className=" inset-0 flex items-center justify-center">
                     <SpinningLogic stopAngle={stopAngle} spinning={spinning} />
                 </div>
-                <div className="absolute top-[calc(50%-70px)] left-[calc(50%+10px)]  inset-0 flex flex-col items-center justify-center">
+                <div className="absolute top-[calc(50%-70px)] left-[calc(50%+10px)]  inset-0 flex flex-col items-center justify-center z-20">
                     <span className="font-bold">{`${(successRate * 100).toFixed(2)}%`}</span>
 
                 </div>
             </div>) : (
-                <div className="absolute top-[calc(50%-35px)] left-[calc(50%-60px)] flex flex-col h-44 items-center justify-center">
+                <div className={`absolute top-[calc(50%-38px)] left-[calc(50%-87px)] flex flex-col h-44 w-44 items-center justify-center rounded-full `}>
                     {
                         success ? (
-                            <div className="flex flex-col items-center justify-center gap-4 -ml-2">
+                            <div className="flex flex-col items-center justify-center gap-4">
                                 <span className="font-semibold">Upgrade Success</span>
                             </div>
                         ) : (

@@ -4,6 +4,8 @@ import Navbar from "./Navbar";
 import UserContext from "../../UserContext";
 import { ImConnection } from "react-icons/im";
 import CaseOpenedNotification from "./CaseOpenedNotification";
+import { useNavigate } from "react-router-dom";
+import { BiArrowBack } from "react-icons/bi";
 
 interface Header {
   onlineUsers: number;
@@ -14,6 +16,8 @@ interface Header {
 
 const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlow, setOpenUserFlow }) => {
   const isLogged = useContext(UserContext);
+  const navigate = useNavigate();
+  const isHome = window.location.pathname === "/";
 
   useEffect(() => {
     if (isLogged.isLogged == true) {
@@ -77,6 +81,16 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
           </div>
         </div>
       )}
+      {
+        !isHome && (
+          <div className="p-4">
+            <div className="flex items-center gap-2 text-gray-400">
+              <BiArrowBack className="text-[#84819a] cursor-pointer" onClick={() => navigate(-1)} />
+              <span className="text-[#84819a] cursor-pointer" onClick={() => navigate(-1)}>Back</span>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 };
