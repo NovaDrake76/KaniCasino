@@ -127,19 +127,25 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                             />
                         ))
                     ) : (
-                        inventory.map((item: any, index: number) => {
-                            if (item.case) {
-                                return (
-                                    <div key={index} ref={
-                                        index === 0 ? inventoryRef : null
-                                    }
-                                        onClick={() => handleItemClick(item)}
-                                        className={`cursor-pointer border-2 h-min ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === item.uniqueId) ? ' border-[#606bc7]' : 'border-transparent'}`}>
-                                        <Item item={item} />
-                                    </div>
-                                )
-                            }
-                        })
+                        inventory.length > 0 ? (
+                            inventory.map((item: any, index: number) => {
+                                if (item.case) {
+                                    return (
+                                        <div key={index} ref={
+                                            index === 0 ? inventoryRef : null
+                                        }
+                                            onClick={() => handleItemClick(item)}
+                                            className={`cursor-pointer border-2 h-min ${selectedItems.some((selectedItem: { identifier: string; }) => selectedItem.identifier === item.uniqueId) ? ' border-[#606bc7]' : 'border-transparent'}`}>
+                                            <Item item={item} />
+                                        </div>
+                                    )
+                                }
+                            })
+                        ) : (
+                            <div className="flex flex-col items-center justify-center gap-4">
+                                <span className="font-semibold">No items found</span>
+                            </div>
+                        )
                     )
                 }
 

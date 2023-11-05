@@ -118,16 +118,16 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
           <div className="flex">
             <Link to="/">
               <div
-                className="flex items-center gap-2 w-0 md:w-auto"
+                className="flex items-center gap-2 "
                 onMouseEnter={handleHover}
                 onMouseLeave={handleHover}
               >
                 <img
                   src="/images/logo.webp"
                   alt="logo"
-                  className="md:w-12 h-12 invisible md:visible"
+                  className="w-12 h-12 "
                 />
-                <div className="flex flex-col justify-center invisible md:visible">
+                <div className="flex flex-col justify-center">
                   <div className="font-normal text-xl text-white">
                     KaniCasino
                   </div>
@@ -174,7 +174,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
 
               }
               {!loading && (
-                <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all ">
+                <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all invisible md:visible">
                   <BiWallet className="text-2xl" />
                   <div className="max-w-[80px] md:max-w-none overflow-hidden truncate">
                     {new Intl.NumberFormat("en-US", {
