@@ -27,16 +27,20 @@ Please note that the database access is not public; you can make your own databa
 - [x] Crash.
 - [x] CoinFlip Input.
 - [X] Fix Market Modal.
-- [x] Migrate to AWS, render sucks
-- [x] Fix login modal rerender on live history
+- [x] Migrate backend to AWS, render sucks.
+- [x] Fix login modal rerender on live history.
 - [x] Search on profile.
 - [x] Item notification information.
-- [x] Fix Level
+- [x] Fix Level.
+- [x] Upgrade clock animation.
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Banner content.
-- [ ] Fix profile picture file error
-- [ ] Upgrade clock animation
+- [ ] Fix profile picture file error.
+- [ ] Add friend.
+- [ ] Item battle.
+- [ ] PFP border color per level.
+
 
 
 ![image](https://github.com/NovaDrake76/KaniCasino/assets/65428910/b7e025e1-25ad-46b6-a7d8-ace72d5804e2)
