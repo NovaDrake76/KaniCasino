@@ -62,6 +62,10 @@ io.on("connection", (socket) => {
   onlineUsers++;
   io.emit("onlineUsers", onlineUsers);
 
+  socket.on("joinRoom", (userId) => {
+    socket.join(userId);
+  });
+
   socket.on("disconnect", () => {
     onlineUsers--;
     io.emit("onlineUsers", onlineUsers);

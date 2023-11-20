@@ -11,16 +11,48 @@ import SocketConnection from "./services/socket"
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
 
+interface userDataProps {
+  id: string;
+  level: number;
+  nextBonus: number;
+  profilePicture: string;
+  username: string;
+  walletBalance: number;
+  xp: number;
+}
+
+interface userDataSocketProps {
+  walletBalance: number;
+  xp: number;
+  level: number;
+}
+
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [onlineUsers, setOnlineUsers] = useState<number>(0);
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<userDataProps | null>(null);
   const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
   const [openUserFlow, setOpenUserFlow] = useState<boolean>(false);
+  const [joinedRoom, setJoinedRoom] = useState<boolean>(false);
   const socket = SocketConnection.getInstance();
 
-  useEffect(() => {
+  const userDataSocket = () => {
+    socket.on("userDataUpdated", (payload: userDataSocketProps) => {
+      console.log("userDataUpdated", payload);
+      setUserData(prevUserData => prevUserData ? {
+        ...prevUserData,
+        walletBalance: payload.walletBalance,
+        xp: payload.xp,
+        level: payload.level
+      } : null);
+    });
 
+    return () => {
+      socket.off("userDataUpdated");
+    };
+  }
+
+  useEffect(() => {
     socket.on("onlineUsers", (count) => {
       setOnlineUsers(count);
     });
@@ -34,11 +66,20 @@ function App() {
       }, 7500);
     });
 
+    userDataSocket();
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [socket]);
+
+  useEffect(() => {
+    if (userData && userData.id && !joinedRoom) {
+      socket.emit("joinRoom", userData.id);
+      setJoinedRoom(true);
+    }
+  }, [joinedRoom, socket, userData]);
+
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");

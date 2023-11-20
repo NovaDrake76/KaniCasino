@@ -32,8 +32,6 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
     return Rarities.find((rarity) => rarity.id == e)?.color;
   };
 
-  console.log(item);
-
 
   return (
     <div

@@ -43,13 +43,12 @@ const CrashGame = () => {
       profilePicture: userData?.profilePicture,
       level: userData?.level,
       fixedItem: userData?.fixedItem,
-      payout: null
+      payout: null,
+      walletBalance: userData?.walletBalance
     }]
     setUserGambled(true);
 
     socket.emit("crash:bet", user[0], bet);
-
-    toogleUserData({ ...userData, walletBalance: userData.walletBalance - bet! });
     setUserCashedOut(false);
   };
 
@@ -70,8 +69,6 @@ const CrashGame = () => {
     const cashoutSuccessListener = (data: any) => {
       setUserMultiplier(data.multiplier);
       setUserCashedOut(true);
-
-      toogleUserData({ ...userData, walletBalance: data.updatedUser.walletBalance });
     };
 
     socket.on("crash:cashoutSuccess", cashoutSuccessListener);
@@ -87,7 +84,6 @@ const CrashGame = () => {
     };
 
     socket.on("crash:gameState", gameStateListener);
-
 
     return () => {
       socket.off("crash:gameState", gameStateListener);
@@ -198,7 +194,7 @@ const CrashGame = () => {
             disabled={
               !isLogged ||
               (gameStarted && (!userGambled || userCashedOut)) ||
-              (!gameStarted && userGambled)
+              (!gameStarted && userGambled) || (userData.walletBalance < (bet ?? 0))
             }
           >
             {!isLogged

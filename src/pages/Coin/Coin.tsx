@@ -5,11 +5,12 @@ import headsImg from '/images/coinHeads.webp';
 import tailsImg from '/images/coinTails.webp';
 
 interface CoinProps {
-    result: any;
+    result: number | null;
     spinning: boolean;
 }
 
 const Coin: React.FC<CoinProps> = ({ result, spinning }) => {
+    console.log(result);
     const controls = useAnimation();
 
     useEffect(() => {
