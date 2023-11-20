@@ -25,7 +25,8 @@ const ClaimBonus: React.FC<IBonus> = ({ setHaveBonus, setOpenUserFlow, toogleUse
             toogleUserData(
                 {
                     ...userData,
-                    nextBonus: res.nextBonus
+                    nextBonus: res.nextBonus,
+                    walletBalance: userData.walletBalance + res.value
                 }
             )
         } catch (error: any) {
