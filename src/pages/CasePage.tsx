@@ -21,7 +21,7 @@ const CasePage = () => {
   const [animationAux, setAnimationAux] = useState<boolean>(false);
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
-  const { userData, toogleUserData } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -53,17 +53,9 @@ const CasePage = () => {
 
   const openCase = async () => {
     setLoadingButton(true);
+
     try {
       const response = await openBox(id);
-      toogleUserData({
-        ...userData,
-        walletBalance: userData.walletBalance - data.price,
-        xp: userData.xp + 5 * data.price,
-        level:
-          userData.xp + 5 * data.price >= (userData.level + 1) * 1000
-            ? userData.level + 1
-            : userData.level,
-      });
       setOpenedItem(response);
       // playAudio();
     } catch (error: any) {

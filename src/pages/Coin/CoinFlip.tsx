@@ -15,7 +15,7 @@ const CoinFlip = () => {
   const [bet, setBet] = useState(0);
   const [betAux, setBetAux] = useState(0);
   const [choice, setChoice] = useState(null as number | null);
-  const [result, setResult] = useState(null as number | null);
+  const [result, setResult] = useState<number | null>(null);
   const [history, setHistory] = useState<GameHistory[]>([]);
   const [spinning, setSpinning] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
@@ -33,7 +33,7 @@ const CoinFlip = () => {
       choices: {},
     }
   });
-  const { isLogged, toogleUserData, userData } = useContext(UserContext);
+  const { isLogged, userData } = useContext(UserContext);
 
   const handleBet = () => {
     const user = [{
@@ -48,7 +48,6 @@ const CoinFlip = () => {
     socket.emit("coinFlip:bet", user[0], bet, choice);
     socket.emit("coinFlip:choice", user[0], choice);
 
-    toogleUserData({ ...userData, walletBalance: userData.walletBalance - bet });
     setUserGambled(true);
     setBetAux(bet);
   };
@@ -64,12 +63,6 @@ const CoinFlip = () => {
     const resultListener = (result: number) => {
       setResult(result);
       setSpinning(false);
-
-      // Update the user's balance based on whether they won or lost
-      if (userGambled && result == choice) {
-        // The user won the game, double their bet
-        toogleUserData({ ...userData, walletBalance: userData.walletBalance + (betAux * 2) });
-      }
 
       //wait 1 second before adding the result to the history
       setTimeout(() => {

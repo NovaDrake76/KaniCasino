@@ -115,6 +115,14 @@ module.exports = (io) => {
       });
 
       res.json({ item: winningItem });
+
+      const userDataPayload = {
+        walletBalance: user.walletBalance,
+        xp: user.xp,
+        level: user.level,
+      }
+      io.to(user._id.toString()).emit('userDataUpdated', userDataPayload);
+
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });

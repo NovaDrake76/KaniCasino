@@ -25,7 +25,6 @@ const ClaimBonus: React.FC<IBonus> = ({ setHaveBonus, setOpenUserFlow, toogleUse
             toogleUserData(
                 {
                     ...userData,
-                    walletBalance: userData?.walletBalance + res.value,
                     nextBonus: res.nextBonus
                 }
             )

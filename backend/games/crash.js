@@ -15,9 +15,14 @@ const crashGame = (io) => {
       try {
         // Handle player bet
 
+        // Check if the user has the required balance
+        if (user.walletBalance < bet) {
+          return;
+        }
+
         //if bet is not a number or is less than 0, return error
         if (isNaN(bet) || bet < 0) {
-          return res.status(400).json({ message: "Invalid bet" });
+          return;
         }
 
         gameState.gameBets[user.id] = bet;
@@ -27,8 +32,14 @@ const crashGame = (io) => {
           user.id,
           { $inc: { walletBalance: -bet } },
           { new: true }
-        ).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-xp").select("-inventory").select("-walletBalance").select("-bonusAmount");
+        ).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-inventory").select("-bonusAmount");
 
+        const userDataPayload = {
+          walletBalance: updatedUser.walletBalance,
+          xp: updatedUser.xp,
+          level: updatedUser.level,
+        }
+        io.to(user.id).emit('userDataUpdated', userDataPayload);
         // After updating the user, add them to the game state
         gameState.gamePlayers[user.id] = updatedUser;
 
@@ -62,6 +73,12 @@ const crashGame = (io) => {
         );
 
         gameState.gamePlayers[user.id] = { ...gameState.gamePlayers[user.id]._doc, payout: multiplier }
+        const userDataPayload = {
+          walletBalance: updatedUser.walletBalance,
+          xp: updatedUser.xp,
+          level: updatedUser.level,
+        }
+        io.to(user.id).emit('userDataUpdated', userDataPayload);
 
         //update the game state
         io.emit("crash:gameState", gameState);
