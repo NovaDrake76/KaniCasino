@@ -13,7 +13,7 @@ interface GameHistory {
 
 const CoinFlip = () => {
   const [bet, setBet] = useState(0);
-  const [betAux, setBetAux] = useState(0);
+  const [_betAux, setBetAux] = useState(0);
   const [choice, setChoice] = useState(null as number | null);
   const [result, setResult] = useState<number | null>(null);
   const [history, setHistory] = useState<GameHistory[]>([]);
