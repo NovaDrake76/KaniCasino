@@ -40,6 +40,7 @@ Please note that the database access is not public; you can make your own databa
 - [ ] Add friend.
 - [ ] Item battle.
 - [ ] PFP border color per level.
+- [ ] Fixed navbar when scrolling.
 
 
 
