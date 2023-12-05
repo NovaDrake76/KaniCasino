@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import SocketConnection from "../../services/socket"
-import { motion } from "framer-motion";
 import UserContext from "../../UserContext";
 import falling from "/images/crash/falling.gif";
 import idle from "/images/crash/idle.gif";
 import up from "/images/crash/up.gif";
 import LiveBets from "./LiveBets";
+import GameContainer from "./GameContainer";
+import SideMenu from "./SideMenu";
 
-import Videos from "./Videos";
 const socket = SocketConnection.getInstance();
 
 interface GameHistory {
@@ -94,7 +94,6 @@ const CrashGame = () => {
   useEffect(() => {
     const startListener = () => {
       setAnimationSrc(up);
-
       setMultiplier(1.0);
       setCrashPoint(null);
       setGameStarted(true);
@@ -102,7 +101,6 @@ const CrashGame = () => {
       setUserCashedOut(false);
       setUserMultiplier(0);
       setCountDown(0); // Reset the countdown
-
     };
 
     let timeoutId: NodeJS.Timeout;
@@ -173,90 +171,22 @@ const CrashGame = () => {
   return (
     <div className="w-screen flex flex-col items-center justify-center gap-12">
       <div className="flex bg-[#212031] rounded flex-col lg:flex-row">
-        <div className="lg:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
-          <input
-            type="number"
-            value={bet || ""}
-            onKeyDown={(event) => {
-              if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
-                event.preventDefault();
-              }
-            }}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              setBet(value < 0 ? 0 : value);
-            }}
-            className="p-2 border rounded w-1/2 lg:w-full"
-          />
-          <button
-            onClick={gameStarted ? handleCashout : handleBet}
-            className="p-2 border rounded bg-indigo-600 hover:bg-indigo-700 w-full mt-4"
-            disabled={
-              !isLogged ||
-              (gameStarted && (!userGambled || userCashedOut)) ||
-              (!gameStarted && userGambled) || (userData.walletBalance < (bet ?? 0))
-            }
-          >
-            {!isLogged
-              ? "Login to play"
-              : userCashedOut
-                ? `Cashed Out at x${userMultiplier.toFixed(2)}`
-                : userGambled
-                  ? (gameStarted ? "Cash Out" : "You're in!")
-                  : gameStarted
-                    ? "Wait for next round"
-                    : bet === 0 || !bet || bet < 1
-                      ? "Place the bet value"
-                      : userData.walletBalance < (bet ?? 0)
-                        ? "Not enough money"
-                        : "Place Bet"
-            }
-          </button>
+        <SideMenu bet={bet} setBet={setBet} gameStarted={gameStarted} handleBet={handleBet} handleCashout={handleCashout} isLogged={isLogged} userGambled={userGambled} userCashedOut={userCashedOut} userData={userData} userMultiplier={userMultiplier} />
+        <GameContainer
+          crashPoint={crashPoint}
+          multiplier={multiplier}
+          animationSrc={animationSrc}
+          gameEnded={gameEnded}
+          countDown={countDown}
+          setAnimationSrc={setAnimationSrc}
+          up={up}
+          idle={idle}
+          falling={falling}
+          history={history} />
+      </div>
 
-        </div>
-        <div className="flex flex-col">
-          <div className="flex lg:w-[800px] border-b border-gray-700  p-4">
-            <div className="flex bg-[#19172D] rounded items-center flex-col  justify-center w-full h-[340px] relative ">
-              {
-                gameEnded && <div className="absolute top-0 left-0 p-2">
-                  <span>
-                    Next game in: {countDown.toFixed(1)}
-                  </span>
-                </div>
-              }
-              <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center -mt-32 ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
-                {
-                  gameEnded ? <span>Crashed at {crashPoint && crashPoint.toFixed(2)}X</span>
-                    : <div className="flex items-center justify-between w-[93%] ">
-                      <span>Multiplier:</span> {multiplier.toFixed(2)}X</div>}
 
-              </div>
-              <Videos
-                animationSrc={animationSrc}
-                setAnimationSrc={setAnimationSrc}
-                up={up}
-                idle={idle}
-                falling={falling} />
-            </div>
-          </div>
-          <div className="flex w-screen lg:w-[800px] p-4 flex-col">
-            <h3 className="mb-2 text-lg font-semibold">Game History:</h3>
-            <div className="flex items-center gap-2 justify-end w-full overflow-hidden h-[24px]">
-              {history.map((e, i) => (
-                <motion.div
-                  key={i}
-                  className={`min-h-[24px] rounded-lg p-2 ${e.crashPoint < 2 ? "bg-red-500" : "bg-green-500"}`}
-                  initial={i === history.length - 1 ? { opacity: 0, x: 30 } : {}}
-                  animate={i === history.length - 1 ? { opacity: 1, x: 0 } : {}}
-                  transition={{ ease: "easeOut", duration: 1 }}
-                >
-                  <span className="font-bold">{e.crashPoint}x</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>          <LiveBets gameState={gameState} />
+      <LiveBets gameState={gameState} />
 
     </div >
   );
