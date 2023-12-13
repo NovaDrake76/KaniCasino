@@ -305,3 +305,52 @@ button:focus-visible {
 .pulse {
   animation: pulseAnimation 2s infinite;
 }
+
+:root {
+  --color1: #19172D;
+  --color2: #312D57;
+  --color3: #484282;
+  --color4: #6058ac;
+  --color5: #776ed7;
+  --color6: #19172D;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  16.6%,
+  33.3% {
+    background-position: 100% 50%;
+  }
+
+  33.3%,
+  50% {
+    background-position: 200% 50%;
+  }
+
+  50%,
+  66.6% {
+    background-position: 300% 50%;
+  }
+
+  66.6%,
+  83.3% {
+    background-position: 400% 50%;
+  }
+
+  83.3%,
+  100% {
+    background-position: 500% 50%;
+  }
+}
+
+.gradient {
+  background: linear-gradient(to right,
+      var(--color1),
+      var(--color2),
+      var(--color3),
+      var(--color6));
+  background-size: 600% 100%;
+}

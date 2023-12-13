@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import PlayerPreview from "../../components/PlayerPreview";
+import Avatar from "../../components/Avatar";
 
 interface GameHistory {
     gameState: any;
@@ -69,7 +70,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
                                 onMouseEnter={() => handleMouseEnter(playerId)}
                                 onMouseLeave={handleMouseLeave}>
                                 <div className="flex items-center gap-2">
-                                    <img src={player.profilePicture} className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 " />
+                                    <Avatar image={player.profilePicture} id={playerId} size="small" level={player.level} />
                                     <span className="font-bold text-sm">{player.username}</span>
                                 </div>
                             </a>

@@ -14,6 +14,7 @@ import { SlPlane } from "react-icons/sl";
 import ClaimBonus from "./ClaimBonus";
 import { GiUpgrade } from 'react-icons/gi';
 import { toast } from "react-toastify";
+import Avatar from "../Avatar";
 
 interface Navbar {
   openUserFlow: boolean;
@@ -186,42 +187,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
                   </div>
                 </div>
               )}
-              {loading ? (
-                <Skeleton
-                  circle={true}
-                  height={40}
-                  width={40}
-                  highlightColor="#161427"
-                  baseColor="#1c1a31"
-                />
-              ) : (
-                <Link to={`profile/${data?.id}`}>
-                  {!loaded && (
-                    <Skeleton
-                      circle={true}
-                      height={40}
-                      width={40}
-                      highlightColor="#161427"
-                      baseColor="#1c1a31"
-                    />
-                  )}
-                  <img
-                    src={
-                      data?.profilePicture
-                        ? data?.profilePicture
-                        : "https://i.imgur.com/uUfJSwW.png"
-                    }
-                    alt="avatar"
-                    className={`min-w-[48px] h-12 rounded-full object-cover border-2 border-blue-500 aspect-square ${loaded ? '' : 'hidden'}`}
-                    onLoad={() => setLoaded(true)}
-                  />
-                </Link>
-              )}
-              {!loading && (
-                <div className="rounded-full text-xs font-semibold bg-blue-500 min-w-[20px] h-5 flex justify-center items-center -ml-7 -mb-7">
-                  {userData?.level}
-                </div>
-              )}
+              <Avatar image={userData?.profilePicture} loading={loading} id={userData?.id} size="medium" level={userData?.level} showLevel={true} />
 
               <div
                 className="text-[#625F7E] font-normal text-lg cursor-pointer hover:text-gray-200 transition-all "

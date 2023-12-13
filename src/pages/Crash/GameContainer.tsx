@@ -16,10 +16,25 @@ interface GameHistory {
 }
 
 const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, animationSrc, gameEnded, countDown, setAnimationSrc, up, idle, falling, history }) => {
+
+    // Calculate the animation speed based on the multiplier
+    const animationSpeed = 100 / Math.max(multiplier, 1);
+
+    const backgroundStyle = gameEnded
+        ? { backgroundColor: '#19172D' }
+        : {
+            background: `linear-gradient(to right, var(--color1), var(--color2), var(--color3), var(--color6))`,
+            backgroundSize: '600% 100%',
+            animation: `gradient ${animationSpeed}s linear infinite`,
+        };
+
     return (
         <div className="flex flex-col">
             <div className="flex lg:w-[800px] border-b border-gray-700  p-4">
-                <div className="flex bg-[#19172D] rounded items-center flex-col  justify-center w-full h-[340px] relative ">
+                <div className="flex rounded items-center flex-col justify-center w-full h-[340px] relative "
+                    style={backgroundStyle}
+                >
+
                     {
                         gameEnded && <div className="absolute top-0 left-0 p-2">
                             <span>

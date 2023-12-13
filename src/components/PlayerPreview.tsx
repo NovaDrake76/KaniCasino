@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Rarities from "../components/Rarities";
 import { RotatingLines } from "react-loader-spinner";
+import Avatar from "./Avatar";
 
 
 interface PlayerPreview {
@@ -26,7 +27,8 @@ const PlayerPreview: React.FC<PlayerPreview> = ({ player }) => {
                 borderColor: Rarities.find((rarity) => rarity.id.toString() == player.fixedItem?.rarity)?.color
             }}
         >
-            <div className="flex items-center gap-2 p-6"><img src={player.profilePicture} className="w-20 h-20 rounded-full object-cover border-2 border-blue-500 p-1" />
+            <div className="flex items-center gap-2 p-6">
+                <Avatar image={player.profilePicture} id={player._id} size="large" level={player.level} />
                 <div className="flex flex-col ">
                     <span className="font-bold text-lg">{player.username}</span>
                     <span className="font-bold text-[#56528b] ">Level {player.level}</span>
