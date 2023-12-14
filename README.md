@@ -33,13 +33,13 @@ Please note that the database access is not public; you can make your own databa
 - [x] Item notification information.
 - [x] Fix Level.
 - [x] Upgrade clock animation.
+- [x] PFP border color per level.
 - [ ] Refresh Token.
 - [ ] Responsivity.
 - [ ] Banner content.
 - [ ] Fix profile picture file error.
 - [ ] Add friend.
 - [ ] Item battle.
-- [ ] PFP border color per level.
 - [ ] Fixed navbar when scrolling.
 
 
