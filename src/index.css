@@ -349,8 +349,10 @@ button:focus-visible {
 .gradient {
   background: linear-gradient(to right,
       var(--color1),
+      var(--color1),
       var(--color2),
       var(--color3),
-      var(--color6));
+      var(--color2),
+      var(--color1));
   background-size: 600% 100%;
 }

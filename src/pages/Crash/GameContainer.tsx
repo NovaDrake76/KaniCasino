@@ -17,8 +17,8 @@ interface GameHistory {
 
 const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, animationSrc, gameEnded, countDown, setAnimationSrc, up, idle, falling, history }) => {
 
-    // Calculate the animation speed based on the multiplier
-    const animationSpeed = 100 / Math.max(multiplier, 1);
+    // Calculate the animation speed based on the multiplier, but don't be faster than 200ms
+    const animationSpeed = Math.max(50 / multiplier, 50);
 
     const backgroundStyle = gameEnded
         ? { backgroundColor: '#19172D' }

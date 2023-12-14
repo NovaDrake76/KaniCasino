@@ -1,7 +1,7 @@
 import { TailSpin } from "react-loader-spinner";
 
 interface MainButton {
-  text: string;
+  text: string | JSX.Element;
   onClick: () => void;
   disabled?: boolean;
   loading?: boolean;

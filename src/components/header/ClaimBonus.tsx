@@ -1,23 +1,48 @@
 import MainButton from "../MainButton";
 import { claimBonus } from "../../services/users/UserServices";
 import { toast } from "react-toastify";
+import Countdown from "../Countdown";
+import React, { useEffect, useState } from "react";
 
 
 interface IBonus {
-    setHaveBonus: React.Dispatch<React.SetStateAction<boolean>>;
+    bonusDate: string;
     setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
     toogleUserData: React.Dispatch<React.SetStateAction<any>>;
     userData: any;
 }
 
-const ClaimBonus: React.FC<IBonus> = ({ setHaveBonus, setOpenUserFlow, toogleUserData, userData }) => {
+const ClaimBonus: React.FC<IBonus> = ({ bonusDate, setOpenUserFlow, toogleUserData, userData }) => {
+    const [bonusAvailable, setBonusAvailable] = useState(false);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+
+        if (bonusDate) {
+            const countdownDate = new Date(bonusDate).getTime();
+
+            interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+
+                if (distance <= 0) {
+                    setBonusAvailable(true);
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [bonusDate]);
 
 
     const claimUserBonus = async () => {
         try {
             const res = await claimBonus();
             setOpenUserFlow(false);
-            setHaveBonus(false);
+            setBonusAvailable(false);
             console.log(res)
             toast.success(res.message, {
                 theme: "dark",
@@ -38,9 +63,10 @@ const ClaimBonus: React.FC<IBonus> = ({ setHaveBonus, setOpenUserFlow, toogleUse
 
     return (
         <MainButton
-            text="Claim Bonus"
+            text={bonusAvailable ? "Claim Bonus" : <Countdown nextBonus={bonusDate} color={"#fff"} bold={false} />}
             onClick={() => claimUserBonus()}
             pulse={true}
+            disabled={!bonusAvailable}
 
         />
     )

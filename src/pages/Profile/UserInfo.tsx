@@ -2,7 +2,7 @@ import { updateProfilePicture } from "../../services/users/UserServices";
 import { Tooltip } from "react-tooltip";
 import { useRef } from "react";
 import { toast } from "react-toastify";
-import Countdown from "./Countdown";
+import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
 import Avatar from "../../components/Avatar";
 
