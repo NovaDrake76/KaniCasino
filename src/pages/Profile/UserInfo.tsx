@@ -2,12 +2,13 @@ import { updateProfilePicture } from "../../services/users/UserServices";
 import { Tooltip } from "react-tooltip";
 import { useRef } from "react";
 import { toast } from "react-toastify";
-import Countdown from "./Countdown";
+import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
+import Avatar from "../../components/Avatar";
 
 interface UserProps {
   user: {
-    id: number;
+    _id: string;
     username: string;
     profilePicture: string;
     level: number;
@@ -35,7 +36,7 @@ const getPercentY = (x: number, y: number) => {
 };
 
 const UserInfo: React.FC<UserProps> = ({
-  user: { profilePicture, level, username, xp, fixedItem, nextBonus },
+  user: { _id, profilePicture, level, username, xp, fixedItem, nextBonus },
   isSameUser,
   setRefresh,
 }) => {
@@ -82,16 +83,12 @@ const UserInfo: React.FC<UserProps> = ({
   //   fileInput.current?.click();
   // };
 
-
   return (
     <div className="flex flex-col lg:flex-row items-center justify-between w-full">
       <div className="flex flex-col lg:flex-row items-center gap-7">
         <div className="relative group">
-          <img
-            src={profilePicture ? profilePicture : "https://i.imgur.com/uUfJSwW.png"}
-            alt="avatar"
-            className="w-36 h-36 rounded-full object-cover border-2 border-blue-500 p-1"
-          />
+          <Avatar image={profilePicture} loading={false} id={_id} size={'extra-large'} level={level} showLevel={true} />
+
           {isSameUser && (
             <button
               className="absolute inset-0 w-full h-full opacity-0 hover:opacity-70 bg-blue-500 transition-all flex items-center justify-center rounded-full cursor-pointer group-hover:opacity-70"
@@ -107,9 +104,7 @@ const UserInfo: React.FC<UserProps> = ({
             ref={fileInput}
             accept="image/png, image/jpeg, image/jpg"
           />
-          <div className="absolute text-base font-semibold top-28 left-28 rounded-full bg-blue-500 min-w-[24px] h-6 flex justify-center items-center ">
-            {level}
-          </div>
+
         </div>
         <div className="flex flex-col w-80 md:w-[686px]">
           <div className="flex gap-4 items-center"> <span className="text-2xl font-semibold color-[#dddcfc]">

@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import MainButton from "../../components/MainButton";
 import UserContext from "../../UserContext";
+import { Link } from "react-router-dom";
 
 interface Props {
   item: {
@@ -27,13 +28,17 @@ const MarketItem: React.FC<Props> = ({ item, click }) => {
     setLoading(false);
   };
 
+
+
   return (
     <div className="border  border-[#161448] rounded-lg p-4 bg-gradient-to-tr from-[#1D1730] to-[#141333] transition-all duration-500 ease-in-out w-[226px] h-[334px]">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 relative">
         <span className="text-lg font-semibold text-white truncate">
           {item.item.name}
         </span>
-        <span className="text-xs  text-white ">({item.sellerId.username})</span>
+        <Link to={`/profile/${item.sellerId._id}`} >
+          <span className="text-xs  text-white underline">({item.sellerId.username})</span>
+        </Link>
       </div>
       {loading && (
         <div className="w-full h-48 flex items-center justify-center">
@@ -47,7 +52,14 @@ const MarketItem: React.FC<Props> = ({ item, click }) => {
           }`}
         onLoad={handleImageLoad}
       />
-      <p className="text-blue-500 text-center py-1">{item.price} K₽</p>
+      <p className="text-blue-500 text-center py-1 text-ellipsis truncate">{
+        new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "DOL",
+        })
+          .format(item.price)
+          .replace("DOL", "K₽")
+      } K₽</p>
 
       <MainButton text="Buy" onClick={click} disabled={!isLogged} />
     </div>

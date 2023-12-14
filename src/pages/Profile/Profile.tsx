@@ -9,7 +9,7 @@ import MainButton from "../../components/MainButton";
 import Filters from "./Filters";
 
 interface User {
-  id: number;
+  _id: string;
   username: string;
   profilePicture: string;
   level: number;

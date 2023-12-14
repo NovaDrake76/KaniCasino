@@ -1,3 +1,5 @@
+
+
 import { Link } from "react-router-dom";
 import { useCallback, useContext, useEffect, useState } from "react";
 import UserContext from "../../UserContext";
@@ -5,7 +7,6 @@ import MainButton from "../MainButton";
 import { clearTokens } from "../../services/auth/authUtils";
 import { me } from "../../services/auth/auth";
 import { IoMdExit } from "react-icons/io";
-import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { BiWallet } from "react-icons/bi";
 import { MdOutlineSell } from "react-icons/md";
@@ -14,6 +15,7 @@ import { SlPlane } from "react-icons/sl";
 import ClaimBonus from "./ClaimBonus";
 import { GiUpgrade } from 'react-icons/gi';
 import { toast } from "react-toastify";
+import Avatar from "../Avatar";
 
 interface Navbar {
   openUserFlow: boolean;
@@ -22,10 +24,8 @@ interface Navbar {
 
 const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
-  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [haveBonus, setHaveBonus] = useState<boolean>(false);
   const [_visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
 
@@ -52,7 +52,6 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
   const getUserInfo = async () => {
     await me()
       .then((response: { data: any }) => {
-        setData(response);
         toogleUserData(response);
         setLoading(false);
       })
@@ -78,11 +77,6 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
     isLogged && getUserInfo();
   }, [isLogged]);
 
-  useEffect(() => {
-    if (userData?.nextBonus && Date.parse(userData?.nextBonus) <= Date.now()) {
-      setHaveBonus(true);
-    }
-  }, [userData])
 
   const links = [
     {
@@ -167,9 +161,9 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
           {isLogged === true ? (
             <div className="flex items-center gap-4">
               {
-                !loading && haveBonus && (
+                !loading && (
                   //button to claim bonus 
-                  <ClaimBonus setHaveBonus={setHaveBonus} setOpenUserFlow={setOpenUserFlow} toogleUserData={toogleUserData} userData={userData} />
+                  <ClaimBonus bonusDate={userData?.nextBonus} setOpenUserFlow={setOpenUserFlow} toogleUserData={toogleUserData} userData={userData} />
                 )
 
               }
@@ -186,42 +180,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
                   </div>
                 </div>
               )}
-              {loading ? (
-                <Skeleton
-                  circle={true}
-                  height={40}
-                  width={40}
-                  highlightColor="#161427"
-                  baseColor="#1c1a31"
-                />
-              ) : (
-                <Link to={`profile/${data?.id}`}>
-                  {!loaded && (
-                    <Skeleton
-                      circle={true}
-                      height={40}
-                      width={40}
-                      highlightColor="#161427"
-                      baseColor="#1c1a31"
-                    />
-                  )}
-                  <img
-                    src={
-                      data?.profilePicture
-                        ? data?.profilePicture
-                        : "https://i.imgur.com/uUfJSwW.png"
-                    }
-                    alt="avatar"
-                    className={`min-w-[48px] h-12 rounded-full object-cover border-2 border-blue-500 aspect-square ${loaded ? '' : 'hidden'}`}
-                    onLoad={() => setLoaded(true)}
-                  />
-                </Link>
-              )}
-              {!loading && (
-                <div className="rounded-full text-xs font-semibold bg-blue-500 min-w-[20px] h-5 flex justify-center items-center -ml-7 -mb-7">
-                  {userData?.level}
-                </div>
-              )}
+              <Avatar image={userData?.profilePicture} loading={loading} id={userData?.id} size="medium" level={userData?.level} showLevel={true} />
 
               <div
                 className="text-[#625F7E] font-normal text-lg cursor-pointer hover:text-gray-200 transition-all "

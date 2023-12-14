@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 
 interface CountdownProps {
     nextBonus: any;
+    color?: string;
+    bold?: boolean;
 }
 
-const Countdown: React.FC<CountdownProps> = ({ nextBonus }) => {
-    const [untilNextBonus, setUntilNextBonus] = useState<string>("00:01:00");
+const Countdown: React.FC<CountdownProps> = ({ nextBonus, color = "#2d2b49", bold = true }) => {
+    const [untilNextBonus, setUntilNextBonus] = useState<string>("15:00");
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -23,11 +25,17 @@ const Countdown: React.FC<CountdownProps> = ({ nextBonus }) => {
     }, [nextBonus]);
 
     return (
-        <div >
-            {untilNextBonus !== "00:00:00" ? (
-                <p className='font-bold text-[#2d2b49]'>Next bonus in {untilNextBonus}</p>
+        <div className='text-sm w-[160px]'>
+            {untilNextBonus !== "00:00" ? (
+                <p style={{
+                    color: color,
+                    fontWeight: bold ? "bold" : "normal"
+                }}>Next bonus in {untilNextBonus}</p>
             ) : (
-                <p className='font-bold text-[#4b4969]'>Bonus available now!</p>
+                <p style={{
+                    color: color,
+                    fontWeight: bold ? "bold" : "normal"
+                }}>Bonus available now!</p>
             )}
         </div>
     );
