@@ -25,7 +25,6 @@ interface Navbar {
 const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [loaded, setLoaded] = useState<boolean>(false);
   const [_visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
 
