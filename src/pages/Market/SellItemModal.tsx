@@ -6,6 +6,7 @@ import Item from "../../components/Item";
 import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import { AiOutlineClose } from 'react-icons/ai'
+import Skeleton from "react-loading-skeleton";
 
 interface Props {
   isOpen: boolean;
@@ -28,13 +29,20 @@ interface Inventory {
 
 const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [selectedItem, setSelectedItem] = useState<any>();
-  const [price, setPrice] = useState<any>(null);
+  const [price, setPrice] = useState<number>(0);
   const [inventory, setInventory] = useState<Inventory>();
   const [invItems, setInvItems] = useState<InventoryItem[]>([]);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
   const { userData } = useContext(UserContext);
+
+  const CloseModal = () => {
+    setSelectedItem(null);
+    setPrice(0);
+    setInvItems([]);
+    onClose();
+  }
 
   const handleSubmit = async () => {
     setLoadingButton(true);
@@ -44,61 +52,44 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
       return toast.error("Price must be between 0 and 1.000.000", {});
     }
 
-
     try {
       await sellItem(selectedItem, price);
       setRefresh && setRefresh(true);
       toast.success("Item listed for sale!", {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
       });
-      onClose();
+      CloseModal();
     } catch (error: any) {
       console.log(error);
-      toast.error(error.response.data.message, {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast.error(error.response.data.message);
     }
     setLoadingButton(false);
   };
 
-  const getInventoryInfo = async (newPage?: boolean) => {
+  const getInventoryInfo = async (page = 1) => {
     try {
-      !newPage && setLoadingInventory(true);
+      setLoadingInventory(true);
 
-      const response = await getInventory(
-        userData.id,
-        newPage ? (inventory && inventory.currentPage + 1) || 1 : 1
-      );
+      const response = await getInventory(userData.id, page);
+      if (page === 1) {
+        setInvItems(response.items);
+      } else {
+        setInvItems((prev) => [...prev, ...response.items]);
+      }
       setInventory(response);
-
-      newPage
-        ? setInvItems((prev) => [...prev, ...response.items])
-        : setInvItems(response.items);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingInventory(false);
     }
-    setLoadingInventory(false);
   };
+
 
   useEffect(() => {
     if (isOpen) {
-      getInventoryInfo(true);
+      getInventoryInfo();
     }
   }, [isOpen]);
+
 
   if (!isOpen) {
     return null;
@@ -110,7 +101,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
         <div className="flex"><h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
           <div className="ml-auto">
             <AiOutlineClose className="text-white text-2xl cursor-pointer"
-              onClick={onClose}
+              onClick={CloseModal}
             />
 
           </div>
@@ -138,7 +129,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                 }
               }}
               onChange={
-                (e) => setPrice(e.target.value)
+                (e) => setPrice(parseInt(e.target.value) || 0)
               }
             />
           </div>
@@ -155,7 +146,10 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
         <div className="flex flex-col justify-center max-h-[300px] overflow-x-hidden gap-4">
           <div className="flex flex-wrap justify-center gap-4  overflow-auto mt-4 ">
             {loadingInventory ? (
-              <div>Loading...</div>
+              [1, 2, 3, 4, 5, 6].map((_, i) => (
+                <Skeleton height={200} width={200} key={i} />
+              ))
+
             ) : (
               invItems.map((item, index) => (
                 <div
@@ -171,7 +165,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           {inventory && inventory.currentPage < inventory.totalPages && (
             <div className="w-60 self-center mt-4">
               <MainButton
-                onClick={() => getInventoryInfo(true)}
+                onClick={() => getInventoryInfo(inventory.currentPage + 1)}
                 text="Load More"
               />
             </div>
@@ -183,7 +177,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
 
           <button
             className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
-            onClick={onClose}
+            onClick={CloseModal}
           >
             Close
           </button>

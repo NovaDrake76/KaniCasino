@@ -29,9 +29,14 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
     }
   };
 
+  const color = Rarities.find((rarity) => rarity.id.toString() == item.rarity)?.color
+
   return (
     <div
-      className="flex flex-col w-20 md:w-44  items-center justify-center bg-[#212031] rounded relative"
+      className={`flex flex-col w-20 md:w-44  items-center justify-center bg-[#212031] rounded relative border-b-2`}
+      style={{
+        borderColor: color
+      }}
       key={item.name + Math.random()}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
@@ -60,9 +65,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
         <div
           className="w-auto"
           style={{
-            boxShadow: `0px 0px 120px 80px ${Rarities.find((rarity) => rarity.id.toString() == item.rarity)
-              ?.color
-              }`,
+            boxShadow: `0px 0px 120px 80px ${color}`,
           }}
         />
       </div>
@@ -77,7 +80,12 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
           <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
         </div>
       )}
-      <p className="text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full">{item.name}</p>
+      <div className="flex gap-2 items-center -ml-1">
+        <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{
+          backgroundColor: color
+        }} />
+        <p className="text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full">{item.name}</p>
+      </div>
     </div>
   );
 };

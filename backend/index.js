@@ -19,7 +19,7 @@ const crash = require("./games/crash");
 const caseRoutes = require("./routes/caseRoutes");
 const itemRoutes = require("./routes/itemRoutes");
 const userRoutes = require("./routes/userRoutes");
-const marketplaceRoutes = require("./routes/marketplaceRoutes");
+const marketplaceRoutes = require("./routes/marketplaceRoutes")(io);
 const adminRoutes = require("./routes/adminRoutes");
 const gamesRoutes = require("./routes/gamesRoutes")(io);
 

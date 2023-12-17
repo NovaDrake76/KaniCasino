@@ -56,10 +56,11 @@ const MarketItem: React.FC<Props> = ({ item, click }) => {
         new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "DOL",
+          minimumFractionDigits: 0,
         })
           .format(item.price)
           .replace("DOL", "K₽")
-      } K₽</p>
+      }</p>
 
       <MainButton text="Buy" onClick={click} disabled={!isLogged} />
     </div>

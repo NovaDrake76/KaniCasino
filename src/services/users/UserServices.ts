@@ -51,3 +51,8 @@ export async function updateProfilePicture(image: string) {
 
     return response.data;
 }
+
+export async function getNotifications(page = 1) {
+    const response = await api.get(`/users/notifications?page=${page}`);
+    return response.data;
+}

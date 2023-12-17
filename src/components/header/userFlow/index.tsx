@@ -3,9 +3,7 @@ import Login from "./Login";
 import SignUp from "./SignUp";
 import "./UserFlow.css";
 
-interface UserFlowProps { }
-
-const UserFlow: React.FC<UserFlowProps> = () => {
+const UserFlow: React.FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
 
   return (

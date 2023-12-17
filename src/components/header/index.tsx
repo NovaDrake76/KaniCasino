@@ -1,20 +1,26 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserFlow from "./userFlow";
-import Navbar from "./Navbar";
+import Navbar from "./Navbar/Navbar";
 import UserContext from "../../UserContext";
 import { ImConnection } from "react-icons/im";
 import CaseOpenedNotification from "./CaseOpenedNotification";
 import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
+import Notifications from "./Navbar/Notifications";
+import { toast } from "react-toastify";
 
 interface Header {
   onlineUsers: number;
   recentCaseOpenings: Array<any>;
   openUserFlow: boolean;
   setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
+  notification: any;
+  setNotification: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlow, setOpenUserFlow }) => {
+const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlow, setOpenUserFlow, notification, setNotification }) => {
+  const [openNotifications, setOpenNotifications] = useState<boolean>(false);
+
   const isLogged = useContext(UserContext);
   const navigate = useNavigate();
   const isHome = window.location.pathname === "/";
@@ -33,6 +39,24 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
     },
   ];
 
+  useEffect(() => {
+    if (openNotifications === true) {
+      setNotification([]);
+    }
+  }
+    , [openNotifications]);
+
+  useEffect(() => {
+    console.log("notification at header part 1", notification)
+    if (notification?.message) {
+      console.log("notification at header part 2", notification)
+      toast.info(notification.message);
+    }
+  }
+    , [notification]);
+
+
+
   return (
     <div className="flex flex-col p-4 w-screen justify-center ">
       <div className="flex pb-2 items-center">
@@ -47,7 +71,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
           </div>
         ))}
       </div>
-      <Navbar openUserFlow={openUserFlow} setOpenUserFlow={setOpenUserFlow} />
+      <Navbar openUserFlow={openUserFlow} setOpenUserFlow={setOpenUserFlow} openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} />
       <div className="flex  items-center justify-center ">
         <div className="flex items-center justify-center relative w-full max-w-[1920px]">
           <div
@@ -58,6 +82,11 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
           >
             <UserFlow />
           </div>
+          {
+            isLogged && openNotifications && (
+              <Notifications openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} />
+            )
+          }
         </div>
       </div>
       {recentCaseOpenings.length > 0 && (
