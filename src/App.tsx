@@ -34,11 +34,12 @@ function App() {
   const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
   const [openUserFlow, setOpenUserFlow] = useState<boolean>(false);
   const [joinedRoom, setJoinedRoom] = useState<boolean>(false);
+  const [notification, setNotification] = useState<any>();
+
   const socket = SocketConnection.getInstance();
 
   const userDataSocket = () => {
     socket.on("userDataUpdated", (payload: userDataSocketProps) => {
-      console.log("userDataUpdated", payload);
       setUserData(prevUserData => prevUserData ? {
         ...prevUserData,
         walletBalance: payload.walletBalance,
@@ -79,6 +80,17 @@ function App() {
       setJoinedRoom(true);
     }
   }, [joinedRoom, socket, userData]);
+
+  useEffect(() => {
+    socket.on("newNotification", (notification) => {
+      setNotification(notification);
+    });
+
+    return () => {
+      socket.off("newNotification");
+    };
+  }, [socket]);
+
 
 
   useEffect(() => {
@@ -121,12 +133,21 @@ function App() {
         }>
           <Router>
             <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
-              <ToastContainer />
+              <ToastContainer
+                position="top-right"
+                autoClose={4000}
+                hideProgressBar={false}
+                closeOnClick={false}
+                pauseOnHover={true}
+                draggable={false}
+                theme="dark" />
               <Header
                 onlineUsers={onlineUsers}
                 recentCaseOpenings={recentCaseOpenings}
                 openUserFlow={openUserFlow}
                 setOpenUserFlow={setOpenUserFlow}
+                notification={notification}
+                setNotification={setNotification}
               />
               <div className="flex w-full">
                 <AppRoutes />

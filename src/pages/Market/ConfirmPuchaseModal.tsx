@@ -44,28 +44,10 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
         walletBalance: userData.walletBalance - item.price,
       });
 
-      toast.success("Purchase successful!", {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast.success("Purchase successful!");
       onClose();
     } catch (error: any) {
-      toast.error(error.response.data.message, {
-        position: "top-right",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast.error(error.response.data.message);
       console.log(error);
     }
     setLoading(false);

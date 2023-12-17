@@ -2,27 +2,27 @@
 
 import { Link } from "react-router-dom";
 import { useCallback, useContext, useEffect, useState } from "react";
-import UserContext from "../../UserContext";
-import MainButton from "../MainButton";
-import { clearTokens } from "../../services/auth/authUtils";
-import { me } from "../../services/auth/auth";
-import { IoMdExit } from "react-icons/io";
+import UserContext from "../../../UserContext";
+import MainButton from "../../MainButton";
+import { clearTokens } from "../../../services/auth/authUtils";
+import { me } from "../../../services/auth/auth";
 import "react-loading-skeleton/dist/skeleton.css";
-import { BiWallet } from "react-icons/bi";
 import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
-import ClaimBonus from "./ClaimBonus";
 import { GiUpgrade } from 'react-icons/gi';
 import { toast } from "react-toastify";
-import Avatar from "../Avatar";
+
+import RightContent from "./RightContent";
 
 interface Navbar {
   openUserFlow: boolean;
   setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
+  openNotifications: boolean;
+  setOpenNotifications: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
+const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenNotifications }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [_visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
@@ -118,9 +118,9 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
                 <img
                   src="/images/logo.webp"
                   alt="logo"
-                  className="w-12 h-12 "
+                  className="w-12 h-12 object-contain"
                 />
-                <div className="flex flex-col justify-center">
+                <div className="hidden md:flex flex-col justify-center">
                   <div className="font-normal text-xl text-white">
                     KaniCasino
                   </div>
@@ -158,36 +158,9 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow }) => {
           </div>
 
           {isLogged === true ? (
-            <div className="flex items-center gap-4">
-              {
-                !loading && (
-                  //button to claim bonus 
-                  <ClaimBonus bonusDate={userData?.nextBonus} setOpenUserFlow={setOpenUserFlow} toogleUserData={toogleUserData} userData={userData} />
-                )
-
-              }
-              {!loading && (
-                <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all invisible md:visible">
-                  <BiWallet className="text-2xl" />
-                  <div className="max-w-[80px] md:max-w-none overflow-hidden truncate">
-                    {new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "DOL",
-                    })
-                      .format(userData?.walletBalance)
-                      .replace("DOL", "K₽")}
-                  </div>
-                </div>
-              )}
-              <Avatar image={userData?.profilePicture} loading={loading} id={userData?.id} size="medium" level={userData?.level} showLevel={true} />
-
-              <div
-                className="text-[#625F7E] font-normal text-lg cursor-pointer hover:text-gray-200 transition-all "
-                onClick={Logout}
-              >
-                <IoMdExit className="text-2xl" />
-              </div>
-            </div>
+            <RightContent loading={loading} userData={userData} setOpenUserFlow={setOpenUserFlow}
+              openNotifications={openNotifications} setOpenNotifications={setOpenNotifications}
+              toogleUserData={toogleUserData} Logout={Logout} />
           ) : (
             <div className="flex items-center gap-4">
               <MainButton

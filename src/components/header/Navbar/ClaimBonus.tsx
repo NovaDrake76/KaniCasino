@@ -1,7 +1,7 @@
-import MainButton from "../MainButton";
-import { claimBonus } from "../../services/users/UserServices";
+import MainButton from "../../MainButton";
+import { claimBonus } from "../../../services/users/UserServices";
 import { toast } from "react-toastify";
-import Countdown from "../Countdown";
+import Countdown from "../../Countdown";
 import React, { useEffect, useState } from "react";
 
 
@@ -43,7 +43,6 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, setOpenUserFlow, toogleUserDa
             const res = await claimBonus();
             setOpenUserFlow(false);
             setBonusAvailable(false);
-            console.log(res)
             toast.success(res.message, {
                 theme: "dark",
             });

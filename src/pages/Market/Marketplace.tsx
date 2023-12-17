@@ -74,6 +74,7 @@ const Marketplace: React.FC = () => {
     }
   }, [refresh]);
 
+
   return (
     <div className="flex flex-col w-screen items-center justify-center ">
       <SellItemModal
