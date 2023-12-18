@@ -56,7 +56,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, gameStarted, handleBet
                 disabled={
                     !isLogged ||
                     (gameStarted && (!userGambled || userCashedOut)) ||
-                    (!gameStarted && userGambled) || (userData.walletBalance < (bet ?? 0))
+                    (!gameStarted && userGambled)
                 }
             >
                 {renderMessage()}
