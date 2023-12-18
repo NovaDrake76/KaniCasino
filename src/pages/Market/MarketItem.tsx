@@ -37,7 +37,7 @@ const MarketItem: React.FC<Props> = ({ item, click }) => {
           {item.item.name}
         </span>
         <Link to={`/profile/${item.sellerId._id}`} >
-          <span className="text-xs  text-white underline">({item.sellerId.username})</span>
+          <span className="text-xs text-white underline truncate">({item.sellerId.username})</span>
         </Link>
       </div>
       {loading && (

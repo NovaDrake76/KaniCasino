@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import Avatar from "../../Avatar";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegBellSlash } from "react-icons/fa";
@@ -29,6 +29,7 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, setOpenU
 
                 }
             </div>
+
             {!loading && (
                 <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all invisible md:visible">
                     <BiWallet className="text-2xl" />
@@ -42,6 +43,7 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, setOpenU
                     </div>
                 </div>
             )}
+
             <div>
                 {
                     openNotifications ? (

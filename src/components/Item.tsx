@@ -12,11 +12,10 @@ interface itemProps {
     rarity: string;
   };
   fixable?: boolean;
-  quantity?: number;
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
+const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
   const [hovering, setHovering] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -33,7 +32,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
 
   return (
     <div
-      className={`flex flex-col w-20 md:w-44  items-center justify-center bg-[#212031] rounded relative border-b-2`}
+      className={`flex flex-col  w-32 md:w-44  items-center justify-center bg-[#212031] rounded relative border-b-2`}
       style={{
         borderColor: color
       }}
@@ -42,7 +41,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
       onMouseLeave={() => setHovering(false)}
     >
       <div className="overflow-hidden">
-        {!loaded && <div className="flex w-20 md:w-44 h-20 md:h-44 items-center justify-center">
+        {!loaded && <div className="flex  w-32 md:w-44 h-32 md:h-44 items-center justify-center">
           <RotatingLines
             strokeColor="grey"
             strokeWidth="5"
@@ -54,14 +53,10 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
         <img
           src={item.image}
           alt={item.name}
-          className={`w-20 md:w-44 h-20 md:h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
+          className={` w-32 md:w-44 h-32 md:h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
           onLoad={() => setLoaded(true)}
         />
-        {quantity && quantity > 1 && (
-          <div className="absolute top-1 left-1 bg-[#212031] e text-xs rounded-full w-6 h-6 p-1 flex items-center justify-center">
-            {quantity}
-          </div>
-        )}
+
         <div
           className="w-auto"
           style={{
@@ -71,8 +66,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
       </div>
       {fixable && (
         <div
-          className={`absolute top-1 right-1 transition-all ${hovering ? "opacity-100 " : "opacity-0 -translate-y-2"
-            }`}
+          className={`absolute top-1 right-1 transition-all ${hovering ? "opacity-100 " : "opacity-0 -translate-y-2"}`}
           onClick={() =>
             fixPlayerItem(item.name, item.image, item.rarity.toString())
           }
@@ -84,7 +78,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, quantity }) => {
         <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{
           backgroundColor: color
         }} />
-        <p className="text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full">{item.name}</p>
+        <p className="text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full max-w-[80px] md:max-w-none">{item.name}</p>
       </div>
     </div>
   );
