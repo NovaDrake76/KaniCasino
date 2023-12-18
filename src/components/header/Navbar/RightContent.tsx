@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import Avatar from "../../Avatar";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegBellSlash } from "react-icons/fa";
