@@ -12,7 +12,7 @@ import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import { GiUpgrade } from 'react-icons/gi';
 import { toast } from "react-toastify";
-
+import { FaBars } from 'react-icons/fa';
 import RightContent from "./RightContent";
 
 interface Navbar {
@@ -20,18 +20,21 @@ interface Navbar {
   setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
   openNotifications: boolean;
   setOpenNotifications: React.Dispatch<React.SetStateAction<boolean>>;
+  openSidebar: boolean;
+  setOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenNotifications }) => {
+const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenNotifications, openSidebar, setOpenSidebar }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [_visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
+
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
 
   const calculateVisibleLinksCount = () => {
     let availableWidth = window.innerWidth;
 
-    availableWidth = availableWidth > 500 ? availableWidth - 500 : 0;
+    availableWidth = availableWidth > 400 ? availableWidth - 400 : 0;
 
     const count = Math.floor(availableWidth / 220);
 
@@ -104,11 +107,18 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenN
     setOpenUserFlow(prevState => !prevState);
   }, []);
 
+  const toggleSidebar = () => {
+    setOpenSidebar(!openSidebar);
+  };
+
   return (
     <div className="w-full flex justify-center">
       <nav className=" py-4 px-8 bg-[#19172D] w-[calc(100vw-2rem)] max-w-[1920px] flex justify-center notched ">
         <div className="flex items-center justify-between w-full ">
-          <div className="flex">
+          <div className="md:hidden">
+            <FaBars onClick={toggleSidebar} className="text-2xl cursor-pointer" />
+          </div>
+          <div className="hidden md:flex">
             <Link to="/">
               <div
                 className="flex items-center gap-2 "
@@ -168,6 +178,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenN
                 onClick={toggleUserFlow} />
             </div>
           )}
+
         </div>
       </nav>
     </div>

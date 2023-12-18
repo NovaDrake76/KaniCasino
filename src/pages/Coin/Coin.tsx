@@ -10,7 +10,6 @@ interface CoinProps {
 }
 
 const Coin: React.FC<CoinProps> = ({ result, spinning }) => {
-    console.log(result);
     const controls = useAnimation();
 
     useEffect(() => {

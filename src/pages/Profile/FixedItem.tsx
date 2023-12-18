@@ -30,7 +30,7 @@ const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) =>
 
     const TextArea = () => {
         return (
-            <div className="flex flex-col items-center justify-center ">
+            <div className="flex flex-col items-center justify-center">
                 <textarea
                     className="w-36 h-16 rounded-lg bg-white p-2 text-black resize-none "
                     maxLength={50}

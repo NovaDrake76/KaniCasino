@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import Notifications from "./Navbar/Notifications";
 import { toast } from "react-toastify";
+import Sidebar from "./Sidebar";
 
 interface Header {
   onlineUsers: number;
@@ -20,6 +21,7 @@ interface Header {
 
 const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlow, setOpenUserFlow, notification, setNotification }) => {
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
+  const [openSidebar, setOpenSidebar] = useState<boolean>(false);
 
   const isLogged = useContext(UserContext);
   const navigate = useNavigate();
@@ -43,18 +45,13 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
     if (openNotifications === true) {
       setNotification([]);
     }
-  }
-    , [openNotifications]);
+  }, [openNotifications]);
 
   useEffect(() => {
-    console.log("notification at header part 1", notification)
     if (notification?.message) {
-      console.log("notification at header part 2", notification)
       toast.info(notification.message);
     }
-  }
-    , [notification]);
-
+  }, [notification]);
 
 
   return (
@@ -71,7 +68,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
           </div>
         ))}
       </div>
-      <Navbar openUserFlow={openUserFlow} setOpenUserFlow={setOpenUserFlow} openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} />
+      <Navbar openUserFlow={openUserFlow} setOpenUserFlow={setOpenUserFlow} openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
       <div className="flex  items-center justify-center ">
         <div className="flex items-center justify-center relative w-full max-w-[1920px]">
           <div
@@ -120,6 +117,10 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
           </div>
         )
       }
+      {openSidebar && <Sidebar closeSidebar={
+        () => setOpenSidebar(false)
+      } />}
+
     </div>
   );
 };

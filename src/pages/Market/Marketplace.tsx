@@ -90,7 +90,7 @@ const Marketplace: React.FC = () => {
       />
       <div className="flex items-center justify-center w-full max-w-[1600px] relative ">
         <Title title="Marketplace" />
-        <div className="absolute right-24">
+        <div className="absolute md:right-24 -top-6 md:top-0">
           {isLogged && (
             <div className="w-52">
 

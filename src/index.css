@@ -215,6 +215,10 @@ button:hover {
   border-color: #646cff;
 }
 
+input {
+  background-color: #3B3B3B;
+}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
