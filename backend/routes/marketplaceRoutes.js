@@ -15,30 +15,36 @@ module.exports = (io) => {
   router.post("/", isAuthenticated, async (req, res) => {
     const { item, price } = req.body;
 
-    //if price is not a number or is less than 0, return error
-    if (isNaN(price) || price < 0) {
+    //if price is not a number, if is less than 1 or if is greater than 1000000, return error
+    if (isNaN(price) || price < 1 || price > 1000000) {
       return res.status(400).json({ message: "Invalid price" });
+    }
+
+    // Check if the item exists
+    if (item === undefined || item === null || !item) {
+      return res.status(404).json({ message: "Item not found" });
     }
 
     const user = await User.findById(req.user._id);
 
     // Check if the item is in the user's inventory
-    const inventoryItemIndex = user.inventory.findIndex(
-      (i) => i._id.toString() === item._id
-    );
+    const inventoryItemIndex = user.inventory.find((inventoryItem) => {
+      return inventoryItem._id.toString() === item.toString();
+    });
 
-    if (inventoryItemIndex === -1) {
-      return res.status(404).json({ message: "Item not found" });
+
+    if (inventoryItemIndex === null || inventoryItemIndex === undefined) {
+      return res.status(404).json({ message: "Item not found in inventory" });
     }
 
     // Create a new marketplace item with the item object
     const marketplaceItem = new Marketplace({
       sellerId: user._id,
-      item,
+      item: inventoryItemIndex,
       price,
-      itemName: item.name,
-      itemImage: item.image,
-      rarity: item.rarity,
+      itemName: inventoryItemIndex.name,
+      itemImage: inventoryItemIndex.image,
+      rarity: inventoryItemIndex.rarity,
     });
 
     await marketplaceItem.save();

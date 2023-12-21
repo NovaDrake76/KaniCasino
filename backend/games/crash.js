@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const crypto = require("crypto");
+const updateUserWinnings = require("../utils/updateUserWinnings");
+
 const crashGame = (io) => {
   let gameState = {
     gameBets: {},
@@ -71,6 +73,9 @@ const crashGame = (io) => {
           { $inc: { walletBalance: payout } },
           { new: true }
         );
+
+        // Update the user's weekly winnings
+        updateUserWinnings(updatedUser, payout);
 
         gameState.gamePlayers[user.id] = { ...gameState.gamePlayers[user.id]._doc, payout: multiplier }
         const userDataPayload = {

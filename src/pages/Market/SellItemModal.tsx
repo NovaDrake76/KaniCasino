@@ -53,7 +53,8 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     }
 
     try {
-      await sellItem(selectedItem, price);
+      console.log(selectedItem)
+      await sellItem(selectedItem._id, price);
       setRefresh && setRefresh(true);
       toast.success("Item listed for sale!", {
       });

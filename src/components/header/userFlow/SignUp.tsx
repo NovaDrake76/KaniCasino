@@ -111,6 +111,17 @@ const SignUpPage: React.FC = () => {
               <div className="divide-y divide-gray-200 mt-2">
                 <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                   {[
+
+                    {
+                      name: "nickname",
+                      type: "text",
+                      required: true,
+                      value: nickname,
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                        setNickname(e.target.value),
+                      placeholder: "Nickname",
+                      label: "Nickname",
+                    },
                     {
                       name: "email",
                       type: "email",
@@ -132,17 +143,7 @@ const SignUpPage: React.FC = () => {
                         setPassword(e.target.value),
                       placeholder: "Password",
                       label: "Password",
-                    },
-                    {
-                      name: "nickname",
-                      type: "text",
-                      required: true,
-                      value: nickname,
-                      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNickname(e.target.value),
-                      placeholder: "Nickname",
-                      label: "Nickname",
-                    },
+                    }
                   ].map((input) => (
                     <div className="relative" key={input.name}>
                       <input

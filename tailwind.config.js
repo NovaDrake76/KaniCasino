@@ -20,7 +20,12 @@ module.exports = {
           '100%': { transform: 'rotateY(60deg)' },
         },
       },
+      colors: {
+        'primary': '#151225',
+        'primary-light': '#19172D',
+      },
     },
+
   },
   variants: {},
   plugins: [],

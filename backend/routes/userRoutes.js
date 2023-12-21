@@ -8,7 +8,7 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const authMiddleware = require("../middleware/authMiddleware");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
-const { ObjectId } = require('mongodb'); // or however you're importing MongoDB
+const { ObjectId } = require('mongodb');
 
 
 // Register user
@@ -162,6 +162,48 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+// Fetch top players
+router.get('/topPlayers', async (req, res) => {
+  try {
+    const topPlayers = await User.find({})
+      .sort({ weeklyWinnings: -1 })
+      .limit(10) // Top 10 players
+      .select('username weeklyWinnings profilePicture level fixedItem');
+
+    res.json(topPlayers);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Fetch user ranking
+router.get('/ranking', authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const allUsers = await User.find({}).sort({ weeklyWinnings: -1 }).select('username weeklyWinnings');
+    const userIndex = allUsers.findIndex(u => u.id === req.user.id);
+
+    let start = userIndex - 3; // Fetch 3 users above
+    let end = userIndex + 4; // Fetch 3 users below (+1 for inclusive)
+
+    // Adjust if start or end goes out of bounds
+    if (start < 0) {
+      start = 0;
+      end = Math.min(7, allUsers.length); // Adjust end if start is adjusted
+    }
+    if (end > allUsers.length) {
+      end = allUsers.length;
+      start = Math.max(0, end - 7); // Adjust start if end is adjusted
+    }
+
+    const surroundingUsers = allUsers.slice(start, end);
+
+    res.json({ ranking: userIndex + 1, users: surroundingUsers });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 // Get user by id
 router.get("/:id", async (req, res) => {
@@ -346,7 +388,7 @@ router.get("/inventory/:userId", async (req, res) => {
 // Set fixed item
 router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
   try {
-    const { name, image, rarity } = req.body;
+    const { item } = req.body;
 
     const user = await User.findById(req.user._id);
 
@@ -354,11 +396,22 @@ router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Check if item is in user's inventory
+    const inventoryItemIndex = user.inventory.find((inventoryItem) => {
+      return inventoryItem._id.toString() === item.toString();
+    });
+
+
+    if (inventoryItemIndex === null || inventoryItemIndex === undefined) {
+      return res.status(404).json({ message: "Item not found in inventory" });
+    }
+
+
     // Update fixed item, keeping the same description
     user.fixedItem = {
-      name,
-      image,
-      rarity,
+      name: inventoryItemIndex.name,
+      image: inventoryItemIndex.image,
+      rarity: inventoryItemIndex.rarity,
       description: user.fixedItem.description,
     };
     await user.save();
