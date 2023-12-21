@@ -65,6 +65,14 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 1000, // sets the initial bonus amount to 1000
   },
+  weeklyWinnings: {
+    type: Number,
+    default: 0,
+  },
+  lastWinningsUpdate: {
+    type: Date,
+    default: Date.now,
+  },
 
 });
 

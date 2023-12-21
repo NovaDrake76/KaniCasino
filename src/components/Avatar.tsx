@@ -57,7 +57,7 @@ const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel =
     switch (size) {
         case 'small':
             LevelSize = 'w-5 h-5';
-            DivPosition = 'bottom-1 right-1';
+            DivPosition = '-bottom-1 right-1';
             break;
         case 'medium':
             LevelSize = 'min-w-[20px] h-5';

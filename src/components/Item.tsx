@@ -7,6 +7,7 @@ import { RotatingLines } from "react-loader-spinner";
 
 interface itemProps {
   item: {
+    _id: string;
     name: string;
     image: string;
     rarity: string;
@@ -19,9 +20,9 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
   const [hovering, setHovering] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  const fixPlayerItem = async (name: string, image: string, rarity: string) => {
+  const fixPlayerItem = async (itemId: string) => {
     try {
-      await fixItem(name, image, rarity);
+      await fixItem(itemId);
       setRefresh && setRefresh((prev) => !prev);
     } catch (error) {
       console.log(error);
@@ -68,7 +69,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
         <div
           className={`absolute top-1 right-1 transition-all ${hovering ? "opacity-100 " : "opacity-0 -translate-y-2"}`}
           onClick={() =>
-            fixPlayerItem(item.name, item.image, item.rarity.toString())
+            fixPlayerItem(item._id)
           }
         >
           <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />

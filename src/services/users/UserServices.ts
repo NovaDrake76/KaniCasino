@@ -22,11 +22,9 @@ export async function getInventory(id: string, page = 1, filters?: any) {
     const response = await api.get(url);
     return response.data;
 }
-export async function fixItem(name: string, image: string, rarity: string) {
+export async function fixItem(item: string) {
     const response = await api.put(`/users/fixedItem/`, {
-        name,
-        image,
-        rarity
+        item
     });
     return response.data;
 }
@@ -54,5 +52,15 @@ export async function updateProfilePicture(image: string) {
 
 export async function getNotifications(page = 1) {
     const response = await api.get(`/users/notifications?page=${page}`);
+    return response.data;
+}
+
+export async function getTopPlayers() {
+    const response = await api.get(`/users/topPlayers`);
+    return response.data;
+}
+
+export async function getMyRanking() {
+    const response = await api.get(`/users/ranking`);
     return response.data;
 }

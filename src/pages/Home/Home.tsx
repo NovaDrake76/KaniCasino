@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Banner from "./Banner";
 import CaseListing from "./CaseListing";
 import GameListing from "./GamesListing";
+import Leaderboard from "./Leaderboard";
 import { getCases } from "../../services/cases/CaseServices";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
@@ -38,9 +39,9 @@ const Home = () => {
 
   const leftContent: BannerProps["left"] = {
     image: "/images/paris.webp",
-    title: "NEW MAJOR CASE",
-    description: "Check out our new case for Paris 2023 Major!",
-    link: "/case/646ca0a4e9b0e208f5ddcfa6",
+    title: "NEW UPGRADE GAME",
+    description: "Go big or go home. Try your luck now!",
+    link: "/upgrade",
   };
 
   return (
@@ -71,7 +72,9 @@ const Home = () => {
             cases={cases.length > 5 ? cases.slice(0, 5) : cases}
           />
         )}
-        {<GameListing name="Our Games" />}
+        <GameListing name="Our Games" />
+        <Leaderboard />
+
       </div>
     </div>
   );

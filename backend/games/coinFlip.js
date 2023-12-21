@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const updateUserWinnings = require("../utils/updateUserWinnings");
 
 const coinFlip = (io) => {
   let gameState = {
@@ -84,7 +85,10 @@ const coinFlip = (io) => {
           xp: user.xp,
           level: user.level,
         }
+
         io.to(userId).emit('userDataUpdated', userDataPayload);
+        updateUserWinnings(userId, betAmount * 2);
+
 
       } catch (err) {
         console.log(err);

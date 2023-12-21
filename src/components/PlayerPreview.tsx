@@ -22,7 +22,7 @@ interface PlayerPreview {
 const PlayerPreview: React.FC<PlayerPreview> = ({ player }) => {
     const [loadingImage, setLoadingImage] = useState<boolean>(true);
     return (
-        <div className={`flex items-center min-w-[370px] justify-between gap-2 absolute -top-48 bg-[#281D3F]  rounded ${player.fixedItem && "border-2"} `}
+        <div className={`flex items-center min-w-[400px] justify-between gap-2 absolute -top-48 bg-[#281D3F] rounded ${player.fixedItem && "border-2"} `}
             style={{
                 borderColor: Rarities.find((rarity) => rarity.id.toString() == player.fixedItem?.rarity)?.color
             }}
@@ -32,7 +32,8 @@ const PlayerPreview: React.FC<PlayerPreview> = ({ player }) => {
                 <div className="flex flex-col ">
                     <span className="font-bold text-lg">{player.username}</span>
                     <span className="font-bold text-[#56528b] ">Level {player.level}</span>
-                </div></div>
+                </div>
+            </div>
             {
                 player.fixedItem && (
                     <div className="flex items-center gap-2 p-6" style={{
