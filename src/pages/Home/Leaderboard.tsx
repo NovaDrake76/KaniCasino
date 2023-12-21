@@ -88,7 +88,12 @@ const Leaderboard = () => {
                                     {user.username}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    K₽{user.weeklyWinnings}
+                                    {new Intl.NumberFormat("en-US", {
+                                        style: "currency",
+                                        currency: "DOL",
+                                    })
+                                        .format(user.weeklyWinnings)
+                                        .replace("DOL", "K₽")}
                                 </td>
                             </tr>
                         ))}
