@@ -17,7 +17,14 @@ const TopPlayer: React.FC<CardProps> = ({ user, rank }) => {
                 <span className="mt-2 font-semibold">{user.username}</span>
 
             </div>
-            <p className="text-gray-500">K₽{user.weeklyWinnings}</p>
+            <p className="text-gray-500">
+                {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "DOL",
+                })
+                    .format(user.weeklyWinnings)
+                    .replace("DOL", "K₽")}
+            </p>
         </div>
     );
 };

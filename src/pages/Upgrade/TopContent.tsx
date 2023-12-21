@@ -51,7 +51,7 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
 
         const payload = {
             selectedItemIds: selectedItems.map(item => item.identifier),
-            targetItemId: selectedTarget
+            targetItemId: selectedTarget._id
         };
         try {
             const response = await upgradeItem(payload.selectedItemIds, payload.targetItemId);
