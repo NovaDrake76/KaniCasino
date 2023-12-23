@@ -83,11 +83,22 @@ module.exports = (io) => {
       sellerId: req.user._id,
     });
 
+    if (item.sellerId.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     if (!item) {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    await item.remove();
+    await Marketplace.deleteOne({ _id: req.params.id });
+
+    // Add the item back to the user's first inventory slot
+    await User.updateOne(
+      { _id: req.user._id },
+      { $push: { inventory: { $each: [item.item], $position: 0 } } }
+    );
+
     res.json({ message: "Item removed" });
   });
 
