@@ -1,16 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getTopPlayers } from '../../services/users/UserServices';
-import { UserRank } from '../../components/Types';
+import { User } from '../../components/Types';
 import Title from '../../components/Title';
 import TopPlayer from '../../components/TopPlayer';
-import Avatar from '../../components/Avatar';
-import PlayerPreview from '../../components/PlayerPreview';
+import Player from '../../components/Player';
 
 const Leaderboard = () => {
-    const [users, setUsers] = useState<UserRank[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
-    const [hoveredPlayerId, setHoveredPlayerId] = useState<string | null>(null);
-    const hoverTimeoutRef = useRef<any>(null);
 
     useEffect(() => {
         setLoading(true);
@@ -23,22 +20,7 @@ const Leaderboard = () => {
         });
     }, []);
 
-    const handleMouseEnter = (playerId: string) => {
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current);
-        }
 
-        hoverTimeoutRef.current = setTimeout(() => {
-            setHoveredPlayerId(playerId);
-        }, 500);
-    };
-
-    const handleMouseLeave = () => {
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current);
-        }
-        setHoveredPlayerId(null);
-    };
 
     return (
         <div className="flex flex-col items-center justify-center ">
@@ -72,20 +54,12 @@ const Leaderboard = () => {
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     #{index + 4}
                                 </td>
-                                {
-                                    user._id === hoveredPlayerId && (
-                                        <div className='absolute'>
-                                            <PlayerPreview player={user} />
-                                        </div>
-                                    )
-                                }
 
                                 <td className="flex p-4 items-center gap-2"
-                                    onMouseEnter={() => handleMouseEnter(user._id)}
-                                    onMouseLeave={handleMouseLeave}
+
                                 >
-                                    <Avatar id={user._id} image={user.profilePicture} size={'small'} showLevel={true} level={user.level} />
-                                    {user.username}
+                                    <Player user={user} size="small" />
+
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {new Intl.NumberFormat("en-US", {

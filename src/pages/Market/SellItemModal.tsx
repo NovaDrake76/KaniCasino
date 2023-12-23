@@ -7,6 +7,7 @@ import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import { AiOutlineClose } from 'react-icons/ai'
 import Skeleton from "react-loading-skeleton";
+import Pagination from "../../components/Pagination";
 
 interface Props {
   isOpen: boolean;
@@ -34,6 +35,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [invItems, setInvItems] = useState<InventoryItem[]>([]);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
 
   const { userData } = useContext(UserContext);
 
@@ -41,6 +43,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     setSelectedItem(null);
     setPrice(0);
     setInvItems([]);
+    setPage(1);
     onClose();
   }
 
@@ -53,7 +56,6 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     }
 
     try {
-      console.log(selectedItem)
       await sellItem(selectedItem._id, price);
       setRefresh && setRefresh(true);
       toast.success("Item listed for sale!", {
@@ -87,18 +89,18 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
 
   useEffect(() => {
     if (isOpen) {
-      getInventoryInfo();
+      setInvItems([]);
+      getInventoryInfo(page);
     }
-  }, [isOpen]);
-
+  }, [isOpen, page]);
 
   if (!isOpen) {
     return null;
   }
 
   return (
-    <div className="fixed flex items-center justify-center w-screen h-screen top-10 z-50 bg-black/40">
-      <div className="bg-[#17132B] p-4 sm:p-6 lg:p-8 rounded max-w-screen-md mx-2 sm:mx-4 h-auto max-h-[80vh]">
+    <div className="fixed flex items-center justify-center w-screen h-screen top-0 z-50 bg-black/40">
+      <div className="bg-[#17132B] p-4 sm:p-6 lg:p-8 rounded w-screen md:max-w-screen-md mx-2 sm:mx-4 h-[90vh]">
         <div className="flex"><h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
           <div className="ml-auto">
             <AiOutlineClose className="text-white text-2xl cursor-pointer"
@@ -144,7 +146,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           )}
         </div>
 
-        <div className="flex flex-col justify-center max-h-[300px] overflow-x-hidden gap-4">
+        <div className="flex flex-col justify-center max-h-[450px] overflow-x-hidden gap-4">
           <div className="flex flex-wrap justify-center gap-4  overflow-auto mt-4 ">
             {loadingInventory ? (
               [1, 2, 3, 4, 5, 6].map((_, i) => (
@@ -163,18 +165,16 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               ))
             )}
           </div>
-          {inventory && inventory.currentPage < inventory.totalPages && (
-            <div className="w-60 self-center mt-4">
-              <MainButton
-                onClick={() => getInventoryInfo(inventory.currentPage + 1)}
-                text="Load More"
-              />
-            </div>
-          )}
+          {inventory && (
+            <div className="w-full flex justify-center">
+              <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
+
+            </div>)
+          }
         </div>
 
 
-        <div className="flex items-center justify-end gap-4 mt-4">
+        <div className="flex items-center justify-end gap-4 mt-4 ">
 
           <button
             className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"

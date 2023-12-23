@@ -7,6 +7,7 @@ import Title from "../../components/Title";
 import ConfirmPurchaseModal from "./ConfirmPuchaseModal";
 import Skeleton from "react-loading-skeleton";
 import UserContext from "../../UserContext";
+import Pagination from "../../components/Pagination";
 
 interface MarketItem {
   _id: string;
@@ -34,6 +35,7 @@ const Marketplace: React.FC = () => {
   const [openSellModal, setOpenSellModal] = useState<boolean>(false);
   const [openBuyModal, setOpenBuyModal] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
 
   const { isLogged } = useContext(UserContext);
 
@@ -58,12 +60,15 @@ const Marketplace: React.FC = () => {
   }, []);
 
   const fetchItems = async () => {
+    setLoading(true);
     try {
-      const items = await getItems(1);
+      const items = await getItems(page);
       setItems(items);
       setLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,6 +79,10 @@ const Marketplace: React.FC = () => {
     }
   }, [refresh]);
 
+  useEffect(() => {
+    setRefresh(true);
+    scrollTo(0, 0);
+  }, [page]);
 
   return (
     <div className="flex flex-col w-screen items-center justify-center ">
@@ -102,6 +111,11 @@ const Marketplace: React.FC = () => {
           )}
         </div>
       </div>
+      {
+        items?.totalPages && items?.totalPages > 1 && (
+          <Pagination totalPages={items.totalPages} currentPage={page} setPage={setPage} />
+        )
+      }
       {loading ? (
         <div className="flex flex-wrap items-center gap-4 justify-center px-8 ">
           {Array(10)
@@ -133,6 +147,11 @@ const Marketplace: React.FC = () => {
           )}
         </div>
       )}
+      {
+        items?.totalPages && items?.totalPages > 1 && (
+          <Pagination totalPages={items.totalPages} currentPage={page} setPage={setPage} />
+        )
+      }
     </div>
   );
 };

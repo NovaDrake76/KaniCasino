@@ -1,8 +1,8 @@
-import { UserRank } from '../components/Types';
-import Avatar from '../components/Avatar';
+import { User } from '../components/Types';
+import Player from './Player';
 
 interface CardProps {
-    user: UserRank;
+    user: User;
     rank: number;
 }
 
@@ -12,11 +12,7 @@ const TopPlayer: React.FC<CardProps> = ({ user, rank }) => {
             style={{ border: rank === 1 ? '1px solid gold' : rank === 2 ? '1px solid silver' : rank === 3 ? '1px solid #cd7f32' : 'none' }}
         >
             {/* <div className="text-2xl font-bold text-indigo-600">#{rank}</div> */}
-            <div className='flex items-center justify-center gap-4'>
-                <Avatar id={user._id} image={user.profilePicture} size={'medium'} showLevel={true} level={user.level} />
-                <span className="mt-2 font-semibold">{user.username}</span>
-
-            </div>
+            <Player user={user} size="medium" />
             <p className="text-gray-500">
                 {new Intl.NumberFormat("en-US", {
                     style: "currency",
