@@ -5,7 +5,6 @@ import UserInfo from "./UserInfo";
 import Item from "../../components/Item";
 import UserContext from "../../UserContext";
 import Skeleton from "react-loading-skeleton";
-import MainButton from "../../components/MainButton";
 import Filters from "./Filters";
 import Pagination from "../../components/Pagination";
 
