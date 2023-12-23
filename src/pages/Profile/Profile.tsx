@@ -1,26 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { getUser, getInventory } from "../../services/users/UserServices";
 import { FiFilter } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
 import Item from "../../components/Item";
 import UserContext from "../../UserContext";
 import Skeleton from "react-loading-skeleton";
-import Filters from "./Filters";
+import Filters from "../../components/InventoryFilters";
 import Pagination from "../../components/Pagination";
-
-interface User {
-  _id: string;
-  username: string;
-  profilePicture: string;
-  level: number;
-  xp: number;
-  fixedItem: {
-    name: string;
-    image: string;
-    rarity: number;
-    description: string;
-  };
-}
+import { User } from '../../components/Types'
 
 interface Inventory {
   totalPages: number;
@@ -46,20 +33,22 @@ const Profile = () => {
     sortBy: '',
     order: 'asc'
   });
+  const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
 
   useEffect(() => {
     if (invItems?.length > 0) {
-      //1.5 second delay. If other filter is selected, it will wait for 1.5 seconds before calling the api
-      const delayDebounceFn = setTimeout(() => {
+      delayDebounceFn.current = setTimeout(() => {
         getInventoryInfo();
       }, 1000);
-      return () => clearTimeout(delayDebounceFn);
-
+      return () => {
+        if (delayDebounceFn.current) {
+          clearTimeout(delayDebounceFn.current);
+        }
+      };
     }
-
   }, [filters]);
 
 
@@ -89,6 +78,17 @@ const Profile = () => {
     }
     setLoadingInventory(false);
   };
+
+  const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Cancel the debounce
+      clearTimeout(delayDebounceFn.current as NodeJS.Timeout);
+      // Fetch the inventory immediately
+      getInventoryInfo();
+    }
+  };
+
 
 
   useEffect(() => {
@@ -140,9 +140,10 @@ const Profile = () => {
         <div className="flex flex-col p-8 gap-2 items-center w-full max-w-[1312px]">
           <h2 className="text-2xl font-bold py-4 ">Inventory</h2>
           <div className="flex flex-col w-full items-end mr-[70px] gap-4 -mt-10">
-            <div onClick={() => setOpenFilters(!openFilters)} className="border p-2 rounded-md cursor-pointer"><FiFilter className="text-2xl " />
+            <div onClick={() => setOpenFilters(!openFilters)} className="border p-2 rounded-md cursor-pointer">
+              <FiFilter className="text-2xl " />
             </div>
-            {openFilters && <Filters filters={filters} setFilters={setFilters} />}
+            {openFilters && <Filters filters={filters} setFilters={setFilters} onKeyPress={handleEnterPress} />}
 
           </div>
           {inventory &&

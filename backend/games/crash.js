@@ -75,7 +75,7 @@ const crashGame = (io) => {
         );
 
         // Update the user's weekly winnings
-        updateUserWinnings(updatedUser, payout);
+        updateUserWinnings(updatedUser, (betAmount * multiplier) - betAmount);
 
         gameState.gamePlayers[user.id] = { ...gameState.gamePlayers[user.id]._doc, payout: multiplier }
         const userDataPayload = {

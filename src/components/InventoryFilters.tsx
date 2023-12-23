@@ -13,10 +13,11 @@ interface Filters {
         sortBy: string;
         order: string;
     }>>;
+    onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 
 }
 
-const Filters: React.FC<Filters> = ({ filters, setFilters }) => (
+const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }) => (
     <div className="flex flex-wrap gap-4 mb-4 w-full justify-end">
         {/* Filter by name */}
         <div className="relative">
@@ -28,7 +29,9 @@ const Filters: React.FC<Filters> = ({ filters, setFilters }) => (
                 placeholder="Search"
                 value={filters.name}
                 onChange={(e) => setFilters((prev) => ({ ...prev, name: e.target.value }))}
-                className="pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" />
+                onKeyPress={onKeyPress}
+                className="pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+            />
         </div>
 
         {/* Filter by rarity */}
@@ -83,4 +86,4 @@ const Filters: React.FC<Filters> = ({ filters, setFilters }) => (
     </div>
 )
 
-export default Filters;
+export default InventoryFilters;

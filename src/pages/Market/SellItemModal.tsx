@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { sellItem } from "../../services/market/MarketSercive";
 import { getInventory } from "../../services/users/UserServices";
 import UserContext from "../../UserContext";
@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import { AiOutlineClose } from 'react-icons/ai'
 import Skeleton from "react-loading-skeleton";
 import Pagination from "../../components/Pagination";
+import Filters from "../../components/InventoryFilters";
+import { FiFilter } from 'react-icons/fi'
 
 interface Props {
   isOpen: boolean;
@@ -36,6 +38,14 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [openFilters, setOpenFilters] = useState<boolean>(false);
+  const [filters, setFilters] = useState({
+    name: '',
+    rarity: '',
+    sortBy: '',
+    order: 'asc'
+  });
+  const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
 
   const { userData } = useContext(UserContext);
 
@@ -68,23 +78,46 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     setLoadingButton(false);
   };
 
-  const getInventoryInfo = async (page = 1) => {
+  const getInventoryInfo = async (newPage?: number) => {
     try {
-      setLoadingInventory(true);
-
-      const response = await getInventory(userData.id, page);
-      if (page === 1) {
-        setInvItems(response.items);
-      } else {
-        setInvItems((prev) => [...prev, ...response.items]);
-      }
+      const response = await getInventory(
+        userData.id,
+        page,
+        filters
+      );
       setInventory(response);
+      newPage
+        ? setInvItems((prev) => [...prev, ...response.items])
+        : setInvItems(response.items);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoadingInventory(false);
+    }
+    setLoadingInventory(false);
+  };
+
+  const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Cancel the debounce
+      clearTimeout(delayDebounceFn.current as NodeJS.Timeout);
+      // Fetch the inventory immediately
+      getInventoryInfo();
     }
   };
+
+  useEffect(() => {
+    if (invItems?.length > 0) {
+      delayDebounceFn.current = setTimeout(() => {
+        getInventoryInfo();
+      }, 1000);
+      return () => {
+        if (delayDebounceFn.current) {
+          clearTimeout(delayDebounceFn.current);
+        }
+      };
+    }
+  }, [filters]);
+
 
 
   useEffect(() => {
@@ -99,8 +132,8 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   }
 
   return (
-    <div className="fixed flex items-center justify-center w-screen h-screen top-0 z-50 bg-black/40">
-      <div className="bg-[#17132B] p-4 sm:p-6 lg:p-8 rounded w-screen md:max-w-screen-md mx-2 sm:mx-4 h-[90vh]">
+    <div className="fixed flex items-center justify-center w-screen h-screen top-0 z-50 bg-black/40 ">
+      <div className="bg-[#17132B] p-4 sm:p-6 lg:p-8 rounded w-screen md:max-w-screen-md mx-2 sm:mx-4 h-[90vh] overflow-y-auto">
         <div className="flex"><h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
           <div className="ml-auto">
             <AiOutlineClose className="text-white text-2xl cursor-pointer"
@@ -145,8 +178,14 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             </div>
           )}
         </div>
+        <div className="flex flex-col w-full items-start gap-4 mt-2 ">
+          <div onClick={() => setOpenFilters(!openFilters)} className="border p-2 rounded-md cursor-pointer">
+            <FiFilter className="text-2xl " />
+          </div>
+          {openFilters && <Filters filters={filters} setFilters={setFilters} onKeyPress={handleEnterPress} />}
 
-        <div className="flex flex-col justify-center max-h-[450px] overflow-x-hidden gap-4">
+        </div>
+        <div className="flex flex-col justify-center max-h-[400px] overflow-x-hidden gap-4">
           <div className="flex flex-wrap justify-center gap-4  overflow-auto mt-4 ">
             {loadingInventory ? (
               [1, 2, 3, 4, 5, 6].map((_, i) => (

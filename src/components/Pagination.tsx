@@ -7,7 +7,6 @@ interface PaginationProps {
 }
 
 const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, setPage }) => {
-    // Function to render a single page number
     const renderPageNumber = (pageNumber: number) => (
         <div
             key={pageNumber}
@@ -21,17 +20,18 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, setPag
         </div>
     );
 
-    // Function to render the pagination
     const renderPagination = () => {
-        let pages: any = [];
-        let startPage, endPage;
+        let pages = [];
 
         if (totalPages <= 7) {
-            // Less than 7 total pages, so show all
-            startPage = 1;
-            endPage = totalPages;
+            // Show all pages if total pages less than or equal to 7
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(renderPageNumber(i));
+            }
         } else {
             // More than 7 total pages, calculate start and end pages
+            let startPage, endPage;
+
             if (currentPage <= 4) {
                 startPage = 1;
                 endPage = 5;
@@ -58,13 +58,6 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, setPag
                     <span key="ellipsis2" className="text-gray-500">...</span>,
                     renderPageNumber(totalPages)
                 ];
-            }
-        }
-
-        // Add the middle range of page numbers
-        if (totalPages > 7 && currentPage > 4 && currentPage + 3 < totalPages) {
-            for (let i = startPage; i <= endPage; i++) {
-                pages.push(renderPageNumber(i));
             }
         }
 

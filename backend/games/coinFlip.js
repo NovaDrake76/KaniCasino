@@ -87,7 +87,7 @@ const coinFlip = (io) => {
         }
 
         io.to(userId).emit('userDataUpdated', userDataPayload);
-        updateUserWinnings(userId, betAmount * 2);
+        updateUserWinnings(userId, betAmount);
 
 
       } catch (err) {

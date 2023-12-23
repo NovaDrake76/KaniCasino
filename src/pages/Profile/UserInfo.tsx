@@ -5,22 +5,10 @@ import { toast } from "react-toastify";
 import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
 import Avatar from "../../components/Avatar";
+import { User } from '../../components/Types'
 
 interface UserProps {
-  user: {
-    _id: string;
-    username: string;
-    profilePicture: string;
-    level: number;
-    xp: number;
-    nextBonus?: any;
-    fixedItem: {
-      name: string;
-      image: string;
-      rarity: number;
-      description: string;
-    };
-  };
+  user: User;
   isSameUser: boolean;
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
 }

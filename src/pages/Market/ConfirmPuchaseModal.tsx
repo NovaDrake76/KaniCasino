@@ -1,25 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { buyItem } from "../../services/market/MarketSercive";
 import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
+import { IMarketItem } from "../../components/Types";
 
-interface MarketItem {
-  _id: string;
-  sellerId: string;
-  item: {
-    _id: string;
-    name: string;
-    image: string;
-  };
-  price: number;
-  itemName: string;
-  itemImage: string;
-  __v: number;
-}
 
 interface Props {
-  item: MarketItem;
+  item: IMarketItem;
   isOpen: boolean;
   onClose: () => void;
   setRefresh?: (value: boolean) => void;
@@ -31,7 +19,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   onClose,
   setRefresh,
 }) => {
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { userData, toogleUserData } = useContext(UserContext);
 
   const handleConfirm = async () => {
