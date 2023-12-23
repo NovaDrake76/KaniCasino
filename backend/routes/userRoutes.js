@@ -292,7 +292,7 @@ router.delete(
 );
 
 // Get user inventory
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 18;
 
 router.get("/inventory/:userId", async (req, res) => {
 

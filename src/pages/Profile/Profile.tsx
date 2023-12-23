@@ -7,6 +7,7 @@ import UserContext from "../../UserContext";
 import Skeleton from "react-loading-skeleton";
 import MainButton from "../../components/MainButton";
 import Filters from "./Filters";
+import Pagination from "../../components/Pagination";
 
 interface User {
   _id: string;
@@ -39,6 +40,7 @@ const Profile = () => {
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -50,16 +52,15 @@ const Profile = () => {
   const id = window.location.pathname.split("/")[2];
 
   useEffect(() => {
-    getUserInfo();
-  }, []);
+    if (invItems?.length > 0) {
+      //1.5 second delay. If other filter is selected, it will wait for 1.5 seconds before calling the api
+      const delayDebounceFn = setTimeout(() => {
+        getInventoryInfo();
+      }, 1000);
+      return () => clearTimeout(delayDebounceFn);
 
-  useEffect(() => {
-    //1.5 second delay. If other filter is selected, it will wait for 1.5 seconds before calling the api
-    const delayDebounceFn = setTimeout(() => {
-      getInventoryInfo();
-    }, 1000);
+    }
 
-    return () => clearTimeout(delayDebounceFn);
   }, [filters]);
 
 
@@ -77,7 +78,7 @@ const Profile = () => {
     try {
       const response = await getInventory(
         id,
-        newPage ? inventory && inventory.currentPage + 1 : 1,
+        page,
         filters
       );
       setInventory(response);
@@ -106,6 +107,10 @@ const Profile = () => {
       setRefresh(false);
     }
   }, [refresh]);
+
+  useEffect(() => {
+    setRefresh(true);
+  }, [page]);
 
 
   return (
@@ -141,7 +146,13 @@ const Profile = () => {
             {openFilters && <Filters filters={filters} setFilters={setFilters} />}
 
           </div>
+          {inventory &&
+            inventory.totalPages > 1 &&
+            (
+              <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
+            )}
           <div className="flex flex-wrap gap-6  justify-center ">
+
             {loadingInventory ? (
               { array: Array(12).fill(0) }.array.map((_, i) => (
                 <Skeleton
@@ -166,15 +177,9 @@ const Profile = () => {
             )}
           </div>
           {inventory &&
-            inventory.currentPage !== inventory.totalPages &&
-            invItems.length > 19 && (
-              <div className="w-40 mt-4">
-                <MainButton
-                  text={`Load more`}
-                  onClick={() => getInventoryInfo(true)}
-                  loading={loadingInventory}
-                />
-              </div>
+            inventory.totalPages > 1 &&
+            (
+              <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
             )}
         </div>
       </div>

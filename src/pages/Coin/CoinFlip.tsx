@@ -154,7 +154,7 @@ const CoinFlip = () => {
                   <button
                     key={e.id}
                     onClick={() => setChoice(e.id)}
-                    className={`p-2 border rounded w-1/2 bg-${e.color}-500 ${choice === e.id && "bg-opacity-50"}`}
+                    className={`p-2 border rounded w-1/2 bg-${e.color}-500 ${choice === e.id && "bg-opacity-30"}`}
                   >
                     {e.name}
                   </button>

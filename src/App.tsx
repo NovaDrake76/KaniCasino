@@ -6,7 +6,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import SocketConnection from "./services/socket"
-
+import ScrollToTop from "./components/ScrollToTop";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -133,6 +133,7 @@ function App() {
         }>
           <Router>
             <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
+              <ScrollToTop />
               <ToastContainer
                 position="top-right"
                 autoClose={4000}

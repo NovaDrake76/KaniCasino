@@ -1,8 +1,14 @@
-export interface UserRank {
+export interface User {
     _id: string;
+    level: number;
+    profilePicture: string;
     username: string;
     weeklyWinnings: number;
-    profilePicture: string;
-    level: number;
-    fixedItem: any;
+    fixedItem: {
+        image: string;
+        name: string;
+        description: string;
+        rarity: string;
+    }
+
 }
