@@ -14,41 +14,36 @@ class SlotGameController {
 
         updateLevel(player, betAmount);
 
-
-        // Initialize the game state
-        let gameState = new SlotGame({
-            userId: userId,
-            betAmount: betAmount,
-            gridState: this.generateRandomGrid(),
-            lastSpinResult: new Map(),
-            manekiNekoFeature: { isActive: false }
-        });
+        // Generate a random grid state
+        const gridState = this.generateRandomGrid();
 
         // Calculate wins
-
-        const winResults = SlotGameController.calculateWins(gameState.gridState);
-        // Convert winResults to a Map or adjust according to schema
-        const lastSpinResult = new Map();
-        winResults.forEach(win => {
-            lastSpinResult.set(win.line, win.payout);
-        });
-        gameState.lastSpinResult = lastSpinResult;
+        const winResults = SlotGameController.calculateWins(gridState);
 
         // Check for special features
-        if (this.checkForManekiNeko(gameState.gridState)) {
-            gameState.manekiNekoFeature.isActive = true;
+        let manekiNekoFeature = false;
+        if (this.checkForManekiNeko(gridState)) {
+            manekiNekoFeature = true;
             // Implement logic for Maneki-neko feature
+        }
+
+        // Calculate total payout
+        function calculateTotalPayout(winResults) {
+            let totalPayout = 0;
+            if (winResults.length > 0) {
+                totalPayout = winResults.reduce((total, win) => total + win.payout, 0);
+            }
+            return totalPayout;
         }
 
         // Update player's balance 
         if (winResults.length > 0) {
-            const totalPayout = winResults.reduce((total, win) => total + win.payout, 0);
+            const totalPayout = calculateTotalPayout(winResults);
             player.walletBalance += totalPayout;
             updateUserWinnings(player, betAmount);
         }
 
         await player.save();
-        await gameState.save();
 
         // Emit updated user data
         const updatedUserData = {
@@ -57,9 +52,19 @@ class SlotGameController {
             level: player.level,
         };
 
-        io.to(userId.toString()).emit('userDataUpdated', updatedUserData);
+        setTimeout(() => {
+            io.to(userId.toString()).emit('userDataUpdated', updatedUserData);
+        }, 3000);
 
-        return gameState;
+        // Return the game state
+        return {
+            userId: userId,
+            betAmount: betAmount,
+            gridState: gridState,
+            lastSpinResult: winResults,
+            manekiNekoFeature: manekiNekoFeature,
+            totalPayout: calculateTotalPayout(winResults)
+        };
     }
 
     static generateRandomGrid() {
@@ -86,8 +91,8 @@ class SlotGameController {
 
         // Helper function to calculate payout for a line
         const calculateLinePayout = (line) => {
-            if (line.every(symbol => symbol === line[0] || symbol === 'wild')) {
-                const mainSymbol = line[0] === 'wild' && line[1] !== 'wild' ? line[1] : line[0];
+            if (line.every(symbol => symbol === line.find(sym => sym !== 'wild') || symbol === 'wild')) {
+                const mainSymbol = line.find(sym => sym !== 'wild') || line[0];
                 return symbolPayouts[mainSymbol];
             }
             return 0;
@@ -101,11 +106,11 @@ class SlotGameController {
         }
 
         // Check vertical lines
-        for (let i = 0; i < 3; i++) {
-            const line = [grid[i], grid[i + 3], grid[i + 6]];
-            const payout = calculateLinePayout(line);
-            if (payout > 0) wins.push({ line: `Vertical ${i + 1}`, payout });
-        }
+        // for (let i = 0; i < 3; i++) {
+        //     const line = [grid[i], grid[i + 3], grid[i + 6]];
+        //     const payout = calculateLinePayout(line);
+        //     if (payout > 0) wins.push({ line: `Vertical ${i + 1}`, payout });
+        // }
 
         // Check diagonals
         const diagonal1 = [grid[0], grid[4], grid[8]];
