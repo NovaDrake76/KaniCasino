@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Game from './Game';
 import { spinSlots } from '../../services/games/GamesServices';
 import { toast } from 'react-toastify';
@@ -14,13 +14,14 @@ const Slots = () => {
     const [isSpinning, setIsSpinning] = useState<boolean>(false);
 
     const handleSpin = async () => {
-        setIsSpinning(true);
         try {
-            setTimeout(async () => {
-                const response = await spinSlots(betAmount);
-                setGrid(response.gridState);
+            const response = await spinSlots(betAmount);
+            setGrid(response.gridState);
+            setIsSpinning(true);
+
+            setTimeout(() => {
                 setIsSpinning(false);
-            }, 2000); // Delay to simulate spinning
+            }, 3000);
         } catch (e: any) {
             console.error(e.response?.data.message || "Error spinning slots");
             toast.error(e.response?.data.message || "Error spinning slots");
@@ -33,7 +34,7 @@ const Slots = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <div className=" mx-auto p-4">
             <Game grid={grid} isSpinning={isSpinning} />
             <div className="flex justify-center mt-4">
                 <input
@@ -48,7 +49,7 @@ const Slots = () => {
                 </button>
             </div>
             <div className="mt-4 text-center">
-                <p className="text-lg">Bet Amount: {betAmount} coins</p>
+                <p className="text-lg">Bet Amount: {betAmount} fodase essa porra</p>
             </div>
         </div>
     );
