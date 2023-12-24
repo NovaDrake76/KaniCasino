@@ -364,3 +364,17 @@ button:focus-visible {
       var(--color1));
   background-size: 600% 100%;
 }
+
+@keyframes spin {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+.animate-spin {
+  animation: spin 2s linear infinite;
+}

@@ -71,6 +71,18 @@ const UserInfo: React.FC<UserProps> = ({
   //   fileInput.current?.click();
   // };
 
+  const calculateRequiredXP = (level: number) => {
+    const baseXP = 1000;
+    let requiredXP = baseXP;
+    for (let i = 1; i <= level; i++) {
+      requiredXP += baseXP * Math.pow(1.1, i - 1) / 2;
+    }
+    requiredXP = Math.round(requiredXP);
+
+    return requiredXP;
+  };
+
+
   return (
     <div className="flex flex-col lg:flex-row items-center justify-between w-full">
       <div className="flex flex-col lg:flex-row items-center gap-7">
@@ -110,19 +122,22 @@ const UserInfo: React.FC<UserProps> = ({
               <div
                 className={`h-1 bg-blue-400 rounded rounded-l-none z-10`}
                 style={{
-                  width: `${getPercentX(xp - level * 1000, 1000)}%`,
+                  width: `${getPercentX(xp, calculateRequiredXP(level))}%`,
                 }}
               />{" "}
               <div
                 className={`h-1 bg-[#3a365a] rounded rounded-r-none -translate-x-1 z-0`}
                 style={{
-                  width: `${getPercentY(xp - level * 1000, 1000)}%`,
+                  width: `${getPercentY(xp, calculateRequiredXP(level))}%`,
                 }}
               />
             </div>
             <div className="flex w-full items-center justify-between">
-              <span className="text-[#dddcfc] font-semibold">{`XP ${xp} / ${(level + 1) * 1000
-                }`}</span>
+              <span className="text-[#dddcfc] font-semibold">
+                {`XP ${new Intl.NumberFormat("en-US").format(xp)} / 
+                ${new Intl.NumberFormat("en-US").format(calculateRequiredXP(level))
+                  }`}
+              </span>
               <Tooltip id="my-tooltip" />
 
               <span

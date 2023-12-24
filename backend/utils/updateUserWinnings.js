@@ -1,8 +1,7 @@
 const User = require("../models/User");
 
 // Updating winnings after a game
-const updateUserWinnings = async (userId, winnings) => {
-    const user = await User.findById(userId);
+const updateUserWinnings = async (user, winnings) => {
 
     // Reset weekly winnings if a week has passed (renmove this when we have a cron job)
     if (new Date() - user.lastWinningsUpdate > 7 * 24 * 60 * 60 * 1000) {
@@ -11,7 +10,6 @@ const updateUserWinnings = async (userId, winnings) => {
     }
 
     user.weeklyWinnings += winnings;
-    await user.save();
 };
 
 module.exports = updateUserWinnings;

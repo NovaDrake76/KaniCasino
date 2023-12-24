@@ -68,14 +68,17 @@ const crashGame = (io) => {
         const payout = betAmount * multiplier;
 
         // Update the user's wallet balance and handle the returned updated user
-        const updatedUser = await User.findByIdAndUpdate(
-          user.id,
-          { $inc: { walletBalance: payout } },
-          { new: true }
+        const updatedUser = await User.findById(
+          user.id
         );
+
+        updatedUser.walletBalance += payout;
 
         // Update the user's weekly winnings
         updateUserWinnings(updatedUser, (betAmount * multiplier) - betAmount);
+
+        // Save the updated user
+        await updatedUser.save();
 
         gameState.gamePlayers[user.id] = { ...gameState.gamePlayers[user.id]._doc, payout: multiplier }
         const userDataPayload = {
