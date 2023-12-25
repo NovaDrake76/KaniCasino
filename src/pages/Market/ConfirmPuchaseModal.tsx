@@ -25,7 +25,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   const handleConfirm = async () => {
     setLoading(true);
     try {
-      await buyItem(item._id as unknown as number);
+      await buyItem(item._id as string);
       setRefresh && setRefresh(true);
       toogleUserData({
         ...userData,
