@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { RotatingLines } from "react-loader-spinner";
 
 interface SlotColumnProps {
     symbols: string[];
@@ -11,6 +12,8 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
     const rollsize = 6015;
     const [rouletteItems, setRouletteItems] = useState<any[]>([]);
     const [translateValue, setTranslateValue] = useState<string>(`-${rollsize}px`);
+    const [loading, setLoading] = useState<boolean>(true);
+
     const rouletteRef = useRef<HTMLDivElement | null>(null);
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
 
@@ -23,6 +26,10 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
         newItems[48] = symbols[1];
         newItems[49] = symbols[2];
         setRouletteItems(newItems);
+    };
+
+    const handleImageLoad = () => {
+        setLoading(false);
     };
 
 
@@ -120,7 +127,20 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
                     rouletteItems.map((symbol, index) => (
                         <div key={index} className={`w-32 h-32 relative  p-2 ${isWinningSymbol(index) ? 'animate-winner' : ''}`} >
                             <div className={`w-full h-full ${isWinningSymbol(index) ? 'winner-item' : ''}`}>
-                                <img src={getSymbolImage(symbol)} alt={symbol} className="w-full h-full z-10" />
+                                {
+                                    loading && <div className="absolute inset-0 flex items-center justify-center">
+                                        <RotatingLines
+                                            strokeColor="grey"
+                                            strokeWidth="5"
+                                            animationDuration="0.75"
+                                            width="50px"
+                                            visible={true}
+                                        />
+                                    </div>
+                                }
+                                <img src={getSymbolImage(symbol)} alt={symbol}
+                                    className={`w-full h-full z-10 ${loading ? "hidden" : ""}`}
+                                    onLoad={handleImageLoad} />
                                 {isWinningSymbol(index) && isSpinning == false &&
                                     <div className="absolute inset-0 flex items-center justify-center">
                                         <div

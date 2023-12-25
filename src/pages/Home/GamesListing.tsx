@@ -26,7 +26,7 @@ const GameListing: React.FC<GameListingProps> = ({
         }, {
             id: "3",
             title: "Upgrade",
-            image: "/images/upgrade/idle.gif",
+            image: "/images/upgrade.webp",
             link: "/upgrade"
         },
         {

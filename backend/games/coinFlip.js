@@ -22,13 +22,13 @@ const coinFlip = (io) => {
       try {
         // Handle player bet
 
-        // Check if the user has the required balance
-        if (user.walletBalance < bet) {
+        //if bet is not a number or is less than 0, return error
+        if (isNaN(bet) || bet < 1 || bet > 1000000) {
           return;
         }
 
-        //if bet is not a number or is less than 0, return error
-        if (isNaN(bet) || bet < 0) {
+        // Check if the user has the required balance
+        if (user.walletBalance < bet) {
           return;
         }
 

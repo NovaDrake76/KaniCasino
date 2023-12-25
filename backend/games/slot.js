@@ -6,6 +6,12 @@ const updateUserWinnings = require("../utils/updateUserWinnings");
 class SlotGameController {
 
     static async spin(userId, betAmount, io) {
+
+        // Check bet amount
+        if (betAmount < 0.5 || betAmount > 50000) {
+            throw new Error("Invalid bet amount");
+        }
+
         // Check user's balance
         const player = await User.findById(userId).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-inventory");
         if (player.walletBalance < betAmount) {
@@ -68,22 +74,41 @@ class SlotGameController {
     }
 
     static generateRandomGrid() {
-        const symbols = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
+        const symbolFrequencies = {
+            'red': 100,     // Common, low payout
+            'blue': 90,
+            'green': 80,
+            'yin_yang': 50, // Moderate rarity and payout
+            'hakkero': 30,  // Rarer, higher payout
+            'yellow': 20,   // Rare, high payout
+            'wild': 40
+        };
+
+        let symbolPool = [];
+        for (const symbol in symbolFrequencies) {
+            for (let i = 0; i < symbolFrequencies[symbol]; i++) {
+                symbolPool.push(symbol);
+            }
+        }
+
         let grid = [];
         for (let i = 0; i < 9; i++) {
-            grid.push(symbols[Math.floor(Math.random() * symbols.length)]);
+            const randomIndex = Math.floor(Math.random() * symbolPool.length);
+            grid.push(symbolPool[randomIndex]);
         }
         return grid;
     }
+
+
 
     static calculateWins(grid) {
         const symbolPayouts = {
             red: 0.5,
             blue: 1,
-            green: 5,
-            yin_yang: 10,
-            hakkero: 20,
-            yellow: 30,
+            green: 3,
+            yin_yang: 8,
+            hakkero: 12,
+            yellow: 25,
             wild: 250
         };
 
