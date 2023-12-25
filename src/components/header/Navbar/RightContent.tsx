@@ -33,10 +33,11 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, setOpenU
             {!loading && (
                 <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all invisible md:visible">
                     <BiWallet className="text-2xl" />
-                    <div className="max-w-[80px] md:max-w-none overflow-hidden truncate">
+                    <div className="max-w-[80px] md:max-w-[140px] overflow-hidden truncate">
                         {new Intl.NumberFormat("en-US", {
                             style: "currency",
                             currency: "DOL",
+                            maximumFractionDigits: 0,
                         })
                             .format(userData?.walletBalance)
                             .replace("DOL", "K₽")}

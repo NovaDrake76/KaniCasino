@@ -44,9 +44,9 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
     return (
         <div className="flex flex-col justify-center items-center ">
             <img src={"/images/bottombar.png"} alt="bottom bar" className='w-[446px] scale-y-[-1]  ' />
-            <div className="flex">
+            <div className="flex ">
                 {renderSidebar(0)}
-                <div className="flex  bg-gray-800">
+                <div className="flex bg-gray-800 min-w-[384px] min-h-[380px]">
                     {[{
                         line: [0, 3, 6],
                     }, {
@@ -56,7 +56,7 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
                     }
                     ].map(
                         (line, index) => (
-                            <div className='flex relative' key={index}>
+                            <div className='flex relative ' key={index}>
                                 <SlotColumn symbols={[grid[line.line[0]], grid[line.line[1]], grid[line.line[2]]]}
                                     isSpinning={isSpinning} position={index} winningLines={winningLines} />
                                 {
@@ -71,7 +71,7 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
                 </div>
                 {renderSidebar(1)}
 
-            </div>
+            </div >
             <img src={"/images/bottombar.png"} alt="bottom bar" className='w-[446px] z-10' />
 
             <div className='bg-[#AA1520] w-full  text-white text-2xl font-bold p-1'>
@@ -88,7 +88,7 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
                 </div>
             </div>
 
-        </div>
+        </div >
     );
 };
 

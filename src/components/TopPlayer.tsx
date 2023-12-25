@@ -17,6 +17,7 @@ const TopPlayer: React.FC<CardProps> = ({ user, rank }) => {
                 {new Intl.NumberFormat("en-US", {
                     style: "currency",
                     currency: "DOL",
+                    maximumFractionDigits: 0,
                 })
                     .format(user.weeklyWinnings)
                     .replace("DOL", "K₽")}

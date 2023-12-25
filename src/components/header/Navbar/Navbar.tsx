@@ -11,6 +11,7 @@ import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import { GiUpgrade } from 'react-icons/gi';
+import { TbCat } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { FaBars } from 'react-icons/fa';
 import RightContent from "./RightContent";
@@ -100,6 +101,11 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenN
       name: "Upgrade",
       path: "/upgrade",
       icon: <GiUpgrade className="text-2xl" />,
+    },
+    {
+      name: "Slots",
+      path: "/slot",
+      icon: <TbCat className="text-2xl" />,
     }
   ];
 
