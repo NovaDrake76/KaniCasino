@@ -10,7 +10,7 @@ interface SlotMachineProps {
 }
 
 const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines }) => {
-    const [message, setMessage] = useState<string | null>(null);
+    const [_message, setMessage] = useState<string | null>(null);
     const messages = ['Win up to 250X!', '10X multiplier!', 'Respin for the Maneki Neko!'];
 
 
