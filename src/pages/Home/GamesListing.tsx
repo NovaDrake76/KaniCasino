@@ -32,7 +32,7 @@ const GameListing: React.FC<GameListingProps> = ({
         {
             id: "4",
             title: "Slot",
-            image: "/images/upgrade/idle.gif",
+            image: "/images/slot/wild.webp",
             link: "/slot"
         },
     ]

@@ -31,7 +31,7 @@ class SlotGameController {
         function calculateTotalPayout(winResults) {
             let totalPayout = 0;
             if (winResults.length > 0) {
-                totalPayout = winResults.reduce((total, win) => total + win.payout, 0);
+                totalPayout = winResults.reduce((total, win) => total + win.payout * betAmount, 0);
             }
             return totalPayout;
         }
@@ -78,12 +78,12 @@ class SlotGameController {
 
     static calculateWins(grid) {
         const symbolPayouts = {
-            red: 3,
-            blue: 5,
-            green: 8,
+            red: 0.5,
+            blue: 1,
+            green: 5,
             yin_yang: 10,
-            hakkero: 25,
-            yellow: 100,
+            hakkero: 20,
+            yellow: 30,
             wild: 250
         };
 

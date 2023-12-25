@@ -1,14 +1,14 @@
-import { m } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 
 interface SlotColumnProps {
     symbols: string[];
     isSpinning: boolean;
     position: number;
+    winningLines?: any[];
 }
 
-const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position }) => {
-    const rollsize = 6272;
+const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, winningLines }) => {
+    const rollsize = 6015;
     const [rouletteItems, setRouletteItems] = useState<any[]>([]);
     const [translateValue, setTranslateValue] = useState<string>(`-${rollsize}px`);
     const rouletteRef = useRef<HTMLDivElement | null>(null);
@@ -16,12 +16,12 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position }
 
     const createRouletteItems = () => {
         let newItems = symbols.slice();
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 46; i++) {
             newItems.unshift(options[Math.floor(Math.random() * options.length)]);
         }
-        newItems[48] = symbols[0];
-        newItems[49] = symbols[1];
-        newItems[50] = symbols[2];
+        newItems[47] = symbols[0];
+        newItems[48] = symbols[1];
+        newItems[49] = symbols[2];
         setRouletteItems(newItems);
     };
 
@@ -64,43 +64,111 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position }
     const getSymbolImage = (symbol: string) => {
 
         const images: { [key: string]: string } = {
-            red: 'https://i.imgur.com/uR1CYH0.png',
-            blue: 'https://pm1.aminoapps.com/7270/78aa14b31aa6c3118b15b785699e946557b910b7r1-512-505v2_hq.jpg',
-            green: 'https://media1.tenor.com/m/_Kumf98IT9wAAAAC/cat-reads-chat-cat-eating.gif',
-            yin_yang: 'https://i.imgur.com/A8JGDG3.png',
-            hakkero: 'https://i.imgur.com/LLIZSbw.png',
-            yellow: 'https://pm1.aminoapps.com/7270/cd0fb82f1ba0f6c3ade2e047e3bbdbb7ac651432r1-474-512v2_hq.jpg',
-            wild: "https://i.imgur.com/xtWn84U.png"
+            red: '/images/slot/red.webp',
+            blue: '/images/slot/shangai.webp',
+            green: '/images/slot/lily.webp',
+            yin_yang: '/images/slot/yin.webp',
+            hakkero: '/images/slot/hakkero.webp',
+            yellow: '/images/slot/green.webp',
+            wild: "/images/slot/wild.webp"
         };
 
         return images[symbol];
     }
 
+
+    const isWinningSymbol = (index: number) => {
+        if (index < 46) return false;
+
+        for (const line of winningLines ?? []) {
+            if (line.startsWith('Horizontal')) {
+                if (line.endsWith('1') && index === 47) {
+                    return true;
+                } else if (line.endsWith('2') && index === 48) {
+                    return true;
+                }
+                else if (line.endsWith('3') && index === 49) {
+                    return true;
+                }
+
+            } else {
+                if (line.endsWith('1') && position == 0 && index === 47) {
+                    return true;
+                } else if (line.endsWith('1') && position == 2 && index === 49) {
+                    return true;
+                }
+
+                else if (position == 1 && index === 48) {
+                    return true;
+                }
+
+                else if (line.endsWith('2') && position == 0 && index === 49) {
+                    return true;
+                } else if (line.endsWith('2') && position == 2 && index === 47) {
+                    return true;
+                }
+
+            }
+            return false;
+        };
+    }
+
     return (
-        <div className="max-h-[380px] overflow-hidden">
+        <div className="max-h-[380px] overflow-hidden ">
             <div ref={rouletteRef} >
                 {
                     rouletteItems.map((symbol, index) => (
-                        <div key={index} className={`w-32 h-32 rounded-full relative`}>
-                            <img src={getSymbolImage(symbol)} alt={symbol} className="w-full h-full" />
-                            {/* <div className="absolute z-10">{index}</div> */}
+                        <div key={index} className={`w-32 h-32 relative  p-2 ${isWinningSymbol(index) ? 'animate-winner' : ''}`} >
+                            <div className={`w-full h-full ${isWinningSymbol(index) ? 'winner-item' : ''}`}>
+                                <img src={getSymbolImage(symbol)} alt={symbol} className="w-full h-full z-10" />
+                                {isWinningSymbol(index) && isSpinning == false &&
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <div
+                                            className="w-auto mt-1 h-1 rounded-full shadow-lg transition-all -z-10 "
+                                            style={{
+                                                boxShadow: "0px 0px 35px 28px #FFCC00",
+                                            }}
+                                        />
+                                        <div className="absolute w-[calc(200%)] h-1 bg-unique  -z-10" style={{
+                                            transform:
+                                                winningLines?.[0].startsWith('Horizontal') ? 'rotate(0deg)' :
+                                                    winningLines?.[0].endsWith('1') ? 'rotate(45deg)' : 'rotate(-45deg)',
+
+                                        }} />
+                                    </div>}
+                                {/* <div className="absolute z-10">{index}</div> */}
+                            </div>
                         </div>
                     ))
                 }
             </div>
-            < style > {`
-          @keyframes spin {
-            from {
-              transform: translateY(0%);
+            <style>{`
+             @keyframes spin {
+                from {
+                    transform: translateY(0%);
+                }
+                to {
+                    transform: translateY(${translateValue});
+                }
             }
-            to {
-              transform: translateY(${translateValue});
-            }
-          }
-        `}</ style>
-        </div>
-    )
 
-}
+            @keyframes animate-winner {
+                0% {
+                    transform: scale(1);
+                }
+                100% {
+                    transform: scale(1.05);
+                }
+            }
+
+            .winner-item {
+                animation: animate-winner 0.8s infinite alternate;
+            }
+        `}</style>
+
+        </div>
+    );
+
+};
 
 export default SlotColumn;
