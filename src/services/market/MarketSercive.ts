@@ -14,9 +14,14 @@ export async function sellItem(item: any, price: number) {
     return response.data;
 }
 
-export async function buyItem(id: number) {
+export async function buyItem(id: string) {
     const response = await api.post(`/marketplace/buy/${id}`);
 
     return response.data;
 }
 
+export async function removeListing(id: string) {
+    const response = await api.delete(`/marketplace/${id}`);
+
+    return response.data;
+}

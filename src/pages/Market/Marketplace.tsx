@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import ItemCard from "./MarketItem";
-import { getItems } from "../../services/market/MarketSercive";
+import MarketItem from "./MarketItem";
+import { getItems, removeListing } from "../../services/market/MarketSercive";
 import SellItemModal from "./SellItemModal";
 import MainButton from "../../components/MainButton";
 import Title from "../../components/Title";
@@ -8,25 +8,12 @@ import ConfirmPurchaseModal from "./ConfirmPuchaseModal";
 import Skeleton from "react-loading-skeleton";
 import UserContext from "../../UserContext";
 import Pagination from "../../components/Pagination";
-
-interface MarketItem {
-  _id: string;
-  sellerId: string;
-  item: {
-    _id: string;
-    name: string;
-    image: string;
-  };
-  price: number;
-  itemName: string;
-  itemImage: string;
-  __v: number;
-}
+import { IMarketItem } from "../../components/Types";
 
 interface ItemData {
   totalPages: number;
   currentPage: number;
-  items: MarketItem[];
+  items: IMarketItem[];
 }
 
 const Marketplace: React.FC = () => {
@@ -39,9 +26,12 @@ const Marketplace: React.FC = () => {
 
   const { isLogged } = useContext(UserContext);
 
-  const defaultItem: MarketItem = {
+  const defaultItem: IMarketItem = {
     _id: "",
-    sellerId: "",
+    sellerId: {
+      _id: "",
+      username: "",
+    },
     item: {
       _id: "",
       name: "",
@@ -53,11 +43,8 @@ const Marketplace: React.FC = () => {
     __v: 0,
   };
 
-  const [selectedItem, setSelectedItem] = useState<MarketItem>(defaultItem);
+  const [selectedItem, setSelectedItem] = useState<IMarketItem>(defaultItem);
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -71,6 +58,21 @@ const Marketplace: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const buyItem = (item: IMarketItem) => {
+    setSelectedItem(item);
+    setOpenBuyModal(true);
+  }
+
+  const removeItem = async (item: IMarketItem) => {
+    try {
+      await removeListing(item._id);
+      setRefresh(true);
+    } catch {
+      console.log("error");
+    }
+  }
+
 
   useEffect(() => {
     if (refresh) {
@@ -99,6 +101,7 @@ const Marketplace: React.FC = () => {
       />
       <div className="flex items-center justify-center w-full max-w-[1600px] relative ">
         <Title title="Marketplace" />
+
         <div className="absolute md:right-24 -top-6 md:top-0">
           {isLogged && (
             <div className="w-52">
@@ -130,13 +133,15 @@ const Marketplace: React.FC = () => {
         <div className="flex flex-wrap items-center gap-4 justify-center px-8  max-w-[1600px]">
 
           {items && items.items && items.items.length > 0 ? (items.items.map((item) => (
-            <ItemCard
+            <MarketItem
               key={item._id}
               item={item}
-              click={() => {
-                setSelectedItem(item);
-                setOpenBuyModal(true);
-              }}
+              click={
+                () => buyItem(item)
+              }
+              remove={
+                () => removeItem(item)
+              }
             />
           ))) : (
             <div className="flex flex-col items-center justify-center w-full">

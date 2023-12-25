@@ -23,7 +23,18 @@ const GameListing: React.FC<GameListingProps> = ({
             title: "CoinFlip",
             image: "/images/coinHeads.webp",
             link: "/coinflip"
-        }
+        }, {
+            id: "3",
+            title: "Upgrade",
+            image: "/images/upgrade/idle.gif",
+            link: "/upgrade"
+        },
+        {
+            id: "4",
+            title: "Slot",
+            image: "/images/slot/wild.webp",
+            link: "/slot"
+        },
     ]
     return (
         <div className="w-full flex flex-col gap-4 py-10 items-center" key={name}>

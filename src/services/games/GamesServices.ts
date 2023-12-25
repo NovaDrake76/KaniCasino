@@ -9,3 +9,10 @@ export async function upgradeItem(selectedItemIds: string[], targetItemId: strin
     const response = await api.post(`/games/upgrade/`, { selectedItemIds, targetItemId });
     return response.data;
 }
+
+export async function spinSlots(betAmount: number) {
+    const response = await api.post(`/games/slots`, {
+        betAmount
+    });
+    return response.data;
+}

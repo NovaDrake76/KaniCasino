@@ -5,6 +5,8 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const upgradeItems = require("../games/upgrade");
+const SlotGameController = require("../games/slot");
+const updateLevel = require("../utils/updateLevel");
 
 
 // Rarities array
@@ -69,9 +71,6 @@ module.exports = (io) => {
         return res.status(400).json({ message: "Insufficient balance" });
       }
 
-      user.walletBalance -= caseData.price;
-      await user.save();
-
       const itemsByRarity = groupItemsByRarity(caseData.items);
       const winningRarity = getRandomWeightedItem(Rarities, "chance");
       let winningItem = getRandomItemFromRarity(itemsByRarity, winningRarity.id);
@@ -91,13 +90,7 @@ module.exports = (io) => {
       // Add the entire winning item object to the user's inventory
       user.inventory.unshift(winningItem);
 
-      // Update user xp by +5*case price
-      user.xp += 5 * caseData.price;
-
-      // Update user level
-      if (user.xp >= (user.level + 1) * 1000) {
-        user.level += 1;
-      }
+      updateLevel(user, caseData.price);
 
       await user.save();
 
@@ -129,6 +122,7 @@ module.exports = (io) => {
     }
   });
 
+  // Upgrade items
   router.post("/upgrade", isAuthenticated, async (req, res) => {
     const { selectedItemIds, targetItemId } = req.body;
     const user = req.user._id;
@@ -138,9 +132,20 @@ module.exports = (io) => {
     res.status(result.status).json(result);
   });
 
+  // Spin the slot machine
+  router.post('/slots', isAuthenticated, async (req, res) => {
+    const user = req.user;
+
+    try {
+      const { betAmount } = req.body;
+
+      const result = await SlotGameController.spin(user._id, betAmount, io);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
 
   return router;
 };
-
-
-

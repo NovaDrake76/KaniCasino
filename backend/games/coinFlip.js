@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const updateUserWinnings = require("../utils/updateUserWinnings");
+const updateLevel = require("../utils/updateLevel");
 
 const coinFlip = (io) => {
   let gameState = {
@@ -35,11 +36,14 @@ const coinFlip = (io) => {
         gameState[betType].bets[user.id] = bet;
 
         // Update player balance
-        const updatedUser = await User.findByIdAndUpdate(
-          user.id,
-          { $inc: { walletBalance: -bet } },
-          { new: true }
+        const updatedUser = await User.findById(
+          user.id
         ).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-inventory");
+
+        updateLevel(updatedUser, bet);
+
+        await updatedUser.save();
+
         const userDataPayload = {
           walletBalance: updatedUser.walletBalance,
           xp: updatedUser.xp,
@@ -75,11 +79,15 @@ const coinFlip = (io) => {
       // Player wins, update their balance
       try {
         const betAmount = gameState[winningChoice].bets[userId];
-        const user = await User.findByIdAndUpdate(
-          userId,
-          { $inc: { walletBalance: betAmount * 2 } },
-          { new: true }
+        const user = await User.findById(
+          userId
         );
+
+        user.walletBalance += betAmount * 2;
+        updateUserWinnings(user, betAmount);
+
+        await user.save();
+
         const userDataPayload = {
           walletBalance: user.walletBalance,
           xp: user.xp,
@@ -87,7 +95,6 @@ const coinFlip = (io) => {
         }
 
         io.to(userId).emit('userDataUpdated', userDataPayload);
-        updateUserWinnings(userId, betAmount * 2);
 
 
       } catch (err) {

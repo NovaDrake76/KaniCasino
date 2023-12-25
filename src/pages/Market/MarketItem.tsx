@@ -2,33 +2,23 @@ import React, { useContext, useState } from "react";
 import MainButton from "../../components/MainButton";
 import UserContext from "../../UserContext";
 import { Link } from "react-router-dom";
+import { IMarketItem } from "../../components/Types";
 
 interface Props {
-  item: {
-    _id: string;
-    sellerId: any;
-    item: {
-      _id: string;
-      name: string;
-      image: string;
-    };
-    price: number;
-    itemName: string;
-    itemImage: string;
-    __v: number;
-  };
+  item: IMarketItem;
   click: () => void;
+  remove: () => void;
 }
 
-const MarketItem: React.FC<Props> = ({ item, click }) => {
-  const { isLogged } = useContext(UserContext);
+const MarketItem: React.FC<Props> = ({ item, click, remove }) => {
+  const { isLogged, userData } = useContext(UserContext);
   const [loading, setLoading] = useState<boolean>(true);
 
   const handleImageLoad = () => {
     setLoading(false);
   };
 
-
+  const isFromLoggedUser = userData?.id === item?.sellerId?._id
 
   return (
     <div className="border  border-[#161448] rounded-lg p-4 bg-gradient-to-tr from-[#1D1730] to-[#141333] transition-all duration-500 ease-in-out w-[226px] h-[334px]">
@@ -62,7 +52,11 @@ const MarketItem: React.FC<Props> = ({ item, click }) => {
           .replace("DOL", "K₽")
       }</p>
 
-      <MainButton text="Buy" onClick={click} disabled={!isLogged} />
+      <MainButton text={
+        isFromLoggedUser ? "Remove" : "Buy"
+      } onClick={
+        isFromLoggedUser ? remove : click
+      } disabled={!isLogged} />
     </div>
   );
 };
