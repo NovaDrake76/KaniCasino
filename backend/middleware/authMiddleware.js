@@ -11,7 +11,7 @@ const isAuthenticated = async (req, res, next) => {
 
   const tokenParts = authHeader.split(' ');
   if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
-    return res.status(401).json({ message: "Authorization header format is 'Bearer [token]'" });
+    return res.status(401).json({ message: "Invalid Authorization" });
   }
 
   const token = tokenParts[1];

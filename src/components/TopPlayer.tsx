@@ -13,7 +13,7 @@ const TopPlayer: React.FC<CardProps> = ({ user, rank }) => {
         >
             {/* <div className="text-2xl font-bold text-indigo-600">#{rank}</div> */}
             <Player user={user} size="medium" />
-            <p className="text-gray-500">
+            <p className="text-gray-500 truncate">
                 {new Intl.NumberFormat("en-US", {
                     style: "currency",
                     currency: "DOL",

@@ -11,7 +11,7 @@ export async function upgradeItem(selectedItemIds: string[], targetItemId: strin
 }
 
 export async function spinSlots(betAmount: number) {
-    const response = await api.post(`/games/slots`, {
+    const response = await api.post(`/games/slots/`, {
         betAmount
     });
     return response.data;

@@ -23,8 +23,8 @@ const Leaderboard = () => {
 
 
     return (
-        <div className="flex flex-col items-center justify-center ">
-            <Title title="Weekly Leaderboard" />
+        <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none overflow-x-auto ">
+            <Title title="Leaderboard" />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
                 {users.slice(0, 3).map((user, index) => (

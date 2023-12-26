@@ -4,6 +4,7 @@ import { MdOutlineSell } from "react-icons/md";
 import { SlPlane } from "react-icons/sl";
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { TbCat } from "react-icons/tb";
 
 interface Sidebar {
     closeSidebar: () => void;
@@ -35,6 +36,11 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: "Upgrade",
             path: "/upgrade",
             icon: <GiUpgrade className="text-2xl" />,
+        },
+        {
+            name: "Slots",
+            path: "/slot",
+            icon: <TbCat className="text-2xl" />,
         }
     ];
 

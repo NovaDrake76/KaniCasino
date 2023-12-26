@@ -66,7 +66,7 @@ const Slots = () => {
 
     const renderValueViewer = (type: "balance" | "bet" | "wins") => {
         return (
-            <div className="flex bg-black/30 p-2 rounded w-[128px] items-center justify-between gap-4 text-sm">
+            <div className="flex bg-black/30 p-2 rounded w-full md:w-[128px] items-center justify-between gap-4 text-sm">
                 <span className='text-unique'>
                     {
                         type == "balance" ? <BiWallet /> :
@@ -79,21 +79,21 @@ const Slots = () => {
                         type == "balance" ? new Intl.NumberFormat("en-US", {
                             style: "currency",
                             currency: "DOL",
-                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
                         })
                             .format(userData?.walletBalance)
                             .replace("DOL", "K₽") :
                             type == "bet" ? new Intl.NumberFormat("en-US", {
                                 style: "currency",
                                 currency: "DOL",
-                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0,
                             })
                                 .format(betAmount)
                                 .replace("DOL", "K₽") :
                                 new Intl.NumberFormat("en-US", {
                                     style: "currency",
                                     currency: "DOL",
-                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0,
                                 })
                                     .format(totalWins)
                                     .replace("DOL", "K₽")
@@ -105,7 +105,7 @@ const Slots = () => {
     }
 
     return (
-        <div className=" mx-auto p-4">
+        <div className="mx-auto md:p-4">
             <Game grid={grid} isSpinning={isSpinning} data={response} winningLines={winningLines} />
             <div className="flex flex-col justify-center p-4 bg-[#B52D26] border-t-4 border-red-800 gap-4"
                 style={{

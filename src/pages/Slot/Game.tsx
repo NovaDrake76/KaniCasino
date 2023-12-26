@@ -37,16 +37,16 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
 
     const renderSidebar = (index: number) => {
         return (
-            <img src={"/images/sidebar.png"} alt="bottom bar" className={`h-[384px] w-6 -mb-4 ${index == 1 ? "scale-x-[-1]" : ""}`} />
+            <img src={"/images/sidebar.png"} alt="bottom bar" className={`h-[384px] w-2 md:w-6 -mb-4 ${index == 1 ? "scale-x-[-1]" : ""}`} />
         )
     }
 
     return (
         <div className="flex flex-col justify-center items-center ">
-            <img src={"/images/bottombar.png"} alt="bottom bar" className='w-[446px] scale-y-[-1]  ' />
+            <img src={"/images/bottombar.png"} alt="bottom bar" className='w-screen md:w-[446px] scale-y-[-1]  ' />
             <div className="flex ">
                 {renderSidebar(0)}
-                <div className="flex bg-gray-800 min-w-[384px] min-h-[380px]">
+                <div className="flex bg-gray-800 w-full md:min-w-[384px] min-h-[380px]">
                     {[{
                         line: [0, 3, 6],
                     }, {
@@ -72,10 +72,14 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
                 {renderSidebar(1)}
 
             </div >
-            <img src={"/images/bottombar.png"} alt="bottom bar" className='w-[446px] z-10' />
+            <img src={"/images/bottombar.png"} alt="bottom bar" className='w-screen md:w-[446px] z-10' />
 
             <div className='bg-[#AA1520] w-full  text-white text-2xl font-bold p-1'>
-                <div className="rounded-full border-[#ECA823] border-4 w-full p-2 flex items-center justify-center min-h-[56px]">
+                <div className="rounded-full border-[#ECA823] border-4 w-full p-2 flex items-center justify-center min-h-[56px]"
+                    style={{
+                        boxShadow: "inset 0px 0px 10px 1px #000",
+                    }}
+                >
                     {data?.totalPayout! > 0 && !isSpinning && `Won ${new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "DOL",

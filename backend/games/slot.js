@@ -8,10 +8,9 @@ class SlotGameController {
     static async spin(userId, betAmount, io) {
 
         // Check bet amount
-        if (betAmount < 0.5 || betAmount > 50000) {
+        if (isNaN(betAmount) || betAmount < 0.5 || betAmount > 50000) {
             throw new Error("Invalid bet amount");
         }
-
         // Check user's balance
         const player = await User.findById(userId).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-inventory");
         if (player.walletBalance < betAmount) {
@@ -37,7 +36,8 @@ class SlotGameController {
         function calculateTotalPayout(winResults) {
             let totalPayout = 0;
             if (winResults.length > 0) {
-                totalPayout = winResults.reduce((total, win) => total + win.payout * betAmount, 0);
+                const totalWins = winResults.reduce((total, win) => total + win.payout, 0);
+                totalPayout = totalWins * betAmount;
             }
             return totalPayout;
         }
@@ -81,7 +81,7 @@ class SlotGameController {
             'yin_yang': 50, // Moderate rarity and payout
             'hakkero': 30,  // Rarer, higher payout
             'yellow': 20,   // Rare, high payout
-            'wild': 40
+            'wild': 20
         };
 
         let symbolPool = [];
