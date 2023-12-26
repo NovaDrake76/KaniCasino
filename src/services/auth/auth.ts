@@ -5,6 +5,11 @@ export async function login(email: string, password: string) {
     return response.data;
 }
 
+export async function googleLogin(token: string) {
+    const response = await api.post('/users/googlelogin', { token });
+    return response.data;
+}
+
 export async function refreshToken(refreshToken: string) {
     const response = await api.post('/auth/refresh-token', { refreshToken });
     return response.data;

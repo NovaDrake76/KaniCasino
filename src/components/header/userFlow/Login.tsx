@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
-import { login } from "../../../services/auth/auth";
+import { login, googleLogin } from "../../../services/auth/auth";
 import { saveTokens } from "../../../services/auth/authUtils";
 import MainButton from "../../MainButton";
 import UserContext from "../../../UserContext";
 import { Tooltip } from "react-tooltip";
+import { GoogleLogin } from '@react-oauth/google';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -34,6 +35,20 @@ const LoginPage = () => {
       setLoadingButton(false);
     }
   };
+
+  const handleGoogleLoginSuccess = async (credentialResponse: any) => {
+    try {
+      const response = await googleLogin(credentialResponse.credential)
+      const data = await response;
+      if (data.token) {
+        saveTokens(data.token, "");
+        toggleLogin();
+      }
+    } catch (error) {
+      console.error('Error during Google login', error);
+    }
+  };
+
 
   return (
     <div className="flex items-center justify-center transition-all ">
@@ -96,7 +111,7 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-2 items-center">
             <MainButton
               text="Sign in"
               // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -105,6 +120,15 @@ const LoginPage = () => {
               loading={loadingButton}
               submit
             />
+
+            <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={() => console.log('Login Failed')}
+              auto_select={true}
+              theme="outline"
+            />
+
+
           </div>
         </form>
       </div>

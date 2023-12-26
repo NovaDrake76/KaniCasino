@@ -9,7 +9,8 @@ const Notification = require("../models/Notification");
 const authMiddleware = require("../middleware/authMiddleware");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
-
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Register user
 router.post(
@@ -125,6 +126,50 @@ router.post(
     }
   }
 );
+
+// Google login
+router.post('/googlelogin', async (req, res) => {
+  const { token } = req.body;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const googlePayload = ticket.getPayload();
+
+    // Check if user exists in your DB or create a new one
+    let user = await User.findOne({ email: googlePayload.email });
+    if (!user) {
+      let username = googlePayload.name;
+      let existingUser = await User.findOne({ username });
+      while (existingUser) {
+        // Handle username conflict
+        username = googlePayload.name + Math.floor(Math.random() * 1000);
+        existingUser = await User.findOne({ username });
+      }
+      user = new User({
+        email: googlePayload.email,
+        username: username,
+        profilePicture: googlePayload.picture,
+      });
+      await user.save();
+    }
+    // Generate and send JWT
+    const payload = { userId: user.id };
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "30d" },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error in Google Authentication' });
+  }
+});
 
 // Get notifications
 router.get("/notifications", authMiddleware.isAuthenticated, async (req, res) => {
