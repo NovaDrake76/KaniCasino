@@ -7,9 +7,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import SocketConnection from "./services/socket"
 import ScrollToTop from "./components/ScrollToTop";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 interface userDataProps {
   id: string;
@@ -131,31 +133,33 @@ function App() {
         <Suspense fallback={
           <div />
         }>
-          <Router>
-            <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
-              <ScrollToTop />
-              <ToastContainer
-                position="top-right"
-                autoClose={4000}
-                hideProgressBar={false}
-                closeOnClick={false}
-                pauseOnHover={true}
-                draggable={false}
-                theme="dark" />
-              <Header
-                onlineUsers={onlineUsers}
-                recentCaseOpenings={recentCaseOpenings}
-                openUserFlow={openUserFlow}
-                setOpenUserFlow={setOpenUserFlow}
-                notification={notification}
-                setNotification={setNotification}
-              />
-              <div className="flex w-full">
-                <AppRoutes />
-              </div>
-              <footer className="h-8"></footer>
-            </SkeletonTheme>
-          </Router>
+          <GoogleOAuthProvider clientId={clientId}>
+            <Router>
+              <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
+                <ScrollToTop />
+                <ToastContainer
+                  position="top-right"
+                  autoClose={4000}
+                  hideProgressBar={false}
+                  closeOnClick={false}
+                  pauseOnHover={true}
+                  draggable={false}
+                  theme="dark" />
+                <Header
+                  onlineUsers={onlineUsers}
+                  recentCaseOpenings={recentCaseOpenings}
+                  openUserFlow={openUserFlow}
+                  setOpenUserFlow={setOpenUserFlow}
+                  notification={notification}
+                  setNotification={setNotification}
+                />
+                <div className="flex w-full">
+                  <AppRoutes />
+                </div>
+                <footer className="h-8"></footer>
+              </SkeletonTheme>
+            </Router>
+          </GoogleOAuthProvider>
         </Suspense>
 
       </UserContext.Provider>

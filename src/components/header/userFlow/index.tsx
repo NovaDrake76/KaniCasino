@@ -9,7 +9,7 @@ const UserFlow: React.FC = () => {
   return (
     <div className="absolute p-8 bg-[#1C1A32] rounded w-80 shadow-sm ">
       <div
-        className={`flex flex-col justify-center transition-all ${isLogin ? "h-[320px]" : "h-[380px]"
+        className={`flex flex-col justify-center transition-all ${isLogin ? "h-[340px]" : "h-[380px]"
           }`}
       >
         {isLogin ? <Login /> : <SignUp />}
