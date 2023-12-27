@@ -5,8 +5,8 @@ const Notification = require("../models/Notification");
 module.exports = {
     startCronJobs: function (io) {
 
-        // Schedule a task to run every wesnesday at 8 pm
-        cron.schedule('0 20 * * 3', async () => {
+        // Schedule a task to run every wesnesday at 8 pm -3 UTC
+        cron.schedule('0 23 * * 3', async () => {
             try {
                 //get the top 3 users and set the next bonus to 10000, 5000, 2500
                 const topUsers = await User.find({}).sort({ weeklyWinnings: -1 }).limit(3);
@@ -19,7 +19,7 @@ module.exports = {
                     // Create a new notification
                     const newNotification = new Notification({
                         senderId: user._id,
-                        receiverId: seller._id,
+                        receiverId: user._id,
                         type: 'message',
                         title: `Award - ${i + 1} place`,
                         content: `You have been awarded K₽${bonus[i]} for being in the top 3 on the leaderboard!`,
@@ -29,7 +29,7 @@ module.exports = {
                     await newNotification.save();
 
                     // Emit an event to the user
-                    io.to(seller._id.toString()).emit("newNotification", {
+                    io.to(users._id.toString()).emit("newNotification", {
                         message: `You have been awarded K₽${bonus[i]} for being in the top 3 on the leaderboard!`
                     });
                 }
