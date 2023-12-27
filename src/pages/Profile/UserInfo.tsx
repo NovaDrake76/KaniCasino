@@ -75,7 +75,7 @@ const UserInfo: React.FC<UserProps> = ({
     const baseXP = 1000;
     let requiredXP = baseXP;
     for (let i = 1; i <= level; i++) {
-      requiredXP += baseXP * Math.pow(1.1, i - 1) / 2;
+      requiredXP += baseXP * Math.pow(2, i - 1);
     }
     requiredXP = Math.round(requiredXP);
 
