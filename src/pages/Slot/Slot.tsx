@@ -115,7 +115,7 @@ const Slots = () => {
     return (
         <div className='w-full flex items-center justify-center'>
             {
-                openBigWin && <BigWinAlert betAmount={betAmount} value={response?.totalPayout || 0} />
+                openBigWin && <BigWinAlert value={response?.totalPayout || 0} />
             }
 
             <div className=" md:p-4">
