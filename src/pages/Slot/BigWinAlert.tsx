@@ -3,10 +3,9 @@ import Monetary from '../../components/Monetary';
 
 interface BigWinAlertProps {
     value: number;
-    betAmount: number;
 }
 
-const BigWinAlert: React.FC<BigWinAlertProps> = ({ value, betAmount }) => {
+const BigWinAlert: React.FC<BigWinAlertProps> = ({ value }) => {
     const [scale, setScale] = useState(0);
     const [animatedValue, setAnimatedValue] = useState(0);
 

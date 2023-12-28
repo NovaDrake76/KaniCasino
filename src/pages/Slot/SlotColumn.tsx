@@ -154,7 +154,7 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
 
                                             //draw a line connecting the winning symbols
                                             winningLines?.map((line, lineIndex) => {
-                                                let rotations = [];
+                                                const rotations = [];
 
                                                 if (line.startsWith('Horizontal') && ((line.endsWith('1') && index === 47) || (line.endsWith('2') && index === 48) || (line.endsWith('3') && index === 49))) {
                                                     rotations.push('rotate(0deg)');
