@@ -37,6 +37,10 @@ module.exports = (io) => {
       return res.status(404).json({ message: "Item not found in inventory" });
     }
 
+    // Remove the item from the user's inventory
+    user.inventory.splice(inventoryItemIndex, 1);
+    await user.save();
+
     // Create a new marketplace item with the item object
     const marketplaceItem = new Marketplace({
       sellerId: user._id,
@@ -49,9 +53,6 @@ module.exports = (io) => {
 
     await marketplaceItem.save();
 
-    // Remove the item from the user's inventory
-    user.inventory.splice(inventoryItemIndex, 1);
-    await user.save();
 
     res.json(marketplaceItem);
   });

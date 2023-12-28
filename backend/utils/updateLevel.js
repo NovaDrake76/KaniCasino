@@ -1,5 +1,5 @@
 const BASE_XP = 1000; // XP required for the first level
-const GROWTH_RATE = 2; // Growth rate for each level
+const GROWTH_RATE = 1.25; // Growth rate for each level
 
 function calculateXPForLevel(level) {
     return Math.floor(BASE_XP * Math.pow(GROWTH_RATE, level - 1));

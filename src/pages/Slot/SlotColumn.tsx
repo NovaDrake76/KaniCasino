@@ -18,7 +18,7 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
 
     const createRouletteItems = () => {
-        let newItems = symbols.slice();
+        const newItems = symbols.slice();
         for (let i = 0; i < 46; i++) {
             newItems.unshift(options[Math.floor(Math.random() * options.length)]);
         }
@@ -97,8 +97,9 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
                 else if (line.endsWith('3') && index === 49) {
                     return true;
                 }
+            }
 
-            } else {
+            if (line.startsWith('Diagonal')) {
                 if (line.endsWith('1') && position == 0 && index === 47) {
                     return true;
                 } else if (line.endsWith('1') && position == 2 && index === 49) {
@@ -114,10 +115,10 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
                 } else if (line.endsWith('2') && position == 2 && index === 47) {
                     return true;
                 }
-
             }
-            return false;
-        };
+        }
+
+        return false;
     }
 
     return (
@@ -149,12 +150,42 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
                                                 boxShadow: "0px 0px 35px 28px #FFCC00",
                                             }}
                                         />
-                                        <div className="absolute w-[calc(200%)] h-1 bg-unique  -z-10" style={{
-                                            transform:
-                                                winningLines?.[0].startsWith('Horizontal') ? 'rotate(0deg)' :
-                                                    winningLines?.[0].endsWith('1') ? 'rotate(45deg)' : 'rotate(-45deg)',
+                                        {
 
-                                        }} />
+                                            //draw a line connecting the winning symbols
+                                            winningLines?.map((line, lineIndex) => {
+                                                let rotations = [];
+
+                                                if (line.startsWith('Horizontal') && ((line.endsWith('1') && index === 47) || (line.endsWith('2') && index === 48) || (line.endsWith('3') && index === 49))) {
+                                                    rotations.push('rotate(0deg)');
+                                                }
+
+                                                if (line.startsWith('Diagonal')) {
+                                                    if ((line.endsWith('1') && position == 0 && index === 47) || (line.endsWith('1') && position == 2 && index === 49)) {
+                                                        rotations.push('rotate(45deg)');
+                                                    } else if ((line.endsWith('2') && position == 0 && index === 49) || (line.endsWith('2') && position == 2 && index === 47)) {
+                                                        rotations.push('rotate(-45deg)');
+                                                    } else if (position == 1 && index === 48) {
+                                                        if (winningLines.includes('Diagonal 1') && winningLines.includes('Diagonal 2')) {
+                                                            rotations.push('rotate(45deg)', 'rotate(-45deg)');
+                                                        } else if (winningLines.includes('Diagonal 1')) {
+                                                            rotations.push('rotate(45deg)');
+                                                        } else if (winningLines.includes('Diagonal 2')) {
+                                                            rotations.push('rotate(-45deg)');
+                                                        }
+                                                    }
+                                                }
+
+                                                return rotations.map((rotation, i) => (
+                                                    <div
+                                                        key={`${lineIndex}-${i}`}
+                                                        className="absolute w-[calc(200%)] h-1 bg-unique  -z-10"
+                                                        style={{ transform: rotation }}
+                                                    />
+                                                ));
+                                            })
+
+                                        }
                                     </div>}
                                 {/* <div className="absolute z-10">{index}</div> */}
                             </div>

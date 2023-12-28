@@ -162,10 +162,17 @@ const CoinFlip = () => {
               }
             </div></div>
           <button onClick={handleBet} className=" p-2 border rounded bg-indigo-600 hover:bg-indigo-700 w-full mt-4" disabled={
-            choice === null || bet === 0 || !isLogged || userGambled || (userData && userData.walletBalance < bet) || spinning
+            choice === null || bet === 0 || !isLogged || userGambled || (userData && userData.walletBalance < bet) || spinning || bet > 1000000
           }>
             {
-              !isLogged ? "Login to play" : spinning ? "Spinning..." : choice === null ? "Choose a side" : bet === 0 ? "Place the bet value" : userGambled ? "You're in!" : userData.walletBalance < bet ? "Not enough money" : "Enter the Game"
+              !isLogged ? "Login to play" :
+                spinning ? "Spinning..."
+                  : choice === null ? "Choose a side"
+                    : bet === 0 ? "Place the bet value"
+                      : bet > 1000000 ? "Max bet is 1M"
+                        : userGambled ? "You're in!"
+                          : userData.walletBalance < bet ? "Not enough money"
+                            : "Enter the Game"
             }
           </button>
         </div>

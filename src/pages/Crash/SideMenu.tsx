@@ -26,6 +26,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, gameStarted, handleBet
             message = "Wait for next round";
         } else if (bet === 0 || !bet || bet < 1) {
             message = "Place the bet value";
+        } else if (bet > 1000000) {
+            message = "Max bet is 1M";
         } else if (userData.walletBalance < (bet ?? 0)) {
             message = "Not enough money";
         } else {
@@ -44,6 +46,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, gameStarted, handleBet
                         event.preventDefault();
                     }
                 }}
+                max={1000000}
                 onChange={(e) => {
                     const value = Number(e.target.value);
                     setBet(value < 0 ? 0 : value);
@@ -56,7 +59,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, gameStarted, handleBet
                 disabled={
                     !isLogged ||
                     (gameStarted && (!userGambled || userCashedOut)) ||
-                    (!gameStarted && userGambled)
+                    (!gameStarted && userGambled) || (!gameStarted && bet === 0 || !bet || bet > 1000000)
                 }
             >
                 {renderMessage()}

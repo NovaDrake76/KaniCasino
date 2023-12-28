@@ -10,30 +10,6 @@ interface SlotMachineProps {
 }
 
 const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines }) => {
-    const [_message, setMessage] = useState<string | null>(null);
-    const messages = ['Win up to 250X!', '10X multiplier!', 'Respin for the Maneki Neko!'];
-
-
-    useEffect(() => {
-        let messageTimeout: NodeJS.Timeout;
-        let displayTimeout: NodeJS.Timeout;
-
-        if (!isSpinning) {
-            messageTimeout = setInterval(() => {
-                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-                setMessage(randomMessage);
-
-                displayTimeout = setTimeout(() => {
-                    setMessage(null);
-                }, 6000); // Message will disappear after 7 seconds
-            }, 16000); // New message every 4 seconds
-        }
-
-        return () => {
-            clearInterval(messageTimeout);
-            clearTimeout(displayTimeout);
-        };
-    }, [isSpinning, messages]);
 
     const renderSidebar = (index: number) => {
         return (
@@ -80,14 +56,14 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
                         boxShadow: "inset 0px 0px 10px 1px #000",
                     }}
                 >
-                    {data?.totalPayout! > 0 && !isSpinning && `Won ${new Intl.NumberFormat("en-US", {
+                    {data?.totalPayout && data?.totalPayout > 0 && !isSpinning ? `Won ${new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "DOL",
                         minimumFractionDigits: 0,
                     })
-                        .format(data?.totalPayout!)
+                        .format(data?.totalPayout)
                         .replace("DOL", "K₽")
-                        }`}
+                        }` : ""}
                     {/* {message && data?.totalPayout! < 1 && !isSpinning && message} */}
                 </div>
             </div>

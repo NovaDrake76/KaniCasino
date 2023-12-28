@@ -109,7 +109,7 @@ class SlotGameController {
             yin_yang: 8,
             hakkero: 12,
             yellow: 25,
-            wild: 250
+            wild: 100
         };
 
         let wins = [];

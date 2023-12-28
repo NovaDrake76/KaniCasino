@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const http = require("http");
 const socketIO = require("socket.io");
+const cronJobs = require("./tasks/cronJobs");
 require("dotenv").config();
 
 const app = express();
@@ -49,6 +50,9 @@ app.use("/games", gamesRoutes);
 // Start the games
 coinFlip(io);
 crash(io);
+
+// Start the cron jobs
+cronJobs.startCronJobs(io);
 
 const port = process.env.PORT || 5000;
 
