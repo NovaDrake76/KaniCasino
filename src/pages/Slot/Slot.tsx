@@ -7,6 +7,8 @@ import { FaCoins } from "react-icons/fa";
 import { BiWallet } from "react-icons/bi";
 import { TbPigMoney } from "react-icons/tb";
 import UserContext from '../../UserContext';
+import BigWinAlert from './BigWinAlert';
+import Monetary from '../../components/Monetary';
 
 const renderPlaceholder = () => {
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
@@ -20,21 +22,42 @@ const Slots = () => {
     const [isSpinning, setIsSpinning] = useState<boolean>(false);
     const [winningLines, setWinningLines] = useState<any[]>([]);
     const [totalWins, setTotalWins] = useState<number>(0);
+    const [openBigWin, setOpenBigWin] = useState<boolean>(false);
     const { userData } = useContext(UserContext);
+
+    const handleClick = () => {
+        if (openBigWin) {
+            setOpenBigWin(false);
+        }
+    };
+
 
     useEffect(() => {
         setTimeout(() => {
-            setTotalWins(totalWins + (response?.totalPayout! || 0));
+            setTotalWins(totalWins + (response?.totalPayout || 0));
         }, 3000);
     }, [response]);
 
+    useEffect(() => {
+
+        window.addEventListener('click', handleClick);
+
+        return () => {
+            window.removeEventListener('click', handleClick);
+        };
+    }, [openBigWin]);
+
     const handleSpin = async () => {
+        setOpenBigWin(false);
         try {
             const response = await spinSlots(betAmount);
             setResponse(response);
             setGrid(response.gridState);
             setWinningLines(response?.lastSpinResult.map((result: { line: any; }) => result.line) || [])
             setIsSpinning(true);
+            if (response.totalPayout >= betAmount * 8) {
+                setOpenBigWin(true);
+            }
 
             setTimeout(() => {
                 setIsSpinning(false);
@@ -76,62 +99,55 @@ const Slots = () => {
                 </span>
                 <span className='truncate'>
                     {
-                        type == "balance" ? new Intl.NumberFormat("en-US", {
-                            style: "currency",
-                            currency: "DOL",
-                            maximumFractionDigits: 0,
-                        })
-                            .format(userData?.walletBalance)
-                            .replace("DOL", "K₽") :
-                            type == "bet" ? new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "DOL",
-                                maximumFractionDigits: 0,
-                            })
-                                .format(betAmount)
-                                .replace("DOL", "K₽") :
-                                new Intl.NumberFormat("en-US", {
-                                    style: "currency",
-                                    currency: "DOL",
-                                    maximumFractionDigits: 0,
-                                })
-                                    .format(totalWins)
-                                    .replace("DOL", "K₽")
+                        type == "balance" ?
+                            <Monetary value={userData?.walletBalance} />
+                            :
+                            type == "bet" ? <Monetary value={betAmount} />
+                                :
+                                <Monetary value={totalWins} />
+
                     }
                 </span>
-
             </div>
         )
     }
 
     return (
-        <div className="mx-auto md:p-4">
-            <Game grid={grid} isSpinning={isSpinning} data={response} winningLines={winningLines} />
-            <div className="flex flex-col justify-center p-4 bg-[#B52D26] border-t-4 border-red-800 gap-4"
-                style={{
-                    boxShadow: "inset 0px 0px 60px 4px #000",
-                }}>
+        <div className='w-full flex items-center justify-center'>
+            {
+                openBigWin && <BigWinAlert betAmount={betAmount} value={response?.totalPayout || 0} />
+            }
 
-                <div className="flex w-full items-center justify-center gap-2">
-                    {
-                        ["balance", "bet", "wins"].map((type) => renderValueViewer(type as "balance" | "bet" | "wins"))
-                    }
-                </div>
-                <div className="flex items-center justify-center gap-8">
-                    {handleChangeBet("subtract")}
-                    <button onClick={handleSpin} disabled={isSpinning} className="bg-[#25D160] w-20 h-20 text-white 
+            <div className=" md:p-4">
+                <Game grid={grid} isSpinning={isSpinning} data={response} winningLines={winningLines} />
+
+                <div className="flex flex-col justify-center p-4 bg-[#B52D26] border-t-4 border-red-800 gap-4"
+                    style={{
+                        boxShadow: "inset 0px 0px 60px 4px #000",
+                    }}>
+
+                    <div className="flex w-full items-center justify-center gap-2">
+                        {
+                            ["balance", "bet", "wins"].map((type) => renderValueViewer(type as "balance" | "bet" | "wins"))
+                        }
+                    </div>
+                    <div className="flex items-center justify-center gap-8">
+                        {handleChangeBet("subtract")}
+                        <button onClick={handleSpin} disabled={isSpinning} className="bg-[#25D160] w-20 h-20 text-white 
                      font-bold py-2 px-4 rounded-full transition-all hover:bg-[#b0ff7c] hover:border-unique border-4 border-[#ECA823]"
-                        style={{
-                            boxShadow: "inset 0px 0px 14px 1px #000",
-                        }}
-                    >
-                        Spin
-                    </button>
-                    {handleChangeBet("add")}
+                            style={{
+                                boxShadow: "inset 0px 0px 14px 1px #000",
+                            }}
+                        >
+                            Spin
+                        </button>
+                        {handleChangeBet("add")}
+                    </div>
                 </div>
-            </div>
 
-        </div >
+            </div >
+        </div>
+
     );
 };
 
