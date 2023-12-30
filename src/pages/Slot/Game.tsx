@@ -51,7 +51,7 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
             <img src={"/images/bottombar.png"} alt="bottom bar" className='w-screen md:w-[416px] z-10' />
 
             <div className='bg-[#AA1520] w-full  text-white text-xl font-bold p-1'>
-                <div className="rounded-full border-[#ECA823] border-4 w-full p-2 flex items-center justify-center min-h-[40px]"
+                <div className="rounded-full border-[#ECA823] border-4 w-full p-2 flex items-center justify-center min-h-[50px]"
                     style={{
                         boxShadow: "inset 0px 0px 10px 1px #000",
                     }}
