@@ -57,7 +57,6 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
           className={` w-32 md:w-44 h-32 md:h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
           onLoad={() => setLoaded(true)}
         />
-
         <div
           className="w-auto"
           style={{

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Game from './Game';
 import { spinSlots } from '../../services/games/GamesServices';
 import { toast } from 'react-toastify';
@@ -7,6 +7,7 @@ import BigWinAlert from './BigWinAlert';
 import RenderMike from './RenderMike';
 import bigwin from "/bigwin.mp3"
 import ValueViewer from './ValueViewer';
+import UserContext from '../../UserContext';
 
 const renderPlaceholder = () => {
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
@@ -23,6 +24,7 @@ const Slots = () => {
     const [openBigWin, setOpenBigWin] = useState<boolean>(false);
     const [lostCount, setLostCount] = useState<number>(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const { userData } = useContext(UserContext);
 
     const startAudio = () => {
         setTimeout(() => {
@@ -66,6 +68,11 @@ const Slots = () => {
     const handleSpin = async () => {
         setOpenBigWin(false);
         setTotalWins(0);
+
+        if (userData?.walletBalance < betAmount) {
+            toast.error("Insufficient funds");
+            return;
+        }
 
         try {
             const response = await spinSlots(betAmount);
