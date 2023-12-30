@@ -34,30 +34,32 @@ const BigWinAlert: React.FC<BigWinAlertProps> = ({ value }) => {
     };
 
     return (
-        <div className='absolute z-50 mb-48 transition-all flex items-center justify-center bg-black/30 w-screen h-[131vh]'
+        <div className='absolute z-50 transition-all flex items-center justify-center bg-black/30 w-screen h-[110vh]'
             style={{
                 opacity: scale,
                 transition: 'opacity 0.5s ease-in-out',
             }}
         >
-            <div
-                className="absolute w-auto rounded-full -z-10 "
-                style={{
-                    width: "1px",
-                    height: "1px",
-                    boxShadow: "0px 0px 230px 150px #FFCC00",
-                }}
-            />
-            <div className='flex flex-col items-center justify-center font-bold p-4 text-white text-2xl gap-2'
-                style={{
-                    transform: `scale(${scale})`,
-                    transition: 'transform 0.5s ease-in-out',
-                    transformOrigin: '50% 50%',
-                }}>
-                <img src={BigWin} className='w-[350px] animate-winner winner-item' />
-                <span className='text-[#FFED08] text-5xl -mt-32 z-10' style={{ textShadow: '4px 4px 0 #A93400, -4px -4px 0 #A93400, 4px -4px 0 #A93400, -4px 4px 0 #A93400' }}>
-                    <Monetary value={animatedValue} />
-                </span>
+            <div className='flex items-center justify-center absolute top-52'>
+                <div
+                    className="absolute w-auto rounded-full -z-10 "
+                    style={{
+                        width: "1px",
+                        height: "1px",
+                        boxShadow: "0px 0px 230px 150px #FFCC00",
+                    }}
+                />
+                <div className='flex flex-col items-center justify-center font-bold p-4 text-white text-2xl gap-2'
+                    style={{
+                        transform: `scale(${scale})`,
+                        transition: 'transform 0.5s ease-in-out',
+                        transformOrigin: '50% 50%',
+                    }}>
+                    <img src={BigWin} className='w-[350px] animate-winner winner-item' />
+                    <span className='text-[#FFED08] text-5xl -mt-32 z-10' style={{ textShadow: '4px 4px 0 #A93400, -4px -4px 0 #A93400, 4px -4px 0 #A93400, -4px 4px 0 #A93400' }}>
+                        <Monetary value={animatedValue} />
+                    </span>
+                </div>
             </div>
 
             <style>{`
