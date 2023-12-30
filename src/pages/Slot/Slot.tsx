@@ -52,8 +52,11 @@ const Slots = () => {
     //fuction to play bigwin.mp3
     const playBigWin = () => {
         const audio = new Audio(bigwin);
+        //play at 20% volume
+        audio.volume = 0.2;
         audio.play();
     }
+
 
 
     const handleSpin = async () => {
