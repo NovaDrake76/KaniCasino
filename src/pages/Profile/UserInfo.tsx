@@ -134,8 +134,8 @@ const UserInfo: React.FC<UserProps> = ({
             </div>
             <div className="flex w-full items-center justify-between">
               <span className="text-[#dddcfc] font-semibold">
-                {`XP ${new Intl.NumberFormat("en-US").format(xp)} / 
-                ${new Intl.NumberFormat("en-US").format(calculateRequiredXP(level))
+                {`XP ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(xp)} / 
+    ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(calculateRequiredXP(level))
                   }`}
               </span>
               <Tooltip id="my-tooltip" />

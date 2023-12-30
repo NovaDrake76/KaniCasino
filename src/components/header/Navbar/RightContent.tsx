@@ -39,7 +39,7 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, setOpenU
                             currency: "DOL",
                             maximumFractionDigits: 0,
                         })
-                            .format(userData?.walletBalance)
+                            .format(Math.floor(userData?.walletBalance))
                             .replace("DOL", "K₽")}
                     </div>
                 </div>

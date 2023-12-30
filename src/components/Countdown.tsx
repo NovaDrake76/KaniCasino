@@ -7,7 +7,7 @@ interface CountdownProps {
 }
 
 const Countdown: React.FC<CountdownProps> = ({ nextBonus, color = "#2d2b49", bold = true }) => {
-    const [untilNextBonus, setUntilNextBonus] = useState<string>("15:00");
+    const [untilNextBonus, setUntilNextBonus] = useState<string>("8:00");
 
     useEffect(() => {
         const interval = setInterval(() => {

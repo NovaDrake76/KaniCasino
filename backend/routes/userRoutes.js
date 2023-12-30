@@ -511,8 +511,9 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
       let currentBonus = user.bonusAmount; // Get current bonus amount
       user.walletBalance += user.bonusAmount; // Add bonus to wallet
 
-      user.nextBonus = new Date(currentTime.getTime() + 15 * 60000);      // Set next bonus time to 15 min later
-      user.bonusAmount = 200; // Set bonus amount to 20 for next time
+      user.nextBonus = new Date(currentTime.getTime() + 8 * 60000);      // Set next bonus time to 8 min later
+      // Set bonus amount to 200 * 10% of the user current level
+      user.bonusAmount = Math.floor(200 * (1 + 0.1 * user.level));
 
       // Save updated user
       await user.save();

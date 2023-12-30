@@ -108,7 +108,7 @@ const Profile = () => {
   }, [refresh]);
 
   useEffect(() => {
-    setRefresh(true);
+    getInventoryInfo();
   }, [page]);
 
 
