@@ -37,7 +37,7 @@ const Case: React.FC<CaseProps> = ({ id, title, image, price }) => {
       <img
         src={image}
         alt={title}
-        className={`w-full h-64 object-cover -ml-4 ${loaded ? '' : 'hidden'}`}
+        className={`w-1/2 md:w-full h-32 md:h-64 object-cover -ml-4 ${loaded ? '' : 'hidden'}`}
         onLoad={() => setLoaded(true)}
       />
       <div className="flex flex-col gap-2 p-4 items-center">

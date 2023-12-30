@@ -9,7 +9,7 @@ interface SlotColumnProps {
 }
 
 const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, winningLines }) => {
-    const rollsize = 6015;
+    const rollsize = 5260;
     const [rouletteItems, setRouletteItems] = useState<any[]>([]);
     const [translateValue, setTranslateValue] = useState<string>(`-${rollsize}px`);
     const [loading, setLoading] = useState<boolean>(true);
@@ -83,7 +83,6 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
         return images[symbol];
     }
 
-
     const isWinningSymbol = (index: number) => {
         if (index < 46) return false;
 
@@ -122,11 +121,11 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
     }
 
     return (
-        <div className="max-h-[380px] overflow-hidden ">
+        <div className="max-h-[340px] overflow-hidden ">
             <div ref={rouletteRef} >
                 {
                     rouletteItems.map((symbol, index) => (
-                        <div key={index} className={`w-32 h-32 relative  p-2 ${isWinningSymbol(index) ? 'animate-winner' : ''}`} >
+                        <div key={index} className={`w-28 h-28 relative  p-2 ${isWinningSymbol(index) ? 'animate-winner' : ''}`} >
                             <div className={`w-full h-full ${isWinningSymbol(index) ? 'winner-item' : ''}`}>
                                 {
                                     loading && <div className="absolute inset-0 flex items-center justify-center">

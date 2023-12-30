@@ -9,6 +9,7 @@ import { TbPigMoney } from "react-icons/tb";
 import UserContext from '../../UserContext';
 import BigWinAlert from './BigWinAlert';
 import Monetary from '../../components/Monetary';
+import RenderMike from './RenderMike';
 
 const renderPlaceholder = () => {
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
@@ -23,6 +24,7 @@ const Slots = () => {
     const [winningLines, setWinningLines] = useState<any[]>([]);
     const [totalWins, setTotalWins] = useState<number>(0);
     const [openBigWin, setOpenBigWin] = useState<boolean>(false);
+    const [lostCount, setLostCount] = useState<number>(0);
     const { userData } = useContext(UserContext);
 
     const handleClick = () => {
@@ -39,7 +41,6 @@ const Slots = () => {
     }, [response]);
 
     useEffect(() => {
-
         window.addEventListener('click', handleClick);
 
         return () => {
@@ -57,6 +58,12 @@ const Slots = () => {
             setIsSpinning(true);
             if (response.totalPayout >= betAmount * 8) {
                 setOpenBigWin(true);
+            }
+
+            if (response.totalPayout == 0) {
+                setLostCount(lostCount + 1);
+            } else {
+                setLostCount(0);
             }
 
             setTimeout(() => {
@@ -78,7 +85,7 @@ const Slots = () => {
                         setBetAmount(newBetAmount);
                     }
                 }}
-                className={`w-8 h-10 bg-transparent text-white font-bold py-2 px-4 
+                className={`w-6 h-10 bg-transparent text-white font-bold py-2 px-4 
                        rounded-full transition-all border-4 hover:border-unique flex items-center justify-center
                        border-[#ECA823]`}
             >
@@ -112,13 +119,30 @@ const Slots = () => {
         )
     }
 
+    const getCurrentMike = () => {
+        if (response) {
+            if (openBigWin) {
+                return "jackpot";
+            } else if (response?.totalPayout > 0) {
+                return "win";
+            } else if (lostCount >= 3) {
+                return "losing";
+            } else {
+                return "normal";
+            }
+        }
+    }
+
     return (
-        <div className='w-full flex items-center justify-center'>
+        <div className='w-full flex justify-center -mt-10'>
             {
                 openBigWin && <BigWinAlert value={response?.totalPayout || 0} />
             }
 
-            <div className=" md:p-4">
+            <div className=" md:p-4 pb-1">
+                <RenderMike status={
+                    getCurrentMike() as "normal" | "win" | "losing" | "jackpot"
+                } />
                 <Game grid={grid} isSpinning={isSpinning} data={response} winningLines={winningLines} />
 
                 <div className="flex flex-col justify-center p-4 bg-[#B52D26] border-t-4 border-red-800 gap-4"
@@ -133,8 +157,9 @@ const Slots = () => {
                     </div>
                     <div className="flex items-center justify-center gap-8">
                         {handleChangeBet("subtract")}
-                        <button onClick={handleSpin} disabled={isSpinning} className="bg-[#25D160] w-20 h-20 text-white 
-                     font-bold py-2 px-4 rounded-full transition-all hover:bg-[#b0ff7c] hover:border-unique border-4 border-[#ECA823]"
+                        <button onClick={handleSpin} disabled={isSpinning} className="bg-[#25D160] w-16 h-16 text-white 
+                            font-bold py-2 px-4 rounded-full transition-all 
+                            hover:bg-[#b0ff7c] hover:border-unique border-4 border-[#ECA823] text-sm flex items-center justify-center"
                             style={{
                                 boxShadow: "inset 0px 0px 14px 1px #000",
                             }}
