@@ -111,6 +111,10 @@ const Profile = () => {
     getInventoryInfo();
   }, [page]);
 
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
 
   return (
     <div className="flex flex-col items-center w-screen">
