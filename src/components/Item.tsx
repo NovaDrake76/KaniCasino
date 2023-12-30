@@ -75,7 +75,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
           <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
         </div>
       )}
-      <div className="flex gap-2 items-center -ml-1">
+      <div className="flex gap-2 items-center -ml-1 max-w-[160px]">
         <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{
           backgroundColor: color
         }} />

@@ -1,16 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Game from './Game';
 import { spinSlots } from '../../services/games/GamesServices';
 import { toast } from 'react-toastify';
 import { SlotProps } from './Types';
-import { FaCoins } from "react-icons/fa";
-import { BiWallet } from "react-icons/bi";
-import { TbPigMoney } from "react-icons/tb";
-import UserContext from '../../UserContext';
 import BigWinAlert from './BigWinAlert';
-import Monetary from '../../components/Monetary';
 import RenderMike from './RenderMike';
 import bigwin from "/bigwin.mp3"
+import ValueViewer from './ValueViewer';
 
 const renderPlaceholder = () => {
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
@@ -26,18 +22,35 @@ const Slots = () => {
     const [totalWins, setTotalWins] = useState<number>(0);
     const [openBigWin, setOpenBigWin] = useState<boolean>(false);
     const [lostCount, setLostCount] = useState<number>(0);
-    const { userData } = useContext(UserContext);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const handleClick = () => {
-        if (openBigWin) {
-            setOpenBigWin(false);
+    const startAudio = () => {
+        setTimeout(() => {
+            if (audioRef.current) {
+                audioRef.current.volume = 0.04;
+                audioRef.current.play();
+            }
+        }, 2800);
+    };
+
+    const pauseAudio = () => {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
         }
     };
 
 
+    const handleClick = () => {
+        if (openBigWin) {
+            setOpenBigWin(false);
+            pauseAudio();
+        }
+    };
+
     useEffect(() => {
         setTimeout(() => {
-            setTotalWins(totalWins + (response?.totalPayout || 0));
+            setTotalWins(response?.totalPayout || 0);
         }, 3000);
     }, [response]);
 
@@ -49,18 +62,11 @@ const Slots = () => {
         };
     }, [openBigWin]);
 
-    //fuction to play bigwin.mp3
-    const playBigWin = () => {
-        const audio = new Audio(bigwin);
-        //play at 20% volume
-        audio.volume = 0.2;
-        audio.play();
-    }
-
-
 
     const handleSpin = async () => {
         setOpenBigWin(false);
+        setTotalWins(0);
+
         try {
             const response = await spinSlots(betAmount);
             setResponse(response);
@@ -69,9 +75,7 @@ const Slots = () => {
             setIsSpinning(true);
             if (response.totalPayout >= betAmount * 8) {
                 setOpenBigWin(true);
-                setTimeout(() => {
-                    playBigWin();
-                }, 2800);
+                startAudio();
             }
 
             if (response.totalPayout == 0) {
@@ -108,30 +112,7 @@ const Slots = () => {
         );
     };
 
-    const renderValueViewer = (type: "balance" | "bet" | "wins") => {
-        return (
-            <div className="flex bg-black/30 p-2 rounded w-full md:w-[128px] items-center justify-between gap-4 text-sm">
-                <span className='text-unique'>
-                    {
-                        type == "balance" ? <BiWallet /> :
-                            type == "bet" ? <FaCoins /> :
-                                <TbPigMoney />
-                    }
-                </span>
-                <span className='truncate'>
-                    {
-                        type == "balance" ?
-                            <Monetary value={userData?.walletBalance} />
-                            :
-                            type == "bet" ? <Monetary value={betAmount} />
-                                :
-                                <Monetary value={totalWins} />
 
-                    }
-                </span>
-            </div>
-        )
-    }
 
     const getCurrentMike = () => {
         if (response) {
@@ -152,6 +133,10 @@ const Slots = () => {
             {
                 openBigWin && <BigWinAlert value={response?.totalPayout || 0} />
             }
+            <audio
+                ref={audioRef}
+                src={bigwin}
+            />
 
             <div className=" md:p-4 pb-1">
                 <RenderMike status={
@@ -166,7 +151,8 @@ const Slots = () => {
 
                     <div className="flex w-full items-center justify-center gap-2">
                         {
-                            ["balance", "bet", "wins"].map((type) => renderValueViewer(type as "balance" | "bet" | "wins"))
+                            ["balance", "bet", "wins"].map((type) => <ValueViewer type={type as "balance" | "bet" | "wins"} betAmount={betAmount} totalWins={totalWins} />
+                            )
                         }
                     </div>
                     <div className="flex items-center justify-center gap-8">
