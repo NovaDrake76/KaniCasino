@@ -10,6 +10,7 @@ import UserContext from '../../UserContext';
 import BigWinAlert from './BigWinAlert';
 import Monetary from '../../components/Monetary';
 import RenderMike from './RenderMike';
+import bigwin from "/bigwin.mp3"
 
 const renderPlaceholder = () => {
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
@@ -48,6 +49,13 @@ const Slots = () => {
         };
     }, [openBigWin]);
 
+    //fuction to play bigwin.mp3
+    const playBigWin = () => {
+        const audio = new Audio(bigwin);
+        audio.play();
+    }
+
+
     const handleSpin = async () => {
         setOpenBigWin(false);
         try {
@@ -58,6 +66,9 @@ const Slots = () => {
             setIsSpinning(true);
             if (response.totalPayout >= betAmount * 8) {
                 setOpenBigWin(true);
+                setTimeout(() => {
+                    playBigWin();
+                }, 2800);
             }
 
             if (response.totalPayout == 0) {
