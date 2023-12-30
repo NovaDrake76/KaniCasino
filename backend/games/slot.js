@@ -46,7 +46,7 @@ class SlotGameController {
         if (winResults.length > 0) {
             const totalPayout = calculateTotalPayout(winResults);
             player.walletBalance += totalPayout;
-            updateUserWinnings(player, betAmount);
+            updateUserWinnings(player, totalPayout);
         }
 
         await player.save();
