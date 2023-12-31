@@ -89,8 +89,6 @@ const Profile = () => {
     }
   };
 
-
-
   useEffect(() => {
     if (userData) {
       if (userData.id == id) {
