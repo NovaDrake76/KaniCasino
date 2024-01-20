@@ -42,7 +42,7 @@ const GameListing: React.FC<GameListingProps> = ({
                 <Title title={name} />
                 {description && <div className="text">{description}</div>}
                 {
-                    <div className="flex flex-col md:flex-row items-center w-full justiy-center gap-8">
+                    <div className="flex flex-col md:flex-row items-center w-full justiy-center gap-8 flex-wrap">
                         {
                             games.map((item: any) => (
                                 <Link to={item.link} key={item.id}>

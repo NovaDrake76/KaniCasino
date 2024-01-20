@@ -28,20 +28,8 @@ interface Navbar {
 const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenNotifications, openSidebar, setOpenSidebar }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [_visibleLinksCount, setVisibleLinksCount] = useState<number>(0);
 
   const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
-
-  const calculateVisibleLinksCount = () => {
-    let availableWidth = window.innerWidth;
-
-    availableWidth = availableWidth > 400 ? availableWidth - 400 : 0;
-
-    const count = Math.floor(availableWidth / 220);
-
-    setVisibleLinksCount(count);
-  };
-
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -65,16 +53,6 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenN
         setLoading(false);
       });
   };
-
-  useEffect(() => {
-    calculateVisibleLinksCount();
-
-    window.addEventListener('resize', calculateVisibleLinksCount);
-
-    return () => {
-      window.removeEventListener('resize', calculateVisibleLinksCount);
-    };
-  }, []);
 
   useEffect(() => {
     isLogged && getUserInfo();
@@ -159,7 +137,7 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenN
                 {links.map((link, index) => (<Link
                   to={link.path}
                   key={index}
-                  className="flex items-center gap-2 font-normal text-lg cursor-pointer "
+                  className="flex items-center gap-2 font-normal text-xs 2xl:text-lg cursor-pointer "
                 >
                   <span className="text-[#625F7E] hover:text-gray-200 transition-all ">
                     {link.icon}

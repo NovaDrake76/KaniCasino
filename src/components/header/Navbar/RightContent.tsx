@@ -2,9 +2,10 @@ import React from "react"
 import Avatar from "../../Avatar";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegBellSlash } from "react-icons/fa";
-import ClaimBonus from "./ClaimBonus";
+import ClaimBonus from "../ClaimBonus";
 import { IoMdExit } from "react-icons/io";
 import { BiWallet } from "react-icons/bi";
+import Monetary from "../../Monetary";
 
 interface RightContentProps {
     loading: boolean;
@@ -34,13 +35,7 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, setOpenU
                 <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all invisible md:visible">
                     <BiWallet className="text-2xl" />
                     <div className="max-w-[80px] md:max-w-[140px] overflow-hidden truncate">
-                        {new Intl.NumberFormat("en-US", {
-                            style: "currency",
-                            currency: "DOL",
-                            maximumFractionDigits: 0,
-                        })
-                            .format(Math.floor(userData?.walletBalance))
-                            .replace("DOL", "K₽")}
+                        <Monetary value={Math.floor(userData?.walletBalance)} />
                     </div>
                 </div>
             )}
