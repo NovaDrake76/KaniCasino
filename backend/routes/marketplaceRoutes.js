@@ -112,6 +112,10 @@ module.exports = (io) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
+    if (user.level < 10) {
+      return res.status(400).json({ message: "You must be level 10 to buy items" });
+    }
+
     if (user.walletBalance < item.price) {
       return res.status(400).json({ message: "Insufficient balance" });
     }

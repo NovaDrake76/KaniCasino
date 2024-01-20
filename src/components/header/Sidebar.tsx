@@ -5,12 +5,19 @@ import { SlPlane } from "react-icons/sl";
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { TbCat } from "react-icons/tb";
+import ClaimBonus from "../header/ClaimBonus";
+import { useContext } from "react";
+import UserContext from "../../UserContext";
+import Monetary from "../Monetary";
 
 interface Sidebar {
     closeSidebar: () => void;
 }
 
 const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
+    const { toogleUserData, userData } = useContext(UserContext);
+
+
     const links = [
         {
             name: "Home",
@@ -67,8 +74,16 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                             </svg>
                         </button>
                     </div>
+                    <div className="mt-8">
 
-                    <div className="flex flex-col space-y-4 mt-12">
+                        <div className="text-green-400 py-1 ">
+                            Balance:{" "}
+                            <Monetary value={Math.floor(userData?.walletBalance)} />
+                        </div>
+
+                        <ClaimBonus bonusDate={userData?.nextBonus} toogleUserData={toogleUserData} userData={userData} />
+                    </div>
+                    <div className="flex flex-col space-y-4 mt-6">
                         {links.map((link, index) => (
                             <Link key={index} to={link.path} onClick={closeSidebar}>
                                 <div className="flex items-center gap-4 p-2 text-white">

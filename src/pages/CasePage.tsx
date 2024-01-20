@@ -90,7 +90,7 @@ const CasePage = () => {
 
   return (
     <div className="flex flex-col items-center w-screen">
-      <div className="flex flex-col items-center max-w-[1920px]">
+      <div className="flex flex-col items-center overflow-hidden  md:max-w-[1920px]">
         <h1 className="text-2xl color-[#e1dde9] font-bold py-7">
           {loading ? <Skeleton width={200} height={30} /> : data && data.title}
         </h1>
@@ -100,7 +100,7 @@ const CasePage = () => {
             alt="left arrow"
             className="hidden lg:flex"
           />
-          <div className="flex flex-col w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative">
+          <div className="flex flex-col overflow-hidden max-w-[120vw] md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative">
             <div className="absolute flex flex-col justify-between h-[calc(100%+50px)] z-20 ">
               <img
                 src="/images/arrowSelector.svg"
@@ -218,7 +218,7 @@ const CasePage = () => {
           )}
         </div>
 
-        <div className="flex flex-col p-8 gap-2 items-center ">
+        <div className="flex flex-col md:p-8 gap-2 items-center ">
           <Title title="Items in this case" />
           <div className="flex flex-wrap gap-6 px-8 justify-center w-screen max-w-[1920px]">
             {loading
