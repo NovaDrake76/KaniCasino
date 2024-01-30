@@ -82,7 +82,7 @@ const Slots = () => {
             setGrid(response.gridState);
             setWinningLines(response?.lastSpinResult.map((result: { line: any; }) => result.line) || [])
             setIsSpinning(true);
-            if (response.totalPayout >= betAmount) {
+            if (response.totalPayout >= betAmount * 8) {
                 setOpenBigWin(true);
                 startAudio();
             }
@@ -121,8 +121,6 @@ const Slots = () => {
         );
     };
 
-
-
     const getCurrentMike = () => {
         if (response) {
             if (openBigWin) {
@@ -146,12 +144,12 @@ const Slots = () => {
                 ref={audioRef}
                 src={bigwin}
             />
-            <div className={`md:p-4 pb-1 ${loadedImages != 1 ? "flex flex-col items-center justify-center" : "hidden"}`}>
+            <div className={`md:p-4 pb-1 ${loadedImages > 1 ? "flex flex-col items-center justify-center" : "hidden"}`}>
                 <RotatingLines strokeColor="grey" strokeWidth="5" animationDuration="0.75" width="50px" visible={true} />
                 <span className='text-[#656569]'>loading assets ({loadedImages}/4)</span>
             </div>
 
-            <div className={`md:p-4 pb-1 ${loadedImages != 1 ? "h-0 w-0 overflow-hidden" : ""}`}>
+            <div className={`md:p-4 pb-1 ${loadedImages > 1 ? "h-0 w-0 overflow-hidden" : ""}`}>
                 <RenderMike status={
                     getCurrentMike() as "normal" | "win" | "losing" | "jackpot"
                 } />
