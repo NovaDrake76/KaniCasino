@@ -18,26 +18,6 @@ then, use `npm run start`.
 Please note that the database access is not public; you can make your own database using MongoDB, or anything else. 
 
 # To-Do
-- [x] Fix PFP upload.
-- [x] Fix Inventory.
-- [x] Fix Netlify URL.
-- [x] Scroll history.
-- [x] Profile Inventory Height.
-- [x] Fix Negative Sell.
-- [x] Coin Flip.
-- [x] Marketplace.
-- [x] Crash.
-- [x] CoinFlip Input.
-- [X] Fix Market Modal.
-- [x] Migrate backend to AWS, render sucks.
-- [x] Fix login modal rerender on live history.
-- [x] Search on profile.
-- [x] Item notification information.
-- [x] Fix Level.
-- [x] Upgrade clock animation.
-- [x] PFP border color per level.
-- [ ] Refresh Token.
-- [ ] Responsivity.
 - [ ] Banner content.
 - [ ] Fix profile picture file error.
 - [ ] Add friend.
