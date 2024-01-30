@@ -8,6 +8,7 @@ import RenderMike from './RenderMike';
 import bigwin from "/bigwin.mp3"
 import ValueViewer from './ValueViewer';
 import UserContext from '../../UserContext';
+import { RotatingLines } from "react-loader-spinner";
 
 const renderPlaceholder = () => {
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
@@ -23,6 +24,7 @@ const Slots = () => {
     const [totalWins, setTotalWins] = useState<number>(0);
     const [openBigWin, setOpenBigWin] = useState<boolean>(false);
     const [lostCount, setLostCount] = useState<number>(0);
+    const [loadedImages, setLoadedImages] = useState<number>(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { userData } = useContext(UserContext);
 
@@ -80,7 +82,7 @@ const Slots = () => {
             setGrid(response.gridState);
             setWinningLines(response?.lastSpinResult.map((result: { line: any; }) => result.line) || [])
             setIsSpinning(true);
-            if (response.totalPayout >= betAmount * 8) {
+            if (response.totalPayout >= betAmount) {
                 setOpenBigWin(true);
                 startAudio();
             }
@@ -144,12 +146,17 @@ const Slots = () => {
                 ref={audioRef}
                 src={bigwin}
             />
+            <div className={`md:p-4 pb-1 ${loadedImages != 1 ? "flex flex-col items-center justify-center" : "hidden"}`}>
+                <RotatingLines strokeColor="grey" strokeWidth="5" animationDuration="0.75" width="50px" visible={true} />
+                <span className='text-[#656569]'>loading assets ({loadedImages}/4)</span>
+            </div>
 
-            <div className=" md:p-4 pb-1">
+            <div className={`md:p-4 pb-1 ${loadedImages != 1 ? "h-0 w-0 overflow-hidden" : ""}`}>
                 <RenderMike status={
                     getCurrentMike() as "normal" | "win" | "losing" | "jackpot"
                 } />
-                <Game grid={grid} isSpinning={isSpinning} data={response} winningLines={winningLines} />
+                <Game grid={grid} isSpinning={isSpinning} data={response} winningLines={winningLines} loadedImages={loadedImages} setLoadedImages={setLoadedImages} />
+
 
                 <div className="flex flex-col justify-center p-4 bg-[#B52D26] border-t-4 border-red-800 gap-4"
                     style={{
@@ -158,7 +165,7 @@ const Slots = () => {
 
                     <div className="flex w-full items-center justify-center gap-2">
                         {
-                            ["balance", "bet", "wins"].map((type) => <ValueViewer type={type as "balance" | "bet" | "wins"} betAmount={betAmount} totalWins={totalWins} />
+                            ["balance", "bet", "wins"].map((type) => <ValueViewer key={type} type={type as "balance" | "bet" | "wins"} betAmount={betAmount} totalWins={totalWins} />
                             )
                         }
                     </div>

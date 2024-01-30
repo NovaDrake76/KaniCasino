@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SlotColumn from './SlotColumn';
 import { SlotProps } from './Types';
 import bottomBar from "/images/bottombar.webp"
@@ -10,19 +10,31 @@ interface SlotMachineProps {
     isSpinning: boolean;
     data: SlotProps | null;
     winningLines: any[];
+    loadedImages: number;
+    setLoadedImages: (value: number) => void;
 }
 
-const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines }) => {
+const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines, loadedImages, setLoadedImages }) => {
 
     const renderSidebar = (index: number) => {
         return (
-            <img src={Sidebar} alt="bottom bar" className={`h-[340px] w-2 md:w-6 -mb-4 ${index == 1 ? "scale-x-[-1]" : ""}`} />
+            <img src={Sidebar} alt="bottom bar" className={`h-[340px] w-2 md:w-6 -mb-4 ${index == 1 ? "scale-x-[-1]" : ""}`}
+                onLoad={() => setLoadedImages(loadedImages + 1)}
+            />
+        )
+    }
+
+    const renderBottomBar = (index: number) => {
+        return (
+            <img src={bottomBar} alt="bottom bar" className={`w-screen md:w-[416px] z-10 ${index == 0 ? "scale-y-[-1]" : ""} `}
+                onLoad={() => setLoadedImages(loadedImages + 1)}
+            />
         )
     }
 
     return (
         <div className="flex flex-col justify-center items-center">
-            <img src={bottomBar} alt="bottom bar" className='w-screen md:w-[416px] scale-y-[-1]  ' />
+            {renderBottomBar(0)}
             <div className="flex ">
                 {renderSidebar(0)}
                 <div className="flex bg-gray-800 w-full md:min-w-[330px] min-h-[340px]">
@@ -51,7 +63,7 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
                 {renderSidebar(1)}
 
             </div >
-            <img src={bottomBar} alt="bottom bar" className='w-screen md:w-[416px] z-10' />
+            {renderBottomBar(1)}
 
             <div className='bg-[#AA1520] w-full  text-white text-xl font-bold p-1'>
                 <div className="rounded-full border-[#ECA823] border-4 w-full p-2 flex items-center justify-center min-h-[56px]"
