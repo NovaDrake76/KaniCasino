@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SlotColumn from './SlotColumn';
 import { SlotProps } from './Types';
 import bottomBar from "/images/bottombar.webp"
