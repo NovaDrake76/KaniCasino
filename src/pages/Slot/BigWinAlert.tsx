@@ -20,24 +20,16 @@ const BigWinAlert: React.FC<BigWinAlertProps> = ({ value }) => {
     const animateValue = () => {
         let start = 0;
         const end = Math.round(value);
-        const duration = 3000; // Adjust the duration as needed
-        const range = end - start;
-        const increment = end > start ? 1 : -1;
-        let stepTime = Math.abs(Math.floor(duration / range));
-
-        // Check if stepTime is Infinity and if so, set it to a default value
-        if (!isFinite(stepTime)) {
-            stepTime = duration;
-        }
 
         const timer = setInterval(() => {
-            start += increment;
+            start += value / 100
             setAnimatedValue(start);
-            if (start === end) {
+            if (start >= end) {
                 clearInterval(timer);
             }
-        }, stepTime);
+        }, 30);
     };
+
     return (
         <div className='absolute z-50 transition-all flex items-center justify-center bg-black/30 w-screen h-[110vh]'
             style={{
