@@ -8,7 +8,7 @@ import RenderMike from './RenderMike';
 import bigwin from "/bigwin.mp3"
 import ValueViewer from './ValueViewer';
 import UserContext from '../../UserContext';
-import { RotatingLines } from "react-loader-spinner";
+// import { RotatingLines } from "react-loader-spinner";
 
 const renderPlaceholder = () => {
     const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
