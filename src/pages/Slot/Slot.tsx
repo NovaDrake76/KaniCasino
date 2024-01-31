@@ -144,12 +144,12 @@ const Slots = () => {
                 ref={audioRef}
                 src={bigwin}
             />
-            <div className={`md:p-4 pb-1 ${loadedImages > 1 ? "flex flex-col items-center justify-center" : "hidden"}`}>
+            {/* <div className={`md:p-4 pb-1 ${loadedImages > 1 ? "flex flex-col items-center justify-center" : "hidden"}`}>
                 <RotatingLines strokeColor="grey" strokeWidth="5" animationDuration="0.75" width="50px" visible={true} />
                 <span className='text-[#656569]'>loading assets ({loadedImages}/4)</span>
-            </div>
+            </div> */}
 
-            <div className={`md:p-4 pb-1 ${loadedImages > 1 ? "h-0 w-0 overflow-hidden" : ""}`}>
+            <div className={`md:p-4 pb-1  `}>
                 <RenderMike status={
                     getCurrentMike() as "normal" | "win" | "losing" | "jackpot"
                 } />
