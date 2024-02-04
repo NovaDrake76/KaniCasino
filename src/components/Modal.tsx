@@ -1,15 +1,17 @@
 interface ModalProps {
-  children: any;
-  isVisible: boolean;
-  onClose: any;
+  children: JSX.Element;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Modal: React.FC<ModalProps> = ({ children, isVisible, onClose }) => {
-  if (!isVisible) return null;
+const Modal: React.FC<ModalProps> = ({ children, open, setOpen }) => {
+  if (!open) return null;
 
   /* function to close when clicking outside modal */
   const handleClose = (e: any) => {
-    if (e.target.id === "wrapped") onClose();
+    if (e.target.id === "wrapped") {
+      setOpen(false);
+    }
   };
 
   return (
@@ -22,7 +24,7 @@ const Modal: React.FC<ModalProps> = ({ children, isVisible, onClose }) => {
         {/* X button to close modal */}
         <button
           className="flex-grow p-2 text-3xl text-red-500 border-none place-self-end bg-inherit focus:outline-none"
-          onClick={() => onClose()}
+          onClick={() => setOpen(false)}
         ></button>
 
         {/* all Modal content */}
