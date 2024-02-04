@@ -1,6 +1,13 @@
 import Modal from "./Modal";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import TermsOfPrivacy from "./modalsChilden/TermsOfPrivacy"
+import UserAgreement from "./modalsChilden/UserAgreement"
+import HowToPlay from "./modalsChilden/HowToPlay"
+import AboutTheMarket from "./modalsChilden/AboutTheMarket"
+import HowGamesWork from "./modalsChilden/HowGamesWork";
+import ContactUs from "./modalsChilden/ContactUs";
+import FAQ from "./modalsChilden/FAQ";
 
 function Footer() {
   // Toggle modal
@@ -20,15 +27,15 @@ function Footer() {
       links: [
         {
           title: "How to Play",
-          onClick: () => handleModalInfo(<p>How to Play</p>),
+          onClick: () => handleModalInfo(<HowToPlay />),
         },
         {
           title: "About the Market",
-          onClick: () => handleModalInfo(<p>About the Market</p>),
+          onClick: () => handleModalInfo(<AboutTheMarket />),
         },
         {
           title: "How Games Work",
-          onClick: () => handleModalInfo(<p>Our Partners</p>),
+          onClick: () => handleModalInfo(<HowGamesWork />),
         },
       ],
     },
@@ -37,11 +44,11 @@ function Footer() {
       links: [
         {
           title: "Terms of Privacy",
-          onClick: () => handleModalInfo(<p>Terms of Privacy</p>),
+          onClick: () => handleModalInfo(<TermsOfPrivacy />),
         },
         {
           title: "User Agreement",
-          onClick: () => handleModalInfo(<p>User Agreement</p>),
+          onClick: () => handleModalInfo(<UserAgreement />),
         },
       ],
     },
@@ -67,11 +74,11 @@ function Footer() {
       links: [
         {
           title: "Contact us",
-          onClick: () => handleModalInfo(<p>Contact us</p>),
+          onClick: () => handleModalInfo(<ContactUs />),
         },
         {
           title: "FAQ",
-          onClick: () => handleModalInfo(<p>FAQ</p>),
+          onClick: () => handleModalInfo(<FAQ />),
         },
       ],
     }, {
