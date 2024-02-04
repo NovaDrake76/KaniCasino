@@ -24,6 +24,7 @@ module.exports = {
         'primary': '#151225',
         'primary-light': '#19172D',
         'secondary': '#4f46e5',
+        'secondary-light': '#606bc7',
         'unique': '#FFCC00',
       },
     },

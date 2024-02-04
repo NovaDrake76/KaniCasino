@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import SocketConnection from "./services/socket"
 import ScrollToTop from "./components/ScrollToTop";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Footer from "./components/Footer";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -156,7 +157,9 @@ function App() {
                 <div className="flex w-full">
                   <AppRoutes />
                 </div>
-                <footer className="h-8"></footer>
+                <div className="w-full pt-12">
+                  <Footer />
+                </div>
               </SkeletonTheme>
             </Router>
           </GoogleOAuthProvider>
