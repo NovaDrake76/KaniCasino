@@ -24,7 +24,7 @@ const Leaderboard = () => {
 
 
     return (
-        <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none overflow-x-auto ">
+        <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none  z-50 ">
             <Title title="Leaderboard" />
 
             {!loading && users[1] ? (
@@ -32,7 +32,6 @@ const Leaderboard = () => {
                     <TopPlayer key={users[1]._id} user={users[1]} rank={2} />
                     <TopPlayer key={users[0]._id} user={users[0]} rank={1} />
                     <TopPlayer key={users[2]._id} user={users[2]} rank={3} />
-
                 </div>
             ) : (
                 <div className="h-[330px]">
