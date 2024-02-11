@@ -6,15 +6,10 @@ import Leaderboard from "./Leaderboard";
 import { getCases } from "../../services/cases/CaseServices";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
+import { BannerProps } from "./Types";
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
-interface BannerProps {
-  left: {
-    image: string;
-    title: string;
-    description: string;
-    link: string;
-  };
-}
 
 const Home = () => {
   const [cases, setCases] = useState<any>();
@@ -37,17 +32,50 @@ const Home = () => {
     getNewCases();
   }, []);
 
-  const leftContent: BannerProps["left"] = {
-    image: "/images/paris.webp",
-    title: "NEW UPGRADE GAME",
-    description: "Go big or go home. Try your luck now!",
-    link: "/upgrade",
-  };
+  const BannerContent: BannerProps[] = [
+    {
+      left: {
+        image: "/images/paris.webp",
+        title: "NEW UPGRADE GAME",
+        description: "Go big or go home. Try your luck now!",
+        link: "/upgrade",
+      },
+      right: null,
+    },
+    {
+      left: {
+        image: "/images/marisaBanner.webp",
+        title: "NEW UPGRADE GAME",
+        description: "Go big or go home. Try your luck now!",
+        link: "/upgrade",
+      },
+      right: <img src="/images/crashBannerTitle.webp" alt="upgrade" className="w-full h-full" />,
+    }
+  ]
+
 
   return (
-    <div className="w-full flex justify-center ">
-      <div className=" flex-col max-w-[1920px]">
-        <Banner left={leftContent} />
+    <div className="w-screen flex justify-center">
+      <div className=" flex-col w-full max-w-[1920px] ">
+        <Carousel
+          autoPlay={true}
+          infiniteLoop={true}
+          showThumbs={false}
+          showStatus={false}
+          showIndicators={false}
+          showArrows={false}
+          interval={7000}
+          stopOnHover={false}
+
+        >
+          {
+            BannerContent.map((_item, index) => (
+              <Banner key={index} left={_item.left} right={_item.right} />
+            ))
+          }
+
+
+        </Carousel>
         {loading ? (
           <div className="flex items-center justify-center w-full mt-[164px]">
             <div className="flex justiy-center gap-8 max-w-[1600px] flex-col md:flex-row">
