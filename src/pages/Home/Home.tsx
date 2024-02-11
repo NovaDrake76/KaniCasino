@@ -47,7 +47,7 @@ const Home = () => {
         image: "/images/marisaBanner.webp",
         title: "CRASH GAME",
         description: "Don't crash, don't burn. Play now!",
-        link: "/upgrade",
+        link: "/crash",
       },
       right: <img src="/images/crashBannerTitle.webp" alt="upgrade" className="w-full h-full" />,
     }
