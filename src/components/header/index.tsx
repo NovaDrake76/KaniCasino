@@ -9,17 +9,42 @@ import { BiArrowBack } from "react-icons/bi";
 import Notifications from "./Navbar/Notifications";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
+import { BasicItem } from "../Types";
+
+interface CaseOpeningItem {
+  caseImage: string;
+  timestamp: number;
+  user: {
+    id: string;
+    name: string;
+    profilePicture: string;
+  };
+  winningItems: BasicItem[];
+}
 
 interface Header {
   onlineUsers: number;
-  recentCaseOpenings: Array<any>;
+  recentCaseOpenings: CaseOpeningItem[];
   notification: any;
   setNotification: React.Dispatch<React.SetStateAction<any>>;
 }
 
+interface ItemsQueue {
+  items: BasicItem[];
+  caseImages: string[];
+  user: {
+    id: string;
+    name: string;
+    profilePicture: string;
+  };
+}
+
 const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notification, setNotification }) => {
+
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
   const [openSidebar, setOpenSidebar] = useState<boolean>(false);
+  const [ItemsQueue, setItemsQueue] = useState<ItemsQueue[]>([]);
+
 
   const { isLogged, openUserFlow } = useContext(UserContext);
   const navigate = useNavigate();
@@ -45,6 +70,21 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
       toast.info(notification.message);
     }
   }, [notification]);
+
+  useEffect(() => {
+    if (recentCaseOpenings.length > 0) {
+      const newQueue = [];
+      const newItems = recentCaseOpenings.map((opening) => {
+        return {
+          items: opening.winningItems,
+          caseImages: [opening.caseImage],
+          user: opening.user,
+        };
+      });
+      newQueue.push(...newItems);
+      setItemsQueue(newQueue);
+    }
+  }, [recentCaseOpenings]);
 
 
   return (
@@ -86,12 +126,12 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
 
             <div className="flex h-28 bg-[#141225] ">
               <div className="flex overflow-hidden justify-start transition-all">
-                {recentCaseOpenings.map((opening) => (
+                {ItemsQueue.map((opening, index) => (
                   <CaseOpenedNotification
-                    key={opening.timestamp}
-                    item={opening.winningItem}
+                    key={index}
+                    item={opening.items[0]}
+                    caseImage={opening.caseImages[0]}
                     user={opening.user}
-                    caseImage={opening.caseImage}
                   />
                 ))}
 

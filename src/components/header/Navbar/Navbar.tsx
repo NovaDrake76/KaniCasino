@@ -1,7 +1,7 @@
 
 
 import { Link } from "react-router-dom";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserContext from "../../../UserContext";
 import MainButton from "../../MainButton";
 import { clearTokens } from "../../../services/auth/authUtils";

@@ -29,7 +29,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
     }
   };
 
-  const color = Rarities.find((rarity) => rarity.id.toString() == item.rarity)?.color
+  const color = Rarities.find((rarity) => rarity.id.toString() == item?.rarity)?.color || "white";
 
   return (
     <div
@@ -37,7 +37,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
       style={{
         borderColor: color
       }}
-      key={item.name + Math.random()}
+      key={item?.name + Math.random()}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
@@ -52,8 +52,8 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
           />
         </div>}
         <img
-          src={item.image}
-          alt={item.name}
+          src={item?.image}
+          alt={item?.name}
           className={` w-32 md:w-44 h-32 md:h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
           onLoad={() => setLoaded(true)}
         />
@@ -78,7 +78,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
         <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{
           backgroundColor: color
         }} />
-        <p className="text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full max-w-[80px] md:max-w-none">{item.name}</p>
+        <p className="text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full max-w-[80px] md:max-w-none">{item?.name}</p>
       </div>
     </div>
   );

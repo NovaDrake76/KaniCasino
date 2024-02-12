@@ -15,7 +15,7 @@ interface Sidebar {
 }
 
 const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
-    const { toogleUserData, userData } = useContext(UserContext);
+    const { userData } = useContext(UserContext);
 
 
     const links = [
@@ -81,7 +81,7 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                             <Monetary value={Math.floor(userData?.walletBalance)} />
                         </div>
 
-                        <ClaimBonus bonusDate={userData?.nextBonus} toogleUserData={toogleUserData} userData={userData} />
+                        <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} />
                     </div>
                     <div className="flex flex-col space-y-4 mt-6">
                         {links.map((link, index) => (

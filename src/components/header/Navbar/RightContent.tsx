@@ -6,10 +6,11 @@ import ClaimBonus from "../ClaimBonus";
 import { IoMdExit } from "react-icons/io";
 import { BiWallet } from "react-icons/bi";
 import Monetary from "../../Monetary";
+import { User } from '../../../components/Types';
 
 interface RightContentProps {
     loading: boolean;
-    userData: any;
+    userData: User;
     openNotifications: boolean;
     setOpenNotifications: React.Dispatch<React.SetStateAction<boolean>>;
     Logout: () => void;

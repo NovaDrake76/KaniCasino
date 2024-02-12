@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import Rarities from "./Rarities";
+import { BasicItem } from "./Types";
 
 interface Roulette {
   items: any;
-  opened: any;
+  openedItem: BasicItem;
   spin: boolean;
 
   className?: string;
 }
 
-const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
+const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className }) => {
   const [rouletteItems, setRouletteItems] = useState<any[]>([]);
   const [translateValue, setTranslateValue] = useState<string>("-6180px");
   const rouletteRef = useRef<HTMLDivElement | null>(null);
@@ -44,7 +45,7 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
         array[randomIndex] = temporaryValue;
 
         if (currentIndex === 36) {
-          array[currentIndex] = opened.item;
+          array[currentIndex] = openedItem;
         }
       }
 
@@ -83,6 +84,7 @@ const Roulette: React.FC<Roulette> = ({ items, opened, spin, className }) => {
             style={{
               borderBottom: Rarities.find((rarity) => rarity.id.toString() == item.rarity)?.color + " solid 4px",
             }}
+
           />
         ))}
         <style>{`

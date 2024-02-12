@@ -4,10 +4,11 @@ import { toast } from "react-toastify";
 import Countdown from "../Countdown";
 import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../../UserContext";
+import { User } from '../../components/Types';
 
 interface IBonus {
     bonusDate: string;
-    userData: any;
+    userData: User;
 }
 
 const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {

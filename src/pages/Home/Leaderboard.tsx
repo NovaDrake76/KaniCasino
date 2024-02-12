@@ -29,9 +29,9 @@ const Leaderboard = () => {
 
             {!loading && users[1] ? (
                 <div className="flex gap-14 my-16 ">
-                    <TopPlayer key={users[1]._id} user={users[1]} rank={2} />
-                    <TopPlayer key={users[0]._id} user={users[0]} rank={1} />
-                    <TopPlayer key={users[2]._id} user={users[2]} rank={3} />
+                    <TopPlayer key={users[1].id} user={users[1]} rank={2} />
+                    <TopPlayer key={users[0].id} user={users[0]} rank={1} />
+                    <TopPlayer key={users[2].id} user={users[2]} rank={3} />
                 </div>
             ) : (
                 <div className="h-[330px]">
@@ -60,7 +60,7 @@ const Leaderboard = () => {
                         </td></tr>}
 
                         {!loading && users.slice(3).map((user, index) => (
-                            <tr key={user._id}>
+                            <tr key={user.id}>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     #{index + 4}
                                 </td>

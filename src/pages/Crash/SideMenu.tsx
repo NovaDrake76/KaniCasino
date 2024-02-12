@@ -1,3 +1,5 @@
+import { User } from '../../components/Types';
+
 interface SideMenuProps {
     bet: number | null;
     setBet: any;
@@ -7,7 +9,7 @@ interface SideMenuProps {
     isLogged: boolean;
     userGambled: boolean;
     userCashedOut: boolean;
-    userData: any;
+    userData: User;
     userMultiplier: number;
 }
 
