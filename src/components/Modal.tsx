@@ -4,9 +4,10 @@ interface ModalProps {
   children: JSX.Element;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  width?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ children, open, setOpen }) => {
+const Modal: React.FC<ModalProps> = ({ children, open, setOpen, width = "600px" }) => {
   if (!open) return null;
 
   /* function to close when clicking outside modal */
@@ -18,11 +19,13 @@ const Modal: React.FC<ModalProps> = ({ children, open, setOpen }) => {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm z-[9999]"
       id="wrapped"
       onClick={handleClose}
     >
-      <div className="w-[600px] max-h-[70vh] flex flex-col overflow-auto">
+      <div className={` max-h-[70vh] flex flex-col overflow-auto`} style={{
+        width: width
+      }}>
         <div className="p-6 text-white rounded bg-[#19172D] relative">
 
           {/* X button to close modal */}

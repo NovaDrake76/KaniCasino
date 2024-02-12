@@ -1,27 +1,29 @@
 import { useState, useEffect, useContext } from "react";
-import { getCase } from "../services/cases/CaseServices";
-import Title from "../components/Title";
-import Item from "../components/Item";
-import Roulette from "../components/Roulette";
+import { getCase } from "../../services/cases/CaseServices";
+import Title from "../../components/Title";
+import Item from "../../components/Item";
+import Roulette from "../../components/Roulette";
 import classNames from "classnames";
-import Rarities from "../components/Rarities";
-import { openBox } from "../services/games/GamesServices";
-import UserContext from "../UserContext";
-import MainButton from "../components/MainButton";
+import { openBox } from "../../services/games/GamesServices";
+import UserContext from "../../UserContext";
+import MainButton from "../../components/MainButton";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
+import { BasicItem } from "../../components/Types";
+import ShowPrize from "./ShowPrize";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [started, setStarted] = useState<boolean>(false);
-  const [openedItem, setOpenedItem] = useState<any>(null);
+  const [openedItems, setOpenedItems] = useState<BasicItem[]>([]);
   const [showPrize, setShowPrize] = useState<boolean>(false);
   const [hasSpinned, setHasSpinned] = useState<boolean>(false);
   const [animationAux, setAnimationAux] = useState<boolean>(false);
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
-  const { userData } = useContext(UserContext);
+  const [quantity, _setQuantity] = useState<number>(2);
+  const { userData, toogleUserFlow } = useContext(UserContext);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -51,22 +53,7 @@ const CasePage = () => {
   //   audio.play();
   // };
 
-  const openCase = async () => {
-    setLoadingButton(true);
-
-    try {
-      const response = await openBox(id);
-      setOpenedItem(response);
-      // playAudio();
-    } catch (error: any) {
-      console.log(error);
-      setLoadingButton(false);
-      toast.error(`${error.response.data.message}!`, {
-        theme: "dark",
-      });
-      return;
-    }
-
+  const resetProps = () => {
     setShowPrize(false);
     setAnimationAux2(false);
 
@@ -86,6 +73,31 @@ const CasePage = () => {
       setAnimationAux2(true);
       setLoadingButton(false);
     }, 8000);
+  }
+
+  const openCase = async () => {
+
+    if (userData == null) {
+      toogleUserFlow(true);
+      return;
+    }
+
+    setLoadingButton(true);
+
+    try {
+      const response = await openBox(id, quantity);
+      setOpenedItems(response.items);
+      // playAudio();
+    } catch (error: any) {
+      console.log(error);
+      setLoadingButton(false);
+      toast.error(`${error.response.data.message}!`, {
+        theme: "dark",
+      });
+      return;
+    }
+
+    resetProps()
   };
 
   return (
@@ -100,8 +112,8 @@ const CasePage = () => {
             alt="left arrow"
             className="hidden lg:flex"
           />
-          <div className="flex flex-col overflow-hidden max-w-[120vw] md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative">
-            <div className="absolute flex flex-col justify-between h-[calc(100%+50px)] z-20 ">
+          <div className="flex flex-col overflow-hidden max-w-[120vw] md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative z-10">
+            <div className="absolute flex flex-col justify-between h-[calc(100%+50px)]  ">
               <img
                 src="/images/arrowSelector.svg"
                 alt="top arrow"
@@ -127,62 +139,17 @@ const CasePage = () => {
                 />
               )
             ) : started && !showPrize ? (
+
               <Roulette
                 items={data.items}
-                opened={openedItem}
+                openedItem={openedItems[0]}
                 spin={started}
                 className={classNames({ "animate-fade-in-down": started })}
+
               />
+
             ) : (
-              <div id="prize" className={`animate-fade-in flex  relative`}>
-                <img
-                  src={openedItem.item.image}
-                  alt={openedItem.item.name}
-                  className={`w-48 h-48 object-contain rounded ${showPrize ? "opacity-100" : "opacity-0"
-                    }`}
-                />
-                {animationAux2 && (
-                  <div
-                    className={`notched h-48 w-48 transition-all animate-fade-in-left absolute left-[210px] items-center justify-center z-20 hidden md:flex`}
-                    style={{
-                      background: Rarities.find(
-                        (rarity) => rarity.id == openedItem.item.rarity
-                      )?.color,
-                    }}
-                  >
-                    <div
-                      className={`notched h-[184px] w-[184px] transition-all bg-[#151225] z-30 flex flex-col items-center justify-center`}
-                    >
-                      <span className="text-xl font-bold color-[#e1dde9] text-center">
-                        {openedItem.item.name}
-                      </span>
-                      <span
-                        className="text-xl underline "
-                        style={{
-                          color: Rarities.find(
-                            (rarity) => rarity.id == openedItem.item.rarity
-                          )?.color,
-                        }}
-                      >
-                        {
-                          Rarities.find(
-                            (rarity) => rarity.id == openedItem.item.rarity
-                          )?.name
-                        }
-                      </span>
-                      <div
-                        style={{
-                          width: "1px",
-                          boxShadow: `0px 0px 80px 30px ${Rarities.find(
-                            (rarity) => rarity.id == openedItem.item.rarity
-                          )?.color
-                            }`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
+              <ShowPrize openedItem={openedItems[0]} showPrize={showPrize} animationAux2={animationAux2} />
             )}
           </div>
 
@@ -206,12 +173,11 @@ const CasePage = () => {
             <Skeleton width={240} height={40} />
           ) : (
             <MainButton
-              text={!userData ? "Sign in to play" : `Open Case - K₽${data.price}`}
+              text={userData == null ? "Sign in to play" : `Open Case - K₽${data.price}`}
               onClick={openCase}
               loading={loadingButton}
               disabled={
                 loadingButton ||
-                !userData ||
                 (userData && data.price > userData.walletBalance)
               }
             />

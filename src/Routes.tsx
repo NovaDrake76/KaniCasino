@@ -1,7 +1,7 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile/Profile";
-import CasePage from "./pages/CasePage";
+import CasePage from "./pages/CasePage/CasePage";
 import Marketplace from "./pages/Market/Marketplace";
 import CoinFlip from "./pages/Coin/CoinFlip";
 import CrashGame from "./pages/Crash/Crash";

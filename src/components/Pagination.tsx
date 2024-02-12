@@ -30,28 +30,23 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, setPag
             }
         } else {
             // More than 7 total pages, calculate start and end pages
-            let startPage, endPage;
-            console.log(startPage, endPage)
 
             if (currentPage <= 4) {
-                startPage = 1;
-                endPage = 5;
+
                 pages = [
                     ...Array.from({ length: 5 }, (_, i) => renderPageNumber(i + 1)),
                     <span key="ellipsis1" className="text-gray-500">...</span>,
                     renderPageNumber(totalPages)
                 ];
             } else if (currentPage + 3 >= totalPages) {
-                startPage = totalPages - 4;
-                endPage = totalPages;
+
                 pages = [
                     renderPageNumber(1),
                     <span key="ellipsis1" className="text-gray-500">...</span>,
                     ...Array.from({ length: 5 }, (_, i) => renderPageNumber(totalPages - 4 + i))
                 ];
             } else {
-                startPage = currentPage - 2;
-                endPage = currentPage + 2;
+
                 pages = [
                     renderPageNumber(1),
                     <span key="ellipsis1" className="text-gray-500">...</span>,

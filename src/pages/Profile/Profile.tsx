@@ -169,7 +169,7 @@ const Profile = () => {
               invItems.map((item: any, i: number) => (
                 <Item
                   item={item}
-                  key={item.name + i}
+                  key={item?.name + i}
                   fixable={isSameUser}
                   setRefresh={setRefresh}
                 />

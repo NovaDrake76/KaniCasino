@@ -33,9 +33,15 @@ const CoinFlip = () => {
       choices: {},
     }
   });
-  const { isLogged, userData } = useContext(UserContext);
+  const { isLogged, userData, toogleUserFlow } = useContext(UserContext);
 
   const handleBet = () => {
+    if (!isLogged) {
+      toogleUserFlow();
+      return;
+    }
+
+
     const user = [{
       id: userData?.id,
       name: userData?.username,
@@ -162,17 +168,17 @@ const CoinFlip = () => {
               }
             </div></div>
           <button onClick={handleBet} className=" p-2 border rounded bg-indigo-600 hover:bg-indigo-700 w-full mt-4" disabled={
-            choice === null || bet === 0 || !isLogged || userGambled || (userData && userData.walletBalance < bet) || spinning || bet > 1000000
+            choice === null || bet === 0 || userGambled || (userData !== null && userData.walletBalance < bet) || spinning || bet > 1000000
           }>
             {
-              !isLogged ? "Login to play" :
-                spinning ? "Spinning..."
-                  : choice === null ? "Choose a side"
-                    : bet === 0 ? "Place the bet value"
-                      : bet > 1000000 ? "Max bet is 1M"
-                        : userGambled ? "You're in!"
-                          : userData.walletBalance < bet ? "Not enough money"
-                            : "Enter the Game"
+
+              spinning ? "Spinning..."
+                : choice === null ? "Choose a side"
+                  : bet === 0 ? "Place the bet value"
+                    : bet > 1000000 ? "Max bet is 1M"
+                      : userGambled ? "You're in!"
+                        : userData !== null && userData.walletBalance < bet ? "Not enough money"
+                          : "Enter the Game"
             }
           </button>
         </div>

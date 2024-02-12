@@ -31,7 +31,7 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    //get cases info and items, and populate the items by rarity, starting from the highest (5)
+    //get cases info and items, and populate the items by rarity, starting from the highest (rarity 5)
     const cases = await Case.findById(req.params.id).populate({
       path: "items",
       options: { sort: { rarity: -1 } },

@@ -94,8 +94,6 @@ function App() {
     };
   }, [socket]);
 
-
-
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token !== null) {
@@ -110,6 +108,10 @@ function App() {
   const toogleUserData = (data: any) => {
     setUserData(data);
   };
+
+  const toogleUserFlow = (state: boolean) => {
+    setOpenUserFlow(state);
+  }
 
   //if there's more than 20 items, remove the last one from the array
   useEffect(() => {
@@ -129,6 +131,8 @@ function App() {
           toggleLogin,
           userData,
           toogleUserData,
+          openUserFlow,
+          toogleUserFlow
         }}
       >
         <Suspense fallback={
@@ -149,8 +153,6 @@ function App() {
                 <Header
                   onlineUsers={onlineUsers}
                   recentCaseOpenings={recentCaseOpenings}
-                  openUserFlow={openUserFlow}
-                  setOpenUserFlow={setOpenUserFlow}
                   notification={notification}
                   setNotification={setNotification}
                 />

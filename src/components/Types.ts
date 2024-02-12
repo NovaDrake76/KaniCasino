@@ -1,11 +1,13 @@
 export interface User {
+    id: string;
     _id: string;
     level: number;
     profilePicture: string;
     username: string;
     weeklyWinnings: number;
     xp: number;
-    nextBonus: number;
+    nextBonus: string;
+    walletBalance: number;
     fixedItem: {
         image: string;
         name: string;
@@ -30,4 +32,12 @@ export interface IMarketItem {
     itemName: string;
     itemImage: string;
     __v: number;
+}
+
+export interface BasicItem {
+    case: string;
+    image: string;
+    name: string;
+    rarity: number;
+    _id: string;
 }

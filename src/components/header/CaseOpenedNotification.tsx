@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Rarities from "../Rarities";
 import { Link } from "react-router-dom";
+import { BasicItem } from "../Types";
 
 interface CaseOpenedNotificationProps {
   user: {
@@ -8,12 +9,7 @@ interface CaseOpenedNotificationProps {
     profilePicture: string;
     id: string;
   };
-  item: {
-    name: string;
-    image: string;
-    rarity: number;
-    case: string;
-  };
+  item: BasicItem;
   caseImage: string;
 }
 
@@ -23,6 +19,7 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
 }) => {
   const [transition, setTransition] = useState<boolean>(false);
   const [isHovering, setIsHovering] = useState<boolean>(false);
+
 
   useEffect(() => {
     setTransition(true);

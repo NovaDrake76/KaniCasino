@@ -1,7 +1,7 @@
 
 
 import { Link } from "react-router-dom";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserContext from "../../../UserContext";
 import MainButton from "../../MainButton";
 import { clearTokens } from "../../../services/auth/authUtils";
@@ -17,27 +17,34 @@ import { FaBars } from 'react-icons/fa';
 import RightContent from "./RightContent";
 
 interface Navbar {
-  openUserFlow: boolean;
-  setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
   openNotifications: boolean;
   setOpenNotifications: React.Dispatch<React.SetStateAction<boolean>>;
   openSidebar: boolean;
   setOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenNotifications, openSidebar, setOpenSidebar }) => {
+const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, openSidebar, setOpenSidebar }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const { isLogged, toggleLogin, toogleUserData, userData } = useContext(UserContext);
+  const { isLogged, toggleLogin, toogleUserData, userData, openUserFlow, toogleUserFlow } = useContext(UserContext);
 
   const handleHover = () => {
     setIsHovering(!isHovering);
   };
 
+  const toggleUserFlow = () => {
+    toogleUserFlow(!openUserFlow);
+  }
+
+  const toggleSidebar = () => {
+    setOpenSidebar(!openSidebar);
+  };
+
   const Logout = () => {
     clearTokens();
     toggleLogin();
+    toogleUserData(null);
   };
 
   const getUserInfo = async () => {
@@ -53,10 +60,6 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenN
         setLoading(false);
       });
   };
-
-  useEffect(() => {
-    isLogged && getUserInfo();
-  }, [isLogged]);
 
 
   const links = [
@@ -87,13 +90,16 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenN
     }
   ];
 
-  const toggleUserFlow = useCallback(() => {
-    setOpenUserFlow(prevState => !prevState);
-  }, []);
 
-  const toggleSidebar = () => {
-    setOpenSidebar(!openSidebar);
-  };
+  useEffect(() => {
+
+    if (isLogged == true) {
+      getUserInfo();
+      toogleUserFlow(false);
+    }
+  }, [isLogged]);
+
+
 
   return (
     <div className="w-full flex justify-center">
@@ -152,9 +158,9 @@ const Navbar: React.FC<Navbar> = ({ setOpenUserFlow, openNotifications, setOpenN
           </div>
 
           {isLogged === true ? (
-            <RightContent loading={loading} userData={userData} setOpenUserFlow={setOpenUserFlow}
+            <RightContent loading={loading} userData={userData}
               openNotifications={openNotifications} setOpenNotifications={setOpenNotifications}
-              toogleUserData={toogleUserData} Logout={Logout} />
+              Logout={Logout} />
           ) : (
             <div className="flex items-center gap-4">
               <MainButton

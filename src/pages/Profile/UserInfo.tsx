@@ -24,7 +24,7 @@ const getPercentY = (x: number, y: number) => {
 };
 
 const UserInfo: React.FC<UserProps> = ({
-  user: { _id, profilePicture, level, username, xp, fixedItem, nextBonus },
+  user: { id, profilePicture, level, username, xp, fixedItem, nextBonus },
   isSameUser,
   setRefresh,
 }) => {
@@ -87,7 +87,7 @@ const UserInfo: React.FC<UserProps> = ({
     <div className="flex flex-col lg:flex-row items-center justify-between w-full">
       <div className="flex flex-col lg:flex-row items-center gap-7">
         <div className="relative group">
-          <Avatar image={profilePicture} loading={false} id={_id} size={'extra-large'} level={level} showLevel={true} />
+          <Avatar image={profilePicture} loading={false} id={id} size={'extra-large'} level={level} showLevel={true} />
 
           {isSameUser && (
             <button
