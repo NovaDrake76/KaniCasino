@@ -21,7 +21,7 @@ const CasePage = () => {
   const [animationAux, setAnimationAux] = useState<boolean>(false);
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
-  const { userData } = useContext(UserContext);
+  const { userData, toogleUserFlow } = useContext(UserContext);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -52,6 +52,12 @@ const CasePage = () => {
   // };
 
   const openCase = async () => {
+
+    if (userData == null) {
+      toogleUserFlow(true);
+      return;
+    }
+
     setLoadingButton(true);
 
     try {
@@ -100,8 +106,8 @@ const CasePage = () => {
             alt="left arrow"
             className="hidden lg:flex"
           />
-          <div className="flex flex-col overflow-hidden max-w-[120vw] md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative">
-            <div className="absolute flex flex-col justify-between h-[calc(100%+50px)] z-20 ">
+          <div className="flex flex-col overflow-hidden max-w-[120vw] md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative z-10">
+            <div className="absolute flex flex-col justify-between h-[calc(100%+50px)]  ">
               <img
                 src="/images/arrowSelector.svg"
                 alt="top arrow"
@@ -206,12 +212,11 @@ const CasePage = () => {
             <Skeleton width={240} height={40} />
           ) : (
             <MainButton
-              text={!userData ? "Sign in to play" : `Open Case - K₽${data.price}`}
+              text={userData == null ? "Sign in to play" : `Open Case - K₽${data.price}`}
               onClick={openCase}
               loading={loadingButton}
               disabled={
                 loadingButton ||
-                !userData ||
                 (userData && data.price > userData.walletBalance)
               }
             />

@@ -26,7 +26,7 @@ const Slots = () => {
     const [lostCount, setLostCount] = useState<number>(0);
     const [loadedImages, setLoadedImages] = useState<number>(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const { userData } = useContext(UserContext);
+    const { userData, toogleUserFlow } = useContext(UserContext);
 
     const startAudio = () => {
         setTimeout(() => {
@@ -68,6 +68,11 @@ const Slots = () => {
 
 
     const handleSpin = async () => {
+
+        if (userData == null) {
+            toogleUserFlow(true);
+            return;
+        }
         setOpenBigWin(false);
         setTotalWins(0);
 

@@ -10,14 +10,12 @@ import Monetary from "../../Monetary";
 interface RightContentProps {
     loading: boolean;
     userData: any;
-    setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
     openNotifications: boolean;
     setOpenNotifications: React.Dispatch<React.SetStateAction<boolean>>;
-    toogleUserData: React.Dispatch<React.SetStateAction<any>>;
     Logout: () => void;
 }
 
-const RightContent: React.FC<RightContentProps> = ({ loading, userData, setOpenUserFlow, openNotifications, setOpenNotifications, toogleUserData, Logout }) => {
+const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNotifications, setOpenNotifications, Logout }) => {
 
     return (
         <div className="flex items-center gap-4">
@@ -25,9 +23,8 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, setOpenU
                 {
                     !loading && (
                         //button to claim bonus 
-                        <ClaimBonus bonusDate={userData?.nextBonus} setOpenUserFlow={setOpenUserFlow} toogleUserData={toogleUserData} userData={userData} />
+                        <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} />
                     )
-
                 }
             </div>
 

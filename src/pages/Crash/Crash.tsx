@@ -33,9 +33,14 @@ const CrashGame = () => {
     gameStartTime: null,
   });
 
-  const { isLogged, toogleUserData, userData } = useContext(UserContext);
+  const { isLogged, toogleUserData, userData, toogleUserFlow } = useContext(UserContext);
 
   const handleBet = () => {
+    if (!isLogged) {
+      toogleUserFlow();
+      return;
+    }
+
     if (bet === null || bet < 1) return;
     const user = [{
       id: userData?.id,

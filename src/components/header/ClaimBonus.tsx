@@ -2,18 +2,17 @@ import MainButton from "../MainButton";
 import { claimBonus } from "../../services/users/UserServices";
 import { toast } from "react-toastify";
 import Countdown from "../Countdown";
-import React, { useEffect, useState } from "react";
-
+import React, { useContext, useEffect, useState } from "react";
+import UserContext from "../../UserContext";
 
 interface IBonus {
     bonusDate: string;
-    setOpenUserFlow?: React.Dispatch<React.SetStateAction<boolean>>;
-    toogleUserData: React.Dispatch<React.SetStateAction<any>>;
     userData: any;
 }
 
-const ClaimBonus: React.FC<IBonus> = ({ bonusDate, setOpenUserFlow, toogleUserData, userData }) => {
+const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
     const [bonusAvailable, setBonusAvailable] = useState(false);
+    const { toogleUserFlow, toogleUserData } = useContext(UserContext);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -41,7 +40,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, setOpenUserFlow, toogleUserDa
     const claimUserBonus = async () => {
         try {
             const res = await claimBonus();
-            setOpenUserFlow && setOpenUserFlow(false);
+            toogleUserFlow(false)
             setBonusAvailable(false);
             toast.success(res.message, {
                 theme: "dark",

@@ -13,25 +13,17 @@ import Sidebar from "./Sidebar";
 interface Header {
   onlineUsers: number;
   recentCaseOpenings: Array<any>;
-  openUserFlow: boolean;
-  setOpenUserFlow: React.Dispatch<React.SetStateAction<boolean>>;
   notification: any;
   setNotification: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlow, setOpenUserFlow, notification, setNotification }) => {
+const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notification, setNotification }) => {
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
   const [openSidebar, setOpenSidebar] = useState<boolean>(false);
 
-  const isLogged = useContext(UserContext);
+  const { isLogged, openUserFlow } = useContext(UserContext);
   const navigate = useNavigate();
   const isHome = window.location.pathname === "/";
-
-  useEffect(() => {
-    if (isLogged.isLogged == true) {
-      setOpenUserFlow(false);
-    }
-  }, [isLogged]);
 
   const items = [
     {
@@ -40,6 +32,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
       value: onlineUsers,
     },
   ];
+
 
   useEffect(() => {
     if (openNotifications === true) {
@@ -68,7 +61,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, openUserFlo
           </div>
         ))}
       </div>
-      <Navbar openUserFlow={openUserFlow} setOpenUserFlow={setOpenUserFlow} openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+      <Navbar openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
       <div className="flex  items-center justify-center ">
         <div className="flex items-center justify-center relative w-full max-w-[1920px]">
           <div

@@ -17,7 +17,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, gameStarted, handleBet
         let message = "";
 
         if (!isLogged) {
-            message = "Login to play";
+            message = "Sign in to play";
         } else if (userCashedOut) {
             message = `Cashed Out at x${userMultiplier.toFixed(2)}`;
         } else if (userGambled) {
@@ -57,7 +57,6 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, gameStarted, handleBet
                 onClick={gameStarted ? handleCashout : handleBet}
                 className="p-2 border rounded bg-indigo-600 hover:bg-indigo-700 w-full mt-4"
                 disabled={
-                    !isLogged ||
                     (gameStarted && (!userGambled || userCashedOut)) ||
                     (!gameStarted && userGambled) || (!gameStarted && bet === 0 || !bet || bet > 1000000)
                 }
