@@ -49,6 +49,26 @@ function getRandomItemFromRarity(itemsByRarity, rarity) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+function getWinningItem(caseData) {
+  const itemsByRarity = groupItemsByRarity(caseData.items);
+  const winningRarity = getRandomWeightedItem(Rarities, "chance");
+  let winningItem = getRandomItemFromRarity(itemsByRarity, winningRarity.id);
+
+  // If winningItem is null, get an item from another rarity
+  if (!winningItem) {
+    // Get array of all rarities that exist in the case
+    const existingRarities = Object.keys(itemsByRarity);
+
+    // Select a random rarity from existingRarities
+    const randomExistingRarity = existingRarities[Math.floor(Math.random() * existingRarities.length)];
+
+    // Select a random item from the chosen rarity
+    winningItem = getRandomItemFromRarity(itemsByRarity, randomExistingRarity);
+  }
+  return winningItem;
+
+}
+
 // Exports
 module.exports = (io) => {
   // Routes
@@ -56,6 +76,8 @@ module.exports = (io) => {
     try {
       const { id } = req.params;
       const user = req.user;
+      const quantityToOpen = req.body.quantity;
+      const winningItems = [];
 
       const caseData = await Case.findById(id).populate("items");
 
@@ -67,30 +89,27 @@ module.exports = (io) => {
         }
       }
 
-      if (user.walletBalance < caseData.price) {
+      if (quantityToOpen > 5) {
+        return res.status(400).json({ message: "You can only open up to 5 cases at a time" });
+      }
+
+      if (quantityToOpen < 1) {
+        return res.status(400).json({ message: "You need to open at least 1 case" });
+      }
+
+      if (user.walletBalance < (caseData.price * quantityToOpen)) {
         return res.status(400).json({ message: "Insufficient balance" });
       }
 
-      const itemsByRarity = groupItemsByRarity(caseData.items);
-      const winningRarity = getRandomWeightedItem(Rarities, "chance");
-      let winningItem = getRandomItemFromRarity(itemsByRarity, winningRarity.id);
-
-      // If winningItem is null, get an item from another rarity
-      if (!winningItem) {
-        // Get array of all rarities that exist in the case
-        const existingRarities = Object.keys(itemsByRarity);
-
-        // Select a random rarity from existingRarities
-        const randomExistingRarity = existingRarities[Math.floor(Math.random() * existingRarities.length)];
-
-        // Select a random item from the chosen rarity
-        winningItem = getRandomItemFromRarity(itemsByRarity, randomExistingRarity);
+      for (let i = 0; i < quantityToOpen; i++) {
+        const winningItem = getWinningItem(caseData);
+        winningItems.push(winningItem);
       }
 
-      // Add the entire winning item object to the user's inventory
-      user.inventory.unshift(winningItem);
+      // Add the entire winning items object to the user's inventory
+      user.inventory.unshift(...winningItems);
 
-      updateLevel(user, caseData.price);
+      updateLevel(user, caseData.price * quantityToOpen);
 
       await user.save();
 
@@ -102,12 +121,12 @@ module.exports = (io) => {
 
       // Emit the caseOpened event
       io.emit("caseOpened", {
-        winningItem: winningItem,
+        winningItems: winningItems,
         user: winnerUser,
         caseImage: caseData.image,
       });
 
-      res.json({ item: winningItem });
+      res.json({ items: winningItems });
 
       const userDataPayload = {
         walletBalance: user.walletBalance,
