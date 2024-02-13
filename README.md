@@ -18,7 +18,6 @@ then, use `npm run start`.
 Please note that the database access is not public; you can make your own database using MongoDB, or anything else. 
 
 # To-Do
-- [ ] Banner content.
 - [ ] Fix profile picture file error.
 - [ ] Add friend.
 - [ ] Item battle.
