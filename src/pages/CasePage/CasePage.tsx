@@ -2,15 +2,14 @@ import { useState, useEffect, useContext } from "react";
 import { getCase } from "../../services/cases/CaseServices";
 import Title from "../../components/Title";
 import Item from "../../components/Item";
-import Roulette from "../../components/Roulette";
-import classNames from "classnames";
 import { openBox } from "../../services/games/GamesServices";
 import UserContext from "../../UserContext";
 import MainButton from "../../components/MainButton";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
 import { BasicItem } from "../../components/Types";
-import ShowPrize from "./ShowPrize";
+import QuantityButton from "../../components/QuantityButton";
+import RouletteContainer from "./RoulleteContainer";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -23,6 +22,7 @@ const CasePage = () => {
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
   const [quantity, _setQuantity] = useState<number>(1);
+
   const { userData, toogleUserFlow } = useContext(UserContext);
 
   //get id from url
@@ -106,82 +106,33 @@ const CasePage = () => {
         <h1 className="text-2xl color-[#e1dde9] font-bold py-7">
           {loading ? <Skeleton width={200} height={30} /> : data && data.title}
         </h1>
-        <div className="flex">
-          <img
-            src="/images/arrow.svg"
-            alt="left arrow"
-            className="hidden lg:flex"
-          />
-          <div className="flex flex-col overflow-hidden max-w-[120vw] md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative z-10">
-            <div className="absolute flex flex-col justify-between h-[calc(100%+50px)]  ">
-              <img
-                src="/images/arrowSelector.svg"
-                alt="top arrow"
-                style={{
-                  transform: "rotate(180deg)",
-                }}
-              />
-              <img src="/images/arrowSelector.svg" alt="bottom arrow" />
-            </div>
-            {!started && !showPrize && !hasSpinned ? (
-              loading ? (
-                <Skeleton width={208} height={208} />
-              ) : (
-                <img
-                  src={data.image}
-                  alt={data.title}
-                  className={classNames(
-                    "w-52 h-52 object-cover z-10",
-                    { "animate-bounce-up-fade": animationAux },
-                    "transition duration-500"
-                  )}
-                  id="caseImage"
-                />
-              )
-            ) : started && !showPrize ? (
 
-              <Roulette
-                items={data.items}
-                openedItem={openedItems[0]}
-                spin={started}
-                className={classNames({ "animate-fade-in-down": started })}
-
-              />
-
-            ) : (
-              <ShowPrize openedItem={openedItems[0]} showPrize={showPrize} animationAux2={animationAux2} />
-            )}
-          </div>
-
-          <img
-            src="/images/arrow.svg"
-            alt="right arrow"
-            className="hidden lg:flex"
-            style={{
-              transform: "rotate(180deg)",
-            }}
-          />
-        </div>
-
+        <RouletteContainer started={started} showPrize={showPrize} hasSpinned={hasSpinned} loading={loading} data={data} openedItems={openedItems} animationAux={animationAux} animationAux2={animationAux2} quantity={quantity} />
         <div
-          className={`w-60 mt-8 ${started ? "opacity-0" : "opacity-100"
-            } transition-all
-
-            `}
+          className={`flex items-center gap-4 w-68 mt-8  ${started ? "opacity-0" : "opacity-100"} transition-all`}
         >
+
           {loading ? (
             <Skeleton width={240} height={40} />
           ) : (
-            <MainButton
-              text={userData == null ? "Sign in to play" : `Open Case - K₽${data.price}`}
-              onClick={openCase}
-              loading={loadingButton}
-              disabled={
-                loadingButton ||
-                (userData && data.price > userData.walletBalance)
-              }
-            />
+            <div className="w-60 ml-20">
+              <MainButton
+                text={userData == null ? "Sign in to play" : `Open Case - K₽${data.price * quantity}`}
+                onClick={openCase}
+                loading={loadingButton}
+                disabled={
+                  loadingButton ||
+                  (userData && data.price > userData.walletBalance)
+                }
+              />
+            </div>
           )}
+          {
+            !loading && (
+              <QuantityButton quantity={quantity} setQuantity={setQuantity} disabled={started} />
+            )
+          }
+
         </div>
 
         <div className="flex flex-col md:p-8 gap-2 items-center ">
