@@ -21,7 +21,7 @@ const CasePage = () => {
   const [animationAux, setAnimationAux] = useState<boolean>(false);
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
-  const [quantity, _setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const { userData, toogleUserFlow } = useContext(UserContext);
 
