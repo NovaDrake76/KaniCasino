@@ -41,3 +41,11 @@ export interface BasicItem {
     rarity: number;
     _id: string;
 }
+
+export interface Case {
+    _id: string;
+    title: string;
+    price: number;
+    image: string;
+    items: BasicItem[];
+}
