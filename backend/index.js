@@ -14,12 +14,11 @@ const io = socketIO(server, {
   },
 });
 
-const authRoutes = require("./routes/auth");
 const coinFlip = require("./games/coinFlip");
 const crash = require("./games/crash");
+const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
 const itemRoutes = require("./routes/itemRoutes");
-const userRoutes = require("./routes/userRoutes");
 const marketplaceRoutes = require("./routes/marketplaceRoutes")(io);
 const adminRoutes = require("./routes/adminRoutes");
 const gamesRoutes = require("./routes/gamesRoutes")(io);
@@ -40,9 +39,9 @@ app.use(express.json());
 
 // Routes
 // app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 app.use("/cases", caseRoutes);
 app.use("/items", itemRoutes);
-app.use("/users", userRoutes);
 app.use("/marketplace", marketplaceRoutes);
 app.use("/admin", adminRoutes);
 app.use("/games", gamesRoutes);

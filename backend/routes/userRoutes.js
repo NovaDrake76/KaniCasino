@@ -250,19 +250,6 @@ router.get('/ranking', authMiddleware.isAuthenticated, async (req, res) => {
 });
 
 
-// Get user by id
-router.get("/:id", async (req, res) => {
-  try {
-    res.json(
-      await User.findById(req.params.id)
-        .select("-inventory")
-        .select("-password")
-    );
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
 
 // Update wallet balance
 router.put("/wallet", authMiddleware.isAuthenticated, async (req, res) => {
@@ -336,99 +323,7 @@ router.delete(
   }
 );
 
-// Get user inventory
-const ITEMS_PER_PAGE = 18;
 
-router.get("/inventory/:userId", async (req, res) => {
-
-  try {
-    const { userId } = req.params;
-    const { name, rarity, sortBy, order, caseId } = req.query;
-    const page = parseInt(req.query.page) || 1;
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    let query = { _id: user._id };  // Default to filtering by user ID
-
-    // Count Pipeline
-    let countPipeline = [
-      { $match: query },
-      { $project: { inventory: 1 } },
-      { $unwind: "$inventory" }
-    ];
-
-    if (caseId) {
-      countPipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
-    }
-
-    if (name) {
-      countPipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
-    }
-    if (rarity) {
-      countPipeline.push({ $match: { "inventory.rarity": rarity } });
-    }
-
-    countPipeline.push({ $count: "totalItems" });
-
-    const totalCount = await User.aggregate(countPipeline);
-    const totalItems = totalCount.length ? totalCount[0].totalItems : 0;
-    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-
-    // Main Pipeline
-    let pipeline = [
-      { $match: query },
-      { $project: { inventory: 1 } },
-      { $unwind: "$inventory" }
-    ];
-
-    if (caseId) {
-      pipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
-    }
-
-
-    if (name) {
-      pipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
-    }
-    if (rarity) {
-      pipeline.push({ $match: { "inventory.rarity": rarity } });
-    }
-
-    let sortQuery = {};
-    if (sortBy) {
-      if (sortBy === "older") {
-        pipeline.push({ $sort: { "inventory._id": -1 } });
-      } else if (sortBy === "mostRare") {
-        sortQuery["inventory.rarity"] = -1;
-        pipeline.push({ $sort: sortQuery });
-      } else if (sortBy === "mostCommon") {
-        sortQuery["inventory.rarity"] = 1;
-        pipeline.push({ $sort: sortQuery });
-      } else {
-        sortQuery[`inventory.${sortBy}`] = order === 'asc' ? 1 : -1;
-        pipeline.push({ $sort: sortQuery });
-      }
-    }
-
-    pipeline.push(
-      { $group: { _id: null, inventory: { $push: "$inventory" } } },
-      { $project: { inventory: { $slice: ["$inventory", (page - 1) * ITEMS_PER_PAGE, ITEMS_PER_PAGE] } } }
-    );
-
-    const inventoryItems = await User.aggregate(pipeline);
-
-    res.json({
-      items: inventoryItems[0]?.inventory || [],
-      currentPage: page,
-      totalPages: totalPages,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 // Set fixed item
 router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
@@ -559,6 +454,118 @@ router.put('/profilePicture', authMiddleware.isAuthenticated, async (req, res) =
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+// Get user by id
+router.get("/:id", async (req, res) => {
+  try {
+    res.json(
+      await User.findById(req.params.id)
+        .select("-inventory")
+        .select("-password")
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+
+// These routes need to be at the end of the file, otherwise they will override other routes
+
+// Get user inventory
+const ITEMS_PER_PAGE = 18;
+
+router.get("/inventory/:userId", async (req, res) => {
+
+  try {
+    const { userId } = req.params;
+    const { name, rarity, sortBy, order, caseId } = req.query;
+    const page = parseInt(req.query.page) || 1;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let query = { _id: user._id };  // Default to filtering by user ID
+
+    // Count Pipeline
+    let countPipeline = [
+      { $match: query },
+      { $project: { inventory: 1 } },
+      { $unwind: "$inventory" }
+    ];
+
+    if (caseId) {
+      countPipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
+    }
+
+    if (name) {
+      countPipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
+    }
+    if (rarity) {
+      countPipeline.push({ $match: { "inventory.rarity": rarity } });
+    }
+
+    countPipeline.push({ $count: "totalItems" });
+
+    const totalCount = await User.aggregate(countPipeline);
+    const totalItems = totalCount.length ? totalCount[0].totalItems : 0;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+    // Main Pipeline
+    let pipeline = [
+      { $match: query },
+      { $project: { inventory: 1 } },
+      { $unwind: "$inventory" }
+    ];
+
+    if (caseId) {
+      pipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
+    }
+
+
+    if (name) {
+      pipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
+    }
+    if (rarity) {
+      pipeline.push({ $match: { "inventory.rarity": rarity } });
+    }
+
+    let sortQuery = {};
+    if (sortBy) {
+      if (sortBy === "older") {
+        pipeline.push({ $sort: { "inventory._id": -1 } });
+      } else if (sortBy === "mostRare") {
+        sortQuery["inventory.rarity"] = -1;
+        pipeline.push({ $sort: sortQuery });
+      } else if (sortBy === "mostCommon") {
+        sortQuery["inventory.rarity"] = 1;
+        pipeline.push({ $sort: sortQuery });
+      } else {
+        sortQuery[`inventory.${sortBy}`] = order === 'asc' ? 1 : -1;
+        pipeline.push({ $sort: sortQuery });
+      }
+    }
+
+    pipeline.push(
+      { $group: { _id: null, inventory: { $push: "$inventory" } } },
+      { $project: { inventory: { $slice: ["$inventory", (page - 1) * ITEMS_PER_PAGE, ITEMS_PER_PAGE] } } }
+    );
+
+    const inventoryItems = await User.aggregate(pipeline);
+
+    res.json({
+      items: inventoryItems[0]?.inventory || [],
+      currentPage: page,
+      totalPages: totalPages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

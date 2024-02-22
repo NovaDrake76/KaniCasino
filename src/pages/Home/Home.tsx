@@ -35,6 +35,15 @@ const Home = () => {
   const BannerContent: BannerProps[] = [
     {
       left: {
+        image: "/images/slots.webp",
+        title: "SLOTS GAME",
+        description: "Try your luck now!",
+        link: "/slots",
+      },
+      right: null,
+    },
+    {
+      left: {
         image: "/images/paris.webp",
         title: "NEW UPGRADE GAME",
         description: "Go big or go home. Try your luck now!",
