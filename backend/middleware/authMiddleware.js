@@ -18,7 +18,7 @@ const isAuthenticated = async (req, res, next) => {
 
   // Verify the token
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.veFBrify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.userId).select("-password");
     next();
   } catch (error) {

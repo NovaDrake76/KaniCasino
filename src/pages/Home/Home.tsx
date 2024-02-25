@@ -35,31 +35,32 @@ const Home = () => {
   const BannerContent: BannerProps[] = [
     {
       left: {
-        image: "/images/slots.webp",
-        title: "SLOTS GAME",
+        image: "/images/homeBanner.webp",
+        //if title is hide, it will hide the information component on the left side
+        title: "hide",
         description: "Try your luck now!",
         link: "/slots",
       },
-      right: null,
+      right: <div><img src="/images/KANICASINO.webp" alt="kanicasino" /></div>,
     },
-    {
-      left: {
-        image: "/images/paris.webp",
-        title: "NEW UPGRADE GAME",
-        description: "Go big or go home. Try your luck now!",
-        link: "/upgrade",
-      },
-      right: null,
-    },
-    {
-      left: {
-        image: "/images/marisaBanner.webp",
-        title: "CRASH GAME",
-        description: "Don't burn, fly high! Try your luck now!",
-        link: "/crash",
-      },
-      right: <img src="/images/crashBannerTitle.webp" alt="upgrade" className="w-full h-full" />,
-    }
+    // {
+    //   left: {
+    //     image: "/images/paris.webp",
+    //     title: "NEW UPGRADE GAME",
+    //     description: "Go big or go home. Try your luck now!",
+    //     link: "/upgrade",
+    //   },
+    //   right: null,
+    // },
+    // {
+    //   left: {
+    //     image: "/images/marisaBanner.webp",
+    //     title: "CRASH GAME",
+    //     description: "Don't burn, fly high! Try your luck now!",
+    //     link: "/crash",
+    //   },
+    //   right: <img src="/images/crashBannerTitle.webp" alt="upgrade" className="w-full h-full" />,
+    // }
   ]
 
 
