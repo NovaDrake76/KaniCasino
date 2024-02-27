@@ -89,6 +89,10 @@ module.exports = (io) => {
         }
       }
 
+      if (!Number.isInteger(quantityToOpen)) {
+        return res.status(400).json({ message: "Quantity to open must be an integer" });
+      }
+
       if (quantityToOpen > 5) {
         return res.status(400).json({ message: "You can only open up to 5 cases at a time" });
       }
