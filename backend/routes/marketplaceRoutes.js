@@ -27,6 +27,10 @@ module.exports = (io) => {
 
     const user = await User.findById(req.user._id);
 
+    if (user.level < 5) {
+      return res.status(400).json({ message: "You must be at least level 5 to sell items" });
+    }
+
     // Check if the item is in the user's inventory
     const inventoryItemIndex = user.inventory.find((inventoryItem) => {
       return inventoryItem._id.toString() === item.toString();
@@ -116,7 +120,7 @@ module.exports = (io) => {
     }
 
     if (user.level < 10) {
-      return res.status(400).json({ message: "You must be level 10 to buy items" });
+      return res.status(400).json({ message: "You must be at least level 10 to buy items" });
     }
 
     if (user.walletBalance < item.price) {
@@ -151,6 +155,13 @@ module.exports = (io) => {
     io.to(seller._id.toString()).emit("newNotification", {
       message: `Your ${item.itemName} has been sold for K₽${item.price}`
     });
+
+    const SellerDataPayload = {
+      walletBalance: seller.walletBalance,
+      xp: seller.xp,
+      level: seller.level,
+    }
+    io.to(seller._id.toString()).emit('userDataUpdated', SellerDataPayload);
   });
 
   return router;

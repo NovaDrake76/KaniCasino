@@ -8,6 +8,7 @@ export interface User {
     xp: number;
     nextBonus: string;
     walletBalance: number;
+    hasUnreadNotifications: boolean;
     fixedItem: {
         image: string;
         name: string;

@@ -183,6 +183,10 @@ router.get("/notifications", authMiddleware.isAuthenticated, async (req, res) =>
       .skip(skip)
       .limit(limit);
     res.json(notifications);
+
+    // set all notifications as read
+    await Notification.updateMany({ receiverId: req.user._id, read: false }, { read: true });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
@@ -201,7 +205,12 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
       walletBalance,
       nextBonus
     } = req.user;
-    res.json({ id, username, profilePicture, xp, level, walletBalance, nextBonus });
+
+    // verify in Notification model if there are unread notifications for the user
+    const unreadNotifications = await Notification.find({ receiverId: req.user._id, read: false });
+    const hasUnreadNotifications = unreadNotifications.length > 0;
+
+    res.json({ id, username, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
