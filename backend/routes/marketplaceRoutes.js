@@ -97,11 +97,11 @@ module.exports = (io) => {
 
     await Marketplace.deleteOne({ _id: req.params.id });
 
-    // Add the item back to the user's first inventory slot
-    await User.updateOne(
-      { _id: req.user._id },
-      { $push: { inventory: { $each: [item.item], $position: 0 } } }
-    );
+    // Add the item back to the user's inventory
+    const user = await User.findById(req.user._id);
+    user.inventory.unshift(item.item);
+    await user.save();
+
 
     res.json({ message: "Item removed" });
   });
