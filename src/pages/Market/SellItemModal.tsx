@@ -60,16 +60,15 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const handleSubmit = async () => {
     setLoadingButton(true);
 
-    if (price < 0 || price > 1000000) {
+    if (price && (price < 0 || price > 1000000)) {
       setLoadingButton(false);
       return toast.error("Price must be between 0 and 1.000.000", {});
     }
 
     try {
-      await sellItem(selectedItem._id, price);
+      await sellItem(selectedItem._id, price || 0);
       setRefresh && setRefresh(true);
-      toast.success("Item listed for sale!", {
-      });
+      toast.success("Item listed for sale!", {});
       CloseModal();
     } catch (error: any) {
       console.log(error);
