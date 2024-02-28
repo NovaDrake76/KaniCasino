@@ -5,11 +5,11 @@ import UserContext from "../../UserContext";
 import Item from "../../components/Item";
 import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
-import { AiOutlineClose } from 'react-icons/ai'
 import Skeleton from "react-loading-skeleton";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/InventoryFilters";
 import { FiFilter } from 'react-icons/fi'
+import Modal from "../../components/Modal";
 
 interface Props {
   isOpen: boolean;
@@ -32,7 +32,7 @@ interface Inventory {
 
 const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [selectedItem, setSelectedItem] = useState<any>();
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<number | undefined>();
   const [inventory, setInventory] = useState<Inventory>();
   const [invItems, setInvItems] = useState<InventoryItem[]>([]);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -91,8 +91,9 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
         : setInvItems(response.items);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingInventory(false);
     }
-    setLoadingInventory(false);
   };
 
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -132,16 +133,10 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   }
 
   return (
-    <div className="fixed flex items-center justify-center w-screen h-screen top-0 z-50 bg-black/40 ">
-      <div className="bg-[#17132B] p-4 sm:p-6 lg:p-8 rounded w-screen md:max-w-screen-md mx-2 sm:mx-4 h-[90vh] overflow-y-auto">
-        <div className="flex"><h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
-          <div className="ml-auto">
-            <AiOutlineClose className="text-white text-2xl cursor-pointer"
-              onClick={CloseModal}
-            />
-
-          </div>
-
+    <Modal open={isOpen} setOpen={onClose}>
+      <div>
+        <div className="flex">
+          <h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
         </div>
         <div className="flex justify-between">
           <div className="mb-4 w-1/2">
@@ -185,11 +180,13 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           {openFilters && <Filters filters={filters} setFilters={setFilters} onKeyPress={handleEnterPress} />}
 
         </div>
-        <div className="flex flex-col justify-center max-h-[400px] overflow-x-hidden gap-4">
-          <div className="flex flex-wrap justify-center gap-4  overflow-auto mt-4 ">
+        <div className="flex flex-col justify-center max-h-[190px]  gap-4 ">
+          <div className="flex flex-wrap justify-center gap-4 overflow-auto overflow-x-hidden mt-4 ">
             {loadingInventory ? (
-              [1, 2, 3, 4, 5, 6].map((_, i) => (
-                <Skeleton height={200} width={200} key={i} />
+              [1, 2, 3, 4].map((item) => (
+                <div className="w-1/4 p-2" key={item}>
+                  <Skeleton height={120} />
+                </div>
               ))
 
             ) : (
@@ -199,17 +196,18 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                   key={item._id + index}
                   onClick={() => setSelectedItem(item)}
                 >
-                  <Item item={item} />
+                  <Item item={item} size="small" />
                 </div>
               ))
             )}
-          </div>
-          {inventory && (
-            <div className="w-full flex justify-center">
-              <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
+            {inventory && (
+              <div className="w-full flex justify-center">
+                <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
 
-            </div>)
-          }
+              </div>)
+            }
+          </div>
+
         </div>
 
 
@@ -231,7 +229,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

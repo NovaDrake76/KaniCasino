@@ -13,16 +13,7 @@ import Footer from "./components/Footer";
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
-
-interface userDataProps {
-  id: string;
-  level: number;
-  nextBonus: number;
-  profilePicture: string;
-  username: string;
-  walletBalance: number;
-  xp: number;
-}
+import { User } from './components/Types'
 
 interface userDataSocketProps {
   walletBalance: number;
@@ -33,7 +24,7 @@ interface userDataSocketProps {
 function App() {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [onlineUsers, setOnlineUsers] = useState<number>(0);
-  const [userData, setUserData] = useState<userDataProps | null>(null);
+  const [userData, setUserData] = useState<User | null>(null);
   const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
   const [openUserFlow, setOpenUserFlow] = useState<boolean>(false);
   const [joinedRoom, setJoinedRoom] = useState<boolean>(false);

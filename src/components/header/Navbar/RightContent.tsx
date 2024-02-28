@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Avatar from "../../Avatar";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegBellSlash } from "react-icons/fa";
@@ -17,6 +17,19 @@ interface RightContentProps {
 }
 
 const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNotifications, setOpenNotifications, Logout }) => {
+    const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false)
+
+    useEffect(() => {
+        if (userData?.hasUnreadNotifications) {
+            setHasUnreadNotifications(true)
+        }
+    }, [userData?.hasUnreadNotifications])
+
+    useEffect(() => {
+        if (openNotifications) {
+            setHasUnreadNotifications(false)
+        }
+    }, [openNotifications])
 
     return (
         <div className="flex items-center gap-4">
@@ -38,23 +51,26 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNoti
                 </div>
             )}
 
-            <div>
+            <div className="relative cursor-pointer" onClick={() => setOpenNotifications(!openNotifications)}
+            >
                 {
                     openNotifications ? (
-                        <div className="cursor-pointer "
-                            onClick={() => setOpenNotifications(false)}
-                        >
+                        <div>
                             <FaRegBellSlash style={{
                                 fontSize: "20px",
                             }} />
                         </div>) : (
-                        <div className="cursor-pointer"
-                            onClick={() => setOpenNotifications(true)}
-                        >
+                        <div>
                             <FaRegBell style={{
                                 width: "20px",
                             }} />
                         </div>)
+                }
+                {
+                    hasUnreadNotifications && !openNotifications && (
+                        <div className="absolute -top-1 -right-[2px] w-3 h-3 bg-red-500 rounded-full " />
+                    )
+
                 }
             </div>
             <Avatar image={userData?.profilePicture} loading={loading} id={userData?.id} size="medium" level={userData?.level} showLevel={true} />

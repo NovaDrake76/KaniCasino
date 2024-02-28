@@ -14,9 +14,10 @@ interface itemProps {
   };
   fixable?: boolean;
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
+  size?: "small" | "large";
 }
 
-const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
+const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, size = "large" }) => {
   const [hovering, setHovering] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -30,10 +31,12 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
   };
 
   const color = Rarities.find((rarity) => rarity.id.toString() == item?.rarity)?.color || "white";
+  const ItemsWidthSize = size === "large" ? "w-32 md:w-44" : "w-24 md:w-32";
+  const ItemHeightSize = size === "large" ? "h-32 md:h-44" : "h-24 md:h-32";
 
   return (
     <div
-      className={`flex flex-col  w-32 md:w-44  items-center justify-center bg-[#212031] rounded relative border-b-2`}
+      className={`flex flex-col ${ItemsWidthSize} items-center justify-center bg-[#212031] rounded relative border-b-2`}
       style={{
         borderColor: color
       }}
@@ -42,7 +45,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
       onMouseLeave={() => setHovering(false)}
     >
       <div className="overflow-hidden">
-        {!loaded && <div className="flex  w-32 md:w-44 h-32 md:h-44 items-center justify-center">
+        {!loaded && <div className={`flex  ${ItemsWidthSize} ${ItemHeightSize} items-center justify-center`}>
           <RotatingLines
             strokeColor="grey"
             strokeWidth="5"
@@ -54,7 +57,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
         <img
           src={item?.image}
           alt={item?.name}
-          className={` w-32 md:w-44 h-32 md:h-44 hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
+          className={`${ItemsWidthSize} ${ItemHeightSize} hover:scale-105 transition-all object-contain ${loaded ? '' : 'hidden'}`}
           onLoad={() => setLoaded(true)}
         />
         <div
@@ -78,7 +81,10 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh }) => {
         <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{
           backgroundColor: color
         }} />
-        <p className="text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center overflow-hidden truncate w-full max-w-[80px] md:max-w-none">{item?.name}</p>
+        <p className={`text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center 
+        overflow-hidden truncate w-full max-w-[80px] md:max-w-none ${size === "large" ? "md:w-auto" : "md:w-20"}`}>
+          {item?.name}
+        </p>
       </div>
     </div>
   );
