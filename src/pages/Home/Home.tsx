@@ -41,7 +41,7 @@ const Home = () => {
         description: "Try your luck now!",
         link: "/slots",
       },
-      right: <div><img src="/images/KANICASINO.webp" alt="kanicasino" /></div>,
+      right: <div className="hidden 2xl:flex 2xl:mr-36"><img src="/images/KANICASINO.webp" alt="kanicasino" /></div>,
     },
     {
       left: {
