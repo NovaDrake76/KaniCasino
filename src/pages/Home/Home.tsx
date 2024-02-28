@@ -59,7 +59,7 @@ const Home = () => {
         description: "Don't burn, fly high! Try your luck now!",
         link: "/crash",
       },
-      right: <img src="/images/crashBannerTitle.webp" alt="upgrade" className="w-full h-full" />,
+      right: <div><img src="/images/crashBannerTitle.webp" alt="upgrade" /></div>,
     }
   ]
 
