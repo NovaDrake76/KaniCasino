@@ -35,6 +35,15 @@ const Home = () => {
   const BannerContent: BannerProps[] = [
     {
       left: {
+        image: "/images/marisaBanner.webp",
+        title: "CRASH GAME",
+        description: "Don't burn, fly high! Try your luck now!",
+        link: "/crash",
+      },
+      right: <div><img src="/images/crashBannerTitle.webp" alt="upgrade" /></div>,
+    },
+    {
+      left: {
         image: "/images/homeBanner.webp",
         //if title is hide, it will hide the information component on the left side
         title: "hide",
@@ -51,15 +60,6 @@ const Home = () => {
         link: "/upgrade",
       },
       right: null,
-    },
-    {
-      left: {
-        image: "/images/marisaBanner.webp",
-        title: "CRASH GAME",
-        description: "Don't burn, fly high! Try your luck now!",
-        link: "/crash",
-      },
-      right: <div><img src="/images/crashBannerTitle.webp" alt="upgrade" /></div>,
     }
   ]
 
