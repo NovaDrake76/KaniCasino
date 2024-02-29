@@ -35,6 +35,14 @@ const Home = () => {
   const BannerContent: BannerProps[] = [
     {
       left: {
+        image: "/images/paris.webp",
+        title: "NEW UPGRADE GAME",
+        description: "Go big or go home. Try your luck now!",
+        link: "/upgrade",
+      },
+      right: null,
+    }, {
+      left: {
         image: "/images/homeBanner.webp",
         //if title is hide, it will hide the information component on the left side
         title: "hide",
@@ -42,15 +50,6 @@ const Home = () => {
         link: "/slots",
       },
       right: <div className="hidden 2xl:flex 2xl:mr-36"><img src="/images/KANICASINO.webp" alt="kanicasino" /></div>,
-    },
-    {
-      left: {
-        image: "/images/paris.webp",
-        title: "NEW UPGRADE GAME",
-        description: "Go big or go home. Try your luck now!",
-        link: "/upgrade",
-      },
-      right: null,
     },
     {
       left: {
