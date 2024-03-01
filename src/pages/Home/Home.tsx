@@ -35,6 +35,15 @@ const Home = () => {
   const BannerContent: BannerProps[] = [
     {
       left: {
+        image: "/images/marisaBanner.webp",
+        title: "CRASH GAME",
+        description: "Don't burn, fly high! Try your luck now!",
+        link: "/crash",
+      },
+      right: <div><img src="/images/crashBannerTitle.webp" alt="upgrade" /></div>,
+    },
+    {
+      left: {
         image: "/images/paris.webp",
         title: "NEW UPGRADE GAME",
         description: "Go big or go home. Try your luck now!",
@@ -50,15 +59,6 @@ const Home = () => {
         link: "/slots",
       },
       right: <div className="hidden 2xl:flex 2xl:mr-36"><img src="/images/KANICASINO.webp" alt="kanicasino" /></div>,
-    },
-    {
-      left: {
-        image: "/images/marisaBanner.webp",
-        title: "CRASH GAME",
-        description: "Don't burn, fly high! Try your luck now!",
-        link: "/crash",
-      },
-      right: <div><img src="/images/crashBannerTitle.webp" alt="upgrade" /></div>,
     }
   ]
 
