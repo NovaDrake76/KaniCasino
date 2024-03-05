@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({ children, open, setOpen, width = "600px" 
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 backdrop-blur-sm z-[9999]"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 z-[999]"
       id="wrapped"
       onClick={handleClose}
     >
