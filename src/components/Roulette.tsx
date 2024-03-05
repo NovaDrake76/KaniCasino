@@ -78,16 +78,19 @@ const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, dire
     <div className={`flex  ${direction == "vertical" ? "max-h-[1100px]" : "max-w-[1100px]"} overflow-hidden ${className}`}>
       <div className={`flex items-center gap-2  ${direction == "vertical" ? "flex-col" : "flex-row"}`} ref={rouletteRef}>
         {rouletteItems.map((item: BasicItem, index: number) => (
-          <img
+          <div
             key={index}
-            src={item && item.image}
-            alt={item && item.name}
-            className={`object-cover ${direction == "vertical" ? "aspect-square h-32" : "min-w-[176px]  h-44"}`}
+            className={`flex-shrink-0 relative ${direction == "vertical" ? "h-32 aspect-square" : "w-[176px] h-[176px]"}`}
             style={{
               borderBottom: Rarities.find((rarity) => rarity.id == item.rarity)?.color + " solid 4px",
             }}
-
-          />
+          >
+            <img
+              src={item && item.image}
+              alt={item && item.name}
+              className={`object-cover w-full h-full`}
+            />
+          </div>
         ))}
         <style>{`
           @keyframes spin {
