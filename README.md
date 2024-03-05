@@ -7,6 +7,7 @@ You can talk with me about the project in discord, add me: novadrake76
 ## Instalation ##
 This project uses NodeJS + Express + WebSockets in the backend, and ReactJS + Vite + Typescript + TailwindCSS in the frontend. <br/>Here, you can create your own items and cases.<br/><br/>
 If you want to run only the Front-end, please run `npm install` to install the dependencies, then use `npm run dev`.
+Create a .env file on the root folder, and set a `VITE_BASE_URL` with value `https://kaniback.onrender.com`. (this is the STG API, that can spin down with inactivity, which can delay requests by 50 seconds or more) 
 
 
 If you want to run the Back-end and the Front-end, change the `VITE_BASE_URL` to localhost in the `.env` on the root folder, install the dependencies on the root folder and in the backend folder, then create a .env on your backend folder, create the following variables (adjust as you wish):
@@ -18,7 +19,6 @@ then, use `npm run start`.
 Please note that the database access is not public; you can make your own database using MongoDB, or anything else. 
 
 # To-Do
-- [ ] Fix profile picture file error.
 - [ ] Add friend.
 - [ ] Item battle.
 - [ ] Fixed navbar when scrolling.
