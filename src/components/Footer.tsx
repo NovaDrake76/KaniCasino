@@ -8,6 +8,7 @@ import AboutTheMarket from "./modalsChilden/AboutTheMarket"
 import HowGamesWork from "./modalsChilden/HowGamesWork";
 import ContactUs from "./modalsChilden/ContactUs";
 import FAQ from "./modalsChilden/FAQ";
+import Artists from "./modalsChilden/Artists";
 
 function Footer() {
   // Toggle modal
@@ -50,6 +51,10 @@ function Footer() {
           title: "User Agreement",
           onClick: () => handleModalInfo(<UserAgreement />),
         },
+        {
+          title: "Artists",
+          onClick: () => handleModalInfo(<Artists />),
+        }
       ],
     },
     {
