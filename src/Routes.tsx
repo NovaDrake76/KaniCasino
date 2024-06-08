@@ -7,6 +7,7 @@ import CoinFlip from "./pages/Coin/CoinFlip";
 import CrashGame from "./pages/Crash/Crash";
 import Upgrade from "./pages/Upgrade/Upgrade";
 import Slot from "./pages/Slot/Slot";
+import PrivacyPolicy from "./pages/About/PrivacyPolicy"
 
 const defaultRoutes = (
   <>
@@ -18,6 +19,7 @@ const defaultRoutes = (
     <Route path="/crash" element={<CrashGame />} />
     <Route path="/upgrade" element={<Upgrade />} />
     <Route path="/slot" element={<Slot />} />
+    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
   </>
 );
 
