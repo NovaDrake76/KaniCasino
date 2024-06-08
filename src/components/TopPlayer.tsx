@@ -10,7 +10,7 @@ interface CardProps {
 const TopPlayer: React.FC<CardProps> = ({ user, rank }) => {
 
     return (
-        <div className={`relative w-64 ${rank === 1 ? '-mt-10' : 'invisible md:visible'}`}>
+        <div className={`relative w-64 ${rank === 1 ? '-mt-10' : 'hidden md:block'}`}>
             <div className='relative  z-50 flex flex-col items-center justify-center'>
                 <Player user={user} size="large" direction='column' showLevel={false} />
                 <div className='flex flex-col items-center gap-2'>

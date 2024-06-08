@@ -18,6 +18,7 @@ interface RightContentProps {
 
 const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNotifications, setOpenNotifications, Logout }) => {
     const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false)
+    const isMobile = window.innerWidth <= 768
 
     useEffect(() => {
         if (userData?.hasUnreadNotifications) {
@@ -43,9 +44,9 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNoti
             </div>
 
             {!loading && (
-                <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all invisible md:visible">
-                    <BiWallet className="text-2xl" />
-                    <div className="max-w-[80px] md:max-w-[140px] overflow-hidden truncate">
+                <div className="flex items-center gap-2 text-green-400 font-normal text-lg hover:text-green-300 transition-all ">
+                    <BiWallet className="text-2xl hidden md:block " />
+                    <div className="max-w-[80px] md:max-w-[140px] overflow-hidden text-sm md:text-lg truncate ">
                         <Monetary value={Math.floor(userData?.walletBalance)} />
                     </div>
                 </div>
@@ -73,7 +74,7 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNoti
 
                 }
             </div>
-            <Avatar image={userData?.profilePicture} loading={loading} id={userData?.id} size="medium" level={userData?.level} showLevel={true} />
+            <Avatar image={userData?.profilePicture} loading={loading} id={userData?.id} size={isMobile ? "small" : "medium"} level={userData?.level} showLevel={true} />
             <div
                 className="text-[#625F7E] font-normal text-lg cursor-pointer hover:text-gray-200 transition-all "
                 onClick={Logout}

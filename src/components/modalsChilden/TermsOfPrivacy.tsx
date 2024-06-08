@@ -11,7 +11,7 @@ const TermsOfPrivacy = () => {
             <span className="font-bold text-lg mb-4">Privacy Policy for KaniCasino</span>
             <span className="mb-2 italic">Last Updated: 04/02/2024</span>
             <span className="mb-2">
-                Welcome to KaniCasino! This Privacy Policy outlines how we collect, use, and protect your personal information when you use our open-source online casino at <span className="text-blue-500">kanicasino.novadrake.com</span>.
+                Welcome to KaniCasino! This Privacy Policy outlines how we collect, use, and protect your personal information when you use our open-source online casino at <span className="text-blue-500">kanicasino.com</span>.
             </span>
 
             {[
