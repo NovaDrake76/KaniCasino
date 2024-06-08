@@ -7,6 +7,8 @@ const Case = require("../models/Case");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
 const updateLevel = require("../utils/updateLevel");
+const { v4: uuidv4 } = require('uuid');
+const mongoose = require("mongoose");
 
 
 // Rarities array
@@ -66,8 +68,16 @@ function getWinningItem(caseData) {
     winningItem = getRandomItemFromRarity(itemsByRarity, randomExistingRarity);
   }
   return winningItem;
-
 }
+
+function addUniqueIdToItem(item) {
+  return {
+    ...item.toObject(), 
+    _id: new mongoose.Types.ObjectId(), 
+    uniqueId: uuidv4(),
+  };
+}
+
 
 // Exports
 module.exports = (io) => {
@@ -107,7 +117,8 @@ module.exports = (io) => {
 
       for (let i = 0; i < quantityToOpen; i++) {
         const winningItem = getWinningItem(caseData);
-        winningItems.push(winningItem);
+        const itemWithUniqueId = addUniqueIdToItem(winningItem);
+        winningItems.push(itemWithUniqueId);
       }
 
       // Add the entire winning items object to the user's inventory

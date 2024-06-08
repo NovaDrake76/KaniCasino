@@ -8,12 +8,13 @@ const User = require("../models/User");
 const Item = require("../models/Item");
 const Marketplace = require("../models/Marketplace");
 const Notification = require("../models/Notification");
+const mongoose = require("mongoose");
 
 module.exports = (io) => {
 
   // Create new listing
   router.post("/", isAuthenticated, async (req, res) => {
-    const { item, price } = req.body;
+    const { item, price } = req.body; // Use itemId instead of item
 
     //if price is not a number, if is less than 1 or if is greater than 1000000, return error
     if (isNaN(price) || price < 1 || price > 1000000) {
@@ -22,7 +23,7 @@ module.exports = (io) => {
 
     // Check if the item exists
     if (item === undefined || item === null || !item) {
-      return res.status(404).json({ message: "Item not found" });
+      return res.status(404).json({ message: "Invalid item" });
     }
 
     const user = await User.findById(req.user._id);
@@ -31,31 +32,29 @@ module.exports = (io) => {
       return res.status(400).json({ message: "You must be at least level 5 to sell items" });
     }
 
-    // Check if the item is in the user's inventory
-    const inventoryItemIndex = user.inventory.find((inventoryItem) => {
-      return inventoryItem._id.toString() === item.toString();
+    // Check if the item is in the user's inventory by uniqueId
+    const inventoryItemIndex = user.inventory.findIndex((inventoryItem) => {
+      return inventoryItem.uniqueId === item;
     });
 
-
-    if (inventoryItemIndex === null || inventoryItemIndex === undefined) {
+    if (inventoryItemIndex === -1) {
       return res.status(404).json({ message: "Item not found in inventory" });
     }
 
-    // Remove the item from the user's inventory
-    user.inventory = user.inventory.filter((inventoryItem) => {
-      return inventoryItem._id.toString() !== item.toString();
-    });
+  // Remove the item from the user's inventory
+  const [inventoryItem] = user.inventory.splice(inventoryItemIndex, 1);
 
-    await user.save();
+  await user.save();
 
     // Create a new marketplace item with the item object
     const marketplaceItem = new Marketplace({
       sellerId: user._id,
-      item: inventoryItemIndex,
+      item: inventoryItem, 
       price,
-      itemName: inventoryItemIndex.name,
-      itemImage: inventoryItemIndex.image,
-      rarity: inventoryItemIndex.rarity,
+      itemName: inventoryItem.name, 
+      itemImage: inventoryItem.image,
+      rarity: inventoryItem.rarity,
+      uniqueId: inventoryItem.uniqueId,
     });
 
     await marketplaceItem.save();
@@ -86,28 +85,32 @@ module.exports = (io) => {
 
   // Delete listing
   router.delete("/:id", isAuthenticated, async (req, res) => {
-    const item = await Marketplace.findOne({
-      _id: req.params.id,
-      sellerId: req.user._id,
-    });
-
-    if (item.sellerId.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: "Unauthorized" });
+    try{
+      const query = Marketplace.where({
+        uniqueId: req.params.id,
+        sellerId: req.user._id,
+      })
+      const item = await query.findOne()
+      
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+    
+      if (item.sellerId.toString() !== req.user._id.toString()) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+    
+      await Marketplace.deleteOne({ uniqueId: req.params.id });
+    
+      // Add the item back to the user's inventory
+      const user = await User.findById(req.user._id);
+      user.inventory.unshift(item.item);
+      await user.save();
+    
+      res.json({ message: "Item removed" });
+    }catch(err){
+      console.log(err)
     }
-
-    if (!item) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-
-    await Marketplace.deleteOne({ _id: req.params.id });
-
-    // Add the item back to the user's inventory
-    const user = await User.findById(req.user._id);
-    user.inventory.unshift(item.item);
-    await user.save();
-
-
-    res.json({ message: "Item removed" });
   });
 
   // Buy an item

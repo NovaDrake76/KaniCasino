@@ -36,11 +36,13 @@ const Marketplace: React.FC = () => {
       _id: "",
       name: "",
       image: "",
+      uniqueId: "",
     },
     price: 0,
     itemName: "",
     itemImage: "",
     __v: 0,
+    uniqueId: "",
   };
 
   const [selectedItem, setSelectedItem] = useState<IMarketItem>(defaultItem);
@@ -66,10 +68,10 @@ const Marketplace: React.FC = () => {
 
   const removeItem = async (item: IMarketItem) => {
     try {
-      await removeListing(item._id);
+      await removeListing(item.uniqueId);
       setRefresh(true);
-    } catch {
-      console.log("error");
+    } catch(err) {
+      console.log(err);
     }
   }
 
