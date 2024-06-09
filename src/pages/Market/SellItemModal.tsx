@@ -22,6 +22,7 @@ interface InventoryItem {
   name: string;
   image: string;
   rarity: string;
+  uniqueId: string
 }
 
 interface Inventory {
@@ -66,7 +67,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     }
 
     try {
-      await sellItem(selectedItem._id, price || 0);
+      await sellItem(selectedItem.uniqueId, price || 0);
       setRefresh && setRefresh(true);
       toast.success("Item listed for sale!", {});
       CloseModal();

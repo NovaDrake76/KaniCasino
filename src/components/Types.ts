@@ -28,11 +28,13 @@ export interface IMarketItem {
         _id: string;
         name: string;
         image: string;
+        uniqueId: string
     };
     price: number;
     itemName: string;
     itemImage: string;
     __v: number;
+    uniqueId: string;
 }
 
 export interface BasicItem {
@@ -41,6 +43,8 @@ export interface BasicItem {
     name: string;
     rarity: number;
     _id: string;
+    uniqueId: string
+
 }
 
 export interface Case {

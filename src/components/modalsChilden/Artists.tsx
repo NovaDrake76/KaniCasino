@@ -4,7 +4,7 @@ const Assets = () => {
             <span className="text-2xl font-bold mb-4">Artists</span>
 
             <p className="text-sm mb-4 text-justify">
-                If you have an asset of your belonging that's being used in this website without permission, please contact me at at <a href="mailto:novadrake76@gmail.com" className="text-blue-500">novadrake76@gmail.com</a> to request the removal.
+                If you have an asset of your belonging that's being used in this website without permission, please contact me at <a href="mailto:novadrake76@gmail.com" className="text-blue-500">novadrake76@gmail.com</a> to request the removal.
             </p>
 
             <div className="mb-4 flex flex-col gap-2">
