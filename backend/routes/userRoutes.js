@@ -22,7 +22,6 @@ router.post(
       "Please enter a password with 6 or more characters"
     ).isLength({ min: 6 }),
     check("username", "Please enter a valid username").not().isEmpty(),
-    check("isAdmin", "isAdmin must be a boolean value").optional().isBoolean(),
   ],
   async (req, res) => {
     // Handle validation errors
@@ -31,7 +30,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password, username, profilePicture, isAdmin } = req.body;
+    const { email, password, username, profilePicture } = req.body;
 
     try {
       // Check if user already exists
@@ -47,7 +46,7 @@ router.post(
       if (!isValidBase64(profilePicture) && profilePicture !== "") return res.status(400).json({ message: "Invalid profile picture" })
 
       // Create new user
-      user = new User({ email, password, username, profilePicture, isAdmin });
+      user = new User({ email, password, username, profilePicture, isAdmin: false });
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
