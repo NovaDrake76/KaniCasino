@@ -8,11 +8,13 @@ interface Props {
   item: IMarketItem;
   click: () => void;
   remove: () => void;
+  loadingRemoval: boolean;
 }
 
-const MarketItem: React.FC<Props> = ({ item, click, remove }) => {
+const MarketItem: React.FC<Props> = ({ item, click, remove, loadingRemoval }) => {
   const { isLogged, userData } = useContext(UserContext);
   const [loading, setLoading] = useState<boolean>(true);
+  
 
   const handleImageLoad = () => {
     setLoading(false);
@@ -56,7 +58,7 @@ const MarketItem: React.FC<Props> = ({ item, click, remove }) => {
         isFromLoggedUser ? "Remove" : "Buy"
       } onClick={
         isFromLoggedUser ? remove : click
-      } disabled={!isLogged} />
+      } disabled={!isLogged || loadingRemoval} />
     </div>
   );
 };

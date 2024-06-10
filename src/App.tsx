@@ -9,10 +9,12 @@ import SocketConnection from "./services/socket"
 import ScrollToTop from "./components/ScrollToTop";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Footer from "./components/Footer";
+import {disableReactDevTools} from '@fvilers/disable-react-devtools';
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+const environment = import.meta.env.VITE_NODE_ENV || "";
 import { User } from './components/Types'
 
 interface userDataSocketProps {
@@ -31,6 +33,10 @@ function App() {
   const [notification, setNotification] = useState<any>();
 
   const socket = SocketConnection.getInstance();
+
+  if(environment == "production"){
+    disableReactDevTools();
+  }
 
   const userDataSocket = () => {
     socket.on("userDataUpdated", (payload: userDataSocketProps) => {

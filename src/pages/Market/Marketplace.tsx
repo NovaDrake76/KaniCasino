@@ -23,6 +23,7 @@ const Marketplace: React.FC = () => {
   const [openBuyModal, setOpenBuyModal] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [loadingRemoval, setLoadingRemoval] = useState<boolean>(false);
 
   const { isLogged } = useContext(UserContext);
 
@@ -67,11 +68,14 @@ const Marketplace: React.FC = () => {
   }
 
   const removeItem = async (item: IMarketItem) => {
+    setLoadingRemoval(true)
     try {
       await removeListing(item.uniqueId);
       setRefresh(true);
     } catch(err) {
       console.log(err);
+    }finally{
+      setLoadingRemoval(false)
     }
   }
 
@@ -144,6 +148,7 @@ const Marketplace: React.FC = () => {
               remove={
                 () => removeItem(item)
               }
+              loadingRemoval={loadingRemoval}
             />
           ))) : (
             <div className="flex flex-col items-center justify-center w-full">
