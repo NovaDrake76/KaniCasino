@@ -12,7 +12,17 @@ const server = http.createServer(app);
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 const corsOptions = {
-  origin: isDevelopment ? '*' : 'https://kanicasino.com',
+  origin: function (origin, callback) {
+    if (isDevelopment) {
+      callback(null, true);
+    } else {
+      if (origin === 'https://kanicasino.com') {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   credentials: true,
 };
@@ -25,6 +35,10 @@ app.use((req, res, next) => {
 
   if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  } else {
+    res.status(403).send('Not allowed by CORS');
+    return;
   }
 
   next();
@@ -32,7 +46,17 @@ app.use((req, res, next) => {
 
 const io = socketIO(server, {
   cors: {
-    origin: isDevelopment ? '*' : 'https://kanicasino.com',
+    origin: function (origin, callback) {
+      if (isDevelopment) {
+        callback(null, true);
+      } else {
+        if (origin === 'https://kanicasino.com') {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     credentials: true,
   },
