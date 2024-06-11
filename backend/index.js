@@ -8,9 +8,30 @@ require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
+
+const corsOptions = {
+  origin: 'https://kanicasino.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  const allowedOrigins = ['https://kanicasino.com'];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  next();
+});
+
 const io = socketIO(server, {
   cors: {
-    methods: ["GET", "POST"],
+    origin: 'https://kanicasino.com',
+    methods: ['GET', 'POST'],
+    credentials: true,
   },
 });
 
@@ -34,7 +55,6 @@ mongoose
   .catch((err) => console.log(err));
 
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Routes
