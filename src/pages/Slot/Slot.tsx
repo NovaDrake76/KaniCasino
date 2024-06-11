@@ -68,7 +68,7 @@ const Slots = () => {
 
 
     const handleSpin = async () => {
-
+        setIsSpinning(true)
         if (userData == null) {
             toogleUserFlow(true);
             return;
@@ -86,7 +86,6 @@ const Slots = () => {
             setResponse(response);
             setGrid(response.gridState);
             setWinningLines(response?.lastSpinResult.map((result: { line: any; }) => result.line) || [])
-            setIsSpinning(true);
             if (response.totalPayout >= betAmount * 8) {
                 setOpenBigWin(true);
                 startAudio();

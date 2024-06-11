@@ -41,8 +41,18 @@ const Assets = () => {
                 </p>
 
                 <p className="text-md">
+                   The Casino banner picture is from Gensokyo 2077: <a href="https://www.pixiv.net/en/artworks/110665474" target="_blank" rel="noreferrer" className="text-blue-500">https://www.pixiv.net/en/artworks/110665474</a>.
+                </p>
+
+                <p className="text-md">
+                   The Mike banner picture is from Azura: <a href="https://www.pixiv.net/en/users/106357304" target="_blank" rel="noreferrer" className="text-blue-500">https://www.pixiv.net/en/users/106357304</a>.
+                </p>
+
+
+                <p className="text-md">
                    The Joon logo is from 忍忍: <a href="https://www.pixiv.net/en/artworks/66805800" target="_blank" rel="noreferrer" className="text-blue-500">https://www.pixiv.net/en/artworks/66805800</a>.
                 </p>
+                
             </div>
         </div>
     );
