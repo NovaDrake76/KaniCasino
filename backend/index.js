@@ -9,8 +9,10 @@ require("dotenv").config();
 const app = express();
 const server = http.createServer(app);
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const corsOptions = {
-  origin: 'https://kanicasino.com',
+  origin: isDevelopment ? '*' : 'https://kanicasino.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   credentials: true,
 };
@@ -18,19 +20,20 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
-  const allowedOrigins = ['https://kanicasino.com'];
+  const allowedOrigins = isDevelopment ? ['*'] : ['https://kanicasino.com'];
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes(origin)) {
+  if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
+
   next();
 });
 
 const io = socketIO(server, {
   cors: {
-    origin: 'https://kanicasino.com',
-    methods: ['GET', 'POST'],
+    origin: isDevelopment ? '*' : 'https://kanicasino.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     credentials: true,
   },
 });
