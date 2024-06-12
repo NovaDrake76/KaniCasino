@@ -34,7 +34,7 @@ app.use((req, res, next) => {
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
   } else {
     res.status(403).send('Not allowed by CORS');
