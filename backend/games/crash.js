@@ -148,7 +148,14 @@ const crashGame = (io) => {
   const calculateCrashPoint = () => {
     const e = 2 ** 32
     const h = crypto.getRandomValues(new Uint32Array(1))[0]
-    return Math.floor((100 * e - h) / (e - h)) / 100
+    let crashPoint = Math.floor((100 * e - h) / (e - h)) / 100
+
+    // 3% of chance to crash instantly because there's a guy named "cat" that is using an autoclicker
+    if (Math.random() < 0.03) {
+      crashPoint = 1.00;
+    }
+
+    return crashPoint;
   };
 
   startGame();

@@ -78,6 +78,7 @@ const Slots = () => {
 
         if (userData?.walletBalance < betAmount) {
             toast.error("Insufficient funds");
+            setIsSpinning(false)
             return;
         }
 

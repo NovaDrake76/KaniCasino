@@ -26,6 +26,7 @@ const CrashGame = () => {
   const [userMultiplier, setUserMultiplier] = useState(0);
   const [animationSrc, setAnimationSrc] = useState(idle);
   const [userCashedOut, setUserCashedOut] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
   const [gameState, setGameState] = useState<any>({
     gameBets: {},
     gamePlayers: {},
@@ -50,7 +51,7 @@ const CrashGame = () => {
       fixedItem: userData?.fixedItem,
       payout: null,
       walletBalance: userData?.walletBalance
-    }]
+    }];
     setUserGambled(true);
 
     socket.emit("crash:bet", user[0], bet);
@@ -58,6 +59,8 @@ const CrashGame = () => {
   };
 
   const handleCashout = () => {
+    console.log("cashout")
+    setDisableButton(true); // Disable the button immediately
     const user = {
       id: userData?.id,
       name: userData?.username,
@@ -67,13 +70,16 @@ const CrashGame = () => {
       payout: null
     };
 
-    socket.emit("crash:cashout", user);
+    socket.emit("crash:cashout", user, () => {
+      setDisableButton(false); // Re-enable the button after the server responds
+    });
   };
 
   useEffect(() => {
     const cashoutSuccessListener = (data: any) => {
       setUserMultiplier(data.multiplier);
       setUserCashedOut(true);
+      setDisableButton(false); // Ensure the button is enabled after a successful cashout
     };
 
     socket.on("crash:cashoutSuccess", cashoutSuccessListener);
@@ -94,7 +100,6 @@ const CrashGame = () => {
       socket.off("crash:gameState", gameStateListener);
     };
   }, []);
-
 
   useEffect(() => {
     const startListener = () => {
@@ -136,7 +141,6 @@ const CrashGame = () => {
       timeoutId = setTimeout(() => setAnimationSrc(idle), 700);
     };
 
-
     socket.on("crash:start", startListener);
     socket.on("crash:result", resultListener);
 
@@ -163,7 +167,6 @@ const CrashGame = () => {
     };
   }, []);
 
-
   useEffect(() => {
     if (countDown > 0.1 && !gameStarted) {
       setTimeout(() => {
@@ -172,11 +175,11 @@ const CrashGame = () => {
     }
   }, [countDown]);
 
-
   return (
     <div className="w-screen flex flex-col items-center justify-center gap-12">
       <div className="flex bg-[#212031] rounded flex-col lg:flex-row">
-        <SideMenu bet={bet} setBet={setBet} gameStarted={gameStarted} handleBet={handleBet} handleCashout={handleCashout} isLogged={isLogged} userGambled={userGambled} userCashedOut={userCashedOut} userData={userData} userMultiplier={userMultiplier} />
+        <SideMenu bet={bet} setBet={setBet} gameStarted={gameStarted} handleBet={handleBet} handleCashout={handleCashout}
+         isLogged={isLogged} userGambled={userGambled} userCashedOut={userCashedOut} userData={userData} userMultiplier={userMultiplier} disableButton={disableButton}/>
         <GameContainer
           crashPoint={crashPoint}
           multiplier={multiplier}
@@ -189,10 +192,7 @@ const CrashGame = () => {
           falling={falling}
           history={history} />
       </div>
-
-
       <LiveBets gameState={gameState} />
-
     </div >
   );
 };
