@@ -106,7 +106,7 @@ const Home = () => {
         ) : (
           <CaseListing
             name="NEW CASES"
-            cases={cases.length > 5 ? cases.slice(0, 5) : cases}
+            cases={cases.length > 6 ? cases.slice(0, 6) : cases}
           />
         )}
         <GameListing name="Our Games" />
