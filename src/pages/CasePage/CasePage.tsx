@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { BasicItem } from "../../components/Types";
 import QuantityButton from "../../components/QuantityButton";
 import RouletteContainer from "./RoulleteContainer";
+import Monetary from '../../components/Monetary';
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -117,7 +118,9 @@ const CasePage = () => {
           ) : (
             <div className="w-60 ml-20">
               <MainButton
-                text={userData == null ? "Sign in to play" : `Open Case - K₽${data.price * quantity}`}
+                text={userData == null ? "Sign in to play" : <div className="flex items-center justify-center text-base">
+                <span className="mr-1">Open case - </span>{<Monetary value={data.price * quantity}/>}
+                </div>}
                 onClick={openCase}
                 loading={loadingButton}
                 disabled={
