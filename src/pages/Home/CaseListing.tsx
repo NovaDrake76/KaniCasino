@@ -19,7 +19,7 @@ const CaseListing: React.FC<CaseListingProps> = ({
         <Title title={name} />
         {description && <div className="text">{description}</div>}
         {
-          <div className="flex flex-col md:flex-row items-center  justiy-center w-full gap-8 md:flex-wrap">
+          <div className="flex flex-col md:flex-row items-center justify-center w-full gap-8 md:flex-wrap">
             {cases.map((item: any) => (
               <Link to={`/case/${item._id}`} key={item._id}>
                 <Case
