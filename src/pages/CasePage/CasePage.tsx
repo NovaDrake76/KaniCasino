@@ -110,13 +110,13 @@ const CasePage = () => {
 
         <RouletteContainer started={started} showPrize={showPrize} hasSpinned={hasSpinned} loading={loading} data={data} openedItems={openedItems} animationAux={animationAux} animationAux2={animationAux2} quantity={quantity} />
         <div
-          className={`flex items-center gap-4 w-68 mt-8  ${started ? "opacity-0" : "opacity-100"} transition-all`}
+          className={`flex flex-col md:flex-row justify-center items-center gap-4 w-68 mt-8  ${started ? "opacity-0" : "opacity-100"} transition-all`}
         >
 
           {loading ? (
             <Skeleton width={240} height={40} />
           ) : (
-            <div className="w-60 ml-20">
+            <div className="w-60 ml-0 md:ml-20">
               <MainButton
                 text={userData == null ? "Sign in to play" : <div className="flex items-center justify-center text-base">
                 <span className="mr-1">Open case - </span>{<Monetary value={data.price * quantity}/>}

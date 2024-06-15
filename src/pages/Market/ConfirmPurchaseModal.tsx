@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
-import { buyItem } from "../../services/market/MarketSercive";
+import { buyItem } from "../../services/market/MarketService";
 import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 import { IMarketItem } from "../../components/Types";
-
 
 interface Props {
   item: IMarketItem;
@@ -33,12 +32,14 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
       });
 
       toast.success("Purchase successful!");
-      onClose();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error);
       console.log(error);
+    }finally{
+      setLoading(false);
+      onClose();
     }
-    setLoading(false);
+   
   };
 
   if (!isOpen) {
@@ -51,8 +52,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
         <h2 className="text-lg font-semibold mb-2">Confirm Purchase</h2>
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-white text-lg">
-            Are you sure you want to buy the {item.item.name} for {item.price}{" "}
-            KP?
+            Are you sure you want to buy the {item.item.name} for {item.price} KP?
           </p>
           <img src={item.item.image} alt="" className="h-28" />
         </div>
@@ -69,6 +69,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
               text="Confirm"
               onClick={handleConfirm}
               loading={loading}
+              disabled={loading}
             />
           </div>
         </div>

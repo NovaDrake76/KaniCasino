@@ -51,33 +51,29 @@ function getRandomItemFromRarity(itemsByRarity, rarity) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-function getWinningItem(caseData) {
+const getWinningItem = (caseData) => {
   const itemsByRarity = groupItemsByRarity(caseData.items);
   const winningRarity = getRandomWeightedItem(Rarities, "chance");
   let winningItem = getRandomItemFromRarity(itemsByRarity, winningRarity.id);
 
-  // If winningItem is null, get an item from another rarity
   if (!winningItem) {
-    // Get array of all rarities that exist in the case
     const existingRarities = Object.keys(itemsByRarity);
-
-    // Select a random rarity from existingRarities
     const randomExistingRarity = existingRarities[Math.floor(Math.random() * existingRarities.length)];
-
-    // Select a random item from the chosen rarity
     winningItem = getRandomItemFromRarity(itemsByRarity, randomExistingRarity);
   }
   return winningItem;
-}
+};
 
-function addUniqueIdToItem(item) {
+const addUniqueIdToItem = (item) => {
   return {
-    ...item.toObject(), 
-    _id: new mongoose.Types.ObjectId(), 
-    uniqueId: uuidv4(),
+    _id: item._id,
+    name: item.name,
+    image: item.image,
+    rarity: item.rarity,
+    case: item.case,
+    uniqueId: require('uuid').v4(),
   };
-}
-
+};
 
 // Exports
 module.exports = (io) => {

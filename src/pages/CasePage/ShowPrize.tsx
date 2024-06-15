@@ -10,16 +10,16 @@ interface ShowPrizeProps {
 
 const ShowPrize: React.FC<ShowPrizeProps> = ({ openedItems, showPrize, animationAux2 }) => {
     return (
-        <div className="flex items-center justify-center gap-8 w-full">
+        <div className="flex items-center justify-center gap-8 w-full overflow-auto max-w-[40vw] md:max-w-none flex-wrap">
             {
                 openedItems.map((openedItem, index) => {
                     return (
-                        <div key={index} id="prize" className={`animate-fade-in flex relative`}>
+                        <div key={index} id="prize" className={`animate-fade-in relative flex `}>
                             <div className="flex flex-col gap-2 items-center">
                                 <img
                                     src={openedItem.image}
                                     alt={openedItem.name}
-                                    className={`w-48 h-48 object-contain rounded ${showPrize ? "opacity-100" : "opacity-0"} 
+                                    className={`w-12 h-12 md:w-48 md:h-48 object-contain rounded ${showPrize ? "opacity-100" : "opacity-0"} 
                                 ${openedItems.length > 1 ? "notched " : ""} `}
                                     style={{
                                         background: openedItems.length > 1 && Rarities.find(

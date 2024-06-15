@@ -1,70 +1,61 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import MainButton from "../../components/MainButton";
+import UserContext from "../../UserContext";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import Rarities from "../../components/Rarities";
+import { IMarketItem } from "../../components/Types";
 
 interface Props {
-  item: {
-    image: string;
-    name: string;
-    rarity: number;
-    _id: string;
-    uniqueId: string
-    cheapestPrice: number;
-    totalListings: number;
-  }
+  item: IMarketItem;
+  click: () => void;
+  remove: () => void;
+  loadingRemoval: boolean;
 }
 
-const MarketItem: React.FC<Props> = ({ item }) => {
+const MarketItem: React.FC<Props> = ({ item, click, remove, loadingRemoval }) => {
+  const { isLogged, userData } = useContext(UserContext);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
 
   const handleImageLoad = () => {
     setLoading(false);
   };
 
-  const color = Rarities.find((rarity) => rarity.id== item?.rarity)?.color || "white";
-
-
+  const isFromLoggedUser = userData?.id === item?.sellerId?._id;
 
   return (
     <div className="border border-[#161448] rounded-lg p-4 bg-gradient-to-tr from-[#1D1730] to-[#141333] transition-all duration-500 ease-in-out w-[226px] h-[334px]">
       <div className="flex items-center gap-2 relative">
-      <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{
-          backgroundColor: color
-        }} />
         <span className="text-lg font-semibold text-white truncate">
-      
-        {item.name}
+          {item.itemName}
         </span>
-
+        <Link to={`/profile/${item.sellerId._id}`}>
+          <span className="text-xs text-white underline truncate">({item.sellerId.username})</span>
+        </Link>
       </div>
       {loading && (
         <div className="w-full h-48 flex items-center justify-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#606BC7]"></div>
         </div>
       )}
-      <Link to={`/marketplace/item/${item._id}`}>
         <img
-          src={item.image}
-          alt={item.name}
+          src={item.itemImage}
+          alt={item.itemName}
           className={`mb-2 w-full h-48 object-cover rounded ${loading ? "hidden" : ""
             }`}
           onLoad={handleImageLoad}
         />
-      </Link>
+  
       <p className="text-blue-500 text-center py-1 text-ellipsis truncate">
-            {item.totalListings} announced
-      </p>
-      <MainButton textSize="text-sm" text={`Starting at ${new Intl.NumberFormat("en-US", {
+        {new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "DOL",
           minimumFractionDigits: 0,
         })
-          .format(item.cheapestPrice)
-          .replace("DOL", "K₽")}`} onClick={() => navigate(`/marketplace/item/${item._id}`)}  />
-
+          .format(item.price)
+          .replace("DOL", "K₽")}
+      </p>
+      <MainButton text={isFromLoggedUser ? "Remove" : "Buy"} onClick={
+        click && (isFromLoggedUser ? remove : click)
+      } disabled={!isLogged || loadingRemoval} />
     </div>
   );
 };
