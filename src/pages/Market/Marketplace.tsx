@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import MarketItem from "./MarketItem";
-import { getItems, removeListing } from "../../services/market/MarketSercive";
+import { getItems, removeListing } from "../../services/market/MarketService";
 import SellItemModal from "./SellItemModal";
 import MainButton from "../../components/MainButton";
 import Title from "../../components/Title";
-import ConfirmPurchaseModal from "./ConfirmPuchaseModal";
+import ConfirmPurchaseModal from "./ConfirmPurchaseModal";
 import Skeleton from "react-loading-skeleton";
 import UserContext from "../../UserContext";
 import Pagination from "../../components/Pagination";
 import { IMarketItem } from "../../components/Types";
+import Filters from "./Filters";
 
 interface ItemData {
   totalPages: number;
@@ -24,6 +25,12 @@ const Marketplace: React.FC = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [loadingRemoval, setLoadingRemoval] = useState<boolean>(false);
+  const [filters, setFilters] = useState({
+    name: '',
+    rarity: '',
+    sortBy: '',
+    order: 'asc'
+  });
 
   const { isLogged } = useContext(UserContext);
 
@@ -48,11 +55,10 @@ const Marketplace: React.FC = () => {
 
   const [selectedItem, setSelectedItem] = useState<IMarketItem>(defaultItem);
 
-
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const items = await getItems(page);
+      const items = await getItems(page, filters);
       setItems(items);
       setLoading(false);
     } catch (error) {
@@ -79,7 +85,6 @@ const Marketplace: React.FC = () => {
     }
   }
 
-
   useEffect(() => {
     if (refresh) {
       fetchItems();
@@ -91,6 +96,10 @@ const Marketplace: React.FC = () => {
     setRefresh(true);
     scrollTo(0, 0);
   }, [page]);
+
+  useEffect(() => {
+    fetchItems();
+  }, [filters]);
 
   return (
     <div className="flex flex-col w-screen items-center justify-center ">
@@ -120,6 +129,7 @@ const Marketplace: React.FC = () => {
           )}
         </div>
       </div>
+      <Filters filters={filters} setFilters={setFilters} />
       {
         items?.totalPages && items?.totalPages > 1 && (
           <Pagination totalPages={items.totalPages} currentPage={page} setPage={setPage} />
@@ -137,17 +147,12 @@ const Marketplace: React.FC = () => {
         </div>
       ) : (
         <div className="flex flex-wrap items-center gap-4 justify-center px-8  max-w-[1600px]">
-
           {items && items.items && items.items.length > 0 ? (items.items.map((item) => (
             <MarketItem
               key={item._id}
               item={item}
-              click={
-                () => buyItem(item)
-              }
-              remove={
-                () => removeItem(item)
-              }
+              click={() => buyItem(item)}
+              remove={() => removeItem(item)}
               loadingRemoval={loadingRemoval}
             />
           ))) : (

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { sellItem } from "../../services/market/MarketSercive";
+import { sellItem } from "../../services/market/MarketService";
 import { getInventory } from "../../services/users/UserServices";
 import UserContext from "../../UserContext";
 import Item from "../../components/Item";
@@ -119,8 +119,6 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     }
   }, [filters]);
 
-
-
   useEffect(() => {
     if (isOpen) {
       setInvItems([]);
@@ -178,7 +176,6 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             <FiFilter className="text-2xl " />
           </div>
           {openFilters && <Filters filters={filters} setFilters={setFilters} onKeyPress={handleEnterPress} />}
-
         </div>
         <div className="flex flex-col justify-center max-h-[190px]  gap-4 ">
           <div className="flex flex-wrap justify-center gap-4 overflow-auto overflow-x-hidden mt-4 ">
@@ -188,7 +185,6 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                   <Skeleton height={120} />
                 </div>
               ))
-
             ) : (
               invItems.map((item, index) => (
                 <div
@@ -203,16 +199,12 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             {inventory && (
               <div className="w-full flex justify-center">
                 <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
-
-              </div>)
-            }
+              </div>
+            )}
           </div>
-
         </div>
 
-
         <div className="flex items-center justify-end gap-4 mt-4 ">
-
           <button
             className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
             onClick={CloseModal}

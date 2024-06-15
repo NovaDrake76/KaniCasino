@@ -1,10 +1,9 @@
 import React, { useContext, useState } from "react";
-import { buyItem } from "../../services/market/MarketSercive";
+import { buyItem } from "../../services/market/MarketService";
 import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 import { IMarketItem } from "../../components/Types";
-
 
 interface Props {
   item: IMarketItem;
@@ -20,14 +19,14 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   setRefresh,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { userData, toogleUserData } = useContext(UserContext);
+  const { userData, toggleUserData } = useContext(UserContext);
 
   const handleConfirm = async () => {
     setLoading(true);
     try {
       await buyItem(item._id as string);
       setRefresh && setRefresh(true);
-      toogleUserData({
+      toggleUserData({
         ...userData,
         walletBalance: userData.walletBalance - item.price,
       });
@@ -51,8 +50,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
         <h2 className="text-lg font-semibold mb-2">Confirm Purchase</h2>
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-white text-lg">
-            Are you sure you want to buy the {item.item.name} for {item.price}{" "}
-            KP?
+            Are you sure you want to buy the {item.item.name} for {item.price} KP?
           </p>
           <img src={item.item.image} alt="" className="h-28" />
         </div>

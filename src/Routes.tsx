@@ -8,6 +8,7 @@ import CrashGame from "./pages/Crash/Crash";
 import Upgrade from "./pages/Upgrade/Upgrade";
 import Slot from "./pages/Slot/Slot";
 import PrivacyPolicy from "./pages/About/PrivacyPolicy"
+import ItemPage from "./pages/Market/ItemPage";
 
 const defaultRoutes = (
   <>
@@ -15,6 +16,7 @@ const defaultRoutes = (
     <Route path="/profile/:id" element={<Profile />} />
     <Route path="/case/:id" element={<CasePage />} />
     <Route path="/marketplace" element={<Marketplace />} />
+    <Route path="/marketplace/item/:itemId" element={<ItemPage/>} />
     <Route path="/coinflip" element={<CoinFlip />} />
     <Route path="/crash" element={<CrashGame />} />
     <Route path="/upgrade" element={<Upgrade />} />

@@ -1,11 +1,6 @@
+// models/Marketplace.js
 const mongoose = require("mongoose");
-
-const ItemSchema = new mongoose.Schema({
-  id: String,
-  name: String,
-  image: String,
-  rarity: String,
-});
+const uuid = require('uuid');
 
 const MarketplaceSchema = new mongoose.Schema(
   {
@@ -15,10 +10,14 @@ const MarketplaceSchema = new mongoose.Schema(
       required: true,
     },
     item: {
-      type: ItemSchema, // use Item sub-schema
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Item",
       required: true,
     },
-    uniqueId: String,
+    uniqueId: {
+      type: String,
+      default: uuid.v4,
+    },
     price: {
       type: Number,
       required: true,
@@ -38,4 +37,9 @@ const MarketplaceSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+MarketplaceSchema.index({ itemName: 1 });
+MarketplaceSchema.index({ rarity: 1 });
+MarketplaceSchema.index({ price: 1 });
+
 module.exports = mongoose.model("Marketplace", MarketplaceSchema);
