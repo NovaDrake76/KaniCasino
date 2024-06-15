@@ -13,6 +13,7 @@ interface IBonus {
 
 const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
     const [bonusAvailable, setBonusAvailable] = useState(false);
+    const [loadingBonus, setLoadingBonus] = useState(false);
     const { toogleUserFlow, toogleUserData } = useContext(UserContext);
 
     useEffect(() => {
@@ -39,6 +40,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
 
 
     const claimUserBonus = async () => {
+        setLoadingBonus(true);
         try {
             const res = await claimBonus();
             toogleUserFlow(false)
@@ -57,6 +59,8 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
             toast.error(`${error.response.data.message}!`, {
                 theme: "dark",
             });
+        }finally{
+            setLoadingBonus(false);
         }
     }
 
@@ -65,8 +69,8 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
             text={bonusAvailable ? "Claim Bonus" : <Countdown nextBonus={bonusDate} color={"#fff"} bold={false} />}
             onClick={() => claimUserBonus()}
             pulse={true}
-            disabled={!bonusAvailable}
-
+            disabled={!bonusAvailable || loadingBonus}
+            loading={loadingBonus}
         />
     )
 }
