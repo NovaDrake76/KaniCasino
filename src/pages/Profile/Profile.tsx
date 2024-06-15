@@ -63,6 +63,7 @@ const Profile = () => {
   };
 
   const getInventoryInfo = async (newPage?: boolean) => {
+    setLoadingInventory(true);
     try {
       const response = await getInventory(
         id,

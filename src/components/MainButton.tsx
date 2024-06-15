@@ -10,6 +10,7 @@ interface MainButton {
   iconPosition?: "left" | "right";
   type?: "button" | "danger" | "success" | "warning" | "info" | "dark";
   pulse?: boolean;
+  textSize?: string;
 }
 
 const MainButton: React.FC<MainButton> = ({
@@ -22,6 +23,7 @@ const MainButton: React.FC<MainButton> = ({
   iconPosition = "left",
   type = "button",
   pulse,
+  textSize,
 
 }) => {
 
@@ -40,7 +42,9 @@ const MainButton: React.FC<MainButton> = ({
     <button
       className={`flex items-center justify-center w-full h-10 ${colorClasses[type]} 
       focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md
-      text-white font-medium md:text-lg ${disabled ? "opacity-50 cursor-not-allowed" : pulseClass} `}
+      text-white font-medium ${disabled ? "opacity-50 cursor-not-allowed" : pulseClass} ${
+        textSize ? textSize : "md:text-lg"
+      }`}
       onClick={onClick}
       disabled={disabled}
       type={submit ? "submit" : "button"}

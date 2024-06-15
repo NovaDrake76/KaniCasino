@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Rarities from '../../components/Rarities';
+import { FiFilter } from 'react-icons/fi';
 
 interface FiltersProps {
   filters: {
@@ -18,6 +19,8 @@ interface FiltersProps {
 
 const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
   const [localFilters, setLocalFilters] = useState(filters);
+  const [openFilters, setOpenFilters] = useState<boolean>(false);
+
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -35,8 +38,14 @@ const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
   };
 
   return (
-    <div className="flex flex-col items-start gap-4 mt-4">
-      <div className="flex flex-col md:flex-row gap-4">
+    <div className='w-full max-w-[1200px] md:-mt-[72px] mb-4 '  >
+      <div className="flex flex-col items-center md:items-end gap-4 mt-4 justify-end w-full">
+               <div onClick={() => setOpenFilters(!openFilters)} className="border p-2 rounded-md cursor-pointer">
+              <FiFilter className="text-2xl " />
+            </div>
+      {
+        openFilters && (
+          <div className="flex flex-col md:flex-row gap-4">
         <input
           type="text"
           name="name"
@@ -61,6 +70,9 @@ const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
           <option value="desc">Descending</option>
         </select>
       </div>
+        )
+      }
+    </div>
     </div>
   );
 };

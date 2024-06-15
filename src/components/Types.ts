@@ -44,7 +44,6 @@ export interface BasicItem {
     rarity: number;
     _id: string;
     uniqueId: string
-
 }
 
 export interface Case {

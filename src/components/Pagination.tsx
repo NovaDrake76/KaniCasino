@@ -10,7 +10,7 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, setPag
     const renderPageNumber = (pageNumber: number) => (
         <div
             key={pageNumber}
-            className={`p-4 w-10 h-10 flex items-center justify-center border rounded hover:border-white transition-all 
+            className={`p-4 w-10 h-10 flex items-center justify-center border rounded hover:border-white transition-all  z-10
                 ${pageNumber === currentPage ?
                     "border-white bg-primary-light text-secondary" :
                     "border-gray-500 text-gray-500 hover:text-white cursor-pointer"}`}
@@ -23,6 +23,8 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, setPag
     const renderPagination = () => {
         let pages = [];
 
+        if(totalPages == 0 ) return null;
+  
         if (totalPages <= 7) {
             // Show all pages if total pages less than or equal to 7
             for (let i = 1; i <= totalPages; i++) {

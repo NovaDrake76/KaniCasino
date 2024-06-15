@@ -59,61 +59,87 @@ module.exports = (io) => {
     res.json(marketplaceItem);
   });
 
-  // Get all listings
-  router.get("/", async (req, res) => {
+ // Get all listings
+ router.get("/", async (req, res) => {
+  try {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 30;
     const skip = (page - 1) * limit;
     const { name, rarity, sortBy, order } = req.query;
 
-    let filter = {};
+    let itemFilter = {};
+    if (name) itemFilter.name = { $regex: new RegExp(name, "i") };
+    if (rarity) itemFilter.rarity = rarity;
 
-    if (name) filter.itemName = { $regex: new RegExp(name, "i") };
-    if (rarity) filter.rarity = rarity;
+    const items = await Item.find(itemFilter).exec();
+    const totalItemsCount = await Item.countDocuments(itemFilter);
 
-    let sortOptions = {};
-    if (sortBy) {
-      sortOptions[sortBy] = order === "asc" ? 1 : -1;
-    } else {
-      sortOptions = { createdAt: -1 };
-    }
+    const itemIds = items.map(item => item._id);
+    const marketplaceData = await Marketplace.aggregate([
+      { $match: { item: { $in: itemIds } } },
+      {
+        $group: {
+          _id: "$item",
+          cheapestPrice: { $min: "$price" },
+          totalListings: { $sum: 1 },
+          mostRecent: { $max: "$createdAt" }
+        }
+      }
+    ]);
 
-    const total = await Marketplace.countDocuments(filter);
-    const items = await Marketplace.find(filter)
-      .populate("sellerId", "username")
-      .populate("item")
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(limit);
+    const itemsWithMarketplaceData = items.map(item => {
+      const marketplaceItem = marketplaceData.find(md => md._id.toString() === item._id.toString());
+      return {
+        ...item.toObject(),
+        cheapestPrice: marketplaceItem ? marketplaceItem.cheapestPrice : null,
+        totalListings: marketplaceItem ? marketplaceItem.totalListings : 0,
+        mostRecent: marketplaceItem ? marketplaceItem.mostRecent : new Date(0)
+      };
+    });
+
+    const itemsWithListings = itemsWithMarketplaceData.filter(item => item.totalListings > 0);
+    const itemsWithoutListings = itemsWithMarketplaceData.filter(item => item.totalListings === 0);
+
+    itemsWithListings.sort((a, b) => {
+      return new Date(b.mostRecent) - new Date(a.mostRecent); 
+    });
+
+    const sortedItems = [...itemsWithListings, ...itemsWithoutListings];
+
+    const paginatedItems = sortedItems.slice(skip, skip + limit);
 
     res.json({
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(totalItemsCount / limit),
       currentPage: page,
-      items,
+      items: paginatedItems,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Get listings for a specific item
+router.get("/item/:itemId", async (req, res) => {
+  const { itemId } = req.params;
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 30;
+  const skip = (page - 1) * limit;
+
+  const total = await Marketplace.countDocuments({ item: itemId });
+  const items = await Marketplace.find({ item: itemId })
+    .populate("sellerId", "username")
+    .populate("item")
+    .sort({ price: 1 })
+    .skip(skip)
+    .limit(limit);
+
+  res.json({
+    totalPages: Math.ceil(total / limit),
+    currentPage: page,
+    items,
   });
-
-  // Get listings for a specific item
-  router.get("/item/:itemId", async (req, res) => {
-    const { itemId } = req.params;
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 30;
-    const skip = (page - 1) * limit;
-
-    const total = await Marketplace.countDocuments({ item: itemId });
-    const items = await Marketplace.find({ item: itemId })
-      .populate("sellerId", "username")
-      .populate("item")
-      .sort({ price: 1 })
-      .skip(skip)
-      .limit(limit);
-
-    res.json({
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-      items,
-    });
-  });
+});
 
   // Delete listing
   router.delete("/:id", isAuthenticated, async (req, res) => {

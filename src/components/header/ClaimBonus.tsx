@@ -70,7 +70,6 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
             onClick={() => claimUserBonus()}
             pulse={true}
             disabled={!bonusAvailable || loadingBonus}
-            loading={loadingBonus}
         />
     )
 }

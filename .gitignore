@@ -28,3 +28,4 @@ backend/buyAllItems.js
 
 .env
 .env
+backend/updateItems.js

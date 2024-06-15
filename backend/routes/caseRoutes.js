@@ -22,8 +22,8 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
   });
 
   try {
-    const savedCases = await newCase.save();
-    res.status(201).json(savedCases);
+    const savedCase = await newCase.save();
+    res.status(201).json(savedCase);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -31,12 +31,11 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    //get cases info and items, and populate the items by rarity, starting from the highest (rarity 5)
-    const cases = await Case.findById(req.params.id).populate({
+    const caseData = await Case.findById(req.params.id).populate({
       path: "items",
       options: { sort: { rarity: -1 } },
     });
-    res.json(cases);
+    res.json(caseData);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -53,7 +52,7 @@ router.put("/:id", isAuthenticated, isAdmin, async (req, res) => {
   }
 });
 
-router.delete("/id", isAuthenticated, isAdmin, async (req, res) => {
+router.delete("/:id", isAuthenticated, isAdmin, async (req, res) => {
   try {
     await Case.findByIdAndDelete(req.params.id);
     res.json({ message: "Case deleted" });
