@@ -19,25 +19,27 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   setRefresh,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { userData, toggleUserData } = useContext(UserContext);
+  const { userData, toogleUserData } = useContext(UserContext);
 
   const handleConfirm = async () => {
     setLoading(true);
     try {
       await buyItem(item._id as string);
       setRefresh && setRefresh(true);
-      toggleUserData({
+      toogleUserData({
         ...userData,
         walletBalance: userData.walletBalance - item.price,
       });
 
       toast.success("Purchase successful!");
-      onClose();
     } catch (error: any) {
-      toast.error(error.response.data.message);
+      toast.error(error);
       console.log(error);
+    }finally{
+      setLoading(false);
+      onClose();
     }
-    setLoading(false);
+   
   };
 
   if (!isOpen) {
@@ -67,6 +69,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
               text="Confirm"
               onClick={handleConfirm}
               loading={loading}
+              disabled={loading}
             />
           </div>
         </div>

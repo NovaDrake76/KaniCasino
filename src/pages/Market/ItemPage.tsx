@@ -59,6 +59,14 @@ const ItemPage: React.FC = () => {
   };
 
   useEffect(() => {
+    if (refresh) {
+      fetchItemListings();
+      setRefresh(false);
+    }
+  }, [refresh]);
+
+
+  useEffect(() => {
     fetchItemListings();
   }, [page]);
 

@@ -7,13 +7,26 @@ import Title from "../../components/Title";
 import Skeleton from "react-loading-skeleton";
 import UserContext from "../../UserContext";
 import Pagination from "../../components/Pagination";
-import { IMarketItem } from "../../components/Types";
 import Filters from "./Filters";
+
+
+interface Props {
+
+    image: string;
+    name: string;
+    rarity: number;
+    _id: string;
+    uniqueId: string
+    cheapestPrice: number;
+    totalListings: number;
+  
+}
+
 
 interface ItemData {
   totalPages: number;
   currentPage: number;
-  items: IMarketItem[];
+  items: Props[];
 }
 
 const Marketplace: React.FC = () => {
