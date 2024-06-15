@@ -106,9 +106,9 @@ const Marketplace: React.FC = () => {
         setRefresh={setRefresh}
       />
       <div className="flex items-center justify-center w-full max-w-[1600px] relative ">
-        <Title title="Marketplace" />
+        <Title title="Marketplace is temporarily disabled" />
 
-        <div className="absolute md:right-24 -top-6 md:top-0">
+        {/* <div className="absolute md:right-24 -top-6 md:top-0">
           {isLogged && (
             <div className="w-52">
 
@@ -118,9 +118,9 @@ const Marketplace: React.FC = () => {
               />
             </div>
           )}
-        </div>
+        </div> */}
       </div>
-      {
+      {/* {
         items?.totalPages && items?.totalPages > 1 && (
           <Pagination totalPages={items.totalPages} currentPage={page} setPage={setPage} />
         )
@@ -163,7 +163,7 @@ const Marketplace: React.FC = () => {
         items?.totalPages && items?.totalPages > 1 && (
           <Pagination totalPages={items.totalPages} currentPage={page} setPage={setPage} />
         )
-      }
+      } */}
     </div>
   );
 };
