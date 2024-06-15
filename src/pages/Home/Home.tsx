@@ -105,7 +105,7 @@ const Home = () => {
           </div>
         ) : (
           <CaseListing
-            name="NEW CASES"
+            name="MANUTENTION"
             cases={cases.length > 6 ? cases.slice(0, 6) : cases}
           />
         )}
