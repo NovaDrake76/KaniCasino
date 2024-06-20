@@ -29,3 +29,7 @@ backend/buyAllItems.js
 .env
 .env
 backend/updateItems.js
+backend/scripts/updateItems.js
+backend/scripts/sendNotificationToAll.js
+backend/scripts/populateUniqueId.js
+backend/scripts/buyAllItems.js

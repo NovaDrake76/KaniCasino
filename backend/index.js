@@ -4,10 +4,16 @@ const mongoose = require("mongoose");
 const http = require("http");
 const socketIO = require("socket.io");
 const cronJobs = require("./tasks/cronJobs");
+const checkApiKey = require('./middleware/checkApiKey');
+const rateLimit = require('express-rate-limit');
+
+
 require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
+
+
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -27,7 +33,6 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
   const allowedOrigins = isDevelopment ? ['*'] : ['https://kanicasino.com'];
@@ -83,6 +88,17 @@ mongoose
 
 // Middleware
 app.use(express.json());
+app.use(cors(corsOptions));
+
+// block requests from outside
+app.use(checkApiKey);
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 400, // limit each IP to 100 requests per window
+});
+
+app.use(limiter);
 
 // Routes
 // app.use("/auth", authRoutes);
