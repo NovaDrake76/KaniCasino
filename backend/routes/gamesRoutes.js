@@ -118,14 +118,14 @@ module.exports = (io) => {
       }
 
       // Add the entire winning items object to the user's inventory
-      // user.inventory.unshift(...winningItems);
+      user.inventory.unshift(...winningItems);
 
-      await User.updateOne(
-        {_id: user._id},
-        {
-          $push: {inventory: winningItems}
-        }
-      )
+      // await User.updateOne(
+      //   {_id: user._id},
+      //   {
+      //     $push: {inventory: winningItems}
+      //   }
+      // )
 
       updateLevel(user, caseData.price * quantityToOpen);
 
