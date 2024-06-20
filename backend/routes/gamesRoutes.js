@@ -129,7 +129,7 @@ module.exports = (io) => {
 
       updateLevel(user, caseData.price * quantityToOpen);
 
-      //await user.save();
+      await user.save();
 
       const winnerUser = {
         name: user.username,
