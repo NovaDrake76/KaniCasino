@@ -260,26 +260,26 @@ router.get('/ranking', authMiddleware.isAuthenticated, async (req, res) => {
 
 
 // Update wallet balance
-router.put("/wallet", authMiddleware.isAuthenticated, async (req, res) => {
-  try {
-    const { amount } = req.body;
+// router.put("/wallet", authMiddleware.isAuthenticated, async (req, res) => {
+//   try {
+//     const { amount } = req.body;
 
-    const user = await User.findById(req.user._id);
+//     const user = await User.findById(req.user._id);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-    // Update wallet balance
-    user.walletBalance += amount;
-    await user.save();
+//     // Update wallet balance
+//     user.walletBalance += amount;
+//     await user.save();
 
-    res.json(user.walletBalance);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
+//     res.json(user.walletBalance);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send("Server error");
+//   }
+// });
 
 // Add item to user inventory
 router.post("/inventory", authMiddleware.isAuthenticated, async (req, res) => {
