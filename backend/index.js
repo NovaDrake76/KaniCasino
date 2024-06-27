@@ -4,45 +4,41 @@ const mongoose = require("mongoose");
 const http = require("http");
 const socketIO = require("socket.io");
 const cronJobs = require("./tasks/cronJobs");
-const checkApiKey = require('./middleware/checkApiKey');
-const rateLimit = require('express-rate-limit');
-
+const checkApiKey = require("./middleware/checkApiKey");
+const rateLimit = require("express-rate-limit");
 
 require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
 
-
-
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isDevelopment = process.env.NODE_ENV === "development";
 
 const corsOptions = {
   origin: function (origin, callback) {
     if (isDevelopment) {
       callback(null, true);
     } else {
-      if (origin === 'https://kanicasino.com') {
+      if (origin === "https://kanicasino.com") {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error("Not allowed by CORS"));
       }
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   credentials: true,
 };
 
-
 app.use((req, res, next) => {
-  const allowedOrigins = isDevelopment ? ['*'] : ['https://kanicasino.com'];
+  const allowedOrigins = isDevelopment ? ["*"] : ["https://kanicasino.com"];
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin || '*');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin || "*");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
   } else {
-    res.status(403).send('Not allowed by CORS');
+    res.status(403).send("Not allowed by CORS");
     return;
   }
 
@@ -55,14 +51,14 @@ const io = socketIO(server, {
       if (isDevelopment) {
         callback(null, true);
       } else {
-        if (origin === 'https://kanicasino.com') {
+        if (origin === "https://kanicasino.com") {
           callback(null, true);
         } else {
-          callback(new Error('Not allowed by CORS'));
+          callback(new Error("Not allowed by CORS"));
         }
       }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     credentials: true,
   },
 });
@@ -95,7 +91,7 @@ app.use(checkApiKey);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 400, // limit each IP to 100 requests per window
+  max: 800, // limit each IP to 800 requests per window
 });
 
 app.use(limiter);
