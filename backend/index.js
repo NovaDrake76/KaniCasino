@@ -89,12 +89,12 @@ app.use(cors(corsOptions));
 // block requests from outside
 app.use(checkApiKey);
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 800, // limit each IP to 800 requests per window
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 800, // limit each IP to 800 requests per window
+// });
 
-app.use(limiter);
+// app.use(limiter);
 
 // Routes
 // app.use("/auth", authRoutes);
