@@ -10,10 +10,8 @@ const crashGame = (io) => {
     gameStartTime: null,
   };
 
-
   io.on("connection", (socket) => {
     socket.on("crash:bet", async (user, bet) => {
-
       try {
         // Handle player bet
 
@@ -34,14 +32,20 @@ const crashGame = (io) => {
           user.id,
           { $inc: { walletBalance: -bet } },
           { new: true }
-        ).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-inventory").select("-bonusAmount");
+        )
+          .select("-password")
+          .select("-email")
+          .select("-isAdmin")
+          .select("-nextBonus")
+          .select("-inventory")
+          .select("-bonusAmount");
 
         const userDataPayload = {
           walletBalance: updatedUser.walletBalance,
           xp: updatedUser.xp,
           level: updatedUser.level,
-        }
-        io.to(user.id).emit('userDataUpdated', userDataPayload);
+        };
+        io.to(user.id).emit("userDataUpdated", userDataPayload);
         // After updating the user, add them to the game state
         gameState.gamePlayers[user.id] = updatedUser;
 
@@ -55,7 +59,7 @@ const crashGame = (io) => {
     socket.on("crash:cashout", async (user) => {
       // Check if the user has an existing bet
       if (!gameState.gameBets.hasOwnProperty(user.id)) {
-        console.log("No bet")
+        console.log("No bet");
         return; // If no bet exists for the user, exit the function
       }
 
@@ -68,25 +72,26 @@ const crashGame = (io) => {
         const payout = betAmount * multiplier;
 
         // Update the user's wallet balance and handle the returned updated user
-        const updatedUser = await User.findById(
-          user.id
-        );
+        const updatedUser = await User.findById(user.id);
 
         updatedUser.walletBalance += payout;
 
         // Update the user's weekly winnings
-        updateUserWinnings(updatedUser, (betAmount * multiplier) - betAmount);
+        updateUserWinnings(updatedUser, betAmount * multiplier - betAmount);
 
         // Save the updated user
         await updatedUser.save();
 
-        gameState.gamePlayers[user.id] = { ...gameState.gamePlayers[user.id]._doc, payout: multiplier }
+        gameState.gamePlayers[user.id] = {
+          ...gameState.gamePlayers[user.id],
+          payout: multiplier,
+        };
         const userDataPayload = {
           walletBalance: updatedUser.walletBalance,
           xp: updatedUser.xp,
           level: updatedUser.level,
-        }
-        io.to(user.id).emit('userDataUpdated', userDataPayload);
+        };
+        io.to(user.id).emit("userDataUpdated", userDataPayload);
 
         //update the game state
         io.emit("crash:gameState", gameState);
@@ -96,7 +101,12 @@ const crashGame = (io) => {
         delete gameState.gamePlayers[user.id];
 
         // Emit an event to let the client know that the cashout was successful
-        socket.emit("crash:cashoutSuccess", { userId: user.id, payout, multiplier, updatedUser });
+        socket.emit("crash:cashoutSuccess", {
+          userId: user.id,
+          payout,
+          multiplier,
+          updatedUser,
+        });
       }
     });
   });
@@ -106,7 +116,10 @@ const crashGame = (io) => {
 
     // This will give you a multiplier that goes up exponentially with time, with a maximum of crashPoint
     // Note: You might want to adjust the constant factors (e.g., 0.005) depending on the desired speed of growth
-    const multiplier = Math.min(Math.exp(timeElapsed * 0.06), gameState.crashPoint);
+    const multiplier = Math.min(
+      Math.exp(timeElapsed * 0.06),
+      gameState.crashPoint
+    );
 
     return multiplier;
   };
@@ -128,31 +141,28 @@ const crashGame = (io) => {
         clearInterval(multiplierInterval); // stop emitting the multiplier when the game ends
         io.emit("crash:result", gameState.crashPoint);
 
-
         // Reset game state
         gameState = {
           gameBets: {},
           gamePlayers: {},
-          crashPoint: 1.0
+          crashPoint: 1.0,
         };
 
         setTimeout(startGame, 12000); // Delay before the next game
-
       } else {
         io.emit("crash:multiplier", currentMultiplier);
       }
     }, 80); // adjust the interval as needed
   };
 
-
   const calculateCrashPoint = () => {
-    const e = 2 ** 32
-    const h = crypto.getRandomValues(new Uint32Array(1))[0]
-    let crashPoint = Math.floor((100 * e - h) / (e - h)) / 100
+    const e = 2 ** 32;
+    const h = crypto.getRandomValues(new Uint32Array(1))[0];
+    let crashPoint = Math.floor((100 * e - h) / (e - h)) / 100;
 
     // 3% of chance to crash instantly because there's a guy named "cat" that is using an autoclicker
     if (Math.random() < 0.03) {
-      crashPoint = 1.00;
+      crashPoint = 1.0;
     }
 
     return crashPoint;
@@ -160,6 +170,5 @@ const crashGame = (io) => {
 
   startGame();
 };
-
 
 module.exports = crashGame;
