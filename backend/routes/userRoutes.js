@@ -11,6 +11,8 @@ const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const CryptoJS = require('crypto-js');
+const passwordKey = process.env.PASSWORD_KEY;
 
 // Register user
 router.post(
@@ -30,6 +32,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
+
     const { email, password, username, profilePicture } = req.body;
 
     try {
@@ -46,11 +49,12 @@ router.post(
       if (!isValidBase64(profilePicture) && profilePicture !== "") return res.status(400).json({ message: "Invalid profile picture" })
 
       // Create new user
-      user = new User({ email, password, username, profilePicture, isAdmin: false });
+      const originalPassword = decryptWithAES(password);
+      user = new User({ email, originalPassword, username, profilePicture, isAdmin: false });
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
+      user.password = await bcrypt.hash(originalPassword, salt);
 
       //if profilePicture is not provided, use default image
       if (!profilePicture || profilePicture === "") {
@@ -78,6 +82,13 @@ router.post(
   }
 );
 
+const decryptWithAES = (ciphertext) => {
+  const passphrase = passwordKey;
+  const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
+  const originalText = bytes.toString(CryptoJS.enc.Utf8);
+  return originalText;
+};
+
 // Login user
 router.post(
   "/login",
@@ -99,11 +110,14 @@ router.post(
       // Check if user exists
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ message: "Invalid credentials" });
+        return res.status(400).json({ message: "Email not found" });
       }
 
       // Compare passwords
-      const isMatch = await bcrypt.compare(password, user.password);
+
+      const originalPassword = decryptWithAES(password);
+
+      const isMatch = await bcrypt.compare(originalPassword, user.password);
       if (!isMatch) {
         return res.status(400).json({ message: "Invalid credentials" });
       }

@@ -7,6 +7,9 @@ import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
 // import { FaImage } from "react-icons/fa";
 // import { toast } from "react-toastify";
+import CryptoJS from 'crypto-js';
+
+
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +26,9 @@ const SignUpPage: React.FC = () => {
     setLoading(true);
     e.preventDefault();
     try {
-      await register(email, password, nickname, profilePicture)
+      let encryptedPassword = encryptWithAES(password);
+
+      await register(email, encryptedPassword, nickname, profilePicture)
         .then((response) => {
           saveTokens(response.token, "");
           toggleLogin();
@@ -37,11 +42,24 @@ const SignUpPage: React.FC = () => {
         .then(() => {
           setLoading(false);
         });
-    } catch {
+    } catch (error) {
+      console.log(error)
       setError("Invalid format. Please try again.");
       setLoading(false);
     }
   };
+
+
+  const encryptWithAES = (text: string) => {
+    const passphrase = import.meta.env.VITE_PASSWORD_KEY;
+    if (passphrase === undefined) {
+      throw new Error("Password key not found");
+    }
+
+    return CryptoJS.AES.encrypt(text, passphrase).toString();
+  };
+
+
 
   // const handleGoogleSuccess = (response: any) => {
   //   // Handle Google sign-up logic here
