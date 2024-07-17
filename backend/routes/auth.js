@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const CryptoJS = require('crypto-js');
 
 // Register a new user
 router.post("/register", async (req, res) => {
@@ -47,8 +48,17 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
+    const decryptWithAES = (ciphertext) => {
+      const passphrase = '123';
+      const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
+      const originalText = bytes.toString(CryptoJS.enc.Utf8);
+      return originalText;
+    };
+
+    const originalPassword = decryptWithAES(password);
+
     // Compare the provided password with the stored hashed password
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(originalPassword, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
