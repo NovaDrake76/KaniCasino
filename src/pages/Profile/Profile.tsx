@@ -30,8 +30,8 @@ const Profile = () => {
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
-    sortBy: '',
-    order: 'asc'
+    sortBy: 'newer',
+    order: 'asc',
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
 

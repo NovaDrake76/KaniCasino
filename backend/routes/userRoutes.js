@@ -500,8 +500,8 @@ router.get("/:id", async (req, res) => {
 // Get user inventory
 const ITEMS_PER_PAGE = 18;
 
-router.get("/inventory/:userId", async (req, res) => {
 
+router.get("/inventory/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const { name, rarity, sortBy, order, caseId } = req.query;
@@ -549,7 +549,6 @@ router.get("/inventory/:userId", async (req, res) => {
       pipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
     }
 
-
     if (name) {
       pipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
     }
@@ -559,20 +558,25 @@ router.get("/inventory/:userId", async (req, res) => {
 
     let sortQuery = {};
     if (sortBy) {
-      if (sortBy === "older") {
-        pipeline.push({ $sort: { "inventory._id": -1 } });
-      } else if (sortBy === "mostRare") {
-        sortQuery["inventory.rarity"] = -1;
-        pipeline.push({ $sort: sortQuery });
-      } else if (sortBy === "mostCommon") {
-        sortQuery["inventory.rarity"] = 1;
-        pipeline.push({ $sort: sortQuery });
-      } else {
-        sortQuery[`inventory.${sortBy}`] = order === 'asc' ? 1 : -1;
-        pipeline.push({ $sort: sortQuery });
+      switch (sortBy) {
+        case "older":
+          pipeline.push({ $sort: { "inventory.createdAt": 1 } });
+          break;
+        case "newer":
+          pipeline.push({ $sort: { "inventory.createdAt": -1 } });
+          break;
+        case "mostRare":
+          pipeline.push({ $sort: { "inventory.rarity": -1 } });
+          break;
+        case "mostCommon":
+          pipeline.push({ $sort: { "inventory.rarity": 1 } });
+          break;
+        default:
+          sortQuery[`inventory.${sortBy}`] = order === 'asc' ? 1 : -1;
+          pipeline.push({ $sort: sortQuery });
+          break;
       }
     }
-
     pipeline.push(
       { $group: { _id: null, inventory: { $push: "$inventory" } } },
       { $project: { inventory: { $slice: ["$inventory", (page - 1) * ITEMS_PER_PAGE, ITEMS_PER_PAGE] } } }
