@@ -46,8 +46,6 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             <option value="3">Epic</option>
             <option value="4">Ultra Rare</option>
             <option value="5">Unique</option>
-
-            {/* Add other rarities as needed */}
         </select>
 
         {/* Sort by */}
@@ -57,7 +55,7 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             className="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
         >
             <option value="">Sort By</option>
-            <option value="recent">Most Recent</option>
+            <option value="newer">Most Recent</option>
             <option value="older">Oldest First</option>
             <option value="mostRare">Most Rare First</option>
             <option value="mostCommon">Most Common First</option>
