@@ -9,6 +9,7 @@ const SlotGameController = require("../games/slot");
 const updateLevel = require("../utils/updateLevel");
 const { v4: uuidv4 } = require('uuid');
 const mongoose = require("mongoose");
+const { create } = require("lodash");
 
 
 // Rarities array
@@ -64,7 +65,7 @@ const getWinningItem = (caseData) => {
   return winningItem;
 };
 
-const addUniqueIdToItem = (item) => {
+const addUniqueInfoToItem = (item) => {
   return {
     _id: item._id,
     name: item.name,
@@ -113,19 +114,19 @@ module.exports = (io) => {
 
       for (let i = 0; i < quantityToOpen; i++) {
         const winningItem = getWinningItem(caseData);
-        const itemWithUniqueId = addUniqueIdToItem(winningItem);
+        const itemWithUniqueId = addUniqueInfoToItem(winningItem);
         winningItems.push(itemWithUniqueId);
       }
 
       // Add the entire winning items object to the user's inventory
-      user.inventory.unshift(...winningItems);
+      //user.inventory.unshift(...winningItems);
 
-      // await User.updateOne(
-      //   {_id: user._id},
-      //   {
-      //     $push: {inventory: winningItems}
-      //   }
-      // )
+      await User.updateOne(
+        { _id: user._id },
+        {
+          $push: { inventory: winningItems }
+        }
+      )
 
       updateLevel(user, caseData.price * quantityToOpen);
 

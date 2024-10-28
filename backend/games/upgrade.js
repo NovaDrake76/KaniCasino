@@ -114,12 +114,13 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
 
     if (isSuccess) {
       // Add the target item to the user's inventory
-      user.inventory.unshift({
+      user.inventory.push({
         _id: targetItem._id,
         name: targetItem.name,
         image: targetItem.image,
         rarity: targetItem.rarity,
         case: targetItem.case,
+        createdAt: new Date(),
         uniqueId: require('uuid').v4(),
       });
     }

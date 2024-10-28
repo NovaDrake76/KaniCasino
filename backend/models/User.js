@@ -33,6 +33,10 @@ const UserSchema = new mongoose.Schema({
       image: String,
       rarity: String,
       case: mongoose.Schema.Types.ObjectId,
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
   ],
   fixedItem: {
