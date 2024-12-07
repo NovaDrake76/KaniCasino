@@ -72,7 +72,7 @@ const Home = () => {
   return (
     <div className="w-screen flex justify-center">
       <div className=" flex-col w-full max-w-[1920px] ">
-        <div className="flex justify-center">
+        <div className="flex flex-col md:flex-row  justify-center">
           <div className="flex ">
             <div className="flex flex-col justify-center items-center gap-4">
               <h1 className="text-5xl font-bold text-white">Hello!</h1>
