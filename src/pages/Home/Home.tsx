@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-import Banner from "./Banner";
-import CaseListing from "./CaseListing";
-import GameListing from "./GamesListing";
-import Leaderboard from "./Leaderboard";
+// import Banner from "./Banner";
+// import CaseListing from "./CaseListing";
+// import GameListing from "./GamesListing";
+// import Leaderboard from "./Leaderboard";
 import { getCases } from "../../services/cases/CaseServices";
-import Skeleton from "react-loading-skeleton";
+// import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
-import { BannerProps } from "./Types";
-import { Carousel } from "react-responsive-carousel";
+// import { BannerProps } from "./Types";
+// import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
 const Home = () => {
-  const [cases, setCases] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_cases, setCases] = useState<any>();
+  const [_loading, setLoading] = useState<boolean>(true);
 
   const getNewCases = async () => {
     setLoading(true);
@@ -30,44 +30,44 @@ const Home = () => {
     getNewCases();
   }, []);
 
-  const BannerContent: BannerProps[] = [
-    {
-      left: {
-        image: "/images/marisaBanner.webp",
-        title: "CRASH GAME",
-        description: "Don't burn, fly high! Try your luck now!",
-        link: "/crash",
-      },
-      right: (
-        <div>
-          <img src="/images/crashBannerTitle.webp" alt="upgrade" />
-        </div>
-      ),
-    },
-    {
-      left: {
-        image: "/images/paris.webp",
-        title: "NEW UPGRADE GAME",
-        description: "Go big or go home. Try your luck now!",
-        link: "/upgrade",
-      },
-      right: null,
-    },
-    {
-      left: {
-        image: "/images/homeBanner.webp",
-        //if title is hide, it will hide the information component on the left side
-        title: "hide",
-        description: "Try your luck now!",
-        link: "/slots",
-      },
-      right: (
-        <div className="hidden 2xl:flex 2xl:mr-36">
-          <img src="/images/KANICASINO.webp" alt="kanicasino" />
-        </div>
-      ),
-    },
-  ];
+  // const BannerContent: BannerProps[] = [
+  //   {
+  //     left: {
+  //       image: "/images/marisaBanner.webp",
+  //       title: "CRASH GAME",
+  //       description: "Don't burn, fly high! Try your luck now!",
+  //       link: "/crash",
+  //     },
+  //     right: (
+  //       <div>
+  //         <img src="/images/crashBannerTitle.webp" alt="upgrade" />
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     left: {
+  //       image: "/images/paris.webp",
+  //       title: "NEW UPGRADE GAME",
+  //       description: "Go big or go home. Try your luck now!",
+  //       link: "/upgrade",
+  //     },
+  //     right: null,
+  //   },
+  //   {
+  //     left: {
+  //       image: "/images/homeBanner.webp",
+  //       //if title is hide, it will hide the information component on the left side
+  //       title: "hide",
+  //       description: "Try your luck now!",
+  //       link: "/slots",
+  //     },
+  //     right: (
+  //       <div className="hidden 2xl:flex 2xl:mr-36">
+  //         <img src="/images/KANICASINO.webp" alt="kanicasino" />
+  //       </div>
+  //     ),
+  //   },
+  // ];
 
   return (
     <div className="w-screen flex justify-center">
