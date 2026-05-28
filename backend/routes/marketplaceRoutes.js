@@ -10,53 +10,66 @@ const Notification = require("../models/Notification");
 module.exports = (io) => {
   // Create new listing
   router.post("/", isAuthenticated, async (req, res) => {
-    const { item: uniqueId, price } = req.body;
+    try {
+      const { item: uniqueId, price } = req.body;
 
-    // if price is not a number, if is less than 1 or if is greater than 1000000, return error
-    if (isNaN(price) || price < 1 || price > 1000000) {
-      return res.status(400).json({ message: "Invalid price" });
+      // if price is not a number, if is less than 1 or if is greater than 1000000, return error
+      if (isNaN(price) || price < 1 || price > 1000000) {
+        return res.status(400).json({ message: "Invalid price" });
+      }
+
+      const user = await User.findById(req.user._id);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.level < 5) {
+        return res.status(400).json({ message: "You must be at least level 5 to sell items" });
+      }
+
+      // find the item in the inventory by uniqueId
+      const inventoryItem = user.inventory.find(
+        (item) => item.uniqueId === uniqueId
+      );
+
+      if (!inventoryItem) {
+        return res.status(404).json({ message: "Item not found in inventory" });
+      }
+
+      // resolve the original item document (and its case) before touching anything
+      const itemDocument = await Item.findById(inventoryItem._id);
+      if (!itemDocument) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+
+      // atomically remove exactly this item; if it's already gone, abort without listing
+      const pull = await User.updateOne(
+        { _id: user._id },
+        { $pull: { inventory: { uniqueId } } }
+      );
+      if (pull.modifiedCount === 0) {
+        return res.status(404).json({ message: "Item not found in inventory" });
+      }
+
+      const marketplaceItem = new Marketplace({
+        sellerId: user._id,
+        item: itemDocument._id,
+        case: itemDocument.case,
+        price,
+        itemName: itemDocument.name,
+        itemImage: itemDocument.image,
+        rarity: itemDocument.rarity,
+        uniqueId: inventoryItem.uniqueId,
+      });
+
+      await marketplaceItem.save();
+
+      res.json(marketplaceItem);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
     }
-
-    const user = await User.findById(req.user._id);
-
-    if (user.level < 5) {
-      return res.status(400).json({ message: "You must be at least level 5 to sell items" });
-    }
-
-    // Check if the item is in the user's inventory by uniqueId
-    const inventoryItemIndex = user.inventory.findIndex((inventoryItem) => {
-      return inventoryItem.uniqueId === uniqueId;
-    });
-
-    if (inventoryItemIndex === -1) {
-      return res.status(404).json({ message: "Item not found in inventory" });
-    }
-
-    // Remove the item from the user's inventory
-    const [inventoryItem] = user.inventory.splice(inventoryItemIndex, 1);
-
-    await user.save();
-
-    // Find the original item document
-    const itemDocument = await Item.findById(inventoryItem._id);
-    if (!itemDocument) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-
-    // Create a new marketplace item with the item object
-    const marketplaceItem = new Marketplace({
-      sellerId: user._id,
-      item: itemDocument._id,
-      price,
-      itemName: itemDocument.name,
-      itemImage: itemDocument.image,
-      rarity: itemDocument.rarity,
-      uniqueId: inventoryItem.uniqueId,
-    });
-
-    await marketplaceItem.save();
-
-    res.json(marketplaceItem);
   });
 
   // Get all listings
@@ -144,99 +157,135 @@ module.exports = (io) => {
   // Delete listing
   router.delete("/:id", isAuthenticated, async (req, res) => {
     try {
-      const query = Marketplace.where({
+      // atomically remove only if it belongs to this seller
+      const item = await Marketplace.findOneAndDelete({
         uniqueId: req.params.id,
         sellerId: req.user._id,
       });
-      const item = await query.findOne();
 
       if (!item) {
         return res.status(404).json({ message: "Item not found" });
       }
 
-      if (item.sellerId.toString() !== req.user._id.toString()) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      await Marketplace.deleteOne({ uniqueId: req.params.id });
-
-      // Add the item back to the user's inventory
-      const user = await User.findById(req.user._id);
-      user.inventory.push({
-        _id: item.item,
-        name: item.itemName,
-        image: item.itemImage,
-        rarity: item.rarity,
-        createdAt: item.createdAt,
-        uniqueId: item.uniqueId,
-      });
-      await user.save();
+      // give the item back to the seller's inventory
+      await User.updateOne(
+        { _id: req.user._id },
+        {
+          $push: {
+            inventory: {
+              _id: item.item,
+              name: item.itemName,
+              image: item.itemImage,
+              rarity: item.rarity,
+              case: item.case,
+              createdAt: item.createdAt,
+              uniqueId: item.uniqueId,
+            },
+          },
+        }
+      );
 
       res.json({ message: "Item removed" });
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
     }
   });
 
   // Buy an item
   router.post("/buy/:id", isAuthenticated, async (req, res) => {
-    const item = await Marketplace.findById(req.params.id);
-    const user = await User.findById(req.user._id);
+    try {
+      const buyerId = req.user._id;
 
-    if (!item) {
-      return res.status(404).json({ message: "Item not found" });
+      const listing = await Marketplace.findById(req.params.id);
+      if (!listing) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+
+      if (req.user.level < 10) {
+        return res.status(400).json({ message: "You must be at least level 10 to buy items" });
+      }
+
+      if (listing.sellerId.toString() === buyerId.toString()) {
+        return res.status(400).json({ message: "You can't buy your own listing" });
+      }
+
+      // atomically claim the listing so two buyers can't both purchase it
+      const claimed = await Marketplace.findOneAndDelete({ _id: listing._id });
+      if (!claimed) {
+        return res.status(404).json({ message: "Item no longer available" });
+      }
+
+      const inventoryItem = {
+        _id: claimed.item,
+        name: claimed.itemName,
+        image: claimed.itemImage,
+        rarity: claimed.rarity,
+        case: claimed.case,
+        createdAt: claimed.createdAt,
+        uniqueId: claimed.uniqueId,
+      };
+
+      // atomically debit the buyer and grant the item only if the balance covers it
+      const updatedBuyer = await User.findOneAndUpdate(
+        { _id: buyerId, walletBalance: { $gte: claimed.price } },
+        { $inc: { walletBalance: -claimed.price }, $push: { inventory: inventoryItem } },
+        { new: true }
+      );
+
+      if (!updatedBuyer) {
+        // payment failed: put the listing back on the market
+        await Marketplace.create({
+          sellerId: claimed.sellerId,
+          item: claimed.item,
+          case: claimed.case,
+          uniqueId: claimed.uniqueId,
+          price: claimed.price,
+          itemName: claimed.itemName,
+          itemImage: claimed.itemImage,
+          rarity: claimed.rarity,
+        });
+        return res.status(400).json({ message: "Insufficient balance" });
+      }
+
+      // pay the seller (atomic credit; account may have been deleted)
+      const seller = await User.findByIdAndUpdate(
+        claimed.sellerId,
+        { $inc: { walletBalance: claimed.price } },
+        { new: true }
+      );
+
+      res.json({ message: "Item purchased" });
+
+      // notify the seller after responding; failures here must not re-send headers
+      try {
+        if (seller) {
+          const newNotification = new Notification({
+            senderId: buyerId,
+            receiverId: seller._id,
+            type: 'message',
+            title: 'Item Sold',
+            content: `Your ${claimed.itemName} has been sold for K₽${claimed.price}`,
+          });
+          await newNotification.save();
+
+          io.to(seller._id.toString()).emit("newNotification", {
+            message: `Your ${claimed.itemName} has been sold for K₽${claimed.price}`
+          });
+
+          io.to(seller._id.toString()).emit('userDataUpdated', {
+            walletBalance: seller.walletBalance,
+            xp: seller.xp,
+            level: seller.level,
+          });
+        }
+      } catch (notifyErr) {
+        console.error(notifyErr);
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
     }
-
-    if (user.level < 10) {
-      return res.status(400).json({ message: "You must be at least level 10 to buy items" });
-    }
-
-    if (user.walletBalance < item.price) {
-      return res.status(400).json({ message: "Insufficient balance" });
-    }
-
-    user.walletBalance -= item.price;
-    user.inventory.push({
-      _id: item.item,
-      name: item.itemName,
-      image: item.itemImage,
-      rarity: item.rarity,
-      createdAt: item.createdAt,
-      uniqueId: item.uniqueId,
-    });
-    await user.save();
-
-    const seller = await User.findById(item.sellerId);
-    seller.walletBalance += item.price;
-    await seller.save();
-
-    await Marketplace.deleteOne({ _id: req.params.id });
-
-    res.json({ message: "Item purchased" });
-
-    // Create a new notification
-    const newNotification = new Notification({
-      senderId: user._id,
-      receiverId: seller._id,
-      type: 'message',
-      title: 'Item Sold',
-      content: `Your ${item.itemName} has been sold for K₽${item.price}`,
-    });
-
-    // Save the notification to the database
-    await newNotification.save();
-
-    // Emit an event to the seller
-    io.to(seller._id.toString()).emit("newNotification", {
-      message: `Your ${item.itemName} has been sold for K₽${item.price}`
-    });
-
-    const SellerDataPayload = {
-      walletBalance: seller.walletBalance,
-      xp: seller.xp,
-      level: seller.level,
-    };
-    io.to(seller._id.toString()).emit('userDataUpdated', SellerDataPayload);
   });
 
   return router;
