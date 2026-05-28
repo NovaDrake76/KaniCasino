@@ -9,58 +9,39 @@ const baseChances = {
   "5": { "1": 0.002, "2": 0.01, "3": 0.05, "4": 0.1, "5": 0.5 }
 };
 
+const rarityFactors = { "4": 0.7, "5": 0.5 };
+const rarityCaps = { "1": 0.8, "2": 0.7, "3": 0.6, "4": 0.45, "5": 0.2 };
+const diminishingRate = 0.9; // 90% effectiveness for each subsequent item
+
+// success rate uses 1 - product(1 - chance), so each item can only help. the
+// per-item contributions are sorted strongest-first before the diminishing
+// factor is applied, which makes the result independent of selection order and
+// keeps it monotonic (adding an item never lowers the rate).
 const calculateSuccessRate = (selectedItems, targetRarity) => {
-  let totalChance = 1;
-  let diminishingFactor = 1;  // Initialize a diminishing factor
-  let rarityFactor = 1;  // Initialize a rarity factor
+  const rarityFactor = rarityFactors[targetRarity] || 1;
 
-  const diminishingRate = 0.9; // 90% effectiveness for each subsequent item
+  const contributions = selectedItems
+    .map((item) => {
+      const baseChance = (baseChances[item.rarity] || {})[targetRarity] || 0;
+      return baseChance * rarityFactor;
+    })
+    .sort((a, b) => b - a);
 
-  // Apply a rarity factor to make it harder to get higher rarities
-  if (targetRarity == "4") {
-    rarityFactor = 0.7;
-  } else if (targetRarity == "5") {
-    rarityFactor = 0.5;
-  }
+  let failChance = 1;
+  contributions.forEach((chance, index) => {
+    failChance *= 1 - chance * Math.pow(diminishingRate, index);
+  });
 
-  for (const item of selectedItems) {
-    const baseChance = baseChances[item.rarity][targetRarity];
-
-    // Apply rarity factor conditionally
-    if (parseInt((targetRarity), 10) >= 3 && selectedItems.length > 1) {
-      totalChance *= (1 - (baseChance * diminishingFactor * rarityFactor));
-      rarityFactor = rarityFactor / 1.11;
-    } else {
-      totalChance *= (1 - (baseChance * diminishingFactor));
-    }
-
-    diminishingFactor *= diminishingRate;  // Reduce the effectiveness for the next item
-  }
-
-  // Apply diminishing returns
-  totalChance = 1 - totalChance;
-
-  // Cap the chance by rarity
-  if (targetRarity == "2") {
-    return Math.min(totalChance, 0.7);
-  }
-  else if (targetRarity == "3") {
-    return Math.min(totalChance, 0.6);
-  }
-  else if (targetRarity == "4") {
-    return Math.min(totalChance, 0.45);
-  }
-  else if (targetRarity == "5") {
-    return Math.min(totalChance, 0.2);
-  } else {
-    return 0.8;
-  }
+  const successRate = 1 - failChance;
+  const cap = rarityCaps[targetRarity] !== undefined ? rarityCaps[targetRarity] : 0.8;
+  return Math.min(successRate, cap);
 };
 
 // Helper function to validate if all items belong to the same case
 const allItemsFromSameCase = (items) => {
   const caseId = items[0].case;
-  return items.every((item) => item.case.toString() === caseId.toString());
+  if (!caseId) return false;
+  return items.every((item) => item.case && item.case.toString() === caseId.toString());
 };
 
 const verifyLesserRarity = (selectedItems, targetItem) => {
@@ -95,6 +76,14 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       return { status: 400, message: "No items selected" };
     }
 
+    // backfill case for items that lost it (e.g. bought before case was preserved)
+    for (const item of selectedItems) {
+      if (!item.case) {
+        const sourceItem = await Item.findById(item._id);
+        if (sourceItem) item.case = sourceItem.case;
+      }
+    }
+
     if (!allItemsFromSameCase([...selectedItems, targetItem])) {
       return { status: 400, message: "All items must be from the same case" };
     }
@@ -103,10 +92,21 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       return { status: 400, message: "You can't upgrade to a lesser rarity" };
     }
 
-    // Remove the selected items from the user's inventory
-    user.inventory = user.inventory.filter(
-      (invItem) => !selectedItemIds.includes(invItem.uniqueId)
+    // atomically consume the selected items; the pre-update doc tells us how many
+    // were actually present, so a concurrent request can't spend them twice
+    const before = await User.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { inventory: { uniqueId: { $in: selectedItemIds } } } }
     );
+    if (!before) {
+      return { status: 404, message: "User not found" };
+    }
+    const removedCount = before.inventory.filter((invItem) =>
+      selectedItemIds.includes(invItem.uniqueId)
+    ).length;
+    if (removedCount !== selectedItems.length) {
+      return { status: 400, message: "Items no longer available" };
+    }
 
     // Calculate the success rate and attempt the upgrade
     const successRate = calculateSuccessRate(selectedItems, targetItem.rarity);
@@ -114,18 +114,23 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
 
     if (isSuccess) {
       // Add the target item to the user's inventory
-      user.inventory.push({
-        _id: targetItem._id,
-        name: targetItem.name,
-        image: targetItem.image,
-        rarity: targetItem.rarity,
-        case: targetItem.case,
-        createdAt: new Date(),
-        uniqueId: require('uuid').v4(),
-      });
+      await User.updateOne(
+        { _id: userId },
+        {
+          $push: {
+            inventory: {
+              _id: targetItem._id,
+              name: targetItem.name,
+              image: targetItem.image,
+              rarity: targetItem.rarity,
+              case: targetItem.case,
+              createdAt: new Date(),
+              uniqueId: require('uuid').v4(),
+            },
+          },
+        }
+      );
     }
-
-    await user.save();
 
     return { status: 200, success: isSuccess, item: isSuccess ? targetItem : null };
   } catch (error) {
