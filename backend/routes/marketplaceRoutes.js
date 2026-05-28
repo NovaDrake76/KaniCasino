@@ -257,25 +257,30 @@ module.exports = (io) => {
 
       res.json({ message: "Item purchased" });
 
-      if (seller) {
-        const newNotification = new Notification({
-          senderId: buyerId,
-          receiverId: seller._id,
-          type: 'message',
-          title: 'Item Sold',
-          content: `Your ${claimed.itemName} has been sold for K₽${claimed.price}`,
-        });
-        await newNotification.save();
+      // notify the seller after responding; failures here must not re-send headers
+      try {
+        if (seller) {
+          const newNotification = new Notification({
+            senderId: buyerId,
+            receiverId: seller._id,
+            type: 'message',
+            title: 'Item Sold',
+            content: `Your ${claimed.itemName} has been sold for K₽${claimed.price}`,
+          });
+          await newNotification.save();
 
-        io.to(seller._id.toString()).emit("newNotification", {
-          message: `Your ${claimed.itemName} has been sold for K₽${claimed.price}`
-        });
+          io.to(seller._id.toString()).emit("newNotification", {
+            message: `Your ${claimed.itemName} has been sold for K₽${claimed.price}`
+          });
 
-        io.to(seller._id.toString()).emit('userDataUpdated', {
-          walletBalance: seller.walletBalance,
-          xp: seller.xp,
-          level: seller.level,
-        });
+          io.to(seller._id.toString()).emit('userDataUpdated', {
+            walletBalance: seller.walletBalance,
+            xp: seller.xp,
+            level: seller.level,
+          });
+        }
+      } catch (notifyErr) {
+        console.error(notifyErr);
       }
     } catch (err) {
       console.error(err);
