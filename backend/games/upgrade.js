@@ -98,6 +98,9 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       { _id: userId },
       { $pull: { inventory: { uniqueId: { $in: selectedItemIds } } } }
     );
+    if (!before) {
+      return { status: 404, message: "User not found" };
+    }
     const removedCount = before.inventory.filter((invItem) =>
       selectedItemIds.includes(invItem.uniqueId)
     ).length;
