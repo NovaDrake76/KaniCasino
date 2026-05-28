@@ -48,9 +48,10 @@ router.post(
 
       if (!isValidBase64(profilePicture) && profilePicture !== "") return res.status(400).json({ message: "Invalid profile picture" })
 
-      // Create new user
-      const originalPassword = decryptWithAES(password);
-      user = new User({ email, originalPassword, username, profilePicture, isAdmin: false });
+      // Create new user. accept the password as plain text; for backwards
+      // compatibility, fall back to decrypting a legacy AES-wrapped value.
+      const originalPassword = decryptWithAES(password) || password;
+      user = new User({ email, username, profilePicture, isAdmin: false });
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
@@ -83,10 +84,13 @@ router.post(
 );
 
 const decryptWithAES = (ciphertext) => {
-  const passphrase = passwordKey;
-  const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
-  const originalText = bytes.toString(CryptoJS.enc.Utf8);
-  return originalText;
+  // returns "" for anything that isn't a legacy AES-wrapped value (incl. plain text)
+  try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, passwordKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  } catch (err) {
+    return "";
+  }
 };
 
 // Login user
@@ -113,9 +117,8 @@ router.post(
         return res.status(400).json({ message: "Email not found" });
       }
 
-      // Compare passwords
-
-      const originalPassword = decryptWithAES(password);
+      // Compare passwords (plain text, with a fallback for legacy AES-wrapped values)
+      const originalPassword = decryptWithAES(password) || password;
 
       const isMatch = await bcrypt.compare(originalPassword, user.password);
       if (!isMatch) {
@@ -474,13 +477,12 @@ router.put('/profilePicture', authMiddleware.isAuthenticated, async (req, res) =
 });
 
 
-// Get user by id
+// Get user by id (public profile: only non-sensitive fields)
 router.get("/:id", async (req, res) => {
   try {
     res.json(
       await User.findById(req.params.id)
-        .select("-inventory")
-        .select("-password")
+        .select("username profilePicture xp level fixedItem nextBonus weeklyWinnings")
     );
   } catch (err) {
     console.error(err.message);

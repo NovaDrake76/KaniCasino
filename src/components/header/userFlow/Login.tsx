@@ -5,7 +5,6 @@ import MainButton from "../../MainButton";
 import UserContext from "../../../UserContext";
 import { Tooltip } from "react-tooltip";
 import { GoogleLogin } from '@react-oauth/google';
-import CryptoJS from 'crypto-js';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -18,8 +17,7 @@ const LoginPage = () => {
     setLoadingButton(true);
     e.preventDefault();
     try {
-      let encryptedPassword = encryptWithAES(password);
-      await login(email, encryptedPassword)
+      await login(email, password)
         .then((response) => {
           saveTokens(response.token, "");
           toggleLogin();
@@ -50,13 +48,6 @@ const LoginPage = () => {
       console.error('Error during Google login', error);
     }
   };
-
-
-  const encryptWithAES = (text: string) => {
-    const passphrase = import.meta.env.VITE_PASSWORD_KEY;
-    return CryptoJS.AES.encrypt(text, passphrase).toString();
-  };
-
 
 
   return (
