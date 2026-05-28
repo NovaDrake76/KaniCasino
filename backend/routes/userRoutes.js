@@ -49,8 +49,8 @@ router.post(
       if (!isValidBase64(profilePicture) && profilePicture !== "") return res.status(400).json({ message: "Invalid profile picture" })
 
       // Create new user. accept the password as plain text; for backwards
-      // compatibility, fall back to decrypting a legacy AES-wrapped value.
-      const originalPassword = decryptWithAES(password) || password;
+      // compatibility, decrypt a legacy AES-wrapped value if detected.
+      const originalPassword = resolvePassword(password);
       user = new User({ email, username, profilePicture, isAdmin: false });
 
       // Hash password
@@ -84,13 +84,23 @@ router.post(
 );
 
 const decryptWithAES = (ciphertext) => {
-  // returns "" for anything that isn't a legacy AES-wrapped value (incl. plain text)
   try {
     const bytes = CryptoJS.AES.decrypt(ciphertext, passwordKey);
     return bytes.toString(CryptoJS.enc.Utf8);
   } catch (err) {
     return "";
   }
+};
+
+// passwords now arrive as plain text. legacy clients AES-encrypted them; that
+// output always starts with the base64 of "Salted__", so we can reliably detect
+// and decrypt it without ever misreading a plain-text password as ciphertext.
+const resolvePassword = (input) => {
+  if (typeof input === "string" && input.startsWith("U2FsdGVk")) {
+    const decrypted = decryptWithAES(input);
+    if (decrypted) return decrypted;
+  }
+  return input;
 };
 
 // Login user
@@ -117,8 +127,8 @@ router.post(
         return res.status(400).json({ message: "Email not found" });
       }
 
-      // Compare passwords (plain text, with a fallback for legacy AES-wrapped values)
-      const originalPassword = decryptWithAES(password) || password;
+      // Compare passwords (plain text, decrypting legacy AES-wrapped values)
+      const originalPassword = resolvePassword(password);
 
       const isMatch = await bcrypt.compare(originalPassword, user.password);
       if (!isMatch) {
