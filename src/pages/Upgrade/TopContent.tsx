@@ -35,15 +35,6 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
         }));
     };
 
-    // //play /upgrade.wav when spinning
-    // const audio = new Audio("/upgrade.wav");
-
-    // if (spinning) {
-    //     audio.play();
-    // } else {
-    //     audio.pause();
-    // }
-
     const UpgradeItems = async () => {
         setLoadingUpgrade(true)
         setFinished(false);

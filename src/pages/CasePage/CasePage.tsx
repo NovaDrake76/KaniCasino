@@ -48,12 +48,6 @@ const CasePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // let audio = new Audio("/open.mp3");
-
-  // const playAudio = () => {
-  //   audio.play();
-  // };
-
   const resetProps = () => {
     setShowPrize(false);
     setAnimationAux2(false);
@@ -88,7 +82,6 @@ const CasePage = () => {
     try {
       const response = await openBox(id, quantity);
       setOpenedItems(response.items);
-      // playAudio();
     } catch (error: any) {
       console.log(error);
       setLoadingButton(false);
