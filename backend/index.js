@@ -15,27 +15,33 @@ const server = http.createServer(app);
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+// allowed origins are configurable via ALLOWED_ORIGINS (comma-separated); falls
+// back to the production domain so behaviour is unchanged when it isn't set
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://kanicasino.com")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const isOriginAllowed = (origin) => isDevelopment || allowedOrigins.includes(origin);
+
+const corsOrigin = (origin, callback) => {
+  if (isOriginAllowed(origin)) {
+    callback(null, true);
+  } else {
+    callback(new Error("Not allowed by CORS"));
+  }
+};
+
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (isDevelopment) {
-      callback(null, true);
-    } else {
-      if (origin === "https://kanicasino.com") {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    }
-  },
+  origin: corsOrigin,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   credentials: true,
 };
 
 app.use((req, res, next) => {
-  const allowedOrigins = isDevelopment ? ["*"] : ["https://kanicasino.com"];
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+  if (isDevelopment || allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin || "*");
     res.setHeader("Access-Control-Allow-Credentials", "true");
   } else {
@@ -48,17 +54,7 @@ app.use((req, res, next) => {
 
 const io = socketIO(server, {
   cors: {
-    origin: function (origin, callback) {
-      if (isDevelopment) {
-        callback(null, true);
-      } else {
-        if (origin === "https://kanicasino.com") {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
-        }
-      }
-    },
+    origin: corsOrigin,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     credentials: true,
   },
