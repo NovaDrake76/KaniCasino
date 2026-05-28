@@ -16,12 +16,16 @@ function calculateLevelFromXp(xp) {
   return level;
 }
 
-// atomically debit `cost` only if the balance covers it, and grant xp.
+// atomically debit `cost` only if the balance covers it, optionally granting xp.
 // returns the updated user, or null when funds are insufficient.
-async function chargeUser(userId, cost) {
+async function chargeUser(userId, cost, { awardXp = true } = {}) {
+  const inc = awardXp
+    ? { walletBalance: -cost, xp: cost * 5 }
+    : { walletBalance: -cost };
+
   const user = await User.findOneAndUpdate(
     { _id: userId, walletBalance: { $gte: cost } },
-    { $inc: { walletBalance: -cost, xp: cost * 5 } },
+    { $inc: inc },
     { new: true }
   );
 
@@ -29,10 +33,12 @@ async function chargeUser(userId, cost) {
     return null;
   }
 
-  const newLevel = calculateLevelFromXp(user.xp);
-  if (newLevel !== user.level) {
-    user.level = newLevel;
-    await User.updateOne({ _id: userId }, { $set: { level: newLevel } });
+  if (awardXp) {
+    const newLevel = calculateLevelFromXp(user.xp);
+    if (newLevel !== user.level) {
+      user.level = newLevel;
+      await User.updateOne({ _id: userId }, { $set: { level: newLevel } });
+    }
   }
 
   return user;
