@@ -3,6 +3,5 @@ export interface SlotProps {
     betAmount: number;
     gridState: string[];
     lastSpinResult: any[];
-    manekiNekoFeature: boolean;
     totalPayout: number;
 }

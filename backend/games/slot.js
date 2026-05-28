@@ -1,5 +1,3 @@
-const SlotGame = require('../models/Slot');
-const User = require('../models/User');
 const { chargeUser, creditUser } = require("../utils/economy");
 
 class SlotGameController {
@@ -136,75 +134,6 @@ class SlotGameController {
         if (diagonal2Payout > 0) wins.push({ line: "Diagonal 2", payout: diagonal2Payout });
 
         return wins;
-    }
-
-    static checkForManekiNeko(grid) {
-        // Define the condition for triggering the Maneki-neko feature
-        const triggerCondition = (grid) => {
-            return grid[3] === 'wild' && grid[4] === 'wild' && grid[5] === 'wild';
-        };
-
-        if (triggerCondition(grid)) {
-            const randomSymbol = this.getRandomSymbol();
-            const newGrid = this.fillLateralReels(grid, randomSymbol);
-
-            let winAchieved = false;
-            while (!winAchieved) {
-                this.spinCentralReel(newGrid);
-                winAchieved = this.checkWin(newGrid);
-            }
-
-            return {
-                triggered: true,
-                newGrid: newGrid
-            };
-        } else {
-            return { triggered: false };
-        }
-    }
-
-    static getRandomSymbol() {
-        const symbols = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
-        return symbols[Math.floor(Math.random() * symbols.length)];
-    }
-
-    static fillLateralReels(grid, symbol) {
-        return [
-            symbol, grid[1], 'wild',
-            symbol, grid[4], 'wild',
-            symbol, grid[7], 'wild'
-        ];
-    }
-
-    static spinCentralReel(grid) {
-        for (let i of [1, 4, 7]) {
-            grid[i] = this.getRandomSymbol();
-        }
-    }
-
-    static checkWin(grid) {
-        const paylines = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6]
-        ];
-
-        const wins = [];
-        for (const line of paylines) {
-            if (grid[line[0]] === grid[line[1]] && grid[line[1]] === grid[line[2]] && grid[line[0]] !== '') {
-                wins.push({
-                    line: line,
-                    symbol: grid[line[0]],
-                    multiplier: this.getMultiplier(grid[line[0]])
-                });
-            }
-        }
-        return wins;
-    }
-
-    static getMultiplier(symbol) {
-        const multipliers = {
-            'red': 3, 'blue': 5, 'green': 8, 'yin_yang': 10, 'hakkero': 25, 'yellow': 100, 'wild': 250
-        };
-        return multipliers[symbol] || 0;
     }
 }
 
