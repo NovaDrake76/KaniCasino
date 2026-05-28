@@ -28,55 +28,30 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
         "5": { "1": 0.002, "2": 0.01, "3": 0.05, "4": 0.1, "5": 0.5 }
     };
 
+    // mirrors the server formula exactly (sorted strongest-first, order-independent)
+    // so the displayed rate matches the rate the server actually rolls
+    const rarityFactors: any = { "4": 0.7, "5": 0.5 };
+    const rarityCaps: any = { "1": 0.8, "2": 0.7, "3": 0.6, "4": 0.45, "5": 0.2 };
+    const diminishingRate = 0.9;
+
     const calculateSuccessRate = (selectedItems: any, targetRarity: string) => {
-        let totalChance = 1;
-        let diminishingFactor = 1;  // Initialize a diminishing factor
-        let rarityFactor = 1;  // Initialize a rarity factor
+        const rarityFactor = rarityFactors[targetRarity] || 1;
 
-        const diminishingRate = 0.9; // 90% effectiveness for each subsequent item
+        const contributions = selectedItems
+            .map((item: any) => {
+                const baseChance = (baseChances[item.item.rarity] || {})[targetRarity] || 0;
+                return baseChance * rarityFactor;
+            })
+            .sort((a: number, b: number) => b - a);
 
-        // Apply a rarity factor to make it harder to get higher rarities
-        if (targetRarity == "4") {
-            rarityFactor = 0.7;
-        } else if (targetRarity == "5") {
-            rarityFactor = 0.5;
-        }
+        let failChance = 1;
+        contributions.forEach((chance: number, index: number) => {
+            failChance *= 1 - chance * Math.pow(diminishingRate, index);
+        });
 
-        for (const item of selectedItems) {
-            const baseChance = baseChances[item.item.rarity][targetRarity];
-
-            // Apply rarity factor conditionally
-            if (parseInt((targetRarity), 10) >= 3 && selectedItems.length > 1) {
-                totalChance *= (1 - (baseChance * diminishingFactor * rarityFactor));
-                rarityFactor = rarityFactor / 1.11;
-            } else {
-                totalChance *= (1 - (baseChance * diminishingFactor));
-            }
-
-            diminishingFactor *= diminishingRate;  // Reduce the effectiveness for the next item
-        }
-
-        // Apply diminishing returns
-        totalChance = 1 - totalChance;
-
-
-        // Cap the chance by rarity
-        if (targetRarity == "2") {
-            return Math.min(totalChance, 0.7);
-        }
-        else if (targetRarity == "3") {
-            return Math.min(totalChance, 0.6);
-
-        }
-        else if (targetRarity == "4") {
-            return Math.min(totalChance, 0.45);
-
-        }
-        else if (targetRarity == "5") {
-            return Math.min(totalChance, 0.2);
-        } else {
-            return 0.8;
-        }
+        const successRate = 1 - failChance;
+        const cap = rarityCaps[targetRarity] !== undefined ? rarityCaps[targetRarity] : 0.8;
+        return Math.min(successRate, cap);
     };
 
     useEffect(() => {
