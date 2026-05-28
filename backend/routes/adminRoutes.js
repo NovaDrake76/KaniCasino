@@ -17,8 +17,8 @@ router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
 
 //create case
 router.post("/cases", isAuthenticated, isAdmin, async (req, res) => {
-  const { name, description, price, items } = req.body;
-  const newCase = new Case({ name, description, price, items });
+  const { title, image, price, items } = req.body;
+  const newCase = new Case({ title, image, price, items });
 
   try {
     const savedCase = await newCase.save();
