@@ -6,7 +6,7 @@ const User = require("../models/User");
 const Case = require("../models/Case");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
-const updateLevel = require("../utils/updateLevel");
+const { calculateLevelFromXp } = require("../utils/economy");
 const { v4: uuidv4 } = require('uuid');
 const mongoose = require("mongoose");
 const { create } = require("lodash");
@@ -108,9 +108,7 @@ module.exports = (io) => {
         return res.status(400).json({ message: "You need to open at least 1 case" });
       }
 
-      if (user.walletBalance < (caseData.price * quantityToOpen)) {
-        return res.status(400).json({ message: "Insufficient balance" });
-      }
+      const cost = caseData.price * quantityToOpen;
 
       for (let i = 0; i < quantityToOpen; i++) {
         const winningItem = getWinningItem(caseData);
@@ -118,19 +116,25 @@ module.exports = (io) => {
         winningItems.push(itemWithUniqueId);
       }
 
-      // Add the entire winning items object to the user's inventory
-      //user.inventory.unshift(...winningItems);
-
-      await User.updateOne(
-        { _id: user._id },
+      // atomically charge the cost and add the items only if the balance covers it
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: user._id, walletBalance: { $gte: cost } },
         {
-          $push: { inventory: winningItems }
-        }
-      )
+          $inc: { walletBalance: -cost, xp: cost * 5 },
+          $push: { inventory: { $each: winningItems } },
+        },
+        { new: true }
+      );
 
-      updateLevel(user, caseData.price * quantityToOpen);
+      if (!updatedUser) {
+        return res.status(400).json({ message: "Insufficient balance" });
+      }
 
-      await user.save();
+      const newLevel = calculateLevelFromXp(updatedUser.xp);
+      if (newLevel !== updatedUser.level) {
+        updatedUser.level = newLevel;
+        await User.updateOne({ _id: user._id }, { $set: { level: newLevel } });
+      }
 
       const winnerUser = {
         name: user.username,
@@ -148,9 +152,9 @@ module.exports = (io) => {
       res.json({ items: winningItems });
 
       const userDataPayload = {
-        walletBalance: user.walletBalance,
-        xp: user.xp,
-        level: user.level,
+        walletBalance: updatedUser.walletBalance,
+        xp: updatedUser.xp,
+        level: updatedUser.level,
       }
       io.to(user._id.toString()).emit('userDataUpdated', userDataPayload);
 

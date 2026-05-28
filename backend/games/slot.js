@@ -1,36 +1,27 @@
 const SlotGame = require('../models/Slot');
 const User = require('../models/User');
-const updateLevel = require("../utils/updateLevel");
-const updateUserWinnings = require("../utils/updateUserWinnings");
+const { chargeUser, creditUser } = require("../utils/economy");
 
 class SlotGameController {
 
     static async spin(userId, betAmount, io) {
 
         // Check bet amount
-        if (isNaN(betAmount) || betAmount < 0.5 || betAmount > 50000) {
+        if (isNaN(betAmount) || betAmount < 1 || betAmount > 50000) {
             throw new Error("Invalid bet amount");
         }
-        // Check user's balance
-        const player = await User.findById(userId).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-inventory");
-        if (player.walletBalance < betAmount) {
+
+        // atomically take the stake, rejecting if the balance can't cover it
+        const player = await chargeUser(userId, betAmount);
+        if (!player) {
             throw new Error("Insufficient balance");
         }
-
-        updateLevel(player, betAmount);
 
         // Generate a random grid state
         const gridState = this.generateRandomGrid();
 
         // Calculate wins
         const winResults = SlotGameController.calculateWins(gridState);
-
-        // Check for special features
-        let manekiNekoFeature = false;
-        if (this.checkForManekiNeko(gridState)) {
-            manekiNekoFeature = true;
-            // Implement logic for Maneki-neko feature
-        }
 
         // Calculate total payout
         function calculateTotalPayout(winResults) {
@@ -42,18 +33,18 @@ class SlotGameController {
             return totalPayout;
         }
 
-        // Update player's balance 
-        if (winResults.length > 0) {
-            const totalPayout = calculateTotalPayout(winResults);
-            player.walletBalance += totalPayout;
-            updateUserWinnings(player, totalPayout);
-        }
+        const totalPayout = calculateTotalPayout(winResults);
 
-        await player.save();
+        // pay out winnings atomically
+        let balanceAfter = player.walletBalance;
+        if (totalPayout > 0) {
+            const credited = await creditUser(userId, totalPayout, totalPayout);
+            balanceAfter = credited.walletBalance;
+        }
 
         // Emit updated user data
         const updatedUserData = {
-            walletBalance: player.walletBalance,
+            walletBalance: balanceAfter,
             xp: player.xp,
             level: player.level,
         };
@@ -68,8 +59,7 @@ class SlotGameController {
             betAmount: betAmount,
             gridState: gridState,
             lastSpinResult: winResults,
-            manekiNekoFeature: manekiNekoFeature,
-            totalPayout: calculateTotalPayout(winResults)
+            totalPayout: totalPayout
         };
     }
 
