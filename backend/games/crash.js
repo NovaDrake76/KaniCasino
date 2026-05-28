@@ -99,6 +99,8 @@ const crashGame = (io) => {
   });
 
   const calculateMultiplier = () => {
+    if (!gameState.gameStartTime) return 1.0; // no round running
+
     const timeElapsed = (Date.now() - gameState.gameStartTime) / 1000; // seconds
 
     // multiplier grows exponentially with time, capped at the crash point
