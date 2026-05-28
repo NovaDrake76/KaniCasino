@@ -76,7 +76,10 @@ function App() {
 
   useEffect(() => {
     if (userData && userData.id && !joinedRoom) {
-      socket.emit("joinRoom", userData.id);
+      // reconnect so the handshake re-runs with the now-available token; the
+      // server authenticates it and joins this user's private room
+      socket.disconnect();
+      socket.connect();
       setJoinedRoom(true);
     }
   }, [joinedRoom, socket, userData]);

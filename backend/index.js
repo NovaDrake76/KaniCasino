@@ -6,6 +6,7 @@ const socketIO = require("socket.io");
 const cronJobs = require("./tasks/cronJobs");
 const checkApiKey = require("./middleware/checkApiKey");
 const rateLimit = require("express-rate-limit");
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -120,13 +121,29 @@ server.listen(port, () => {
 
 let onlineUsers = 0;
 
+// optional auth: a valid token binds socket.userId; anonymous sockets may still
+// watch games but the game handlers ignore any client-supplied identity.
+io.use((socket, next) => {
+  try {
+    const token = socket.handshake.auth && socket.handshake.auth.token;
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      socket.userId = decoded.userId;
+    }
+  } catch (err) {
+    // invalid/expired token: continue unauthenticated
+  }
+  next();
+});
+
 io.on("connection", (socket) => {
   onlineUsers++;
   io.emit("onlineUsers", onlineUsers);
 
-  socket.on("joinRoom", (userId) => {
-    socket.join(userId);
-  });
+  // join the authenticated user's private room for targeted updates
+  if (socket.userId) {
+    socket.join(socket.userId.toString());
+  }
 
   socket.on("disconnect", () => {
     onlineUsers--;
