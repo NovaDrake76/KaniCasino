@@ -13,6 +13,11 @@ require("dotenv").config();
 const app = express();
 const server = http.createServer(app);
 
+// deploy webhook is mounted first, with a raw body parser, so it bypasses the
+// CORS + api-key gates below (GitHub sends neither) and can verify its own HMAC
+const { githubDeployHandler } = require("./deployWebhook");
+app.post("/deploy/github", express.raw({ type: "*/*" }), githubDeployHandler);
+
 const isDevelopment = process.env.NODE_ENV === "development";
 
 // allowed origins are configurable via ALLOWED_ORIGINS (comma-separated); falls
