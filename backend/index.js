@@ -6,6 +6,7 @@ const socketIO = require("socket.io");
 const cronJobs = require("./tasks/cronJobs");
 const checkApiKey = require("./middleware/checkApiKey");
 const rateLimit = require("express-rate-limit");
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -14,27 +15,33 @@ const server = http.createServer(app);
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+// allowed origins are configurable via ALLOWED_ORIGINS (comma-separated); falls
+// back to the production domain so behaviour is unchanged when it isn't set
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://kanicasino.com")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const isOriginAllowed = (origin) => isDevelopment || allowedOrigins.includes(origin);
+
+const corsOrigin = (origin, callback) => {
+  if (isOriginAllowed(origin)) {
+    callback(null, true);
+  } else {
+    callback(new Error("Not allowed by CORS"));
+  }
+};
+
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (isDevelopment) {
-      callback(null, true);
-    } else {
-      if (origin === "https://kanicasino.com") {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    }
-  },
+  origin: corsOrigin,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   credentials: true,
 };
 
 app.use((req, res, next) => {
-  const allowedOrigins = isDevelopment ? ["*"] : ["https://kanicasino.com"];
   const origin = req.headers.origin;
 
-  if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+  if (isDevelopment || allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin || "*");
     res.setHeader("Access-Control-Allow-Credentials", "true");
   } else {
@@ -47,17 +54,7 @@ app.use((req, res, next) => {
 
 const io = socketIO(server, {
   cors: {
-    origin: function (origin, callback) {
-      if (isDevelopment) {
-        callback(null, true);
-      } else {
-        if (origin === "https://kanicasino.com") {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
-        }
-      }
-    },
+    origin: corsOrigin,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     credentials: true,
   },
@@ -65,12 +62,14 @@ const io = socketIO(server, {
 
 const coinFlip = require("./games/coinFlip");
 const crash = require("./games/crash");
+const itemBattle = require("./games/itemBattle");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
 const itemRoutes = require("./routes/itemRoutes");
 const marketplaceRoutes = require("./routes/marketplaceRoutes")(io);
 const adminRoutes = require("./routes/adminRoutes");
 const gamesRoutes = require("./routes/gamesRoutes")(io);
+const friendsRoutes = require("./routes/friendsRoutes")(io);
 
 // Connect to MongoDB
 mongoose
@@ -104,10 +103,12 @@ app.use("/items", itemRoutes);
 app.use("/marketplace", marketplaceRoutes);
 app.use("/admin", adminRoutes);
 app.use("/games", gamesRoutes);
+app.use("/friends", friendsRoutes);
 
 // Start the games
 coinFlip(io);
 crash(io);
+itemBattle(io);
 
 // Start the cron jobs
 cronJobs.startCronJobs(io);
@@ -120,13 +121,29 @@ server.listen(port, () => {
 
 let onlineUsers = 0;
 
+// optional auth: a valid token binds socket.userId; anonymous sockets may still
+// watch games but the game handlers ignore any client-supplied identity.
+io.use((socket, next) => {
+  try {
+    const token = socket.handshake.auth && socket.handshake.auth.token;
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      socket.userId = decoded.userId;
+    }
+  } catch (err) {
+    // invalid/expired token: continue unauthenticated
+  }
+  next();
+});
+
 io.on("connection", (socket) => {
   onlineUsers++;
   io.emit("onlineUsers", onlineUsers);
 
-  socket.on("joinRoom", (userId) => {
-    socket.join(userId);
-  });
+  // join the authenticated user's private room for targeted updates
+  if (socket.userId) {
+    socket.join(socket.userId.toString());
+  }
 
   socket.on("disconnect", () => {
     onlineUsers--;

@@ -14,6 +14,10 @@ const MarketplaceSchema = new mongoose.Schema(
       ref: "Item",
       required: true,
     },
+    case: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Case",
+    },
     uniqueId: {
       type: String,
       default: uuid.v4,

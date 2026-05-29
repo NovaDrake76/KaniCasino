@@ -6,75 +6,8 @@ const User = require("../models/User");
 const Case = require("../models/Case");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
-const updateLevel = require("../utils/updateLevel");
-const { v4: uuidv4 } = require('uuid');
-const mongoose = require("mongoose");
-const { create } = require("lodash");
-
-
-// Rarities array
-const Rarities = [
-  { id: "1", chance: 0.7992 },
-  { id: "2", chance: 0.1598 },
-  { id: "3", chance: 0.032 },
-  { id: "4", chance: 0.0064 },
-  { id: "5", chance: 0.0026 },
-];
-
-// Helper functions
-function groupItemsByRarity(items) {
-  const itemsByRarity = {};
-  items.forEach((item) => {
-    if (!itemsByRarity[item.rarity]) {
-      itemsByRarity[item.rarity] = [];
-    }
-    itemsByRarity[item.rarity].push(item);
-  });
-  return itemsByRarity;
-}
-
-function getRandomWeightedItem(items, weightPropertyName) {
-  const randomNumber = Math.random();
-  let cumulativeWeight = 0;
-  for (const item of items) {
-    cumulativeWeight += item[weightPropertyName];
-    if (randomNumber <= cumulativeWeight) {
-      return item;
-    }
-  }
-}
-
-function getRandomItemFromRarity(itemsByRarity, rarity) {
-  const items = itemsByRarity[rarity];
-  if (!items || items.length === 0) {
-    return null;
-  }
-  return items[Math.floor(Math.random() * items.length)];
-}
-
-const getWinningItem = (caseData) => {
-  const itemsByRarity = groupItemsByRarity(caseData.items);
-  const winningRarity = getRandomWeightedItem(Rarities, "chance");
-  let winningItem = getRandomItemFromRarity(itemsByRarity, winningRarity.id);
-
-  if (!winningItem) {
-    const existingRarities = Object.keys(itemsByRarity);
-    const randomExistingRarity = existingRarities[Math.floor(Math.random() * existingRarities.length)];
-    winningItem = getRandomItemFromRarity(itemsByRarity, randomExistingRarity);
-  }
-  return winningItem;
-};
-
-const addUniqueInfoToItem = (item) => {
-  return {
-    _id: item._id,
-    name: item.name,
-    image: item.image,
-    rarity: item.rarity,
-    case: item.case,
-    uniqueId: require('uuid').v4(),
-  };
-};
+const { calculateLevelFromXp } = require("../utils/economy");
+const { getWinningItem, addUniqueInfoToItem } = require("../utils/caseOpening");
 
 // Exports
 module.exports = (io) => {
@@ -108,9 +41,7 @@ module.exports = (io) => {
         return res.status(400).json({ message: "You need to open at least 1 case" });
       }
 
-      if (user.walletBalance < (caseData.price * quantityToOpen)) {
-        return res.status(400).json({ message: "Insufficient balance" });
-      }
+      const cost = caseData.price * quantityToOpen;
 
       for (let i = 0; i < quantityToOpen; i++) {
         const winningItem = getWinningItem(caseData);
@@ -118,19 +49,25 @@ module.exports = (io) => {
         winningItems.push(itemWithUniqueId);
       }
 
-      // Add the entire winning items object to the user's inventory
-      //user.inventory.unshift(...winningItems);
-
-      await User.updateOne(
-        { _id: user._id },
+      // atomically charge the cost and add the items only if the balance covers it
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: user._id, walletBalance: { $gte: cost } },
         {
-          $push: { inventory: winningItems }
-        }
-      )
+          $inc: { walletBalance: -cost, xp: cost * 5 },
+          $push: { inventory: { $each: winningItems } },
+        },
+        { new: true }
+      );
 
-      updateLevel(user, caseData.price * quantityToOpen);
+      if (!updatedUser) {
+        return res.status(400).json({ message: "Insufficient balance" });
+      }
 
-      await user.save();
+      const newLevel = calculateLevelFromXp(updatedUser.xp);
+      if (newLevel !== updatedUser.level) {
+        updatedUser.level = newLevel;
+        await User.updateOne({ _id: user._id }, { $set: { level: newLevel } });
+      }
 
       const winnerUser = {
         name: user.username,
@@ -148,9 +85,9 @@ module.exports = (io) => {
       res.json({ items: winningItems });
 
       const userDataPayload = {
-        walletBalance: user.walletBalance,
-        xp: user.xp,
-        level: user.level,
+        walletBalance: updatedUser.walletBalance,
+        xp: updatedUser.xp,
+        level: updatedUser.level,
       }
       io.to(user._id.toString()).emit('userDataUpdated', userDataPayload);
 

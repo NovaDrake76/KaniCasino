@@ -1,36 +1,25 @@
-const SlotGame = require('../models/Slot');
-const User = require('../models/User');
-const updateLevel = require("../utils/updateLevel");
-const updateUserWinnings = require("../utils/updateUserWinnings");
+const { chargeUser, creditUser } = require("../utils/economy");
 
 class SlotGameController {
 
     static async spin(userId, betAmount, io) {
 
         // Check bet amount
-        if (isNaN(betAmount) || betAmount < 0.5 || betAmount > 50000) {
+        if (isNaN(betAmount) || betAmount < 1 || betAmount > 50000) {
             throw new Error("Invalid bet amount");
         }
-        // Check user's balance
-        const player = await User.findById(userId).select("-password").select("-email").select("-isAdmin").select("-nextBonus").select("-inventory");
-        if (player.walletBalance < betAmount) {
+
+        // atomically take the stake, rejecting if the balance can't cover it
+        const player = await chargeUser(userId, betAmount);
+        if (!player) {
             throw new Error("Insufficient balance");
         }
-
-        updateLevel(player, betAmount);
 
         // Generate a random grid state
         const gridState = this.generateRandomGrid();
 
         // Calculate wins
         const winResults = SlotGameController.calculateWins(gridState);
-
-        // Check for special features
-        let manekiNekoFeature = false;
-        if (this.checkForManekiNeko(gridState)) {
-            manekiNekoFeature = true;
-            // Implement logic for Maneki-neko feature
-        }
 
         // Calculate total payout
         function calculateTotalPayout(winResults) {
@@ -42,18 +31,18 @@ class SlotGameController {
             return totalPayout;
         }
 
-        // Update player's balance 
-        if (winResults.length > 0) {
-            const totalPayout = calculateTotalPayout(winResults);
-            player.walletBalance += totalPayout;
-            updateUserWinnings(player, totalPayout);
-        }
+        const totalPayout = calculateTotalPayout(winResults);
 
-        await player.save();
+        // pay out winnings atomically
+        let balanceAfter = player.walletBalance;
+        if (totalPayout > 0) {
+            const credited = await creditUser(userId, totalPayout, totalPayout);
+            balanceAfter = credited.walletBalance;
+        }
 
         // Emit updated user data
         const updatedUserData = {
-            walletBalance: player.walletBalance,
+            walletBalance: balanceAfter,
             xp: player.xp,
             level: player.level,
         };
@@ -68,8 +57,7 @@ class SlotGameController {
             betAmount: betAmount,
             gridState: gridState,
             lastSpinResult: winResults,
-            manekiNekoFeature: manekiNekoFeature,
-            totalPayout: calculateTotalPayout(winResults)
+            totalPayout: totalPayout
         };
     }
 
@@ -146,75 +134,6 @@ class SlotGameController {
         if (diagonal2Payout > 0) wins.push({ line: "Diagonal 2", payout: diagonal2Payout });
 
         return wins;
-    }
-
-    static checkForManekiNeko(grid) {
-        // Define the condition for triggering the Maneki-neko feature
-        const triggerCondition = (grid) => {
-            return grid[3] === 'wild' && grid[4] === 'wild' && grid[5] === 'wild';
-        };
-
-        if (triggerCondition(grid)) {
-            const randomSymbol = this.getRandomSymbol();
-            const newGrid = this.fillLateralReels(grid, randomSymbol);
-
-            let winAchieved = false;
-            while (!winAchieved) {
-                this.spinCentralReel(newGrid);
-                winAchieved = this.checkWin(newGrid);
-            }
-
-            return {
-                triggered: true,
-                newGrid: newGrid
-            };
-        } else {
-            return { triggered: false };
-        }
-    }
-
-    static getRandomSymbol() {
-        const symbols = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
-        return symbols[Math.floor(Math.random() * symbols.length)];
-    }
-
-    static fillLateralReels(grid, symbol) {
-        return [
-            symbol, grid[1], 'wild',
-            symbol, grid[4], 'wild',
-            symbol, grid[7], 'wild'
-        ];
-    }
-
-    static spinCentralReel(grid) {
-        for (let i of [1, 4, 7]) {
-            grid[i] = this.getRandomSymbol();
-        }
-    }
-
-    static checkWin(grid) {
-        const paylines = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [2, 4, 6]
-        ];
-
-        const wins = [];
-        for (const line of paylines) {
-            if (grid[line[0]] === grid[line[1]] && grid[line[1]] === grid[line[2]] && grid[line[0]] !== '') {
-                wins.push({
-                    line: line,
-                    symbol: grid[line[0]],
-                    multiplier: this.getMultiplier(grid[line[0]])
-                });
-            }
-        }
-        return wins;
-    }
-
-    static getMultiplier(symbol) {
-        const multipliers = {
-            'red': 3, 'blue': 5, 'green': 8, 'yin_yang': 10, 'hakkero': 25, 'yellow': 100, 'wild': 250
-        };
-        return multipliers[symbol] || 0;
     }
 }
 

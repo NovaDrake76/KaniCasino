@@ -42,17 +42,7 @@ const CoinFlip = () => {
     }
 
 
-    const user = [{
-      id: userData?.id,
-      name: userData?.username,
-      profilePicture: userData?.profilePicture,
-      level: userData?.level,
-      fixedItem: userData?.fixedItem,
-      payout: null
-    }]
-
-    socket.emit("coinFlip:bet", user[0], bet, choice);
-    socket.emit("coinFlip:choice", user[0], choice);
+    socket.emit("coinFlip:bet", bet, choice);
 
     setUserGambled(true);
     setBetAux(bet);

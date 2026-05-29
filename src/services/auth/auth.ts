@@ -10,11 +10,6 @@ export async function googleLogin(token: string) {
     return response.data;
 }
 
-export async function refreshToken(refreshToken: string) {
-    const response = await api.post('/auth/refresh-token', { refreshToken });
-    return response.data;
-}
-
 export async function register(email: string, password: string, username: string, profilePicture: any) {
     const response = await api.post('/users/register', {
         email, password, username,

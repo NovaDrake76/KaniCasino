@@ -43,34 +43,16 @@ const CrashGame = () => {
     }
 
     if (bet === null || bet < 1) return;
-    const user = [{
-      id: userData?.id,
-      name: userData?.username,
-      profilePicture: userData?.profilePicture,
-      level: userData?.level,
-      fixedItem: userData?.fixedItem,
-      payout: null,
-      walletBalance: userData?.walletBalance
-    }];
     setUserGambled(true);
 
-    socket.emit("crash:bet", user[0], bet);
+    socket.emit("crash:bet", bet);
     setUserCashedOut(false);
   };
 
   const handleCashout = () => {
-    console.log("cashout")
     setDisableButton(true); // Disable the button immediately
-    const user = {
-      id: userData?.id,
-      name: userData?.username,
-      profilePicture: userData?.profilePicture,
-      level: userData?.level,
-      fixedItem: userData?.fixedItem,
-      payout: null
-    };
 
-    socket.emit("crash:cashout", user, () => {
+    socket.emit("crash:cashout", () => {
       setDisableButton(false); // Re-enable the button after the server responds
     });
   };

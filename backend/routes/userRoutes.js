@@ -48,9 +48,10 @@ router.post(
 
       if (!isValidBase64(profilePicture) && profilePicture !== "") return res.status(400).json({ message: "Invalid profile picture" })
 
-      // Create new user
-      const originalPassword = decryptWithAES(password);
-      user = new User({ email, originalPassword, username, profilePicture, isAdmin: false });
+      // Create new user. accept the password as plain text; for backwards
+      // compatibility, decrypt a legacy AES-wrapped value if detected.
+      const originalPassword = resolvePassword(password);
+      user = new User({ email, username, profilePicture, isAdmin: false });
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
@@ -83,10 +84,23 @@ router.post(
 );
 
 const decryptWithAES = (ciphertext) => {
-  const passphrase = passwordKey;
-  const bytes = CryptoJS.AES.decrypt(ciphertext, passphrase);
-  const originalText = bytes.toString(CryptoJS.enc.Utf8);
-  return originalText;
+  try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, passwordKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  } catch (err) {
+    return "";
+  }
+};
+
+// passwords now arrive as plain text. legacy clients AES-encrypted them; that
+// output always starts with the base64 of "Salted__", so we can reliably detect
+// and decrypt it without ever misreading a plain-text password as ciphertext.
+const resolvePassword = (input) => {
+  if (typeof input === "string" && input.startsWith("U2FsdGVk")) {
+    const decrypted = decryptWithAES(input);
+    if (decrypted) return decrypted;
+  }
+  return input;
 };
 
 // Login user
@@ -113,9 +127,8 @@ router.post(
         return res.status(400).json({ message: "Email not found" });
       }
 
-      // Compare passwords
-
-      const originalPassword = decryptWithAES(password);
+      // Compare passwords (plain text, decrypting legacy AES-wrapped values)
+      const originalPassword = resolvePassword(password);
 
       const isMatch = await bcrypt.compare(originalPassword, user.password);
       if (!isMatch) {
@@ -414,32 +427,26 @@ router.put(
 
 router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
     const currentTime = new Date();
-    const nextBonusTime = new Date(user.nextBonus);
+    const currentBonus = req.user.bonusAmount;
+    const nextBonus = new Date(currentTime.getTime() + 8 * 60000); // 8 min later
+    const nextBonusAmount = Math.floor(200 * (1 + 0.1 * req.user.level));
 
-    // Check if bonus is available
-    if (currentTime >= nextBonusTime) {
-      let currentBonus = user.bonusAmount; // Get current bonus amount
-      user.walletBalance += user.bonusAmount; // Add bonus to wallet
+    // claim atomically: the nextBonus condition lets only one concurrent request through
+    const updated = await User.findOneAndUpdate(
+      { _id: req.user._id, nextBonus: { $lte: currentTime } },
+      {
+        $inc: { walletBalance: currentBonus },
+        $set: { nextBonus, bonusAmount: nextBonusAmount },
+      },
+      { new: true }
+    );
 
-      user.nextBonus = new Date(currentTime.getTime() + 8 * 60000);      // Set next bonus time to 8 min later
-      // Set bonus amount to 200 * 10% of the user current level
-      user.bonusAmount = Math.floor(200 * (1 + 0.1 * user.level));
-
-      // Save updated user
-      await user.save();
-
-      res.json({ message: `Claimed K₽${currentBonus}!`, value: currentBonus, nextBonus: user.nextBonus });
-
-    } else {
-      res.status(400).json({ message: 'Bonus not yet available' });
+    if (!updated) {
+      return res.status(400).json({ message: 'Bonus not yet available' });
     }
+
+    res.json({ message: `Claimed K₽${currentBonus}!`, value: currentBonus, nextBonus: updated.nextBonus });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
@@ -480,13 +487,12 @@ router.put('/profilePicture', authMiddleware.isAuthenticated, async (req, res) =
 });
 
 
-// Get user by id
+// Get user by id (public profile: only non-sensitive fields)
 router.get("/:id", async (req, res) => {
   try {
     res.json(
       await User.findById(req.params.id)
-        .select("-inventory")
-        .select("-password")
+        .select("username profilePicture xp level fixedItem nextBonus weeklyWinnings")
     );
   } catch (err) {
     console.error(err.message);
