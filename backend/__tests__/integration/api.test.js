@@ -99,7 +99,10 @@ describe("marketplace buy", () => {
     expect((await User.findById(buyer._id)).walletBalance).toBe(400);
     expect((await User.findById(seller._id)).walletBalance).toBe(100);
     const buyerInv = (await User.findById(buyer._id)).inventory;
-    expect(buyerInv.some((i) => i.uniqueId === listing.uniqueId)).toBe(true);
+    const bought = buyerInv.find((i) => i.uniqueId === listing.uniqueId);
+    expect(bought).toBeDefined();
+    // acquired now, so it sorts as newest (not the listing's createdAt)
+    expect(Date.now() - new Date(bought.createdAt).getTime()).toBeLessThan(60000);
 
     const again = await request(app).post(`/marketplace/buy/${listing._id}`).set(...auth(buyer));
     expect(again.status).toBe(404);
