@@ -2,6 +2,9 @@
 // `case` they were missing (items bought before case was preserved). additive and
 // idempotent — it only fills a missing case, never changes an existing one.
 //
+// safe to run on a live DB: it uses atomic positional updates that touch only the
+// `case` subfield, so it can't clobber inventory changes made by concurrent play.
+//
 // usage (from backend/):
 //   node scripts/backfillItemCase.js          # dry run, reports what would change
 //   node scripts/backfillItemCase.js --apply   # actually writes the changes
@@ -12,6 +15,7 @@ const Item = require("../models/Item");
 const Marketplace = require("../models/Marketplace");
 
 const APPLY = process.argv.includes("--apply");
+const MISSING = { $in: [null] }; // matches both a missing field and an explicit null
 
 (async () => {
   if (!process.env.MONGO_URI) {
@@ -22,60 +26,43 @@ const APPLY = process.argv.includes("--apply");
   await mongoose.connect(process.env.MONGO_URI);
   console.log(APPLY ? "APPLY mode — writing changes" : "DRY RUN — no changes will be written");
 
-  // map of itemId -> case
   const items = await Item.find({}, { _id: 1, case: 1 }).lean();
-  const caseById = new Map(items.map((i) => [i._id.toString(), i.case]));
+  const withCase = items.filter((i) => i.case);
 
-  // marketplace listings missing a case
+  // marketplace listings missing a case — one atomic updateMany per item
   let listingsFixed = 0;
-  let listingsUnresolved = 0;
-  const listings = await Marketplace.find({ $or: [{ case: { $exists: false } }, { case: null }] });
-  for (const listing of listings) {
-    const c = caseById.get(listing.item?.toString());
-    if (c) {
-      listingsFixed += 1;
-      if (APPLY) {
-        listing.case = c;
-        await listing.save();
-      }
+  for (const it of withCase) {
+    const filter = { item: it._id, case: MISSING };
+    if (APPLY) {
+      listingsFixed += (await Marketplace.updateMany(filter, { $set: { case: it.case } })).modifiedCount;
     } else {
-      listingsUnresolved += 1; // source item no longer exists
+      listingsFixed += await Marketplace.countDocuments(filter);
     }
   }
 
-  // user inventory items missing a case
-  let usersChanged = 0;
+  // user inventory items missing a case — atomic positional update per item.
+  // a null/malformed inventory slot has no _id, so it simply isn't matched.
   let invFixed = 0;
-  let invUnresolved = 0;
-  let invNullEntries = 0; // pre-existing corruption: null/empty inventory slots
-  const users = await User.find({});
-  for (const user of users) {
-    let changed = false;
-    for (const inv of user.inventory) {
-      if (!inv) {
-        invNullEntries += 1; // skip — don't touch malformed entries
-        continue;
-      }
-      if (!inv.case) {
-        const c = caseById.get(inv._id?.toString());
-        if (c) {
-          invFixed += 1;
-          changed = true;
-          if (APPLY) inv.case = c;
-        } else {
-          invUnresolved += 1;
-        }
-      }
-    }
-    if (changed) {
-      usersChanged += 1;
-      if (APPLY) await user.save();
+  for (const it of withCase) {
+    if (APPLY) {
+      const r = await User.updateMany(
+        { inventory: { $elemMatch: { _id: it._id, case: MISSING } } },
+        { $set: { "inventory.$[e].case": it.case } },
+        { arrayFilters: [{ "e._id": it._id, "e.case": MISSING }] }
+      );
+      invFixed += r.modifiedCount; // users updated for this item
+    } else {
+      const agg = await User.aggregate([
+        { $unwind: "$inventory" },
+        { $match: { "inventory._id": it._id, "inventory.case": MISSING } },
+        { $count: "n" },
+      ]);
+      invFixed += agg.length ? agg[0].n : 0; // inventory items for this item
     }
   }
 
-  console.log(`marketplace listings: ${listingsFixed} fixed, ${listingsUnresolved} unresolved (item deleted)`);
-  console.log(`inventory items: ${invFixed} fixed across ${usersChanged} users, ${invUnresolved} unresolved`);
-  console.log(`inventory null/malformed entries skipped: ${invNullEntries}`);
+  console.log(`marketplace listings ${APPLY ? "fixed" : "to fix"}: ${listingsFixed}`);
+  console.log(`inventory ${APPLY ? "users updated" : "items to fix"}: ${invFixed}`);
   console.log(APPLY ? "done." : "dry run complete — re-run with --apply to write.");
 
   await mongoose.disconnect();
