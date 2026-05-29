@@ -106,6 +106,11 @@ router.post(
         return res.status(400).json({ message: "Email not found" });
       }
 
+      // accounts created via Google sign-in have no password set
+      if (!user.password) {
+        return res.status(400).json({ message: "Invalid credentials" });
+      }
+
       // Compare passwords (plain text, decrypting legacy AES-wrapped values)
       const originalPassword = resolvePassword(password);
 
@@ -469,6 +474,9 @@ router.put('/profilePicture', authMiddleware.isAuthenticated, async (req, res) =
 // Get user by id (public profile: only non-sensitive fields)
 router.get("/:id", async (req, res) => {
   try {
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.json(
       await User.findById(req.params.id)
         .select("username profilePicture xp level fixedItem nextBonus weeklyWinnings")
@@ -492,12 +500,22 @@ router.get("/inventory/:userId", async (req, res) => {
     const { name, rarity, sortBy, order, caseId } = req.query;
     const page = parseInt(req.query.page) || 1;
 
+    if (!ObjectId.isValid(userId)) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     let query = { _id: user._id };  // Default to filtering by user ID
+
+    // guard optional filters so malformed input can't throw
+    const caseFilter = caseId && ObjectId.isValid(caseId) ? new ObjectId(caseId) : null;
+    const nameRegex = name
+      ? new RegExp(String(name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
+      : null;
 
     // Count Pipeline
     let countPipeline = [
@@ -506,12 +524,12 @@ router.get("/inventory/:userId", async (req, res) => {
       { $unwind: "$inventory" }
     ];
 
-    if (caseId) {
-      countPipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
+    if (caseFilter) {
+      countPipeline.push({ $match: { "inventory.case": caseFilter } });
     }
 
-    if (name) {
-      countPipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
+    if (nameRegex) {
+      countPipeline.push({ $match: { "inventory.name": nameRegex } });
     }
     if (rarity) {
       countPipeline.push({ $match: { "inventory.rarity": rarity } });
@@ -530,12 +548,12 @@ router.get("/inventory/:userId", async (req, res) => {
       { $unwind: "$inventory" }
     ];
 
-    if (caseId) {
-      pipeline.push({ $match: { "inventory.case": new ObjectId(caseId) } });
+    if (caseFilter) {
+      pipeline.push({ $match: { "inventory.case": caseFilter } });
     }
 
-    if (name) {
-      pipeline.push({ $match: { "inventory.name": new RegExp(name, "i") } });
+    if (nameRegex) {
+      pipeline.push({ $match: { "inventory.name": nameRegex } });
     }
     if (rarity) {
       pipeline.push({ $match: { "inventory.rarity": rarity } });
