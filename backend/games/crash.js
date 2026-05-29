@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const { chargeUser, creditUser } = require("../utils/economy");
+const { multiplierAt, crashPointFromRandom, INSTANT_CRASH_CHANCE } = require("../utils/crashMath");
 
 const freshState = () => ({
   gameBets: {},
@@ -102,14 +103,7 @@ const crashGame = (io) => {
     if (!gameState.gameStartTime) return 1.0; // no round running
 
     const timeElapsed = (Date.now() - gameState.gameStartTime) / 1000; // seconds
-
-    // multiplier grows exponentially with time, capped at the crash point
-    const multiplier = Math.min(
-      Math.exp(timeElapsed * 0.06),
-      gameState.crashPoint
-    );
-
-    return multiplier;
+    return multiplierAt(timeElapsed, gameState.crashPoint);
   };
 
   const runRound = () => {
@@ -139,12 +133,11 @@ const crashGame = (io) => {
   };
 
   const calculateCrashPoint = () => {
-    const e = 2 ** 32;
     const h = crypto.getRandomValues(new Uint32Array(1))[0];
-    let crashPoint = Math.floor((100 * e - h) / (e - h)) / 100;
+    let crashPoint = crashPointFromRandom(h);
 
     // small chance to crash instantly
-    if (Math.random() < 0.03) {
+    if (Math.random() < INSTANT_CRASH_CHANCE) {
       crashPoint = 1.0;
     }
 

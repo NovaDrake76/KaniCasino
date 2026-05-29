@@ -11,8 +11,7 @@ const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-const CryptoJS = require('crypto-js');
-const passwordKey = process.env.PASSWORD_KEY;
+const { resolvePassword } = require("../utils/password");
 
 // Register user
 router.post(
@@ -82,26 +81,6 @@ router.post(
     }
   }
 );
-
-const decryptWithAES = (ciphertext) => {
-  try {
-    const bytes = CryptoJS.AES.decrypt(ciphertext, passwordKey);
-    return bytes.toString(CryptoJS.enc.Utf8);
-  } catch (err) {
-    return "";
-  }
-};
-
-// passwords now arrive as plain text. legacy clients AES-encrypted them; that
-// output always starts with the base64 of "Salted__", so we can reliably detect
-// and decrypt it without ever misreading a plain-text password as ciphertext.
-const resolvePassword = (input) => {
-  if (typeof input === "string" && input.startsWith("U2FsdGVk")) {
-    const decrypted = decryptWithAES(input);
-    if (decrypted) return decrypted;
-  }
-  return input;
-};
 
 // Login user
 router.post(
