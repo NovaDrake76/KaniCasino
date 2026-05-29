@@ -45,6 +45,18 @@ const UserSchema = new mongoose.Schema({
     rarity: String,
     description: String,
   },
+  friends: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  friendRequests: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   xp: {
     type: Number,
     default: 0,
