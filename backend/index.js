@@ -18,6 +18,9 @@ const server = http.createServer(app);
 const { githubDeployHandler } = require("./deployWebhook");
 app.post("/deploy/github", express.raw({ type: "*/*" }), githubDeployHandler);
 
+// public liveness probe (also bypasses the api-key gate so monitors can hit it)
+app.get("/health", (req, res) => res.json({ status: "ok", uptime: process.uptime() }));
+
 const isDevelopment = process.env.NODE_ENV === "development";
 
 // allowed origins are configurable via ALLOWED_ORIGINS (comma-separated); falls
