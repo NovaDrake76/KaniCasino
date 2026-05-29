@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from "react-icons/md";
 import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
 import Skeleton from "react-loading-skeleton";
@@ -36,7 +36,6 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
         order: "asc",
         caseId: "",
     });
-    const inventoryRef = useRef<HTMLDivElement | null>(null);
     const { userData } = useContext(UserContext);
 
     // any filter/sort change goes back to the first page
@@ -158,7 +157,6 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                             return (
                                 <div
                                     key={index}
-                                    ref={index === 0 ? inventoryRef : null}
                                     onClick={() => handleItemClick(item)}
                                     className={`cursor-pointer border-2 h-min ${selectedItems.some((selectedItem: { identifier: string }) => selectedItem.identifier === item.uniqueId) ? " border-[#606bc7]" : "border-transparent"}`}
                                 >
@@ -180,8 +178,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                         color: currentPage === 1 ? "gray" : "white",
                     }}
                     onClick={() => {
-                        currentPage !== 1 && setCurrentPage((prev) => prev - 1);
-                        currentPage !== 1 && inventoryRef.current?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+                        if (currentPage !== 1) setCurrentPage((prev) => prev - 1);
                     }}
                 />
                 <span>Page: {currentPage}{pageLimit > 0 ? ` / ${pageLimit}` : ""}</span>
@@ -191,8 +188,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                         color: currentPage === pageLimit ? "gray" : "white",
                     }}
                     onClick={() => {
-                        currentPage !== pageLimit && setCurrentPage((prev) => prev + 1);
-                        currentPage !== pageLimit && inventoryRef.current?.scrollIntoView({ behavior: "smooth" });
+                        if (currentPage !== pageLimit) setCurrentPage((prev) => prev + 1);
                     }}
                 />
             </div>
