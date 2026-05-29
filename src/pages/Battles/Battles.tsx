@@ -96,7 +96,12 @@ const Battles = () => {
         toast.error(res.error, { theme: "dark" });
         return;
       }
-      socket.emit("battle:get", battleId, (battle: Battle) => setActive(battle));
+      // set active immediately so resolution broadcasts (finished/cancelled) apply
+      const known = waiting.find((b) => b.id === battleId);
+      if (known) setActive(known);
+      socket.emit("battle:get", battleId, (battle: Battle) => {
+        if (battle) setActive(battle);
+      });
     });
   };
 
@@ -166,6 +171,10 @@ const Battles = () => {
             <span className="text-[#84819a] text-sm">K₽{active.price} entry</span>
           </div>
         </div>
+
+        {active.status === "cancelled" && (
+          <span className="text-red-400">Battle cancelled — a player couldn't cover the entry.</span>
+        )}
 
         <div className="flex flex-wrap gap-4 justify-center">
           {slots.map((p, i) => renderPlayerSlot(p, i))}
