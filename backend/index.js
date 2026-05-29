@@ -62,7 +62,6 @@ const io = socketIO(server, {
 
 const coinFlip = require("./games/coinFlip");
 const crash = require("./games/crash");
-const itemBattle = require("./games/itemBattle");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
 const itemRoutes = require("./routes/itemRoutes");
@@ -108,7 +107,6 @@ app.use("/friends", friendsRoutes);
 // Start the games
 coinFlip(io);
 crash(io);
-itemBattle(io);
 
 // Start the cron jobs
 cronJobs.startCronJobs(io);

@@ -35,12 +35,6 @@ const GameListing: React.FC<GameListingProps> = ({
             image: "/images/slot/wild.webp",
             link: "/slot"
         },
-        {
-            id: "5",
-            title: "Case Battles",
-            image: "/images/cards.webp",
-            link: "/battles"
-        },
     ]
     return (
         <div className="w-full flex flex-col gap-4 py-10 items-center" key={name}>
