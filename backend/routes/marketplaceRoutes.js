@@ -178,7 +178,7 @@ module.exports = (io) => {
               image: item.itemImage,
               rarity: item.rarity,
               case: item.case,
-              createdAt: item.createdAt,
+              createdAt: new Date(), // acquired now, so it sorts as newest
               uniqueId: item.uniqueId,
             },
           },
@@ -222,7 +222,7 @@ module.exports = (io) => {
         image: claimed.itemImage,
         rarity: claimed.rarity,
         case: claimed.case,
-        createdAt: claimed.createdAt,
+        createdAt: new Date(), // acquired now, so it sorts as newest
         uniqueId: claimed.uniqueId,
       };
 
