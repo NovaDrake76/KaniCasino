@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { getUser, getInventory } from "../../services/users/UserServices";
 import { FiFilter } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
+import FriendButton from "./FriendButton";
 import Item from "../../components/Item";
 import UserContext from "../../UserContext";
 import Skeleton from "react-loading-skeleton";
@@ -130,11 +131,14 @@ const Profile = () => {
           </div>
         ) : (
           user && (
-            <UserInfo
-              user={user}
-              isSameUser={isSameUser}
-              setRefresh={setRefresh}
-            />
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <UserInfo
+                user={user}
+                isSameUser={isSameUser}
+                setRefresh={setRefresh}
+              />
+              <FriendButton profileId={id as string} isSameUser={isSameUser} />
+            </div>
           )
         )}
       </div>

@@ -64,3 +64,38 @@ export async function getMyRanking() {
     const response = await api.get(`/users/ranking`);
     return response.data;
 }
+
+export async function getFriendStatus(id: string) {
+    const response = await api.get(`/friends/status/${id}`);
+    return response.data;
+}
+
+export async function getMyFriends() {
+    const response = await api.get(`/friends/me`);
+    return response.data;
+}
+
+export async function getUserFriends(id: string) {
+    const response = await api.get(`/friends/list/${id}`);
+    return response.data;
+}
+
+export async function sendFriendRequest(id: string) {
+    const response = await api.post(`/friends/request/${id}`);
+    return response.data;
+}
+
+export async function acceptFriendRequest(id: string) {
+    const response = await api.post(`/friends/accept/${id}`);
+    return response.data;
+}
+
+export async function declineFriendRequest(id: string) {
+    const response = await api.post(`/friends/decline/${id}`);
+    return response.data;
+}
+
+export async function removeFriend(id: string) {
+    const response = await api.delete(`/friends/${id}`);
+    return response.data;
+}
