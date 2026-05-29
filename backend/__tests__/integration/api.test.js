@@ -187,3 +187,27 @@ describe("openCase", () => {
     expect((await User.findById(u._id)).walletBalance).toBe(100);
   });
 });
+
+describe("input guards", () => {
+  test("GET /users/:id with a non-ObjectId returns 404, not a 500", async () => {
+    const res = await request(app).get("/users/undefined");
+    expect(res.status).toBe(404);
+  });
+
+  test("GET /users/inventory/:userId with a bad id returns 404, not a 500", async () => {
+    const res = await request(app).get("/users/inventory/undefined");
+    expect(res.status).toBe(404);
+  });
+
+  test("inventory search with regex-special characters doesn't error", async () => {
+    const u = await makeUser();
+    const res = await request(app).get(`/users/inventory/${u._id}?name=${encodeURIComponent("((")}`);
+    expect(res.status).toBe(200);
+  });
+
+  test("login against a passwordless (Google) account returns 400, not a 500", async () => {
+    const u = await makeUser({ password: undefined });
+    const res = await request(app).post("/users/login").send({ email: u.email, password: "whatever" });
+    expect(res.status).toBe(400);
+  });
+});
