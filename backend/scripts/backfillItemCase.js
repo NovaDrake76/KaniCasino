@@ -47,10 +47,15 @@ const APPLY = process.argv.includes("--apply");
   let usersChanged = 0;
   let invFixed = 0;
   let invUnresolved = 0;
+  let invNullEntries = 0; // pre-existing corruption: null/empty inventory slots
   const users = await User.find({});
   for (const user of users) {
     let changed = false;
     for (const inv of user.inventory) {
+      if (!inv) {
+        invNullEntries += 1; // skip — don't touch malformed entries
+        continue;
+      }
       if (!inv.case) {
         const c = caseById.get(inv._id?.toString());
         if (c) {
@@ -70,6 +75,7 @@ const APPLY = process.argv.includes("--apply");
 
   console.log(`marketplace listings: ${listingsFixed} fixed, ${listingsUnresolved} unresolved (item deleted)`);
   console.log(`inventory items: ${invFixed} fixed across ${usersChanged} users, ${invUnresolved} unresolved`);
+  console.log(`inventory null/malformed entries skipped: ${invNullEntries}`);
   console.log(APPLY ? "done." : "dry run complete — re-run with --apply to write.");
 
   await mongoose.disconnect();
