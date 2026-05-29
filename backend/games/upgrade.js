@@ -140,3 +140,6 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
 };
 
 module.exports = upgradeItems;
+// exposed for unit testing
+module.exports.calculateSuccessRate = calculateSuccessRate;
+module.exports.baseChances = baseChances;
