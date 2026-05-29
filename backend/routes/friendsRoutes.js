@@ -1,10 +1,19 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const { isAuthenticated } = require("../middleware/authMiddleware");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 
 const PUBLIC_FIELDS = "username profilePicture level fixedItem";
+
+// reject malformed ids up front so they return 400 instead of a cast-error 500
+const validId = (req, res, next) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    return res.status(400).json({ message: "Invalid user id" });
+  }
+  next();
+};
 
 module.exports = (io) => {
   // my friends and incoming requests
@@ -26,7 +35,7 @@ module.exports = (io) => {
   });
 
   // a user's public friends list
-  router.get("/list/:id", async (req, res) => {
+  router.get("/list/:id", validId, async (req, res) => {
     try {
       const user = await User.findById(req.params.id).populate("friends", PUBLIC_FIELDS);
       if (!user) {
@@ -40,7 +49,7 @@ module.exports = (io) => {
   });
 
   // my relationship with another user
-  router.get("/status/:id", isAuthenticated, async (req, res) => {
+  router.get("/status/:id", isAuthenticated, validId, async (req, res) => {
     try {
       const targetId = req.params.id;
       if (targetId === req.user._id.toString()) {
@@ -71,7 +80,7 @@ module.exports = (io) => {
   });
 
   // send a friend request
-  router.post("/request/:id", isAuthenticated, async (req, res) => {
+  router.post("/request/:id", isAuthenticated, validId, async (req, res) => {
     try {
       const targetId = req.params.id;
       const meId = req.user._id;
@@ -90,7 +99,7 @@ module.exports = (io) => {
       if (has(req.user.friends, targetId)) {
         return res.status(400).json({ message: "You are already friends" });
       }
-      // if they already requested me, treat it as accepting
+      // if they already requested me, i should accept that instead of sending one
       if (has(req.user.friendRequests, targetId)) {
         return res.status(400).json({ message: "This user already sent you a request" });
       }
@@ -121,7 +130,7 @@ module.exports = (io) => {
   });
 
   // accept an incoming request
-  router.post("/accept/:id", isAuthenticated, async (req, res) => {
+  router.post("/accept/:id", isAuthenticated, validId, async (req, res) => {
     try {
       const requesterId = req.params.id;
       const meId = req.user._id;
@@ -131,12 +140,13 @@ module.exports = (io) => {
         return res.status(400).json({ message: "No pending request from this user" });
       }
 
-      // link both ways and clear the pending request
+      // add to the requester first, then link my side and clear the request last,
+      // so a partial failure leaves the request intact and a retry completes it
+      await User.updateOne({ _id: requesterId }, { $addToSet: { friends: meId } });
       await User.updateOne(
         { _id: meId },
         { $addToSet: { friends: requesterId }, $pull: { friendRequests: requesterId } }
       );
-      await User.updateOne({ _id: requesterId }, { $addToSet: { friends: meId } });
 
       const requester = await User.findById(requesterId).select("username");
       if (requester) {
@@ -162,7 +172,7 @@ module.exports = (io) => {
   });
 
   // decline an incoming request
-  router.post("/decline/:id", isAuthenticated, async (req, res) => {
+  router.post("/decline/:id", isAuthenticated, validId, async (req, res) => {
     try {
       await User.updateOne(
         { _id: req.user._id },
@@ -176,7 +186,7 @@ module.exports = (io) => {
   });
 
   // remove a friend (both directions)
-  router.delete("/:id", isAuthenticated, async (req, res) => {
+  router.delete("/:id", isAuthenticated, validId, async (req, res) => {
     try {
       const otherId = req.params.id;
       await User.updateOne({ _id: req.user._id }, { $pull: { friends: otherId } });
