@@ -43,7 +43,9 @@ export interface BasicItem {
     name: string;
     rarity: number;
     _id: string;
-    uniqueId: string
+    uniqueId: string;
+    baseValue?: number;
+    sellValue?: number;
 }
 
 export interface Case {

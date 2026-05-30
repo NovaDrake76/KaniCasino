@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Rarities from "./Rarities";
 import { BsPinAngleFill } from "react-icons/bs";
-import { fixItem } from "../services/users/UserServices";
+import { fixItem, sellItems } from "../services/users/UserServices";
 import { RotatingLines } from "react-loader-spinner";
+import { toast } from "react-toastify";
+import UserContext from "../UserContext";
+import Monetary from "./Monetary";
 
 
 interface itemProps {
@@ -11,15 +14,21 @@ interface itemProps {
     name: string;
     image: string;
     rarity: string;
+    uniqueId?: string;
+    baseValue?: number;
+    sellValue?: number;
   };
   fixable?: boolean;
+  sellable?: boolean;
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
   size?: "small" | "large";
 }
 
-const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, size = "large" }) => {
+const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size = "large" }) => {
   const [hovering, setHovering] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [selling, setSelling] = useState<boolean>(false);
+  const { userData, toogleUserData } = useContext(UserContext);
 
   const fixPlayerItem = async (itemId: string) => {
     try {
@@ -27,6 +36,22 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, size = "large" }
       setRefresh && setRefresh((prev) => !prev);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const sellPlayerItem = async () => {
+    if (!item.uniqueId || selling) return;
+    setSelling(true);
+    try {
+      const res = await sellItems([item.uniqueId]);
+      if (userData) {
+        toogleUserData({ ...userData, walletBalance: res.walletBalance });
+      }
+      toast.success(res.message, { theme: "dark" });
+      setRefresh && setRefresh((prev) => !prev);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Could not sell item", { theme: "dark" });
+      setSelling(false);
     }
   };
 
@@ -81,11 +106,25 @@ const Item: React.FC<itemProps> = ({ item, fixable, setRefresh, size = "large" }
         <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{
           backgroundColor: color
         }} />
-        <p className={`text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center 
+        <p className={`text-xs md:text-base py-2 max-h-[32px] md:max-h-none text-center
         overflow-hidden truncate w-full max-w-[80px] md:max-w-none ${size === "large" ? "md:w-auto" : "md:w-20"}`}>
           {item?.name}
         </p>
       </div>
+      {typeof item.baseValue === "number" && item.baseValue > 0 && (
+        <div className="text-xs text-green-400 pb-1 flex items-center">
+          <Monetary value={item.baseValue} />
+        </div>
+      )}
+      {sellable && item.uniqueId && typeof item.sellValue === "number" && (
+        <button
+          onClick={(e) => { e.stopPropagation(); sellPlayerItem(); }}
+          disabled={selling}
+          className={`w-full text-xs font-semibold py-1 rounded-b bg-[#281D3F] hover:bg-green-700 transition-all disabled:opacity-50 ${hovering ? "opacity-100" : "opacity-60"}`}
+        >
+          {selling ? "Selling..." : <span>Sell <Monetary value={item.sellValue} /></span>}
+        </button>
+      )}
     </div>
   );
 };

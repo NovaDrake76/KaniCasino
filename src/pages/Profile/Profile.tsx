@@ -176,6 +176,7 @@ const Profile = () => {
                   item={item}
                   key={item?.name + i}
                   fixable={isSameUser}
+                  sellable={isSameUser}
                   setRefresh={setRefresh}
                 />
               ))

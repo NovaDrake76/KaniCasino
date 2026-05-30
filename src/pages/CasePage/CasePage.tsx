@@ -3,6 +3,7 @@ import { getCase } from "../../services/cases/CaseServices";
 import Title from "../../components/Title";
 import Item from "../../components/Item";
 import { openBox } from "../../services/games/GamesServices";
+import { sellItems } from "../../services/users/UserServices";
 import UserContext from "../../UserContext";
 import MainButton from "../../components/MainButton";
 import Skeleton from "react-loading-skeleton";
@@ -24,7 +25,8 @@ const CasePage = () => {
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
 
-  const { userData, toogleUserFlow } = useContext(UserContext);
+  const { userData, toogleUserFlow, toogleUserData } = useContext(UserContext);
+  const [sellingAll, setSellingAll] = useState<boolean>(false);
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -69,6 +71,28 @@ const CasePage = () => {
       setLoadingButton(false);
     }, 8000);
   }
+
+  const sellOpened = async () => {
+    const ids = openedItems.map((i) => i.uniqueId).filter(Boolean);
+    if (!ids.length || sellingAll) return;
+    setSellingAll(true);
+    try {
+      const res = await sellItems(ids);
+      if (userData) {
+        toogleUserData({ ...userData, walletBalance: res.walletBalance });
+      }
+      toast.success(res.message, { theme: "dark" });
+      setShowPrize(false);
+      setAnimationAux2(false);
+      setHasSpinned(false);
+      setOpenedItems([]);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Could not sell items", { theme: "dark" });
+    }
+    setSellingAll(false);
+  };
+
+  const openedSellTotal = openedItems.reduce((s, i) => s + (i.sellValue || 0), 0);
 
   const openCase = async () => {
 
@@ -128,6 +152,16 @@ const CasePage = () => {
               <QuantityButton quantity={quantity} setQuantity={setQuantity} disabled={started} />
             )
           }
+
+          {showPrize && openedItems.length > 0 && openedSellTotal > 0 && (
+            <button
+              onClick={sellOpened}
+              disabled={sellingAll}
+              className="px-4 py-2 rounded bg-[#281D3F] hover:bg-green-700 font-semibold transition-all disabled:opacity-50"
+            >
+              {sellingAll ? "Selling..." : <span className="flex items-center gap-1">Sell {openedItems.length > 1 ? "all " : ""}<Monetary value={openedSellTotal} /></span>}
+            </button>
+          )}
 
         </div>
 

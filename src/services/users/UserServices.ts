@@ -99,3 +99,8 @@ export async function removeFriend(id: string) {
     const response = await api.delete(`/friends/${id}`);
     return response.data;
 }
+
+export async function sellItems(uniqueIds: string[]) {
+    const response = await api.post(`/users/inventory/sell`, { uniqueIds });
+    return response.data;
+}
