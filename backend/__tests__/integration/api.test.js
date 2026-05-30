@@ -8,7 +8,9 @@ const User = require("../../models/User");
 const Item = require("../../models/Item");
 const Case = require("../../models/Case");
 const Marketplace = require("../../models/Marketplace");
+const Battle = require("../../models/Battle");
 const { chargeUser } = require("../../utils/economy");
+const battleEngine = require("../../games/battleEngine");
 
 let app;
 
@@ -227,6 +229,95 @@ describe("selling items", () => {
     ]);
     expect([r1.status, r2.status].sort()).toEqual([200, 404]);
     expect((await User.findById(u._id)).walletBalance).toBe(300); // floor(400 * 0.75), once
+  });
+});
+
+describe("case battles", () => {
+  async function makeCase(price, baseValue) {
+    const item = await Item.create({ name: "BattleItem", image: "b.png", rarity: "3", baseValue });
+    const c = await Case.create({ title: "BattleCase", image: "c.png", price, items: [item._id] });
+    return c;
+  }
+
+  test("start charges every player and the winner takes the whole pool", async () => {
+    const c = await makeCase(50, 100);
+    const a = await makeUser({ walletBalance: 200 });
+    const b = await makeUser({ walletBalance: 200 });
+    const battle = await Battle.create({
+      mode: "1v1",
+      cases: [c._id],
+      entryCost: 50,
+      createdBy: a._id,
+      players: [
+        { userId: a._id, username: a.username, team: 0, slot: 0, isBot: false },
+        { userId: b._id, username: b.username, team: 1, slot: 1, isBot: false },
+      ],
+    });
+
+    const res = await battleEngine.chargeAndStart(battle._id);
+    expect(res.ok).toBe(true);
+    expect((await User.findById(a._id)).walletBalance).toBe(150);
+    expect((await User.findById(b._id)).walletBalance).toBe(150);
+
+    const started = await Battle.findById(battle._id);
+    expect(started.status).toBe("in_progress");
+    expect(started.rolls).toHaveLength(1); // one case
+    expect(started.rolls[0]).toHaveLength(2); // two slots
+
+    const done = await battleEngine.finishBattle(started);
+    expect(done.status).toBe("finished");
+    expect(done.winnerUserIds).toHaveLength(1);
+    const winner = await User.findById(done.winnerUserIds[0]);
+    expect(winner.inventory).toHaveLength(2); // the whole pool (1 case x 2 slots)
+  });
+
+  test("start is rejected and nobody is charged if a player can't afford the entry", async () => {
+    const c = await makeCase(100, 100);
+    const a = await makeUser({ walletBalance: 200 });
+    const poor = await makeUser({ walletBalance: 10 });
+    const battle = await Battle.create({
+      mode: "1v1",
+      cases: [c._id],
+      entryCost: 100,
+      createdBy: a._id,
+      players: [
+        { userId: a._id, username: a.username, team: 0, slot: 0 },
+        { userId: poor._id, username: poor.username, team: 1, slot: 1 },
+      ],
+    });
+
+    const res = await battleEngine.chargeAndStart(battle._id);
+    expect(res.error).toBeTruthy();
+    expect((await User.findById(a._id)).walletBalance).toBe(200); // untouched
+    expect((await Battle.findById(battle._id)).status).toBe("waiting");
+  });
+
+  test("a bot teammate's winnings sink (only humans receive)", async () => {
+    const c = await makeCase(40, 100);
+    const a = await makeUser({ walletBalance: 200 });
+    // 1v1 vs a bot
+    const battle = await Battle.create({
+      mode: "1v1",
+      cases: [c._id],
+      entryCost: 40,
+      createdBy: a._id,
+      players: [
+        { userId: a._id, username: a.username, team: 0, slot: 0, isBot: false },
+        { userId: null, username: "Bot 2", team: 1, slot: 1, isBot: true },
+      ],
+    });
+
+    const res = await battleEngine.chargeAndStart(battle._id);
+    expect(res.ok).toBe(true);
+    expect((await User.findById(a._id)).walletBalance).toBe(160); // only the human charged
+
+    const done = await battleEngine.finishBattle(await Battle.findById(battle._id));
+    // if the bot won, no human gets items and winnerUserIds is empty; if the human won, they get the pool
+    if (done.winnerUserIds.length) {
+      expect((await User.findById(a._id)).inventory).toHaveLength(2);
+    } else {
+      expect((await User.findById(a._id)).inventory).toHaveLength(0);
+    }
   });
 });
 
