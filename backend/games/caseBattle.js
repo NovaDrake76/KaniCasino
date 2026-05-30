@@ -59,7 +59,7 @@ const caseBattle = (io) => {
         const b = await Battle.findById(battleId);
         if (!b || b.status !== "in_progress") return;
         await engine.applyRound(b, roundIndex);
-        io.to(room(battleId)).emit("battle:round", { round: roundIndex, players: publicPlayers(b) });
+        io.to(room(battleId)).emit("battle:round", { battleId: String(battleId), round: roundIndex, players: publicPlayers(b) });
         if (roundIndex + 1 < b.cases.length) {
           setTimeout(() => playRound(roundIndex + 1), REVEAL_MS);
         } else {
