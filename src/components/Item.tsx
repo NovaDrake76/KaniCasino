@@ -111,19 +111,19 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
           {item?.name}
         </p>
       </div>
-      {typeof item.baseValue === "number" && item.baseValue > 0 && (
-        <div className="text-xs text-green-400 pb-1 flex items-center">
-          <Monetary value={item.baseValue} />
-        </div>
-      )}
-      {sellable && item.uniqueId && typeof item.sellValue === "number" && (
-        <button
-          onClick={(e) => { e.stopPropagation(); sellPlayerItem(); }}
-          disabled={selling}
-          className={`w-full text-xs font-semibold py-1 rounded-b bg-[#281D3F] hover:bg-green-700 transition-all disabled:opacity-50 ${hovering ? "opacity-100" : "opacity-60"}`}
+      {sellable && item.uniqueId && (item.sellValue ?? 0) > 0 && (
+        <div
+          className={`absolute left-1/2 -translate-x-1/2 -bottom-4 z-30 transition-all ${hovering ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         >
-          {selling ? "Selling..." : <span>Sell <Monetary value={item.sellValue} /></span>}
-        </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); sellPlayerItem(); }}
+            disabled={selling}
+            className="border rounded px-3 py-2 text-xs md:text-sm font-semibold bg-[#212031] hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap shadow-lg"
+            style={{ borderColor: color }}
+          >
+            {selling ? "Selling..." : <span className="flex items-center gap-1">Sell <Monetary value={item.sellValue ?? 0} /></span>}
+          </button>
+        </div>
       )}
     </div>
   );
