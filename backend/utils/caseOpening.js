@@ -60,6 +60,7 @@ const addUniqueInfoToItem = (item) => {
     image: item.image,
     rarity: item.rarity,
     case: item.case,
+    baseValue: item.baseValue || 0,
     uniqueId: uuidv4(),
   };
 };

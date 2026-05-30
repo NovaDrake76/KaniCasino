@@ -5,8 +5,10 @@ const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
 
 const User = require("../models/User");
+const Item = require("../models/Item");
 const Notification = require("../models/Notification");
 const authMiddleware = require("../middleware/authMiddleware");
+const { sellValue } = require("../utils/itemValue");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
@@ -343,6 +345,65 @@ router.delete(
 );
 
 
+// Sell items back to the house for coins (base value x sell rate)
+router.post("/inventory/sell", authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const ids = Array.isArray(req.body.uniqueIds)
+      ? req.body.uniqueIds
+      : req.body.uniqueId
+        ? [req.body.uniqueId]
+        : [];
+    if (!ids.length) {
+      return res.status(400).json({ message: "No items selected" });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const toSell = user.inventory.filter((i) => i && ids.includes(i.uniqueId));
+    if (!toSell.length) {
+      return res.status(404).json({ message: "Items not found in inventory" });
+    }
+
+    // authoritative base values from the item catalog
+    const itemIds = [...new Set(toSell.map((i) => String(i._id)))];
+    const items = await Item.find({ _id: { $in: itemIds } }, { baseValue: 1 });
+    const baseById = new Map(items.map((i) => [String(i._id), i.baseValue || 0]));
+
+    // atomically remove the items, then credit only for the ones actually removed
+    const before = await User.findOneAndUpdate(
+      { _id: user._id },
+      { $pull: { inventory: { uniqueId: { $in: ids } } } }
+    );
+    if (!before) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const removed = before.inventory.filter((i) => i && ids.includes(i.uniqueId));
+    if (!removed.length) {
+      return res.status(404).json({ message: "Items not found in inventory" });
+    }
+
+    const total = removed.reduce((s, i) => s + sellValue(baseById.get(String(i._id)) || 0), 0);
+    const updated = await User.findByIdAndUpdate(
+      user._id,
+      { $inc: { walletBalance: total } },
+      { new: true }
+    );
+
+    res.json({
+      message: `Sold ${removed.length} item${removed.length > 1 ? "s" : ""} for K₽${total}`,
+      sold: removed.length,
+      value: total,
+      walletBalance: updated.walletBalance,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // Set fixed item
 router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
@@ -586,9 +647,19 @@ router.get("/inventory/:userId", async (req, res) => {
     );
 
     const inventoryItems = await User.aggregate(pipeline);
+    const items = inventoryItems[0]?.inventory || [];
+
+    // attach authoritative base/sell value from the item catalog
+    const ids = [...new Set(items.map((i) => String(i._id)))];
+    const catalog = await Item.find({ _id: { $in: ids } }, { baseValue: 1 });
+    const baseById = new Map(catalog.map((i) => [String(i._id), i.baseValue || 0]));
+    const withValue = items.map((i) => {
+      const base = baseById.get(String(i._id)) || 0;
+      return { ...i, baseValue: base, sellValue: sellValue(base) };
+    });
 
     res.json({
-      items: inventoryItems[0]?.inventory || [],
+      items: withValue,
       currentPage: page,
       totalPages: totalPages,
     });

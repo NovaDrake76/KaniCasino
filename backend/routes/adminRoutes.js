@@ -4,6 +4,7 @@ const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const Item = require("../models/Item");
+const { recomputeCaseValues } = require("../utils/itemValue");
 
 router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
   try {
@@ -22,6 +23,7 @@ router.post("/cases", isAuthenticated, isAdmin, async (req, res) => {
 
   try {
     const savedCase = await newCase.save();
+    await recomputeCaseValues(savedCase._id);
     res.status(201).json(savedCase);
   } catch (err) {
     console.error(err.message);
@@ -40,6 +42,7 @@ router.put("/cases/:id", isAuthenticated, isAdmin, async (req, res) => {
       return res.status(404).json({ message: "Case not found" });
     }
 
+    await recomputeCaseValues(updatedCase._id);
     res.json(updatedCase);
   } catch (err) {
     console.error(err.message);
@@ -88,6 +91,9 @@ router.put("/items/:id", isAuthenticated, isAdmin, async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
+    if (updatedItem.case) {
+      await recomputeCaseValues(updatedItem.case);
+    }
     res.json(updatedItem);
   } catch (err) {
     console.error(err.message);
@@ -104,6 +110,10 @@ router.delete("/items/:id", isAuthenticated, isAdmin, async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
+    if (deletedItem.case) {
+      await Case.updateOne({ _id: deletedItem.case }, { $pull: { items: deletedItem._id } });
+      await recomputeCaseValues(deletedItem.case);
+    }
     res.json({ message: "Item deleted" });
   } catch (err) {
     console.error(err.message);

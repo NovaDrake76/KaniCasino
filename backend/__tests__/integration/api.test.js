@@ -191,6 +191,45 @@ describe("openCase", () => {
   });
 });
 
+describe("selling items", () => {
+  async function giveItem(user, baseValue, uniqueId, rarity = "5") {
+    const item = await Item.create({ name: "Knife", image: "k.png", rarity, baseValue });
+    await User.updateOne(
+      { _id: user._id },
+      { $push: { inventory: { _id: item._id, name: "Knife", image: "k.png", rarity, uniqueId, createdAt: new Date() } } }
+    );
+    return item;
+  }
+
+  test("selling credits 75% of base value and removes the item", async () => {
+    const u = await makeUser({ walletBalance: 0 });
+    await giveItem(u, 1000, "sell-1");
+    const res = await request(app).post("/users/inventory/sell").set(...auth(u)).send({ uniqueId: "sell-1" });
+    expect(res.status).toBe(200);
+    expect(res.body.value).toBe(750);
+    const after = await User.findById(u._id);
+    expect(after.walletBalance).toBe(750);
+    expect(after.inventory.some((i) => i.uniqueId === "sell-1")).toBe(false);
+  });
+
+  test("selling an item you do not have returns 404", async () => {
+    const u = await makeUser();
+    const res = await request(app).post("/users/inventory/sell").set(...auth(u)).send({ uniqueId: "missing" });
+    expect(res.status).toBe(404);
+  });
+
+  test("the same item cannot be sold twice (no double credit)", async () => {
+    const u = await makeUser({ walletBalance: 0 });
+    await giveItem(u, 400, "dup-1", "3");
+    const [r1, r2] = await Promise.all([
+      request(app).post("/users/inventory/sell").set(...auth(u)).send({ uniqueId: "dup-1" }),
+      request(app).post("/users/inventory/sell").set(...auth(u)).send({ uniqueId: "dup-1" }),
+    ]);
+    expect([r1.status, r2.status].sort()).toEqual([200, 404]);
+    expect((await User.findById(u._id)).walletBalance).toBe(300); // floor(400 * 0.75), once
+  });
+});
+
 describe("input guards", () => {
   test("GET /users/:id with a non-ObjectId returns 404, not a 500", async () => {
     const res = await request(app).get("/users/undefined");
