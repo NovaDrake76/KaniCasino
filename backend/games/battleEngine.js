@@ -2,8 +2,8 @@ const Battle = require("../models/Battle");
 const Case = require("../models/Case");
 const User = require("../models/User");
 const { getWinningItem, addUniqueInfoToItem } = require("../utils/caseOpening");
-const { chargeUser, creditUser } = require("../utils/economy");
-const { modeConfig, pickWinningTeam, splitItemsEvenly } = require("../utils/battle");
+const { chargeUser, creditUser, awardXp } = require("../utils/economy");
+const { modeConfig, evaluateWinner, splitItemsEvenly } = require("../utils/battle");
 
 const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
 
@@ -31,15 +31,33 @@ async function prerollBattle(battle) {
   return rolls;
 }
 
-// re-check balances, charge every human all-or-nothing, preroll, mark in_progress.
-// returns { ok: true } or { error, shortSlot? }.
+// atomically claim the battle (status waiting -> in_progress) so two concurrent
+// battle:start calls can never both charge/preroll/reveal. charge all-or-nothing,
+// preroll, then award xp. returns { ok: true } or { error, shortSlot? }.
 async function chargeAndStart(battleId, io = noopIo) {
-  const battle = await Battle.findById(battleId);
-  if (!battle || battle.status !== "waiting") return { error: "Battle not available" };
+  // compare-and-set on status: only one caller wins this transition
+  const battle = await Battle.findOneAndUpdate(
+    { _id: battleId, status: "waiting" },
+    { $set: { status: "in_progress", startedAt: new Date(), currentRound: 0 } },
+    { new: true }
+  );
+  if (!battle) return { error: "Battle not available" };
+
+  // release the claim so a legitimate retry can start once the problem is fixed
+  const release = () => Battle.updateOne({ _id: battleId }, { $set: { status: "waiting" } });
 
   const config = modeConfig(battle.mode);
   if (!config || battle.players.length !== config.slots) {
+    await release();
     return { error: "All slots must be filled to start" };
+  }
+
+  // defense-in-depth: refuse a corrupted roster (duplicate slot or duplicate human)
+  const slotSet = new Set(battle.players.map((p) => p.slot));
+  const humanIds = battle.players.filter((p) => p.userId).map((p) => p.userId.toString());
+  if (slotSet.size !== config.slots || new Set(humanIds).size !== humanIds.length) {
+    await release();
+    return { error: "Battle roster invalid" };
   }
 
   const humans = battle.players.filter((p) => p.userId && !p.isBot);
@@ -48,11 +66,13 @@ async function chargeAndStart(battleId, io = noopIo) {
   for (const p of humans) {
     const u = await User.findById(p.userId).select("walletBalance");
     if (!u || u.walletBalance < battle.entryCost) {
+      await release();
       return { error: `${p.username} can't cover the entry`, shortSlot: p.slot };
     }
   }
 
-  // charge all-or-nothing (refund anyone charged if a later charge loses a race)
+  // charge all-or-nothing (wallet only; xp is granted after the start commits so
+  // a refund never has to reverse it). refund + release if any charge loses a race
   const charged = [];
   for (const p of humans) {
     const updated = await chargeUser(p.userId, battle.entryCost, { awardXp: false });
@@ -61,17 +81,20 @@ async function chargeAndStart(battleId, io = noopIo) {
         const refunded = await creditUser(id, battle.entryCost, 0);
         emitUserData(io, id, refunded);
       }
+      await release();
       return { error: "A player could not pay; battle cancelled" };
     }
     charged.push(p.userId);
-    emitUserData(io, p.userId, updated);
   }
 
   battle.rolls = await prerollBattle(battle);
-  battle.status = "in_progress";
-  battle.startedAt = new Date();
-  battle.currentRound = 0;
   await battle.save();
+
+  // now that the start is committed, grant xp like a normal case open
+  for (const id of charged) {
+    const leveled = await awardXp(id, battle.entryCost * 5);
+    emitUserData(io, id, leveled);
+  }
   return { ok: true };
 }
 
@@ -89,24 +112,33 @@ async function applyRound(battle, roundIndex) {
   await battle.save();
 }
 
-// pay the winning team and finish. applies any not-yet-revealed rounds first,
-// so it also safely completes a battle a restart left mid-flight.
+// pay the winning team and finish. claims the finish atomically so the item
+// payout runs exactly once, then applies any not-yet-revealed rounds (so it also
+// safely completes a battle a restart left mid-flight).
 async function finishBattle(battle, io = noopIo) {
-  for (let r = battle.currentRound; r < battle.cases.length; r++) {
-    const round = battle.rolls[r] || [];
-    battle.players.forEach((p) => {
+  // compare-and-set on status: only one runner pays out this battle
+  const claimed = await Battle.findOneAndUpdate(
+    { _id: battle._id, status: "in_progress" },
+    { $set: { status: "finished", finishedAt: new Date() } },
+    { new: true }
+  );
+  if (!claimed) return Battle.findById(battle._id); // already finished elsewhere
+
+  for (let r = claimed.currentRound; r < claimed.cases.length; r++) {
+    const round = claimed.rolls[r] || [];
+    claimed.players.forEach((p) => {
       const item = round[p.slot];
       if (item) {
         p.items.push(item);
         p.total += item.baseValue || 0;
       }
     });
-    battle.currentRound = r + 1;
+    claimed.currentRound = r + 1;
   }
 
-  const winningTeam = pickWinningTeam(battle.players, battle.bakaMode);
-  const winners = battle.players.filter((p) => p.team === winningTeam);
-  const pool = battle.players.flatMap((p) => p.items);
+  const { winningTeam, tiedTeams } = evaluateWinner(claimed.players, claimed.bakaMode);
+  const winners = claimed.players.filter((p) => p.team === winningTeam);
+  const pool = claimed.players.flatMap((p) => p.items);
   const shares = splitItemsEvenly(pool, winners.length);
 
   const winnerUserIds = [];
@@ -128,11 +160,11 @@ async function finishBattle(battle, io = noopIo) {
     }
   }
 
-  battle.winnerUserIds = winnerUserIds;
-  battle.status = "finished";
-  battle.finishedAt = new Date();
-  await battle.save();
-  return battle;
+  claimed.winnerUserIds = winnerUserIds;
+  claimed.winningTeam = winningTeam;
+  claimed.tiedTeams = tiedTeams.length > 1 ? tiedTeams : [];
+  await claimed.save();
+  return claimed;
 }
 
 // on boot, finish any battle a restart interrupted so none are stuck

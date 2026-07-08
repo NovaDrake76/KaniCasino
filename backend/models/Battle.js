@@ -44,6 +44,8 @@ const BattleSchema = new mongoose.Schema(
     rolls: { type: Array, default: [] }, // rolls[caseIndex][slot] = item snapshot
     currentRound: { type: Number, default: 0 },
     winnerUserIds: [{ type: mongoose.Schema.Types.ObjectId }],
+    winningTeam: { type: Number, default: null },
+    tiedTeams: { type: [Number], default: [] }, // >1 team only when the top total was tied
     startedAt: Date,
     finishedAt: Date,
   },

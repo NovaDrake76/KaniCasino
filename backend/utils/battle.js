@@ -20,12 +20,12 @@ function teamTotals(players) {
   return totals;
 }
 
-// the winning team index. highest total wins, or lowest in baka mode.
-// ties are broken with rng (injectable so tests are deterministic).
-function pickWinningTeam(players, bakaMode = false, rng = Math.random) {
+// resolve the winning team and which teams tied for the top spot. highest total
+// wins, or lowest in baka mode. ties are broken with rng (injectable for tests).
+function evaluateWinner(players, bakaMode = false, rng = Math.random) {
   const totals = teamTotals(players);
   const teams = Object.keys(totals);
-  if (!teams.length) return null;
+  if (!teams.length) return { winningTeam: null, tiedTeams: [] };
 
   const best = teams.reduce((acc, t) => {
     if (acc === null) return t;
@@ -34,9 +34,15 @@ function pickWinningTeam(players, bakaMode = false, rng = Math.random) {
   }, null);
 
   const bestVal = totals[best];
-  const tied = teams.filter((t) => totals[t] === bestVal);
-  if (tied.length === 1) return Number(tied[0]);
-  return Number(tied[Math.floor(rng() * tied.length)]);
+  const tiedTeams = teams.filter((t) => totals[t] === bestVal).map(Number);
+  const winningTeam =
+    tiedTeams.length === 1 ? tiedTeams[0] : tiedTeams[Math.floor(rng() * tiedTeams.length)];
+  return { winningTeam, tiedTeams };
+}
+
+// the winning team index (see evaluateWinner).
+function pickWinningTeam(players, bakaMode = false, rng = Math.random) {
+  return evaluateWinner(players, bakaMode, rng).winningTeam;
 }
 
 // distribute a pool of items among N recipients as evenly as possible by value:
@@ -56,4 +62,4 @@ function splitItemsEvenly(items, recipientCount) {
   return buckets.map((b) => b.items);
 }
 
-module.exports = { MODES, modeConfig, teamTotals, pickWinningTeam, splitItemsEvenly };
+module.exports = { MODES, modeConfig, teamTotals, evaluateWinner, pickWinningTeam, splitItemsEvenly };

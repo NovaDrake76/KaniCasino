@@ -10,6 +10,7 @@ const { uniqueSuffix } = require("./helpers");
 const User = require("../../models/User");
 const Item = require("../../models/Item");
 const Case = require("../../models/Case");
+const Battle = require("../../models/Battle");
 const caseBattle = require("../../games/caseBattle");
 
 let httpServer, io, port;
@@ -125,5 +126,48 @@ describe("case battle socket layer", () => {
     expect(fin.status).toBe("finished");
     expect(fin.players.every((p) => p.items.length === 1)).toBe(true); // one case opened
     hostSock.close();
+  });
+
+  test("concurrent battle:start charges the host exactly once (no double-start)", async () => {
+    const host = await makeUser({ walletBalance: 1000 });
+    const c = await makeCase(50);
+    const hostSock = await connect(tokenFor(host));
+    const created = await emitAck(hostSock, "battle:create", { caseIds: [c._id.toString()], mode: "1v1", bakaMode: false });
+    await emitAck(hostSock, "battle:addBot", created.id);
+
+    const finishedP = new Promise((resolve) => hostSock.once("battle:finished", resolve));
+    // fire two starts in the same tick; only one may charge/preroll/reveal
+    const results = await Promise.all([
+      emitAck(hostSock, "battle:start", created.id).catch((e) => ({ error: String(e) })),
+      emitAck(hostSock, "battle:start", created.id).catch((e) => ({ error: String(e) })),
+    ]);
+    expect(results.filter((r) => r && r.ok).length).toBe(1);
+
+    await finishedP;
+    const after = await User.findById(host._id).select("walletBalance");
+    expect(after.walletBalance).toBe(950); // 1000 - 50 entry, charged once
+    hostSock.close();
+  });
+
+  test("concurrent battle:join from one account claims a single seat (no duplicate)", async () => {
+    const host = await makeUser();
+    const c = await makeCase(50);
+    const hostSock = await connect(tokenFor(host));
+    const created = await emitAck(hostSock, "battle:create", { caseIds: [c._id.toString()], mode: "1v1v1v1", bakaMode: false });
+
+    const attacker = await makeUser({ walletBalance: 1000 });
+    const aSock = await connect(tokenFor(attacker));
+    // two joins in the same tick must not seat the same user twice
+    await Promise.all([
+      emitAck(aSock, "battle:join", created.id).catch((e) => ({ error: String(e) })),
+      emitAck(aSock, "battle:join", created.id).catch((e) => ({ error: String(e) })),
+    ]);
+
+    const b = await Battle.findById(created.id);
+    const seats = b.players.filter((p) => p.userId && p.userId.toString() === attacker._id.toString());
+    expect(seats.length).toBe(1);
+    expect(b.players.length).toBe(2); // host + attacker once
+    hostSock.close();
+    aSock.close();
   });
 });

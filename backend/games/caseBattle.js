@@ -11,6 +11,8 @@ const PUBLIC_USER = "username profilePicture";
 
 const room = (id) => `battle:${id}`;
 
+const BOT_NAMES = ["Chaz Bot", "MamBot", "Carlos Bot"];
+
 const isHost = (b, userId) =>
   userId && b.createdBy && b.createdBy.toString() === userId.toString();
 
@@ -42,6 +44,8 @@ const publicBattle = (b) => ({
   createdBy: b.createdBy,
   currentRound: b.currentRound,
   winnerUserIds: b.winnerUserIds || [],
+  winningTeam: b.winningTeam ?? null,
+  tiedTeams: b.tiedTeams || [],
   players: publicPlayers(b),
 });
 
@@ -169,20 +173,37 @@ const caseBattle = (io) => {
         const slot = nextFreeSlot(b, config);
         if (slot === -1) return cb && cb({ error: "Battle is full" });
 
-        b.players.push({
-          userId,
-          username: user.username,
-          profilePicture: user.profilePicture,
-          team: config.teams[slot],
-          slot,
-          isBot: false,
-        });
-        await b.save();
+        // atomically claim the seat: the filter rejects the join if the battle
+        // left "waiting", this user is already in, the slot got taken, or it
+        // filled up — closing the concurrent-join / post-start-injection races
+        const updated = await Battle.findOneAndUpdate(
+          {
+            _id: battleId,
+            status: "waiting",
+            "players.userId": { $ne: userId },
+            "players.slot": { $ne: slot },
+            $expr: { $lt: [{ $size: "$players" }, config.slots] },
+          },
+          {
+            $push: {
+              players: {
+                userId,
+                username: user.username,
+                profilePicture: user.profilePicture,
+                team: config.teams[slot],
+                slot,
+                isBot: false,
+              },
+            },
+          },
+          { new: true }
+        );
+        if (!updated) return cb && cb({ error: "Battle changed, please retry" });
 
-        socket.join(room(b._id));
+        socket.join(room(updated._id));
         broadcastList();
-        broadcastBattle(b);
-        if (typeof cb === "function") cb({ id: b._id });
+        broadcastBattle(updated);
+        if (typeof cb === "function") cb({ id: updated._id });
       } catch (e) {
         console.log(e);
         if (typeof cb === "function") cb({ error: "Server error" });
@@ -199,17 +220,35 @@ const caseBattle = (io) => {
         const slot = nextFreeSlot(b, config);
         if (slot === -1) return cb && cb({ error: "Battle is full" });
 
-        b.players.push({
-          userId: null,
-          username: `Bot ${slot + 1}`,
-          profilePicture: "",
-          team: config.teams[slot],
-          slot,
-          isBot: true,
-        });
-        await b.save();
+        const usedNames = new Set(b.players.filter((p) => p.isBot).map((p) => p.username));
+        const botName = BOT_NAMES.find((n) => !usedNames.has(n)) || `Bot ${slot + 1}`;
+
+        // atomic seat claim (host-gated), same race guards as join
+        const updated = await Battle.findOneAndUpdate(
+          {
+            _id: battleId,
+            status: "waiting",
+            createdBy: socket.userId,
+            "players.slot": { $ne: slot },
+            $expr: { $lt: [{ $size: "$players" }, config.slots] },
+          },
+          {
+            $push: {
+              players: {
+                userId: null,
+                username: botName,
+                profilePicture: "",
+                team: config.teams[slot],
+                slot,
+                isBot: true,
+              },
+            },
+          },
+          { new: true }
+        );
+        if (!updated) return cb && cb({ error: "Battle changed, please retry" });
         broadcastList();
-        broadcastBattle(b);
+        broadcastBattle(updated);
         if (typeof cb === "function") cb({ ok: true });
       } catch (e) {
         console.log(e);
@@ -219,15 +258,24 @@ const caseBattle = (io) => {
 
     socket.on("battle:kick", async (battleId, slot, cb) => {
       try {
+        // coerce the client slot to a positive integer (never trust it in a query)
+        const s = Number(slot);
+        if (!Number.isInteger(s) || s <= 0) return cb && cb({ error: "Invalid slot" });
+
         const b = await Battle.findById(battleId);
         if (!b || b.status !== "waiting") return cb && cb({ error: "Battle not available" });
         if (!isHost(b, socket.userId)) return cb && cb({ error: "Only the host can kick" });
-        if (slot === 0) return cb && cb({ error: "Can't remove the host" });
 
-        b.players = b.players.filter((p) => p.slot !== slot);
-        await b.save();
+        // atomic removal, guarded on waiting+host so a concurrent start can't be
+        // clobbered (removing a player from an already-charged roster)
+        const updated = await Battle.findOneAndUpdate(
+          { _id: battleId, status: "waiting", createdBy: socket.userId },
+          { $pull: { players: { slot: s } } },
+          { new: true }
+        );
+        if (!updated) return cb && cb({ error: "Battle not available" });
         broadcastList();
-        broadcastBattle(b);
+        broadcastBattle(updated);
         if (typeof cb === "function") cb({ ok: true });
       } catch (e) {
         console.log(e);
@@ -242,13 +290,22 @@ const caseBattle = (io) => {
         if (!userId || !b || b.status !== "waiting") return;
 
         if (isHost(b, userId)) {
-          b.status = "cancelled";
-          await b.save();
-          io.to(room(b._id)).emit("battle:state", publicBattle(b));
+          // CAS: only cancel while still waiting; a concurrent start wins otherwise
+          const cancelled = await Battle.findOneAndUpdate(
+            { _id: battleId, status: "waiting", createdBy: userId },
+            { $set: { status: "cancelled" } },
+            { new: true }
+          );
+          if (!cancelled) return; // start already claimed it -> let it run/pay out
+          io.to(room(cancelled._id)).emit("battle:state", publicBattle(cancelled));
         } else {
-          b.players = b.players.filter((p) => !(p.userId && p.userId.toString() === userId.toString()));
-          await b.save();
-          broadcastBattle(b);
+          const updated = await Battle.findOneAndUpdate(
+            { _id: battleId, status: "waiting" },
+            { $pull: { players: { userId } } },
+            { new: true }
+          );
+          if (!updated) return;
+          broadcastBattle(updated);
         }
         broadcastList();
       } catch (e) {

@@ -7,7 +7,11 @@ const { recomputeCaseValues } = require("../utils/itemValue");
 
 router.get("/", async (req, res) => {
   try {
-    const cases = await Case.find().select('-items');
+    const q = (req.query.q || "").toString().trim();
+    // escape regex metacharacters so search is a literal, injection/ReDoS-safe match
+    const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const filter = q ? { title: { $regex: safe, $options: "i" } } : {};
+    const cases = await Case.find(filter).select('-items');
     res.json(cases);
   } catch (err) {
     res.status(500).json({ message: err.message });
