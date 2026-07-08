@@ -1,7 +1,7 @@
 import api from '../api';
 
-export async function getCases() {
-    const response = await api.get('/cases/');
+export async function getCases(search?: string) {
+    const response = await api.get('/cases/', { params: search ? { q: search } : {} });
     return response.data;
 }
 

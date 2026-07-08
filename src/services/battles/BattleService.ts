@@ -32,6 +32,8 @@ export interface Battle {
   createdBy: string;
   currentRound: number;
   winnerUserIds: string[];
+  winningTeam: number | null;
+  tiedTeams: number[];
   players: BattlePlayer[];
 }
 
@@ -42,12 +44,7 @@ export const MODE_SLOTS: Record<string, number> = {
   "2v2": 4,
 };
 
-export const MODE_TEAMS: Record<string, number[]> = {
-  "1v1": [0, 1],
-  "1v1v1": [0, 1, 2],
-  "1v1v1v1": [0, 1, 2, 3],
-  "2v2": [0, 0, 1, 1],
-};
+export const MODES = ["1v1", "1v1v1", "1v1v1v1", "2v2"];
 
 const ack = <T,>(event: string, ...args: any[]): Promise<T> =>
   new Promise((resolve) => socket.emit(event, ...args, (res: T) => resolve(res)));

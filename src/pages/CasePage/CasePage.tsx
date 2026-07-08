@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { getCase } from "../../services/cases/CaseServices";
 import Title from "../../components/Title";
 import Item from "../../components/Item";
@@ -27,6 +28,7 @@ const CasePage = () => {
 
   const { userData, toogleUserFlow, toogleUserData } = useContext(UserContext);
   const [sellingAll, setSellingAll] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -119,7 +121,15 @@ const CasePage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-screen">
+    <div className="flex flex-col items-center w-screen relative">
+      {!loading && data && (
+        <button
+          onClick={() => navigate(`/battles?add=${id}`)}
+          className="absolute top-4 right-4 md:right-8 z-20 px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm"
+        >
+          Add to battle
+        </button>
+      )}
       <div className="flex flex-col items-center overflow-hidden  md:max-w-[1920px]">
         <h1 className="text-2xl color-[#e1dde9] font-bold py-7">
           {loading ? <Skeleton width={200} height={30} /> : data && data.title}
