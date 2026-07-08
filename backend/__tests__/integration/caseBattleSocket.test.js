@@ -170,4 +170,21 @@ describe("case battle socket layer", () => {
     hostSock.close();
     aSock.close();
   });
+
+  test("host disconnecting before start cancels the waiting battle", async () => {
+    const host = await makeUser();
+    const c = await makeCase(50);
+    const hostSock = await connect(tokenFor(host));
+    const created = await emitAck(hostSock, "battle:create", { caseIds: [c._id.toString()], mode: "1v1", bakaMode: false });
+
+    hostSock.close();
+
+    let b;
+    for (let i = 0; i < 30; i++) {
+      b = await Battle.findById(created.id);
+      if (b && b.status === "cancelled") break;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+    expect(b.status).toBe("cancelled");
+  });
 });

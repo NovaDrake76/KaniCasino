@@ -332,6 +332,41 @@ const caseBattle = (io) => {
         if (typeof cb === "function") cb({ error: "Server error" });
       }
     });
+
+    // when a socket drops (tab closed) and the user has no other tab open, tidy
+    // their WAITING battles: cancel the ones they host, drop them from the rest.
+    // in_progress/finished battles are left alone — a started battle keeps running.
+    socket.on("disconnect", async () => {
+      try {
+        const userId = socket.userId;
+        if (!userId) return;
+
+        const others = await io.in(userId.toString()).fetchSockets();
+        if (others.length > 0) return; // another tab is still connected
+
+        const open = await Battle.find({ status: "waiting", "players.userId": userId });
+        for (const b of open) {
+          if (isHost(b, userId)) {
+            const cancelled = await Battle.findOneAndUpdate(
+              { _id: b._id, status: "waiting", createdBy: userId },
+              { $set: { status: "cancelled" } },
+              { new: true }
+            );
+            if (cancelled) io.to(room(cancelled._id)).emit("battle:state", publicBattle(cancelled));
+          } else {
+            const updated = await Battle.findOneAndUpdate(
+              { _id: b._id, status: "waiting" },
+              { $pull: { players: { userId } } },
+              { new: true }
+            );
+            if (updated) broadcastBattle(updated);
+          }
+        }
+        if (open.length) broadcastList();
+      } catch (e) {
+        console.log(e);
+      }
+    });
   });
 };
 
