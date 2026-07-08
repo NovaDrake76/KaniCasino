@@ -51,9 +51,9 @@ const BattlesView: React.FC<BattlesViewProps> = ({
                 />
                 <button
                   onClick={() => removeAt(i)}
-                  className="absolute -top-1 -right-1 aspect-square text-white bg-red-600 hover:bg-red-500 rounded-full w-4 h-4 flex items-center justify-center text-[10px]"
+                  className="absolute -top-1 -right-1 aspect-square text-white bg-red-600 hover:bg-red-500 rounded-full w-5 h-5 flex items-center justify-center"
                 >
-                  <AiOutlineClose />
+                  <AiOutlineClose size={12} />
                 </button>
               </div>
             ))}
