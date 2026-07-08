@@ -8,6 +8,7 @@ const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
 const { calculateLevelFromXp } = require("../utils/economy");
 const { getWinningItem, addUniqueInfoToItem } = require("../utils/caseOpening");
+const { sellValue } = require("../utils/itemValue");
 
 // Exports
 module.exports = (io) => {
@@ -82,7 +83,7 @@ module.exports = (io) => {
         caseImage: caseData.image,
       });
 
-      res.json({ items: winningItems });
+      res.json({ items: winningItems.map((i) => ({ ...i, sellValue: sellValue(i.baseValue) })) });
 
       const userDataPayload = {
         walletBalance: updatedUser.walletBalance,

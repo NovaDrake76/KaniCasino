@@ -9,6 +9,8 @@ import Upgrade from "./pages/Upgrade/Upgrade";
 import Slot from "./pages/Slot/Slot";
 import PrivacyPolicy from "./pages/About/PrivacyPolicy"
 import ItemPage from "./pages/Market/ItemPage";
+import Battles from "./pages/Battles/Battles";
+import BattleRoom from "./pages/Battles/BattleRoom";
 
 const defaultRoutes = (
   <>
@@ -21,6 +23,8 @@ const defaultRoutes = (
     <Route path="/crash" element={<CrashGame />} />
     <Route path="/upgrade" element={<Upgrade />} />
     <Route path="/slot" element={<Slot />} />
+    <Route path="/battles" element={<Battles />} />
+    <Route path="/battles/:id" element={<BattleRoom />} />
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
   </>
 );

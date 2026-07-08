@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { getCase } from "../../services/cases/CaseServices";
 import Title from "../../components/Title";
 import Item from "../../components/Item";
 import { openBox } from "../../services/games/GamesServices";
+import { sellItems } from "../../services/users/UserServices";
 import UserContext from "../../UserContext";
 import MainButton from "../../components/MainButton";
 import Skeleton from "react-loading-skeleton";
@@ -24,7 +26,9 @@ const CasePage = () => {
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
 
-  const { userData, toogleUserFlow } = useContext(UserContext);
+  const { userData, toogleUserFlow, toogleUserData } = useContext(UserContext);
+  const [sellingAll, setSellingAll] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
@@ -70,6 +74,28 @@ const CasePage = () => {
     }, 8000);
   }
 
+  const sellOpened = async () => {
+    const ids = openedItems.map((i) => i.uniqueId).filter(Boolean);
+    if (!ids.length || sellingAll) return;
+    setSellingAll(true);
+    try {
+      const res = await sellItems(ids);
+      if (userData) {
+        toogleUserData({ ...userData, walletBalance: res.walletBalance });
+      }
+      toast.success(res.message, { theme: "dark" });
+      setShowPrize(false);
+      setAnimationAux2(false);
+      setHasSpinned(false);
+      setOpenedItems([]);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Could not sell items", { theme: "dark" });
+    }
+    setSellingAll(false);
+  };
+
+  const openedSellTotal = openedItems.reduce((s, i) => s + (i.sellValue || 0), 0);
+
   const openCase = async () => {
 
     if (userData == null) {
@@ -95,7 +121,15 @@ const CasePage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-screen">
+    <div className="flex flex-col items-center w-screen relative">
+      {!loading && data && (
+        <button
+          onClick={() => navigate(`/battles?add=${id}`)}
+          className="absolute top-4 right-4 md:right-8 z-20 px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm"
+        >
+          Add to battle
+        </button>
+      )}
       <div className="flex flex-col items-center overflow-hidden  md:max-w-[1920px]">
         <h1 className="text-2xl color-[#e1dde9] font-bold py-7">
           {loading ? <Skeleton width={200} height={30} /> : data && data.title}
@@ -128,6 +162,16 @@ const CasePage = () => {
               <QuantityButton quantity={quantity} setQuantity={setQuantity} disabled={started} />
             )
           }
+
+          {showPrize && openedItems.length > 0 && openedSellTotal > 0 && (
+            <button
+              onClick={sellOpened}
+              disabled={sellingAll}
+              className="px-4 py-2 rounded bg-[#281D3F] hover:bg-green-700 font-semibold transition-all disabled:opacity-50"
+            >
+              {sellingAll ? "Selling..." : <span className="flex items-center gap-1">Sell {openedItems.length > 1 ? "all " : ""}<Monetary value={openedSellTotal} /></span>}
+            </button>
+          )}
 
         </div>
 

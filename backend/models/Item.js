@@ -10,6 +10,10 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  baseValue: {
+    type: Number,
+    default: 0,
+  },
   case: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Case",

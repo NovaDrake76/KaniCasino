@@ -3,10 +3,15 @@ const router = express.Router();
 const Case = require("../models/Case");
 const Item = require("../models/Item");
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
+const { recomputeCaseValues } = require("../utils/itemValue");
 
 router.get("/", async (req, res) => {
   try {
-    const cases = await Case.find().select('-items');
+    const q = (req.query.q || "").toString().trim();
+    // escape regex metacharacters so search is a literal, injection/ReDoS-safe match
+    const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const filter = q ? { title: { $regex: safe, $options: "i" } } : {};
+    const cases = await Case.find(filter).select('-items');
     res.json(cases);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -23,6 +28,7 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
 
   try {
     const savedCase = await newCase.save();
+    await recomputeCaseValues(savedCase._id);
     res.status(201).json(savedCase);
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -46,6 +52,9 @@ router.put("/:id", isAuthenticated, isAdmin, async (req, res) => {
     const updatedCase = await Case.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
+    if (updatedCase) {
+      await recomputeCaseValues(updatedCase._id); // price/items may have changed
+    }
     res.json(updatedCase);
   } catch (err) {
     res.status(400).json({ message: err.message });

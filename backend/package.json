@@ -30,6 +30,7 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "mongodb-memory-server": "^10.4.3",
+    "socket.io-client": "^4.8.3",
     "supertest": "^7.2.2"
   }
 }

@@ -53,9 +53,30 @@ async function creditUser(userId, amount, winnings = 0) {
   );
 }
 
+// grant xp without touching the wallet, then recompute the derived level.
+// kept separate from chargeUser so xp can be awarded only after an action
+// commits (a wallet refund then has no xp to reverse).
+async function awardXp(userId, xpAmount) {
+  if (!xpAmount) return null;
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { $inc: { xp: xpAmount } },
+    { new: true }
+  );
+  if (!user) return null;
+
+  const newLevel = calculateLevelFromXp(user.xp);
+  if (newLevel !== user.level) {
+    user.level = newLevel;
+    await User.updateOne({ _id: userId }, { $set: { level: newLevel } });
+  }
+  return user;
+}
+
 module.exports = {
   calculateXPForLevel,
   calculateLevelFromXp,
   chargeUser,
   creditUser,
+  awardXp,
 };
