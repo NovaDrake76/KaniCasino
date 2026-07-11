@@ -18,12 +18,6 @@ then, use `npm run start`.
 
 Please note that the database access is not public; you can make your own database using MongoDB, or anything else. 
 
-# To-Do
-- [ ] Add friend.
-- [ ] Item battle.
-- [ ] Fixed navbar when scrolling.
-
-
 
 ![image](https://github.com/NovaDrake76/KaniCasino/assets/65428910/b7e025e1-25ad-46b6-a7d8-ace72d5804e2)
 
