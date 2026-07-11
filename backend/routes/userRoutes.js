@@ -7,8 +7,10 @@ const { check, validationResult } = require("express-validator");
 const User = require("../models/User");
 const Item = require("../models/Item");
 const Notification = require("../models/Notification");
+const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
 const { sellValue } = require("../utils/itemValue");
+const { creditUser, recordTransaction, TX } = require("../utils/economy");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
@@ -65,6 +67,15 @@ router.post(
 
       // Save user to the database
       await user.save();
+
+      await recordTransaction({
+        userId: user._id,
+        type: TX.SIGNUP,
+        direction: "credit",
+        amount: user.walletBalance,
+        balanceAfter: user.walletBalance,
+        meta: { source: "register" },
+      });
 
       // Generate and send JWT
       const payload = { userId: user.id };
@@ -165,6 +176,15 @@ router.post('/googlelogin', async (req, res) => {
         profilePicture: googlePayload.picture,
       });
       await user.save();
+
+      await recordTransaction({
+        userId: user._id,
+        type: TX.SIGNUP,
+        direction: "credit",
+        amount: user.walletBalance,
+        balanceAfter: user.walletBalance,
+        meta: { source: "google" },
+      });
     }
     // Generate and send JWT
     const payload = { userId: user.id };
@@ -266,6 +286,36 @@ router.get('/ranking', authMiddleware.isAuthenticated, async (req, res) => {
 
     res.json({ ranking: userIndex + 1, users: surroundingUsers });
   } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get the authenticated user's balance history (private; paginated, newest first)
+router.get('/transactions', authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
+    const limit = Math.min(Math.max(1, Math.floor(Number(req.query.limit)) || 20), 50);
+    const skip = (page - 1) * limit;
+
+    const filter = { userId: req.user._id };
+    if (req.query.type) filter.type = req.query.type;
+    if (req.query.direction === 'credit' || req.query.direction === 'debit') {
+      filter.direction = req.query.direction;
+    }
+
+    const [transactions, total] = await Promise.all([
+      Transaction.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Transaction.countDocuments(filter),
+    ]);
+
+    res.json({
+      transactions,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      total,
+    });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -387,11 +437,10 @@ router.post("/inventory/sell", authMiddleware.isAuthenticated, async (req, res) 
     }
 
     const total = removed.reduce((s, i) => s + sellValue(baseById.get(String(i._id)) || 0), 0);
-    const updated = await User.findByIdAndUpdate(
-      user._id,
-      { $inc: { walletBalance: total } },
-      { new: true }
-    );
+    const updated = await creditUser(user._id, total, 0, {
+      type: TX.ITEM_SELL,
+      meta: { count: removed.length },
+    });
 
     res.json({
       message: `Sold ${removed.length} item${removed.length > 1 ? "s" : ""} for K₽${total}`,
@@ -490,6 +539,15 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
     if (!updated) {
       return res.status(400).json({ message: 'Bonus not yet available' });
     }
+
+    await recordTransaction({
+      userId: req.user._id,
+      type: TX.BONUS,
+      direction: "credit",
+      amount: currentBonus,
+      balanceAfter: updated.walletBalance,
+      meta: {},
+    });
 
     res.json({ message: `Claimed K₽${currentBonus}!`, value: currentBonus, nextBonus: updated.nextBonus });
   } catch (err) {

@@ -6,9 +6,13 @@ const User = require("../models/User");
 const Case = require("../models/Case");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
-const { calculateLevelFromXp } = require("../utils/economy");
-const { getWinningItem, addUniqueInfoToItem } = require("../utils/caseOpening");
-const { sellValue } = require("../utils/itemValue");
+const { calculateLevelFromXp, recordTransaction, TX } = require("../utils/economy");
+const { addUniqueInfoToItem } = require("../utils/caseOpening");
+const { buildRangeTable } = require("../utils/caseRanges");
+const { roll, pickFromRanges, TOTAL } = require("../utils/provablyFair");
+const seeds = require("../utils/seeds");
+const rolls = require("../utils/rolls");
+const { sellValue, recomputeCaseValues } = require("../utils/itemValue");
 
 // Exports
 module.exports = (io) => {
@@ -20,7 +24,7 @@ module.exports = (io) => {
       const quantityToOpen = req.body.quantity;
       const winningItems = [];
 
-      const caseData = await Case.findById(id).populate("items");
+      let caseData = await Case.findById(id).populate("items");
 
       if (!caseData || !user) {
         if (!caseData) {
@@ -44,10 +48,34 @@ module.exports = (io) => {
 
       const cost = caseData.price * quantityToOpen;
 
+      // reserve the nonces atomically up front (never rolled back), then derive each
+      // item from the case's committed range table (provably fair, one draw per open)
+      const reserved = await seeds.reserveNonces(user._id, quantityToOpen);
+
+      // self-heal: materialize + commit this case's config on first open if it has
+      // none yet, so the roll stays verifiable even if the backfill hasn't run
+      if (!caseData.rangeTable || !caseData.rangeTable.length) {
+        await recomputeCaseValues(caseData._id);
+        caseData = await Case.findById(id).populate("items");
+      }
+      let rangeTable = caseData.rangeTable;
+      let configHash = caseData.configHash;
+      const configVersion = caseData.configVersion || 0;
+      if (!rangeTable || !rangeTable.length) {
+        const built = buildRangeTable(caseData); // safety net (e.g. a case with no items)
+        rangeTable = built.rangeTable;
+        configHash = built.configHash;
+      }
+
+      const draws = [];
       for (let i = 0; i < quantityToOpen; i++) {
-        const winningItem = getWinningItem(caseData);
-        const itemWithUniqueId = addUniqueInfoToItem(winningItem);
+        const nonce = reserved.startNonce + i;
+        const rollValue = roll(reserved.serverSeed, reserved.clientSeed, nonce); // 1..TOTAL
+        const picked = pickFromRanges(rollValue, rangeTable);
+        const sourceItem = caseData.items.find((it) => String(it._id) === String(picked.itemId));
+        const itemWithUniqueId = addUniqueInfoToItem(sourceItem);
         winningItems.push(itemWithUniqueId);
+        draws.push({ nonce, roll: rollValue, itemId: picked.itemId, uniqueId: itemWithUniqueId.uniqueId });
       }
 
       // atomically charge the cost and add the items only if the balance covers it
@@ -62,6 +90,36 @@ module.exports = (io) => {
 
       if (!updatedUser) {
         return res.status(400).json({ message: "Insufficient balance" });
+      }
+
+      await recordTransaction({
+        userId: user._id,
+        type: TX.CASE_OPEN,
+        direction: "debit",
+        amount: cost,
+        balanceAfter: updatedUser.walletBalance,
+        meta: { caseId: caseData._id, caseTitle: caseData.title, quantity: quantityToOpen },
+      });
+
+      // record one provably-fair audit roll per open (after the charge commits)
+      const rollIds = [];
+      for (const d of draws) {
+        const rec = await rolls.recordRoll({
+          game: "case",
+          userId: user._id,
+          seedId: reserved.seedId,
+          clientSeed: reserved.clientSeed,
+          serverSeedHash: reserved.serverSeedHash,
+          nonce: d.nonce,
+          roll: d.roll,
+          total: TOTAL,
+          caseId: caseData._id,
+          caseConfigVersion: configVersion,
+          caseConfigHash: configHash,
+          itemId: d.itemId,
+          uniqueId: d.uniqueId,
+        });
+        rollIds.push(rec.rollId);
       }
 
       const newLevel = calculateLevelFromXp(updatedUser.xp);
@@ -83,7 +141,13 @@ module.exports = (io) => {
         caseImage: caseData.image,
       });
 
-      res.json({ items: winningItems.map((i) => ({ ...i, sellValue: sellValue(i.baseValue) })) });
+      res.json({
+        items: winningItems.map((i, idx) => ({
+          ...i,
+          sellValue: sellValue(i.baseValue),
+          rollId: rollIds[idx],
+        })),
+      });
 
       const userDataPayload = {
         walletBalance: updatedUser.walletBalance,

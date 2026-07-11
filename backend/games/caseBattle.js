@@ -32,6 +32,7 @@ const publicPlayers = (b) =>
     isBot: p.isBot,
     items: p.items,
     total: p.total,
+    clientSeed: p.clientSeed || null,
   }));
 
 const publicBattle = (b) => ({
@@ -46,6 +47,8 @@ const publicBattle = (b) => ({
   winnerUserIds: b.winnerUserIds || [],
   winningTeam: b.winningTeam ?? null,
   tiedTeams: b.tiedTeams || [],
+  pfServerSeedHash: b.pfServerSeedHash || null,
+  pfServerSeed: b.status === "finished" ? b.pfServerSeed || null : null, // revealed on finish
   players: publicPlayers(b),
 });
 
@@ -175,7 +178,7 @@ const caseBattle = (io) => {
 
         // atomically claim the seat: the filter rejects the join if the battle
         // left "waiting", this user is already in, the slot got taken, or it
-        // filled up — closing the concurrent-join / post-start-injection races
+        // filled up, closing the concurrent-join / post-start-injection races
         const updated = await Battle.findOneAndUpdate(
           {
             _id: battleId,
@@ -335,7 +338,7 @@ const caseBattle = (io) => {
 
     // when a socket drops (tab closed) and the user has no other tab open, tidy
     // their WAITING battles: cancel the ones they host, drop them from the rest.
-    // in_progress/finished battles are left alone — a started battle keeps running.
+    // in_progress/finished battles are left alone; a started battle keeps running.
     socket.on("disconnect", async () => {
       try {
         const userId = socket.userId;

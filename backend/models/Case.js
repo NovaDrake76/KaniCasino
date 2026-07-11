@@ -17,6 +17,22 @@ const CaseSchema = new mongoose.Schema({
       ref: "Item",
     },
   ],
+
+  // provably-fair mapping: the committed item ranges for the current config. bumped
+  // and archived (see CaseConfig) whenever the case's items/rarities change.
+  rollTotal: { type: Number },
+  configVersion: { type: Number, default: 0 },
+  configHash: { type: String },
+  rarityTableVersion: { type: Number },
+  rangeTable: [
+    {
+      _id: false,
+      itemId: String,
+      rarity: String,
+      start: Number,
+      end: Number,
+    },
+  ],
 });
 
 module.exports = mongoose.model("Case", CaseSchema);

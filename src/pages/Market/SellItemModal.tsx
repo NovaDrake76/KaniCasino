@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/InventoryFilters";
-import { FiFilter } from 'react-icons/fi'
 import Modal from "../../components/Modal";
 
 interface Props {
@@ -39,7 +38,6 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -131,93 +129,96 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   }
 
   return (
-    <Modal open={isOpen} setOpen={onClose}>
-      <div>
-        <div className="flex">
-          <h2 className="text-lg font-semibold mb-2">Sell an Item</h2>
-        </div>
-        <div className="flex justify-between">
-          <div className="mb-4 w-1/2">
-            <label
-              className="block text-gray-400 text-sm font-bold mb-2"
-              htmlFor="price"
-            >
-              Set Price
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
-              id="price"
-              type="number"
-              min={0}
-              max={100000}
-              placeholder="Price in KP"
-              value={price}
-              onKeyDown={(event) => {
-                if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
-                  event.preventDefault();
-                }
-              }}
-              onChange={
-                (e) => setPrice(parseInt(e.target.value) || 0)
-              }
-            />
-          </div>
-          {selectedItem && (
-            <div className="flex  items-center">
-              <span className="text-white text-lg font-semibold mr-2">
-                {selectedItem.name}
-              </span>
-              <img src={selectedItem.image} alt="" className=" h-20" />
+    <Modal open={isOpen} setOpen={onClose} width="min(960px, 95vw)">
+      <div className="flex flex-col gap-4">
+        <h2 className="text-xl font-bold">Sell an item</h2>
+
+        <Filters filters={filters} setFilters={setFilters} onKeyPress={handleEnterPress} />
+
+        <div className="max-h-[42vh] overflow-y-auto overflow-x-hidden -mx-1 px-1">
+          {loadingInventory ? (
+            <div className="flex flex-wrap justify-center gap-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Skeleton key={i} width={128} height={150} baseColor="#1c1a31" highlightColor="#161427" />
+              ))}
+            </div>
+          ) : invItems.length === 0 ? (
+            <div className="text-center text-[#84819a] py-12">No items to sell.</div>
+          ) : (
+            <div className="flex flex-wrap justify-center gap-3">
+              {invItems.map((item, index) => {
+                const isSelected = selectedItem && selectedItem.uniqueId === item.uniqueId;
+                return (
+                  <div
+                    key={item._id + index}
+                    onClick={() => setSelectedItem(item)}
+                    className={`rounded-lg cursor-pointer transition-all p-1 border-2 ${
+                      isSelected ? "border-indigo-500 bg-indigo-500/10" : "border-transparent hover:bg-[#212031]"
+                    }`}
+                  >
+                    <Item item={item} size="small" />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {inventory && inventory.totalPages > 1 && (
+            <div className="w-full flex justify-center mt-3">
+              <Pagination
+                totalPages={inventory.totalPages}
+                currentPage={inventory.currentPage}
+                setPage={setPage}
+              />
             </div>
           )}
         </div>
-        <div className="flex flex-col w-full items-start gap-4 mt-2 ">
-          <div onClick={() => setOpenFilters(!openFilters)} className="border p-2 rounded-md cursor-pointer">
-            <FiFilter className="text-2xl " />
-          </div>
-          {openFilters && <Filters filters={filters} setFilters={setFilters} onKeyPress={handleEnterPress} />}
-        </div>
-        <div className="flex flex-col justify-center max-h-[190px]  gap-4 ">
-          <div className="flex flex-wrap justify-center gap-4 overflow-auto overflow-x-hidden mt-4 ">
-            {loadingInventory ? (
-              [1, 2, 3, 4].map((item) => (
-                <div className="w-1/4 p-2" key={item}>
-                  <Skeleton height={120} />
-                </div>
-              ))
-            ) : (
-              invItems.map((item, index) => (
-                <div
-                  className="w-1/4 p-2 cursor-pointer"
-                  key={item._id + index}
-                  onClick={() => setSelectedItem(item)}
-                >
-                  <Item item={item} size="small" />
-                </div>
-              ))
-            )}
-            {inventory && (
-              <div className="w-full flex justify-center">
-                <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
-              </div>
-            )}
-          </div>
-        </div>
 
-        <div className="flex items-center justify-end gap-4 mt-4 ">
-          <button
-            className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
-            onClick={CloseModal}
-          >
-            Close
-          </button>
-          <div className="w-44">
-            <MainButton
-              text="Sell Item"
-              onClick={handleSubmit}
-              loading={loadingButton}
-              disabled={!selectedItem || !price || loadingButton}
-            />
+        <div className="sticky bottom-0 flex flex-col sm:flex-row sm:items-center gap-3 border-t border-gray-700 pt-4 bg-[#19172D]">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            {selectedItem ? (
+              <>
+                <img src={selectedItem.image} alt={selectedItem.name} className="w-12 h-12 object-contain shrink-0" />
+                <span className="font-semibold truncate">{selectedItem.name}</span>
+              </>
+            ) : (
+              <span className="text-[#84819a] text-sm">Pick an item above to sell it.</span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1 sm:flex-none">
+              <span className="absolute inset-y-0 left-3 flex items-center text-[#84819a] text-sm pointer-events-none">
+                K₽
+              </span>
+              <input
+                type="number"
+                min={0}
+                max={1000000}
+                placeholder="Price"
+                value={price ?? ""}
+                onKeyDown={(event) => {
+                  if (!/[0-9]/.test(event.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(event.key)) {
+                    event.preventDefault();
+                  }
+                }}
+                onChange={(e) => setPrice(parseInt(e.target.value) || 0)}
+                className="w-full sm:w-36 bg-[#19172D] border border-gray-700 focus:border-indigo-500 outline-none rounded pl-9 pr-3 py-2 text-sm"
+              />
+            </div>
+            <button
+              onClick={CloseModal}
+              className="px-4 py-2 rounded bg-[#281D3F] hover:bg-red-700 text-sm font-semibold"
+            >
+              Close
+            </button>
+            <div className="w-32 shrink-0">
+              <MainButton
+                text="Sell item"
+                onClick={handleSubmit}
+                loading={loadingButton}
+                disabled={!selectedItem || !price || loadingButton}
+              />
+            </div>
           </div>
         </div>
       </div>

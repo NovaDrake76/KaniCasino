@@ -1,5 +1,5 @@
 import { BsCoin } from "react-icons/bs";
-import { GiUpgrade } from "react-icons/gi";
+import { GiUpgrade, GiCrossedSwords } from "react-icons/gi";
 import { MdOutlineSell } from "react-icons/md";
 import { SlPlane } from "react-icons/sl";
 import { FaHome } from "react-icons/fa";
@@ -48,6 +48,11 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: "Slots",
             path: "/slot",
             icon: <TbCat className="text-2xl" />,
+        },
+        {
+            name: "Case Battles",
+            path: "/battles",
+            icon: <GiCrossedSwords className="text-2xl" />,
         }
     ];
 

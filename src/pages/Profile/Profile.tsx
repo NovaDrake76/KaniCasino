@@ -8,6 +8,7 @@ import UserContext from "../../UserContext";
 import Skeleton from "react-loading-skeleton";
 import Filters from "../../components/InventoryFilters";
 import Pagination from "../../components/Pagination";
+import BalanceHistory from "./BalanceHistory";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -28,6 +29,7 @@ const Profile = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<"inventory" | "history">("inventory");
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -145,7 +147,27 @@ const Profile = () => {
 
       <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
         <div className="flex flex-col p-8 gap-2 items-center w-full max-w-[1312px]">
-          <h2 className="text-2xl font-bold py-4 ">Inventory</h2>
+          <div className="flex gap-2 py-4">
+            <button
+              onClick={() => setActiveTab("inventory")}
+              className={`px-4 py-2 rounded-md font-semibold text-sm transition-all ${activeTab === "inventory" ? "bg-[#281D3F] text-white" : "text-[#84819a] hover:text-white"}`}
+            >
+              Inventory
+            </button>
+            {isSameUser && (
+              <button
+                onClick={() => setActiveTab("history")}
+                className={`px-4 py-2 rounded-md font-semibold text-sm transition-all ${activeTab === "history" ? "bg-[#281D3F] text-white" : "text-[#84819a] hover:text-white"}`}
+              >
+                Balance history
+              </button>
+            )}
+          </div>
+
+          {activeTab === "history" ? (
+            <BalanceHistory />
+          ) : (
+          <>
           <div className="flex flex-col w-full items-end mr-[70px] gap-4 -mt-10">
             <div onClick={() => setOpenFilters(!openFilters)} className="border p-2 rounded-md cursor-pointer">
               <FiFilter className="text-2xl " />
@@ -189,6 +211,8 @@ const Profile = () => {
             (
               <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
             )}
+          </>
+          )}
         </div>
       </div>
     </div>

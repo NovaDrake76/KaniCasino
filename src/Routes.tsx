@@ -11,6 +11,7 @@ import PrivacyPolicy from "./pages/About/PrivacyPolicy"
 import ItemPage from "./pages/Market/ItemPage";
 import Battles from "./pages/Battles/Battles";
 import BattleRoom from "./pages/Battles/BattleRoom";
+import ProvablyFair from "./pages/ProvablyFair";
 
 const defaultRoutes = (
   <>
@@ -25,6 +26,7 @@ const defaultRoutes = (
     <Route path="/slot" element={<Slot />} />
     <Route path="/battles" element={<Battles />} />
     <Route path="/battles/:id" element={<BattleRoom />} />
+    <Route path="/provably-fair" element={<ProvablyFair />} />
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
   </>
 );

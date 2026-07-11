@@ -1,0 +1,96 @@
+const express = require("express");
+const router = express.Router();
+const { isAuthenticated } = require("../middleware/authMiddleware");
+const seeds = require("../utils/seeds");
+const rolls = require("../utils/rolls");
+
+const cleanClientSeed = (raw) => {
+  const s = (raw || "").toString().trim();
+  if (!s || s.length > 256) return null;
+  return s;
+};
+
+// current active seed (public fields only, never the secret serverSeed)
+router.get("/seed", isAuthenticated, async (req, res) => {
+  try {
+    res.json(await seeds.getPublicSeedState(req.user._id));
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// set a new client seed for the active seed
+router.post("/client-seed", isAuthenticated, async (req, res) => {
+  try {
+    const clientSeed = cleanClientSeed(req.body.clientSeed);
+    if (!clientSeed) return res.status(400).json({ message: "Invalid client seed" });
+    const seed = await seeds.setClientSeed(req.user._id, clientSeed);
+    res.json({ clientSeed: seed.clientSeed, serverSeedHash: seed.serverSeedHash, nonce: seed.nonce });
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// rotate: reveal the old serverSeed, commit a fresh one
+router.post("/rotate", isAuthenticated, async (req, res) => {
+  try {
+    const newClientSeed = req.body.clientSeed ? cleanClientSeed(req.body.clientSeed) : undefined;
+    const { revealed, current } = await seeds.rotate(req.user._id, newClientSeed);
+    res.json({
+      revealed: revealed
+        ? {
+            serverSeed: revealed.serverSeed,
+            serverSeedHash: revealed.serverSeedHash,
+            clientSeed: revealed.clientSeed,
+            nonce: revealed.nonce,
+          }
+        : null,
+      current: { serverSeedHash: current.serverSeedHash, clientSeed: current.clientSeed, nonce: current.nonce },
+    });
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// revealed seeds the user can fully verify
+router.get("/seeds/revealed", isAuthenticated, async (req, res) => {
+  try {
+    res.json(await seeds.getRevealedSeeds(req.user._id));
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// public roll lookup (the "provably fair data" page). serverSeed appears only once
+// the seed has been rotated/revealed.
+router.get("/roll/:rollId", async (req, res) => {
+  try {
+    const view = await rolls.getRollForVerify(req.params.rollId);
+    if (!view) return res.status(404).json({ message: "Roll not found" });
+    res.json(view);
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// look up the roll that produced an inventory item (by its uniqueId)
+router.get("/roll-by-item/:uniqueId", async (req, res) => {
+  try {
+    const view = await rolls.getRollForItem(req.params.uniqueId);
+    if (!view) return res.status(404).json({ message: "No roll found for this item" });
+    res.json(view);
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// server-side reproduction of a case roll (only possible after reveal)
+router.get("/roll/:rollId/verify", async (req, res) => {
+  try {
+    res.json(await rolls.verifyCaseRoll(req.params.rollId));
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+module.exports = router;

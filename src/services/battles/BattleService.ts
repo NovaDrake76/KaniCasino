@@ -20,6 +20,7 @@ export interface BattlePlayer {
   isBot: boolean;
   items: BattleItem[];
   total: number;
+  clientSeed?: string | null;
 }
 
 export interface Battle {
@@ -34,6 +35,8 @@ export interface Battle {
   winnerUserIds: string[];
   winningTeam: number | null;
   tiedTeams: number[];
+  pfServerSeedHash?: string | null;
+  pfServerSeed?: string | null;
   players: BattlePlayer[];
 }
 

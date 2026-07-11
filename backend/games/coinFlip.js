@@ -1,4 +1,4 @@
-const { chargeUser, creditUser } = require("../utils/economy");
+const { chargeUser, creditUser, TX } = require("../utils/economy");
 
 const freshState = () => ({
   heads: { players: {}, bets: {} },
@@ -29,7 +29,10 @@ const coinFlip = (io) => {
         }
 
         // atomically take the stake from the real balance
-        const updatedUser = await chargeUser(userId, bet);
+        const updatedUser = await chargeUser(userId, bet, {
+          type: TX.COINFLIP_BET,
+          meta: { bet, side },
+        });
         if (!updatedUser) return; // insufficient funds
 
         gameState[side].bets[userId] = bet;
@@ -60,7 +63,10 @@ const coinFlip = (io) => {
     for (const userId in gameState[winningSide].bets) {
       try {
         const betAmount = gameState[winningSide].bets[userId];
-        const updatedUser = await creditUser(userId, betAmount * 2, betAmount);
+        const updatedUser = await creditUser(userId, betAmount * 2, betAmount, {
+          type: TX.COINFLIP_WIN,
+          meta: { betAmount, side: winningSide },
+        });
 
         io.to(userId.toString()).emit("userDataUpdated", {
           walletBalance: updatedUser.walletBalance,

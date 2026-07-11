@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import Rarities from "./Rarities";
-import { BsPinAngleFill } from "react-icons/bs";
+import { BsPinAngleFill, BsShieldFillCheck } from "react-icons/bs";
 import { fixItem, sellItems } from "../services/users/UserServices";
 import { RotatingLines } from "react-loader-spinner";
 import { toast } from "react-toastify";
@@ -96,6 +97,15 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
           >
             <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
           </div>
+        )}
+        {fixable && item.uniqueId && (
+          <Link
+            to={`/provably-fair?item=${item.uniqueId}`}
+            className="absolute top-9 right-1 z-30 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
+            title="Verify this drop (provably fair)"
+          >
+            <BsShieldFillCheck className="text-2xl text-green-500 hover:text-green-300 transition-all cursor-pointer" />
+          </Link>
         )}
         <div className="flex gap-2 items-center -ml-1 max-w-[160px]">
           <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{

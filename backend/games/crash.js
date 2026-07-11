@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const { chargeUser, creditUser } = require("../utils/economy");
+const { chargeUser, creditUser, TX } = require("../utils/economy");
 const { multiplierAt, crashPointFromRandom, INSTANT_CRASH_CHANCE } = require("../utils/crashMath");
 
 const freshState = () => ({
@@ -31,7 +31,11 @@ const crashGame = (io) => {
         }
 
         // atomically take the stake from the real balance (crash grants no xp)
-        const updatedUser = await chargeUser(userId, bet, { awardXp: false });
+        const updatedUser = await chargeUser(userId, bet, {
+          awardXp: false,
+          type: TX.CRASH_BET,
+          meta: { bet },
+        });
         if (!updatedUser) {
           return; // insufficient funds
         }
@@ -75,7 +79,10 @@ const crashGame = (io) => {
           const betAmount = gameState.gameBets[userId];
           const payout = betAmount * multiplier;
 
-          const updatedUser = await creditUser(userId, payout, payout - betAmount);
+          const updatedUser = await creditUser(userId, payout, payout - betAmount, {
+            type: TX.CRASH_CASHOUT,
+            meta: { betAmount, multiplier },
+          });
 
           // keep the player visible with their locked-in payout
           gameState.gamePlayers[userId].payout = multiplier;

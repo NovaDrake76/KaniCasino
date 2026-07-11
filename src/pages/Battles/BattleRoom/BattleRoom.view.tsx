@@ -119,7 +119,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
       {tie && (
         <div className="w-full max-w-[1200px] flex flex-col items-center gap-2 animate-fade-in">
           <span className="text-yellow-300 font-bold text-lg">
-            It's a tie — spinning for the winner
+            It's a tie, spinning for the winner
           </span>
           <TieBreaker
             players={tie.players}

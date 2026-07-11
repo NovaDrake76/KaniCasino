@@ -27,7 +27,7 @@ import {
 } from "./BattleRoom.types";
 
 const REEL_MS = 4200; // must stay under the backend's REVEAL_MS (4500)
-const WINDOW_H = 420; // reel window height — must match BattleReel (ITEM_H * WINDOW_CELLS)
+const WINDOW_H = 420; // must match the BattleReel window (ITEM_H * WINDOW_CELLS)
 const TIE_MS = 4200; // tie-breaker roulette spin
 
 const EMPTY_COLUMNS: BattleColumn[] = [];
