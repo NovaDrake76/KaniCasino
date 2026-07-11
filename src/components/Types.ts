@@ -46,6 +46,7 @@ export interface BasicItem {
     uniqueId: string;
     baseValue?: number;
     sellValue?: number;
+    rollId?: string;
 }
 
 export interface Case {

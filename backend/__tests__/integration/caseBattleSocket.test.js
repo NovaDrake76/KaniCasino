@@ -12,6 +12,8 @@ const Item = require("../../models/Item");
 const Case = require("../../models/Case");
 const Battle = require("../../models/Battle");
 const caseBattle = require("../../games/caseBattle");
+const { roll, pickFromRanges } = require("../../utils/provablyFair");
+const { buildRangeTable } = require("../../utils/caseRanges");
 
 let httpServer, io, port;
 
@@ -169,6 +171,35 @@ describe("case battle socket layer", () => {
     expect(b.players.length).toBe(2); // host + attacker once
     hostSock.close();
     aSock.close();
+  });
+
+  test("a finished battle is provably fair: every item reproduces from the revealed seed", async () => {
+    const host = await makeUser({ walletBalance: 1000 });
+    const its = await Item.create([
+      { name: `r1-${uniqueSuffix()}`, image: "x", rarity: "1", baseValue: 10 },
+      { name: `r3-${uniqueSuffix()}`, image: "x", rarity: "3", baseValue: 100 },
+      { name: `r5-${uniqueSuffix()}`, image: "x", rarity: "5", baseValue: 1000 },
+    ]);
+    const c = await Case.create({ title: "MB", image: "c.png", price: 50, items: its.map((i) => i._id) });
+
+    const hostSock = await connect(tokenFor(host));
+    const created = await emitAck(hostSock, "battle:create", { caseIds: [c._id.toString()], mode: "1v1", bakaMode: false });
+    await emitAck(hostSock, "battle:addBot", created.id);
+
+    const finishedP = new Promise((resolve) => hostSock.once("battle:finished", resolve));
+    await emitAck(hostSock, "battle:start", created.id);
+    const fin = await finishedP;
+
+    expect(fin.pfServerSeed).toMatch(/^[0-9a-f]{64}$/); // revealed once finished
+
+    const caseDoc = await Case.findById(c._id).populate("items");
+    const { rangeTable, total } = buildRangeTable(caseDoc);
+    for (const p of fin.players) {
+      const rollValue = roll(fin.pfServerSeed, p.clientSeed, 0, { total, cursor: p.slot });
+      const picked = pickFromRanges(rollValue, rangeTable);
+      expect(String(picked.itemId)).toBe(String(p.items[0]._id));
+    }
+    hostSock.close();
   });
 
   test("host disconnecting before start cancels the waiting battle", async () => {

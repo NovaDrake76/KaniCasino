@@ -1,9 +1,18 @@
 const Battle = require("../models/Battle");
 const Case = require("../models/Case");
 const User = require("../models/User");
-const { getWinningItem, addUniqueInfoToItem } = require("../utils/caseOpening");
-const { chargeUser, creditUser, awardXp } = require("../utils/economy");
+const { addUniqueInfoToItem } = require("../utils/caseOpening");
+const { chargeUser, creditUser, awardXp, TX } = require("../utils/economy");
 const { modeConfig, evaluateWinner, splitItemsEvenly } = require("../utils/battle");
+const {
+  generateServerSeed,
+  hashServerSeed,
+  roll,
+  rollFloat,
+  pickFromRanges,
+} = require("../utils/provablyFair");
+const { buildRangeTable } = require("../utils/caseRanges");
+const { getOrCreateActiveSeed } = require("../utils/seeds");
 
 const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
 
@@ -15,16 +24,36 @@ const emitUserData = (io, userId, user) => {
   });
 };
 
-// roll every outcome up front so the battle is deterministic once started
-// (survives restarts, lets spectators/rejoiners see the same thing).
+// deterministically derive every outcome from the battle's committed server seed +
+// each slot's client seed, so the whole battle is provably fair and reproducible.
+// (also survives restarts and lets spectators/rejoiners see the same thing.)
 async function prerollBattle(battle) {
   const config = modeConfig(battle.mode);
+  const clientSeedFor = (slot) => {
+    const p = battle.players.find((x) => x.slot === slot);
+    return (p && p.clientSeed) || `slot:${slot}`;
+  };
+
   const rolls = [];
-  for (const caseId of battle.cases) {
-    const caseDoc = await Case.findById(caseId).populate("items");
+  for (let c = 0; c < battle.cases.length; c++) {
+    const caseDoc = await Case.findById(battle.cases[c]).populate("items");
+    let rangeTable = caseDoc.rangeTable;
+    let rollTotal = caseDoc.rollTotal;
+    if (!rangeTable || !rangeTable.length) {
+      const built = buildRangeTable(caseDoc);
+      rangeTable = built.rangeTable;
+      rollTotal = built.total;
+    }
+
     const round = [];
     for (let slot = 0; slot < config.slots; slot++) {
-      round.push(addUniqueInfoToItem(getWinningItem(caseDoc)));
+      const rollValue = roll(battle.pfServerSeed, clientSeedFor(slot), c, {
+        total: rollTotal,
+        cursor: slot,
+      });
+      const picked = pickFromRanges(rollValue, rangeTable);
+      const sourceItem = caseDoc.items.find((it) => String(it._id) === String(picked.itemId));
+      round.push(addUniqueInfoToItem(sourceItem));
     }
     rolls.push(round);
   }
@@ -75,16 +104,36 @@ async function chargeAndStart(battleId, io = noopIo) {
   // a refund never has to reverse it). refund + release if any charge loses a race
   const charged = [];
   for (const p of humans) {
-    const updated = await chargeUser(p.userId, battle.entryCost, { awardXp: false });
+    const updated = await chargeUser(p.userId, battle.entryCost, {
+      awardXp: false,
+      type: TX.BATTLE_ENTRY,
+      meta: { battleId: battle._id },
+    });
     if (!updated) {
       for (const id of charged) {
-        const refunded = await creditUser(id, battle.entryCost, 0);
+        const refunded = await creditUser(id, battle.entryCost, 0, {
+          type: TX.BATTLE_REFUND,
+          meta: { battleId: battle._id },
+        });
         emitUserData(io, id, refunded);
       }
       await release();
       return { error: "A player could not pay; battle cancelled" };
     }
     charged.push(p.userId);
+  }
+
+  // commit a battle server seed and lock each slot's client seed (humans use their
+  // own; bots get a deterministic one), then derive the provably-fair preroll
+  battle.pfServerSeed = generateServerSeed();
+  battle.pfServerSeedHash = hashServerSeed(battle.pfServerSeed);
+  for (const p of battle.players) {
+    if (p.userId && !p.isBot) {
+      const seed = await getOrCreateActiveSeed(p.userId);
+      p.clientSeed = seed.clientSeed;
+    } else {
+      p.clientSeed = `bot:${p.slot}`;
+    }
   }
 
   battle.rolls = await prerollBattle(battle);
@@ -136,7 +185,11 @@ async function finishBattle(battle, io = noopIo) {
     claimed.currentRound = r + 1;
   }
 
-  const { winningTeam, tiedTeams } = evaluateWinner(claimed.players, claimed.bakaMode);
+  // break ties deterministically from the committed seed (reproducible + fair)
+  const tieRng = claimed.pfServerSeed
+    ? () => rollFloat(claimed.pfServerSeed, "tiebreak", 0)
+    : undefined;
+  const { winningTeam, tiedTeams } = evaluateWinner(claimed.players, claimed.bakaMode, tieRng);
   const winners = claimed.players.filter((p) => p.team === winningTeam);
   const pool = claimed.players.flatMap((p) => p.items);
   const shares = splitItemsEvenly(pool, winners.length);

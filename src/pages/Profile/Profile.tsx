@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { getUser, getInventory } from "../../services/users/UserServices";
 import { FiFilter } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
@@ -8,6 +9,7 @@ import UserContext from "../../UserContext";
 import Skeleton from "react-loading-skeleton";
 import Filters from "../../components/InventoryFilters";
 import Pagination from "../../components/Pagination";
+import BalanceHistory from "./BalanceHistory";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -18,6 +20,7 @@ interface Inventory {
 
 
 const Profile = () => {
+  const { id } = useParams();
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -28,6 +31,7 @@ const Profile = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<"inventory" | "history">("inventory");
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -35,9 +39,6 @@ const Profile = () => {
     order: 'asc',
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
-
-  //get id from url
-  const id = window.location.pathname.split("/")[2];
 
   useEffect(() => {
     if (invItems?.length > 0) {
@@ -55,7 +56,7 @@ const Profile = () => {
 
   const getUserInfo = async () => {
     try {
-      const response = await getUser(id);
+      const response = await getUser(id as string);
       setUser(response);
     } catch (error) {
       console.log(error);
@@ -67,7 +68,7 @@ const Profile = () => {
     setLoadingInventory(true);
     try {
       const response = await getInventory(
-        id,
+        id as string,
         page,
         filters
       );
@@ -92,12 +93,8 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (userData) {
-      if (userData.id == id) {
-        setIsSameUser(true);
-      }
-    }
-  }, [userData]);
+    setIsSameUser(userData?.id == id);
+  }, [id, userData]);
 
   useEffect(() => {
     if (refresh) {
@@ -108,12 +105,15 @@ const Profile = () => {
   }, [refresh]);
 
   useEffect(() => {
-    getInventoryInfo();
-  }, [page]);
+    setInvItems([]);
+    setPage(1);
+    setActiveTab("inventory");
+    getUserInfo();
+  }, [id]);
 
   useEffect(() => {
-    getUserInfo();
-  }, []);
+    getInventoryInfo();
+  }, [page, id]);
 
 
   return (
@@ -145,7 +145,29 @@ const Profile = () => {
 
       <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
         <div className="flex flex-col p-8 gap-2 items-center w-full max-w-[1312px]">
-          <h2 className="text-2xl font-bold py-4 ">Inventory</h2>
+          <div className="flex w-full gap-6 overflow-x-auto border-b border-[#2a2840] mb-4">
+            <button
+              onClick={() => setActiveTab("inventory")}
+              className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${activeTab === "inventory" ? "text-white" : "text-[#84819a] hover:text-white"}`}
+            >
+              Inventory
+              <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-colors ${activeTab === "inventory" ? "bg-indigo-500" : "bg-transparent"}`} />
+            </button>
+            {isSameUser && (
+              <button
+                onClick={() => setActiveTab("history")}
+                className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${activeTab === "history" ? "text-white" : "text-[#84819a] hover:text-white"}`}
+              >
+                Balance history
+                <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-colors ${activeTab === "history" ? "bg-indigo-500" : "bg-transparent"}`} />
+              </button>
+            )}
+          </div>
+
+          {activeTab === "history" ? (
+            <BalanceHistory />
+          ) : (
+          <>
           <div className="flex flex-col w-full items-end mr-[70px] gap-4 -mt-10">
             <div onClick={() => setOpenFilters(!openFilters)} className="border p-2 rounded-md cursor-pointer">
               <FiFilter className="text-2xl " />
@@ -189,6 +211,8 @@ const Profile = () => {
             (
               <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
             )}
+          </>
+          )}
         </div>
       </div>
     </div>

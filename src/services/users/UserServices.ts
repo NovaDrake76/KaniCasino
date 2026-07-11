@@ -104,3 +104,19 @@ export async function sellItems(uniqueIds: string[]) {
     const response = await api.post(`/users/inventory/sell`, { uniqueIds });
     return response.data;
 }
+
+export async function getTransactions(page = 1, filters?: { type?: string; direction?: string }) {
+    let url = `/users/transactions?page=${page}`;
+
+    if (filters) {
+        for (const key in filters) {
+            const value = filters[key as keyof typeof filters];
+            if (value) {
+                url += `&${key}=${value}`;
+            }
+        }
+    }
+
+    const response = await api.get(url);
+    return response.data;
+}

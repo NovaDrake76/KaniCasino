@@ -22,12 +22,17 @@ describe("slot win calculation", () => {
     expect(SlotGameController.calculateWins(grid)).toHaveLength(0);
   });
 
-  test("generated grids only contain valid symbols", () => {
+  test("generated grids are deterministic and only contain valid symbols", () => {
     const valid = new Set(["red", "blue", "green", "yin_yang", "hakkero", "yellow", "wild"]);
+    const serverSeed = "s".repeat(64);
     for (let i = 0; i < 200; i++) {
-      const grid = SlotGameController.generateRandomGrid();
+      const grid = SlotGameController.generateGrid(serverSeed, "client", i);
       expect(grid).toHaveLength(9);
       expect(grid.every((s) => valid.has(s))).toBe(true);
     }
+    // same seed + nonce reproduces the same grid
+    expect(SlotGameController.generateGrid(serverSeed, "client", 7)).toEqual(
+      SlotGameController.generateGrid(serverSeed, "client", 7)
+    );
   });
 });

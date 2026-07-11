@@ -24,6 +24,7 @@ const playerSchema = new mongoose.Schema(
     isBot: { type: Boolean, default: false },
     items: { type: [battleItemSchema], default: [] },
     total: { type: Number, default: 0 },
+    clientSeed: String, // locked at start; used with the battle server seed
   },
   { _id: false }
 );
@@ -46,6 +47,8 @@ const BattleSchema = new mongoose.Schema(
     winnerUserIds: [{ type: mongoose.Schema.Types.ObjectId }],
     winningTeam: { type: Number, default: null },
     tiedTeams: { type: [Number], default: [] }, // >1 team only when the top total was tied
+    pfServerSeed: String, // secret until the battle finishes, then revealed for verification
+    pfServerSeedHash: String, // committed at start
     startedAt: Date,
     finishedAt: Date,
   },

@@ -1,5 +1,10 @@
 const User = require("../models/User");
 const Item = require("../models/Item");
+const seeds = require("../utils/seeds");
+const rolls = require("../utils/rolls");
+const { rollFloat, TOTAL } = require("../utils/provablyFair");
+
+const UPGRADE_ALGO_VERSION = 1; // bump if calculateSuccessRate ever changes
 
 const baseChances = {
   "1": { "1": 0.5, "2": 0.2, "3": 0.1, "4": 0.05, "5": 0.002 },
@@ -92,6 +97,10 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       return { status: 400, message: "You can't upgrade to a lesser rarity" };
     }
 
+    // reserve the provably-fair nonce up front (atomic, never rolled back)
+    const reserved = await seeds.reserveNonces(userId, 1);
+    const nonce = reserved.startNonce;
+
     // atomically consume the selected items; the pre-update doc tells us how many
     // were actually present, so a concurrent request can't spend them twice
     const before = await User.findOneAndUpdate(
@@ -108,12 +117,15 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       return { status: 400, message: "Items no longer available" };
     }
 
-    // Calculate the success rate and attempt the upgrade
+    // success is the provably-fair roll: succeed when the [0,1) draw is below the rate
     const successRate = calculateSuccessRate(selectedItems, targetItem.rarity);
-    const isSuccess = Math.random() < successRate;
+    const rollFloatValue = rollFloat(reserved.serverSeed, reserved.clientSeed, nonce);
+    const isSuccess = rollFloatValue < successRate;
 
+    let producedUniqueId = null;
     if (isSuccess) {
       // Add the target item to the user's inventory
+      producedUniqueId = require('uuid').v4();
       await User.updateOne(
         { _id: userId },
         {
@@ -125,14 +137,38 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
               rarity: targetItem.rarity,
               case: targetItem.case,
               createdAt: new Date(),
-              uniqueId: require('uuid').v4(),
+              uniqueId: producedUniqueId,
             },
           },
         }
       );
     }
 
-    return { status: 200, success: isSuccess, item: isSuccess ? targetItem : null };
+    const rec = await rolls.recordRoll({
+      game: "upgrade",
+      userId,
+      seedId: reserved.seedId,
+      clientSeed: reserved.clientSeed,
+      serverSeedHash: reserved.serverSeedHash,
+      nonce,
+      roll: Math.floor(rollFloatValue * TOTAL) + 1,
+      total: TOTAL,
+      uniqueId: producedUniqueId,
+      outcome: {
+        success: isSuccess,
+        successRate,
+        targetItemId: String(targetItem._id),
+        targetRarity: targetItem.rarity,
+        algoVersion: UPGRADE_ALGO_VERSION,
+      },
+    });
+
+    return {
+      status: 200,
+      success: isSuccess,
+      item: isSuccess ? targetItem : null,
+      rollId: rec.rollId,
+    };
   } catch (error) {
     console.error(error);
     return { status: 500, message: "Internal server error" };

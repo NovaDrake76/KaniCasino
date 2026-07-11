@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Rarities from "../../components/Rarities";
 import { BasicItem } from "../../components/Types";
 
@@ -34,6 +35,14 @@ const ShowPrize: React.FC<ShowPrizeProps> = ({ openedItems, showPrize, animation
                                         </span>
                                     )
                                 }
+                                {openedItem.rollId && showPrize && (
+                                    <Link
+                                        to={`/provably-fair?roll=${openedItem.rollId}`}
+                                        className="text-[10px] text-[#84819a] hover:text-white underline"
+                                    >
+                                        provably fair
+                                    </Link>
+                                )}
                             </div>
                             {animationAux2 && openedItems.length == 1 && (
                                 <div

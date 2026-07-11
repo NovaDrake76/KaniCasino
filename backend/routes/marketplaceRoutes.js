@@ -6,6 +6,7 @@ const User = require("../models/User");
 const Item = require("../models/Item");
 const Marketplace = require("../models/Marketplace");
 const Notification = require("../models/Notification");
+const { creditUser, recordTransaction, TX } = require("../utils/economy");
 
 module.exports = (io) => {
   // Create new listing
@@ -248,12 +249,38 @@ module.exports = (io) => {
         return res.status(400).json({ message: "Insufficient balance" });
       }
 
-      // pay the seller (atomic credit; account may have been deleted)
-      const seller = await User.findByIdAndUpdate(
-        claimed.sellerId,
-        { $inc: { walletBalance: claimed.price } },
-        { new: true }
-      );
+      await recordTransaction({
+        userId: buyerId,
+        type: TX.MARKET_BUY,
+        direction: "debit",
+        amount: claimed.price,
+        balanceAfter: updatedBuyer.walletBalance,
+        meta: { itemName: claimed.itemName, sellerId: claimed.sellerId, listingId: claimed.uniqueId },
+      });
+
+      // pay the seller through the ledger chokepoint (records the sale proceeds)
+      const seller = await creditUser(claimed.sellerId, claimed.price, 0, {
+        type: TX.MARKET_SALE,
+        meta: { itemName: claimed.itemName, buyerId, listingId: claimed.uniqueId },
+      });
+
+      // seller account is gone: reverse the buyer so their KP can't disappear
+      if (!seller) {
+        const reversed = await User.findOneAndUpdate(
+          { _id: buyerId },
+          { $inc: { walletBalance: claimed.price }, $pull: { inventory: { uniqueId: claimed.uniqueId } } },
+          { new: true }
+        );
+        await recordTransaction({
+          userId: buyerId,
+          type: TX.MARKET_BUY,
+          direction: "credit",
+          amount: claimed.price,
+          balanceAfter: reversed ? reversed.walletBalance : undefined,
+          meta: { itemName: claimed.itemName, reversal: true, reason: "seller no longer exists" },
+        });
+        return res.status(410).json({ message: "Seller no longer available; purchase reversed" });
+      }
 
       res.json({ message: "Item purchased" });
 

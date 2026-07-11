@@ -40,17 +40,40 @@ function baseValuesForCase(caseDoc) {
 
 const sellValue = (baseValue) => Math.floor((baseValue || 0) * SELL_RATE);
 
-// recompute and persist baseValue for every item in a case
+// recompute and persist baseValue for every item in a case, and (re)materialize the
+// provably-fair range table, bumping the case's config version + archiving it when
+// the mapping actually changes so past rolls stay verifiable against a pinned version.
 async function recomputeCaseValues(caseId) {
   const Case = require("../models/Case");
   const Item = require("../models/Item");
+  const CaseConfig = require("../models/CaseConfig");
+  const { buildRangeTable } = require("./caseRanges");
+
   const caseDoc = await Case.findById(caseId).populate("items");
   if (!caseDoc) return;
+
   const values = baseValuesForCase(caseDoc);
   const ops = Object.entries(values).map(([id, v]) => ({
     updateOne: { filter: { _id: id }, update: { $set: { baseValue: v } } },
   }));
   if (ops.length) await Item.bulkWrite(ops);
+
+  const { total, rangeTable, configHash, rarityTableVersion } = buildRangeTable(caseDoc);
+  if (configHash && configHash !== caseDoc.configHash) {
+    const bumped = await Case.findByIdAndUpdate(
+      caseId,
+      {
+        $set: { rollTotal: total, rangeTable, configHash, rarityTableVersion },
+        $inc: { configVersion: 1 },
+      },
+      { new: true }
+    );
+    await CaseConfig.updateOne(
+      { caseId, configVersion: bumped.configVersion },
+      { $set: { configHash, rollTotal: total, rarityTableVersion, rangeTable } },
+      { upsert: true }
+    );
+  }
 }
 
 module.exports = {

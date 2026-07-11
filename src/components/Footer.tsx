@@ -78,6 +78,10 @@ function Footer() {
       title: "Support",
       links: [
         {
+          title: "Provably Fair",
+          onClick: () => navigate("/provably-fair"),
+        },
+        {
           title: "Contact us",
           onClick: () => handleModalInfo(<ContactUs />),
         },

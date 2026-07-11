@@ -5,6 +5,7 @@ const User = require("../models/User");
 const Case = require("../models/Case");
 const Item = require("../models/Item");
 const { recomputeCaseValues } = require("../utils/itemValue");
+const { recordTransaction, TX } = require("../utils/economy");
 
 router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
   try {
@@ -125,14 +126,31 @@ router.delete("/items/:id", isAuthenticated, isAdmin, async (req, res) => {
 router.put("/users/:id/wallet", isAuthenticated, isAdmin, async (req, res) => {
   const { walletBalance } = req.body;
 
+  if (typeof walletBalance !== "number" || !Number.isFinite(walletBalance) || walletBalance < 0) {
+    return res.status(400).json({ message: "walletBalance must be a non-negative number" });
+  }
+
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    const previous = user.walletBalance;
+    const delta = walletBalance - previous;
     user.walletBalance = walletBalance;
     await user.save();
+
+    if (delta !== 0) {
+      await recordTransaction({
+        userId: user._id,
+        type: TX.ADMIN_ADJUST,
+        direction: delta > 0 ? "credit" : "debit",
+        amount: Math.abs(delta),
+        balanceAfter: user.walletBalance,
+        meta: { adminId: req.user._id, previous },
+      });
+    }
 
     res.json(user.walletBalance);
   } catch (err) {
