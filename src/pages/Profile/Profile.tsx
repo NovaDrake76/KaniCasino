@@ -1,4 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { getUser, getInventory } from "../../services/users/UserServices";
 import { FiFilter } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
@@ -19,6 +20,7 @@ interface Inventory {
 
 
 const Profile = () => {
+  const { id } = useParams();
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -38,9 +40,6 @@ const Profile = () => {
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
 
-  //get id from url
-  const id = window.location.pathname.split("/")[2];
-
   useEffect(() => {
     if (invItems?.length > 0) {
       delayDebounceFn.current = setTimeout(() => {
@@ -57,7 +56,7 @@ const Profile = () => {
 
   const getUserInfo = async () => {
     try {
-      const response = await getUser(id);
+      const response = await getUser(id as string);
       setUser(response);
     } catch (error) {
       console.log(error);
@@ -69,7 +68,7 @@ const Profile = () => {
     setLoadingInventory(true);
     try {
       const response = await getInventory(
-        id,
+        id as string,
         page,
         filters
       );
@@ -94,12 +93,8 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (userData) {
-      if (userData.id == id) {
-        setIsSameUser(true);
-      }
-    }
-  }, [userData]);
+    setIsSameUser(userData?.id == id);
+  }, [id, userData]);
 
   useEffect(() => {
     if (refresh) {
@@ -110,12 +105,15 @@ const Profile = () => {
   }, [refresh]);
 
   useEffect(() => {
-    getInventoryInfo();
-  }, [page]);
+    setInvItems([]);
+    setPage(1);
+    setActiveTab("inventory");
+    getUserInfo();
+  }, [id]);
 
   useEffect(() => {
-    getUserInfo();
-  }, []);
+    getInventoryInfo();
+  }, [page, id]);
 
 
   return (
@@ -147,19 +145,21 @@ const Profile = () => {
 
       <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
         <div className="flex flex-col p-8 gap-2 items-center w-full max-w-[1312px]">
-          <div className="flex gap-2 py-4">
+          <div className="flex w-full gap-6 overflow-x-auto border-b border-[#2a2840] mb-4">
             <button
               onClick={() => setActiveTab("inventory")}
-              className={`px-4 py-2 rounded-md font-semibold text-sm transition-all ${activeTab === "inventory" ? "bg-[#281D3F] text-white" : "text-[#84819a] hover:text-white"}`}
+              className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${activeTab === "inventory" ? "text-white" : "text-[#84819a] hover:text-white"}`}
             >
               Inventory
+              <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-colors ${activeTab === "inventory" ? "bg-indigo-500" : "bg-transparent"}`} />
             </button>
             {isSameUser && (
               <button
                 onClick={() => setActiveTab("history")}
-                className={`px-4 py-2 rounded-md font-semibold text-sm transition-all ${activeTab === "history" ? "bg-[#281D3F] text-white" : "text-[#84819a] hover:text-white"}`}
+                className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${activeTab === "history" ? "text-white" : "text-[#84819a] hover:text-white"}`}
               >
                 Balance history
+                <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-colors ${activeTab === "history" ? "bg-indigo-500" : "bg-transparent"}`} />
               </button>
             )}
           </div>
