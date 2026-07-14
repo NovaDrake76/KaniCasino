@@ -12,6 +12,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const { loginLimiter, registerLimiter } = require("../middleware/rateLimit");
 const { sellValue } = require("../utils/itemValue");
 const { creditUser, recordTransaction, TX } = require("../utils/economy");
+const { sellUniqueIds } = require("../utils/inventorySell");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
@@ -358,46 +359,19 @@ router.post("/inventory/sell", authMiddleware.isAuthenticated, async (req, res) 
       return res.status(400).json({ message: "No items selected" });
     }
 
-    const user = await User.findById(req.user._id);
-    if (!user) {
+    const result = await sellUniqueIds(req.user._id, ids);
+    if (!result) {
       return res.status(404).json({ message: "User not found" });
     }
-
-    const toSell = user.inventory.filter((i) => i && ids.includes(i.uniqueId));
-    if (!toSell.length) {
+    if (!result.sold) {
       return res.status(404).json({ message: "Items not found in inventory" });
     }
-
-    // authoritative base values from the item catalog
-    const itemIds = [...new Set(toSell.map((i) => String(i._id)))];
-    const items = await Item.find({ _id: { $in: itemIds } }, { baseValue: 1 });
-    const baseById = new Map(items.map((i) => [String(i._id), i.baseValue || 0]));
-
-    // atomically remove the items, then credit only for the ones actually removed
-    const before = await User.findOneAndUpdate(
-      { _id: user._id },
-      { $pull: { inventory: { uniqueId: { $in: ids } } } }
-    );
-    if (!before) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const removed = before.inventory.filter((i) => i && ids.includes(i.uniqueId));
-    if (!removed.length) {
-      return res.status(404).json({ message: "Items not found in inventory" });
-    }
-
-    const total = removed.reduce((s, i) => s + sellValue(baseById.get(String(i._id)) || 0), 0);
-    const updated = await creditUser(user._id, total, 0, {
-      type: TX.ITEM_SELL,
-      meta: { count: removed.length },
-    });
 
     res.json({
-      message: `Sold ${removed.length} item${removed.length > 1 ? "s" : ""} for K₽${total}`,
-      sold: removed.length,
-      value: total,
-      walletBalance: updated.walletBalance,
+      message: `Sold ${result.sold} item${result.sold > 1 ? "s" : ""} for K₽${result.value}`,
+      sold: result.sold,
+      value: result.value,
+      walletBalance: result.walletBalance,
     });
   } catch (err) {
     console.error(err);
