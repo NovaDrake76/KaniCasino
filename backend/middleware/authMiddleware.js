@@ -20,7 +20,14 @@ const isAuthenticated = async (req, res, next) => {
   // Verify the token
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.userId).select("-password");
+    const user = await User.findById(decoded.userId).select("-password");
+
+    // a valid token for an account that no longer exists is not a session
+    if (!user) {
+      return res.status(401).json({ message: "Token is not valid" });
+    }
+
+    req.user = user;
     next();
   } catch (error) {
     console.log(error.message)

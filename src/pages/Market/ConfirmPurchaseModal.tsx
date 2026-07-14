@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { buyItem } from "../../services/market/MarketService";
 import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
-import UserContext from "../../UserContext";
 import { IMarketItem } from "../../components/Types";
 
 interface Props {
@@ -19,27 +18,20 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   setRefresh,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { userData, toogleUserData } = useContext(UserContext);
 
   const handleConfirm = async () => {
     setLoading(true);
     try {
       await buyItem(item._id as string);
       setRefresh && setRefresh(true);
-      toogleUserData({
-        ...userData,
-        walletBalance: userData.walletBalance - item.price,
-      });
-
+      // the balance comes back over the socket, so it stays in step with the server
       toast.success("Purchase successful!");
     } catch (error: any) {
-      toast.error(error);
-      console.log(error);
-    }finally{
+      toast.error(error?.response?.data?.message || "Could not complete the purchase");
+    } finally {
       setLoading(false);
       onClose();
     }
-   
   };
 
   if (!isOpen) {

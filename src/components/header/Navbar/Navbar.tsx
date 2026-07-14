@@ -43,7 +43,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
 
   const Logout = () => {
     clearTokens();
-    toggleLogin();
+    toggleLogin(false);
     toogleUserData(null);
   };
 
@@ -54,9 +54,11 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
         setLoading(false);
       })
       .catch((error: any) => {
-        console.log(error);
-        toast.error("Please, login again");
-        Logout();
+        // a 401 is already handled globally (session expired)
+        if (error?.response?.status !== 401) {
+          toast.error("Please, login again");
+          Logout();
+        }
         setLoading(false);
       });
   };

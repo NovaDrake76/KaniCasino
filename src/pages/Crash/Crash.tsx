@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import SocketConnection from "../../services/socket"
 import UserContext from "../../UserContext";
 import falling from "/images/crash/falling.gif";
@@ -38,15 +39,22 @@ const CrashGame = () => {
 
   const handleBet = () => {
     if (!isLogged) {
-      toogleUserFlow();
+      toogleUserFlow(true);
       return;
     }
 
     if (bet === null || bet < 1) return;
     setUserGambled(true);
-
-    socket.emit("crash:bet", bet);
     setUserCashedOut(false);
+
+    // the server has the final word: a refused bet used to leave the ui claiming
+    // the player was in the round
+    socket.emit("crash:bet", bet, (result: { ok?: boolean; error?: string }) => {
+      if (result?.error) {
+        setUserGambled(false);
+        toast.error(result.error);
+      }
+    });
   };
 
   const handleCashout = () => {

@@ -9,8 +9,8 @@ class SlotGameController {
 
     static async spin(userId, betAmount, io) {
 
-        // Check bet amount
-        if (isNaN(betAmount) || betAmount < 1 || betAmount > 50000) {
+        // Check bet amount (whole coins only: fractional bets leak into the balance)
+        if (!Number.isInteger(betAmount) || betAmount < 1 || betAmount > 50000) {
             throw new Error("Invalid bet amount");
         }
 

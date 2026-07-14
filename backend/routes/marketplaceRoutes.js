@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
 
@@ -7,6 +8,8 @@ const Item = require("../models/Item");
 const Marketplace = require("../models/Marketplace");
 const Notification = require("../models/Notification");
 const { creditUser, recordTransaction, TX } = require("../utils/economy");
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 module.exports = (io) => {
   // Create new listing
@@ -76,13 +79,13 @@ module.exports = (io) => {
   // Get all listings
   router.get("/", async (req, res) => {
     try {
-      const page = Number(req.query.page) || 1;
-      const limit = Number(req.query.limit) || 30;
+      const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
+      const limit = Math.min(Math.max(1, Math.floor(Number(req.query.limit)) || 30), 100);
       const skip = (page - 1) * limit;
       const { name, rarity, sortBy, order } = req.query;
 
       let itemFilter = {};
-      if (name) itemFilter.name = { $regex: new RegExp(name, "i") };
+      if (name) itemFilter.name = { $regex: new RegExp(escapeRegex(String(name)), "i") };
       if (rarity) itemFilter.rarity = rarity;
 
       const items = await Item.find(itemFilter).exec();
@@ -135,24 +138,33 @@ module.exports = (io) => {
 
   // Get listings for a specific item
   router.get("/item/:itemId", async (req, res) => {
-    const { itemId } = req.params;
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 30;
-    const skip = (page - 1) * limit;
+    try {
+      const { itemId } = req.params;
+      if (!mongoose.Types.ObjectId.isValid(itemId)) {
+        return res.status(404).json({ message: "Item not found" });
+      }
 
-    const total = await Marketplace.countDocuments({ item: itemId });
-    const items = await Marketplace.find({ item: itemId })
-      .populate("sellerId", "username")
-      .populate("item")
-      .sort({ price: 1 })
-      .skip(skip)
-      .limit(limit);
+      const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
+      const limit = Math.min(Math.max(1, Math.floor(Number(req.query.limit)) || 30), 100);
+      const skip = (page - 1) * limit;
 
-    res.json({
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-      items,
-    });
+      const total = await Marketplace.countDocuments({ item: itemId });
+      const items = await Marketplace.find({ item: itemId })
+        .populate("sellerId", "username")
+        .populate("item")
+        .sort({ price: 1 })
+        .skip(skip)
+        .limit(limit);
+
+      res.json({
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        items,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 
   // Delete listing
@@ -279,10 +291,24 @@ module.exports = (io) => {
           balanceAfter: reversed ? reversed.walletBalance : undefined,
           meta: { itemName: claimed.itemName, reversal: true, reason: "seller no longer exists" },
         });
+        if (reversed) {
+          io.to(buyerId.toString()).emit("userDataUpdated", {
+            walletBalance: reversed.walletBalance,
+            xp: reversed.xp,
+            level: reversed.level,
+          });
+        }
         return res.status(410).json({ message: "Seller no longer available; purchase reversed" });
       }
 
       res.json({ message: "Item purchased" });
+
+      // the buyer's balance is authoritative here; the client must not guess it
+      io.to(buyerId.toString()).emit("userDataUpdated", {
+        walletBalance: updatedBuyer.walletBalance,
+        xp: updatedBuyer.xp,
+        level: updatedBuyer.level,
+      });
 
       // notify the seller after responding; failures here must not re-send headers
       try {
