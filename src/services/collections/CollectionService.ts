@@ -79,10 +79,16 @@ export interface QuicksellPreview {
 
 export interface QuicksellResult {
   changed: boolean;
+  // when changed === false (the sale went through)
   sold?: number;
   value?: number;
   walletBalance?: number;
-  preview?: QuicksellPreview;
+  // when changed === true, the fresh preview is returned inline
+  caseId?: string;
+  lines?: QuicksellLine[];
+  plan?: string[];
+  totalItems?: number;
+  totalValue?: number;
 }
 
 export async function getCollectionsSummary(userId: string): Promise<CollectionsSummary> {

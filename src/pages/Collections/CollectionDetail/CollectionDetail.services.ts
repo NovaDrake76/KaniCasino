@@ -5,8 +5,11 @@ import UserContext from "../../../UserContext";
 import { sellItems } from "../../../services/users/UserServices";
 import {
   getCollection,
+  previewQuicksell,
+  commitQuicksell,
   CollectionDetail,
   AlbumItem,
+  QuicksellPreview,
 } from "../../../services/collections/CollectionService";
 
 export type AlbumFilter = "all" | "owned" | "missing" | "duplicates";
@@ -34,6 +37,11 @@ export const useCollectionDetailServices = () => {
   const [selectedItem, setSelectedItem] = useState<AlbumItem | null>(null);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selling, setSelling] = useState<boolean>(false);
+
+  const [quicksellOpen, setQuicksellOpen] = useState<boolean>(false);
+  const [quicksellPreview, setQuicksellPreview] = useState<QuicksellPreview | null>(null);
+  const [quicksellLoading, setQuicksellLoading] = useState<boolean>(false);
+  const [committing, setCommitting] = useState<boolean>(false);
 
   useEffect(() => {
     if (!targetUserId || !caseId) {
@@ -90,6 +98,59 @@ export const useCollectionDetailServices = () => {
     }
   };
 
+  const openQuicksell = async () => {
+    if (quicksellLoading) return;
+    setQuicksellLoading(true);
+    try {
+      const p = await previewQuicksell(caseId);
+      setQuicksellPreview(p);
+      setQuicksellOpen(true);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Could not load duplicates", { theme: "dark" });
+    } finally {
+      setQuicksellLoading(false);
+    }
+  };
+
+  const confirmQuicksell = async () => {
+    if (!quicksellPreview || committing) return;
+    setCommitting(true);
+    try {
+      const res = await commitQuicksell(caseId, quicksellPreview.plan);
+      if (res.changed) {
+        // the sale drifted; the server returned a fresh preview inline
+        setQuicksellPreview({
+          caseId,
+          lines: res.lines || [],
+          totalItems: res.totalItems || 0,
+          totalValue: res.totalValue || 0,
+          plan: res.plan || [],
+        });
+        toast.info("Your items changed since the preview. Review the update and confirm again.", {
+          theme: "dark",
+        });
+        return;
+      }
+      if (userData && typeof res.walletBalance === "number") {
+        toogleUserData({ ...userData, walletBalance: res.walletBalance });
+      }
+      if (res.sold) {
+        toast.success(`Quicksold ${res.sold} duplicate${res.sold > 1 ? "s" : ""} for K₽${res.value}`, {
+          theme: "dark",
+        });
+      } else {
+        toast.info("Nothing to sell.", { theme: "dark" });
+      }
+      setQuicksellOpen(false);
+      setQuicksellPreview(null);
+      setRefresh((r) => !r);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Could not sell duplicates", { theme: "dark" });
+    } finally {
+      setCommitting(false);
+    }
+  };
+
   return {
     caseId,
     detail,
@@ -110,5 +171,12 @@ export const useCollectionDetailServices = () => {
     selling,
     openItem,
     handleSellOne,
+    quicksellOpen,
+    setQuicksellOpen,
+    quicksellPreview,
+    quicksellLoading,
+    committing,
+    openQuicksell,
+    confirmQuicksell,
   };
 };

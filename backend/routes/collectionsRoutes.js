@@ -6,6 +6,8 @@ const Case = require("../models/Case");
 const Item = require("../models/Item");
 const User = require("../models/User");
 const { sellValue } = require("../utils/itemValue");
+const { sellUniqueIds } = require("../utils/inventorySell");
+const { isAuthenticated } = require("../middleware/authMiddleware");
 
 const PAGE_SIZE = 18;
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -27,6 +29,70 @@ function indexInventory(inventory) {
     uniqueIdsById.get(id).push(e.uniqueId);
   }
   return { countById, uniqueIdsById };
+}
+
+// the canonical quicksell plan for a case: for every item in Case.items the viewer
+// owns more than one of (and that has a positive sell value), sell all but one. the
+// kept copy is the oldest (createdAt asc, uniqueId asc as a total-order tiebreak) so
+// two runs always agree on which copy survives. extras (owned but no longer in the
+// case) are never swept. returns { lines, plan, totalItems, totalValue }, where plan
+// is the sorted, flat list of uniqueIds to sell.
+function computeQuicksellPlan(inventory, caseDoc) {
+  const items = (caseDoc.items || []).filter(Boolean);
+  const metaById = new Map(
+    items.map((it) => [
+      String(it._id),
+      { baseValue: it.baseValue || 0, name: it.name, image: it.image, rarity: it.rarity },
+    ])
+  );
+
+  const byItem = new Map();
+  for (const e of inventory || []) {
+    if (!e || !e._id) continue;
+    const id = String(e._id);
+    if (!metaById.has(id)) continue; // per-case scope = the case's slots only
+    if (!byItem.has(id)) byItem.set(id, []);
+    byItem.get(id).push(e);
+  }
+
+  const lines = [];
+  const plan = [];
+  for (const [id, entries] of byItem) {
+    const meta = metaById.get(id);
+    const unit = sellValue(meta.baseValue);
+    const owned = entries.length;
+    if (owned <= 1 || unit <= 0) continue; // no duplicate, or nothing to gain -> keep all
+    entries.sort(
+      (a, b) =>
+        new Date(a.createdAt) - new Date(b.createdAt) ||
+        (a.uniqueId < b.uniqueId ? -1 : a.uniqueId > b.uniqueId ? 1 : 0)
+    );
+    const sellEntries = entries.slice(1); // keep entries[0]
+    for (const s of sellEntries) plan.push(s.uniqueId);
+    lines.push({
+      _id: id,
+      name: meta.name,
+      image: meta.image,
+      rarity: meta.rarity,
+      owned,
+      sellCount: sellEntries.length,
+      unitSellValue: unit,
+      lineValue: unit * sellEntries.length,
+    });
+  }
+
+  lines.sort(
+    (a, b) =>
+      Number(b.rarity) - Number(a.rarity) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
+  );
+  plan.sort();
+
+  return {
+    lines,
+    plan,
+    totalItems: plan.length,
+    totalValue: lines.reduce((s, l) => s + l.lineValue, 0),
+  };
 }
 
 function caseStats(caseDoc, countById) {
@@ -99,6 +165,100 @@ router.get("/summary", async (req, res) => {
       : 0;
 
     res.json({ userId, totals, collections });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// POST /collections/quicksell/preview : what a per-case quicksell would sell now.
+// a pure read; drives the confirmation modal. always the caller's own inventory.
+router.post("/quicksell/preview", isAuthenticated, async (req, res) => {
+  try {
+    const { caseId } = req.body;
+    if (!isValidId(caseId)) {
+      return res.status(400).json({ message: "Invalid case id" });
+    }
+    const caseDoc = await Case.findById(caseId)
+      .populate("items", "name image rarity baseValue");
+    if (!caseDoc) {
+      return res.status(404).json({ message: "Case not found" });
+    }
+    const user = await User.findById(req.user._id, { inventory: 1 });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const plan = computeQuicksellPlan(user.inventory, caseDoc);
+    res.json({ caseId: String(caseDoc._id), ...plan });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// POST /collections/quicksell/commit : sell the duplicates the user just confirmed.
+// destructive. the client echoes the exact plan (uniqueIds) the modal showed; the
+// server recomputes the canonical plan from live inventory and only sells if the two
+// match exactly. any drift -> sell nothing, hand back a fresh preview to re-confirm,
+// so the user can never sell a set different from what they saw. identity is always
+// req.user; a body userId is ignored.
+router.post("/quicksell/commit", isAuthenticated, async (req, res) => {
+  try {
+    const { caseId, plan } = req.body;
+    if (!isValidId(caseId)) {
+      return res.status(400).json({ message: "Invalid case id" });
+    }
+    if (!Array.isArray(plan)) {
+      return res.status(400).json({ message: "Missing plan" });
+    }
+
+    const caseDoc = await Case.findById(caseId)
+      .populate("items", "name image rarity baseValue");
+    if (!caseDoc) {
+      return res.status(404).json({ message: "Case not found" });
+    }
+    const user = await User.findById(req.user._id, { inventory: 1 });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const current = computeQuicksellPlan(user.inventory, caseDoc);
+    const confirmed = [...new Set(plan.map(String))].sort();
+    const canonical = current.plan; // already de-duped + sorted
+
+    const matches =
+      confirmed.length === canonical.length &&
+      confirmed.every((id, i) => id === canonical[i]);
+
+    if (!matches) {
+      // the sale drifted since the preview: sell nothing, ask for a fresh confirm
+      return res.json({ changed: true, caseId: String(caseDoc._id), ...current });
+    }
+
+    if (!canonical.length) {
+      return res.json({
+        changed: false,
+        sold: 0,
+        value: 0,
+        walletBalance: user.walletBalance,
+      });
+    }
+
+    const result = await sellUniqueIds(req.user._id, canonical, {
+      source: "quicksell",
+      caseId: String(caseDoc._id),
+    });
+    if (!result) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      changed: false,
+      sold: result.sold,
+      value: result.value,
+      walletBalance: result.walletBalance,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

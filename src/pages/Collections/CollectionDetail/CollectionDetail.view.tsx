@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { IoArrowBack } from "react-icons/io5";
+import { MdOutlineSell } from "react-icons/md";
 import Monetary from "../../../components/Monetary";
+import MainButton from "../../../components/MainButton";
 import Pagination from "../../../components/Pagination";
 import CompletionBar from "../components/CompletionBar";
 import AlbumSlot from "../components/AlbumSlot";
 import ItemDetailModal from "../components/ItemDetailModal";
+import QuicksellModal from "../components/QuicksellModal";
 import { CollectionDetailViewProps } from "./CollectionDetail.types";
 import { AlbumFilter } from "./CollectionDetail.services";
 
@@ -36,6 +39,13 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
   selling,
   openItem,
   handleSellOne,
+  quicksellOpen,
+  setQuicksellOpen,
+  quicksellPreview,
+  quicksellLoading,
+  committing,
+  openQuicksell,
+  confirmQuicksell,
 }) => {
   return (
     <div className="w-screen max-w-[1400px] px-4 md:px-8 flex flex-col gap-6 pb-16">
@@ -73,6 +83,18 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
                 pct={detail.completionPct}
               />
             </div>
+            {isOwner && detail.duplicatesValue > 0 && (
+              <div className="w-full md:w-52 shrink-0">
+                <MainButton
+                  text="Quicksell duplicates"
+                  onClick={openQuicksell}
+                  icon={<MdOutlineSell />}
+                  type="warning"
+                  loading={quicksellLoading}
+                  disabled={quicksellLoading}
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -143,6 +165,14 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
         open={modalOpen}
         setOpen={setModalOpen}
         onSellOne={handleSellOne}
+      />
+
+      <QuicksellModal
+        open={quicksellOpen}
+        setOpen={setQuicksellOpen}
+        preview={quicksellPreview}
+        committing={committing}
+        onConfirm={confirmQuicksell}
       />
     </div>
   );
