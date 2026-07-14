@@ -2,15 +2,10 @@ const rateLimit = require("express-rate-limit");
 
 // the app sits behind a cloudflare tunnel, so every request reaches express from
 // localhost: keying on req.ip would throttle all users as one. cf-connecting-ip is
-// set by cloudflare and cannot be forged by the client through it.
+// set by cloudflare and a client cannot forge it through the tunnel. no fallback to
+// x-forwarded-for: that one is client-supplied, so it would hand out free buckets.
 function clientIp(req) {
-  const cf = req.headers["cf-connecting-ip"];
-  if (cf) return cf;
-
-  const forwarded = req.headers["x-forwarded-for"];
-  if (forwarded) return String(forwarded).split(",")[0].trim();
-
-  return req.ip;
+  return req.headers["cf-connecting-ip"] || req.ip;
 }
 
 const skipInTests = () => process.env.NODE_ENV === "test";
