@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import SocketConnection from "../../services/socket"
 import Coin from "./Coin"
 import { motion } from "framer-motion";
@@ -37,15 +38,21 @@ const CoinFlip = () => {
 
   const handleBet = () => {
     if (!isLogged) {
-      toogleUserFlow();
+      toogleUserFlow(true);
       return;
     }
 
-
-    socket.emit("coinFlip:bet", bet, choice);
-
     setUserGambled(true);
     setBetAux(bet);
+
+    // the server has the final word: a refused bet used to leave the ui claiming
+    // the player was in the round
+    socket.emit("coinFlip:bet", bet, choice, (result: { ok?: boolean; error?: string }) => {
+      if (result?.error) {
+        setUserGambled(false);
+        toast.error(result.error);
+      }
+    });
   };
 
   useEffect(() => {
