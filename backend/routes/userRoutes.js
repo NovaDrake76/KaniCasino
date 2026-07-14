@@ -9,6 +9,7 @@ const Item = require("../models/Item");
 const Notification = require("../models/Notification");
 const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
+const { loginLimiter, registerLimiter } = require("../middleware/rateLimit");
 const { sellValue } = require("../utils/itemValue");
 const { creditUser, recordTransaction, TX } = require("../utils/economy");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
@@ -20,6 +21,7 @@ const { resolvePassword } = require("../utils/password");
 // Register user
 router.post(
   "/register",
+  registerLimiter,
   [
     check("email", "Please include a valid email").isEmail(),
     check(
@@ -98,7 +100,7 @@ router.post(
 // Login user
 router.post(
   "/login",
-
+  loginLimiter,
   [
     check("email", "Please include a valid email").isEmail(),
     check("password", "Password is required").exists(),
@@ -205,7 +207,7 @@ router.post('/googlelogin', async (req, res) => {
 
 // Get notifications
 router.get("/notifications", authMiddleware.isAuthenticated, async (req, res) => {
-  const page = Number(req.query.page) || 1;
+  const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
   const limit = 10;
   const skip = (page - 1) * limit;
 
@@ -343,57 +345,6 @@ router.get('/transactions', authMiddleware.isAuthenticated, async (req, res) => 
 //     res.status(500).send("Server error");
 //   }
 // });
-
-// Add item to user inventory
-router.post("/inventory", authMiddleware.isAuthenticated, async (req, res) => {
-  try {
-    const { itemId } = req.body;
-
-    const user = await User.findById(req.user._id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Add item to inventory
-    user.inventory.push(itemId);
-    await user.save();
-
-    res.json(user.inventory);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-});
-
-// Remove item from user inventory
-router.delete(
-  "/inventory/:itemId",
-  authMiddleware.isAuthenticated,
-  async (req, res) => {
-    try {
-      const { itemId } = req.params;
-
-      const user = await User.findById(req.user._id);
-
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      // Remove item from inventory
-      user.inventory = user.inventory.filter(
-        (item) => item.toString() !== itemId
-      );
-      await user.save();
-
-      res.json(user.inventory);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server error");
-    }
-  }
-);
-
 
 // Sell items back to the house for coins (base value x sell rate)
 router.post("/inventory/sell", authMiddleware.isAuthenticated, async (req, res) => {
@@ -616,8 +567,8 @@ const ITEMS_PER_PAGE = 18;
 router.get("/inventory/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const { name, rarity, sortBy, order, caseId } = req.query;
-    const page = parseInt(req.query.page) || 1;
+    const { name, rarity, sortBy, caseId } = req.query;
+    const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
 
     if (!ObjectId.isValid(userId)) {
       return res.status(404).json({ message: "User not found" });
@@ -678,26 +629,16 @@ router.get("/inventory/:userId", async (req, res) => {
       pipeline.push({ $match: { "inventory.rarity": rarity } });
     }
 
-    let sortQuery = {};
-    if (sortBy) {
-      switch (sortBy) {
-        case "older":
-          pipeline.push({ $sort: { "inventory.createdAt": 1 } });
-          break;
-        case "newer":
-          pipeline.push({ $sort: { "inventory.createdAt": -1 } });
-          break;
-        case "mostRare":
-          pipeline.push({ $sort: { "inventory.rarity": -1 } });
-          break;
-        case "mostCommon":
-          pipeline.push({ $sort: { "inventory.rarity": 1 } });
-          break;
-        default:
-          sortQuery[`inventory.${sortBy}`] = order === 'asc' ? 1 : -1;
-          pipeline.push({ $sort: sortQuery });
-          break;
-      }
+    // only known sort keys: an arbitrary one would be interpolated into the sort
+    // path and blow up the aggregation
+    const SORTS = {
+      older: { "inventory.createdAt": 1 },
+      newer: { "inventory.createdAt": -1 },
+      mostRare: { "inventory.rarity": -1 },
+      mostCommon: { "inventory.rarity": 1 },
+    };
+    if (sortBy && SORTS[sortBy]) {
+      pipeline.push({ $sort: SORTS[sortBy] });
     }
     pipeline.push(
       { $group: { _id: null, inventory: { $push: "$inventory" } } },
