@@ -37,6 +37,9 @@ async function prerollBattle(battle) {
   const rolls = [];
   for (let c = 0; c < battle.cases.length; c++) {
     const caseDoc = await Case.findById(battle.cases[c]).populate("items");
+    if (!caseDoc) {
+      throw new Error(`case ${battle.cases[c]} no longer exists`);
+    }
     let rangeTable = caseDoc.rangeTable;
     let rollTotal = caseDoc.rollTotal;
     if (!rangeTable || !rangeTable.length) {
@@ -103,6 +106,16 @@ async function chargeAndStart(battleId, io = noopIo) {
   // charge all-or-nothing (wallet only; xp is granted after the start commits so
   // a refund never has to reverse it). refund + release if any charge loses a race
   const charged = [];
+  const refundAll = async () => {
+    for (const id of charged) {
+      const refunded = await creditUser(id, battle.entryCost, 0, {
+        type: TX.BATTLE_REFUND,
+        meta: { battleId: battle._id },
+      });
+      emitUserData(io, id, refunded);
+    }
+  };
+
   for (const p of humans) {
     const updated = await chargeUser(p.userId, battle.entryCost, {
       awardXp: false,
@@ -110,13 +123,7 @@ async function chargeAndStart(battleId, io = noopIo) {
       meta: { battleId: battle._id },
     });
     if (!updated) {
-      for (const id of charged) {
-        const refunded = await creditUser(id, battle.entryCost, 0, {
-          type: TX.BATTLE_REFUND,
-          meta: { battleId: battle._id },
-        });
-        emitUserData(io, id, refunded);
-      }
+      await refundAll();
       await release();
       return { error: "A player could not pay; battle cancelled" };
     }
@@ -124,20 +131,28 @@ async function chargeAndStart(battleId, io = noopIo) {
   }
 
   // commit a battle server seed and lock each slot's client seed (humans use their
-  // own; bots get a deterministic one), then derive the provably-fair preroll
-  battle.pfServerSeed = generateServerSeed();
-  battle.pfServerSeedHash = hashServerSeed(battle.pfServerSeed);
-  for (const p of battle.players) {
-    if (p.userId && !p.isBot) {
-      const seed = await getOrCreateActiveSeed(p.userId);
-      p.clientSeed = seed.clientSeed;
-    } else {
-      p.clientSeed = `bot:${p.slot}`;
+  // own; bots get a deterministic one), then derive the provably-fair preroll.
+  // everyone is already charged here, so any failure has to give the money back
+  try {
+    battle.pfServerSeed = generateServerSeed();
+    battle.pfServerSeedHash = hashServerSeed(battle.pfServerSeed);
+    for (const p of battle.players) {
+      if (p.userId && !p.isBot) {
+        const seed = await getOrCreateActiveSeed(p.userId);
+        p.clientSeed = seed.clientSeed;
+      } else {
+        p.clientSeed = `bot:${p.slot}`;
+      }
     }
-  }
 
-  battle.rolls = await prerollBattle(battle);
-  await battle.save();
+    battle.rolls = await prerollBattle(battle);
+    await battle.save();
+  } catch (err) {
+    console.error("battle preroll failed:", err);
+    await refundAll();
+    await release();
+    return { error: "Could not start the battle; everyone was refunded" };
+  }
 
   // now that the start is committed, grant xp like a normal case open
   for (const id of charged) {

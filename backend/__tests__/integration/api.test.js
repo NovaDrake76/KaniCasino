@@ -232,6 +232,27 @@ describe("selling items", () => {
   });
 });
 
+describe("inventory cannot be written directly", () => {
+  test("there is no endpoint to grant yourself an item", async () => {
+    const u = await makeUser({ walletBalance: 0 });
+    const item = await Item.create({ name: "Dragon Lore", image: "d.png", rarity: "5", baseValue: 9999 });
+
+    const res = await request(app).post("/users/inventory").set(...auth(u)).send({ itemId: item._id.toString() });
+
+    expect(res.status).toBe(404);
+    const after = await User.findById(u._id);
+    expect(after.inventory).toHaveLength(0);
+    expect(after.walletBalance).toBe(0);
+  });
+
+  test("there is no endpoint to drop an item by id", async () => {
+    const u = await makeUser();
+    const item = await Item.create({ name: "Knife", image: "k.png", rarity: "5" });
+    const res = await request(app).delete(`/users/inventory/${item._id}`).set(...auth(u));
+    expect(res.status).toBe(404);
+  });
+});
+
 describe("case battles", () => {
   async function makeCase(price, baseValue) {
     const item = await Item.create({ name: "BattleItem", image: "b.png", rarity: "3", baseValue });

@@ -68,19 +68,19 @@ const Slots = () => {
 
 
     const handleSpin = async () => {
-        setIsSpinning(true)
         if (userData == null) {
             toogleUserFlow(true);
             return;
         }
-        setOpenBigWin(false);
-        setTotalWins(0);
 
         if (userData?.walletBalance < betAmount) {
             toast.error("Insufficient funds");
-            setIsSpinning(false)
             return;
         }
+
+        setIsSpinning(true)
+        setOpenBigWin(false);
+        setTotalWins(0);
 
         try {
             const response = await spinSlots(betAmount);
@@ -112,7 +112,10 @@ const Slots = () => {
         return (
             <button
                 onClick={() => {
-                    const newBetAmount = type === "subtract" ? betAmount / 2 : betAmount * 2;
+                    // bets are whole coins: halving 5 must not offer 2.5
+                    const newBetAmount = type === "subtract"
+                        ? Math.floor(betAmount / 2)
+                        : betAmount * 2;
                     if (newBetAmount >= 1 && newBetAmount <= 50000) {
                         setBetAmount(newBetAmount);
                     }

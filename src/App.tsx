@@ -4,8 +4,10 @@ import UserContext from "./UserContext";
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-tooltip/dist/react-tooltip.css";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import SocketConnection from "./services/socket"
+import { SESSION_EXPIRED_EVENT } from "./services/api";
+import { clearTokens } from "./services/auth/authUtils";
 import ScrollToTop from "./components/ScrollToTop";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Footer from "./components/Footer";
@@ -101,8 +103,23 @@ function App() {
     }
   }, [isLogged]);
 
-  const toggleLogin = () => {
-    setIsLogged(!isLogged);
+  // the token expired or was rejected: end the session and ask for a new login
+  useEffect(() => {
+    const onSessionExpired = () => {
+      clearTokens();
+      setIsLogged(false);
+      setUserData(null);
+      setJoinedRoom(false);
+      setOpenUserFlow(true);
+      toast.info("Your session expired. Please log in again.");
+    };
+
+    window.addEventListener(SESSION_EXPIRED_EVENT, onSessionExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onSessionExpired);
+  }, []);
+
+  const toggleLogin = (state?: boolean) => {
+    setIsLogged((prev) => (typeof state === "boolean" ? state : !prev));
   };
 
   const toogleUserData = (data: any) => {

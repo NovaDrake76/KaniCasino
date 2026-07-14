@@ -13,31 +13,46 @@ const crashGame = (io) => {
   let gameState = freshState();
   // bets are only accepted in the window between rounds
   let bettingOpen = true;
+  // a socket can emit twice in one tick: the guards below only close once the db
+  // call returns, so track who is mid-charge/mid-cashout and reject the duplicate
+  const pendingBets = new Set();
+  const pendingCashouts = new Set();
 
   io.on("connection", (socket) => {
-    socket.on("crash:bet", async (bet) => {
+    socket.on("crash:bet", async (bet, callback) => {
+      // the client used to get no answer at all when a bet was refused
+      const reply = (result) => {
+        if (typeof callback === "function") callback(result);
+      };
+
       try {
         const userId = socket.userId;
-        if (!userId) return; // unauthenticated sockets can't bet
-        if (!bettingOpen) return; // round already running
+        if (!userId) return reply({ error: "You must be logged in to bet" });
+        if (!bettingOpen) return reply({ error: "Betting is closed for this round" });
 
-        if (isNaN(bet) || bet < 1 || bet > 1000000) {
-          return;
+        if (!Number.isInteger(bet) || bet < 1 || bet > 1000000) {
+          return reply({ error: "Invalid bet amount" });
         }
 
         // one bet per round
-        if (gameState.gameBets.hasOwnProperty(userId)) {
-          return;
+        if (gameState.gameBets.hasOwnProperty(userId) || pendingBets.has(userId)) {
+          return reply({ error: "You already have a bet this round" });
         }
 
         // atomically take the stake from the real balance (crash grants no xp)
-        const updatedUser = await chargeUser(userId, bet, {
-          awardXp: false,
-          type: TX.CRASH_BET,
-          meta: { bet },
-        });
+        pendingBets.add(userId);
+        let updatedUser;
+        try {
+          updatedUser = await chargeUser(userId, bet, {
+            awardXp: false,
+            type: TX.CRASH_BET,
+            meta: { bet },
+          });
+        } finally {
+          pendingBets.delete(userId);
+        }
         if (!updatedUser) {
-          return; // insufficient funds
+          return reply({ error: "Insufficient funds" });
         }
 
         gameState.gameBets[userId] = bet;
@@ -57,20 +72,25 @@ const crashGame = (io) => {
         });
 
         io.emit("crash:gameState", gameState);
+        reply({ ok: true });
       } catch (err) {
         console.log(err);
+        reply({ error: "Could not place the bet" });
       }
     });
 
     socket.on("crash:cashout", async (callback) => {
+      const done = () => {
+        if (typeof callback === "function") callback();
+      };
+
       try {
         const userId = socket.userId;
         const player = userId && gameState.gamePlayers[userId];
 
         // must have an active, not-yet-cashed-out bet
-        if (!userId || !player || player.payout != null) {
-          if (typeof callback === "function") callback();
-          return;
+        if (!userId || !player || player.payout != null || pendingCashouts.has(userId)) {
+          return done();
         }
 
         const multiplier = calculateMultiplier();
@@ -79,13 +99,24 @@ const crashGame = (io) => {
           const betAmount = gameState.gameBets[userId];
           const payout = betAmount * multiplier;
 
-          const updatedUser = await creditUser(userId, payout, payout - betAmount, {
-            type: TX.CRASH_CASHOUT,
-            meta: { betAmount, multiplier },
-          });
+          // claim the cashout before paying: a second emit in the same tick must
+          // not be paid again while this credit is still in flight
+          pendingCashouts.add(userId);
+          let updatedUser;
+          try {
+            updatedUser = await creditUser(userId, payout, payout - betAmount, {
+              type: TX.CRASH_CASHOUT,
+              meta: { betAmount, multiplier },
+            });
+          } finally {
+            pendingCashouts.delete(userId);
+          }
+          if (!updatedUser) {
+            return done(); // account is gone; leave the bet uncashed
+          }
 
           // keep the player visible with their locked-in payout
-          gameState.gamePlayers[userId].payout = multiplier;
+          player.payout = multiplier;
 
           io.to(userId.toString()).emit("userDataUpdated", {
             walletBalance: updatedUser.walletBalance,
@@ -98,10 +129,10 @@ const crashGame = (io) => {
           socket.emit("crash:cashoutSuccess", { userId, payout, multiplier });
         }
 
-        if (typeof callback === "function") callback();
+        return done();
       } catch (err) {
         console.log(err);
-        if (typeof callback === "function") callback();
+        return done();
       }
     });
   });

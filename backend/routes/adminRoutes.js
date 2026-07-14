@@ -9,7 +9,7 @@ const { recordTransaction, TX } = require("../utils/economy");
 
 router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password");
     res.json(users);
   } catch (err) {
     console.error(err.message);
