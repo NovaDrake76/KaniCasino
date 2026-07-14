@@ -99,7 +99,7 @@ export const useCollectionDetailServices = () => {
   };
 
   const openQuicksell = async () => {
-    if (quicksellLoading) return;
+    if (quicksellLoading || committing) return;
     setQuicksellLoading(true);
     try {
       const p = await previewQuicksell(caseId);
@@ -129,6 +129,7 @@ export const useCollectionDetailServices = () => {
         toast.info("Your items changed since the preview. Review the update and confirm again.", {
           theme: "dark",
         });
+        setRefresh((r) => !r); // reflect the changed inventory in the album behind the modal
         return;
       }
       if (userData && typeof res.walletBalance === "number") {

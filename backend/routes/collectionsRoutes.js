@@ -11,7 +11,8 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 
 const PAGE_SIZE = 18;
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
-const round1 = (n) => Math.round(n * 10) / 10;
+// floor to one decimal so progress never rounds up to 100% before it is complete
+const pctOf = (owned, total) => (total ? Math.floor((1000 * owned) / total) / 10 : 0);
 
 // an owned item belongs to a case's collection iff its catalog _id is in
 // Case.items (the authoritative slot set). completion, duplicate value and the
@@ -104,16 +105,20 @@ function caseStats(caseDoc, countById) {
   for (const it of items) {
     const owned = countById.get(String(it._id)) || 0;
     if (owned > 0) slotsOwned += 1;
+    const unit = sellValue(it.baseValue);
     const dups = Math.max(owned - 1, 0);
-    duplicatesCount += dups;
-    duplicatesValue += dups * sellValue(it.baseValue);
+    // count/value only the duplicates quicksell would actually sell (positive value)
+    if (unit > 0) {
+      duplicatesCount += dups;
+      duplicatesValue += dups * unit;
+    }
   }
   return {
     slotsTotal,
     slotsOwned,
     duplicatesValue,
     duplicatesCount,
-    completionPct: slotsTotal ? round1((100 * slotsOwned) / slotsTotal) : 0,
+    completionPct: pctOf(slotsOwned, slotsTotal),
     complete: slotsTotal > 0 && slotsOwned === slotsTotal,
   };
 }
@@ -160,9 +165,7 @@ router.get("/summary", async (req, res) => {
         duplicatesCount: 0,
       }
     );
-    totals.completionPct = totals.slotsTotal
-      ? round1((100 * totals.slotsOwned) / totals.slotsTotal)
-      : 0;
+    totals.completionPct = pctOf(totals.slotsOwned, totals.slotsTotal);
 
     res.json({ userId, totals, collections });
   } catch (err) {
@@ -331,20 +334,23 @@ router.get("/:caseId", async (req, res) => {
     const paged = rows.slice((page - 1) * PAGE_SIZE, (page - 1) * PAGE_SIZE + PAGE_SIZE);
 
     // extras: copies the viewer owns that were once in this case (snapshot .case)
-    // but are no longer in its item list. shown read-only; never quicksold.
+    // but are no longer in its item list. shown read-only once, below the grid, so
+    // only attach them on the first page.
     const extraSnap = new Map();
     const extraCounts = new Map();
     const extraUniqueIds = new Map();
-    for (const e of user.inventory || []) {
-      if (!e || !e._id) continue;
-      const id = String(e._id);
-      if (String(e.case) !== String(caseId) || caseItemIds.has(id)) continue;
-      extraCounts.set(id, (extraCounts.get(id) || 0) + 1);
-      if (!extraSnap.has(id)) {
-        extraSnap.set(id, { name: e.name, image: e.image, rarity: e.rarity });
+    if (page === 1) {
+      for (const e of user.inventory || []) {
+        if (!e || !e._id) continue;
+        const id = String(e._id);
+        if (String(e.case) !== String(caseId) || caseItemIds.has(id)) continue;
+        extraCounts.set(id, (extraCounts.get(id) || 0) + 1);
+        if (!extraSnap.has(id)) {
+          extraSnap.set(id, { name: e.name, image: e.image, rarity: e.rarity });
+        }
+        if (!extraUniqueIds.has(id)) extraUniqueIds.set(id, []);
+        extraUniqueIds.get(id).push(e.uniqueId);
       }
-      if (!extraUniqueIds.has(id)) extraUniqueIds.set(id, []);
-      extraUniqueIds.get(id).push(e.uniqueId);
     }
 
     let extras = [];

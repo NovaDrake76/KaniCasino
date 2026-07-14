@@ -84,7 +84,7 @@ describe("GET /collections/summary", () => {
     const col = res.body.collections.find((x) => x.caseId === c._id.toString());
     expect(col.slotsTotal).toBe(3);
     expect(col.slotsOwned).toBe(2);
-    expect(col.completionPct).toBeCloseTo(66.7, 1);
+    expect(col.completionPct).toBe(66.6); // floored, never rounds up
     expect(col.duplicatesCount).toBe(2);
     expect(col.duplicatesValue).toBe(150); // 2 * 75
     expect(col.complete).toBe(false);

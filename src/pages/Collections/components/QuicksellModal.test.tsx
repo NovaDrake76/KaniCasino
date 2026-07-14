@@ -14,7 +14,7 @@ const preview: QuicksellPreview = {
   ],
 };
 
-const noop = () => {};
+const noop = vi.fn();
 
 describe("QuicksellModal", () => {
   it("shows a sell-count badge per line and the running total", () => {

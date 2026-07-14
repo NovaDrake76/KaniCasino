@@ -76,7 +76,12 @@ const QuicksellModal: React.FC<Props> = ({ open, setOpen, preview, committing, o
         </div>
 
         <div className="flex items-center gap-3">
-          <MainButton text="Cancel" onClick={() => setOpen(false)} type="dark" />
+          <MainButton
+            text="Cancel"
+            onClick={() => setOpen(false)}
+            type="dark"
+            disabled={committing}
+          />
           <MainButton
             text={`Sell ${totalItems} duplicate${totalItems !== 1 ? "s" : ""}`}
             onClick={onConfirm}
