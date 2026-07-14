@@ -1,5 +1,4 @@
 import Skeleton from "react-loading-skeleton";
-import Title from "../../components/Title";
 import Monetary from "../../components/Monetary";
 import CompletionBar from "./components/CompletionBar";
 import CollectionCard from "./components/CollectionCard";
@@ -9,19 +8,21 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
   summary,
   loading,
   error,
-  needsLogin,
-  detailLink,
+  openCase,
 }) => {
   return (
-    <div className="w-screen max-w-[1400px] px-4 md:px-8 flex flex-col items-center gap-8 pb-16">
-      <Title title="Collections" />
-
-      {needsLogin ? (
-        <p className="text-ink-muted mt-8">Log in to start filling your collections.</p>
-      ) : loading ? (
+    <div className="w-full flex flex-col items-center gap-8">
+      {loading ? (
         <div className="w-full flex flex-wrap gap-6 justify-center">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} width={256} height={230} borderRadius={12} />
+            <Skeleton
+              key={i}
+              width={256}
+              height={230}
+              borderRadius={12}
+              highlightColor="#161427"
+              baseColor="#1c1a31"
+            />
           ))}
         </div>
       ) : error ? (
@@ -54,7 +55,11 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
 
           <div className="w-full flex flex-wrap gap-6 justify-center">
             {summary.collections.map((c) => (
-              <CollectionCard key={c.caseId} collection={c} to={detailLink(c.caseId)} />
+              <CollectionCard
+                key={c.caseId}
+                collection={c}
+                onClick={() => openCase(c.caseId)}
+              />
             ))}
           </div>
         </>

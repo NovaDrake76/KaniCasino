@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UserContext from "../../../UserContext";
 import { sellItems } from "../../../services/users/UserServices";
@@ -15,15 +14,15 @@ import {
 export type AlbumFilter = "all" | "owned" | "missing" | "duplicates";
 export type AlbumSort = "mostRare" | "mostCommon";
 
-export const useCollectionDetailServices = () => {
-  const { caseId = "" } = useParams();
-  const { userData, toogleUserData } = useContext(UserContext);
-  const [searchParams] = useSearchParams();
+interface Args {
+  userId: string;
+  isOwner: boolean;
+  caseId: string;
+  onBack: () => void;
+}
 
-  const queryUser = searchParams.get("user");
-  const targetUserId = queryUser || userData?.id || null;
-  const isOwner = !!targetUserId && targetUserId === userData?.id;
-  const userQuery = queryUser ? `?user=${queryUser}` : "";
+export const useCollectionDetailServices = ({ userId, isOwner, caseId, onBack }: Args) => {
+  const { userData, toogleUserData } = useContext(UserContext);
 
   const [detail, setDetail] = useState<CollectionDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,14 +43,11 @@ export const useCollectionDetailServices = () => {
   const [committing, setCommitting] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!targetUserId || !caseId) {
-      setLoading(false);
-      return;
-    }
+    if (!userId || !caseId) return;
     let active = true;
     setLoading(true);
     setError(false);
-    getCollection(caseId, targetUserId, { page, filter, sortBy })
+    getCollection(caseId, userId, { page, filter, sortBy })
       .then((data) => {
         if (active) setDetail(data);
       })
@@ -64,7 +60,7 @@ export const useCollectionDetailServices = () => {
     return () => {
       active = false;
     };
-  }, [caseId, targetUserId, page, filter, sortBy, refresh]);
+  }, [caseId, userId, page, filter, sortBy, refresh]);
 
   const setFilter = (f: AlbumFilter) => {
     setPage(1);
@@ -118,7 +114,6 @@ export const useCollectionDetailServices = () => {
     try {
       const res = await commitQuicksell(caseId, quicksellPreview.plan);
       if (res.changed) {
-        // the sale drifted; the server returned a fresh preview inline
         setQuicksellPreview({
           caseId,
           lines: res.lines || [],
@@ -129,7 +124,7 @@ export const useCollectionDetailServices = () => {
         toast.info("Your items changed since the preview. Review the update and confirm again.", {
           theme: "dark",
         });
-        setRefresh((r) => !r); // reflect the changed inventory in the album behind the modal
+        setRefresh((r) => !r);
         return;
       }
       if (userData && typeof res.walletBalance === "number") {
@@ -158,8 +153,7 @@ export const useCollectionDetailServices = () => {
     loading,
     error,
     isOwner,
-    needsTarget: !targetUserId,
-    backLink: `/collections${userQuery}`,
+    onBack,
     page,
     setPage,
     filter,

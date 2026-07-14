@@ -10,6 +10,7 @@ import Skeleton from "react-loading-skeleton";
 import Filters from "../../components/InventoryFilters";
 import Pagination from "../../components/Pagination";
 import BalanceHistory from "./BalanceHistory";
+import CollectionsPanel from "../Collections/CollectionsPanel";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -31,7 +32,7 @@ const Profile = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<"inventory" | "history">("inventory");
+  const [activeTab, setActiveTab] = useState<"inventory" | "collections" | "history">("inventory");
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -153,6 +154,13 @@ const Profile = () => {
               Inventory
               <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-colors ${activeTab === "inventory" ? "bg-indigo-500" : "bg-transparent"}`} />
             </button>
+            <button
+              onClick={() => setActiveTab("collections")}
+              className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${activeTab === "collections" ? "text-white" : "text-[#84819a] hover:text-white"}`}
+            >
+              Collections
+              <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-colors ${activeTab === "collections" ? "bg-indigo-500" : "bg-transparent"}`} />
+            </button>
             {isSameUser && (
               <button
                 onClick={() => setActiveTab("history")}
@@ -166,6 +174,8 @@ const Profile = () => {
 
           {activeTab === "history" ? (
             <BalanceHistory />
+          ) : activeTab === "collections" ? (
+            <CollectionsPanel userId={id as string} isOwner={isSameUser} />
           ) : (
           <>
           <div className="flex flex-col w-full items-end mr-[70px] gap-4 -mt-10">

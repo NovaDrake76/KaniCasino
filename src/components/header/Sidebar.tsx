@@ -1,7 +1,6 @@
 import { BsCoin } from "react-icons/bs";
 import { GiUpgrade, GiCrossedSwords } from "react-icons/gi";
 import { MdOutlineSell } from "react-icons/md";
-import { RiBook2Fill } from "react-icons/ri";
 import { SlPlane } from "react-icons/sl";
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -54,11 +53,6 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: "Case Battles",
             path: "/battles",
             icon: <GiCrossedSwords className="text-2xl" />,
-        },
-        {
-            name: "Collections",
-            path: "/collections",
-            icon: <RiBook2Fill className="text-2xl" />,
         }
     ];
 

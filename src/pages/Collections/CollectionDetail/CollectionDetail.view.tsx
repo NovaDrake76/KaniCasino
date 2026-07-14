@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { IoArrowBack } from "react-icons/io5";
 import { MdOutlineSell } from "react-icons/md";
@@ -25,8 +24,7 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
   loading,
   error,
   isOwner,
-  needsTarget,
-  backLink,
+  onBack,
   page,
   setPage,
   filter,
@@ -48,15 +46,16 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
   confirmQuicksell,
 }) => {
   return (
-    <div className="w-screen max-w-[1400px] px-4 md:px-8 flex flex-col gap-6 pb-16">
-      <Link to={backLink} className="flex items-center gap-2 text-ink-muted hover:text-ink w-fit">
+    <div className="w-full flex flex-col gap-6">
+      <button
+        onClick={onBack}
+        className="flex items-center gap-2 text-ink-muted hover:text-ink w-fit"
+      >
         <IoArrowBack /> Back to collections
-      </Link>
+      </button>
 
-      {needsTarget ? (
-        <p className="text-ink-muted">Log in to view collections.</p>
-      ) : loading && !detail ? (
-        <Skeleton height={140} borderRadius={12} />
+      {loading && !detail ? (
+        <Skeleton height={140} borderRadius={12} highlightColor="#161427" baseColor="#1c1a31" />
       ) : error || !detail ? (
         <p className="text-ink-muted">Could not load this collection.</p>
       ) : (
@@ -86,12 +85,13 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
             {isOwner && detail.duplicatesValue > 0 && (
               <div className="w-full md:w-52 shrink-0">
                 <MainButton
-                  text="Quicksell duplicates"
+                  text={<span className="whitespace-nowrap">Quicksell duplicates</span>}
                   onClick={openQuicksell}
                   icon={<MdOutlineSell />}
                   type="warning"
                   loading={quicksellLoading}
                   disabled={quicksellLoading}
+                  textSize="text-sm"
                 />
               </div>
             )}

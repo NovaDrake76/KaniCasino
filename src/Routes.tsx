@@ -12,8 +12,6 @@ import ItemPage from "./pages/Market/ItemPage";
 import Battles from "./pages/Battles/Battles";
 import BattleRoom from "./pages/Battles/BattleRoom";
 import ProvablyFair from "./pages/ProvablyFair";
-import Collections from "./pages/Collections";
-import CollectionDetail from "./pages/Collections/CollectionDetail";
 
 const defaultRoutes = (
   <>
@@ -28,8 +26,6 @@ const defaultRoutes = (
     <Route path="/slot" element={<Slot />} />
     <Route path="/battles" element={<Battles />} />
     <Route path="/battles/:id" element={<BattleRoom />} />
-    <Route path="/collections" element={<Collections />} />
-    <Route path="/collections/:caseId" element={<CollectionDetail />} />
     <Route path="/provably-fair" element={<ProvablyFair />} />
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
   </>

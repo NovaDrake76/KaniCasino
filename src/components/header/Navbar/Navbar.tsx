@@ -11,7 +11,6 @@ import { MdOutlineSell } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import { GiUpgrade, GiCrossedSwords } from 'react-icons/gi';
-import { RiBook2Fill } from "react-icons/ri";
 import { TbCat } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { FaBars } from 'react-icons/fa';
@@ -95,11 +94,6 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       name: "Case Battles",
       path: "/battles",
       icon: <GiCrossedSwords className="text-2xl" />,
-    },
-    {
-      name: "Collections",
-      path: "/collections",
-      icon: <RiBook2Fill className="text-2xl" />,
     }
   ];
 
