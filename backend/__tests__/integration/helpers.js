@@ -6,6 +6,7 @@ const marketplaceRoutes = require("../../routes/marketplaceRoutes");
 const friendsRoutes = require("../../routes/friendsRoutes");
 const gamesRoutes = require("../../routes/gamesRoutes");
 const fairRoutes = require("../../routes/fairRoutes");
+const collectionsRoutes = require("../../routes/collectionsRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -18,6 +19,7 @@ function makeApp() {
   app.use("/friends", friendsRoutes(io));
   app.use("/games", gamesRoutes(io));
   app.use("/fair", fairRoutes);
+  app.use("/collections", collectionsRoutes);
   return app;
 }
 
