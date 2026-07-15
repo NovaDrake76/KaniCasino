@@ -1,5 +1,5 @@
 import { BrowserRouter as Router } from "react-router-dom";
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import UserContext from "./UserContext";
 import { SkeletonTheme } from "react-loading-skeleton";
 import "react-tooltip/dist/react-tooltip.css";
@@ -12,6 +12,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Footer from "./components/Footer";
 import {disableReactDevTools} from '@fvilers/disable-react-devtools';
+import { getPendingMissions } from "./services/missions/MissionService";
+import { toastMissionComplete } from "./pages/Missions/components/missionCompleteToast";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -35,10 +37,32 @@ function App() {
   const [notification, setNotification] = useState<any>();
 
   const socket = SocketConnection.getInstance();
+  const missionCheck = useRef<{ inFlight: boolean; last: number }>({ inFlight: false, last: 0 });
 
   if(environment == "production"){
     disableReactDevTools();
   }
+
+  // ask the server for missions that just became claimable and toast them once.
+  // best-effort: throttled on the frequent light path, never blocks anything.
+  const checkMissions = (light: boolean) => {
+    if (!localStorage.getItem("accessToken")) return;
+    const c = missionCheck.current;
+    if (c.inFlight) return;
+    if (light && Date.now() - c.last < 1500) return;
+    c.inFlight = true;
+    getPendingMissions(light)
+      .then((pending) => {
+        pending.forEach(toastMissionComplete);
+        c.last = Date.now();
+      })
+      .catch(() => {
+        // best-effort: never let a mission check surface an error
+      })
+      .finally(() => {
+        c.inFlight = false;
+      });
+  };
 
   const userDataSocket = () => {
     socket.on("userDataUpdated", (payload: userDataSocketProps) => {
@@ -48,6 +72,8 @@ function App() {
         xp: payload.xp,
         level: payload.level
       } : null);
+      // a balance change usually means an action just resolved: check for completions
+      checkMissions(true);
     });
 
     return () => {
@@ -83,6 +109,9 @@ function App() {
       socket.disconnect();
       socket.connect();
       setJoinedRoom(true);
+      // full catch-up check on login: seeds silently the first time, then toasts
+      // anything completed while away
+      checkMissions(false);
     }
   }, [joinedRoom, socket, userData]);
 

@@ -14,6 +14,11 @@ const MissionStateSchema = new mongoose.Schema(
     },
     claimed: { type: [String], default: [] },
     visited: { type: [String], default: [] },
+    // missions already announced via the real-time "mission complete" toast, so it
+    // fires exactly once. `seeded` marks the one-time catch-up that records existing
+    // completions silently (no toast for things finished before real-time tracking).
+    announced: { type: [String], default: [] },
+    seeded: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

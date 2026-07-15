@@ -213,6 +213,48 @@ describe("POST /missions/:key/claim", () => {
   });
 });
 
+describe("GET /missions/pending (real-time announcements)", () => {
+  function getPending(user, light) {
+    return auth(request(app).get(`/missions/pending${light ? "?light=1" : ""}`), user);
+  }
+
+  test("the first call seeds silently, then only new completions are announced once", async () => {
+    const u = await makeUser();
+    // fresh user, nothing complete: first call seeds and returns nothing
+    let res = await getPending(u);
+    expect(res.status).toBe(200);
+    expect(res.body.pending).toEqual([]);
+
+    // complete a mission after the seed
+    await tx(u._id, TX.BONUS, { amount: 1000, direction: "credit" });
+    res = await getPending(u);
+    expect(res.body.pending.map((p) => p.key)).toEqual(["first-bonus"]);
+    expect(res.body.pending[0].reward).toBe(250);
+
+    // announced once: a second call does not re-announce it
+    res = await getPending(u);
+    expect(res.body.pending).toEqual([]);
+  });
+
+  test("completions that predate the first check are seeded silently (never toast)", async () => {
+    const u = await makeUser();
+    await tx(u._id, TX.BONUS, { amount: 1000, direction: "credit" }); // already complete before any check
+    let res = await getPending(u);
+    expect(res.body.pending).toEqual([]); // seeded, not announced
+    res = await getPending(u);
+    expect(res.body.pending).toEqual([]); // and still nothing
+  });
+
+  test("concurrent pending checks announce a mission exactly once", async () => {
+    const u = await makeUser();
+    await getPending(u); // seed
+    await tx(u._id, TX.COINFLIP_WIN, { amount: 500, direction: "credit" });
+    const results = await Promise.all(Array.from({ length: 5 }, () => getPending(u)));
+    const announced = results.flatMap((r) => r.body.pending.map((p) => p.key)).filter((k) => k === "coinflip-win");
+    expect(announced).toHaveLength(1);
+  });
+});
+
 describe("POST /missions/:key/visit (social, honor-system)", () => {
   test("visiting a social link completes it, then it can be claimed", async () => {
     const u = await makeUser({ walletBalance: 500 });

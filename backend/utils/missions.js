@@ -34,7 +34,7 @@ async function getState(userId) {
 
 // gather every signal the catalog needs in one pass. progress is derived, never
 // stored, and only activity at/after the launch timestamp counts.
-async function buildContext(userId) {
+async function buildContext(userId, { includeCollections = true } = {}) {
   const launch = missionsLaunchAt();
   const [txAgg, battlesWon, collectionsCompleted, user, state] = await Promise.all([
     Transaction.aggregate([
@@ -49,7 +49,8 @@ async function buildContext(userId) {
       },
     ]),
     Battle.countDocuments({ winnerUserIds: userId, status: "finished", finishedAt: { $gte: launch } }),
-    countCompletedCollections(userId),
+    // the collections scan is the one heavy read; skip it on frequent hot-path calls
+    includeCollections ? countCompletedCollections(userId) : Promise.resolve(0),
     User.findById(userId, { profilePicture: 1, friends: 1 }),
     getState(userId),
   ]);
@@ -74,6 +75,7 @@ async function buildContext(userId) {
     friendsCount: user && user.friends ? user.friends.length : 0,
     claimed: new Set((state && state.claimed) || []),
     visited: new Set((state && state.visited) || []),
+    announced: new Set((state && state.announced) || []),
   };
 }
 
@@ -125,6 +127,39 @@ async function getMissionsView(userId) {
     claimed: missions.filter((m) => m.claimed).length,
   };
   return { missions, totals };
+}
+
+// missions that just became claimable and have not been announced yet, for the
+// real-time "mission complete" toast. exactly-once: each key is announced via an
+// atomic per-key guard, so concurrent /pending calls never double-toast. the first
+// call ever for a user SEEDS silently (records current completions without returning
+// them), so completions from before real-time tracking do not stack a burst.
+async function getPendingAnnouncements(userId, { light = false } = {}) {
+  const state = await getState(userId);
+  if (!state.seeded) {
+    const fullCtx = await buildContext(userId, { includeCollections: true });
+    const keys = CATALOG.filter((m) => {
+      const v = view(m, fullCtx);
+      return v.complete && !v.claimed;
+    }).map((m) => m.key);
+    const update = { $set: { seeded: true } };
+    if (keys.length) update.$addToSet = { announced: { $each: keys } };
+    await MissionState.updateOne({ userId }, update);
+    return [];
+  }
+
+  const ctx = await buildContext(userId, { includeCollections: !light });
+  const pending = [];
+  for (const m of CATALOG) {
+    const v = view(m, ctx);
+    if (!v.complete || v.claimed || ctx.announced.has(m.key)) continue;
+    const res = await MissionState.updateOne(
+      { userId, announced: { $ne: m.key } },
+      { $addToSet: { announced: m.key } }
+    );
+    if (res.modifiedCount === 1) pending.push({ key: m.key, title: m.title, reward: m.reward });
+  }
+  return pending;
 }
 
 // mark a social mission's link as clicked. honor-system: the server cannot verify
@@ -186,4 +221,11 @@ async function claimMission(userId, key, io) {
   };
 }
 
-module.exports = { getMissionsView, markVisited, claimMission, buildContext, countCompletedCollections };
+module.exports = {
+  getMissionsView,
+  getPendingAnnouncements,
+  markVisited,
+  claimMission,
+  buildContext,
+  countCompletedCollections,
+};

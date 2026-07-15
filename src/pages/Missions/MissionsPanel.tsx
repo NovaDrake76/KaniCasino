@@ -9,8 +9,8 @@ interface Props {
 // the missions tab. missions are always the logged-in user's own progress, so the
 // tab is only shown on your own profile (userId is accepted for a consistent tab
 // interface but the API resolves the caller from the token).
-const MissionsPanel: React.FC<Props> = ({ userId, isOwner }) => {
-  const service = useMissionsServices({ isOwner, userId });
+const MissionsPanel: React.FC<Props> = ({ isOwner }) => {
+  const service = useMissionsServices({ isOwner });
   return (
     <div className="w-full flex justify-center">
       <MissionsView {...service} />

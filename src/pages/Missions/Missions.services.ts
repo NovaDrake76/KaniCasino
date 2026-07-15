@@ -2,17 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   getMissions,
+  getPendingMissions,
   claimMission,
   visitMission,
   MissionsData,
 } from "../../services/missions/MissionService";
+import { toastMissionComplete } from "./components/missionCompleteToast";
 
-// remembers which claimable missions have already been announced (per user, so a
-// shared browser doesn't suppress another account's toasts), so the "mission
-// complete" toast fires once per mission and not on every refetch
-const seenKeyFor = (userId: string) => `kani.seenClaimable.${userId}`;
-
-export const useMissionsServices = ({ isOwner, userId }: { isOwner: boolean; userId: string }) => {
+export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
   const [data, setData] = useState<MissionsData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -47,37 +44,19 @@ export const useMissionsServices = ({ isOwner, userId }: { isOwner: boolean; use
       .finally(() => {
         if (active) setLoading(false);
       });
+    // a full pending check on tab open catches completions the frequent balance-change
+    // checks skip (collections, and social/state missions); the server announces each once
+    getPendingMissions(false)
+      .then((pending) => {
+        if (active) pending.forEach(toastMissionComplete);
+      })
+      .catch(() => {
+        // best-effort: a failed pending check just means no toast this time
+      });
     return () => {
       active = false;
     };
   }, [isOwner]);
-
-  useEffect(() => {
-    if (!data || !userId) return;
-    const seenKey = seenKeyFor(userId);
-    const claimableKeys = data.missions.filter((m) => m.claimable).map((m) => m.key);
-    const raw = localStorage.getItem(seenKey);
-    // first ever view for this user: seed silently so pre-existing completions do
-    // not stack a burst of toasts. only genuinely-new completions toast afterwards.
-    if (raw === null) {
-      localStorage.setItem(seenKey, JSON.stringify(claimableKeys));
-      return;
-    }
-    let seen: string[] = [];
-    try {
-      seen = JSON.parse(raw);
-    } catch {
-      seen = [];
-    }
-    const fresh = claimableKeys.filter((k) => !seen.includes(k));
-    if (fresh.length) {
-      fresh.forEach((k) => {
-        const m = data.missions.find((x) => x.key === k);
-        if (m) toast.info(`Mission complete: ${m.title}`);
-      });
-      localStorage.setItem(seenKey, JSON.stringify([...new Set([...seen, ...claimableKeys])]));
-    }
-  }, [data, userId]);
 
   const claim = async (key: string) => {
     setClaimingKey(key);

@@ -19,6 +19,12 @@ export interface MissionsData {
   totals: { total: number; completed: number; claimable: number; claimed: number };
 }
 
+export interface PendingMission {
+  key: string;
+  title: string;
+  reward: number;
+}
+
 export interface ClaimResult {
   claimed: boolean;
   alreadyClaimed?: boolean;
@@ -30,6 +36,13 @@ export interface ClaimResult {
 export async function getMissions(): Promise<MissionsData> {
   const res = await api.get("/missions");
   return res.data;
+}
+
+// missions newly complete since the last check, for the "mission complete" toast.
+// pass light=true on frequent calls (balance changes) to skip the heavy collection scan.
+export async function getPendingMissions(light: boolean): Promise<PendingMission[]> {
+  const res = await api.get(`/missions/pending${light ? "?light=1" : ""}`);
+  return res.data.pending || [];
 }
 
 export async function visitMission(key: string): Promise<void> {
