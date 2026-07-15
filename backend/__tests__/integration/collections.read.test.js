@@ -169,6 +169,40 @@ describe("GET /collections/:caseId", () => {
     expect(res.body.extras[0]._id).toBe(removed._id.toString());
     expect(res.body.extras[0].inCase).toBe(false);
     expect(res.body.extras[0].owned).toBe(3);
+    expect(res.body.extras[0].slotNumber).toBe(0); // extras sit outside the numbering
+  });
+
+  test("card numbers follow the canonical order and survive sort and filter", async () => {
+    const u = await makeUser();
+    const { c, items } = await makeCase([
+      { rarity: 1, baseValue: 100 },
+      { rarity: 3, baseValue: 300 },
+      { rarity: 5, baseValue: 1000 },
+    ]);
+    await Item.updateOne({ _id: items[0]._id }, { description: "a very common thing" });
+    await give(u, items[0], 2, c._id);
+
+    const res = await request(app).get(`/collections/${c._id}`).query({ userId: u._id.toString() });
+    const byId = new Map(res.body.items.map((i) => [i._id, i]));
+    // canonical order is rarest first: rarity 5 is card 1, rarity 1 is card 3
+    expect(byId.get(items[2]._id.toString()).slotNumber).toBe(1);
+    expect(byId.get(items[1]._id.toString()).slotNumber).toBe(2);
+    expect(byId.get(items[0]._id.toString()).slotNumber).toBe(3);
+    expect(byId.get(items[0]._id.toString()).description).toBe("a very common thing");
+    expect(byId.get(items[1]._id.toString()).description).toBe("");
+
+    // reversing the sort must not renumber the cards
+    const rev = await request(app)
+      .get(`/collections/${c._id}`)
+      .query({ userId: u._id.toString(), sortBy: "mostCommon" });
+    expect(rev.body.items[0]._id).toBe(items[0]._id.toString());
+    expect(rev.body.items[0].slotNumber).toBe(3);
+
+    // a filtered view keeps the numbers of the full album
+    const dups = await request(app)
+      .get(`/collections/${c._id}`)
+      .query({ userId: u._id.toString(), filter: "duplicates" });
+    expect(dups.body.items[0].slotNumber).toBe(3);
   });
 
   test("bad case id -> 404, invalid user -> 400", async () => {
@@ -176,6 +210,21 @@ describe("GET /collections/:caseId", () => {
     const { c } = await makeCase([{ rarity: 1, baseValue: 100 }]);
     expect((await request(app).get(`/collections/notanid`).query({ userId: u._id.toString() })).status).toBe(404);
     expect((await request(app).get(`/collections/${c._id}`).query({ userId: "nope" })).status).toBe(400);
+  });
+
+  test("a duplicated item id in Case.items counts as a single slot", async () => {
+    const u = await makeUser();
+    const { c, items } = await makeCase([
+      { rarity: 5, baseValue: 1000 },
+      { rarity: 1, baseValue: 100 },
+    ]);
+    // raw admin input can push the same id twice
+    await Case.updateOne({ _id: c._id }, { $push: { items: items[0]._id } });
+
+    const res = await request(app).get(`/collections/${c._id}`).query({ userId: u._id.toString() });
+    expect(res.body.slotsTotal).toBe(2);
+    expect(res.body.items).toHaveLength(2);
+    expect(res.body.items.map((i) => i.slotNumber).sort()).toEqual([1, 2]);
   });
 
   test("second page respects the 18-per-page size", async () => {

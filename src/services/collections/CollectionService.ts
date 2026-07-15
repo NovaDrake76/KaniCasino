@@ -30,8 +30,10 @@ export interface CollectionsSummary {
 export interface AlbumItem {
   _id: string;
   name: string;
+  description: string;
   image: string;
   rarity: string;
+  slotNumber: number;
   baseValue: number;
   sellValue: number;
   owned: number;
