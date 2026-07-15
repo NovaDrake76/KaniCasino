@@ -79,6 +79,7 @@ const gamesRoutes = require("./routes/gamesRoutes")(io);
 const friendsRoutes = require("./routes/friendsRoutes")(io);
 const fairRoutes = require("./routes/fairRoutes");
 const collectionsRoutes = require("./routes/collectionsRoutes");
+const missionsRoutes = require("./routes/missionsRoutes")(io);
 
 // Connect to MongoDB
 mongoose
@@ -108,6 +109,7 @@ app.use("/games", gamesRoutes);
 app.use("/friends", friendsRoutes);
 app.use("/fair", fairRoutes);
 app.use("/collections", collectionsRoutes);
+app.use("/missions", missionsRoutes);
 
 // Start the games
 coinFlip(io);

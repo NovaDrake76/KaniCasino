@@ -11,6 +11,7 @@ import Filters from "../../components/InventoryFilters";
 import Pagination from "../../components/Pagination";
 import BalanceHistory from "./BalanceHistory";
 import CollectionsPanel from "../Collections/CollectionsPanel";
+import MissionsPanel from "../Missions/MissionsPanel";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -32,7 +33,7 @@ const Profile = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<"inventory" | "collections" | "history">("inventory");
+  const [activeTab, setActiveTab] = useState<"inventory" | "collections" | "history" | "missions">("inventory");
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -117,10 +118,15 @@ const Profile = () => {
   }, [page, id]);
 
 
-  const tabs: { key: "inventory" | "collections" | "history"; label: string }[] = [
+  const tabs: { key: "inventory" | "collections" | "history" | "missions"; label: string }[] = [
     { key: "inventory", label: "Inventory" },
     { key: "collections", label: "Collections" },
-    ...(isSameUser ? [{ key: "history" as const, label: "Balance history" }] : []),
+    ...(isSameUser
+      ? [
+          { key: "missions" as const, label: "Missions" },
+          { key: "history" as const, label: "Balance history" },
+        ]
+      : []),
   ];
 
   return (
@@ -172,6 +178,8 @@ const Profile = () => {
 
           {activeTab === "history" ? (
             <BalanceHistory />
+          ) : activeTab === "missions" ? (
+            <MissionsPanel userId={id as string} isOwner={isSameUser} />
           ) : activeTab === "collections" ? (
             <CollectionsPanel userId={id as string} isOwner={isSameUser} />
           ) : (
