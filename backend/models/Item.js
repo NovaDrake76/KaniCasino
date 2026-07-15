@@ -5,7 +5,10 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: String,
+  description: {
+    type: String,
+    maxlength: 200,
+  },
   image: String,
   rarity: {
     type: String,
