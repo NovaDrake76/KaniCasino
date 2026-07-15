@@ -67,7 +67,7 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
             <div className="flex flex-col gap-3 flex-1 w-full">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-xl font-semibold text-ink">{detail.title}</h2>
-                {detail.duplicatesValue > 0 && (
+                {isOwner && detail.duplicatesValue > 0 && (
                   <span className="text-sm text-ink-muted">
                     Duplicates worth{" "}
                     <span className="text-accent-gold font-medium">

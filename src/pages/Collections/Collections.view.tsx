@@ -8,6 +8,7 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
   summary,
   loading,
   error,
+  isOwner,
   openCase,
 }) => {
   return (
@@ -41,7 +42,7 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
               total={summary.totals.slotsTotal}
               pct={summary.totals.completionPct}
             />
-            {summary.totals.duplicatesValue > 0 && (
+            {isOwner && summary.totals.duplicatesValue > 0 && (
               <div className="flex items-center justify-between text-sm pt-1 border-t border-line">
                 <span className="text-ink-muted">
                   {summary.totals.duplicatesCount} duplicate items
@@ -58,6 +59,7 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
               <CollectionCard
                 key={c.caseId}
                 collection={c}
+                isOwner={isOwner}
                 onClick={() => openCase(c.caseId)}
               />
             ))}

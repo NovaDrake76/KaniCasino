@@ -6,10 +6,11 @@ import {
 
 interface Args {
   userId: string;
+  isOwner: boolean;
   onOpenCase: (caseId: string) => void;
 }
 
-export const useCollectionsServices = ({ userId, onOpenCase }: Args) => {
+export const useCollectionsServices = ({ userId, isOwner, onOpenCase }: Args) => {
   const [summary, setSummary] = useState<CollectionsSummary | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -34,5 +35,5 @@ export const useCollectionsServices = ({ userId, onOpenCase }: Args) => {
     };
   }, [userId]);
 
-  return { summary, loading, error, openCase: onOpenCase };
+  return { summary, loading, error, isOwner, openCase: onOpenCase };
 };

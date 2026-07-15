@@ -9,11 +9,12 @@ interface Props {
   isOwner: boolean;
 }
 
-const CollectionSummary: React.FC<{ userId: string; onOpenCase: (id: string) => void }> = ({
-  userId,
-  onOpenCase,
-}) => {
-  const service = useCollectionsServices({ userId, onOpenCase });
+const CollectionSummary: React.FC<{
+  userId: string;
+  isOwner: boolean;
+  onOpenCase: (id: string) => void;
+}> = ({ userId, isOwner, onOpenCase }) => {
+  const service = useCollectionsServices({ userId, isOwner, onOpenCase });
   return <CollectionsView {...service} />;
 };
 
@@ -42,7 +43,7 @@ const CollectionsPanel: React.FC<Props> = ({ userId, isOwner }) => {
       />
     );
   }
-  return <CollectionSummary userId={userId} onOpenCase={setSelectedCaseId} />;
+  return <CollectionSummary userId={userId} isOwner={isOwner} onOpenCase={setSelectedCaseId} />;
 };
 
 export default CollectionsPanel;

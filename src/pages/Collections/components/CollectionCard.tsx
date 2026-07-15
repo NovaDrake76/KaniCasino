@@ -4,10 +4,11 @@ import { CollectionSummaryItem } from "../../../services/collections/CollectionS
 
 interface Props {
   collection: CollectionSummaryItem;
+  isOwner: boolean;
   onClick: () => void;
 }
 
-const CollectionCard: React.FC<Props> = ({ collection, onClick }) => {
+const CollectionCard: React.FC<Props> = ({ collection, isOwner, onClick }) => {
   const c = collection;
   return (
     <button
@@ -35,16 +36,18 @@ const CollectionCard: React.FC<Props> = ({ collection, onClick }) => {
         className="w-full"
       />
 
-      <div className="flex items-center justify-between text-xs pt-1 border-t border-line w-full">
-        <span className="text-ink-muted">
-          {c.duplicatesCount > 0 ? `${c.duplicatesCount} duplicates` : "No duplicates"}
-        </span>
-        {c.duplicatesValue > 0 && (
-          <span className="text-accent-gold font-medium">
-            <Monetary value={c.duplicatesValue} />
+      {isOwner && (
+        <div className="flex items-center justify-between text-xs pt-1 border-t border-line w-full">
+          <span className="text-ink-muted">
+            {c.duplicatesCount > 0 ? `${c.duplicatesCount} duplicates` : "No duplicates"}
           </span>
-        )}
-      </div>
+          {c.duplicatesValue > 0 && (
+            <span className="text-accent-gold font-medium">
+              <Monetary value={c.duplicatesValue} />
+            </span>
+          )}
+        </div>
+      )}
     </button>
   );
 };
