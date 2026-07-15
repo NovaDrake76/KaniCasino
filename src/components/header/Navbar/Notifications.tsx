@@ -45,7 +45,7 @@ const Notifications: React.FC<NotificationsProps> = ({ openNotifications, setOpe
     }, []);
 
     return (
-        <div className={`bg-[#19172d] rounded absolute z-50 top-1 md:right-10 w-full md:w-80 min-h-[400px] ${openNotifications ? 'flex flex-col' : 'hidden'}`} ref={notificationsRef}>
+        <div className={`bg-[#19172d] rounded absolute z-50 top-1 md:right-10 w-full md:w-80 min-h-[400px] max-h-[70vh] overflow-y-auto ${openNotifications ? 'flex flex-col' : 'hidden'}`} ref={notificationsRef}>
             {
                 loading ?
                     <div className="flex justify-center items-center h-96"> <p className="text-white">

@@ -10,6 +10,7 @@ import Skeleton from "react-loading-skeleton";
 import Filters from "../../components/InventoryFilters";
 import Pagination from "../../components/Pagination";
 import BalanceHistory from "./BalanceHistory";
+import CollectionsPanel from "../Collections/CollectionsPanel";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -31,7 +32,7 @@ const Profile = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<"inventory" | "history">("inventory");
+  const [activeTab, setActiveTab] = useState<"inventory" | "collections" | "history">("inventory");
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -116,6 +117,12 @@ const Profile = () => {
   }, [page, id]);
 
 
+  const tabs: { key: "inventory" | "collections" | "history"; label: string }[] = [
+    { key: "inventory", label: "Inventory" },
+    { key: "collections", label: "Collections" },
+    ...(isSameUser ? [{ key: "history" as const, label: "Balance history" }] : []),
+  ];
+
   return (
     <div className="flex flex-col items-center w-screen">
       <div className="flex flex-col max-w-[1312px] py-4 w-full">
@@ -145,27 +152,28 @@ const Profile = () => {
 
       <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
         <div className="flex flex-col p-8 gap-2 items-center w-full max-w-[1312px]">
-          <div className="flex w-full gap-6 overflow-x-auto border-b border-[#2a2840] mb-4">
-            <button
-              onClick={() => setActiveTab("inventory")}
-              className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${activeTab === "inventory" ? "text-white" : "text-[#84819a] hover:text-white"}`}
-            >
-              Inventory
-              <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-colors ${activeTab === "inventory" ? "bg-indigo-500" : "bg-transparent"}`} />
-            </button>
-            {isSameUser && (
-              <button
-                onClick={() => setActiveTab("history")}
-                className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-semibold transition-colors ${activeTab === "history" ? "text-white" : "text-[#84819a] hover:text-white"}`}
-              >
-                Balance history
-                <span className={`absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-colors ${activeTab === "history" ? "bg-indigo-500" : "bg-transparent"}`} />
-              </button>
-            )}
+          <div className="w-full flex justify-center mb-6">
+            <div className="inline-flex gap-1 bg-[#19172d] border border-[#2a2840] rounded-xl p-1 max-w-full overflow-x-auto">
+              {tabs.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setActiveTab(t.key)}
+                  className={`shrink-0 whitespace-nowrap px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    activeTab === t.key
+                      ? "bg-[#281d3f] text-white shadow"
+                      : "text-[#84819a] hover:text-white hover:bg-[#221f38]"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {activeTab === "history" ? (
             <BalanceHistory />
+          ) : activeTab === "collections" ? (
+            <CollectionsPanel userId={id as string} isOwner={isSameUser} />
           ) : (
           <>
           <div className="flex flex-col w-full items-end mr-[70px] gap-4 -mt-10">
