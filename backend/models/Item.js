@@ -5,6 +5,7 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  description: String,
   image: String,
   rarity: {
     type: String,

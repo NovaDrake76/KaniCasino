@@ -18,6 +18,17 @@ const pctOf = (owned, total) => (total ? Math.floor((1000 * owned) / total) / 10
 // Case.items (the authoritative slot set). completion, duplicate value and the
 // quicksell scope all use this one rule, so they can never disagree.
 
+// Case.items is raw admin input and can hold the same id twice; every consumer
+// works on the unique slot set so stats, numbering and quicksell agree
+function uniqueItems(caseDoc) {
+  const seen = new Set();
+  return (caseDoc.items || []).filter((it) => {
+    if (!it || seen.has(String(it._id))) return false;
+    seen.add(String(it._id));
+    return true;
+  });
+}
+
 // count owned copies and gather the uniqueIds per catalog item _id
 function indexInventory(inventory) {
   const countById = new Map();
@@ -39,7 +50,7 @@ function indexInventory(inventory) {
 // case) are never swept. returns { lines, plan, totalItems, totalValue }, where plan
 // is the sorted, flat list of uniqueIds to sell.
 function computeQuicksellPlan(inventory, caseDoc) {
-  const items = (caseDoc.items || []).filter(Boolean);
+  const items = uniqueItems(caseDoc);
   const metaById = new Map(
     items.map((it) => [
       String(it._id),
@@ -97,7 +108,7 @@ function computeQuicksellPlan(inventory, caseDoc) {
 }
 
 function caseStats(caseDoc, countById) {
-  const items = (caseDoc.items || []).filter(Boolean);
+  const items = uniqueItems(caseDoc);
   const slotsTotal = items.length;
   let slotsOwned = 0;
   let duplicatesValue = 0;
@@ -281,7 +292,7 @@ router.get("/:caseId", async (req, res) => {
     }
 
     const caseDoc = await Case.findById(caseId)
-      .populate("items", "name image rarity baseValue");
+      .populate("items", "name image rarity baseValue description");
     if (!caseDoc) {
       return res.status(404).json({ message: "Collection not found" });
     }
@@ -291,7 +302,7 @@ router.get("/:caseId", async (req, res) => {
     }
 
     const { countById, uniqueIdsById } = indexInventory(user.inventory);
-    const items = (caseDoc.items || []).filter(Boolean);
+    const items = uniqueItems(caseDoc);
     const caseItemIds = new Set(items.map((it) => String(it._id)));
     const stats = caseStats(caseDoc, countById);
 
@@ -303,6 +314,7 @@ router.get("/:caseId", async (req, res) => {
       return {
         _id: id,
         name: it.name,
+        description: it.description || "",
         image: it.image,
         rarity: it.rarity,
         baseValue: it.baseValue || 0,
@@ -315,6 +327,16 @@ router.get("/:caseId", async (req, res) => {
         uniqueIds: uniqueIdsById.get(id) || [],
       };
     });
+
+    // card numbers follow the album's canonical order (rarest first, name as
+    // tiebreak) and stick to the item, whatever filter or sort is applied
+    const numbered = [...rows].sort(
+      (a, b) =>
+        Number(b.rarity) - Number(a.rarity) ||
+        (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
+    );
+    const numberById = new Map(numbered.map((r, i) => [r._id, i + 1]));
+    for (const r of rows) r.slotNumber = numberById.get(r._id);
 
     const { filter, sortBy } = req.query;
     if (filter === "owned") rows = rows.filter((r) => r.owned > 0);
@@ -357,9 +379,10 @@ router.get("/:caseId", async (req, res) => {
     if (extraCounts.size) {
       const exDocs = await Item.find(
         { _id: { $in: [...extraCounts.keys()] } },
-        { baseValue: 1 }
+        { baseValue: 1, description: 1 }
       );
       const baseById = new Map(exDocs.map((i) => [String(i._id), i.baseValue || 0]));
+      const descById = new Map(exDocs.map((i) => [String(i._id), i.description || ""]));
       extras = [...extraCounts.entries()].map(([id, owned]) => {
         const snap = extraSnap.get(id) || {};
         const base = baseById.get(id) || 0; // deleted source -> 0, not sellable
@@ -368,8 +391,10 @@ router.get("/:caseId", async (req, res) => {
         return {
           _id: id,
           name: snap.name || "Unknown item",
+          description: descById.get(id) || "",
           image: snap.image || "",
           rarity: snap.rarity || "1",
+          slotNumber: 0,
           baseValue: base,
           sellValue: sv,
           owned,
