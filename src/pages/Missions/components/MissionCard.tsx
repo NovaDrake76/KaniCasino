@@ -3,6 +3,7 @@ import { FaDiscord, FaTwitter } from "react-icons/fa";
 import MainButton from "../../../components/MainButton";
 import Monetary from "../../../components/Monetary";
 import { Mission } from "../../../services/missions/MissionService";
+import { resolveMissionArt, MissionArtTile } from "../missionArt";
 
 // discord invite comes from the frontend env; the x handle is a plain constant to edit
 const SOCIAL_URLS: Record<string, string> = {
@@ -15,9 +16,10 @@ interface Props {
   claiming: boolean;
   claim: (key: string) => void;
   visit: (key: string, url: string) => void;
+  caseImage?: string;
 }
 
-const MissionCard: React.FC<Props> = ({ mission, claiming, claim, visit }) => {
+const MissionCard: React.FC<Props> = ({ mission, claiming, claim, visit, caseImage }) => {
   const pct =
     mission.target > 0 ? Math.min(100, Math.round((mission.current / mission.target) * 100)) : 0;
   const showBar = mission.target > 1 && !mission.claimed;
@@ -32,6 +34,7 @@ const MissionCard: React.FC<Props> = ({ mission, claiming, claim, visit }) => {
           : "bg-surface border-line"
       }`}
     >
+      <MissionArtTile art={resolveMissionArt(mission.key, caseImage)} dim={mission.claimed} />
       <div className="flex flex-col min-w-0 flex-1 gap-1">
         <div className="flex items-center gap-2">
           <span className={`text-sm font-semibold ${mission.claimed ? "text-ink-muted" : "text-ink"}`}>

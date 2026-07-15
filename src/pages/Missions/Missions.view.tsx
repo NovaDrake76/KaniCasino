@@ -10,6 +10,7 @@ interface Props {
   claim: (key: string) => void;
   visit: (key: string, url: string) => void;
   isOwner: boolean;
+  caseImage?: string;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -28,6 +29,7 @@ const MissionsView: React.FC<Props> = ({
   claim,
   visit,
   isOwner,
+  caseImage,
 }) => {
   if (!isOwner) {
     return <p className="text-ink-muted py-8 text-center">Missions are private.</p>;
@@ -81,6 +83,7 @@ const MissionsView: React.FC<Props> = ({
                 claiming={claimingKey === m.key}
                 claim={claim}
                 visit={visit}
+                caseImage={caseImage}
               />
             ))}
           </div>

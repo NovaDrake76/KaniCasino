@@ -7,6 +7,7 @@ import {
   visitMission,
   MissionsData,
 } from "../../services/missions/MissionService";
+import { getCases } from "../../services/cases/CaseServices";
 import { toastMissionComplete } from "./components/missionCompleteToast";
 
 export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
@@ -14,6 +15,7 @@ export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [claimingKey, setClaimingKey] = useState<string | null>(null);
+  const [caseImage, setCaseImage] = useState<string | undefined>(undefined);
 
   const load = useCallback(async () => {
     try {
@@ -53,6 +55,15 @@ export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
       .catch(() => {
         // best-effort: a failed pending check just means no toast this time
       });
+    // a real case image for the case/collection missions; icon fallback if it fails
+    getCases()
+      .then((cases) => {
+        const img = Array.isArray(cases) ? cases.find((c) => c && c.image)?.image : undefined;
+        if (active && img) setCaseImage(img);
+      })
+      .catch(() => {
+        // fall back to the chest icon
+      });
     return () => {
       active = false;
     };
@@ -82,5 +93,5 @@ export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
     await load();
   };
 
-  return { data, loading, error, claimingKey, claim, visit, isOwner };
+  return { data, loading, error, claimingKey, claim, visit, isOwner, caseImage };
 };
