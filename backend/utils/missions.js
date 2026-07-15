@@ -34,9 +34,9 @@ async function getState(userId) {
 
 // gather every signal the catalog needs in one pass. progress is derived, never
 // stored, and only activity at/after the launch timestamp counts.
-async function buildContext(userId, { includeCollections = true } = {}) {
+async function buildContext(userId, { includeCollections = true, state = null } = {}) {
   const launch = missionsLaunchAt();
-  const [txAgg, battlesWon, collectionsCompleted, user, state] = await Promise.all([
+  const [txAgg, battlesWon, collectionsCompleted, user, st] = await Promise.all([
     Transaction.aggregate([
       { $match: { userId: new mongoose.Types.ObjectId(String(userId)), createdAt: { $gte: launch } } },
       {
@@ -52,7 +52,8 @@ async function buildContext(userId, { includeCollections = true } = {}) {
     // the collections scan is the one heavy read; skip it on frequent hot-path calls
     includeCollections ? countCompletedCollections(userId) : Promise.resolve(0),
     User.findById(userId, { profilePicture: 1, friends: 1 }),
-    getState(userId),
+    // reuse an already-loaded state doc when the caller has one, to avoid re-reading it
+    state || getState(userId),
   ]);
 
   const byType = {};
@@ -73,9 +74,9 @@ async function buildContext(userId, { includeCollections = true } = {}) {
     collectionsCompleted,
     hasProfilePicture: !!(user && user.profilePicture && String(user.profilePicture).trim() !== ""),
     friendsCount: user && user.friends ? user.friends.length : 0,
-    claimed: new Set((state && state.claimed) || []),
-    visited: new Set((state && state.visited) || []),
-    announced: new Set((state && state.announced) || []),
+    claimed: new Set((st && st.claimed) || []),
+    visited: new Set((st && st.visited) || []),
+    announced: new Set((st && st.announced) || []),
   };
 }
 
@@ -137,7 +138,8 @@ async function getMissionsView(userId) {
 async function getPendingAnnouncements(userId, { light = false } = {}) {
   const state = await getState(userId);
   if (!state.seeded) {
-    const fullCtx = await buildContext(userId, { includeCollections: true });
+    // seed is always full so nothing pre-existing (incl. collections) ever toasts
+    const fullCtx = await buildContext(userId, { includeCollections: true, state });
     const keys = CATALOG.filter((m) => {
       const v = view(m, fullCtx);
       return v.complete && !v.claimed;
@@ -148,7 +150,7 @@ async function getPendingAnnouncements(userId, { light = false } = {}) {
     return [];
   }
 
-  const ctx = await buildContext(userId, { includeCollections: !light });
+  const ctx = await buildContext(userId, { includeCollections: !light, state });
   const pending = [];
   for (const m of CATALOG) {
     const v = view(m, ctx);

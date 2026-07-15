@@ -41,7 +41,9 @@ export async function getMissions(): Promise<MissionsData> {
 // missions newly complete since the last check, for the "mission complete" toast.
 // pass light=true on frequent calls (balance changes) to skip the heavy collection scan.
 export async function getPendingMissions(light: boolean): Promise<PendingMission[]> {
-  const res = await api.get(`/missions/pending${light ? "?light=1" : ""}`);
+  // a timeout guarantees the promise settles, so the caller's in-flight guard can
+  // never stay pinned by a stalled connection
+  const res = await api.get(`/missions/pending${light ? "?light=1" : ""}`, { timeout: 10000 });
   return res.data.pending || [];
 }
 
