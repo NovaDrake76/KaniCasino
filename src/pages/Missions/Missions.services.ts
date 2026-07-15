@@ -7,11 +7,12 @@ import {
   MissionsData,
 } from "../../services/missions/MissionService";
 
-// remembers which claimable missions have already been announced, so the
-// "mission complete" toast fires once per mission and not on every refetch
-const SEEN_KEY = "kani.seenClaimable";
+// remembers which claimable missions have already been announced (per user, so a
+// shared browser doesn't suppress another account's toasts), so the "mission
+// complete" toast fires once per mission and not on every refetch
+const seenKeyFor = (userId: string) => `kani.seenClaimable.${userId}`;
 
-export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
+export const useMissionsServices = ({ isOwner, userId }: { isOwner: boolean; userId: string }) => {
   const [data, setData] = useState<MissionsData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -21,8 +22,10 @@ export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
     try {
       const res = await getMissions();
       setData(res);
+      setError(false);
     } catch {
-      setError(true);
+      // a refetch failure must not blank an already-loaded panel; the triggering
+      // action reports its own success/failure via a toast
     }
   }, []);
 
@@ -50,19 +53,31 @@ export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
   }, [isOwner]);
 
   useEffect(() => {
-    if (!data) return;
+    if (!data || !userId) return;
+    const seenKey = seenKeyFor(userId);
+    const claimableKeys = data.missions.filter((m) => m.claimable).map((m) => m.key);
+    const raw = localStorage.getItem(seenKey);
+    // first ever view for this user: seed silently so pre-existing completions do
+    // not stack a burst of toasts. only genuinely-new completions toast afterwards.
+    if (raw === null) {
+      localStorage.setItem(seenKey, JSON.stringify(claimableKeys));
+      return;
+    }
     let seen: string[] = [];
     try {
-      seen = JSON.parse(localStorage.getItem(SEEN_KEY) || "[]");
+      seen = JSON.parse(raw);
     } catch {
       seen = [];
     }
-    const fresh = data.missions.filter((m) => m.claimable && !seen.includes(m.key));
+    const fresh = claimableKeys.filter((k) => !seen.includes(k));
     if (fresh.length) {
-      fresh.forEach((m) => toast.info(`Mission complete: ${m.title}`));
-      localStorage.setItem(SEEN_KEY, JSON.stringify([...seen, ...fresh.map((m) => m.key)]));
+      fresh.forEach((k) => {
+        const m = data.missions.find((x) => x.key === k);
+        if (m) toast.info(`Mission complete: ${m.title}`);
+      });
+      localStorage.setItem(seenKey, JSON.stringify([...new Set([...seen, ...claimableKeys])]));
     }
-  }, [data]);
+  }, [data, userId]);
 
   const claim = async (key: string) => {
     setClaimingKey(key);

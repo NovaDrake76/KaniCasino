@@ -105,6 +105,31 @@ describe("GET /missions", () => {
     expect(find(res.body, "battle-win").complete).toBe(true);
   });
 
+  test("complete-collection matches the album: a dangling item ref is not a required slot", async () => {
+    const u = await makeUser();
+    const s = uniqueSuffix();
+    const x = await Item.create({ name: `x-${s}`, image: "i", rarity: "1", baseValue: 100 });
+    const y = await Item.create({ name: `y-${s}`, image: "i", rarity: "2", baseValue: 200 });
+    const ghost = "651111111111111111111111"; // a deleted item still referenced by the case
+    const c = await Case.create({ title: `c-${s}`, image: "c", price: 100, items: [x._id, y._id, ghost] });
+    // own the two surviving items only
+    await User.updateOne(
+      { _id: u._id },
+      {
+        $push: {
+          inventory: {
+            $each: [
+              { _id: x._id, name: x.name, image: x.image, rarity: x.rarity, case: c._id, uniqueId: `u1-${s}` },
+              { _id: y._id, name: y.name, image: y.image, rarity: y.rarity, case: c._id, uniqueId: `u2-${s}` },
+            ],
+          },
+        },
+      }
+    );
+    const res = await getMissions(u);
+    expect(find(res.body, "complete-collection").complete).toBe(true);
+  });
+
   test("state-based missions read live user fields", async () => {
     const friend = await makeUser();
     const u = await makeUser({ profilePicture: "http://img/x.png", friends: [friend._id] });

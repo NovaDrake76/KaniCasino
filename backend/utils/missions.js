@@ -10,15 +10,17 @@ const { CATALOG, byKey, missionsLaunchAt } = require("./missionsCatalog");
 // a "big win" is any single game payout (slots / crash cashout / coin flip win)
 const WIN_TYPES = [TX.SLOT_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
 
-// how many case collections the user has fully completed (every catalog item owned)
+// how many case collections the user has fully completed (every catalog item owned).
+// populate + drop null (deleted) refs so "complete" matches exactly what the
+// collections tab shows: a dangling item id is not a slot the album counts either.
 async function countCompletedCollections(userId) {
   const user = await User.findById(userId, { inventory: 1 });
   if (!user) return 0;
   const owned = new Set((user.inventory || []).map((e) => String(e._id)));
-  const cases = await Case.find({}, { items: 1 });
+  const cases = await Case.find({}, { items: 1 }).populate("items", "_id");
   let done = 0;
   for (const c of cases) {
-    const items = [...new Set((c.items || []).map(String))];
+    const items = [...new Set((c.items || []).filter(Boolean).map((it) => String(it._id)))];
     if (items.length && items.every((id) => owned.has(id))) done += 1;
   }
   return done;
