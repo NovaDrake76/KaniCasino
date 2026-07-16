@@ -101,17 +101,19 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
 
         <div className="rounded border border-line bg-surface p-3 text-xs flex flex-col gap-1">
           <div className="flex justify-between">
-            <span className="text-ink-muted">Total held in escrow</span>
+            <span className="text-ink-muted">Charged now, up to</span>
             <span className="text-ink font-semibold">
               <Monetary value={total} />
             </span>
           </div>
-          <span className="text-ink-faint">
-            Charged now and refunded in full if you cancel. This guarantees your order can pay when it matches.
-          </span>
-          {fillsNow && (
+          {fillsNow ? (
             <span className="text-accent-gold">
-              At this price part of your order fills immediately from existing listings.
+              Anything already listed at or below your bid is bought immediately (spent, not refundable).
+              Only the unfilled rest is held as escrow and refunded if you cancel.
+            </span>
+          ) : (
+            <span className="text-ink-faint">
+              Held as escrow and refunded in full if you cancel. This guarantees your order can pay when it matches.
             </span>
           )}
         </div>

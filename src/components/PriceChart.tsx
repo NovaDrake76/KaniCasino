@@ -48,8 +48,14 @@ const PriceChart: React.FC<Props> = ({ points, floor, height = 220, loading }) =
     const innerW = W - PAD.left - PAD.right;
     const innerH = H - PAD.top - PAD.bottom;
 
+    // x is positioned by TIME, not by index: the backend emits only buckets that had
+    // sales, so index spacing would silently squash a month-long gap next to an hour.
+    const times = points.map((p) => new Date(p.t).getTime());
+    const t0 = Math.min(...times);
+    const t1 = Math.max(...times);
+    const span = t1 - t0;
     const x = (i: number) =>
-      PAD.left + (points.length === 1 ? innerW / 2 : (i / (points.length - 1)) * innerW);
+      PAD.left + (span <= 0 ? innerW / 2 : ((times[i] - t0) / span) * innerW);
     const y = (v: number) => PAD.top + innerH - ((v - lo) / (hi - lo)) * innerH;
 
     return { lo, hi, maxVol, innerW, innerH, x, y };
@@ -138,12 +144,13 @@ const PriceChart: React.FC<Props> = ({ points, floor, height = 220, loading }) =
         <polygon points={area} fill="url(#pcFill)" />
         <polyline points={line} fill="none" stroke="#4F46E5" strokeWidth="2" strokeLinejoin="round" />
 
+        {/* a lone bucket has no line to draw, so it must still show as a point */}
         {points.map((p, i) => (
           <circle
             key={`p${i}`}
             cx={x(i)}
             cy={y(p.median)}
-            r={hover === i ? 3.5 : 0}
+            r={hover === i ? 3.5 : points.length === 1 ? 3 : 0}
             fill="#fff"
             stroke="#4F46E5"
             strokeWidth="2"
@@ -166,19 +173,24 @@ const PriceChart: React.FC<Props> = ({ points, floor, height = 220, loading }) =
             </text>
           ))}
 
-        {/* invisible hit areas drive the tooltip */}
-        {points.map((_, i) => (
-          <rect
-            key={`h${i}`}
-            x={x(i) - innerW / points.length / 2}
-            y={PAD.top}
-            width={innerW / points.length}
-            height={innerH}
-            fill="transparent"
-            onMouseEnter={() => setHover(i)}
-            onMouseLeave={() => setHover(null)}
-          />
-        ))}
+        {/* invisible hit areas: each spans to the midpoint of its neighbours, so the
+            whole plot is hoverable even though points are unevenly spaced in time */}
+        {points.map((_, i) => {
+          const left = i === 0 ? PAD.left : (x(i - 1) + x(i)) / 2;
+          const right = i === points.length - 1 ? W - PAD.right : (x(i) + x(i + 1)) / 2;
+          return (
+            <rect
+              key={`h${i}`}
+              x={left}
+              y={PAD.top}
+              width={Math.max(1, right - left)}
+              height={innerH}
+              fill="transparent"
+              onMouseEnter={() => setHover(i)}
+              onMouseLeave={() => setHover(null)}
+            />
+          );
+        })}
       </svg>
 
       {hp && (

@@ -164,9 +164,12 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const stats = history?.stats;
   const feeRate = stats?.feeRate ?? 0.05;
   const p = price || 0;
-  const fee = Math.floor(p * feeRate);
-  const receive = Math.max(0, p - fee);
   const crossesBid = !!(stats?.bestBid && p > 0 && p <= stats.bestBid);
+  // an ask that crosses a resting bid clears at the BID, not the ask: quote what the
+  // seller will actually be paid, not what they typed
+  const clearsAt = crossesBid ? (stats?.bestBid as number) : p;
+  const fee = Math.floor(clearsAt * feeRate);
+  const receive = Math.max(0, clearsAt - fee);
 
   return (
     <Modal open={isOpen} setOpen={onClose} width="min(980px, 95vw)">
@@ -294,7 +297,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                     {p > 0 && (
                       <span className="text-xs text-ink-muted">
                         You receive <span className="text-accent-gold font-semibold"><Monetary value={receive} /></span>
-                        {" "}· buyer pays <Monetary value={p} /> ({Math.round(feeRate * 100)}% fee <Monetary value={fee} />)
+                        {" "}· buyer pays <Monetary value={clearsAt} /> ({Math.round(feeRate * 100)}% fee <Monetary value={fee} />)
                       </span>
                     )}
                   </div>

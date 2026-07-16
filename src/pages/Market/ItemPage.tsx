@@ -73,6 +73,7 @@ const ItemPage: React.FC = () => {
 
   const [history, setHistory] = useState<ItemHistory | null>(null);
   const [loadingHistory, setLoadingHistory] = useState<boolean>(true);
+  const [historyError, setHistoryError] = useState<boolean>(false);
   const [range, setRange] = useState<string>("week");
   const [book, setBook] = useState<{ price: number; quantity: number }[]>([]);
   const [myOrders, setMyOrders] = useState<BuyOrder[]>([]);
@@ -81,6 +82,11 @@ const ItemPage: React.FC = () => {
     setLoading(true);
     try {
       const data = await getItemListings(itemId as string, page);
+      // buying the last listing on a page would otherwise strand you on an empty one
+      if (page > 1 && data.items.length === 0 && data.totalPages >= 1) {
+        setPage(Math.min(page - 1, Math.max(1, data.totalPages)));
+        return;
+      }
       setItems(data);
     } catch (error) {
       console.log(error);
@@ -95,8 +101,10 @@ const ItemPage: React.FC = () => {
       const [h, o] = await Promise.all([getItemHistory(itemId, range), getItemOrders(itemId)]);
       setHistory(h);
       setBook(o.orders || []);
+      setHistoryError(false);
     } catch (error) {
       console.log(error);
+      setHistoryError(true);
     } finally {
       setLoadingHistory(false);
     }
@@ -177,6 +185,20 @@ const ItemPage: React.FC = () => {
       )}
 
       <div className="w-full max-w-[1312px] px-4 md:px-8 py-6 flex flex-col gap-6">
+        {historyError && (
+          <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm text-red-300 flex items-center justify-between gap-3">
+            <span>Could not load market data for this item.</span>
+            <button
+              onClick={() => {
+                setLoadingHistory(true);
+                fetchMarketData();
+              }}
+              className="px-3 py-1 rounded border border-red-400/50 text-xs hover:bg-red-500/20"
+            >
+              Retry
+            </button>
+          </div>
+        )}
         {/* item header */}
         <div className="flex items-center gap-4 rounded-xl border border-line bg-surface p-4">
           <div

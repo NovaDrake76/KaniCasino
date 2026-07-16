@@ -44,15 +44,19 @@ const Marketplace: React.FC = () => {
 
   const { isLogged } = useContext(UserContext);
 
+  // a filter change also resets the page, which would fire a second overlapping
+  // request; the sequence guard makes sure only the newest response is rendered
+  const reqSeq = React.useRef(0);
   const fetchItems = useCallback(async () => {
+    const seq = ++reqSeq.current;
     setLoading(true);
     try {
       const data = await getItems(page, filters);
-      setItems(data);
+      if (seq === reqSeq.current) setItems(data);
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      if (seq === reqSeq.current) setLoading(false);
     }
   }, [page, filters]);
 

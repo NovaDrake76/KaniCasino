@@ -97,6 +97,24 @@ describe("market fee + sale history", () => {
     expect(String(sales[0].buyerId)).toBe(String(buyer._id));
   });
 
+  test("a failed purchase leaves the listing buyable at the same id", async () => {
+    const seller = await makeUser({ walletBalance: 0 });
+    const broke = await makeUser({ walletBalance: 0 });
+    const rich = await makeUser({ walletBalance: 1000 });
+    const item = await makeItem();
+    const listing = await makeListing(seller, item, 100);
+
+    // a broke account claims the listing and fails to pay: it must go back untouched
+    const fail = await request(app).post(`/marketplace/buy/${listing._id}`).set(...auth(broke));
+    expect(fail.status).toBe(400);
+
+    // the id every client was shown must still work, or a zero-balance account could
+    // re-key any listing at will just by failing to pay for it
+    const ok = await request(app).post(`/marketplace/buy/${listing._id}`).set(...auth(rich));
+    expect(ok.status).toBe(200);
+    expect((await User.findById(seller._id)).walletBalance).toBe(95);
+  });
+
   test("history reports median, volume and the house floor", async () => {
     const seller = await makeUser();
     const item = await makeItem({ baseValue: 1000 }); // floor = 750
@@ -288,6 +306,27 @@ describe("buy orders", () => {
     // the loser stays listed on the market
     expect(await Marketplace.countDocuments({ item: item._id })).toBe(1);
     expect(await MarketSale.countDocuments({ item: item._id })).toBe(1);
+  });
+
+  test("the ledger still reconciles with the wallet after an escrow fill", async () => {
+    const buyer = await makeUser({ walletBalance: 1000 });
+    const seller = await makeUser({ walletBalance: 0 });
+    const item = await makeItem();
+
+    await request(app)
+      .post("/marketplace/orders")
+      .set(...auth(buyer))
+      .send({ itemId: item._id, price: 200, quantity: 1 });
+    await giveItem(seller, item, "led-1");
+    await request(app).post("/marketplace/").set(...auth(seller)).send({ item: "led-1", price: 120 });
+
+    // replaying every ledger row from the starting balance must land on the real
+    // wallet: the escrow debit is the spend, the fill must not double-count it
+    const rows = await Transaction.find({ userId: buyer._id });
+    const net = rows.reduce((s, t) => s + (t.direction === "credit" ? t.amount : -t.amount), 0);
+    const wallet = (await User.findById(buyer._id)).walletBalance;
+    expect(1000 + net).toBe(wallet);
+    expect(wallet).toBe(800);
   });
 
   test("you cannot fill your own buy order", async () => {

@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
 
@@ -24,6 +25,20 @@ const BUY_LEVEL = 10;
 const cleanPrice = (raw) => {
   const n = Math.floor(Number(raw));
   return Number.isFinite(n) && n >= 1 && n <= MAX_PRICE ? n : null;
+};
+
+// the history route is public, but if a token happens to be present we use it to hide
+// the caller's own bids: the matcher refuses to cross them, so showing them as "best
+// bid" would promise a sale that can never happen.
+const viewerId = (req) => {
+  try {
+    const header = req.header("Authorization") || "";
+    const [scheme, token] = header.split(" ");
+    if (scheme !== "Bearer" || !token) return null;
+    return jwt.verify(token, process.env.JWT_SECRET).userId || null;
+  } catch {
+    return null;
+  }
 };
 
 const median = (arr) => {
@@ -111,7 +126,7 @@ module.exports = (io) => {
         return res.status(404).json({ message: "Item not found in inventory" });
       }
 
-      const marketplaceItem = new Marketplace({
+      const pending = {
         sellerId: user._id,
         item: itemDocument._id,
         case: itemDocument.case,
@@ -120,27 +135,31 @@ module.exports = (io) => {
         itemImage: itemDocument.image,
         rarity: itemDocument.rarity,
         uniqueId: inventoryItem.uniqueId,
-      });
-      await marketplaceItem.save();
+      };
 
-      // cross against the best resting bid, if any
-      const order = await market.findMatchingOrder({
-        itemId: itemDocument._id,
-        price,
-        excludeUserId: user._id,
-      });
-      if (order) {
-        const filled = await market.fillListingWithOrder({ listing: marketplaceItem, order, io });
+      // cross the best resting bids BEFORE publishing, so nobody can front-run the
+      // bid at the lower ask. a lost claim race just means trying the next best bid.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const order = await market.findMatchingOrder({
+          itemId: itemDocument._id,
+          price,
+          excludeUserId: user._id,
+        });
+        if (!order) break;
+        const filled = await market.fillOrderWithItem({ pending, order, io });
         if (filled.ok) {
           return res.json({
-            ...marketplaceItem.toObject(),
             soldInstantly: true,
             soldFor: filled.price,
             received: sellerNet(filled.price),
+            itemName: itemDocument.name,
           });
         }
+        if (filled.reason === "seller gone") break;
       }
 
+      const marketplaceItem = new Marketplace(pending);
+      await marketplaceItem.save();
       res.json(marketplaceItem);
     } catch (err) {
       console.error(err);
@@ -286,19 +305,30 @@ module.exports = (io) => {
           meta: { itemId: itemDoc._id, itemName: itemDoc.name, price, quantity: remaining },
         });
         if (charged) {
-          const order = await BuyOrder.create({
-            userId: req.user._id,
-            item: itemDoc._id,
-            itemName: itemDoc.name,
-            itemImage: itemDoc.image,
-            rarity: itemDoc.rarity,
-            case: itemDoc.case,
-            price,
-            quantity: remaining,
-            filled: 0,
-            escrow,
-            status: "open",
-          });
+          let order;
+          try {
+            order = await BuyOrder.create({
+              userId: req.user._id,
+              item: itemDoc._id,
+              itemName: itemDoc.name,
+              itemImage: itemDoc.image,
+              rarity: itemDoc.rarity,
+              case: itemDoc.case,
+              price,
+              quantity: remaining,
+              filled: 0,
+              escrow,
+              status: "open",
+            });
+          } catch (createErr) {
+            // the KP is already off the wallet: hand it back rather than burn it
+            console.error(createErr);
+            await creditUser(req.user._id, escrow, 0, {
+              type: TX.MARKET_ORDER_REFUND,
+              meta: { itemId: itemDoc._id, reason: "order could not be created" },
+            });
+            return res.status(500).json({ message: "Could not place the order" });
+          }
           io.to(req.user._id.toString()).emit("userDataUpdated", {
             walletBalance: charged.walletBalance,
             xp: charged.xp,
@@ -365,7 +395,9 @@ module.exports = (io) => {
       const { itemId } = req.params;
       if (!isValidId(itemId)) return res.status(404).json({ message: "Item not found" });
 
-      const rangeKey = RANGES[String(req.query.range)] ? String(req.query.range) : "week";
+      // hasOwnProperty, so ?range=toString can't match an inherited prototype key
+      const asked = String(req.query.range);
+      const rangeKey = Object.prototype.hasOwnProperty.call(RANGES, asked) ? asked : "week";
       const { days, bucketMs } = RANGES[rangeKey];
       const since = days ? new Date(Date.now() - days * 24 * 3600 * 1000) : null;
 
@@ -374,6 +406,13 @@ module.exports = (io) => {
 
       const weekAgo = new Date(Date.now() - 7 * 24 * 3600 * 1000);
       const monthAgo = new Date(Date.now() - 30 * 24 * 3600 * 1000);
+      const me = viewerId(req);
+      const bidFilter = {
+        item: itemId,
+        status: "open",
+        $expr: { $lt: ["$filled", "$quantity"] },
+      };
+      if (me) bidFilter.userId = { $ne: new mongoose.Types.ObjectId(String(me)) };
 
       const [points, cheapest, totalListings, lastSale, recent7, recent30, bestBid] = await Promise.all([
         salesSeries(itemId, since, bucketMs),
@@ -382,9 +421,7 @@ module.exports = (io) => {
         MarketSale.findOne({ item: itemId }).sort({ soldAt: -1 }).select("price soldAt"),
         MarketSale.find({ item: itemId, soldAt: { $gte: weekAgo } }).select("price"),
         MarketSale.find({ item: itemId, soldAt: { $gte: monthAgo } }).select("price"),
-        BuyOrder.findOne({ item: itemId, status: "open", $expr: { $lt: ["$filled", "$quantity"] } })
-          .sort({ price: -1 })
-          .select("price"),
+        BuyOrder.findOne(bidFilter).sort({ price: -1 }).select("price"),
       ]);
 
       const prices7 = recent7.map((s) => s.price);

@@ -19,9 +19,12 @@ function inventoryEntryFrom(listing) {
   };
 }
 
-// put a claimed listing back on the market (same uniqueId, new _id)
+// put a claimed listing back on the market. the _id is preserved: clients hold it
+// and buy by it, so minting a new one would 404 every honest buyer and let a broke
+// account re-key a listing at will just by failing to pay for it.
 function restoreListing(claimed) {
   return Marketplace.create({
+    _id: claimed._id,
     sellerId: claimed.sellerId,
     item: claimed.item,
     case: claimed.case,
@@ -176,17 +179,18 @@ async function purchaseListing({ listingId, buyerId, io }) {
   return { ok: true, price: claimed.price, buyer: updatedBuyer, listing: claimed };
 }
 
-// fill a fresh listing against a resting buy order. the bid is the resting side, so
-// the trade clears at the ORDER's price (price improvement goes to the seller), and
-// the buyer's KP is already escrowed. every step is reversible if the next one fails.
-async function fillListingWithOrder({ listing, order, io }) {
-  const claimed = await Marketplace.findOneAndDelete({ _id: listing._id });
-  if (!claimed) return { ok: false, reason: "listing gone" };
-
+// cross an item the seller still holds straight into a resting buy order, WITHOUT
+// ever publishing a listing (publishing first would let a third party front-run the
+// bid at the lower ask, and would hand out an _id that the restore path invalidates).
+// the bid is the resting side, so the trade clears at the ORDER's price: the price
+// improvement goes to the seller. the buyer's KP is already escrowed, so no wallet
+// moves here and no ledger row is written for the buyer: the escrow debit recorded at
+// placement is the spend. writing one here would double-count it against the wallet.
+async function fillOrderWithItem({ pending, order, io }) {
   const price = order.price;
 
   // claim exactly one unit of escrow; the filter is the guard, so two concurrent
-  // listings can never overfill the same order
+  // sellers can never overfill the same order
   const claimedOrder = await BuyOrder.findOneAndUpdate(
     {
       _id: order._id,
@@ -197,31 +201,25 @@ async function fillListingWithOrder({ listing, order, io }) {
     { $inc: { filled: 1, escrow: -price } },
     { new: true }
   );
-  if (!claimedOrder) {
-    await restoreListing(claimed);
-    return { ok: false, reason: "order gone" };
-  }
+  if (!claimedOrder) return { ok: false, reason: "order gone" };
 
-  // hand the item to the order's owner
   const grant = await User.updateOne(
     { _id: claimedOrder.userId },
-    { $push: { inventory: inventoryEntryFrom(claimed) } }
+    { $push: { inventory: inventoryEntryFrom(pending) } }
   );
   if (!grant.matchedCount) {
-    // buyer vanished: undo the escrow claim and put the listing back
     await BuyOrder.updateOne({ _id: order._id }, { $inc: { filled: -1, escrow: price } });
-    await restoreListing(claimed);
     return { ok: false, reason: "buyer gone" };
   }
 
   const net = sellerNet(price);
-  const seller = await creditUser(claimed.sellerId, net, 0, {
+  const seller = await creditUser(pending.sellerId, net, 0, {
     type: TX.MARKET_SALE,
     meta: {
-      itemId: claimed.item,
-      itemName: claimed.itemName,
+      itemId: pending.item,
+      itemName: pending.itemName,
       buyerId: claimedOrder.userId,
-      listingId: claimed.uniqueId,
+      listingId: pending.uniqueId,
       price,
       fee: marketFee(price),
       viaOrder: true,
@@ -232,48 +230,33 @@ async function fillListingWithOrder({ listing, order, io }) {
     // seller gone: give the escrowed KP back to the buyer and take the item back
     await User.updateOne(
       { _id: claimedOrder.userId },
-      { $inc: { walletBalance: price }, $pull: { inventory: { uniqueId: claimed.uniqueId } } }
+      { $inc: { walletBalance: price }, $pull: { inventory: { uniqueId: pending.uniqueId } } }
     );
     await recordTransaction({
       userId: claimedOrder.userId,
       type: TX.MARKET_ORDER_REFUND,
       direction: "credit",
       amount: price,
-      meta: { itemName: claimed.itemName, reversal: true, reason: "seller no longer exists" },
+      meta: { itemName: pending.itemName, reversal: true, reason: "seller no longer exists" },
     });
     return { ok: false, reason: "seller gone" };
   }
-
-  // the buyer's escrow paid for this unit: ledger it as the purchase
-  await recordTransaction({
-    userId: claimedOrder.userId,
-    type: TX.MARKET_BUY,
-    direction: "debit",
-    amount: price,
-    meta: {
-      itemId: claimed.item,
-      itemName: claimed.itemName,
-      sellerId: claimed.sellerId,
-      listingId: claimed.uniqueId,
-      fromEscrow: true,
-    },
-  });
 
   if (claimedOrder.filled >= claimedOrder.quantity) {
     await BuyOrder.updateOne({ _id: order._id, status: "open" }, { $set: { status: "filled" } });
   }
 
-  await logSale({ listing: claimed, buyerId: claimedOrder.userId, price, viaOrder: true });
+  await logSale({ listing: pending, buyerId: claimedOrder.userId, price, viaOrder: true });
 
   if (io) {
     io.to(claimedOrder.userId.toString()).emit("newNotification", {
-      message: `Your buy order filled: ${claimed.itemName} for K₽${price}`,
+      message: `Your buy order filled: ${pending.itemName} for K₽${price}`,
     });
   }
   await notifySeller({
     seller,
     buyerId: claimedOrder.userId,
-    itemName: claimed.itemName,
+    itemName: pending.itemName,
     price,
     net,
     io,
@@ -298,6 +281,6 @@ module.exports = {
   restoreListing,
   logSale,
   purchaseListing,
-  fillListingWithOrder,
+  fillOrderWithItem,
   findMatchingOrder,
 };
