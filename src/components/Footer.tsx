@@ -93,10 +93,8 @@ function Footer() {
     }, {
       title: "Payment Forms",
       children: <div className="flex flex-col items-start gap-2">
-        <img src="/images/PIX_Logo2.webp" alt="PIX" />
-        <img src="/images/cards.webp" alt="cards">
-
-        </img>
+        <img src="/images/PIX_Logo2.webp" alt="PIX" width={150} height={58} loading="lazy" />
+        <img src="/images/cards.webp" alt="cards" width={200} height={24} loading="lazy" />
       </div>
     }
   ];

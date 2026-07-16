@@ -20,7 +20,7 @@ const CaseListing: React.FC<CaseListingProps> = ({
         {description && <div className="text">{description}</div>}
         {
           <div className="flex flex-col md:flex-row items-center justify-center w-full gap-8 md:flex-wrap">
-            {cases.map((item: any) => (
+            {cases.map((item: any, index: number) => (
               <Link to={`/case/${item._id}`} key={item._id}>
                 <Case
                   key={item._id}
@@ -28,6 +28,7 @@ const CaseListing: React.FC<CaseListingProps> = ({
                   title={item.title}
                   image={item.image}
                   price={item.price}
+                  priority={index < 4}
                 />
               </Link>
             ))}

@@ -23,6 +23,20 @@
   <link rel="icon" type="image/x-icon" href="/ran.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- montserrat, only the weights the app actually uses. loaded here rather than via
+       an @import in index.css so it is discovered with the html instead of after it,
+       and swapped in without holding up the first render -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
+  </noscript>
+
   <!-- Primary Meta Tags -->
   <title>KaniCasino</title>
   <meta name="title" content="KaniCasino" />
@@ -31,7 +45,7 @@
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://kanicasino.novadrake.com/" />
+  <meta property="og:url" content="https://kanicasino.com/" />
   <meta property="og:title" content="KaniCasino" />
   <meta property="og:description"
     content="KaniCasino is a case opening website where you can open cases of Touhou, CS2, anything! No real money involved." />
@@ -39,7 +53,7 @@
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://kanicasino.novadrake.com/" />
+  <meta property="twitter:url" content="https://kanicasino.com/" />
   <meta property="twitter:title" content="KaniCasino" />
   <meta property="twitter:description"
     content="KaniCasino is a case opening website where you can open cases of Touhou, CS2, anything! No real money involved." />
