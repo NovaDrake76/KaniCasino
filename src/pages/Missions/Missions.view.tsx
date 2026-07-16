@@ -18,7 +18,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   games: "Games",
   collection: "Collection",
   community: "Community",
-  endgame: "Endgame",
+  endgame: "All In",
 };
 const CATEGORY_ORDER = ["onboarding", "games", "collection", "community", "endgame"];
 

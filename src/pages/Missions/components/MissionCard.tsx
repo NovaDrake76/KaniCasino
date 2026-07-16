@@ -31,7 +31,7 @@ const MissionCard: React.FC<Props> = ({ mission, claiming, claim, visit, caseIma
     : mission.claimable
     ? "bg-accent-gold/[0.06] border-accent-gold/60 ring-1 ring-accent-gold/20"
     : endgame
-    ? "bg-[#e5308c]/[0.04] border-line border-l-2 border-l-[#e5308c]/60"
+    ? "bg-[#e5308c]/[0.04] border-line border-l-4 border-l-[#e5308c] rounded-l-none"
     : "bg-surface border-line";
 
   return (

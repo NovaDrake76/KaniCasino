@@ -230,7 +230,7 @@ const Profile = () => {
                         </span>
                       )}
                       <span
-                        className={`absolute left-0 right-0 -bottom-px h-[3px] rounded-full transition-all ${
+                        className={`absolute left-0 right-0 -bottom-px h-[3px] transition-all ${
                           active ? "bg-[#e5308c]" : "bg-transparent"
                         }`}
                       />
