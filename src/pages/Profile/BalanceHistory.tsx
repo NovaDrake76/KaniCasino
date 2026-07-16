@@ -28,6 +28,8 @@ const TYPE_LABELS: Record<string, string> = {
   battle_refund: "Battle refund",
   market_buy: "Marketplace purchase",
   market_sale: "Marketplace sale",
+  market_order: "Buy order placed",
+  market_order_refund: "Buy order refunded",
   item_sell: "Sold to shop",
   admin_adjust: "Admin adjustment",
   mission_reward: "Mission reward",
@@ -48,6 +50,9 @@ const describe = (tx: Transaction): string => {
   }
   if (tx.type === "mission_reward" && m.missionTitle) {
     return `Mission reward: ${m.missionTitle}`;
+  }
+  if ((tx.type === "market_order" || tx.type === "market_order_refund") && m.itemName) {
+    return `${base}: ${m.itemName}`;
   }
   return base;
 };

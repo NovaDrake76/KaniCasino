@@ -4,6 +4,7 @@ const { Rarities } = require("./caseOpening");
 const RARITY_MULTIPLIER = { "1": 1, "2": 4, "3": 12, "4": 40, "5": 100 };
 const RTP = 0.9; // expected item value per open = case price * RTP (10% open edge)
 const SELL_RATE = 0.75; // instant sell-to-house = base value * SELL_RATE
+const MARKET_FEE_RATE = 0.05; // house cut on a marketplace sale, paid by the seller
 
 const chanceFor = (rarityId) => {
   const r = Rarities.find((x) => x.id === String(rarityId));
@@ -39,6 +40,12 @@ function baseValuesForCase(caseDoc) {
 }
 
 const sellValue = (baseValue) => Math.floor((baseValue || 0) * SELL_RATE);
+
+// the buyer always pays the listed price; the seller keeps it minus the house fee,
+// which is burned (a KP sink). both derive from the same price so they can never
+// disagree about who got what.
+const marketFee = (price) => Math.floor(Math.max(0, price || 0) * MARKET_FEE_RATE);
+const sellerNet = (price) => Math.max(0, (price || 0) - marketFee(price));
 
 // recompute and persist baseValue for every item in a case, and (re)materialize the
 // provably-fair range table, bumping the case's config version + archiving it when
@@ -80,7 +87,10 @@ module.exports = {
   RARITY_MULTIPLIER,
   RTP,
   SELL_RATE,
+  MARKET_FEE_RATE,
   baseValuesForCase,
   sellValue,
+  marketFee,
+  sellerNet,
   recomputeCaseValues,
 };

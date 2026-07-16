@@ -19,6 +19,8 @@ const TX = {
   BATTLE_REFUND: "battle_refund",
   MARKET_BUY: "market_buy",
   MARKET_SALE: "market_sale",
+  MARKET_ORDER: "market_order", // KP escrowed when a buy order is placed
+  MARKET_ORDER_REFUND: "market_order_refund", // escrow returned on cancel
   ITEM_SELL: "item_sell",
   ADMIN_ADJUST: "admin_adjust",
   MISSION_REWARD: "mission_reward",

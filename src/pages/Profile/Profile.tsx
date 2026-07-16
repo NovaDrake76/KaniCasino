@@ -12,6 +12,7 @@ import Pagination from "../../components/Pagination";
 import BalanceHistory from "./BalanceHistory";
 import CollectionsPanel from "../Collections/CollectionsPanel";
 import MissionsPanel from "../Missions/MissionsPanel";
+import { resolveTab, Tab } from "./tabs";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -25,7 +26,7 @@ const NEW_TABS = ["collections", "missions"];
 
 const Profile = () => {
   const { id } = useParams();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -36,7 +37,7 @@ const Profile = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<"inventory" | "collections" | "history" | "missions">("inventory");
+  const activeTab = resolveTab(searchParams.get("tab"), isSameUser);
   const [seenTabs, setSeenTabs] = useState<string[]>([]);
   const [filters, setFilters] = useState({
     name: '',
@@ -45,8 +46,6 @@ const Profile = () => {
     order: 'asc',
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
-  const deepLinkTabRef = useRef<string | null>(null);
-  const userPickedTabRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (invItems?.length > 0) {
@@ -115,31 +114,8 @@ const Profile = () => {
   useEffect(() => {
     setInvItems([]);
     setPage(1);
-    setActiveTab("inventory");
     getUserInfo();
   }, [id]);
-
-  // deep-link support: /profile/:id?tab=missions opens that tab (e.g. from a toast).
-  // capture the requested tab; a slow /users/me can defer applying an own-only tab.
-  useEffect(() => {
-    deepLinkTabRef.current = searchParams.get("tab");
-    userPickedTabRef.current = false;
-  }, [id, searchParams]);
-
-  // apply the captured tab once ownership is known, unless the user already picked a
-  // tab manually in the meantime (so the deep-link can never clobber their choice).
-  useEffect(() => {
-    const tabParam = deepLinkTabRef.current;
-    if (!tabParam || userPickedTabRef.current) return;
-    const allowed =
-      tabParam === "inventory" ||
-      tabParam === "collections" ||
-      (isSameUser && (tabParam === "missions" || tabParam === "history"));
-    if (allowed) {
-      deepLinkTabRef.current = null;
-      setActiveTab(tabParam as "inventory" | "collections" | "history" | "missions");
-    }
-  }, [isSameUser, id, searchParams]);
 
   // load which "new" tabs this user has already opened (per user, per browser)
   useEffect(() => {
@@ -165,7 +141,7 @@ const Profile = () => {
   }, [page, id]);
 
 
-  const tabs: { key: "inventory" | "collections" | "history" | "missions"; label: string }[] = [
+  const tabs: { key: Tab; label: string }[] = [
     { key: "inventory", label: "Inventory" },
     { key: "collections", label: "Collections" },
     ...(isSameUser
@@ -216,8 +192,11 @@ const Profile = () => {
                     <button
                       key={t.key}
                       onClick={() => {
-                        userPickedTabRef.current = true;
-                        setActiveTab(t.key);
+                        // re-clicking the open tab must not throw away the case and item
+                        // params below it. a literal rebuilds from scratch, so switching
+                        // tabs drops them, which is what unmounting did before anyway.
+                        if (activeTab === t.key) return;
+                        setSearchParams({ tab: t.key }, { replace: true });
                       }}
                       className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-bold uppercase tracking-wider transition-colors ${
                         active ? "text-white" : "text-[#84819a] hover:text-white"
