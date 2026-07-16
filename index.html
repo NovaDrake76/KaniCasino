@@ -3,20 +3,44 @@
 
 <head>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QMWHYXJ6YE"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8052282199595049"
-  crossorigin="anonymous"></script>
-
-  
+  <!-- analytics and ads, started once the page has finished loading rather than racing it.
+       between them they are ~380 KiB of javascript that nothing on screen needs: in the
+       head they competed with the app's own bundle and the case art for a phone's
+       bandwidth, and every long task on the main thread was theirs. they still run, and
+       gtag still records the page view, they just stop being on the critical path.
+       the queues below exist because gtag() and adsbygoogle are called by the app before
+       either script is fetched; both are designed to replay a pre-seeded array. -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
-
     gtag('config', 'G-QMWHYXJ6YE');
+
+    window.adsbygoogle = window.adsbygoogle || [];
+
+    (function () {
+      var started = false;
+      function start() {
+        if (started) return;
+        started = true;
+        [
+          'https://www.googletagmanager.com/gtag/js?id=G-QMWHYXJ6YE',
+          'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8052282199595049'
+        ].forEach(function (src) {
+          var s = document.createElement('script');
+          s.src = src;
+          s.async = true;
+          s.crossOrigin = 'anonymous';
+          document.head.appendChild(s);
+        });
+      }
+      // whichever comes first: the load event, or a few seconds. the timer is the safety
+      // net for a load event that never fires because something else stalled.
+      if (document.readyState === 'complete') start();
+      else window.addEventListener('load', start, { once: true });
+      setTimeout(start, 5000);
+    })();
   </script>
-  <script src="https://accounts.google.com/gsi/client" async></script>
 
 
   <meta charset="UTF-8" />

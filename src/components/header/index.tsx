@@ -49,6 +49,12 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
   const { isLogged, openUserFlow } = useContext(UserContext);
   const navigate = useNavigate();
   const isHome = window.location.pathname === "/";
+  // latches on the first open and never resets: the panel keeps its state, and its
+  // transition still needs it in the tree after it closes
+  const [everOpened, setEverOpened] = useState<boolean>(false);
+  useEffect(() => {
+    if (openUserFlow) setEverOpened(true);
+  }, [openUserFlow]);
 
   const items = [
     {
@@ -110,7 +116,11 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
               : "opacity-100 z-20 "
               }`}
           >
-            <UserFlow />
+            {/* only built once the panel has been opened. it was always mounted and merely
+                hidden with css, and mounting it is what pulls in google's sign-in script:
+                ~160 KiB fetched on every page view for a button most visitors never see.
+                it stays mounted afterwards so the open/close transition still runs. */}
+            {everOpened && <UserFlow />}
           </div>
           {
             isLogged && openNotifications && (

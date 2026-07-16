@@ -9,7 +9,6 @@ import SocketConnection from "./services/socket"
 import { SESSION_EXPIRED_EVENT } from "./services/api";
 import { clearTokens } from "./services/auth/authUtils";
 import ScrollToTop from "./components/ScrollToTop";
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import Footer from "./components/Footer";
 import {disableReactDevTools} from '@fvilers/disable-react-devtools';
 import { getPendingMissions } from "./services/missions/MissionService";
@@ -20,7 +19,6 @@ import BootLoader from "./components/BootLoader";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
-const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 const environment = import.meta.env.VITE_NODE_ENV || "";
 import { User } from './components/Types'
 
@@ -190,7 +188,6 @@ function App() {
         }}
       >
         <Suspense fallback={<BootLoader />}>
-          <GoogleOAuthProvider clientId={clientId}>
             <Router>
               <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
                 <ScrollToTop />
@@ -218,7 +215,6 @@ function App() {
                 </div>
               </SkeletonTheme>
             </Router>
-          </GoogleOAuthProvider>
         </Suspense>
 
       </UserContext.Provider>
