@@ -50,6 +50,15 @@ const render = (html, { title, description, url, image }) => {
   return out;
 };
 
+// the homepage's largest element is the first case cover, and nothing in the html points
+// at it: the browser only finds it once react has rendered the card, which measured as
+// ~2.2s of dead "resource load delay". we know the url at build time, so say it up front.
+const preloadImage = (html, url) =>
+  html.replace(
+    "</head>",
+    `  <link rel="preload" as="image" href="${esc(url)}" fetchpriority="high" />\n</head>`
+  );
+
 // "/" is dist/index.html itself; "/crash" becomes dist/crash/index.html
 const write = (route, html) => {
   const dir = route === "/" ? dist : join(dist, route);
@@ -96,6 +105,26 @@ if (!base) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const cases = await res.json();
     if (!Array.isArray(cases)) throw new Error("unexpected /cases payload");
+
+    // the home page lists cases in the order the api returns them (Home.tsx slices the
+    // first six), so the first cover is the one to preload
+    const first = cases.find((c) => c?.image);
+    if (first) {
+      write(
+        "/",
+        preloadImage(
+          render(shell, {
+            title: routes.static["/"].title,
+            description: routes.static["/"].description,
+            url: routes.site + "/",
+            image: routes.defaultImage,
+          }),
+          first.image
+        )
+      );
+      console.log(`prerender: preloading the first cover (${first.title})`);
+    }
+
     let n = 0;
     for (const c of cases) {
       // a case id lands in a filesystem path: anything but plain hex could climb out
