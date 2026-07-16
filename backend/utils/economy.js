@@ -21,6 +21,7 @@ const TX = {
   MARKET_SALE: "market_sale",
   ITEM_SELL: "item_sell",
   ADMIN_ADJUST: "admin_adjust",
+  MISSION_REWARD: "mission_reward",
 };
 
 function calculateXPForLevel(level) {

@@ -30,6 +30,7 @@ const TYPE_LABELS: Record<string, string> = {
   market_sale: "Marketplace sale",
   item_sell: "Sold to shop",
   admin_adjust: "Admin adjustment",
+  mission_reward: "Mission reward",
 };
 
 const describe = (tx: Transaction): string => {
@@ -44,6 +45,9 @@ const describe = (tx: Transaction): string => {
   }
   if (tx.type === "item_sell" && m.count) {
     return `Sold ${m.count} item${m.count > 1 ? "s" : ""} to shop`;
+  }
+  if (tx.type === "mission_reward" && m.missionTitle) {
+    return `Mission reward: ${m.missionTitle}`;
   }
   return base;
 };

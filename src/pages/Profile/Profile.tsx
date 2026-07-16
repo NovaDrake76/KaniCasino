@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { getUser, getInventory } from "../../services/users/UserServices";
 import { FiFilter } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
@@ -11,6 +11,7 @@ import Filters from "../../components/InventoryFilters";
 import Pagination from "../../components/Pagination";
 import BalanceHistory from "./BalanceHistory";
 import CollectionsPanel from "../Collections/CollectionsPanel";
+import MissionsPanel from "../Missions/MissionsPanel";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -19,9 +20,12 @@ interface Inventory {
   items: any[];
 }
 
+// tabs that show a "NEW!" badge until the owner opens them for the first time
+const NEW_TABS = ["collections", "missions"];
 
 const Profile = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -32,7 +36,8 @@ const Profile = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<"inventory" | "collections" | "history">("inventory");
+  const [activeTab, setActiveTab] = useState<"inventory" | "collections" | "history" | "missions">("inventory");
+  const [seenTabs, setSeenTabs] = useState<string[]>([]);
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -40,6 +45,8 @@ const Profile = () => {
     order: 'asc',
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
+  const deepLinkTabRef = useRef<string | null>(null);
+  const userPickedTabRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (invItems?.length > 0) {
@@ -112,15 +119,61 @@ const Profile = () => {
     getUserInfo();
   }, [id]);
 
+  // deep-link support: /profile/:id?tab=missions opens that tab (e.g. from a toast).
+  // capture the requested tab; a slow /users/me can defer applying an own-only tab.
+  useEffect(() => {
+    deepLinkTabRef.current = searchParams.get("tab");
+    userPickedTabRef.current = false;
+  }, [id, searchParams]);
+
+  // apply the captured tab once ownership is known, unless the user already picked a
+  // tab manually in the meantime (so the deep-link can never clobber their choice).
+  useEffect(() => {
+    const tabParam = deepLinkTabRef.current;
+    if (!tabParam || userPickedTabRef.current) return;
+    const allowed =
+      tabParam === "inventory" ||
+      tabParam === "collections" ||
+      (isSameUser && (tabParam === "missions" || tabParam === "history"));
+    if (allowed) {
+      deepLinkTabRef.current = null;
+      setActiveTab(tabParam as "inventory" | "collections" | "history" | "missions");
+    }
+  }, [isSameUser, id, searchParams]);
+
+  // load which "new" tabs this user has already opened (per user, per browser)
+  useEffect(() => {
+    if (!userData?.id) return;
+    try {
+      setSeenTabs(JSON.parse(localStorage.getItem(`kani.tabSeen.${userData.id}`) || "[]"));
+    } catch {
+      setSeenTabs([]);
+    }
+  }, [userData?.id]);
+
+  // opening a new tab (by click or deep-link) clears its badge for good
+  useEffect(() => {
+    if (!userData?.id || !isSameUser) return;
+    if (!NEW_TABS.includes(activeTab) || seenTabs.includes(activeTab)) return;
+    const next = [...seenTabs, activeTab];
+    setSeenTabs(next);
+    localStorage.setItem(`kani.tabSeen.${userData.id}`, JSON.stringify(next));
+  }, [activeTab, isSameUser, userData?.id, seenTabs]);
+
   useEffect(() => {
     getInventoryInfo();
   }, [page, id]);
 
 
-  const tabs: { key: "inventory" | "collections" | "history"; label: string }[] = [
+  const tabs: { key: "inventory" | "collections" | "history" | "missions"; label: string }[] = [
     { key: "inventory", label: "Inventory" },
     { key: "collections", label: "Collections" },
-    ...(isSameUser ? [{ key: "history" as const, label: "Balance history" }] : []),
+    ...(isSameUser
+      ? [
+          { key: "missions" as const, label: "Missions" },
+          { key: "history" as const, label: "Balance history" },
+        ]
+      : []),
   ];
 
   return (
@@ -151,27 +204,47 @@ const Profile = () => {
       </div>
 
       <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
-        <div className="flex flex-col p-8 gap-2 items-center w-full max-w-[1312px]">
-          <div className="w-full flex justify-center mb-6">
-            <div className="inline-flex gap-1 bg-[#19172d] border border-[#2a2840] rounded-xl p-1 max-w-full overflow-x-auto">
-              {tabs.map((t) => (
-                <button
-                  key={t.key}
-                  onClick={() => setActiveTab(t.key)}
-                  className={`shrink-0 whitespace-nowrap px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
-                    activeTab === t.key
-                      ? "bg-[#281d3f] text-white shadow"
-                      : "text-[#84819a] hover:text-white hover:bg-[#221f38]"
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
+        <div className="flex flex-col p-4 md:p-8 gap-2 items-center w-full max-w-[1312px]">
+          <div className="w-full flex justify-center mb-8">
+            <div className="w-full max-w-[1100px] border-b border-line">
+              <div className="flex gap-6 md:gap-8 overflow-x-auto pt-3">
+                {tabs.map((t) => {
+                  const active = activeTab === t.key;
+                  const isNew =
+                    isSameUser && NEW_TABS.includes(t.key) && !seenTabs.includes(t.key);
+                  return (
+                    <button
+                      key={t.key}
+                      onClick={() => {
+                        userPickedTabRef.current = true;
+                        setActiveTab(t.key);
+                      }}
+                      className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-bold uppercase tracking-wider transition-colors ${
+                        active ? "text-white" : "text-[#84819a] hover:text-white"
+                      }`}
+                    >
+                      {t.label}
+                      {isNew && (
+                        <span className="absolute -top-2 -right-2 flex items-center rounded-full bg-accent-gold px-1.5 py-0.5 text-[9px] font-extrabold uppercase leading-none text-black shadow animate-pulse">
+                          New
+                        </span>
+                      )}
+                      <span
+                        className={`absolute left-0 right-0 -bottom-px h-[3px] transition-all ${
+                          active ? "bg-[#e5308c]" : "bg-transparent"
+                        }`}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
           {activeTab === "history" ? (
             <BalanceHistory />
+          ) : activeTab === "missions" ? (
+            <MissionsPanel userId={id as string} isOwner={isSameUser} />
           ) : activeTab === "collections" ? (
             <CollectionsPanel userId={id as string} isOwner={isSameUser} />
           ) : (
