@@ -14,6 +14,7 @@ import Footer from "./components/Footer";
 import {disableReactDevTools} from '@fvilers/disable-react-devtools';
 import { getPendingMissions } from "./services/missions/MissionService";
 import { toastMissionComplete } from "./pages/Missions/components/missionCompleteToast";
+import NavigationBridge from "./components/NavigationBridge";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -38,6 +39,7 @@ function App() {
 
   const socket = SocketConnection.getInstance();
   const missionCheck = useRef<{ inFlight: boolean; last: number }>({ inFlight: false, last: 0 });
+  const userIdRef = useRef<string | null>(null);
 
   if(environment == "production"){
     disableReactDevTools();
@@ -51,9 +53,10 @@ function App() {
     if (c.inFlight) return;
     if (light && Date.now() - c.last < 1500) return;
     c.inFlight = true;
+    const missionsPath = userIdRef.current ? `/profile/${userIdRef.current}?tab=missions` : undefined;
     getPendingMissions(light)
       .then((pending) => {
-        pending.forEach(toastMissionComplete);
+        pending.forEach((m) => toastMissionComplete(m, missionsPath));
         c.last = Date.now();
       })
       .catch(() => {
@@ -104,6 +107,7 @@ function App() {
 
   useEffect(() => {
     if (userData && userData.id && !joinedRoom) {
+      userIdRef.current = userData.id;
       // reconnect so the handshake re-runs with the now-available token; the
       // server authenticates it and joins this user's private room
       socket.disconnect();
@@ -188,6 +192,7 @@ function App() {
             <Router>
               <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
                 <ScrollToTop />
+                <NavigationBridge />
                 <ToastContainer
                   position="top-right"
                   autoClose={4000}

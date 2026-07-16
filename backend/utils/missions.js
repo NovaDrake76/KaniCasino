@@ -10,6 +10,10 @@ const { CATALOG, byKey, missionsLaunchAt } = require("./missionsCatalog");
 // a "big win" is any single game payout (slots / crash cashout / coin flip win)
 const WIN_TYPES = [TX.SLOT_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
 
+// missions currently offered; a disabled one (active:false) stays defined but is
+// never shown, announced, or claimable
+const ACTIVE = CATALOG.filter((m) => m.active !== false);
+
 // how many case collections the user has fully completed (every catalog item owned).
 // populate + drop null (deleted) refs so "complete" matches exactly what the
 // collections tab shows: a dangling item id is not a slot the album counts either.
@@ -120,7 +124,7 @@ function view(mission, ctx) {
 
 async function getMissionsView(userId) {
   const ctx = await buildContext(userId);
-  const missions = CATALOG.map((m) => view(m, ctx));
+  const missions = ACTIVE.map((m) => view(m, ctx));
   const totals = {
     total: missions.length,
     completed: missions.filter((m) => m.complete).length,
@@ -140,7 +144,7 @@ async function getPendingAnnouncements(userId, { light = false } = {}) {
   if (!state.seeded) {
     // seed is always full so nothing pre-existing (incl. collections) ever toasts
     const fullCtx = await buildContext(userId, { includeCollections: true, state });
-    const keys = CATALOG.filter((m) => {
+    const keys = ACTIVE.filter((m) => {
       const v = view(m, fullCtx);
       return v.complete && !v.claimed;
     }).map((m) => m.key);
@@ -152,7 +156,7 @@ async function getPendingAnnouncements(userId, { light = false } = {}) {
 
   const ctx = await buildContext(userId, { includeCollections: !light, state });
   const pending = [];
-  for (const m of CATALOG) {
+  for (const m of ACTIVE) {
     const v = view(m, ctx);
     if (!v.complete || v.claimed || ctx.announced.has(m.key)) continue;
     const res = await MissionState.updateOne(
@@ -183,7 +187,7 @@ async function markVisited(userId, key) {
 // is credited only after the claim is marked, so a failure never double-pays.
 async function claimMission(userId, key, io) {
   const mission = byKey(key);
-  if (!mission) return { code: 404, body: { message: "Mission not found" } };
+  if (!mission || mission.active === false) return { code: 404, body: { message: "Mission not found" } };
 
   const ctx = await buildContext(userId);
   const v = view(mission, ctx);

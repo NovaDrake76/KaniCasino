@@ -50,7 +50,7 @@ export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
     // checks skip (collections, and social/state missions); the server announces each once
     getPendingMissions(false)
       .then((pending) => {
-        if (active) pending.forEach(toastMissionComplete);
+        if (active) pending.forEach((m) => toastMissionComplete(m));
       })
       .catch(() => {
         // best-effort: a failed pending check just means no toast this time

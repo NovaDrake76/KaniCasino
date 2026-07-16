@@ -59,7 +59,7 @@ describe("GET /missions", () => {
     const u = await makeUser();
     const res = await getMissions(u);
     expect(res.status).toBe(200);
-    expect(res.body.missions.length).toBeGreaterThanOrEqual(16);
+    expect(res.body.missions.length).toBeGreaterThanOrEqual(15);
     expect(res.body.missions.every((m) => m.current === 0)).toBe(true);
     expect(res.body.totals.claimable).toBe(0);
     expect(find(res.body, "first-case").complete).toBe(false);
@@ -134,8 +134,15 @@ describe("GET /missions", () => {
     const friend = await makeUser();
     const u = await makeUser({ profilePicture: "http://img/x.png", friends: [friend._id] });
     const res = await getMissions(u);
-    expect(find(res.body, "set-avatar").complete).toBe(true);
     expect(find(res.body, "add-friend").complete).toBe(true);
+  });
+
+  test("a disabled mission is never shown or claimable", async () => {
+    const u = await makeUser({ profilePicture: "http://img/x.png" });
+    const res = await getMissions(u);
+    expect(find(res.body, "set-avatar")).toBeUndefined(); // filtered out of the catalog
+    // and it cannot be claimed even though the user has a profile picture
+    expect((await auth(request(app).post("/missions/set-avatar/claim"), u)).status).toBe(404);
   });
 
   test("only activity at/after the launch timestamp counts", async () => {

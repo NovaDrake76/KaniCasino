@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { getUser, getInventory } from "../../services/users/UserServices";
 import { FiFilter } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
@@ -20,9 +20,12 @@ interface Inventory {
   items: any[];
 }
 
+// tabs that show a "NEW!" badge until the owner opens them for the first time
+const NEW_TABS = ["collections", "missions"];
 
 const Profile = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -34,6 +37,7 @@ const Profile = () => {
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<"inventory" | "collections" | "history" | "missions">("inventory");
+  const [seenTabs, setSeenTabs] = useState<string[]>([]);
   const [filters, setFilters] = useState({
     name: '',
     rarity: '',
@@ -113,6 +117,37 @@ const Profile = () => {
     getUserInfo();
   }, [id]);
 
+  // deep-link support: /profile/:id?tab=missions opens that tab (e.g. from a toast).
+  // runs after the reset above so it wins, and re-applies once ownership is known.
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (!tabParam) return;
+    const allowed =
+      tabParam === "inventory" ||
+      tabParam === "collections" ||
+      (isSameUser && (tabParam === "missions" || tabParam === "history"));
+    if (allowed) setActiveTab(tabParam as "inventory" | "collections" | "history" | "missions");
+  }, [searchParams, isSameUser, id]);
+
+  // load which "new" tabs this user has already opened (per user, per browser)
+  useEffect(() => {
+    if (!userData?.id) return;
+    try {
+      setSeenTabs(JSON.parse(localStorage.getItem(`kani.tabSeen.${userData.id}`) || "[]"));
+    } catch {
+      setSeenTabs([]);
+    }
+  }, [userData?.id]);
+
+  // opening a new tab (by click or deep-link) clears its badge for good
+  useEffect(() => {
+    if (!userData?.id || !isSameUser) return;
+    if (!NEW_TABS.includes(activeTab) || seenTabs.includes(activeTab)) return;
+    const next = [...seenTabs, activeTab];
+    setSeenTabs(next);
+    localStorage.setItem(`kani.tabSeen.${userData.id}`, JSON.stringify(next));
+  }, [activeTab, isSameUser, userData?.id, seenTabs]);
+
   useEffect(() => {
     getInventoryInfo();
   }, [page, id]);
@@ -170,7 +205,14 @@ const Profile = () => {
                       : "text-[#84819a] hover:text-white hover:bg-[#221f38]"
                   }`}
                 >
-                  {t.label}
+                  <span className="inline-flex items-center gap-1.5">
+                    {t.label}
+                    {isSameUser && NEW_TABS.includes(t.key) && !seenTabs.includes(t.key) && (
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-accent-gold text-[9px] font-bold uppercase leading-none text-black animate-pulse">
+                        New
+                      </span>
+                    )}
+                  </span>
                 </button>
               ))}
             </div>

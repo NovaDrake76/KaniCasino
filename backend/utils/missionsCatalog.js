@@ -14,7 +14,8 @@ const CATALOG = [
   // onboarding
   { key: "first-bonus", category: "onboarding", title: "Free money", description: "Claim your bonus for the first time.", metric: "bonusesClaimed", target: 1, reward: 250 },
   { key: "first-case", category: "onboarding", title: "Crack one open", description: "Open your very first case.", metric: "casesOpened", target: 1, reward: 250 },
-  { key: "set-avatar", category: "onboarding", title: "Show your face", description: "Set a profile picture.", metric: "profilePictureSet", target: 1, reward: 250 },
+  // disabled until there is a UI to set a profile picture (active:false hides it everywhere)
+  { key: "set-avatar", category: "onboarding", title: "Show your face", description: "Set a profile picture.", metric: "profilePictureSet", target: 1, reward: 250, active: false },
   { key: "first-sale", category: "onboarding", title: "Open for business", description: "Sell an item on the marketplace.", metric: "marketSales", target: 1, reward: 300 },
 
   // games

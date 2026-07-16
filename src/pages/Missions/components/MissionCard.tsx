@@ -5,10 +5,10 @@ import Monetary from "../../../components/Monetary";
 import { Mission } from "../../../services/missions/MissionService";
 import { resolveMissionArt, MissionArtTile } from "../missionArt";
 
-// discord invite comes from the frontend env; the x handle is a plain constant to edit
+// both social links come from the frontend env (set VITE_X_URL on Render for prod)
 const SOCIAL_URLS: Record<string, string> = {
-  discord: (import.meta.env.VITE_DISCORD_INVITE as string) || "https://discord.gg",
-  x: "https://x.com/kanicasino",
+  discord: (import.meta.env.VITE_DISCORD_INVITE as string) || "https://discord.gg/NMdYb2aBZK",
+  x: (import.meta.env.VITE_X_URL as string) || "https://x.com/kani_casino",
 };
 
 interface Props {
