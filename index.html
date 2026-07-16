@@ -23,19 +23,11 @@
   <link rel="icon" type="image/x-icon" href="/ran.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- montserrat, only the weights the app actually uses. loaded here rather than via
-       an @import in index.css so it is discovered with the html instead of after it,
-       and swapped in without holding up the first render -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet" media="print" onload="this.media='all'"
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
-  <noscript>
-    <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
-  </noscript>
+  <!-- montserrat, self-hosted and preloaded. from google it arrived two hops late (html ->
+       css -> woff2 on another origin) and the swap relaid the page out once it landed.
+       from our own origin the browser starts it with the html, so the text is drawn in
+       the real font the first time. one variable file covers weights 400-800. -->
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/montserrat-latin.woff2" crossorigin />
 
   <!-- Primary Meta Tags -->
   <title>KaniCasino</title>
