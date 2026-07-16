@@ -161,8 +161,11 @@ const Marketplace: React.FC = () => {
           </div>
         )}
 
+        {/* the cards are a fixed 200px, so a plain flex-wrap packs them left and leaves the
+            leftover width as a gap on the right. an auto-fill grid centres the columns it
+            fits, and a short last row still lines up with the ones above it. */}
         {loading ? (
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-[repeat(auto-fill,200px)] justify-center gap-4">
             {Array(12)
               .fill(0)
               .map((_, i) => (
@@ -170,7 +173,7 @@ const Marketplace: React.FC = () => {
               ))}
           </div>
         ) : items && items.items && items.items.length > 0 ? (
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-[repeat(auto-fill,200px)] justify-center gap-4">
             {items.items.map((item) => (
               <MarketItem key={item._id} item={item} />
             ))}

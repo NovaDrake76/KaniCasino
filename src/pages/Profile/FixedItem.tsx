@@ -12,11 +12,17 @@ interface IfixedItem {
 }
 
 const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) => {
-    const [description, setDescription] = useState<string>(
-        fixedItem ? fixedItem.description : ""
-    );
+    // only the draft being typed lives in state. what is shown always comes from the
+    // prop: this component is reused across profiles rather than remounted, so a state
+    // copy seeded on mount would keep showing the previous player's text.
+    const [draft, setDraft] = useState<string>("");
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [isHovering, setIsHovering] = useState<boolean>(false);
+
+    const startEditing = () => {
+        setDraft(fixedItem?.description || "");
+        setIsEditing(true);
+    };
 
     const updateFixDescription = async (description: string) => {
         try {
@@ -32,17 +38,17 @@ const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) =>
         return (
             <div className="flex flex-col items-center justify-center">
                 <textarea
-                    className="w-36 h-16 rounded-lg bg-white p-2 text-black resize-none "
+                    className="w-36 h-16 rounded-lg bg-white p-2 text-black resize-none text-xs"
                     maxLength={50}
-                    value={description}
+                    value={draft}
                     onChange={(e) => {
-                        setDescription(e.target.value);
+                        setDraft(e.target.value);
                     }}
                 />
                 <button
-                    className="bg-blue-500 rounded-lg px-4 py-2 mt-2"
+                    className="bg-blue-500 rounded-lg px-4 py-2 mt-2 text-sm"
                     onClick={() => {
-                        updateFixDescription(description);
+                        updateFixDescription(draft);
                         setIsEditing(false);
                     }}
                 >
@@ -78,18 +84,16 @@ const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) =>
                                     }}
                                 >
                                     <span
-                                        className="text-center  overflow-auto max-w-[140px]"
+                                        className="text-center text-xs leading-snug overflow-auto max-w-[140px]"
                                         style={{ textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000' }}
                                     >
-                                        {fixedItem.description ? description : "No description"}
+                                        {fixedItem.description}
                                     </span>
 
                                     {isSameUser && isHovering && (
                                         <BiEditAlt
-                                            className="text-2xl text-[#dddcfc] cursor-pointer"
-                                            onClick={() => {
-                                                setIsEditing(true);
-                                            }}
+                                            className="text-2xl text-[#dddcfc] cursor-pointer shrink-0"
+                                            onClick={startEditing}
                                         />
                                     )}
                                 </div>
@@ -104,10 +108,8 @@ const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) =>
                                     TextArea()
                                 ) : (
                                     <span
-                                        className="text-center flex items-center cursor-pointer"
-                                        onClick={() => {
-                                            setIsEditing(true);
-                                        }}
+                                        className="text-center text-xs flex items-center cursor-pointer"
+                                        onClick={startEditing}
                                     >
                                         Edit Description <BiEditAlt />
                                     </span>
