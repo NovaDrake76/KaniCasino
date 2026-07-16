@@ -12,7 +12,8 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test:unit": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "lh": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@fvilers/disable-react-devtools": "^1.3.0",
@@ -53,10 +54,12 @@
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.14",
+    "chrome-launcher": "^1.1.2",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "jsdom": "^25.0.1",
+    "lighthouse": "^13.4.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.2",

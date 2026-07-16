@@ -51,6 +51,50 @@
     content="KaniCasino is a case opening website where you can open cases of Touhou, CS2, anything! No real money involved." />
   <meta property="og:image" content="https://i.imgur.com/2NEJRGB.jpg" />
 
+  <!-- inline so the boot screen needs no extra request to paint -->
+  <style>
+    .boot {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .boot-ring {
+      width: 34px;
+      height: 34px;
+      border: 3px solid rgba(255, 255, 255, 0.14);
+      border-top-color: #605bff;
+      border-radius: 50%;
+      animation: boot-spin 0.8s linear infinite;
+    }
+
+    .boot-word {
+      margin: 0;
+      font-family: Montserrat, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.32em;
+      text-indent: 0.32em;
+      color: #6f6b93;
+    }
+
+    @keyframes boot-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .boot-ring {
+        animation-duration: 2.4s;
+      }
+    }
+  </style>
+
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://kanicasino.com/" />
@@ -64,6 +108,13 @@
 <body style="margin: 0; padding: 0;">
   <div id="root"
     style="background: linear-gradient(322deg, rgba(21, 18, 37, 1) 71%, rgba(62, 42, 92, 1) 100%); height: 100vh; margin: 0; padding: 0;">
+    <!-- painted straight from the html, so something is on screen while the bundle is
+         still downloading instead of an empty gradient. react drops it on first render,
+         and the suspense fallback repeats it so there is no blank frame in between. -->
+    <div class="boot">
+      <div class="boot-ring"></div>
+      <p class="boot-word">KANICASINO</p>
+    </div>
   </div>
   <script type="module" src="/src/main.tsx"></script>
 </body>

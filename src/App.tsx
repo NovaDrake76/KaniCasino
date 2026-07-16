@@ -16,6 +16,7 @@ import { getPendingMissions } from "./services/missions/MissionService";
 import { toastMissionComplete } from "./pages/Missions/components/missionCompleteToast";
 import NavigationBridge from "./components/NavigationBridge";
 import PageMeta from "./components/PageMeta";
+import BootLoader from "./components/BootLoader";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -188,9 +189,7 @@ function App() {
           toogleUserFlow
         }}
       >
-        <Suspense fallback={
-          <div />
-        }>
+        <Suspense fallback={<BootLoader />}>
           <GoogleOAuthProvider clientId={clientId}>
             <Router>
               <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
