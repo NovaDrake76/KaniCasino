@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import MainButton from "../../components/MainButton";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Rarities from "../../components/Rarities";
+import Monetary from "../../components/Monetary";
+import { rarityColor, rarityName } from "../../utils/rarity";
 
 interface Props {
   item: {
@@ -10,62 +9,70 @@ interface Props {
     name: string;
     rarity: number;
     _id: string;
-    uniqueId: string
-    cheapestPrice: number;
+    uniqueId: string;
+    cheapestPrice: number | null;
     totalListings: number;
-  }
+    sellValue?: number;
+  };
 }
 
+// one item on the market: rarity-framed art, what it starts at, and how deep the
+// book is. an item with no listings is still shown so it can be bid on.
 const MarketItem: React.FC<Props> = ({ item }) => {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loaded, setLoaded] = useState<boolean>(false);
   const navigate = useNavigate();
-
-  const handleImageLoad = () => {
-    setLoading(false);
-  };
-
-  const color = Rarities.find((rarity) => rarity.id== item?.rarity)?.color || "white";
-
-
+  const color = rarityColor(item.rarity);
+  const listed = item.totalListings > 0;
 
   return (
-    <div className="border border-[#161448] rounded-lg p-4 bg-gradient-to-tr from-[#1D1730] to-[#141333] transition-all duration-500 ease-in-out w-[226px] h-[334px]">
-      <div className="flex items-center gap-2 relative">
-      <div className={`w-1 h-1 md:h-2 md:w-2 aspect-square rounded-full`} style={{
-          backgroundColor: color
-        }} />
-        <span className="text-lg font-semibold text-white truncate">
-      
-        {item.name}
-        </span>
-
-      </div>
-      {loading && (
-        <div className="w-full h-48 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#606BC7]"></div>
-        </div>
-      )}
-      <Link to={`/marketplace/item/${item._id}`}>
+    <button
+      type="button"
+      onClick={() => navigate(`/marketplace/item/${item._id}`)}
+      className="group w-[200px] rounded-xl border border-line bg-surface hover:border-line-strong hover:-translate-y-1 transition-all overflow-hidden text-left"
+    >
+      <div
+        className="relative h-40 flex items-center justify-center bg-surface-nav border-b-2"
+        style={{ borderColor: color }}
+      >
+        {!loaded && <div className="absolute inset-0 animate-pulse bg-surface-nav" />}
         <img
           src={item.image}
           alt={item.name}
-          className={`mb-2 w-full h-48 object-cover rounded ${loading ? "hidden" : ""
-            }`}
-          onLoad={handleImageLoad}
+          onLoad={() => setLoaded(true)}
+          className={`max-h-32 max-w-[80%] object-contain transition-all group-hover:scale-105 ${
+            loaded ? "" : "opacity-0"
+          }`}
+          style={{ filter: `drop-shadow(0 0 14px ${color}55)` }}
         />
-      </Link>
-      <p className="text-blue-500 text-center py-1 text-ellipsis truncate">
-            {item.totalListings} announced
-      </p>
-      <MainButton textSize="text-sm" text={`Starting at ${new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "DOL",
-          minimumFractionDigits: 0,
-        })
-          .format(item.cheapestPrice)
-          .replace("DOL", "K₽")}`} onClick={() => navigate(`/marketplace/item/${item._id}`)}  />
+        {listed && (
+          <span className="absolute top-2 right-2 rounded-full bg-surface/90 border border-line px-2 py-0.5 text-[10px] text-ink-muted">
+            {item.totalListings}
+          </span>
+        )}
+      </div>
 
-    </div>
+      <div className="p-3 flex flex-col gap-1">
+        <span className="text-sm font-semibold text-ink truncate">{item.name}</span>
+        <span className="text-[10px]" style={{ color }}>
+          {rarityName(item.rarity)}
+        </span>
+        <div className="mt-1 flex items-end justify-between gap-2">
+          {listed ? (
+            <div className="flex flex-col min-w-0">
+              <span className="text-[10px] text-ink-muted">Starting at</span>
+              <span className="text-sm font-bold text-accent truncate">
+                <Monetary value={item.cheapestPrice || 0} />
+              </span>
+            </div>
+          ) : (
+            <span className="text-xs text-ink-faint">No listings</span>
+          )}
+          <span className="text-[10px] text-ink-faint shrink-0 group-hover:text-ink-muted">
+            {listed ? "View" : "Place bid"}
+          </span>
+        </div>
+      </div>
+    </button>
   );
 };
 

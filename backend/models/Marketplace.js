@@ -45,5 +45,9 @@ const MarketplaceSchema = new mongoose.Schema(
 MarketplaceSchema.index({ itemName: 1 });
 MarketplaceSchema.index({ rarity: 1 });
 MarketplaceSchema.index({ price: 1 });
+// the hot paths: an item's listings cheapest-first, and a seller reclaiming a listing
+MarketplaceSchema.index({ item: 1, price: 1 });
+MarketplaceSchema.index({ sellerId: 1 });
+MarketplaceSchema.index({ uniqueId: 1 });
 
 module.exports = mongoose.model("Marketplace", MarketplaceSchema);

@@ -164,7 +164,8 @@ describe("money paths record a transaction", () => {
     const sellerTx = (await txFor(seller._id)).filter((t) => t.type === "market_sale");
     expect(sellerTx).toHaveLength(1);
     expect(sellerTx[0].direction).toBe("credit");
-    expect(sellerTx[0].amount).toBe(100);
+    expect(sellerTx[0].amount).toBe(95); // price minus the 5% house fee
+    expect(sellerTx[0].meta.fee).toBe(5);
   });
 
   test("a buy reverses cleanly when the seller no longer exists", async () => {
