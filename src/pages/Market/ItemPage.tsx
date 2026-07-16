@@ -202,7 +202,7 @@ const ItemPage: React.FC = () => {
         {/* item header */}
         <div className="flex items-center gap-4 rounded-xl border border-line bg-surface p-4">
           <div
-            className="w-20 h-20 shrink-0 rounded-lg bg-surface-nav flex items-center justify-center border-b-4"
+            className="w-20 h-20 shrink-0 rounded-t-lg bg-surface-nav flex items-center justify-center border-b-4"
             style={{ borderColor: color }}
           >
             {item ? (
