@@ -1,4 +1,6 @@
 import { useContext, useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UserContext from "../../../UserContext";
 import { sellItems } from "../../../services/users/UserServices";
@@ -33,8 +35,8 @@ export const useCollectionDetailServices = ({ userId, isOwner, caseId, onBack }:
   const [sortBy, setSortByState] = useState<AlbumSort>("mostRare");
   const [refresh, setRefresh] = useState<boolean>(false);
 
-  const [selectedItem, setSelectedItem] = useState<AlbumItem | null>(null);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const itemParam = searchParams.get("item");
   const [selling, setSelling] = useState<boolean>(false);
 
   const [quicksellOpen, setQuicksellOpen] = useState<boolean>(false);
@@ -71,10 +73,55 @@ export const useCollectionDetailServices = ({ userId, isOwner, caseId, onBack }:
     setSortByState(s);
   };
 
+  // the open item lives in the url, so returning from the market reopens it. items and
+  // extras are disjoint by _id, so the first hit is unambiguous.
+  const selectedItem: AlbumItem | null =
+    (itemParam && detail
+      ? detail.items.find((i) => i._id === itemParam) ??
+        detail.extras.find((i) => i._id === itemParam)
+      : undefined) ?? null;
+  const modalOpen = selectedItem !== null;
+
+  const writeItem = (id: string | null) =>
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (id) next.set("item", id);
+        else next.delete("item");
+        return next;
+      },
+      { replace: true }
+    );
+
+  // a refetch keeps the old rows on screen (the skeleton only covers the first load),
+  // so ignore clicks on rows that are about to be replaced: the item may not survive
+  // the new result set, and the modal would open and then vanish.
   const openItem = (item: AlbumItem) => {
-    setSelectedItem(item);
-    setModalOpen(true);
+    if (loading) return;
+    writeItem(item._id);
   };
+
+  // keeps the view/modal contract: Modal only ever calls setOpen(false).
+  const setModalOpen: Dispatch<SetStateAction<boolean>> = (value) => {
+    const next = typeof value === "function" ? value(modalOpen) : value;
+    if (!next && itemParam) writeItem(null);
+  };
+
+  // an ?item= we cannot resolve against the loaded album (it sits on another page, or
+  // it is gone) has to be dropped, or it pops the modal open unbidden the moment the
+  // user pages to the page that happens to hold it. loading covers the refetch window,
+  // and the album unmounts on a case change, so detail always belongs to this caseId.
+  useEffect(() => {
+    if (!itemParam || loading || !detail || selectedItem) return;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("item");
+        return next;
+      },
+      { replace: true }
+    );
+  }, [itemParam, loading, detail, selectedItem, setSearchParams]);
 
   const handleSellOne = async (uniqueId: string) => {
     if (selling) return;
