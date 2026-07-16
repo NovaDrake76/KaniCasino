@@ -45,6 +45,8 @@ const Profile = () => {
     order: 'asc',
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
+  const deepLinkTabRef = useRef<string | null>(null);
+  const userPickedTabRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (invItems?.length > 0) {
@@ -118,16 +120,26 @@ const Profile = () => {
   }, [id]);
 
   // deep-link support: /profile/:id?tab=missions opens that tab (e.g. from a toast).
-  // runs after the reset above so it wins, and re-applies once ownership is known.
+  // capture the requested tab; a slow /users/me can defer applying an own-only tab.
   useEffect(() => {
-    const tabParam = searchParams.get("tab");
-    if (!tabParam) return;
+    deepLinkTabRef.current = searchParams.get("tab");
+    userPickedTabRef.current = false;
+  }, [id, searchParams]);
+
+  // apply the captured tab once ownership is known, unless the user already picked a
+  // tab manually in the meantime (so the deep-link can never clobber their choice).
+  useEffect(() => {
+    const tabParam = deepLinkTabRef.current;
+    if (!tabParam || userPickedTabRef.current) return;
     const allowed =
       tabParam === "inventory" ||
       tabParam === "collections" ||
       (isSameUser && (tabParam === "missions" || tabParam === "history"));
-    if (allowed) setActiveTab(tabParam as "inventory" | "collections" | "history" | "missions");
-  }, [searchParams, isSameUser, id]);
+    if (allowed) {
+      deepLinkTabRef.current = null;
+      setActiveTab(tabParam as "inventory" | "collections" | "history" | "missions");
+    }
+  }, [isSameUser, id, searchParams]);
 
   // load which "new" tabs this user has already opened (per user, per browser)
   useEffect(() => {
@@ -198,7 +210,10 @@ const Profile = () => {
               {tabs.map((t) => (
                 <button
                   key={t.key}
-                  onClick={() => setActiveTab(t.key)}
+                  onClick={() => {
+                    userPickedTabRef.current = true;
+                    setActiveTab(t.key);
+                  }}
                   className={`shrink-0 whitespace-nowrap px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
                     activeTab === t.key
                       ? "bg-[#281d3f] text-white shadow"
