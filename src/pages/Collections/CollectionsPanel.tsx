@@ -35,6 +35,15 @@ const CollectionsPanel: React.FC<Props> = ({ userId, isOwner }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCaseId = searchParams.get("case");
 
+  // the open item and the album view belong to whichever case was open, so they go
+  // whenever the case does: a duplicates filter must not leak into the next album.
+  const clearAlbum = (params: URLSearchParams) => {
+    params.delete("item");
+    params.delete("page");
+    params.delete("filter");
+    params.delete("sort");
+  };
+
   // copy before writing: the params object is memoized on location.search, so
   // mutating it in place corrupts the memo for the rest of this location.
   const openCase = (caseId: string) =>
@@ -42,7 +51,7 @@ const CollectionsPanel: React.FC<Props> = ({ userId, isOwner }) => {
       (prev) => {
         const next = new URLSearchParams(prev);
         next.set("case", caseId);
-        next.delete("item");
+        clearAlbum(next);
         return next;
       },
       { replace: true }
@@ -53,7 +62,7 @@ const CollectionsPanel: React.FC<Props> = ({ userId, isOwner }) => {
       (prev) => {
         const next = new URLSearchParams(prev);
         next.delete("case");
-        next.delete("item");
+        clearAlbum(next);
         return next;
       },
       { replace: true }

@@ -16,6 +16,20 @@ import {
 export type AlbumFilter = "all" | "owned" | "missing" | "duplicates";
 export type AlbumSort = "mostRare" | "mostCommon";
 
+const FILTERS: AlbumFilter[] = ["all", "owned", "missing", "duplicates"];
+const SORTS: AlbumSort[] = ["mostRare", "mostCommon"];
+
+// the album view lives in the url too, so returning from the market lands on the same
+// page and filter the item was found under. junk falls back to the default.
+export const resolveFilter = (v: string | null): AlbumFilter =>
+  FILTERS.includes(v as AlbumFilter) ? (v as AlbumFilter) : "all";
+export const resolveSort = (v: string | null): AlbumSort =>
+  SORTS.includes(v as AlbumSort) ? (v as AlbumSort) : "mostRare";
+export const resolvePage = (v: string | null): number => {
+  const n = Number(v);
+  return Number.isInteger(n) && n > 0 ? n : 1;
+};
+
 interface Args {
   userId: string;
   isOwner: boolean;
@@ -30,13 +44,13 @@ export const useCollectionDetailServices = ({ userId, isOwner, caseId, onBack }:
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
-  const [page, setPage] = useState<number>(1);
-  const [filter, setFilterState] = useState<AlbumFilter>("all");
-  const [sortBy, setSortByState] = useState<AlbumSort>("mostRare");
   const [refresh, setRefresh] = useState<boolean>(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const itemParam = searchParams.get("item");
+  const page = resolvePage(searchParams.get("page"));
+  const filter = resolveFilter(searchParams.get("filter"));
+  const sortBy = resolveSort(searchParams.get("sort"));
   const [selling, setSelling] = useState<boolean>(false);
 
   const [quicksellOpen, setQuicksellOpen] = useState<boolean>(false);
@@ -64,14 +78,61 @@ export const useCollectionDetailServices = ({ userId, isOwner, caseId, onBack }:
     };
   }, [caseId, userId, page, filter, sortBy, refresh]);
 
-  const setFilter = (f: AlbumFilter) => {
-    setPage(1);
-    setFilterState(f);
+  // the set can shrink under a page we are already on (selling the last card of a
+  // filter, or a hand-typed number), and the pager hides itself once there is one page
+  // left, so the album would strand empty with nothing to click. kept out of the fetch
+  // effect on purpose: its deps must not include setSearchParams, whose identity
+  // changes on every param write and would refetch the album on each one.
+  useEffect(() => {
+    if (loading || !detail || page <= detail.totalPages) return;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete("page");
+        return next;
+      },
+      { replace: true }
+    );
+  }, [loading, detail, page, setSearchParams]);
+
+  // a param at its default is left out, so a plain album url stays clean
+  const writeView = (next: URLSearchParams, key: string, value: string | null) => {
+    if (value) next.set(key, value);
+    else next.delete(key);
   };
-  const setSortBy = (s: AlbumSort) => {
-    setPage(1);
-    setSortByState(s);
-  };
+
+  const setPage = (p: number) =>
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        writeView(next, "page", p > 1 ? String(p) : null);
+        return next;
+      },
+      { replace: true }
+    );
+
+  // a new filter or sort reshuffles the album, so the old page number means nothing
+  const setFilter = (f: AlbumFilter) =>
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        writeView(next, "filter", f !== "all" ? f : null);
+        next.delete("page");
+        return next;
+      },
+      { replace: true }
+    );
+
+  const setSortBy = (s: AlbumSort) =>
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        writeView(next, "sort", s !== "mostRare" ? s : null);
+        next.delete("page");
+        return next;
+      },
+      { replace: true }
+    );
 
   // the open item lives in the url, so returning from the market reopens it. items and
   // extras are disjoint by _id, so the first hit is unambiguous.

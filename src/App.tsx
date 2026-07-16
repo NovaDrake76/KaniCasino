@@ -34,7 +34,6 @@ function App() {
   const [userData, setUserData] = useState<User | null>(null);
   const [recentCaseOpenings, setRecentCaseOpenings] = useState<any>([]);
   const [openUserFlow, setOpenUserFlow] = useState<boolean>(false);
-  const [joinedRoom, setJoinedRoom] = useState<boolean>(false);
   const [notification, setNotification] = useState<any>();
 
   const socket = SocketConnection.getInstance();
@@ -105,19 +104,23 @@ function App() {
     };
   }, [socket]);
 
+  // keyed on the account itself, not a "joined once" latch: logging out and into
+  // another account in the same tab never remounts App, so a latch would leave the
+  // socket in the old user's room and userIdRef pointing at them.
   useEffect(() => {
-    if (userData && userData.id && !joinedRoom) {
-      userIdRef.current = userData.id;
-      // reconnect so the handshake re-runs with the now-available token; the
-      // server authenticates it and joins this user's private room
-      socket.disconnect();
-      socket.connect();
-      setJoinedRoom(true);
+    const id = userData?.id ?? null;
+    if (userIdRef.current === id) return;
+    userIdRef.current = id;
+    // reconnect so the handshake re-runs with the current token; the server
+    // authenticates it and joins this user's private room, or none when logged out
+    socket.disconnect();
+    socket.connect();
+    if (id) {
       // full catch-up check on login: seeds silently the first time, then toasts
       // anything completed while away
       checkMissions(false);
     }
-  }, [joinedRoom, socket, userData]);
+  }, [socket, userData]);
 
   useEffect(() => {
     socket.on("newNotification", (notification) => {
@@ -142,7 +145,6 @@ function App() {
       clearTokens();
       setIsLogged(false);
       setUserData(null);
-      setJoinedRoom(false);
       setOpenUserFlow(true);
       toast.info("Your session expired. Please log in again.");
     };
