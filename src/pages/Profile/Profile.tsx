@@ -204,32 +204,40 @@ const Profile = () => {
       </div>
 
       <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
-        <div className="flex flex-col p-8 gap-2 items-center w-full max-w-[1312px]">
-          <div className="w-full flex justify-center mb-6">
-            <div className="inline-flex gap-1 bg-[#19172d] border border-[#2a2840] rounded-xl p-1 max-w-full overflow-x-auto">
-              {tabs.map((t) => (
-                <button
-                  key={t.key}
-                  onClick={() => {
-                    userPickedTabRef.current = true;
-                    setActiveTab(t.key);
-                  }}
-                  className={`shrink-0 whitespace-nowrap px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
-                    activeTab === t.key
-                      ? "bg-[#281d3f] text-white shadow"
-                      : "text-[#84819a] hover:text-white hover:bg-[#221f38]"
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-1.5">
-                    {t.label}
-                    {isSameUser && NEW_TABS.includes(t.key) && !seenTabs.includes(t.key) && (
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-accent-gold text-[9px] font-bold uppercase leading-none text-black animate-pulse">
-                        New
-                      </span>
-                    )}
-                  </span>
-                </button>
-              ))}
+        <div className="flex flex-col p-4 md:p-8 gap-2 items-center w-full max-w-[1312px]">
+          <div className="w-full flex justify-center mb-8">
+            <div className="w-full max-w-[1100px] border-b border-line">
+              <div className="flex gap-6 md:gap-8 overflow-x-auto pt-3">
+                {tabs.map((t) => {
+                  const active = activeTab === t.key;
+                  const isNew =
+                    isSameUser && NEW_TABS.includes(t.key) && !seenTabs.includes(t.key);
+                  return (
+                    <button
+                      key={t.key}
+                      onClick={() => {
+                        userPickedTabRef.current = true;
+                        setActiveTab(t.key);
+                      }}
+                      className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-bold uppercase tracking-wider transition-colors ${
+                        active ? "text-white" : "text-[#84819a] hover:text-white"
+                      }`}
+                    >
+                      {t.label}
+                      {isNew && (
+                        <span className="absolute -top-2 -right-2 flex items-center rounded-full bg-accent-gold px-1.5 py-0.5 text-[9px] font-extrabold uppercase leading-none text-black shadow animate-pulse">
+                          New
+                        </span>
+                      )}
+                      <span
+                        className={`absolute left-0 right-0 -bottom-px h-[3px] rounded-full transition-all ${
+                          active ? "bg-[#e5308c]" : "bg-transparent"
+                        }`}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

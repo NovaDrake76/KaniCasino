@@ -18,8 +18,9 @@ const CATEGORY_LABELS: Record<string, string> = {
   games: "Games",
   collection: "Collection",
   community: "Community",
+  endgame: "Endgame",
 };
-const CATEGORY_ORDER = ["onboarding", "games", "collection", "community"];
+const CATEGORY_ORDER = ["onboarding", "games", "collection", "community", "endgame"];
 
 const MissionsView: React.FC<Props> = ({
   data,
@@ -36,7 +37,7 @@ const MissionsView: React.FC<Props> = ({
   }
   if (loading) {
     return (
-      <div className="w-full max-w-[900px] flex flex-col gap-3">
+      <div className="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-2 gap-3">
         {Array(6)
           .fill(0)
           .map((_, i) => (
@@ -55,16 +56,13 @@ const MissionsView: React.FC<Props> = ({
   })).filter((g) => g.items.length > 0);
 
   return (
-    <div className="w-full max-w-[900px] flex flex-col gap-8">
+    <div className="w-full max-w-[1100px] flex flex-col gap-8">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex flex-col">
-          <h2 className="text-xl font-semibold text-ink">Missions</h2>
-          <span className="text-sm text-ink-muted">
-            {data.totals.claimed}/{data.totals.total} completed
-          </span>
-        </div>
+        <span className="text-sm text-ink-muted">
+          <span className="text-ink font-semibold">{data.totals.claimed}</span> of {data.totals.total} missions claimed
+        </span>
         {data.totals.claimable > 0 && (
-          <span className="px-3 py-1.5 rounded-lg bg-accent-gold/15 text-accent-gold text-sm font-semibold">
+          <span className="px-3 py-1.5 rounded-lg bg-accent-gold/15 text-accent-gold text-sm font-semibold animate-pulse">
             {data.totals.claimable} ready to claim
           </span>
         )}
@@ -72,10 +70,14 @@ const MissionsView: React.FC<Props> = ({
 
       {grouped.map(({ cat, items }) => (
         <div key={cat} className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
+          <h3
+            className={`text-sm font-semibold uppercase tracking-wide ${
+              cat === "endgame" ? "text-accent-gold" : "text-ink-muted"
+            }`}
+          >
             {CATEGORY_LABELS[cat] || cat}
           </h3>
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {items.map((m) => (
               <MissionCard
                 key={m.key}
@@ -84,6 +86,7 @@ const MissionsView: React.FC<Props> = ({
                 claim={claim}
                 visit={visit}
                 caseImage={caseImage}
+                endgame={cat === "endgame"}
               />
             ))}
           </div>

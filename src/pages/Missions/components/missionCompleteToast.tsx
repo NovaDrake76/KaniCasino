@@ -20,7 +20,7 @@ export function toastMissionComplete(m: PendingMission, targetPath?: string) {
         </span>
       </div>
       {targetPath && (
-        <span className="ml-auto flex items-center gap-1 text-xs text-ink-soft shrink-0">
+        <span className="ml-auto flex items-center gap-1 text-xs font-medium text-accent-gold shrink-0">
           Claim <FiArrowRight />
         </span>
       )}

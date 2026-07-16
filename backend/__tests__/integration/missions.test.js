@@ -56,10 +56,10 @@ describe("GET /missions", () => {
   });
 
   test("a fresh user has the full catalog with zero progress and nothing claimable", async () => {
-    const u = await makeUser();
+    const u = await makeUser({ walletBalance: 0 });
     const res = await getMissions(u);
     expect(res.status).toBe(200);
-    expect(res.body.missions.length).toBeGreaterThanOrEqual(15);
+    expect(res.body.missions.length).toBeGreaterThanOrEqual(20);
     expect(res.body.missions.every((m) => m.current === 0)).toBe(true);
     expect(res.body.totals.claimable).toBe(0);
     expect(find(res.body, "first-case").complete).toBe(false);
@@ -143,6 +143,42 @@ describe("GET /missions", () => {
     expect(find(res.body, "set-avatar")).toBeUndefined(); // filtered out of the catalog
     // and it cannot be claimed even though the user has a profile picture
     expect((await auth(request(app).post("/missions/set-avatar/claim"), u)).status).toBe(404);
+  });
+
+  test("endgame metrics: total wagered, crash cashouts, level and balance", async () => {
+    const u = await makeUser({ level: 30, walletBalance: 1000000 });
+    await tx(u._id, TX.CRASH_BET, { amount: 400000 });
+    await tx(u._id, TX.SLOT_BET, { amount: 400000 });
+    await tx(u._id, TX.CASE_OPEN, { amount: 300000, meta: { quantity: 1 } });
+    await tx(u._id, TX.CRASH_CASHOUT, { amount: 50, direction: "credit" });
+    const res = await getMissions(u);
+    expect(find(res.body, "wager-million").complete).toBe(true); // 1.1M staked
+    expect(find(res.body, "crash-50").current).toBe(1);
+    expect(find(res.body, "level-30").complete).toBe(true);
+    expect(find(res.body, "millionaire").complete).toBe(true);
+  });
+
+  test("master collector needs every case complete, not just one", async () => {
+    const u = await makeUser();
+    const mk = async (rarities) => {
+      const items = [];
+      for (const r of rarities) items.push(await Item.create({ name: `i-${uniqueSuffix()}`, image: "i", rarity: String(r), baseValue: 100 }));
+      const c = await Case.create({ title: `c-${uniqueSuffix()}`, image: "c", price: 100, items: items.map((i) => i._id) });
+      return { c, items };
+    };
+    const a = await mk([1, 2]);
+    const b = await mk([1]);
+    const give = async (item, caseId) =>
+      User.updateOne({ _id: u._id }, { $push: { inventory: { _id: item._id, name: item.name, image: item.image, rarity: item.rarity, case: caseId, uniqueId: `u-${uniqueSuffix()}` } } });
+    // complete only case A
+    await give(a.items[0], a.c._id);
+    await give(a.items[1], a.c._id);
+    let res = await getMissions(u);
+    expect(find(res.body, "collections-all").complete).toBe(false); // case B still missing
+    // complete case B too
+    await give(b.items[0], b.c._id);
+    res = await getMissions(u);
+    expect(find(res.body, "collections-all").complete).toBe(true);
   });
 
   test("only activity at/after the launch timestamp counts", async () => {

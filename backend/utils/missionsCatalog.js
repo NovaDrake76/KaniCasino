@@ -35,6 +35,20 @@ const CATALOG = [
   { key: "add-friend", category: "community", title: "Not alone", description: "Add your first friend.", metric: "friendsAdded", target: 1, reward: 300 },
   { key: "join-discord", category: "community", title: "Join the Discord", description: "Hop into the KaniCasino Discord.", metric: "social", social: "discord", target: 1, reward: 150 },
   { key: "follow-x", category: "community", title: "Follow on X", description: "Follow KaniCasino on X.", metric: "social", social: "x", target: 1, reward: 150 },
+
+  // endgame: long-horizon goals across every system. grind-based ones count only
+  // activity since launch; the state-based ones (level, balance, all collections)
+  // are one-time achievements a top player may already qualify for.
+  { key: "market-10", category: "endgame", title: "Marketeer", description: "Sell 10 items on the marketplace.", metric: "marketSales", target: 10, reward: 5000 },
+  { key: "coinflip-25", category: "endgame", title: "Hot streak", description: "Win 25 coin flips.", metric: "coinflipWins", target: 25, reward: 6000 },
+  { key: "crash-50", category: "endgame", title: "Nerves of titanium", description: "Cash out of Crash 50 times.", metric: "crashCashouts", target: 50, reward: 6000 },
+  { key: "battles-10", category: "endgame", title: "Battle-hardened", description: "Win 10 case battles.", metric: "battlesWon", target: 10, reward: 8000 },
+  { key: "jackpot", category: "endgame", title: "Jackpot", description: "Land a 100,000 K₽ payout in a single play.", metric: "bigWin", target: 100000, reward: 15000 },
+  { key: "cases-1000", category: "endgame", title: "Case fiend", description: "Open 1,000 cases.", metric: "casesOpened", target: 1000, reward: 25000 },
+  { key: "wager-million", category: "endgame", title: "High roller", description: "Stake a total of 1,000,000 K₽ across all games.", metric: "totalWagered", target: 1000000, reward: 20000 },
+  { key: "level-30", category: "endgame", title: "Ascended", description: "Reach level 30.", metric: "level", target: 30, reward: 15000 },
+  { key: "collections-all", category: "endgame", title: "Master collector", description: "Complete every collection.", metric: "allCollectionsComplete", target: 1, reward: 50000 },
+  { key: "millionaire", category: "endgame", title: "Millionaire", description: "Hold a balance of 1,000,000 K₽.", metric: "walletBalance", target: 1000000, reward: 30000 },
 ];
 
 const BY_KEY = new Map(CATALOG.map((m) => [m.key, m]));

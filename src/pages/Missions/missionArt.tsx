@@ -1,10 +1,11 @@
 import { IconType } from "react-icons";
-import { GiOpenChest } from "react-icons/gi";
+import { GiOpenChest, GiTwoCoins, GiMoneyStack } from "react-icons/gi";
 import { FiUser, FiUsers } from "react-icons/fi";
-import { FaDiscord, FaTwitter } from "react-icons/fa";
+import { FaDiscord, FaTwitter, FaMedal, FaCoins } from "react-icons/fa";
+import { MdStorefront } from "react-icons/md";
 
 // contextual art per mission: reuse the app's real game/case assets where a mission
-// maps to one, and fall back to a themed icon for the rest (avatar, friend, socials).
+// maps to one, and a themed icon otherwise (money, store, level, socials).
 
 // static public assets, the same art the home game listing and slot big-win use
 const IMG: Record<string, string> = {
@@ -14,14 +15,29 @@ const IMG: Record<string, string> = {
   "try-slots": "/images/slot/wild.webp",
   "battle-win": "/images/boo.webp",
   "big-win": "/images/slot/bigwin.webp",
-  "first-bonus": "/images/clock.webp",
-  "first-sale": "/images/item1.webp",
+  "battles-10": "/images/boo.webp",
+  "coinflip-25": "/images/coinHeads.webp",
+  "crash-50": "/images/crash/idle.gif",
+  "jackpot": "/images/slot/bigwin.webp",
 };
 
 // missions that show a real case image, supplied at runtime from the cases list
-const CASE_ART = new Set(["first-case", "cases-10", "cases-100", "complete-collection"]);
+const CASE_ART = new Set([
+  "first-case",
+  "cases-10",
+  "cases-100",
+  "cases-1000",
+  "complete-collection",
+  "collections-all",
+]);
 
 const ICON: Record<string, IconType> = {
+  "first-bonus": GiTwoCoins,
+  "first-sale": MdStorefront,
+  "market-10": MdStorefront,
+  "wager-million": FaCoins,
+  "millionaire": GiMoneyStack,
+  "level-30": FaMedal,
   "set-avatar": FiUser,
   "add-friend": FiUsers,
   "join-discord": FaDiscord,
@@ -49,7 +65,7 @@ export const MissionArtTile: React.FC<{ art: MissionArt; dim?: boolean }> = ({ a
     {art.img ? (
       <img src={art.img} alt="" className="max-h-12 max-w-12 object-contain" />
     ) : art.Icon ? (
-      <art.Icon className="text-2xl text-accent-gold" />
+      <art.Icon className="text-3xl text-accent-gold" />
     ) : null}
   </div>
 );

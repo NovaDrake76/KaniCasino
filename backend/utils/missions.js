@@ -14,21 +14,31 @@ const WIN_TYPES = [TX.SLOT_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
 // never shown, announced, or claimable
 const ACTIVE = CATALOG.filter((m) => m.active !== false);
 
-// how many case collections the user has fully completed (every catalog item owned).
+// case collections the user has fully completed vs how many cases have items.
 // populate + drop null (deleted) refs so "complete" matches exactly what the
 // collections tab shows: a dangling item id is not a slot the album counts either.
-async function countCompletedCollections(userId) {
+async function collectionsProgress(userId) {
   const user = await User.findById(userId, { inventory: 1 });
-  if (!user) return 0;
+  if (!user) return { done: 0, total: 0 };
   const owned = new Set((user.inventory || []).map((e) => String(e._id)));
   const cases = await Case.find({}, { items: 1 }).populate("items", "_id");
   let done = 0;
+  let total = 0;
   for (const c of cases) {
     const items = [...new Set((c.items || []).filter(Boolean).map((it) => String(it._id)))];
-    if (items.length && items.every((id) => owned.has(id))) done += 1;
+    if (!items.length) continue;
+    total += 1;
+    if (items.every((id) => owned.has(id))) done += 1;
   }
-  return done;
+  return { done, total };
 }
+
+async function countCompletedCollections(userId) {
+  return (await collectionsProgress(userId)).done;
+}
+
+// the stakes the "total wagered" mission counts: every KP put at risk on a game
+const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN];
 
 // ensure the per-user state doc exists, then return it
 async function getState(userId) {
@@ -49,13 +59,14 @@ async function buildContext(userId, { includeCollections = true, state = null } 
           count: { $sum: 1 },
           qty: { $sum: { $ifNull: ["$meta.quantity", 0] } },
           maxAmount: { $max: "$amount" },
+          sumAmount: { $sum: "$amount" },
         },
       },
     ]),
     Battle.countDocuments({ winnerUserIds: userId, status: "finished", finishedAt: { $gte: launch } }),
     // the collections scan is the one heavy read; skip it on frequent hot-path calls
-    includeCollections ? countCompletedCollections(userId) : Promise.resolve(0),
-    User.findById(userId, { profilePicture: 1, friends: 1 }),
+    includeCollections ? collectionsProgress(userId) : Promise.resolve({ done: 0, total: 0 }),
+    User.findById(userId, { profilePicture: 1, friends: 1, level: 1, walletBalance: 1 }),
     // reuse an already-loaded state doc when the caller has one, to avoid re-reading it
     state || getState(userId),
   ]);
@@ -63,19 +74,26 @@ async function buildContext(userId, { includeCollections = true, state = null } 
   const byType = {};
   for (const r of txAgg) byType[r._id] = r;
   const count = (t) => (byType[t] ? byType[t].count : 0);
+  const sum = (t) => (byType[t] ? byType[t].sumAmount || 0 : 0);
   const openRow = byType[TX.CASE_OPEN];
   const casesOpened = openRow ? openRow.qty || openRow.count : 0; // sum of quantities, count as fallback
   const bigWin = WIN_TYPES.reduce((m, t) => Math.max(m, byType[t] ? byType[t].maxAmount || 0 : 0), 0);
+  const totalWagered = STAKE_TYPES.reduce((s, t) => s + sum(t), 0);
 
   return {
     casesOpened,
     games: { crash: count(TX.CRASH_BET), coinflip: count(TX.COINFLIP_BET), slots: count(TX.SLOT_BET) },
     coinflipWins: count(TX.COINFLIP_WIN),
+    crashCashouts: count(TX.CRASH_CASHOUT),
     bonusesClaimed: count(TX.BONUS),
     marketSales: count(TX.MARKET_SALE),
     bigWin,
+    totalWagered,
     battlesWon,
-    collectionsCompleted,
+    collectionsCompleted: collectionsCompleted.done,
+    collectionsTotal: collectionsCompleted.total,
+    level: user ? user.level || 0 : 0,
+    walletBalance: user ? user.walletBalance || 0 : 0,
     hasProfilePicture: !!(user && user.profilePicture && String(user.profilePicture).trim() !== ""),
     friendsCount: user && user.friends ? user.friends.length : 0,
     claimed: new Set((st && st.claimed) || []),
@@ -96,6 +114,12 @@ function currentFor(mission, ctx) {
     case "bigWin": return ctx.bigWin;
     case "battlesWon": return ctx.battlesWon;
     case "collectionsCompleted": return ctx.collectionsCompleted;
+    case "allCollectionsComplete":
+      return ctx.collectionsTotal > 0 && ctx.collectionsCompleted >= ctx.collectionsTotal ? 1 : 0;
+    case "crashCashouts": return ctx.crashCashouts;
+    case "totalWagered": return ctx.totalWagered;
+    case "level": return ctx.level;
+    case "walletBalance": return ctx.walletBalance;
     case "profilePictureSet": return ctx.hasProfilePicture ? 1 : 0;
     case "friendsAdded": return ctx.friendsCount;
     case "social": return ctx.visited.has(mission.key) ? 1 : 0;
