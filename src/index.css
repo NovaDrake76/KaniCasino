@@ -2,7 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap");
+/* montserrat is loaded from index.html: an @import here has to wait for this file to
+   parse before the font is even discovered, which blocks the first render twice over */
 
 @layer utilities {
   .notched {

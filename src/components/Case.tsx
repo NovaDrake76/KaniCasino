@@ -7,9 +7,12 @@ interface CaseProps {
   title: string;
   image: string;
   price: number;
+  // above the fold: fetch it eagerly and let it jump the queue, since the first of
+  // these is the largest thing on the homepage
+  priority?: boolean;
 }
 
-const Case: React.FC<CaseProps> = ({ id, title, image, price }) => {
+const Case: React.FC<CaseProps> = ({ id, title, image, price, priority }) => {
   const [hover, setHover] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -24,8 +27,10 @@ const Case: React.FC<CaseProps> = ({ id, title, image, price }) => {
         transform: hover ? "scale(1.01)" : "scale(1)",
       }}
     >
+      {/* the placeholder has to match the image's height at every breakpoint, or the
+          card collapses by half its height the moment the image lands */}
       {!loaded && (
-        <div className="flex w-full h-64 items-center justify-center">
+        <div className="flex w-full h-32 md:h-64 items-center justify-center">
           <RotatingLines
             strokeColor="grey"
             strokeWidth="5"
@@ -38,6 +43,8 @@ const Case: React.FC<CaseProps> = ({ id, title, image, price }) => {
       <img
         src={image}
         alt={title}
+        loading={priority ? "eager" : "lazy"}
+        fetchpriority={priority ? "high" : undefined}
         className={`w-1/2 md:w-full h-32 md:h-64 object-cover -ml-4 ${loaded ? '' : 'hidden'}`}
         onLoad={() => setLoaded(true)}
       />

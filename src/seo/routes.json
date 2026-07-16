@@ -1,0 +1,66 @@
+{
+  "site": "https://kanicasino.com",
+  "name": "KaniCasino",
+  "defaultDescription": "KaniCasino is a case opening website where you can open cases of Touhou, CS2, anything! No real money involved.",
+  "defaultImage": "https://i.imgur.com/2NEJRGB.jpg",
+  "static": {
+    "/": {
+      "title": "KaniCasino | Open cases, play, and trade with fake coins",
+      "description": "Open Touhou, CS2 and cat cases, play Crash, Coin Flip, Slots and Case Battles, and trade on the market. Fake coins only, no real money."
+    },
+    "/marketplace": {
+      "title": "Marketplace | KaniCasino",
+      "description": "Buy and sell items with other players, follow the price history of every item, and place buy orders."
+    },
+    "/crash": {
+      "title": "Crash | KaniCasino",
+      "description": "Cash out before it burns. A live multiplayer crash game, played with fake coins."
+    },
+    "/coinflip": {
+      "title": "Coin Flip | KaniCasino",
+      "description": "Heads or tails against another player, live. No real money involved."
+    },
+    "/upgrade": {
+      "title": "Upgrade | KaniCasino",
+      "description": "Gamble your items for a shot at a better one. Provably fair, no real money involved."
+    },
+    "/slot": {
+      "title": "Slots | KaniCasino",
+      "description": "Spin the reels for fake coins. Provably fair, no real money involved."
+    },
+    "/battles": {
+      "title": "Case Battles | KaniCasino",
+      "description": "Open cases head to head against other players. Best total value takes the pot."
+    },
+    "/provably-fair": {
+      "title": "Provably Fair | KaniCasino",
+      "description": "Verify any roll for yourself: server seed hashes, your client seed, and the nonce behind every drop."
+    },
+    "/privacy-policy": {
+      "title": "Privacy Policy | KaniCasino",
+      "description": "How KaniCasino handles your data."
+    }
+  },
+  "dynamic": [
+    {
+      "pattern": "^/marketplace/item/",
+      "title": "Item | KaniCasino",
+      "description": "Price history, listings and buy orders for this item."
+    },
+    {
+      "pattern": "^/case/",
+      "title": "Open a case | KaniCasino",
+      "description": "Open this case for a shot at its rarest drops. Provably fair, no real money involved."
+    },
+    {
+      "pattern": "^/profile/",
+      "title": "Profile | KaniCasino",
+      "description": "A player's inventory, collections and stats on KaniCasino."
+    },
+    {
+      "pattern": "^/battles/",
+      "title": "Case Battle | KaniCasino",
+      "description": "A live case battle on KaniCasino."
+    }
+  ]
+}

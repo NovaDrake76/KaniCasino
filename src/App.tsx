@@ -15,6 +15,7 @@ import {disableReactDevTools} from '@fvilers/disable-react-devtools';
 import { getPendingMissions } from "./services/missions/MissionService";
 import { toastMissionComplete } from "./pages/Missions/components/missionCompleteToast";
 import NavigationBridge from "./components/NavigationBridge";
+import PageMeta from "./components/PageMeta";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -195,6 +196,7 @@ function App() {
               <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
                 <ScrollToTop />
                 <NavigationBridge />
+                <PageMeta />
                 <ToastContainer
                   position="top-right"
                   autoClose={4000}
