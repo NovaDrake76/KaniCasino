@@ -12,6 +12,7 @@ const BuyOrder = require("../models/BuyOrder");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
 const { sellValue, marketFee, sellerNet, MARKET_FEE_RATE } = require("../utils/itemValue");
 const market = require("../utils/market");
+const { isRealMoneyMode } = require("../utils/mode");
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -20,11 +21,21 @@ const MAX_PRICE = 1000000;
 const MAX_ORDER_QTY = 20;
 const SELL_LEVEL = 5;
 const BUY_LEVEL = 10;
+const PRICE_CEILING_RATE = 10; // a listing or bid may not exceed this multiple of book value
+const UNVALUED_REFERENCE = 100; // stand-in book value for an item with none computed yet
 
 // prices are whole KP; floor rather than reject so a client sending 10.5 is not a hard error
 const cleanPrice = (raw) => {
   const n = Math.floor(Number(raw));
   return Number.isFinite(n) && n >= 1 && n <= MAX_PRICE ? n : null;
+};
+
+// the ceiling blocks chip-dumping (pricing a cheap item high to move KP to a colluder),
+// which only matters with real value, so it is null and unenforced in fake mode.
+const priceCeiling = (baseValue) => {
+  if (!isRealMoneyMode()) return null;
+  const ref = baseValue > 0 ? baseValue : UNVALUED_REFERENCE;
+  return Math.min(MAX_PRICE, Math.ceil(ref * PRICE_CEILING_RATE));
 };
 
 // the history route is public, but if a token happens to be present we use it to hide
@@ -118,6 +129,11 @@ module.exports = (io) => {
       const itemDocument = await Item.findById(inventoryItem._id);
       if (!itemDocument) {
         return res.status(404).json({ message: "Item not found" });
+      }
+
+      const ceiling = priceCeiling(itemDocument.baseValue);
+      if (ceiling !== null && price > ceiling) {
+        return res.status(400).json({ message: `Price too high: at most ${ceiling} K₽ for this item` });
       }
 
       // atomically remove exactly this item; if it's already gone, abort without listing
@@ -271,6 +287,11 @@ module.exports = (io) => {
 
       const itemDoc = await Item.findById(itemId);
       if (!itemDoc) return res.status(404).json({ message: "Item not found" });
+
+      const ceiling = priceCeiling(itemDoc.baseValue);
+      if (ceiling !== null && price > ceiling) {
+        return res.status(400).json({ message: `Bid too high: at most ${ceiling} K₽ for this item` });
+      }
 
       let filled = 0;
       let spent = 0;
