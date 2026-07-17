@@ -3,7 +3,6 @@ const { Rarities } = require("./caseOpening");
 // tunable economy knobs
 const RARITY_MULTIPLIER = { "1": 1, "2": 4, "3": 12, "4": 40, "5": 100 };
 const RTP = 0.9; // expected item value per open = case price * RTP (10% open edge)
-const UPGRADE_RTP = 0.9; // expected item value out per value staked (10% upgrade edge)
 const SELL_RATE = 0.75; // instant sell-to-house = base value * SELL_RATE
 const MARKET_FEE_RATE = 0.05; // house cut on a marketplace sale, paid by the seller
 
@@ -87,7 +86,6 @@ async function recomputeCaseValues(caseId) {
 module.exports = {
   RARITY_MULTIPLIER,
   RTP,
-  UPGRADE_RTP,
   SELL_RATE,
   MARKET_FEE_RATE,
   baseValuesForCase,

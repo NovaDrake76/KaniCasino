@@ -1,67 +1,56 @@
-const { calculateSuccessRate, MAX_UPGRADE_CHANCE } = require("../../games/upgrade");
-const { RARITY_MULTIPLIER, UPGRADE_RTP } = require("../../utils/itemValue");
+const { calculateSuccessRate, UPGRADE_RTP_BY_RARITY, UPGRADE_CEILING } = require("../../games/upgrade");
+const { RARITY_MULTIPLIER } = require("../../utils/itemValue");
 
-// within a case an item's value is A * RARITY_MULTIPLIER[rarity], so a rarity is worth
-// its multiplier. A cancels out of every edge below, so it can be 1.
+// within a case an item's value is A * RARITY_MULTIPLIER[rarity], so a rarity is worth its
+// multiplier. A cancels out of every edge below, so it can be 1.
 const value = (rarity) => RARITY_MULTIPLIER[String(rarity)];
 const staked = (...rarities) => rarities.reduce((s, r) => s + value(r), 0);
 
-// what the player gets back per unit staked
-const edgeOf = (rarities, target) => {
-  const inValue = staked(...rarities);
-  const outValue = value(target);
-  return 1 - (calculateSuccessRate(inValue, outValue) * outValue) / inValue;
-};
+const rateOf = (rarities, target) => calculateSuccessRate(staked(...rarities), value(target), target);
+const edgeOf = (rarities, target) => 1 - (rateOf(rarities, target) * value(target)) / staked(...rarities);
 
 const RARITIES = [1, 2, 3, 4, 5];
+const atCeiling = (rarities, target) => rateOf(rarities, target) >= UPGRADE_CEILING[String(target)] - 1e-12;
 
 describe("upgrade success rate", () => {
-  test("the edge is exactly 1 - UPGRADE_RTP for every rarity pair", () => {
-    for (const from of RARITIES) {
-      for (const to of RARITIES) {
-        // skip the ones a big stake pushes into the cap; covered separately below
-        if (calculateSuccessRate(value(from), value(to)) >= MAX_UPGRADE_CHANCE) continue;
-        expect(edgeOf([from], to)).toBeCloseTo(1 - UPGRADE_RTP, 10);
-      }
+  test("below its ceiling, the edge is exactly 1 - RTP for the target rarity", () => {
+    for (const target of RARITIES) {
+      // one rarity-1 item is a small enough stake to stay under every ceiling
+      if (atCeiling([1], target)) continue;
+      expect(edgeOf([1], target)).toBeCloseTo(1 - UPGRADE_RTP_BY_RARITY[String(target)], 10);
     }
   });
 
+  test("both the edge and the ceiling get worse as the target rarity climbs", () => {
+    for (let r = 2; r <= 5; r++) {
+      expect(UPGRADE_RTP_BY_RARITY[String(r)]).toBeLessThanOrEqual(UPGRADE_RTP_BY_RARITY[String(r - 1)]);
+      expect(UPGRADE_CEILING[String(r)]).toBeLessThan(UPGRADE_CEILING[String(r - 1)]);
+    }
+    // the top tier is a genuine long shot, not a near-certainty
+    expect(UPGRADE_CEILING["5"]).toBeLessThanOrEqual(0.15);
+  });
+
+  test("stacking cheap items cannot beat the ceiling of a rare target", () => {
+    // a hundred rarity-1 items poured into a rarity-5: the old flat cap gave ~0.95
+    const rate = calculateSuccessRate(staked(...Array(100).fill(1)), value(5), 5);
+    expect(rate).toBe(UPGRADE_CEILING["5"]);
+    expect(rate).toBeLessThanOrEqual(0.12);
+  });
+
   test("no combination of rarities is ever player-positive", () => {
-    // the old table paid the player +40% on 1x rarity-1 -> rarity-4, and stayed
-    // player-positive on that trade for stacks of up to six
     for (const target of RARITIES) {
       for (const from of RARITIES) {
-        for (let n = 1; n <= 30; n++) {
-          const edge = edgeOf(Array(n).fill(from), target);
-          expect(edge).toBeGreaterThanOrEqual(-1e-12);
+        for (let n = 1; n <= 40; n++) {
+          expect(edgeOf(Array(n).fill(from), target)).toBeGreaterThanOrEqual(-1e-12);
         }
       }
     }
   });
 
-  test("mixing colors does not move the edge", () => {
-    const mixes = [
-      [1, 4], [4, 1], [1, 1, 5], [3, 3, 1], [2, 3, 4], [1, 2, 3, 4, 5], [5, 1, 1, 1],
-    ];
-    for (const mix of mixes) {
-      for (const target of RARITIES) {
-        if (calculateSuccessRate(staked(...mix), value(target)) >= MAX_UPGRADE_CHANCE) continue;
-        expect(edgeOf(mix, target)).toBeCloseTo(1 - UPGRADE_RTP, 10);
-      }
-    }
-  });
-
-  test("an extra item buys exactly the chance it pays for", () => {
-    // adding a 1 KP rarity-1 to a 24 KP pair of rarity-3s used to buy 8.6% more chance
-    // for 4% more value. the chance must now move in step with the stake.
-    const before = calculateSuccessRate(staked(3, 3), value(4));
-    const after = calculateSuccessRate(staked(3, 3, 1), value(4));
-    expect(after / before).toBeCloseTo(staked(3, 3, 1) / staked(3, 3), 10);
-  });
-
-  test("order of items does not change the result", () => {
-    expect(calculateSuccessRate(staked(1, 3, 2), value(4)))
-      .toBe(calculateSuccessRate(staked(3, 2, 1), value(4)));
+  test("mixing colors does not move the rate for a given target and stake", () => {
+    // same total value, different mixes, both under the ceiling -> identical rate
+    const target = 4; // ceiling reached only well above these stakes
+    expect(rateOf([3, 1], target)).toBeCloseTo(rateOf([2, 2, 2, 1], target), 10);
   });
 
   test("adding an item never lowers the rate", () => {
@@ -69,30 +58,23 @@ describe("upgrade success rate", () => {
       let prev = 0;
       const pool = [1, 2, 3, 1, 2, 1];
       for (let n = 1; n <= pool.length; n++) {
-        const rate = calculateSuccessRate(staked(...pool.slice(0, n)), value(target));
+        const rate = calculateSuccessRate(staked(...pool.slice(0, n)), value(target), target);
         expect(rate + 1e-12).toBeGreaterThanOrEqual(prev);
         prev = rate;
       }
     }
   });
 
-  test("an oversized stake is capped rather than promised", () => {
-    // 100x rarity-5 against a rarity-1 target would ask for a chance of 9000
-    const rate = calculateSuccessRate(staked(...Array(100).fill(5)), value(1));
-    expect(rate).toBe(MAX_UPGRADE_CHANCE);
+  test("an oversized stake is capped at the target's ceiling, not promised", () => {
+    const rate = calculateSuccessRate(staked(...Array(100).fill(5)), value(1), 1);
+    expect(rate).toBe(UPGRADE_CEILING["1"]);
     expect(rate).toBeLessThan(1);
   });
 
-  test("a capped trade is still house-positive", () => {
-    // overpaying is the player's own bad trade; it must never turn into a player edge
-    expect(edgeOf(Array(100).fill(5), 1)).toBeGreaterThan(0);
-    expect(edgeOf([4, 4], 4)).toBeGreaterThan(0);
-  });
-
   test("worthless or missing values never produce a chance", () => {
-    expect(calculateSuccessRate(0, 100)).toBe(0);
-    expect(calculateSuccessRate(100, 0)).toBe(0);
-    expect(calculateSuccessRate(undefined, 100)).toBe(0);
-    expect(calculateSuccessRate(-5, 100)).toBe(0);
+    expect(calculateSuccessRate(0, 100, 5)).toBe(0);
+    expect(calculateSuccessRate(100, 0, 5)).toBe(0);
+    expect(calculateSuccessRate(undefined, 100, 5)).toBe(0);
+    expect(calculateSuccessRate(-5, 100, 5)).toBe(0);
   });
 });

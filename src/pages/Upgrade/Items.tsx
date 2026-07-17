@@ -21,10 +21,9 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
 
 
     // mirrors backend/games/upgrade.js exactly, so the rate on screen is the rate the
-    // server rolls. the chance is the stake measured against the prize, which holds the
-    // edge at 1 - UPGRADE_RTP however the rarities are mixed.
-    const UPGRADE_RTP = 0.9;
-    const MAX_UPGRADE_CHANCE = 0.95;
+    // server rolls: p = RTP(targetRarity) * staked / target, capped by the rarity ceiling.
+    const UPGRADE_RTP_BY_RARITY: { [k: string]: number } = { "1": 0.9, "2": 0.9, "3": 0.85, "4": 0.75, "5": 0.6 };
+    const UPGRADE_CEILING: { [k: string]: number } = { "1": 0.9, "2": 0.7, "3": 0.45, "4": 0.25, "5": 0.12 };
 
     const calculateSuccessRate = (items: any, target: any) => {
         const stakedValue = items.reduce(
@@ -33,7 +32,9 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
         );
         const targetValue = target?.baseValue || 0;
         if (stakedValue <= 0 || targetValue <= 0) return 0;
-        return Math.min((UPGRADE_RTP * stakedValue) / targetValue, MAX_UPGRADE_CHANCE);
+        const rtp = UPGRADE_RTP_BY_RARITY[String(target?.rarity)] || 0.9;
+        const ceiling = UPGRADE_CEILING[String(target?.rarity)] || 0.9;
+        return Math.min((rtp * stakedValue) / targetValue, ceiling);
     };
 
     useEffect(() => {
