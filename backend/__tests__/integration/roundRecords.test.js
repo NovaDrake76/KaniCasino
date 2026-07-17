@@ -2,10 +2,15 @@ process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
 
 const crypto = require("crypto");
 
-// pin the crash seed so its outcome is known (jest only allows mock-prefixed vars here)
+// pin each game's seed so its outcome is known (jest only allows mock-prefixed vars here)
 let mockCrashSeed = null;
+let mockCoinSeed = null;
 jest.mock("../../utils/gameChain", () => ({
-  consumeNextSeed: jest.fn(async () => ({ seed: mockCrashSeed, chainId: null, index: 0 })),
+  consumeNextSeed: jest.fn(async (game) => ({
+    seed: game === "coinflip" ? mockCoinSeed : mockCrashSeed,
+    chainId: null,
+    index: 0,
+  })),
 }));
 
 const { setupDb, clearDb, teardownDb } = require("./db");
@@ -15,19 +20,22 @@ const Round = require("../../models/Round");
 const Transaction = require("../../models/Transaction");
 const { TX } = require("../../utils/economy");
 const { crashPointFromSeed } = require("../../utils/crashMath");
+const { coinResultFromSeed } = require("../../utils/coinMath");
 const crashGame = require("../../games/crash");
 const coinFlip = require("../../games/coinFlip");
 
-const findSeed = (pred) => {
+const seedBy = (hash, pred) => {
   for (let i = 0; i < 200000; i++) {
     const s = crypto.createHash("sha256").update(`rr:${i}`).digest("hex");
-    if (pred(crashPointFromSeed(s))) return s;
+    if (pred(hash(s))) return s;
   }
   throw new Error("no seed found");
 };
-const INSTANT_SEED = findSeed((cp) => cp === 1.0);
-const RUNNING_SEED = findSeed((cp) => cp >= 3);
-mockCrashSeed = RUNNING_SEED; // default so a round always has a valid seed
+const INSTANT_SEED = seedBy(crashPointFromSeed, (cp) => cp === 1.0);
+const RUNNING_SEED = seedBy(crashPointFromSeed, (cp) => cp >= 3);
+const HEADS_SEED = seedBy(coinResultFromSeed, (r) => r === 0);
+mockCrashSeed = RUNNING_SEED; // defaults so a round always has a valid seed
+mockCoinSeed = HEADS_SEED;
 
 // real timers throughout: faking the clock stops the mongo driver's own timers and every
 // query then times out. the games take their timings as arguments instead, so a whole
@@ -162,7 +170,7 @@ test("a crash cashout is recorded on the round", async () => {
 });
 
 test("coin flip writes a round, records the side, and settles after the toss", async () => {
-  jest.spyOn(Math, "random").mockReturnValue(0.1); // heads
+  // the seed is pinned to heads, so the bettor on heads wins
   const user = await makeUser(5000);
   const io = makeIo();
 
