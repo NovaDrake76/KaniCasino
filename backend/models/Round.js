@@ -37,6 +37,10 @@ const RoundSchema = new mongoose.Schema(
     bets: { type: [roundBetSchema], default: [] },
     startedAt: Date,
     settledAt: Date,
+    // a give-back loop marks the round when it claims it and again when it finishes, so
+    // one that dies partway can be picked up rather than keeping what it still owes
+    settlementStartedAt: Date,
+    settlementDone: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
