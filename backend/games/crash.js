@@ -1,23 +1,25 @@
-const crypto = require("crypto");
 const Round = require("../models/Round");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
-const { multiplierAt, crashPointFromRandom, INSTANT_CRASH_CHANCE } = require("../utils/crashMath");
+const { multiplierAt, crashPointFromSeed } = require("../utils/crashMath");
+const { consumeNextSeed } = require("../utils/gameChain");
+const { sha256 } = require("../utils/hashChain");
 
 const freshState = () => ({
   gameBets: {},
   gamePlayers: {},
   crashPoint: 1.0,
   gameStartTime: null,
+  serverSeed: null, // the round's seed, kept secret until the round ends
+  serverSeedHash: null, // its commitment, public from betting open
 });
 
-// the crash point is the one secret a round holds, so it never goes on the wire until
-// the round is over and `crash:result` reveals it. broadcasting the whole state used to
-// hand it to every connected client the moment anyone cashed out: everyone still in the
-// round could then bail one tick before the bust, every time.
+// the crash point never goes on the wire until the round ends. the serverSeedHash is
+// safe: it is a one-way commitment, and the crash point cannot be derived from it.
 const publicState = (state) => ({
   gameBets: state.gameBets,
   gamePlayers: state.gamePlayers,
   gameStartTime: state.gameStartTime,
+  serverSeedHash: state.serverSeedHash,
 });
 
 // the timings are arguments so a test can run a whole round in milliseconds against a
@@ -193,7 +195,21 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
     if (stopped) return;
     gameState = freshState();
     try {
-      round = await Round.create({ game: "crash", status: "betting" });
+      // the seed fixes the crash point before any bet: players see its commitment now and
+      // the seed at round end, so the outcome was decided in advance and cannot be steered.
+      const { seed, chainId, index } = await consumeNextSeed("crash");
+      gameState.serverSeed = seed;
+      gameState.serverSeedHash = sha256(seed);
+      gameState.crashPoint = crashPointFromSeed(seed);
+      round = await Round.create({
+        game: "crash",
+        status: "betting",
+        serverSeed: seed,
+        serverSeedHash: gameState.serverSeedHash,
+        chainId,
+        chainIndex: index,
+        outcome: { crashPoint: gameState.crashPoint },
+      });
       if (stopped) return;
       bettingOpen = true;
     } catch (e) {
@@ -212,16 +228,14 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
     bettingOpen = false;
     io.emit("crash:start");
 
-    gameState.crashPoint = calculateCrashPoint();
+    // the crash point was fixed by the seed at betting open, so the round just starts;
+    // it stays server side until the reveal
     gameState.gameStartTime = Date.now();
-
-    // the crash point is written down before the round runs, so a restart can tell a
-    // round that had an outcome from one that never got that far. it stays server side.
     const running = round;
     if (running) {
       await Round.updateOne(
         { _id: running._id },
-        { $set: { status: "running", outcome: { crashPoint: gameState.crashPoint }, startedAt: new Date() } }
+        { $set: { status: "running", startedAt: new Date() } }
       ).catch((e) => console.log(e));
     }
 
@@ -232,6 +246,13 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
       if (currentMultiplier >= gameState.crashPoint) {
         clearInterval(multiplierInterval);
         io.emit("crash:result", gameState.crashPoint);
+        // the seed is revealed only now, so nobody could have derived the outcome early
+        io.emit("crash:reveal", {
+          roundId: running ? String(running._id) : null,
+          serverSeed: gameState.serverSeed,
+          serverSeedHash: gameState.serverSeedHash,
+          crashPoint: gameState.crashPoint,
+        });
 
         // the round is over: whoever did not cash out lost it fairly, which is what
         // separates a settled round from one a restart has to hand back
@@ -248,18 +269,6 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
       }
     }, tickMs);
     ticker = multiplierInterval;
-  };
-
-  const calculateCrashPoint = () => {
-    const h = crypto.getRandomValues(new Uint32Array(1))[0];
-    let crashPoint = crashPointFromRandom(h);
-
-    // small chance to crash instantly
-    if (Math.random() < INSTANT_CRASH_CHANCE) {
-      crashPoint = 1.0;
-    }
-
-    return crashPoint;
   };
 
   openBetting();

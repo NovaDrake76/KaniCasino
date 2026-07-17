@@ -3,6 +3,9 @@ const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
+const Round = require("../models/Round");
+const { crashPointFromSeed } = require("../utils/crashMath");
+const { sha256 } = require("../utils/hashChain");
 
 const cleanClientSeed = (raw) => {
   const s = (raw || "").toString().trim();
@@ -88,6 +91,37 @@ router.get("/roll-by-item/:uniqueId", async (req, res) => {
 router.get("/roll/:rollId/verify", async (req, res) => {
   try {
     res.json(await rolls.verifyCaseRoll(req.params.rollId));
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// verify a crash round. while it is still live only the commitment is public; once it
+// settles the seed is revealed and anyone can reproduce the crash point and the chain link.
+router.get("/crash/:roundId", async (req, res) => {
+  try {
+    const round = await Round.findById(req.params.roundId);
+    if (!round || round.game !== "crash") return res.status(404).json({ message: "Round not found" });
+
+    const revealed = round.status === "settled" || round.status === "voided";
+    const view = {
+      roundId: String(round._id),
+      status: round.status,
+      serverSeedHash: round.serverSeedHash,
+      chainIndex: round.chainIndex,
+      revealed,
+    };
+    if (!revealed) return res.json(view);
+
+    const recomputed = crashPointFromSeed(round.serverSeed);
+    res.json({
+      ...view,
+      serverSeed: round.serverSeed,
+      crashPoint: round.outcome && round.outcome.crashPoint,
+      recomputedCrashPoint: recomputed,
+      commitmentValid: sha256(round.serverSeed) === round.serverSeedHash,
+      outcomeValid: recomputed === (round.outcome && round.outcome.crashPoint),
+    });
   } catch (e) {
     res.status(500).json({ message: "Server error" });
   }
