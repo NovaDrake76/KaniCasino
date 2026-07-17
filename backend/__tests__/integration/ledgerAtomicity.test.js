@@ -204,3 +204,43 @@ test("concurrent mission claims pay the reward exactly once", async () => {
   expect((await User.findById(u._id)).walletBalance).toBe(1000 + REWARD);
   expect(await Transaction.countDocuments({ userId: u._id, type: TX.MISSION_REWARD })).toBe(1);
 });
+
+const { claimCommission } = require("../../utils/referrals");
+
+// a referrer with one referee who has wagered enough to earn commission
+async function referrerWithEarnings(wagered) {
+  const me = await makeUser(0);
+  const referee = await makeUser(1000);
+  await User.updateOne({ _id: referee._id }, { $set: { referredBy: me._id } });
+  await Transaction.create({ userId: referee._id, type: TX.CRASH_BET, direction: "debit", amount: wagered });
+  return me;
+}
+
+test("a failed commission credit rolls the claimed counter back", async () => {
+  const me = await referrerWithEarnings(1000); // 10 earned
+  jest.spyOn(Transaction, "create").mockRejectedValueOnce(new Error("row write failed"));
+
+  const res = await claimCommission(me._id);
+
+  expect(res.code).toBe(500);
+  const after = await User.findById(me._id);
+  expect(after.referralClaimed || 0).toBe(0); // the counter rolled back
+  expect(after.walletBalance).toBe(0); // nothing paid
+  jest.restoreAllMocks();
+
+  const retry = await claimCommission(me._id); // still all claimable
+  expect(retry.code).toBe(200);
+  expect(retry.body.claimed).toBe(10);
+  expect((await User.findById(me._id)).walletBalance).toBe(10);
+});
+
+test("concurrent commission claims pay exactly once", async () => {
+  const me = await referrerWithEarnings(1000);
+
+  const results = await Promise.all([claimCommission(me._id), claimCommission(me._id)]);
+
+  expect(results.filter((r) => r.code === 200).length).toBe(1);
+  expect((await User.findById(me._id)).walletBalance).toBe(10);
+  expect((await User.findById(me._id)).referralClaimed).toBe(10);
+  expect(await Transaction.countDocuments({ userId: me._id, type: TX.REFERRAL_COMMISSION })).toBe(1);
+});

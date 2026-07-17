@@ -5,6 +5,7 @@ import { register } from "../../../services/auth/auth";
 import MainButton from "../../MainButton";
 import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
+import { getPendingReferralCode, clearPendingReferralCode } from "../../../services/referrals/ReferralServices";
 // import { FaImage } from "react-icons/fa";
 // import { toast } from "react-toastify";
 
@@ -14,6 +15,7 @@ const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
+  const [referralCode, setReferralCode] = useState(getPendingReferralCode());
   const [profilePicture, _setProfilePicture] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,9 +27,10 @@ const SignUpPage: React.FC = () => {
     setLoading(true);
     e.preventDefault();
     try {
-      await register(email, password, nickname, profilePicture)
+      await register(email, password, nickname, profilePicture, referralCode.trim() || undefined)
         .then((response) => {
           saveTokens(response.token, "");
+          clearPendingReferralCode();
           toggleLogin();
         })
         .catch((error) => {
@@ -148,6 +151,16 @@ const SignUpPage: React.FC = () => {
                         setPassword(e.target.value),
                       placeholder: "Password",
                       label: "Password",
+                    },
+                    {
+                      name: "referralCode",
+                      type: "text",
+                      required: false,
+                      value: referralCode,
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                        setReferralCode(e.target.value.toUpperCase()),
+                      placeholder: "Referral code",
+                      label: "Referral code (optional)",
                     }
                   ].map((input) => (
                     <div className="relative" key={input.name}>
