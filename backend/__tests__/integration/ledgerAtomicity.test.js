@@ -1,15 +1,19 @@
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
+process.env.MISSIONS_LAUNCH_AT = "2000-01-01T00:00:00.000Z";
 
 // this suite needs real transactions, so it runs its own replica set rather than the
 // shared standalone harness. it proves the guarantee prod relies on: money and its
-// history commit together or not at all.
+// history commit together or not at all. every transaction-dependent test lives here so
+// only one replica set spins up (a second one starves the timing-sensitive round tests).
 const { MongoMemoryReplSet } = require("mongodb-memory-server");
 const mongoose = require("mongoose");
 const { uniqueSuffix } = require("./helpers");
 const User = require("../../models/User");
 const Transaction = require("../../models/Transaction");
 const Marketplace = require("../../models/Marketplace");
+const MissionState = require("../../models/MissionState");
 const { purchaseListing } = require("../../utils/market");
+const { claimMission } = require("../../utils/missions");
 const {
   chargeUser, creditUser, probeTransactions, setTransactionsSupported, transactionsSupported, TX,
 } = require("../../utils/economy");
@@ -24,7 +28,9 @@ beforeAll(async () => {
 
 afterEach(async () => {
   jest.restoreAllMocks();
-  await Promise.all([User.deleteMany({}), Transaction.deleteMany({}), Marketplace.deleteMany({})]);
+  await Promise.all([
+    User.deleteMany({}), Transaction.deleteMany({}), Marketplace.deleteMany({}), MissionState.deleteMany({}),
+  ]);
 });
 
 const listItem = (sellerId, price) => {
@@ -147,4 +153,54 @@ test("two concurrent buyers cannot both win the same listing", async () => {
   expect(balances).toEqual([900, 1000]); // the winner paid, the loser kept everything
   expect(await Marketplace.countDocuments({})).toBe(0); // the listing is consumed
   expect((await User.findById(seller._id)).walletBalance).toBe(95); // seller paid once
+});
+
+// a user who has opened a case (so "first-case" is complete) with an empty mission state
+const REWARD = 250; // the "first-case" mission reward
+async function claimableUser(walletBalance = 1000) {
+  const u = await makeUser(walletBalance);
+  await Transaction.create({ userId: u._id, type: TX.CASE_OPEN, direction: "debit", amount: 100, meta: { quantity: 1 } });
+  await MissionState.create({ userId: u._id });
+  return u;
+}
+const claimedKeys = async (userId) => (await MissionState.findOne({ userId })).claimed;
+
+test("a failed mission credit does not burn the reward: it stays claimable", async () => {
+  const u = await claimableUser(1000);
+  jest.spyOn(Transaction, "create").mockRejectedValueOnce(new Error("row write failed"));
+
+  const res = await claimMission(u._id, "first-case", null);
+
+  expect(res.code).toBe(500);
+  expect(await claimedKeys(u._id)).not.toContain("first-case"); // the mark rolled back
+  expect((await User.findById(u._id)).walletBalance).toBe(1000); // nothing paid
+  expect(await Transaction.countDocuments({ userId: u._id, type: TX.MISSION_REWARD })).toBe(0);
+});
+
+test("retrying after a failed mission credit pays the reward exactly once", async () => {
+  const u = await claimableUser(1000);
+  jest.spyOn(Transaction, "create").mockRejectedValueOnce(new Error("row write failed"));
+  await claimMission(u._id, "first-case", null); // fails, rolls back
+  jest.restoreAllMocks();
+
+  const res = await claimMission(u._id, "first-case", null); // retry
+  expect(res.body.claimed).toBe(true);
+  expect((await User.findById(u._id)).walletBalance).toBe(1000 + REWARD);
+
+  const again = await claimMission(u._id, "first-case", null);
+  expect(again.body.alreadyClaimed).toBe(true);
+  expect((await User.findById(u._id)).walletBalance).toBe(1000 + REWARD);
+});
+
+test("concurrent mission claims pay the reward exactly once", async () => {
+  const u = await claimableUser(1000);
+
+  const results = await Promise.all([
+    claimMission(u._id, "first-case", null),
+    claimMission(u._id, "first-case", null),
+  ]);
+
+  expect(results.filter((r) => r.body.claimed).length).toBe(1);
+  expect((await User.findById(u._id)).walletBalance).toBe(1000 + REWARD);
+  expect(await Transaction.countDocuments({ userId: u._id, type: TX.MISSION_REWARD })).toBe(1);
 });

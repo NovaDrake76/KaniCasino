@@ -4,7 +4,7 @@ const Battle = require("../models/Battle");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const MissionState = require("../models/MissionState");
-const { creditUser, TX } = require("./economy");
+const { creditUser, runAtomic, TX } = require("./economy");
 const { CATALOG, byKey, missionsLaunchAt } = require("./missionsCatalog");
 
 // a "big win" is any single game payout (slots / crash cashout / coin flip win)
@@ -205,10 +205,8 @@ async function markVisited(userId, key) {
   return { ok: true };
 }
 
-// claim a completed mission's reward exactly once. the one-time guard lives in the
-// update FILTER (claimed !contains key), so two concurrent claims can never both
-// credit: the second finds the key already present and modifies nothing. the wallet
-// is credited only after the claim is marked, so a failure never double-pays.
+// claim a completed mission's reward exactly once. the mark is the mutex and it commits in
+// one transaction with the credit, so a failed payout rolls it back instead of burning it.
 async function claimMission(userId, key, io) {
   const mission = byKey(key);
   if (!mission || mission.active === false) return { code: 404, body: { message: "Mission not found" } };
@@ -219,20 +217,34 @@ async function claimMission(userId, key, io) {
   if (v.claimed) return { code: 200, body: { claimed: false, alreadyClaimed: true } };
 
   await MissionState.updateOne({ userId }, { $setOnInsert: { userId } }, { upsert: true });
-  const res = await MissionState.updateOne(
-    { userId, claimed: { $ne: key } },
-    { $addToSet: { claimed: key } }
-  );
-  if (res.modifiedCount !== 1) {
+
+  let updated;
+  try {
+    updated = await runAtomic(async (session) => {
+      const res = await MissionState.updateOne(
+        { userId, claimed: { $ne: key } },
+        { $addToSet: { claimed: key } },
+        { session }
+      );
+      if (res.modifiedCount !== 1) return null; // a concurrent request claimed it first
+      const credited = await creditUser(userId, mission.reward, 0, {
+        type: TX.MISSION_REWARD,
+        meta: { missionKey: key, missionTitle: mission.title },
+        session,
+      });
+      if (!credited) throw new Error("mission credit failed"); // abort so the mark rolls back
+      return credited;
+    });
+  } catch (e) {
+    console.error("claimMission failed:", e);
+    return { code: 500, body: { message: "Could not claim the reward, please try again" } };
+  }
+
+  if (updated === null) {
     return { code: 200, body: { claimed: false, alreadyClaimed: true } };
   }
 
-  const updated = await creditUser(userId, mission.reward, 0, {
-    type: TX.MISSION_REWARD,
-    meta: { missionKey: key, missionTitle: mission.title },
-  });
-
-  if (io && updated) {
+  if (io) {
     io.to(userId.toString()).emit("userDataUpdated", {
       walletBalance: updated.walletBalance,
       xp: updated.xp,
@@ -245,7 +257,7 @@ async function claimMission(userId, key, io) {
     body: {
       claimed: true,
       reward: mission.reward,
-      walletBalance: updated ? updated.walletBalance : undefined,
+      walletBalance: updated.walletBalance,
       missionKey: key,
     },
   };
