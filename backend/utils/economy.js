@@ -33,6 +33,7 @@ const TX = {
   REFERRAL_BONUS: "referral_bonus", // one-time signup bonus, both sides of a referral
   REFERRAL_COMMISSION: "referral_commission", // the referrer's cut of referred wagers
   REFERRAL_MILESTONE: "referral_milestone", // one-time payout when a referee reaches level 10
+  AD_REWARD: "ad_reward", // KP paid for a completed rewarded ad view
   OPENING: "opening_balance", // the pre-ledger balance, booked once against genesis
 };
 

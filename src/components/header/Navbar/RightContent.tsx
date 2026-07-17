@@ -3,6 +3,7 @@ import Avatar from "../../Avatar";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegBellSlash } from "react-icons/fa";
 import ClaimBonus from "../ClaimBonus";
+import WatchAdReward from "../WatchAdReward";
 import { IoMdExit } from "react-icons/io";
 import { BiWallet } from "react-icons/bi";
 import Monetary from "../../Monetary";
@@ -34,11 +35,14 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNoti
 
     return (
         <div className="flex items-center gap-4">
-            <div className="hidden md:flex ">
+            <div className="hidden md:flex items-center gap-2">
                 {
                     !loading && (
-                        //button to claim bonus 
-                        <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} />
+                        //button to claim bonus
+                        <>
+                            <WatchAdReward />
+                            <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} />
+                        </>
                     )
                 }
             </div>
