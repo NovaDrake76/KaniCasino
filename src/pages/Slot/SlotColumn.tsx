@@ -8,25 +8,22 @@ interface SlotColumnProps {
     winningLines?: any[];
 }
 
+const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
+const makeFillers = () =>
+    Array.from({ length: 47 }, () => options[Math.floor(Math.random() * options.length)]);
+
 const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, winningLines }) => {
     const rollsize = 5260;
-    const [rouletteItems, setRouletteItems] = useState<any[]>([]);
     const [translateValue, setTranslateValue] = useState<string>(`-${rollsize}px`);
     const [loading, setLoading] = useState<boolean>(true);
+    // the scrolling fillers are refreshed only when a spin starts, never when `symbols`
+    // changes; otherwise the result arriving mid-spin re-randomised the whole reel
+    const [fillers, setFillers] = useState<string[]>(makeFillers);
 
     const rouletteRef = useRef<HTMLDivElement | null>(null);
-    const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
 
-    const createRouletteItems = () => {
-        const newItems = symbols.slice();
-        for (let i = 0; i < 46; i++) {
-            newItems.unshift(options[Math.floor(Math.random() * options.length)]);
-        }
-        newItems[47] = symbols[0];
-        newItems[48] = symbols[1];
-        newItems[49] = symbols[2];
-        setRouletteItems(newItems);
-    };
+    // the final three symbols land at the stop position; fillers scroll past above them
+    const rouletteItems = [...fillers, symbols[0], symbols[1], symbols[2]];
 
     const handleImageLoad = () => {
         setLoading(false);
@@ -34,8 +31,8 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
 
 
     useEffect(() => {
-        createRouletteItems();
-    }, [symbols]);
+        if (isSpinning) setFillers(makeFillers());
+    }, [isSpinning]);
 
 
     useEffect(() => {
