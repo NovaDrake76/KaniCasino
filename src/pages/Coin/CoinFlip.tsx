@@ -8,6 +8,12 @@ import LiveBets from "./LiveBets";
 
 const socket = SocketConnection.getInstance();
 
+// mirrors backend/games/coinFlip.js: a win pays 1.94x, and the minimum exists because
+// the payout is whole KP, so below it the rounding would be the house edge
+const WIN_MULTIPLIER = 1.94;
+const MIN_BET = 10;
+const MAX_BET = 1000000;
+
 interface GameHistory {
   result: number;
 }
@@ -165,19 +171,27 @@ const CoinFlip = () => {
               }
             </div></div>
           <button onClick={handleBet} className=" p-2 border rounded bg-indigo-600 hover:bg-indigo-700 w-full mt-4" disabled={
-            choice === null || bet === 0 || userGambled || (userData !== null && userData.walletBalance < bet) || spinning || bet > 1000000
+            choice === null || bet < MIN_BET || userGambled || (userData !== null && userData.walletBalance < bet) || spinning || bet > MAX_BET
           }>
             {
 
               spinning ? "Spinning..."
                 : choice === null ? "Choose a side"
                   : bet === 0 ? "Place the bet value"
-                    : bet > 1000000 ? "Max bet is 1M"
-                      : userGambled ? "You're in!"
-                        : userData !== null && userData.walletBalance < bet ? "Not enough money"
-                          : "Enter the Game"
+                    : bet < MIN_BET ? `Min bet is ${MIN_BET}`
+                      : bet > MAX_BET ? "Max bet is 1M"
+                        : userGambled ? "You're in!"
+                          : userData !== null && userData.walletBalance < bet ? "Not enough money"
+                            : "Enter the Game"
             }
           </button>
+          {/* the payout is not 2x, so it says so rather than leaving it to be inferred */}
+          <div className="flex justify-between text-xs text-[#84819a] pt-2">
+            <span>Win pays {WIN_MULTIPLIER}x</span>
+            {bet >= MIN_BET && bet <= MAX_BET && (
+              <span>You'd win {Math.floor(bet * WIN_MULTIPLIER).toLocaleString()} K₽</span>
+            )}
+          </div>
         </div>
         <div className="flex flex-col">
           <div className="flex lg:w-[800px] border-b border-gray-700  p-4">
