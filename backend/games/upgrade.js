@@ -3,26 +3,24 @@ const Item = require("../models/Item");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
-const { UPGRADE_RTP } = require("../utils/itemValue");
 
-const UPGRADE_ALGO_VERSION = 2; // bump if calculateSuccessRate ever changes
+const UPGRADE_ALGO_VERSION = 3; // bump if calculateSuccessRate ever changes
 
-// nothing is ever a certainty: staking more than the target is worth still leaves a
-// sliver of risk, and this is what stops an oversized stake asking for a chance above 1
-const MAX_UPGRADE_CHANCE = 0.95;
+// return by target rarity: the edge grows with rarity, so upgrading into a rare item is a
+// worse deal per attempt than upgrading into a common one
+const UPGRADE_RTP_BY_RARITY = { "1": 0.9, "2": 0.9, "3": 0.85, "4": 0.75, "5": 0.6 };
 
-// the chance is the stake measured against the prize: p = RTP * staked / target. the
-// player's return is p * target / staked, so it is UPGRADE_RTP for every trade, and the
-// edge is a flat 1 - UPGRADE_RTP whatever mix of rarities goes in.
-//
-// it used to be read off a rarity-to-rarity table that had nothing to do with the
-// rarity multipliers item values are built from. the two were never reconciled, so the
-// edge swung from -40% (the player profiting, on 1x rarity-1 -> rarity-4) to +90%
-// depending purely on which colors were fed in, and adding a 1 KP item to a 24 KP stake
-// bought more chance than it paid for.
-const calculateSuccessRate = (stakedValue, targetValue) => {
+// max success chance by target rarity: piling in cheap items cannot make a rare upgrade a
+// sure thing, so stacking a heap of low items into an ultra is still a gamble. no case odds.
+const UPGRADE_CEILING = { "1": 0.9, "2": 0.7, "3": 0.45, "4": 0.25, "5": 0.12 };
+
+// the stake measured against the prize, p = RTP * staked / target, capped by the target's
+// rarity ceiling; below the ceiling the edge is 1 - RTP(rarity), so mixing colors never moves it.
+const calculateSuccessRate = (stakedValue, targetValue, targetRarity) => {
   if (!(stakedValue > 0) || !(targetValue > 0)) return 0;
-  return Math.min((UPGRADE_RTP * stakedValue) / targetValue, MAX_UPGRADE_CHANCE);
+  const rtp = UPGRADE_RTP_BY_RARITY[String(targetRarity)] || 0.9;
+  const ceiling = UPGRADE_CEILING[String(targetRarity)] || 0.9;
+  return Math.min((rtp * stakedValue) / targetValue, ceiling);
 };
 
 // Helper function to validate if all items belong to the same case
@@ -115,7 +113,7 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
     }
 
     // success is the provably-fair roll: succeed when the [0,1) draw is below the rate
-    const successRate = calculateSuccessRate(stakedValue, targetValue);
+    const successRate = calculateSuccessRate(stakedValue, targetValue, targetItem.rarity);
     const rollFloatValue = rollFloat(reserved.serverSeed, reserved.clientSeed, nonce);
     const isSuccess = rollFloatValue < successRate;
 
@@ -179,4 +177,5 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
 module.exports = upgradeItems;
 // exposed for unit testing
 module.exports.calculateSuccessRate = calculateSuccessRate;
-module.exports.MAX_UPGRADE_CHANCE = MAX_UPGRADE_CHANCE;
+module.exports.UPGRADE_RTP_BY_RARITY = UPGRADE_RTP_BY_RARITY;
+module.exports.UPGRADE_CEILING = UPGRADE_CEILING;
