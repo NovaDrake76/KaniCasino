@@ -2,7 +2,7 @@ import { BsCoin } from "react-icons/bs";
 import { GiUpgrade, GiCrossedSwords } from "react-icons/gi";
 import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { SlPlane } from "react-icons/sl";
-import { FaHome, FaUserFriends } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { TbCat } from "react-icons/tb";
 import ClaimBonus from "../header/ClaimBonus";
@@ -53,11 +53,6 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: "Case Battles",
             path: "/battles",
             icon: <GiCrossedSwords className="text-2xl" />,
-        },
-        {
-            name: "Affiliates",
-            path: "/affiliates",
-            icon: <FaUserFriends className="text-2xl" />,
         },
         ...(userData?.isAdmin ? [{
             name: "Backoffice",

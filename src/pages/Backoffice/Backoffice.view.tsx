@@ -41,6 +41,7 @@ const LINE_LABELS: Record<string, string> = {
   signup: "Signup balance",
   mission_reward: "Mission rewards",
   referral_bonus: "Referral bonuses",
+  referral_milestone: "Referral milestones",
   referral_commission: "Referral commission",
   admin_adjust: "Admin adjustments",
 };

@@ -8,6 +8,7 @@ const Round = require("../models/Round");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
+const referrals = require("../utils/referrals");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
 const { buildRangeTable } = require("../utils/caseRanges");
 const { roll, pickFromRanges, TOTAL } = require("../utils/provablyFair");
@@ -134,6 +135,7 @@ module.exports = (io) => {
       if (newLevel !== updatedUser.level) {
         updatedUser.level = newLevel;
         await User.updateOne({ _id: user._id }, { $set: { level: newLevel } });
+        referrals.maybePayReferralMilestone(user._id, newLevel).catch(() => {});
       }
 
       const winnerUser = {
