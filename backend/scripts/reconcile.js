@@ -11,10 +11,12 @@ async function reconcile() {
   const users = await User.find({}, { walletBalance: 1 }).lean();
   let drifting = 0;
   let totalDrift = 0;
+  let circulating = 0;
   const worst = [];
 
   for (const u of users) {
     const derived = await accountBalance(u._id);
+    circulating += derived;
     const drift = u.walletBalance - derived;
     if (drift !== 0) {
       drifting += 1;
@@ -32,9 +34,13 @@ async function reconcile() {
     ledgerSupply(),
   ]);
 
+  // double entry means every account sums to zero; conservation is how far off it is
+  const conservation = circulating + house + mint + escrow + genesis;
+
   return {
-    players: { total: users.length, drifting, totalDrift },
+    players: { total: users.length, drifting, totalDrift, circulating },
     system: { house, mint, escrow, genesis, supply },
+    conservation,
     worst: worst.slice(0, 20),
   };
 }

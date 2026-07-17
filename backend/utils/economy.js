@@ -30,6 +30,7 @@ const TX = {
   ITEM_SELL: "item_sell",
   ADMIN_ADJUST: "admin_adjust",
   MISSION_REWARD: "mission_reward",
+  OPENING: "opening_balance", // the pre-ledger balance, booked once against genesis
 };
 
 function calculateXPForLevel(level) {
