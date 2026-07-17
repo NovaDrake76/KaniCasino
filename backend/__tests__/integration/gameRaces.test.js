@@ -1,10 +1,12 @@
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
 
-// pin the round to a high crash point so a cashout at 1.0x is always in time
-jest.mock("../../utils/crashMath", () => ({
-  ...jest.requireActual("../../utils/crashMath"),
-  crashPointFromRandom: () => 99,
-  INSTANT_CRASH_CHANCE: 0,
+const crypto = require("crypto");
+
+// pin the crash seed to a high crash point so a cashout at 1.0x is always in time, and
+// skip generating a real 10k-seed chain under this suite's fake timers (mock-prefixed)
+let mockHighSeed = null;
+jest.mock("../../utils/gameChain", () => ({
+  consumeNextSeed: jest.fn(async () => ({ seed: mockHighSeed, chainId: null, index: 0 })),
 }));
 
 const { setupDb, clearDb, teardownDb } = require("./db");
@@ -12,8 +14,14 @@ const { uniqueSuffix } = require("./helpers");
 
 const User = require("../../models/User");
 const Round = require("../../models/Round");
+const { crashPointFromSeed } = require("../../utils/crashMath");
 const crashGame = require("../../games/crash");
 const coinFlip = require("../../games/coinFlip");
+
+for (let i = 0; mockHighSeed === null; i++) {
+  const s = crypto.createHash("sha256").update(`gr:${i}`).digest("hex");
+  if (crashPointFromSeed(s) >= 50) mockHighSeed = s;
+}
 
 beforeAll(setupDb);
 
