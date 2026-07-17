@@ -7,7 +7,7 @@ import MainButton from "../../MainButton";
 import { clearTokens } from "../../../services/auth/authUtils";
 import { me } from "../../../services/auth/auth";
 import "react-loading-skeleton/dist/skeleton.css";
-import { MdOutlineSell } from "react-icons/md";
+import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import { GiUpgrade, GiCrossedSwords } from 'react-icons/gi';
@@ -99,7 +99,13 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       name: "Affiliates",
       path: "/affiliates",
       icon: <FaUserFriends className="text-2xl" />,
-    }
+    },
+    // only admins see the backoffice; the api refuses everyone else anyway
+    ...(userData?.isAdmin ? [{
+      name: "Backoffice",
+      path: "/backoffice",
+      icon: <MdOutlineAdminPanelSettings className="text-2xl" />,
+    }] : [])
   ];
 
 

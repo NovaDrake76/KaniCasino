@@ -14,6 +14,7 @@ import BattleRoom from "./pages/Battles/BattleRoom";
 import ProvablyFair from "./pages/ProvablyFair";
 import Affiliates from "./pages/Affiliates/Affiliates";
 import ReferralRedirect from "./pages/Affiliates/ReferralRedirect";
+import Backoffice from "./pages/Backoffice/Backoffice";
 
 const defaultRoutes = (
   <>
@@ -31,6 +32,7 @@ const defaultRoutes = (
     <Route path="/provably-fair" element={<ProvablyFair />} />
     <Route path="/affiliates" element={<Affiliates />} />
     <Route path="/r/:code" element={<ReferralRedirect />} />
+    <Route path="/backoffice" element={<Backoffice />} />
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
   </>
 );

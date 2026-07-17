@@ -250,14 +250,16 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
       xp,
       level,
       walletBalance,
-      nextBonus
+      nextBonus,
+      isAdmin
     } = req.user;
 
     // verify in Notification model if there are unread notifications for the user
     const unreadNotifications = await Notification.find({ receiverId: req.user._id, read: false });
     const hasUnreadNotifications = unreadNotifications.length > 0;
 
-    res.json({ id, username, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications });
+    // isAdmin is the caller's own flag; the public /:id profile keeps hiding it
+    res.json({ id, username, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications, isAdmin: !!isAdmin });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
