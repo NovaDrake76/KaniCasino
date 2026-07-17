@@ -9,6 +9,16 @@ const freshState = () => ({
   gameStartTime: null,
 });
 
+// the crash point is the one secret a round holds, so it never goes on the wire until
+// the round is over and `crash:result` reveals it. broadcasting the whole state used to
+// hand it to every connected client the moment anyone cashed out: everyone still in the
+// round could then bail one tick before the bust, every time.
+const publicState = (state) => ({
+  gameBets: state.gameBets,
+  gamePlayers: state.gamePlayers,
+  gameStartTime: state.gameStartTime,
+});
+
 const crashGame = (io) => {
   let gameState = freshState();
   // bets are only accepted in the window between rounds
@@ -71,7 +81,7 @@ const crashGame = (io) => {
           level: updatedUser.level,
         });
 
-        io.emit("crash:gameState", gameState);
+        io.emit("crash:gameState", publicState(gameState));
         reply({ ok: true });
       } catch (err) {
         console.log(err);
@@ -124,7 +134,7 @@ const crashGame = (io) => {
             level: updatedUser.level,
           });
 
-          io.emit("crash:gameState", gameState);
+          io.emit("crash:gameState", publicState(gameState));
 
           socket.emit("crash:cashoutSuccess", { userId, payout, multiplier });
         }
@@ -161,7 +171,7 @@ const crashGame = (io) => {
         // reset and reopen betting for the next round
         gameState = freshState();
         bettingOpen = true;
-        io.emit("crash:gameState", gameState);
+        io.emit("crash:gameState", publicState(gameState));
 
         setTimeout(runRound, 12000); // betting window before the next round
       } else {
