@@ -1,13 +1,33 @@
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
 
+const crypto = require("crypto");
+
+// pin the crash seed so its outcome is known (jest only allows mock-prefixed vars here)
+let mockCrashSeed = null;
+jest.mock("../../utils/gameChain", () => ({
+  consumeNextSeed: jest.fn(async () => ({ seed: mockCrashSeed, chainId: null, index: 0 })),
+}));
+
 const { setupDb, clearDb, teardownDb } = require("./db");
 const { uniqueSuffix } = require("./helpers");
 const User = require("../../models/User");
 const Round = require("../../models/Round");
 const Transaction = require("../../models/Transaction");
 const { TX } = require("../../utils/economy");
+const { crashPointFromSeed } = require("../../utils/crashMath");
 const crashGame = require("../../games/crash");
 const coinFlip = require("../../games/coinFlip");
+
+const findSeed = (pred) => {
+  for (let i = 0; i < 200000; i++) {
+    const s = crypto.createHash("sha256").update(`rr:${i}`).digest("hex");
+    if (pred(crashPointFromSeed(s))) return s;
+  }
+  throw new Error("no seed found");
+};
+const INSTANT_SEED = findSeed((cp) => cp === 1.0);
+const RUNNING_SEED = findSeed((cp) => cp >= 3);
+mockCrashSeed = RUNNING_SEED; // default so a round always has a valid seed
 
 // real timers throughout: faking the clock stops the mongo driver's own timers and every
 // query then times out. the games take their timings as arguments instead, so a whole
@@ -70,8 +90,8 @@ const makeSocket = (userId) => {
 };
 
 test("crash writes a round, ties the stake to it, and settles it at the bust", async () => {
-  // land on an instant bust so the round resolves in one tick without a real wait
-  jest.spyOn(Math, "random").mockReturnValue(0.01); // below INSTANT_CRASH_CHANCE
+  // a seed whose crash point is 1.0, so the round busts instantly and settles at once
+  mockCrashSeed = INSTANT_SEED;
   const user = await makeUser(5000);
   const io = makeIo();
 
@@ -105,7 +125,8 @@ test("crash writes a round, ties the stake to it, and settles it at the bust", a
 });
 
 test("a crash cashout is recorded on the round", async () => {
-  jest.spyOn(Math, "random").mockReturnValue(0.99); // no instant bust
+  // a seed with a high crash point, so the round is comfortably still running at cashout
+  mockCrashSeed = RUNNING_SEED;
   const user = await makeUser(5000);
   const io = makeIo();
 
@@ -120,14 +141,11 @@ test("a crash cashout is recorded on the round", async () => {
   await socket.handlers["crash:cashout"](() => {});
 
   const cashed = await Round.findById(opened._id);
-  // a crash point of exactly 1.00 happens 1% of the time and refuses the cashout
-  if (cashed.outcome && cashed.outcome.crashPoint > 1) {
-    expect(cashed.bets[0].payout).toBeGreaterThan(0);
-    expect(cashed.bets[0].multiplier).toBeGreaterThan(1);
-    expect(cashed.bets[0].settledAt).toBeTruthy();
-    const tx = await Transaction.findOne({ userId: user._id, type: TX.CRASH_CASHOUT });
-    expect(tx.meta.roundId).toBe(String(opened._id));
-  }
+  expect(cashed.bets[0].payout).toBeGreaterThan(0);
+  expect(cashed.bets[0].multiplier).toBeGreaterThan(1);
+  expect(cashed.bets[0].settledAt).toBeTruthy();
+  const tx = await Transaction.findOne({ userId: user._id, type: TX.CRASH_CASHOUT });
+  expect(tx.meta.roundId).toBe(String(opened._id));
 });
 
 test("coin flip writes a round, records the side, and settles after the toss", async () => {
