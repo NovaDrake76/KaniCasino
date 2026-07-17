@@ -18,6 +18,11 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  // bumped to invalidate every token issued so far (logout everywhere, password change)
+  tokenVersion: {
+    type: Number,
+    default: 0,
+  },
   walletBalance: {
     type: Number,
     default: 200,

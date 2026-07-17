@@ -81,7 +81,7 @@ router.post(
       });
 
       // Generate and send JWT
-      const payload = { userId: user.id };
+      const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
@@ -136,7 +136,7 @@ router.post(
       }
 
       // Generate and send JWT
-      const payload = { userId: user.id };
+      const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
       jwt.sign(
         payload,
         process.env.JWT_SECRET,
@@ -190,7 +190,7 @@ router.post('/googlelogin', async (req, res) => {
       });
     }
     // Generate and send JWT
-    const payload = { userId: user.id };
+    const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
@@ -482,6 +482,18 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
 });
 
 
+
+// revoke every token issued for this account by bumping its version; the caller and
+// every other device must log in again. the fix for a stolen or leaked token.
+router.post('/logout-all', authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    await User.updateOne({ _id: req.user._id }, { $inc: { tokenVersion: 1 } });
+    res.json({ message: "Signed out of all devices." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 const isValidBase64 = (str) => {
   const base64Regex = /^data:image\/(png|jpeg|jpg);base64,/;
