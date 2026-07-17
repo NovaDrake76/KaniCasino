@@ -71,6 +71,7 @@ const coinFlip = require("./games/coinFlip");
 const crash = require("./games/crash");
 const caseBattle = require("./games/caseBattle");
 const { recoverStuckRounds } = require("./utils/rounds");
+const { completeStuckBattles } = require("./games/battleEngine");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
 const itemRoutes = require("./routes/itemRoutes");
@@ -113,8 +114,15 @@ app.use("/collections", collectionsRoutes);
 app.use("/missions", missionsRoutes);
 
 // settle whatever the last shutdown interrupted before dealing anyone in again: a live
-// crash or coin flip round holds real stakes, and until this runs they are unaccounted
-recoverStuckRounds(io, coinFlip.winPayout).catch((e) => console.log(e));
+// crash or coin flip round holds real stakes, and until this runs they are unaccounted.
+// it repeats because a give-back loop that dies holds its lease until that goes stale,
+// and a boot-only sweep would leave the money it still owes until the next restart.
+const sweepRounds = () => {
+  recoverStuckRounds(io, coinFlip.winPayout).catch((e) => console.log(e));
+  completeStuckBattles(io).catch((e) => console.log(e));
+};
+sweepRounds();
+setInterval(sweepRounds, 5 * 60 * 1000);
 
 // Start the games
 coinFlip(io);

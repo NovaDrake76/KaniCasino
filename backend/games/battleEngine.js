@@ -17,6 +17,9 @@ const { getOrCreateActiveSeed } = require("../utils/seeds");
 
 const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
 
+// how long a refund loop's claim is trusted before another boot may take it over
+const SETTLEMENT_LEASE_MS = 60000;
+
 const emitUserData = (io, userId, user) => {
   io.to(userId.toString()).emit("userDataUpdated", {
     walletBalance: user.walletBalance,
@@ -240,10 +243,20 @@ async function finishBattle(battle, io = noopIo) {
 // nothing was ever rolled. finishing one invents a winner out of an empty pool (every
 // total is 0, so the tie-break picks at random) and quietly keeps the entry fees.
 async function voidBattle(battle, io = noopIo) {
-  // compare-and-set on status: only one runner voids this battle
+  // the claim doubles as a lease. "cancelled" is in the filter so a refund loop that
+  // died partway can be picked up again, and the lease stops two boots both running it
+  // and refunding the same player twice. a lease older than this is assumed dead.
   const claimed = await Battle.findOneAndUpdate(
-    { _id: battle._id, status: "in_progress" },
-    { $set: { status: "cancelled", finishedAt: new Date() } },
+    {
+      _id: battle._id,
+      status: { $in: ["in_progress", "cancelled"] },
+      settlementDone: { $ne: true },
+      $or: [
+        { settlementStartedAt: { $exists: false } },
+        { settlementStartedAt: { $lte: new Date(Date.now() - SETTLEMENT_LEASE_MS) } },
+      ],
+    },
+    { $set: { status: "cancelled", finishedAt: new Date(), settlementStartedAt: new Date() } },
     { new: true }
   );
   if (!claimed) return Battle.findById(battle._id);
@@ -267,13 +280,27 @@ async function voidBattle(battle, io = noopIo) {
     if (user) emitUserData(io, entry.userId, user);
   }
 
+  // only now is the battle finished with: until this lands, recovery will come back
+  await Battle.updateOne({ _id: claimed._id }, { $set: { settlementDone: true } });
   return claimed;
 }
 
 // on boot, settle any battle a restart interrupted so none are left stuck. one that
-// never committed a preroll has nothing to reveal, so it is voided rather than finished
+// never committed a preroll has nothing to reveal, so it is voided rather than finished.
+// the second arm picks up a void whose own refund loop died partway: it keys on
+// settlementStartedAt, which only exists once that loop has claimed the battle, so
+// battles cancelled before this existed are left alone.
 async function completeStuckBattles(io = noopIo) {
-  const stuck = await Battle.find({ status: "in_progress" });
+  const stuck = await Battle.find({
+    $or: [
+      { status: "in_progress" },
+      {
+        status: "cancelled",
+        settlementStartedAt: { $exists: true },
+        settlementDone: { $ne: true },
+      },
+    ],
+  });
   for (const b of stuck) {
     try {
       if (b.pfServerSeed && b.rolls && b.rolls.length) {

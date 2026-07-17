@@ -51,6 +51,10 @@ const BattleSchema = new mongoose.Schema(
     pfServerSeedHash: String, // committed at start
     startedAt: Date,
     finishedAt: Date,
+    // a refund loop marks the battle when it claims it and again when it finishes, so
+    // one that dies partway can be picked up rather than keeping the entries it owes
+    settlementStartedAt: Date,
+    settlementDone: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
