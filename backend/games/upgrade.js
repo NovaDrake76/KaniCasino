@@ -3,43 +3,26 @@ const Item = require("../models/Item");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
+const { UPGRADE_RTP } = require("../utils/itemValue");
 
-const UPGRADE_ALGO_VERSION = 1; // bump if calculateSuccessRate ever changes
+const UPGRADE_ALGO_VERSION = 2; // bump if calculateSuccessRate ever changes
 
-const baseChances = {
-  "1": { "1": 0.5, "2": 0.2, "3": 0.1, "4": 0.05, "5": 0.002 },
-  "2": { "1": 0.2, "2": 0.5, "3": 0.2, "4": 0.1, "5": 0.01 },
-  "3": { "1": 0.1, "2": 0.2, "3": 0.5, "4": 0.2, "5": 0.05 },
-  "4": { "1": 0.05, "2": 0.1, "3": 0.2, "4": 0.5, "5": 0.1 },
-  "5": { "1": 0.002, "2": 0.01, "3": 0.05, "4": 0.1, "5": 0.5 }
-};
+// nothing is ever a certainty: staking more than the target is worth still leaves a
+// sliver of risk, and this is what stops an oversized stake asking for a chance above 1
+const MAX_UPGRADE_CHANCE = 0.95;
 
-const rarityFactors = { "4": 0.7, "5": 0.5 };
-const rarityCaps = { "1": 0.8, "2": 0.7, "3": 0.6, "4": 0.45, "5": 0.2 };
-const diminishingRate = 0.9; // 90% effectiveness for each subsequent item
-
-// success rate uses 1 - product(1 - chance), so each item can only help. the
-// per-item contributions are sorted strongest-first before the diminishing
-// factor is applied, which makes the result independent of selection order and
-// keeps it monotonic (adding an item never lowers the rate).
-const calculateSuccessRate = (selectedItems, targetRarity) => {
-  const rarityFactor = rarityFactors[targetRarity] || 1;
-
-  const contributions = selectedItems
-    .map((item) => {
-      const baseChance = (baseChances[item.rarity] || {})[targetRarity] || 0;
-      return baseChance * rarityFactor;
-    })
-    .sort((a, b) => b - a);
-
-  let failChance = 1;
-  contributions.forEach((chance, index) => {
-    failChance *= 1 - chance * Math.pow(diminishingRate, index);
-  });
-
-  const successRate = 1 - failChance;
-  const cap = rarityCaps[targetRarity] !== undefined ? rarityCaps[targetRarity] : 0.8;
-  return Math.min(successRate, cap);
+// the chance is the stake measured against the prize: p = RTP * staked / target. the
+// player's return is p * target / staked, so it is UPGRADE_RTP for every trade, and the
+// edge is a flat 1 - UPGRADE_RTP whatever mix of rarities goes in.
+//
+// it used to be read off a rarity-to-rarity table that had nothing to do with the
+// rarity multipliers item values are built from. the two were never reconciled, so the
+// edge swung from -40% (the player profiting, on 1x rarity-1 -> rarity-4) to +90%
+// depending purely on which colors were fed in, and adding a 1 KP item to a 24 KP stake
+// bought more chance than it paid for.
+const calculateSuccessRate = (stakedValue, targetValue) => {
+  if (!(stakedValue > 0) || !(targetValue > 0)) return 0;
+  return Math.min((UPGRADE_RTP * stakedValue) / targetValue, MAX_UPGRADE_CHANCE);
 };
 
 // Helper function to validate if all items belong to the same case
@@ -81,10 +64,18 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       return { status: 400, message: "No items selected" };
     }
 
+    // the catalog is the authority on what an item is worth: an inventory entry carries
+    // no value at all, and some older ones lost their case too
+    const catalog = await Item.find(
+      { _id: { $in: [...new Set(selectedItems.map((invItem) => String(invItem._id)))] } },
+      { baseValue: 1, case: 1 }
+    );
+    const sourceById = new Map(catalog.map((item) => [String(item._id), item]));
+
     // backfill case for items that lost it (e.g. bought before case was preserved)
     for (const item of selectedItems) {
       if (!item.case) {
-        const sourceItem = await Item.findById(item._id);
+        const sourceItem = sourceById.get(String(item._id));
         if (sourceItem) item.case = sourceItem.case;
       }
     }
@@ -97,28 +88,34 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       return { status: 400, message: "You can't upgrade to a lesser rarity" };
     }
 
+    const stakedValue = selectedItems.reduce((sum, invItem) => {
+      const sourceItem = sourceById.get(String(invItem._id));
+      return sum + ((sourceItem && sourceItem.baseValue) || 0);
+    }, 0);
+    const targetValue = targetItem.baseValue || 0;
+    if (!(stakedValue > 0) || !(targetValue > 0)) {
+      return { status: 400, message: "These items have no value yet" };
+    }
+
     // reserve the provably-fair nonce up front (atomic, never rolled back)
     const reserved = await seeds.reserveNonces(userId, 1);
     const nonce = reserved.startNonce;
 
-    // atomically consume the selected items; the pre-update doc tells us how many
-    // were actually present, so a concurrent request can't spend them twice
+    // consume the selected items in one atomic step. the filter demands every one of
+    // them is still there, so a request that loses the race to a sale or another
+    // upgrade removes nothing at all. it used to $pull first and count afterwards,
+    // which meant losing that race destroyed whichever items it did still find.
+    const consumeIds = selectedItems.map((invItem) => invItem.uniqueId);
     const before = await User.findOneAndUpdate(
-      { _id: userId },
-      { $pull: { inventory: { uniqueId: { $in: selectedItemIds } } } }
+      { _id: userId, "inventory.uniqueId": { $all: consumeIds } },
+      { $pull: { inventory: { uniqueId: { $in: consumeIds } } } }
     );
     if (!before) {
-      return { status: 404, message: "User not found" };
-    }
-    const removedCount = before.inventory.filter((invItem) =>
-      selectedItemIds.includes(invItem.uniqueId)
-    ).length;
-    if (removedCount !== selectedItems.length) {
       return { status: 400, message: "Items no longer available" };
     }
 
     // success is the provably-fair roll: succeed when the [0,1) draw is below the rate
-    const successRate = calculateSuccessRate(selectedItems, targetItem.rarity);
+    const successRate = calculateSuccessRate(stakedValue, targetValue);
     const rollFloatValue = rollFloat(reserved.serverSeed, reserved.clientSeed, nonce);
     const isSuccess = rollFloatValue < successRate;
 
@@ -157,6 +154,10 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       outcome: {
         success: isSuccess,
         successRate,
+        // the two numbers the rate is derived from, so a past roll stays checkable
+        // even after the catalog revalues the items
+        stakedValue,
+        targetValue,
         targetItemId: String(targetItem._id),
         targetRarity: targetItem.rarity,
         algoVersion: UPGRADE_ALGO_VERSION,
@@ -178,4 +179,4 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
 module.exports = upgradeItems;
 // exposed for unit testing
 module.exports.calculateSuccessRate = calculateSuccessRate;
-module.exports.baseChances = baseChances;
+module.exports.MAX_UPGRADE_CHANCE = MAX_UPGRADE_CHANCE;
