@@ -17,6 +17,9 @@ const COUNTERPARTY_FOR_TYPE = {
   bonus: MINT,
   mission_reward: MINT,
   referral_bonus: MINT,
+  referral_milestone: MINT,
+  ad_reward: MINT, // KP printed against outside ad revenue
+
   referral_commission: HOUSE, // the house shares its edge with the affiliate
   admin_adjust: MINT,
   case_open: HOUSE,
