@@ -5,6 +5,7 @@ const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const Round = require("../models/Round");
 const { crashPointFromSeed } = require("../utils/crashMath");
+const { coinResultFromSeed } = require("../utils/coinMath");
 const { sha256 } = require("../utils/hashChain");
 
 const cleanClientSeed = (raw) => {
@@ -121,6 +122,37 @@ router.get("/crash/:roundId", async (req, res) => {
       recomputedCrashPoint: recomputed,
       commitmentValid: sha256(round.serverSeed) === round.serverSeedHash,
       outcomeValid: recomputed === (round.outcome && round.outcome.crashPoint),
+    });
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// verify a coin flip round. the result is only revealed once the round settles, and then
+// anyone can reproduce it from the seed and check the chain link.
+router.get("/coinflip/:roundId", async (req, res) => {
+  try {
+    const round = await Round.findById(req.params.roundId);
+    if (!round || round.game !== "coinflip") return res.status(404).json({ message: "Round not found" });
+
+    const revealed = round.status === "settled";
+    const view = {
+      roundId: String(round._id),
+      status: round.status,
+      serverSeedHash: round.serverSeedHash,
+      chainIndex: round.chainIndex,
+      revealed,
+    };
+    if (!revealed) return res.json(view);
+
+    const recomputed = coinResultFromSeed(round.serverSeed);
+    res.json({
+      ...view,
+      serverSeed: round.serverSeed,
+      result: round.outcome && round.outcome.result,
+      recomputedResult: recomputed,
+      commitmentValid: sha256(round.serverSeed) === round.serverSeedHash,
+      outcomeValid: recomputed === (round.outcome && round.outcome.result),
     });
   } catch (e) {
     res.status(500).json({ message: "Server error" });
