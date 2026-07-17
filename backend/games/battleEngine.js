@@ -285,22 +285,23 @@ async function voidBattle(battle, io = noopIo) {
   return claimed;
 }
 
-// on boot, settle any battle a restart interrupted so none are left stuck. one that
-// never committed a preroll has nothing to reveal, so it is voided rather than finished.
-// the second arm picks up a void whose own refund loop died partway: it keys on
-// settlementStartedAt, which only exists once that loop has claimed the battle, so
-// battles cancelled before this existed are left alone.
-async function completeStuckBattles(io = noopIo) {
-  const stuck = await Battle.find({
-    $or: [
-      { status: "in_progress" },
-      {
-        status: "cancelled",
-        settlementStartedAt: { $exists: true },
-        settlementDone: { $ne: true },
-      },
-    ],
-  });
+// settle any battle a restart interrupted so none are left stuck. the first arm (live
+// in_progress battles) only runs at boot: then they are genuinely orphaned, but on the
+// periodic sweep the engine is still playing them, and finishing/voiding one early cuts
+// its reveal short. the second arm picks up a void whose own refund loop died partway: it
+// keys on settlementStartedAt, which only exists once that loop has claimed the battle, so
+// it resumes a dead loop without touching a live battle. battles cancelled before this
+// existed have no marker and are left alone.
+async function completeStuckBattles(io = noopIo, { boot = false } = {}) {
+  const arms = [
+    {
+      status: "cancelled",
+      settlementStartedAt: { $exists: true },
+      settlementDone: { $ne: true },
+    },
+  ];
+  if (boot) arms.unshift({ status: "in_progress" });
+  const stuck = await Battle.find({ $or: arms });
   for (const b of stuck) {
     try {
       if (b.pfServerSeed && b.rolls && b.rolls.length) {

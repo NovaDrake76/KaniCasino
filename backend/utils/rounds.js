@@ -120,21 +120,24 @@ async function settleInterruptedCoinFlip(round, io = noopIo, payoutFor) {
 // happened and its stakes go back; a coin flip that already landed is finished properly.
 // a round whose own give-back loop was interrupted is picked up again: it is terminal
 // but not done with, and the money it still owes is the whole reason this runs.
-async function recoverStuckRounds(io = noopIo, payoutFor) {
-  // the second arm keys on settlementStartedAt, which only exists once a give-back loop
-  // has actually claimed the round. every round that finished normally, and every round
-  // that predates this, has no such marker and is left alone: without that, the first
-  // boot would sweep every settled round ever and refund the losers.
-  const stuck = await Round.find({
-    $or: [
-      { status: { $in: ["betting", "running"] } },
-      {
-        status: { $in: ["voided", "settled"] },
-        settlementStartedAt: { $exists: true },
-        settlementDone: { $ne: true },
-      },
-    ],
-  });
+async function recoverStuckRounds(io = noopIo, payoutFor, { boot = false } = {}) {
+  // the first arm (fresh betting/running rounds) only runs at boot: then every such round
+  // is genuinely orphaned by the restart. on the periodic sweep the live game loop is still
+  // playing those rounds, and voiding one out from under it refunds its stakes and lets the
+  // loop pay on top, so the interval runs only the second arm.
+  // the second arm keys on settlementStartedAt, which only exists once a give-back loop has
+  // actually claimed the round, so it resumes a loop that died mid-settlement without
+  // touching a live round. every round that finished normally, and every round that predates
+  // this, has no such marker and is left alone.
+  const arms = [
+    {
+      status: { $in: ["voided", "settled"] },
+      settlementStartedAt: { $exists: true },
+      settlementDone: { $ne: true },
+    },
+  ];
+  if (boot) arms.unshift({ status: { $in: ["betting", "running"] } });
+  const stuck = await Round.find({ $or: arms });
   let voided = 0;
   let settled = 0;
 

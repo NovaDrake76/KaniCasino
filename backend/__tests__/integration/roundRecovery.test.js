@@ -33,7 +33,10 @@ const paidRow = (user, round, amount, type) =>
     meta: { roundId: String(round._id) },
   });
 
-const recover = () => recoverStuckRounds(undefined, winPayout);
+// the boot recovery: at restart every betting/running round is genuinely orphaned
+const recover = () => recoverStuckRounds(undefined, winPayout, { boot: true });
+// the periodic sweep: the live loops are still playing, so it must skip their rounds
+const sweep = () => recoverStuckRounds(undefined, winPayout, { boot: false });
 
 describe("rounds a restart left in flight", () => {
   test("a crash round caught during betting gives every stake back", async () => {
@@ -155,5 +158,45 @@ describe("rounds a restart left in flight", () => {
 
     // the ledger knows, which is the whole reason the refund reads from it
     expect(await balanceOf(a)).toBe(1000);
+  });
+});
+
+describe("the periodic sweep leaves the live loops' rounds alone", () => {
+  test("a live betting round is not voided out from under the loop", async () => {
+    const a = await makeUser(900);
+    const round = await Round.create({
+      game: "crash", status: "betting", bets: [{ userId: a._id, amount: 100 }],
+    });
+    await stakeRow(a, round, 100, TX.CRASH_BET);
+
+    expect(await sweep()).toEqual({ voided: 0, settled: 0 });
+    expect((await Round.findById(round._id)).status).toBe("betting");
+    expect(await balanceOf(a)).toBe(900); // stake not refunded mid-round
+  });
+
+  test("a live running coin flip is not settled early", async () => {
+    const winner = await makeUser(900);
+    const round = await Round.create({
+      game: "coinflip", status: "running", outcome: { result: 0, winningSide: "heads" },
+      bets: [{ userId: winner._id, amount: 100, side: "heads" }],
+    });
+    await stakeRow(winner, round, 100, TX.COINFLIP_BET);
+
+    expect(await sweep()).toEqual({ voided: 0, settled: 0 });
+    expect(await balanceOf(winner)).toBe(900); // the live loop pays it, not the sweep
+  });
+
+  test("but it still resumes a give-back loop that died holding a stale lease", async () => {
+    const a = await makeUser(900);
+    const round = await Round.create({
+      game: "crash", status: "voided",
+      settlementStartedAt: new Date(Date.now() - 120000), // older than the 60s lease
+      bets: [{ userId: a._id, amount: 100 }],
+    });
+    await stakeRow(a, round, 100, TX.CRASH_BET);
+
+    expect(await sweep()).toEqual({ voided: 1, settled: 0 });
+    expect(await balanceOf(a)).toBe(1000);
+    expect((await Round.findById(round._id)).settlementDone).toBe(true);
   });
 });
