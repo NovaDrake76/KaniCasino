@@ -5,6 +5,22 @@ const BuyOrder = require("../models/BuyOrder");
 const Notification = require("../models/Notification");
 const { creditUser, recordTransaction, TX } = require("./economy");
 const { marketFee, sellerNet } = require("./itemValue");
+const { HOUSE, ESCROW } = require("./accounts");
+
+// the house cut on a settled trade, booked to HOUSE so the three trade legs (buyer,
+// seller, house) sum to zero. best-effort, like the rest of the ledger for now.
+async function recordMarketFee({ price, buyerId, meta }) {
+  const fee = marketFee(price);
+  if (!fee) return;
+  await recordTransaction({
+    userId: HOUSE,
+    type: TX.MARKET_FEE,
+    direction: "credit",
+    amount: fee,
+    counterparty: null,
+    meta: { ...meta, buyerId },
+  });
+}
 
 // rebuild the inventory entry a listing represents. acquired now, so it sorts newest.
 function inventoryEntryFrom(listing) {
@@ -107,12 +123,15 @@ async function purchaseListing({ listingId, buyerId, io }) {
     return { ok: false, code: 400, message: "Insufficient balance" };
   }
 
+  // the trade is player to player, so buyer and seller legs need no counterparty: they
+  // and the house fee row self-balance to zero
   await recordTransaction({
     userId: buyerId,
     type: TX.MARKET_BUY,
     direction: "debit",
     amount: claimed.price,
     balanceAfter: updatedBuyer.walletBalance,
+    counterparty: null,
     meta: {
       itemId: claimed.item,
       itemName: claimed.itemName,
@@ -124,6 +143,7 @@ async function purchaseListing({ listingId, buyerId, io }) {
   const net = sellerNet(claimed.price);
   const seller = await creditUser(claimed.sellerId, net, 0, {
     type: TX.MARKET_SALE,
+    counterparty: null,
     meta: {
       itemId: claimed.item,
       itemName: claimed.itemName,
@@ -158,6 +178,12 @@ async function purchaseListing({ listingId, buyerId, io }) {
     }
     return { ok: false, code: 410, message: "Seller no longer available; purchase reversed" };
   }
+
+  await recordMarketFee({
+    price: claimed.price,
+    buyerId,
+    meta: { itemName: claimed.itemName, listingId: claimed.uniqueId },
+  });
 
   await logSale({ listing: claimed, buyerId, price: claimed.price });
   if (io) {
@@ -215,6 +241,7 @@ async function fillOrderWithItem({ pending, order, io }) {
   const net = sellerNet(price);
   const seller = await creditUser(pending.sellerId, net, 0, {
     type: TX.MARKET_SALE,
+    counterparty: null,
     meta: {
       itemId: pending.item,
       itemName: pending.itemName,
@@ -241,6 +268,21 @@ async function fillOrderWithItem({ pending, order, io }) {
     });
     return { ok: false, reason: "seller gone" };
   }
+
+  // the buyer paid at placement, so the payout comes out of escrow, not their wallet
+  await recordTransaction({
+    userId: ESCROW,
+    type: TX.MARKET_ORDER_FILL,
+    direction: "debit",
+    amount: price,
+    counterparty: null,
+    meta: { orderId: String(order._id), sellerId: pending.sellerId, itemName: pending.itemName },
+  });
+  await recordMarketFee({
+    price,
+    buyerId: claimedOrder.userId,
+    meta: { itemName: pending.itemName, orderId: String(order._id), viaOrder: true },
+  });
 
   if (claimedOrder.filled >= claimedOrder.quantity) {
     await BuyOrder.updateOne({ _id: order._id, status: "open" }, { $set: { status: "filled" } });
