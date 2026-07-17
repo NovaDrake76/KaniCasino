@@ -27,6 +27,12 @@ const isAuthenticated = async (req, res, next) => {
       return res.status(401).json({ message: "Token is not valid" });
     }
 
+    // a token from before the current version has been revoked. a missing version reads
+    // as 0 so tokens issued before this existed keep working until the next revoke.
+    if ((decoded.tokenVersion || 0) !== (user.tokenVersion || 0)) {
+      return res.status(401).json({ message: "Session expired. Please log in again." });
+    }
+
     req.user = user;
     next();
   } catch (error) {
