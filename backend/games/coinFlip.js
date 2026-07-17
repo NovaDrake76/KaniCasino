@@ -1,5 +1,19 @@
 const { chargeUser, creditUser, TX } = require("../utils/economy");
 
+// a fair coin paying 2x is a 0% house edge: the house cannot win, and the game is a
+// pure variance pump on the KP supply that no amount of play ever drains. paying
+// 1.94x puts it at 3%, in the same band as crash (3.97%) and slots (3.55%).
+// floor keeps the payout in whole KP and always rounds towards the house, so there is
+// no bet size that rounds its way into a player edge.
+const COINFLIP_RTP = 0.97;
+const winPayout = (bet) => Math.floor(bet * 2 * COINFLIP_RTP);
+
+// a table minimum, for the reason real tables have one: the payout is whole KP, and no
+// integer pays 3% on a 1 KP stake (1 is 50%, 2 is 0%), so below a floor the rounding is
+// the edge. at 10 the worst case is 5% and by 50 it is exactly 3%.
+const MIN_BET = 10;
+const MAX_BET = 1000000;
+
 const freshState = () => ({
   heads: { players: {}, bets: {} },
   tails: { players: {}, bets: {} },
@@ -25,8 +39,8 @@ const coinFlip = (io) => {
         if (!bettingOpen) return reply({ error: "Betting is closed for this round" });
 
         if (choice !== 0 && choice !== 1) return reply({ error: "Pick heads or tails" });
-        if (!Number.isInteger(bet) || bet < 1 || bet > 1000000) {
-          return reply({ error: "Invalid bet amount" });
+        if (!Number.isInteger(bet) || bet < MIN_BET || bet > MAX_BET) {
+          return reply({ error: `Bet between ${MIN_BET} and ${MAX_BET} KP` });
         }
 
         const side = choice === 0 ? "heads" : "tails";
@@ -86,9 +100,10 @@ const coinFlip = (io) => {
     for (const userId in gameState[winningSide].bets) {
       try {
         const betAmount = gameState[winningSide].bets[userId];
-        const updatedUser = await creditUser(userId, betAmount * 2, betAmount, {
+        const payout = winPayout(betAmount);
+        const updatedUser = await creditUser(userId, payout, payout - betAmount, {
           type: TX.COINFLIP_WIN,
-          meta: { betAmount, side: winningSide },
+          meta: { betAmount, payout, side: winningSide },
         });
         if (!updatedUser) continue; // account no longer exists
 
@@ -127,3 +142,7 @@ const coinFlip = (io) => {
 };
 
 module.exports = coinFlip;
+// exposed for unit testing
+module.exports.winPayout = winPayout;
+module.exports.COINFLIP_RTP = COINFLIP_RTP;
+module.exports.MIN_BET = MIN_BET;
