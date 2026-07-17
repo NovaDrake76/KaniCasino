@@ -52,7 +52,7 @@ test("a battle abandoned before its preroll refunds the players who paid", async
   await recordEntry(a._id, battle._id);
   await recordEntry(b._id, battle._id);
 
-  await engine.completeStuckBattles();
+  await engine.completeStuckBattles(undefined, { boot: true });
 
   const done = await Battle.findById(battle._id);
   // it never happened, so it must not be dressed up as a finished battle
@@ -70,7 +70,7 @@ test("a player the crash beat to the charge is not refunded money they never pai
   const battle = await abandonedBattle([paid, never]);
   await recordEntry(paid._id, battle._id); // only one of them was charged
 
-  await engine.completeStuckBattles();
+  await engine.completeStuckBattles(undefined, { boot: true });
 
   expect((await User.findById(paid._id)).walletBalance).toBe(1000);
   expect((await User.findById(never._id)).walletBalance).toBe(1000); // not 1100
@@ -81,8 +81,8 @@ test("voiding twice does not pay twice", async () => {
   const battle = await abandonedBattle([a]);
   await recordEntry(a._id, battle._id);
 
-  await engine.completeStuckBattles();
-  await engine.completeStuckBattles();
+  await engine.completeStuckBattles(undefined, { boot: true });
+  await engine.completeStuckBattles(undefined, { boot: true });
 
   expect((await User.findById(a._id)).walletBalance).toBe(1000);
 });
@@ -101,11 +101,25 @@ test("a battle interrupted mid-reveal still finishes from its preroll", async ()
   battle.rolls = [[item, null]]; // slot 0 won something, slot 1 got nothing
   await battle.save();
 
-  await engine.completeStuckBattles();
+  await engine.completeStuckBattles(undefined, { boot: true });
 
   const done = await Battle.findById(battle._id);
   expect(done.status).toBe("finished");
   expect(done.winningTeam).toBe(0);
   const winner = await User.findById(a._id);
   expect(winner.inventory.map((i) => i.name)).toContain("won");
+});
+
+test("the periodic sweep leaves a live in-progress battle for the engine to finish", async () => {
+  const a = await makePlayer(900);
+  const b = await makePlayer(900);
+  const battle = await abandonedBattle([a, b]); // in_progress, the engine is still playing it
+  await recordEntry(a._id, battle._id);
+  await recordEntry(b._id, battle._id);
+
+  await engine.completeStuckBattles(undefined, { boot: false });
+
+  const same = await Battle.findById(battle._id);
+  expect(same.status).toBe("in_progress"); // untouched, no early finish/void
+  expect((await User.findById(a._id)).walletBalance).toBe(900); // not refunded out from under it
 });

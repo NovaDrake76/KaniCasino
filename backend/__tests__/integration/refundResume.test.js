@@ -55,7 +55,7 @@ const creditWorksAgain = () => {
   creditUser.mockImplementation((...args) => actual.creditUser(...args));
 };
 
-const recover = () => recoverStuckRounds(undefined, winPayout);
+const recover = () => recoverStuckRounds(undefined, winPayout, { boot: true });
 
 // a dead process leaves its lease behind. the next sweep only takes it over once the
 // lease has gone stale, so that is what a later boot actually sees.
@@ -130,10 +130,11 @@ test("a battle void interrupted mid-refund is finished on the next boot", async 
   }
 
   dieOnCredit(2);
-  await engine.completeStuckBattles().catch(() => {});
+  await engine.completeStuckBattles(undefined, { boot: true }).catch(() => {});
   creditWorksAgain();
   await expireLease(Battle, battle._id);
-  await engine.completeStuckBattles();
+  // the periodic sweep (not a boot) resumes the give-back loop that died holding the lease
+  await engine.completeStuckBattles(undefined, { boot: false });
 
   expect(await balanceOf(a)).toBe(1000);
   expect(await balanceOf(b)).toBe(1000);
