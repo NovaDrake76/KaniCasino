@@ -6,7 +6,6 @@ import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { TbCat } from "react-icons/tb";
 import ClaimBonus from "../header/ClaimBonus";
-import WatchAdReward from "../header/WatchAdReward";
 import { useContext } from "react";
 import UserContext from "../../UserContext";
 import Monetary from "../Monetary";
@@ -92,10 +91,7 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                             <Monetary value={Math.floor(userData?.walletBalance)} />
                         </div>
 
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <WatchAdReward />
-                            <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} />
-                        </div>
+                        <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} />
                     </div>
                     <div className="flex flex-col space-y-4 mt-6">
                         {links.map((link, index) => (
