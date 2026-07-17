@@ -1,5 +1,8 @@
 const Round = require("../models/Round");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
+const { coinResultFromSeed } = require("../utils/coinMath");
+const { consumeNextSeed } = require("../utils/gameChain");
+const { sha256 } = require("../utils/hashChain");
 
 // a fair coin paying 2x is a 0% house edge: the house cannot win, and the game is a
 // pure variance pump on the KP supply that no amount of play ever drains. paying
@@ -18,6 +21,17 @@ const MAX_BET = 1000000;
 const freshState = () => ({
   heads: { players: {}, bets: {} },
   tails: { players: {}, bets: {} },
+  serverSeed: null, // the round's seed, secret until the flip is revealed
+  serverSeedHash: null, // its commitment, public from betting open
+  result: null, // decided by the seed at betting open, revealed with the flip
+});
+
+// the result stays off the wire until the flip. serverSeedHash is safe: it is a one-way
+// commitment, and the result cannot be derived from it without the seed.
+const publicCoinState = (state) => ({
+  heads: state.heads,
+  tails: state.tails,
+  serverSeedHash: state.serverSeedHash,
 });
 
 // the timings are arguments so a test can run a whole round in milliseconds against a
@@ -107,7 +121,7 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {
           level: updatedUser.level,
         });
 
-        io.emit("coinFlip:gameState", gameState);
+        io.emit("coinFlip:gameState", publicCoinState(gameState));
         reply({ ok: true });
       } catch (err) {
         console.log(err);
@@ -155,7 +169,22 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {
     if (stopped) return;
     gameState = freshState();
     try {
-      round = await Round.create({ game: "coinflip", status: "betting" });
+      // the seed fixes the flip before any bet: players see its commitment now and the
+      // seed at round end, so the result was decided in advance and cannot be steered
+      const { seed, chainId, index } = await consumeNextSeed("coinflip");
+      gameState.serverSeed = seed;
+      gameState.serverSeedHash = sha256(seed);
+      gameState.result = coinResultFromSeed(seed);
+      const winningSide = gameState.result === 0 ? "heads" : "tails";
+      round = await Round.create({
+        game: "coinflip",
+        status: "betting",
+        serverSeed: seed,
+        serverSeedHash: gameState.serverSeedHash,
+        chainId,
+        chainIndex: index,
+        outcome: { result: gameState.result, winningSide },
+      });
       if (stopped) return;
       bettingOpen = true;
     } catch (e) {
@@ -165,7 +194,7 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {
       if (!stopped) nextRound = setTimeout(openBetting, retryMs); // retry rather than stall for good
       return;
     }
-    io.emit("coinFlip:gameState", gameState);
+    io.emit("coinFlip:gameState", publicCoinState(gameState));
     nextRound = setTimeout(runRound, bettingMs); // betting window before the flip
   };
 
@@ -174,23 +203,27 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {
     bettingOpen = false;
     io.emit("coinFlip:start");
 
-    const result = Math.floor(Math.random() * 2);
-    const winningSide = result === 0 ? "heads" : "tails";
+    // the result was fixed by the seed at betting open; running just marks it landed, so
+    // a restart tells a flip that happened from one still in its betting window
+    const result = gameState.result;
     const running = round;
-
-    // the coin lands before anyone is paid, and it is written down in that order. a
-    // restart between the two can then finish the payouts rather than void a round that
-    // genuinely landed, which would hand the losers their stakes back.
     if (running) {
       await Round.updateOne(
         { _id: running._id },
-        { $set: { status: "running", outcome: { result, winningSide }, startedAt: new Date() } }
+        { $set: { status: "running", startedAt: new Date() } }
       ).catch((e) => console.log(e));
     }
 
     reveal = setTimeout(async () => {
       if (stopped) return;
       io.emit("coinFlip:result", result);
+      // the seed is revealed only now, so nobody could have known the flip early
+      io.emit("coinFlip:reveal", {
+        roundId: running ? String(running._id) : null,
+        serverSeed: gameState.serverSeed,
+        serverSeedHash: gameState.serverSeedHash,
+        result,
+      });
 
       await calculatePayout(result, running);
 

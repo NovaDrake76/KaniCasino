@@ -140,10 +140,10 @@ async function recoverStuckRounds(io = noopIo, payoutFor) {
 
   for (const round of stuck) {
     try {
-      // an outcome is what decides it, not the status: a resumed coin flip is already
-      // marked settled, and voiding it would hand the losers their stakes back
+      // status decides it now that the seed fixes the flip at betting open: running or
+      // settled means it landed and pays, betting or voided means it did not and refunds.
       const landed =
-        round.game === "coinflip" && round.outcome && round.outcome.winningSide;
+        round.game === "coinflip" && (round.status === "running" || round.status === "settled");
       if (landed && typeof payoutFor === "function") {
         if (await settleInterruptedCoinFlip(round, io, payoutFor)) settled += 1;
       } else if (await voidRound(round, io)) {
