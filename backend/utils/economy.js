@@ -45,23 +45,58 @@ function calculateLevelFromXp(xp) {
   return level;
 }
 
-// append a balance-history entry. best-effort audit: a failed write here must
-// never break the money path, so it logs and swallows rather than throwing.
-async function recordTransaction({ userId, type, direction, amount, balanceAfter, meta, counterparty }) {
-  if (!userId || !amount) return null;
-  // counterparty is the account on the other side; most types have a fixed one, and
-  // caller-supplied wins so market trades can name the actual player or system leg
-  const other = counterparty !== undefined ? counterparty : COUNTERPARTY_FOR_TYPE[type];
+// whether the connected mongo supports multi-document transactions, probed at boot.
+// production is Atlas (a replica set) and always does; a standalone dev mongod does not.
+let txSupported = false;
+function setTransactionsSupported(v) { txSupported = Boolean(v); }
+function transactionsSupported() { return txSupported; }
+
+// true on a replica set or a mongos, the topologies where transactions work
+async function probeTransactions() {
   try {
-    return await Transaction.create({
-      userId,
-      type: type || (direction === "debit" ? "charge" : "credit"),
-      direction,
-      amount: Math.abs(amount),
-      balanceAfter,
-      counterparty: other,
-      meta: meta || {},
+    const info = await mongoose.connection.db.admin().command({ hello: 1 });
+    return Boolean(info.setName || info.msg === "isdbgrid");
+  } catch (err) {
+    return false;
+  }
+}
+
+// run a money operation atomically when transactions are available, else best-effort
+// without a session. prod always has them, so prod gets the guarantee.
+async function runAtomic(fn) {
+  if (!txSupported) return fn(null);
+  const session = await mongoose.startSession();
+  try {
+    let result;
+    await session.withTransaction(async () => {
+      result = await fn(session);
     });
+    return result;
+  } finally {
+    await session.endSession();
+  }
+}
+
+// append a balance-history entry. inside a transaction a failed row must abort the
+// money move, so it throws; without one it stays best-effort and swallows.
+async function recordTransaction({ userId, type, direction, amount, balanceAfter, meta, counterparty }, session = null) {
+  if (!userId || !amount) return null;
+  const other = counterparty !== undefined ? counterparty : COUNTERPARTY_FOR_TYPE[type];
+  const doc = {
+    userId,
+    type: type || (direction === "debit" ? "charge" : "credit"),
+    direction,
+    amount: Math.abs(amount),
+    balanceAfter,
+    counterparty: other,
+    meta: meta || {},
+  };
+  if (session) {
+    const [row] = await Transaction.create([doc], { session });
+    return row;
+  }
+  try {
+    return await Transaction.create(doc);
   } catch (err) {
     console.error("recordTransaction failed:", err);
     return null;
@@ -97,68 +132,72 @@ async function ledgerSupply() {
   return -(await accountBalance(MINT));
 }
 
-// atomically debit `cost` only if the balance covers it, optionally granting xp.
-// returns the updated user, or null when funds are insufficient.
-async function chargeUser(userId, cost, { awardXp = true, type, meta, counterparty } = {}) {
+// debit `cost` if the balance covers it, with its ledger row in the same transaction:
+// a failed row rolls the charge back and returns null, like insufficient funds
+async function chargeUser(userId, cost, { awardXp = true, type, meta, counterparty, session } = {}) {
   const inc = awardXp
     ? { walletBalance: -cost, xp: cost * 5 }
     : { walletBalance: -cost };
 
-  const user = await User.findOneAndUpdate(
-    { _id: userId, walletBalance: { $gte: cost } },
-    { $inc: inc },
-    { new: true }
-  );
+  const body = async (s) => {
+    const user = await User.findOneAndUpdate(
+      { _id: userId, walletBalance: { $gte: cost } },
+      { $inc: inc },
+      { new: true, session: s }
+    );
+    if (!user) return null;
 
-  if (!user) {
+    if (awardXp) {
+      const newLevel = calculateLevelFromXp(user.xp);
+      if (newLevel !== user.level) {
+        user.level = newLevel;
+        await User.updateOne({ _id: userId }, { $set: { level: newLevel } }, { session: s });
+      }
+    }
+
+    await recordTransaction(
+      { userId, type, direction: "debit", amount: cost, balanceAfter: user.walletBalance, meta, counterparty },
+      s
+    );
+    return user;
+  };
+
+  // joining a caller's transaction: let a failure propagate so their whole op aborts
+  if (session) return body(session);
+  try {
+    return await runAtomic(body);
+  } catch (err) {
+    console.error("chargeUser rolled back:", err);
     return null;
   }
-
-  if (awardXp) {
-    const newLevel = calculateLevelFromXp(user.xp);
-    if (newLevel !== user.level) {
-      user.level = newLevel;
-      await User.updateOne({ _id: userId }, { $set: { level: newLevel } });
-    }
-  }
-
-  await recordTransaction({
-    userId,
-    type,
-    direction: "debit",
-    amount: cost,
-    balanceAfter: user.walletBalance,
-    meta,
-    counterparty,
-  });
-
-  return user;
 }
 
-// atomically credit winnings to the wallet (and weekly winnings).
-// returns the updated user, or null when the account no longer exists.
-async function creditUser(userId, amount, winnings = 0, { type, meta, counterparty } = {}) {
-  const user = await User.findByIdAndUpdate(
-    userId,
-    { $inc: { walletBalance: amount, weeklyWinnings: winnings } },
-    { new: true }
-  );
+// atomically credit winnings to the wallet (and weekly winnings). the credit and its
+// ledger row commit together; a failed row rolls the credit back and returns null.
+async function creditUser(userId, amount, winnings = 0, { type, meta, counterparty, session } = {}) {
+  const body = async (s) => {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $inc: { walletBalance: amount, weeklyWinnings: winnings } },
+      { new: true, session: s }
+    );
+    if (!user) return null;
 
-  if (!user) {
+    await recordTransaction(
+      { userId, type, direction: "credit", amount, balanceAfter: user.walletBalance, meta, counterparty },
+      s
+    );
+    return user;
+  };
+
+  // joining a caller's transaction: let a failure propagate so their whole op aborts
+  if (session) return body(session);
+  try {
+    return await runAtomic(body);
+  } catch (err) {
+    console.error("creditUser rolled back:", err);
     return null;
   }
-
-  await recordTransaction({
-    userId,
-    type,
-    direction: "credit",
-    amount,
-    balanceAfter: user.walletBalance,
-    meta,
-    counterparty,
-  });
-
-  return user;
 }
 
 // grant xp without touching the wallet, then recompute the derived level.
@@ -190,5 +229,9 @@ module.exports = {
   awardXp,
   accountBalance,
   ledgerSupply,
+  runAtomic,
+  probeTransactions,
+  setTransactionsSupported,
+  transactionsSupported,
   TX,
 };

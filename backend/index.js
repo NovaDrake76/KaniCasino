@@ -72,6 +72,7 @@ const crash = require("./games/crash");
 const caseBattle = require("./games/caseBattle");
 const { recoverStuckRounds } = require("./utils/rounds");
 const { completeStuckBattles } = require("./games/battleEngine");
+const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
 const itemRoutes = require("./routes/itemRoutes");
@@ -90,7 +91,19 @@ mongoose
     useUnifiedTopology: true,
     // useCreateIndex: true,
   })
-  .then(() => console.log("MongoDB connected"))
+  .then(async () => {
+    console.log("MongoDB connected");
+    // money writes are only atomic where transactions exist; refuse to run prod without
+    const ok = await probeTransactions();
+    setTransactionsSupported(ok);
+    if (!ok) {
+      if (process.env.NODE_ENV === "production") {
+        console.error("mongo is not a replica set: money writes cannot be atomic, refusing to start");
+        process.exit(1);
+      }
+      console.warn("mongo is not a replica set: money writes are best-effort (dev only)");
+    }
+  })
   .catch((err) => console.log(err));
 
 // Middleware

@@ -11,7 +11,7 @@ const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
 const { loginLimiter, registerLimiter } = require("../middleware/rateLimit");
 const { sellValue } = require("../utils/itemValue");
-const { creditUser, recordTransaction, TX } = require("../utils/economy");
+const { creditUser, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const { sellUniqueIds } = require("../utils/inventorySell");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
@@ -451,28 +451,28 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
     const nextBonus = new Date(currentTime.getTime() + 8 * 60000); // 8 min later
     const nextBonusAmount = Math.floor(200 * (1 + 0.1 * req.user.level));
 
-    // claim atomically: the nextBonus condition lets only one concurrent request through
-    const updated = await User.findOneAndUpdate(
-      { _id: req.user._id, nextBonus: { $lte: currentTime } },
-      {
-        $inc: { walletBalance: currentBonus },
-        $set: { nextBonus, bonusAmount: nextBonusAmount },
-      },
-      { new: true }
-    );
+    // claim and record together: the nextBonus condition lets only one concurrent
+    // request through, and a failed row rolls the claim back so it can be retried
+    const updated = await runAtomic(async (session) => {
+      const u = await User.findOneAndUpdate(
+        { _id: req.user._id, nextBonus: { $lte: currentTime } },
+        {
+          $inc: { walletBalance: currentBonus },
+          $set: { nextBonus, bonusAmount: nextBonusAmount },
+        },
+        { new: true, session }
+      );
+      if (!u) return null;
+      await recordTransaction(
+        { userId: req.user._id, type: TX.BONUS, direction: "credit", amount: currentBonus, balanceAfter: u.walletBalance, meta: {} },
+        session
+      );
+      return u;
+    });
 
     if (!updated) {
       return res.status(400).json({ message: 'Bonus not yet available' });
     }
-
-    await recordTransaction({
-      userId: req.user._id,
-      type: TX.BONUS,
-      direction: "credit",
-      amount: currentBonus,
-      balanceAfter: updated.walletBalance,
-      meta: {},
-    });
 
     res.json({ message: `Claimed K₽${currentBonus}!`, value: currentBonus, nextBonus: updated.nextBonus });
   } catch (err) {
