@@ -1,6 +1,7 @@
 const Battle = require("../models/Battle");
 const Case = require("../models/Case");
 const User = require("../models/User");
+const Transaction = require("../models/Transaction");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
 const { chargeUser, creditUser, awardXp, TX } = require("../utils/economy");
 const { modeConfig, evaluateWinner, splitItemsEvenly } = require("../utils/battle");
@@ -235,12 +236,51 @@ async function finishBattle(battle, io = noopIo) {
   return claimed;
 }
 
-// on boot, finish any battle a restart interrupted so none are stuck
+// a battle claimed but abandoned before its preroll committed has no outcome at all:
+// nothing was ever rolled. finishing one invents a winner out of an empty pool (every
+// total is 0, so the tie-break picks at random) and quietly keeps the entry fees.
+async function voidBattle(battle, io = noopIo) {
+  // compare-and-set on status: only one runner voids this battle
+  const claimed = await Battle.findOneAndUpdate(
+    { _id: battle._id, status: "in_progress" },
+    { $set: { status: "cancelled", finishedAt: new Date() } },
+    { new: true }
+  );
+  if (!claimed) return Battle.findById(battle._id);
+
+  // the ledger says who is owed, not the player list: the interruption can just as
+  // easily land between claiming the battle and charging for it, and refunding a slot
+  // that never paid would mint the entry out of nothing
+  const [paid, refunded] = await Promise.all([
+    Transaction.find({ type: TX.BATTLE_ENTRY, "meta.battleId": claimed._id }).select("userId"),
+    Transaction.find({ type: TX.BATTLE_REFUND, "meta.battleId": claimed._id }).select("userId"),
+  ]);
+  const settled = new Set(refunded.map((t) => String(t.userId)));
+
+  for (const entry of paid) {
+    if (settled.has(String(entry.userId))) continue;
+    settled.add(String(entry.userId));
+    const user = await creditUser(entry.userId, claimed.entryCost, 0, {
+      type: TX.BATTLE_REFUND,
+      meta: { battleId: claimed._id, reason: "interrupted before start" },
+    });
+    if (user) emitUserData(io, entry.userId, user);
+  }
+
+  return claimed;
+}
+
+// on boot, settle any battle a restart interrupted so none are left stuck. one that
+// never committed a preroll has nothing to reveal, so it is voided rather than finished
 async function completeStuckBattles(io = noopIo) {
   const stuck = await Battle.find({ status: "in_progress" });
   for (const b of stuck) {
     try {
-      await finishBattle(b, io);
+      if (b.pfServerSeed && b.rolls && b.rolls.length) {
+        await finishBattle(b, io);
+      } else {
+        await voidBattle(b, io);
+      }
     } catch (e) {
       console.log(e);
     }
@@ -248,4 +288,4 @@ async function completeStuckBattles(io = noopIo) {
   return stuck.length;
 }
 
-module.exports = { prerollBattle, chargeAndStart, applyRound, finishBattle, completeStuckBattles };
+module.exports = { prerollBattle, chargeAndStart, applyRound, finishBattle, voidBattle, completeStuckBattles };
