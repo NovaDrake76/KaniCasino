@@ -16,9 +16,9 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
     const rollsize = 5260;
     const [translateValue, setTranslateValue] = useState<string>(`-${rollsize}px`);
     const [loading, setLoading] = useState<boolean>(true);
-    // the scrolling fillers are refreshed only when a spin starts, never when `symbols`
-    // changes; otherwise the result arriving mid-spin re-randomised the whole reel
-    const [fillers, setFillers] = useState<string[]>(makeFillers);
+    // the scrolling fillers are generated once and never change; regenerating them on a spin
+    // repainted the whole reel mid-animation, so only the final three symbols move now
+    const [fillers] = useState<string[]>(makeFillers);
 
     const rouletteRef = useRef<HTMLDivElement | null>(null);
 
@@ -28,11 +28,6 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
     const handleImageLoad = () => {
         setLoading(false);
     };
-
-
-    useEffect(() => {
-        if (isSpinning) setFillers(makeFillers());
-    }, [isSpinning]);
 
 
     useEffect(() => {
