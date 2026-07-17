@@ -3,7 +3,7 @@ const Marketplace = require("../models/Marketplace");
 const MarketSale = require("../models/MarketSale");
 const BuyOrder = require("../models/BuyOrder");
 const Notification = require("../models/Notification");
-const { creditUser, recordTransaction, TX } = require("./economy");
+const { creditUser, recordTransaction, runAtomic, TX } = require("./economy");
 const { marketFee, sellerNet } = require("./itemValue");
 const { HOUSE, ESCROW } = require("./accounts");
 
@@ -112,33 +112,38 @@ async function purchaseListing({ listingId, buyerId, io }) {
     return { ok: false, code: 400, message: "You can't buy your own listing" };
   }
 
-  // debit the buyer and grant the item together, only if the balance covers it
-  const updatedBuyer = await User.findOneAndUpdate(
-    { _id: buyerId, walletBalance: { $gte: claimed.price } },
-    { $inc: { walletBalance: -claimed.price }, $push: { inventory: inventoryEntryFrom(claimed) } },
-    { new: true }
-  );
+  // debit the buyer, grant the item and write the row together; a failed row rolls the
+  // charge back and the listing is restored, so nobody pays without a record
+  const updatedBuyer = await runAtomic(async (session) => {
+    const u = await User.findOneAndUpdate(
+      { _id: buyerId, walletBalance: { $gte: claimed.price } },
+      { $inc: { walletBalance: -claimed.price }, $push: { inventory: inventoryEntryFrom(claimed) } },
+      { new: true, session }
+    );
+    if (!u) return null;
+    // player-to-player, so the buyer and seller legs carry no counterparty; they and the
+    // house fee row self-balance to zero
+    await recordTransaction(
+      {
+        userId: buyerId,
+        type: TX.MARKET_BUY,
+        direction: "debit",
+        amount: claimed.price,
+        balanceAfter: u.walletBalance,
+        counterparty: null,
+        meta: { itemId: claimed.item, itemName: claimed.itemName, sellerId: claimed.sellerId, listingId: claimed.uniqueId },
+      },
+      session
+    );
+    return u;
+  }).catch((err) => {
+    console.error("market buyer charge rolled back:", err);
+    return null;
+  });
   if (!updatedBuyer) {
     await restoreListing(claimed);
     return { ok: false, code: 400, message: "Insufficient balance" };
   }
-
-  // the trade is player to player, so buyer and seller legs need no counterparty: they
-  // and the house fee row self-balance to zero
-  await recordTransaction({
-    userId: buyerId,
-    type: TX.MARKET_BUY,
-    direction: "debit",
-    amount: claimed.price,
-    balanceAfter: updatedBuyer.walletBalance,
-    counterparty: null,
-    meta: {
-      itemId: claimed.item,
-      itemName: claimed.itemName,
-      sellerId: claimed.sellerId,
-      listingId: claimed.uniqueId,
-    },
-  });
 
   const net = sellerNet(claimed.price);
   const seller = await creditUser(claimed.sellerId, net, 0, {
@@ -156,18 +161,25 @@ async function purchaseListing({ listingId, buyerId, io }) {
 
   // seller account is gone: reverse the buyer so their KP can't disappear
   if (!seller) {
-    const reversed = await User.findOneAndUpdate(
-      { _id: buyerId },
-      { $inc: { walletBalance: claimed.price }, $pull: { inventory: { uniqueId: claimed.uniqueId } } },
-      { new: true }
-    );
-    await recordTransaction({
-      userId: buyerId,
-      type: TX.MARKET_BUY,
-      direction: "credit",
-      amount: claimed.price,
-      balanceAfter: reversed ? reversed.walletBalance : undefined,
-      meta: { itemName: claimed.itemName, reversal: true, reason: "seller no longer exists" },
+    const reversed = await runAtomic(async (session) => {
+      const r = await User.findOneAndUpdate(
+        { _id: buyerId },
+        { $inc: { walletBalance: claimed.price }, $pull: { inventory: { uniqueId: claimed.uniqueId } } },
+        { new: true, session }
+      );
+      await recordTransaction(
+        {
+          userId: buyerId,
+          type: TX.MARKET_BUY,
+          direction: "credit",
+          amount: claimed.price,
+          balanceAfter: r ? r.walletBalance : undefined,
+          counterparty: null,
+          meta: { itemName: claimed.itemName, reversal: true, reason: "seller no longer exists" },
+        },
+        session
+      );
+      return r;
     });
     if (reversed && io) {
       io.to(buyerId.toString()).emit("userDataUpdated", {
@@ -255,16 +267,22 @@ async function fillOrderWithItem({ pending, order, io }) {
 
   if (!seller) {
     // seller gone: give the escrowed KP back to the buyer and take the item back
-    await User.updateOne(
-      { _id: claimedOrder.userId },
-      { $inc: { walletBalance: price }, $pull: { inventory: { uniqueId: pending.uniqueId } } }
-    );
-    await recordTransaction({
-      userId: claimedOrder.userId,
-      type: TX.MARKET_ORDER_REFUND,
-      direction: "credit",
-      amount: price,
-      meta: { itemName: pending.itemName, reversal: true, reason: "seller no longer exists" },
+    await runAtomic(async (session) => {
+      await User.updateOne(
+        { _id: claimedOrder.userId },
+        { $inc: { walletBalance: price }, $pull: { inventory: { uniqueId: pending.uniqueId } } },
+        { session }
+      );
+      await recordTransaction(
+        {
+          userId: claimedOrder.userId,
+          type: TX.MARKET_ORDER_REFUND,
+          direction: "credit",
+          amount: price,
+          meta: { itemName: pending.itemName, reversal: true, reason: "seller no longer exists" },
+        },
+        session
+      );
     });
     return { ok: false, reason: "seller gone" };
   }
