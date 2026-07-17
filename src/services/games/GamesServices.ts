@@ -12,6 +12,11 @@ export async function upgradeItem(selectedItemIds: string[], targetItemId: strin
     return response.data;
 }
 
+export async function getCoinFlipHistory(limit = 15) {
+    const response = await api.get(`/games/coinflip/history`, { params: { limit } });
+    return response.data;
+}
+
 export async function spinSlots(betAmount: number) {
     const response = await api.post(`/games/slots/`, {
         betAmount
