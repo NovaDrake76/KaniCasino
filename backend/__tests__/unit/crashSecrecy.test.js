@@ -11,6 +11,13 @@ jest.mock("crypto", () => {
   };
 });
 
+// the round record is exercised against a real database in the round-records tests;
+// here it only has to not need one
+jest.mock("../../models/Round", () => ({
+  create: jest.fn(async () => ({ _id: "round-under-test" })),
+  updateOne: jest.fn(async () => ({})),
+}));
+
 // what the wallet does is irrelevant to what the server broadcasts, so stubbing it
 // keeps this test free of a database and lets the round run on fake timers
 jest.mock("../../utils/economy", () => ({
@@ -75,12 +82,14 @@ const lastState = (io) => {
 describe("crash rounds", () => {
   let io;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.useFakeTimers();
     jest.spyOn(Math, "random").mockReturnValue(0.99); // above INSTANT_CRASH_CHANCE
     creditUser.mockClear();
     io = makeIo();
     crashGame(io);
+    // betting opens once the round record is written, so let that settle first
+    await jest.advanceTimersByTimeAsync(0);
   });
 
   afterEach(() => {

@@ -13,8 +13,10 @@ const TX = {
   SLOT_WIN: "slot_win",
   CRASH_BET: "crash_bet",
   CRASH_CASHOUT: "crash_cashout",
+  CRASH_REFUND: "crash_refund", // stake returned when a restart voids a live round
   COINFLIP_BET: "coinflip_bet",
   COINFLIP_WIN: "coinflip_win",
+  COINFLIP_REFUND: "coinflip_refund", // stake returned when a restart voids a live round
   BATTLE_ENTRY: "battle_entry",
   BATTLE_REFUND: "battle_refund",
   MARKET_BUY: "market_buy",

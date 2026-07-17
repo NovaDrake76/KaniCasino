@@ -11,11 +11,32 @@ const { setupDb, clearDb, teardownDb } = require("./db");
 const { uniqueSuffix } = require("./helpers");
 
 const User = require("../../models/User");
+const Round = require("../../models/Round");
 const crashGame = require("../../games/crash");
 const coinFlip = require("../../games/coinFlip");
 
 beforeAll(setupDb);
-afterEach(clearDb);
+
+// the round loop runs forever, so whatever a test starts is stopped when it ends
+const running = [];
+const start = (game, io) => {
+  running.push(game(io));
+};
+
+// betting does not open until the round record exists, so wait for it rather than
+// assume. setImmediate is real here (the fake timers below leave it alone).
+async function untilBettingOpens(game) {
+  for (let i = 0; i < 500; i++) {
+    if (await Round.findOne({ game, status: "betting" })) return;
+    await new Promise((r) => setImmediate(r));
+  }
+  throw new Error(`no ${game} round opened`);
+}
+
+afterEach(async () => {
+  while (running.length) running.pop()();
+  await clearDb();
+});
 afterAll(teardownDb);
 
 // a socket can emit the same event twice in one tick; these fakes let us fire the
@@ -66,7 +87,8 @@ describe("crash", () => {
 
     const user = await makeUser(1000);
     const { io, connect } = fakeIo();
-    crashGame(io);
+    start(crashGame, io);
+    await untilBettingOpens("crash");
     const socket = fakeSocket(user._id);
     connect(socket);
 
@@ -88,7 +110,8 @@ describe("crash", () => {
     jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] });
     const user = await makeUser(1000);
     const { io, connect } = fakeIo();
-    crashGame(io);
+    start(crashGame, io);
+    await untilBettingOpens("crash");
     const socket = fakeSocket(user._id);
     connect(socket);
 
@@ -110,7 +133,8 @@ describe("coin flip", () => {
     jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] });
     const user = await makeUser(1000);
     const { io, connect } = fakeIo();
-    coinFlip(io);
+    start(coinFlip, io);
+    await untilBettingOpens("coinflip");
     const socket = fakeSocket(user._id);
     connect(socket);
 

@@ -1,3 +1,4 @@
+const Round = require("../models/Round");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
 
 // a fair coin paying 2x is a 0% house edge: the house cannot win, and the game is a
@@ -19,12 +20,22 @@ const freshState = () => ({
   tails: { players: {}, bets: {} },
 });
 
-const coinFlip = (io) => {
+// the timings are arguments so a test can run a whole round in milliseconds against a
+// real database. faking the clock instead breaks the mongo driver's own timers.
+const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {}) => {
   let gameState = freshState();
+  // the persisted record of the round being played. bets refuse to open without one:
+  // taking a stake we cannot account for later is the thing this exists to stop.
+  let round = null;
   // bets are only accepted in the window between flips
-  let bettingOpen = true;
+  let bettingOpen = false;
   // players whose charge is still in flight, so a duplicate emit can't get through
   const pendingBets = new Set();
+  // the round loop runs forever, so it needs a way out: without one a restart or a test
+  // leaves it looping against a database that is no longer there
+  let stopped = false;
+  let nextRound = null;
+  let reveal = null;
 
   io.on("connection", (socket) => {
     socket.on("coinFlip:bet", async (bet, choice, callback) => {
@@ -36,7 +47,7 @@ const coinFlip = (io) => {
       try {
         const userId = socket.userId;
         if (!userId) return reply({ error: "You must be logged in to bet" });
-        if (!bettingOpen) return reply({ error: "Betting is closed for this round" });
+        if (!bettingOpen || !round) return reply({ error: "Betting is closed for this round" });
 
         if (choice !== 0 && choice !== 1) return reply({ error: "Pick heads or tails" });
         if (!Number.isInteger(bet) || bet < MIN_BET || bet > MAX_BET) {
@@ -57,18 +68,29 @@ const coinFlip = (io) => {
           return reply({ error: "You already have a bet this round" });
         }
 
-        // atomically take the stake from the real balance
+        // atomically take the stake from the real balance. roundId on the ledger row is
+        // what lets a restart work out whose stake it still owes.
+        const roundId = String(round._id);
         pendingBets.add(userId);
         let updatedUser;
         try {
           updatedUser = await chargeUser(userId, bet, {
             type: TX.COINFLIP_BET,
-            meta: { bet, side },
+            meta: { bet, side, roundId },
           });
         } finally {
           pendingBets.delete(userId);
         }
         if (!updatedUser) return reply({ error: "Insufficient funds" });
+
+        await Round.updateOne(
+          { _id: round._id },
+          {
+            $push: {
+              bets: { userId, username: updatedUser.username, amount: bet, side, payout: 0 },
+            },
+          }
+        );
 
         gameState[side].bets[userId] = bet;
         gameState[side].players[userId] = {
@@ -94,8 +116,9 @@ const coinFlip = (io) => {
     });
   });
 
-  const calculatePayout = async (result) => {
+  const calculatePayout = async (result, running) => {
     const winningSide = result === 0 ? "heads" : "tails";
+    const roundId = running ? String(running._id) : null;
 
     for (const userId in gameState[winningSide].bets) {
       try {
@@ -103,9 +126,16 @@ const coinFlip = (io) => {
         const payout = winPayout(betAmount);
         const updatedUser = await creditUser(userId, payout, payout - betAmount, {
           type: TX.COINFLIP_WIN,
-          meta: { betAmount, payout, side: winningSide },
+          meta: { betAmount, payout, side: winningSide, roundId },
         });
         if (!updatedUser) continue; // account no longer exists
+
+        if (running) {
+          await Round.updateOne(
+            { _id: running._id, "bets.userId": userId },
+            { $set: { "bets.$.payout": payout, "bets.$.settledAt": new Date() } }
+          );
+        }
 
         io.to(userId.toString()).emit("userDataUpdated", {
           walletBalance: updatedUser.walletBalance,
@@ -118,27 +148,73 @@ const coinFlip = (io) => {
     }
   };
 
+  // a round exists before a single stake is taken, so there is always something to
+  // account against. if the record cannot be written, betting stays shut rather than
+  // taking money the server would have no way to give back.
+  const openBetting = async () => {
+    if (stopped) return;
+    gameState = freshState();
+    try {
+      round = await Round.create({ game: "coinflip", status: "betting" });
+      if (stopped) return;
+      bettingOpen = true;
+    } catch (e) {
+      console.log("coinFlip: could not open a round", e);
+      round = null;
+      bettingOpen = false;
+      if (!stopped) nextRound = setTimeout(openBetting, retryMs); // retry rather than stall for good
+      return;
+    }
+    io.emit("coinFlip:gameState", gameState);
+    nextRound = setTimeout(runRound, bettingMs); // betting window before the flip
+  };
+
   const runRound = async () => {
+    if (stopped) return;
     bettingOpen = false;
     io.emit("coinFlip:start");
 
     const result = Math.floor(Math.random() * 2);
+    const winningSide = result === 0 ? "heads" : "tails";
+    const running = round;
 
-    setTimeout(async () => {
+    // the coin lands before anyone is paid, and it is written down in that order. a
+    // restart between the two can then finish the payouts rather than void a round that
+    // genuinely landed, which would hand the losers their stakes back.
+    if (running) {
+      await Round.updateOne(
+        { _id: running._id },
+        { $set: { status: "running", outcome: { result, winningSide }, startedAt: new Date() } }
+      ).catch((e) => console.log(e));
+    }
+
+    reveal = setTimeout(async () => {
+      if (stopped) return;
       io.emit("coinFlip:result", result);
 
-      await calculatePayout(result);
+      await calculatePayout(result, running);
 
-      gameState = freshState();
-      io.emit("coinFlip:gameState", gameState);
-      bettingOpen = true;
+      if (running) {
+        await Round.updateOne(
+          { _id: running._id },
+          { $set: { status: "settled", settledAt: new Date() } }
+        ).catch((e) => console.log(e));
+      }
 
-      setTimeout(runRound, 14000); // betting window before the next flip
-    }, 5000);
+      openBetting();
+    }, revealMs);
   };
 
-  // open an initial betting window, then start the first flip
-  setTimeout(runRound, 14000);
+  openBetting();
+
+  // stops the loop cleanly. the process exiting mid-round is exactly what the round
+  // record exists to survive, but there is no reason to thrash on the way out.
+  return () => {
+    stopped = true;
+    bettingOpen = false;
+    if (nextRound) clearTimeout(nextRound);
+    if (reveal) clearTimeout(reveal);
+  };
 };
 
 module.exports = coinFlip;

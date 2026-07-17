@@ -1,0 +1,182 @@
+process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
+
+const { setupDb, clearDb, teardownDb } = require("./db");
+const { uniqueSuffix } = require("./helpers");
+const User = require("../../models/User");
+const Round = require("../../models/Round");
+const Transaction = require("../../models/Transaction");
+const { TX } = require("../../utils/economy");
+const crashGame = require("../../games/crash");
+const coinFlip = require("../../games/coinFlip");
+
+// real timers throughout: faking the clock stops the mongo driver's own timers and every
+// query then times out. the games take their timings as arguments instead, so a whole
+// round runs in milliseconds.
+const FAST_CRASH = { bettingMs: 60, tickMs: 5, retryMs: 20 };
+const FAST_FLIP = { bettingMs: 60, revealMs: 40, retryMs: 20 };
+
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// polls instead of guessing a duration: the whole suite runs in parallel, so a fixed
+// wait that passes alone is a coin toss under load
+async function until(check, what, timeoutMs = 8000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const value = await check();
+    if (value) return value;
+    await wait(5);
+  }
+  throw new Error(`timed out waiting for ${what}`);
+}
+
+const roundIn = (game, status) => () => Round.findOne({ game, status });
+
+beforeAll(setupDb);
+
+// the round loop runs forever, so anything a test starts is stopped before the database
+// goes away underneath it
+const running = [];
+const start = (game, io, opts) => {
+  const stop = game(io, opts);
+  running.push(stop);
+  return stop;
+};
+
+afterEach(async () => {
+  while (running.length) running.pop()();
+  jest.restoreAllMocks();
+  await clearDb();
+});
+afterAll(teardownDb);
+
+const makeUser = (walletBalance = 5000) => {
+  const s = uniqueSuffix();
+  return User.create({ username: `u-${s}`, email: `u-${s}@e.com`, password: "x", walletBalance });
+};
+
+const makeIo = () => {
+  const io = {
+    connection: null,
+    on: (event, fn) => { if (event === "connection") io.connection = fn; },
+    emit: () => {},
+    to: () => ({ emit: () => {} }),
+  };
+  return io;
+};
+
+const makeSocket = (userId) => {
+  const handlers = {};
+  return { userId, handlers, on: (e, fn) => { handlers[e] = fn; }, emit: () => {} };
+};
+
+test("crash writes a round, ties the stake to it, and settles it at the bust", async () => {
+  // land on an instant bust so the round resolves in one tick without a real wait
+  jest.spyOn(Math, "random").mockReturnValue(0.01); // below INSTANT_CRASH_CHANCE
+  const user = await makeUser(5000);
+  const io = makeIo();
+
+  start(crashGame, io, FAST_CRASH);
+  const opened = await until(roundIn("crash", "betting"), "crash betting to open");
+
+  const socket = makeSocket(String(user._id));
+  io.connection(socket);
+  let reply;
+  await socket.handlers["crash:bet"](100, (r) => { reply = r; });
+  expect(reply).toEqual({ ok: true });
+
+  // the stake is on the round, and the ledger row points back at it
+  const withBet = await Round.findById(opened._id);
+  expect(withBet.bets).toHaveLength(1);
+  expect(withBet.bets[0].amount).toBe(100);
+  expect(String(withBet.bets[0].userId)).toBe(String(user._id));
+
+  const betTx = await Transaction.findOne({ userId: user._id, type: TX.CRASH_BET });
+  expect(betTx.meta.roundId).toBe(String(opened._id));
+
+  const done = await until(
+    async () => {
+      const r = await Round.findById(opened._id);
+      return r.status === "settled" ? r : null;
+    },
+    "the crash round to bust and settle"
+  );
+  expect(done.outcome.crashPoint).toBe(1);
+  expect(done.bets[0].payout).toBe(0); // an instant bust pays nobody
+});
+
+test("a crash cashout is recorded on the round", async () => {
+  jest.spyOn(Math, "random").mockReturnValue(0.99); // no instant bust
+  const user = await makeUser(5000);
+  const io = makeIo();
+
+  start(crashGame, io, { bettingMs: 60, tickMs: 5, retryMs: 20 });
+  const opened = await until(roundIn("crash", "betting"), "crash betting to open");
+
+  const socket = makeSocket(String(user._id));
+  io.connection(socket);
+  await socket.handlers["crash:bet"](100, () => {});
+
+  await until(roundIn("crash", "running"), "the crash round to start");
+  await socket.handlers["crash:cashout"](() => {});
+
+  const cashed = await Round.findById(opened._id);
+  // a crash point of exactly 1.00 happens 1% of the time and refuses the cashout
+  if (cashed.outcome && cashed.outcome.crashPoint > 1) {
+    expect(cashed.bets[0].payout).toBeGreaterThan(0);
+    expect(cashed.bets[0].multiplier).toBeGreaterThan(1);
+    expect(cashed.bets[0].settledAt).toBeTruthy();
+    const tx = await Transaction.findOne({ userId: user._id, type: TX.CRASH_CASHOUT });
+    expect(tx.meta.roundId).toBe(String(opened._id));
+  }
+});
+
+test("coin flip writes a round, records the side, and settles after the toss", async () => {
+  jest.spyOn(Math, "random").mockReturnValue(0.1); // heads
+  const user = await makeUser(5000);
+  const io = makeIo();
+
+  start(coinFlip, io, FAST_FLIP);
+  const opened = await until(roundIn("coinflip", "betting"), "coin flip betting to open");
+
+  const socket = makeSocket(String(user._id));
+  io.connection(socket);
+  let reply;
+  await socket.handlers["coinFlip:bet"](100, 0, (r) => { reply = r; });
+  expect(reply).toEqual({ ok: true });
+
+  const withBet = await Round.findById(opened._id);
+  expect(withBet.bets[0].side).toBe("heads");
+  expect(withBet.bets[0].amount).toBe(100);
+
+  const settled = await until(
+    async () => {
+      const r = await Round.findById(opened._id);
+      return r.status === "settled" ? r : null;
+    },
+    "the coin flip to land and pay out"
+  );
+  expect(settled.outcome.winningSide).toBe("heads");
+  expect(settled.bets[0].payout).toBe(194);
+  expect((await User.findById(user._id)).walletBalance).toBe(5000 - 100 + 194);
+});
+
+test("no stake is taken while the round record cannot be written", async () => {
+  const user = await makeUser(5000);
+  const io = makeIo();
+  jest.spyOn(Round, "create").mockRejectedValue(new Error("mongo is down"));
+  jest.spyOn(console, "log").mockImplementation(() => {});
+
+  start(crashGame, io, { bettingMs: 60, tickMs: 5, retryMs: 100000 });
+  await wait(60); // nothing to wait for: the point is that no round is ever written
+
+  const socket = makeSocket(String(user._id));
+  io.connection(socket);
+  let reply;
+  await socket.handlers["crash:bet"](100, (r) => { reply = r; });
+
+  // refusing the bet is the point: a stake with nothing to account it against is
+  // exactly what a restart cannot give back
+  expect(reply).toEqual({ error: "Betting is closed for this round" });
+  expect((await User.findById(user._id)).walletBalance).toBe(5000);
+  expect(await Transaction.countDocuments({ userId: user._id })).toBe(0);
+});
