@@ -12,6 +12,7 @@ const BuyOrder = require("../models/BuyOrder");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
 const { sellValue, marketFee, sellerNet, MARKET_FEE_RATE } = require("../utils/itemValue");
 const market = require("../utils/market");
+const { isRealMoneyMode } = require("../utils/mode");
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -29,9 +30,10 @@ const cleanPrice = (raw) => {
   return Number.isFinite(n) && n >= 1 && n <= MAX_PRICE ? n : null;
 };
 
-// the ceiling blocks chip-dumping: pricing a cheap item absurdly high is how KP moves to
-// a colluding account. selling cheap only hands over the item, so there is no floor.
+// the ceiling blocks chip-dumping (pricing a cheap item high to move KP to a colluder),
+// which only matters with real value, so it is null and unenforced in fake mode.
 const priceCeiling = (baseValue) => {
+  if (!isRealMoneyMode()) return null;
   const ref = baseValue > 0 ? baseValue : UNVALUED_REFERENCE;
   return Math.min(MAX_PRICE, Math.ceil(ref * PRICE_CEILING_RATE));
 };
@@ -130,7 +132,7 @@ module.exports = (io) => {
       }
 
       const ceiling = priceCeiling(itemDocument.baseValue);
-      if (price > ceiling) {
+      if (ceiling !== null && price > ceiling) {
         return res.status(400).json({ message: `Price too high: at most ${ceiling} K₽ for this item` });
       }
 
@@ -287,7 +289,7 @@ module.exports = (io) => {
       if (!itemDoc) return res.status(404).json({ message: "Item not found" });
 
       const ceiling = priceCeiling(itemDoc.baseValue);
-      if (price > ceiling) {
+      if (ceiling !== null && price > ceiling) {
         return res.status(400).json({ message: `Bid too high: at most ${ceiling} K₽ for this item` });
       }
 

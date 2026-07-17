@@ -10,7 +10,9 @@ const BuyOrder = require("../../models/BuyOrder");
 
 let app;
 beforeAll(async () => { await setupDb(); app = makeApp(); });
-afterEach(clearDb);
+// the ceiling only applies in real-money mode; each cap test turns it on
+beforeEach(() => { process.env.REAL_MONEY_MODE = "true"; });
+afterEach(async () => { delete process.env.REAL_MONEY_MODE; await clearDb(); });
 afterAll(teardownDb);
 
 const auth = (user) => ["Authorization", `Bearer ${tokenFor(user)}`];
@@ -89,4 +91,16 @@ test("a buy order within the band still works", async () => {
   const res = await request(app).post("/marketplace/orders").set(...auth(buyer)).send({ itemId: item._id, price: 5000, quantity: 1 });
 
   expect(res.status).toBe(200);
+});
+
+test("fake-balance mode leaves the market uncapped", async () => {
+  delete process.env.REAL_MONEY_MODE; // the default: fake balances
+  const seller = await makeUser();
+  const item = await makeItem(1000); // would be capped at 10,000 in real mode
+  const uniqueId = await giveItem(seller, item);
+
+  const res = await request(app).post("/marketplace").set(...auth(seller)).send({ item: uniqueId, price: 1000000 });
+
+  expect(res.status).toBe(200);
+  expect(await Marketplace.countDocuments({ sellerId: seller._id })).toBe(1);
 });
