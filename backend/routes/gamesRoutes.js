@@ -6,7 +6,7 @@ const User = require("../models/User");
 const Case = require("../models/Case");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
-const { calculateLevelFromXp, recordTransaction, TX } = require("../utils/economy");
+const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
 const { buildRangeTable } = require("../utils/caseRanges");
 const { roll, pickFromRanges, TOTAL } = require("../utils/provablyFair");
@@ -78,28 +78,35 @@ module.exports = (io) => {
         draws.push({ nonce, roll: rollValue, itemId: picked.itemId, uniqueId: itemWithUniqueId.uniqueId });
       }
 
-      // atomically charge the cost and add the items only if the balance covers it
-      const updatedUser = await User.findOneAndUpdate(
-        { _id: user._id, walletBalance: { $gte: cost } },
-        {
-          $inc: { walletBalance: -cost, xp: cost * 5 },
-          $push: { inventory: { $each: winningItems } },
-        },
-        { new: true }
-      );
+      // charge the cost, add the items and write the ledger row together: a failed row
+      // rolls the charge back, so the player is never charged without a record
+      const updatedUser = await runAtomic(async (session) => {
+        const u = await User.findOneAndUpdate(
+          { _id: user._id, walletBalance: { $gte: cost } },
+          {
+            $inc: { walletBalance: -cost, xp: cost * 5 },
+            $push: { inventory: { $each: winningItems } },
+          },
+          { new: true, session }
+        );
+        if (!u) return null;
+        await recordTransaction(
+          {
+            userId: user._id,
+            type: TX.CASE_OPEN,
+            direction: "debit",
+            amount: cost,
+            balanceAfter: u.walletBalance,
+            meta: { caseId: caseData._id, caseTitle: caseData.title, quantity: quantityToOpen },
+          },
+          session
+        );
+        return u;
+      });
 
       if (!updatedUser) {
         return res.status(400).json({ message: "Insufficient balance" });
       }
-
-      await recordTransaction({
-        userId: user._id,
-        type: TX.CASE_OPEN,
-        direction: "debit",
-        amount: cost,
-        balanceAfter: updatedUser.walletBalance,
-        meta: { caseId: caseData._id, caseTitle: caseData.title, quantity: quantityToOpen },
-      });
 
       // record one provably-fair audit roll per open (after the charge commits)
       const rollIds = [];

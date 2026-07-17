@@ -8,6 +8,7 @@ const gamesRoutes = require("../../routes/gamesRoutes");
 const fairRoutes = require("../../routes/fairRoutes");
 const collectionsRoutes = require("../../routes/collectionsRoutes");
 const missionsRoutes = require("../../routes/missionsRoutes");
+const adminRoutes = require("../../routes/adminRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -22,6 +23,7 @@ function makeApp() {
   app.use("/fair", fairRoutes);
   app.use("/collections", collectionsRoutes);
   app.use("/missions", missionsRoutes(io));
+  app.use("/admin", adminRoutes);
   return app;
 }
 

@@ -5,7 +5,7 @@ const User = require("../models/User");
 const Case = require("../models/Case");
 const Item = require("../models/Item");
 const { recomputeCaseValues } = require("../utils/itemValue");
-const { recordTransaction, TX } = require("../utils/economy");
+const { recordTransaction, runAtomic, TX } = require("../utils/economy");
 
 router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
   try {
@@ -131,28 +131,38 @@ router.put("/users/:id/wallet", isAuthenticated, isAdmin, async (req, res) => {
   }
 
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
+    // set the balance and record the adjustment together, computing the delta inside the
+    // transaction so two concurrent admin sets cannot clobber each other or mis-record
+    const result = await runAtomic(async (session) => {
+      const user = await User.findById(req.params.id).session(session);
+      if (!user) return { notFound: true };
+
+      const previous = user.walletBalance;
+      const delta = walletBalance - previous;
+      user.walletBalance = walletBalance;
+      await user.save({ session });
+
+      if (delta !== 0) {
+        await recordTransaction(
+          {
+            userId: user._id,
+            type: TX.ADMIN_ADJUST,
+            direction: delta > 0 ? "credit" : "debit",
+            amount: Math.abs(delta),
+            balanceAfter: user.walletBalance,
+            meta: { adminId: req.user._id, previous },
+          },
+          session
+        );
+      }
+      return { balance: user.walletBalance };
+    });
+
+    if (result.notFound) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const previous = user.walletBalance;
-    const delta = walletBalance - previous;
-    user.walletBalance = walletBalance;
-    await user.save();
-
-    if (delta !== 0) {
-      await recordTransaction({
-        userId: user._id,
-        type: TX.ADMIN_ADJUST,
-        direction: delta > 0 ? "credit" : "debit",
-        amount: Math.abs(delta),
-        balanceAfter: user.walletBalance,
-        meta: { adminId: req.user._id, previous },
-      });
-    }
-
-    res.json(user.walletBalance);
+    res.json(result.balance);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
