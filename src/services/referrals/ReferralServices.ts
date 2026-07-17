@@ -5,14 +5,21 @@ export interface ReferralRow {
   username: string;
   profilePicture: string;
   joinedAt: string;
+  level: number;
+  milestonePaid: boolean;
   wagered: number;
   commission: number;
   active: boolean;
 }
 
+// when referrals are disabled (real-money mode) the api returns only { enabled: false }
 export interface ReferralDashboard {
+  enabled: boolean;
   referralCode: string | null;
-  signupBonus: number;
+  referrerBonus: number;
+  refereeBonus: number;
+  milestoneLevel: number;
+  milestoneBonus: number;
   commissionRate: number;
   totals: {
     earned: number;

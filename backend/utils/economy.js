@@ -32,6 +32,8 @@ const TX = {
   MISSION_REWARD: "mission_reward",
   REFERRAL_BONUS: "referral_bonus", // one-time signup bonus, both sides of a referral
   REFERRAL_COMMISSION: "referral_commission", // the referrer's cut of referred wagers
+  REFERRAL_MILESTONE: "referral_milestone", // one-time payout when a referee reaches level 10
+  AD_REWARD: "ad_reward", // KP paid for a completed rewarded ad view
   OPENING: "opening_balance", // the pre-ledger balance, booked once against genesis
 };
 
@@ -171,7 +173,12 @@ async function chargeUser(userId, cost, { awardXp = true, type, meta, counterpar
   // joining a caller's transaction: let a failure propagate so their whole op aborts
   if (session) return body(session);
   try {
-    return await runAtomic(body);
+    const user = await runAtomic(body);
+    // the level may have crossed the referral milestone; lazy require breaks the cycle
+    if (user && awardXp) {
+      require("./referrals").maybePayReferralMilestone(userId, user.level).catch(() => {});
+    }
+    return user;
   } catch (err) {
     console.error("chargeUser rolled back:", err);
     return null;
@@ -222,6 +229,7 @@ async function awardXp(userId, xpAmount) {
   if (newLevel !== user.level) {
     user.level = newLevel;
     await User.updateOne({ _id: userId }, { $set: { level: newLevel } });
+    require("./referrals").maybePayReferralMilestone(userId, newLevel).catch(() => {});
   }
   return user;
 }

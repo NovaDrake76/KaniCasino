@@ -26,13 +26,14 @@ const StatCard = ({ label, children }: { label: string; children: React.ReactNod
   </div>
 );
 
-const ReferralTable = ({ referrals }: { referrals: ReferralRow[] }) => (
+const ReferralTable = ({ referrals, milestoneLevel }: { referrals: ReferralRow[]; milestoneLevel: number }) => (
   <div className="overflow-x-auto">
     <table className="w-full text-left text-sm">
       <thead>
         <tr className="text-ink-muted">
           <th className="font-medium py-2 pr-4">User</th>
           <th className="font-medium py-2 pr-4">Joined</th>
+          <th className="font-medium py-2 pr-4">Level</th>
           <th className="font-medium py-2 pr-4">Total wagered</th>
           <th className="font-medium py-2 pr-4">Commission earned</th>
           <th className="font-medium py-2">Status</th>
@@ -48,6 +49,17 @@ const ReferralTable = ({ referrals }: { referrals: ReferralRow[] }) => (
               </div>
             </td>
             <td className="py-3 pr-4 text-ink-soft">{new Date(r.joinedAt).toLocaleDateString()}</td>
+            <td className="py-3 pr-4 text-ink-soft">
+              {r.level}
+              {r.milestonePaid && (
+                <span
+                  className="ml-2 text-xs px-1.5 py-0.5 rounded bg-accent-gold/15 text-accent-gold"
+                  title={`Reached level ${milestoneLevel}, milestone paid`}
+                >
+                  paid
+                </span>
+              )}
+            </td>
             <td className="py-3 pr-4 text-ink-soft">
               <Monetary value={r.wagered} />
             </td>
@@ -74,30 +86,29 @@ const AffiliatesView: React.FC<Props> = ({
   }
   if (loading) {
     return (
-      <div className="w-full flex justify-center">
-        <div className="w-full max-w-[1100px] px-4 py-8">
-          <Skeleton height={320} borderRadius={12} highlightColor="#161427" baseColor="#1c1a31" />
-        </div>
+      <div className="w-full max-w-[1100px]">
+        <Skeleton height={320} borderRadius={12} highlightColor="#161427" baseColor="#1c1a31" />
       </div>
     );
   }
   if (error || !data) {
     return <div className="w-full flex justify-center py-16 text-ink-muted">Could not load your referrals.</div>;
   }
+  if (!data.enabled) {
+    return <div className="w-full flex justify-center py-16 text-ink-muted">Referrals are turned off right now.</div>;
+  }
 
   const { totals } = data;
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="w-full max-w-[1100px] px-4 py-8 flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-ink">Refer friends</h1>
-          <p className="text-ink-muted mt-1">
-            You both get <span className="text-accent-gold">+{data.signupBonus} K₽</span> when a friend signs up
-            with your link, and you keep earning{" "}
-            <span className="text-accent-gold">{Math.round(data.commissionRate * 100)}%</span> of everything they wager.
-          </p>
-        </div>
+    <div className="w-full max-w-[1100px] flex flex-col gap-6">
+        <p className="text-ink-muted">
+          Bring a friend: they start with <span className="text-accent-gold">+{data.refereeBonus} K₽</span>, you
+          get <span className="text-accent-gold">+{data.referrerBonus} K₽</span>, and when they reach level{" "}
+          {data.milestoneLevel} you earn <span className="text-accent-gold">+{data.milestoneBonus.toLocaleString()} K₽</span> more.
+          On top, <span className="text-accent-gold">{Math.round(data.commissionRate * 100)}%</span> of everything
+          they wager is yours to claim.
+        </p>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard label="Total earned">
@@ -167,10 +178,9 @@ const AffiliatesView: React.FC<Props> = ({
               No one yet. Share your link and both of you get paid.
             </p>
           ) : (
-            <ReferralTable referrals={data.referrals} />
+            <ReferralTable referrals={data.referrals} milestoneLevel={data.milestoneLevel} />
           )}
         </div>
-      </div>
     </div>
   );
 };

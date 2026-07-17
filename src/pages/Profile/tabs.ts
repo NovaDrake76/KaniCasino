@@ -1,4 +1,4 @@
-export type Tab = "inventory" | "collections" | "history" | "missions";
+export type Tab = "inventory" | "collections" | "history" | "missions" | "affiliates";
 
 // the url is the source of truth for the tab. owner-only tabs collapse to inventory
 // whenever isOwner is false, which covers both "not the owner" and "ownership not
@@ -6,6 +6,6 @@ export type Tab = "inventory" | "collections" | "history" | "missions";
 export const resolveTab = (param: string | null, isOwner: boolean): Tab =>
   param === "collections"
     ? "collections"
-    : (param === "missions" || param === "history") && isOwner
+    : (param === "missions" || param === "history" || param === "affiliates") && isOwner
     ? param
     : "inventory";

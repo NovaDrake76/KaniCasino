@@ -13,7 +13,7 @@ import { SlPlane } from "react-icons/sl";
 import { GiUpgrade, GiCrossedSwords } from 'react-icons/gi';
 import { TbCat } from "react-icons/tb";
 import { toast } from "react-toastify";
-import { FaBars, FaUserFriends } from 'react-icons/fa';
+import { FaBars } from 'react-icons/fa';
 import RightContent from "./RightContent";
 
 interface Navbar {
@@ -94,11 +94,6 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       name: "Case Battles",
       path: "/battles",
       icon: <GiCrossedSwords className="text-2xl" />,
-    },
-    {
-      name: "Affiliates",
-      path: "/affiliates",
-      icon: <FaUserFriends className="text-2xl" />,
     },
     // only admins see the backoffice; the api refuses everyone else anyway
     ...(userData?.isAdmin ? [{

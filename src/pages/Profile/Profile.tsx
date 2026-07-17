@@ -12,6 +12,7 @@ import Pagination from "../../components/Pagination";
 import BalanceHistory from "./BalanceHistory";
 import CollectionsPanel from "../Collections/CollectionsPanel";
 import MissionsPanel from "../Missions/MissionsPanel";
+import AffiliatesPanel from "../Affiliates/AffiliatesPanel";
 import { resolveTab, Tab } from "./tabs";
 import { User } from '../../components/Types'
 
@@ -22,7 +23,7 @@ interface Inventory {
 }
 
 // tabs that show a "NEW!" badge until the owner opens them for the first time
-const NEW_TABS = ["collections", "missions"];
+const NEW_TABS = ["collections", "missions", "affiliates"];
 
 const Profile = () => {
   const { id } = useParams();
@@ -147,6 +148,7 @@ const Profile = () => {
     ...(isSameUser
       ? [
           { key: "missions" as const, label: "Missions" },
+          { key: "affiliates" as const, label: "Affiliates" },
           { key: "history" as const, label: "Balance history" },
         ]
       : []),
@@ -224,6 +226,8 @@ const Profile = () => {
             <BalanceHistory />
           ) : activeTab === "missions" ? (
             <MissionsPanel userId={id as string} isOwner={isSameUser} />
+          ) : activeTab === "affiliates" ? (
+            <AffiliatesPanel isOwner={isSameUser} />
           ) : activeTab === "collections" ? (
             <CollectionsPanel userId={id as string} isOwner={isSameUser} />
           ) : (

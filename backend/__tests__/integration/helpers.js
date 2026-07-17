@@ -10,6 +10,7 @@ const collectionsRoutes = require("../../routes/collectionsRoutes");
 const missionsRoutes = require("../../routes/missionsRoutes");
 const adminRoutes = require("../../routes/adminRoutes");
 const referralRoutes = require("../../routes/referralRoutes");
+const rewardRoutes = require("../../routes/rewardRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -26,6 +27,7 @@ function makeApp() {
   app.use("/missions", missionsRoutes(io));
   app.use("/admin", adminRoutes);
   app.use("/referrals", referralRoutes(io));
+  app.use("/rewards", rewardRoutes(io));
   return app;
 }
 

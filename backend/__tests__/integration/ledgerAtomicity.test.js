@@ -244,3 +244,38 @@ test("concurrent commission claims pay exactly once", async () => {
   expect((await User.findById(me._id)).referralClaimed).toBe(10);
   expect(await Transaction.countDocuments({ userId: me._id, type: TX.REFERRAL_COMMISSION })).toBe(1);
 });
+
+const { maybePayReferralMilestone, MILESTONE_LEVEL, MILESTONE_BONUS } = require("../../utils/referrals");
+
+async function referredPair() {
+  const referrer = await makeUser(0);
+  const referee = await makeUser(1000);
+  await User.updateOne({ _id: referee._id }, { $set: { referredBy: referrer._id } });
+  return { referrer, referee };
+}
+
+test("a failed milestone credit rolls the paid flag back", async () => {
+  const { referrer, referee } = await referredPair();
+  jest.spyOn(Transaction, "create").mockRejectedValueOnce(new Error("row write failed"));
+
+  await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL); // swallows the abort
+
+  expect((await User.findById(referee._id)).referralMilestonePaid).not.toBe(true); // still owed
+  expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+  jest.restoreAllMocks();
+
+  await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL); // the next level event pays
+  expect((await User.findById(referrer._id)).walletBalance).toBe(MILESTONE_BONUS);
+});
+
+test("concurrent milestone triggers pay exactly once", async () => {
+  const { referrer, referee } = await referredPair();
+
+  await Promise.all([
+    maybePayReferralMilestone(referee._id, MILESTONE_LEVEL),
+    maybePayReferralMilestone(referee._id, MILESTONE_LEVEL),
+  ]);
+
+  expect((await User.findById(referrer._id)).walletBalance).toBe(MILESTONE_BONUS);
+  expect(await Transaction.countDocuments({ userId: referrer._id, type: TX.REFERRAL_MILESTONE })).toBe(1);
+});

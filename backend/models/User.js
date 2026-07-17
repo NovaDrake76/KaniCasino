@@ -107,6 +107,11 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  // the level-10 reward went to this user's referrer; set once, never unset
+  referralMilestonePaid: {
+    type: Boolean,
+    default: false,
+  },
 
 });
 
