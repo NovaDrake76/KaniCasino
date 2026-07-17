@@ -91,6 +91,36 @@ const CrashGame = () => {
     };
   }, []);
 
+  // sync to a round already in progress on entry, so joining mid-round does not sit at
+  // 1x with the idle animation until the next game. asks the server, and also catches the
+  // server's own emit on (re)connect.
+  useEffect(() => {
+    const syncListener = (sync: any) => {
+      setGameState({
+        gameBets: sync.gameBets || {},
+        gamePlayers: sync.gamePlayers || {},
+        crashPoint: 1.0,
+        gameStartTime: sync.gameStartTime || null,
+      });
+      if (sync.phase === "running") {
+        setGameStarted(true);
+        setGameEnded(false);
+        setAnimationSrc(up);
+      } else if (sync.phase === "betting") {
+        setGameStarted(false);
+        setGameEnded(false);
+        setAnimationSrc(idle);
+      }
+    };
+
+    socket.on("crash:sync", syncListener);
+    socket.emit("crash:requestState");
+
+    return () => {
+      socket.off("crash:sync", syncListener);
+    };
+  }, []);
+
   useEffect(() => {
     const startListener = () => {
       setAnimationSrc(up);

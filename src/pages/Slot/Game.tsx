@@ -26,7 +26,9 @@ const Game: React.FC<SlotMachineProps> = ({ grid, isSpinning, data, winningLines
 
     const renderBottomBar = (index: number) => {
         return (
-            <img src={bottomBar} alt="bottom bar" className={`w-screen md:w-[416px] z-10 ${index == 0 ? "scale-y-[-1]" : ""} `}
+            // aspect-ratio reserves the bar's height before it loads, so the machine below
+            // it does not jump down when the image arrives
+            <img src={bottomBar} alt="bottom bar" className={`w-screen md:w-[416px] aspect-[539/7] z-10 ${index == 0 ? "scale-y-[-1]" : ""} `}
                 onLoad={() => setLoadedImages(loadedImages + 1)}
             />
         )

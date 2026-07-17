@@ -4,6 +4,7 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 
 const User = require("../models/User");
 const Case = require("../models/Case");
+const Round = require("../models/Round");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
@@ -193,6 +194,29 @@ module.exports = (io) => {
     }
   });
 
+  // recent coin flip results, so the page has a history the moment it loads. light and
+  // indexed (game + createdAt), capped, public: just the outcome, no bets or seeds.
+  router.get("/coinflip/history", async (req, res) => {
+    try {
+      const limit = Math.min(Math.max(1, Math.floor(Number(req.query.limit)) || 15), 50);
+      const rounds = await Round.find(
+        { game: "coinflip", status: "settled" },
+        { outcome: 1, createdAt: 1 }
+      )
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .lean();
+      res.json(
+        rounds.map((r) => ({
+          result: r.outcome && r.outcome.result,
+          winningSide: r.outcome && r.outcome.winningSide,
+          at: r.createdAt,
+        }))
+      );
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
 
   return router;
 };

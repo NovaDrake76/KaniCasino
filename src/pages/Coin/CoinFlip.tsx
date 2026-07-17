@@ -5,6 +5,7 @@ import Coin from "./Coin"
 import { motion } from "framer-motion";
 import UserContext from "../../UserContext";
 import LiveBets from "./LiveBets";
+import { getCoinFlipHistory } from "../../services/games/GamesServices";
 
 const socket = SocketConnection.getInstance();
 
@@ -41,6 +42,18 @@ const CoinFlip = () => {
     }
   });
   const { isLogged, userData, toogleUserFlow } = useContext(UserContext);
+
+  // seed the history from past rounds so the page is not blank on entry. the endpoint
+  // returns newest first, so it is reversed into the oldest-first order the row appends to.
+  useEffect(() => {
+    getCoinFlipHistory()
+      .then((rounds: Array<{ result: number }>) => {
+        setHistory(rounds.map((r) => ({ result: r.result })).reverse());
+      })
+      .catch(() => {
+        // best-effort: a missing history must never break the page
+      });
+  }, []);
 
   const handleBet = () => {
     if (!isLogged) {
