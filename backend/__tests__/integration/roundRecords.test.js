@@ -89,6 +89,29 @@ const makeSocket = (userId) => {
   return { userId, handlers, on: (e, fn) => { handlers[e] = fn; }, emit: () => {} };
 };
 
+// place a bet during a betting window, retrying across windows if one closes first under
+// load. returns the round the bet actually landed on, so assertions target the right one.
+async function betOnRound(game, event, socket, args) {
+  for (let attempt = 0; attempt < 200; attempt++) {
+    await until(roundIn(game, "betting"), `${game} betting to open`);
+    let reply;
+    await socket.handlers[event](...args, (r) => { reply = r; });
+    if (reply && reply.ok) {
+      return until(
+        () => Round.findOne({ game, "bets.userId": socket.userId }),
+        `${game} round holding the bet`
+      );
+    }
+    await wait(10);
+  }
+  throw new Error(`could not place a ${game} bet`);
+}
+
+const settledById = (id) => async () => {
+  const r = await Round.findById(id);
+  return r && r.status === "settled" ? r : null;
+};
+
 test("crash writes a round, ties the stake to it, and settles it at the bust", async () => {
   // a seed whose crash point is 1.0, so the round busts instantly and settles at once
   mockCrashSeed = INSTANT_SEED;
@@ -96,30 +119,19 @@ test("crash writes a round, ties the stake to it, and settles it at the bust", a
   const io = makeIo();
 
   start(crashGame, io, FAST_CRASH);
-  const opened = await until(roundIn("crash", "betting"), "crash betting to open");
-
   const socket = makeSocket(String(user._id));
   io.connection(socket);
-  let reply;
-  await socket.handlers["crash:bet"](100, (r) => { reply = r; });
-  expect(reply).toEqual({ ok: true });
+  const opened = await betOnRound("crash", "crash:bet", socket, [100]);
 
   // the stake is on the round, and the ledger row points back at it
-  const withBet = await Round.findById(opened._id);
-  expect(withBet.bets).toHaveLength(1);
-  expect(withBet.bets[0].amount).toBe(100);
-  expect(String(withBet.bets[0].userId)).toBe(String(user._id));
+  expect(opened.bets).toHaveLength(1);
+  expect(opened.bets[0].amount).toBe(100);
+  expect(String(opened.bets[0].userId)).toBe(String(user._id));
 
   const betTx = await Transaction.findOne({ userId: user._id, type: TX.CRASH_BET });
   expect(betTx.meta.roundId).toBe(String(opened._id));
 
-  const done = await until(
-    async () => {
-      const r = await Round.findById(opened._id);
-      return r.status === "settled" ? r : null;
-    },
-    "the crash round to bust and settle"
-  );
+  const done = await until(settledById(opened._id), "the crash round to bust and settle");
   expect(done.outcome.crashPoint).toBe(1);
   expect(done.bets[0].payout).toBe(0); // an instant bust pays nobody
 });
@@ -131,13 +143,14 @@ test("a crash cashout is recorded on the round", async () => {
   const io = makeIo();
 
   start(crashGame, io, { bettingMs: 60, tickMs: 5, retryMs: 20 });
-  const opened = await until(roundIn("crash", "betting"), "crash betting to open");
-
   const socket = makeSocket(String(user._id));
   io.connection(socket);
-  await socket.handlers["crash:bet"](100, () => {});
+  const opened = await betOnRound("crash", "crash:bet", socket, [100]);
 
-  await until(roundIn("crash", "running"), "the crash round to start");
+  await until(async () => {
+    const r = await Round.findById(opened._id);
+    return r && r.status === "running" ? r : null;
+  }, "the crash round to start");
   await socket.handlers["crash:cashout"](() => {});
 
   const cashed = await Round.findById(opened._id);
@@ -154,25 +167,14 @@ test("coin flip writes a round, records the side, and settles after the toss", a
   const io = makeIo();
 
   start(coinFlip, io, FAST_FLIP);
-  const opened = await until(roundIn("coinflip", "betting"), "coin flip betting to open");
-
   const socket = makeSocket(String(user._id));
   io.connection(socket);
-  let reply;
-  await socket.handlers["coinFlip:bet"](100, 0, (r) => { reply = r; });
-  expect(reply).toEqual({ ok: true });
+  const opened = await betOnRound("coinflip", "coinFlip:bet", socket, [100, 0]);
 
-  const withBet = await Round.findById(opened._id);
-  expect(withBet.bets[0].side).toBe("heads");
-  expect(withBet.bets[0].amount).toBe(100);
+  expect(opened.bets[0].side).toBe("heads");
+  expect(opened.bets[0].amount).toBe(100);
 
-  const settled = await until(
-    async () => {
-      const r = await Round.findById(opened._id);
-      return r.status === "settled" ? r : null;
-    },
-    "the coin flip to land and pay out"
-  );
+  const settled = await until(settledById(opened._id), "the coin flip to land and pay out");
   expect(settled.outcome.winningSide).toBe("heads");
   expect(settled.bets[0].payout).toBe(194);
   expect((await User.findById(user._id)).walletBalance).toBe(5000 - 100 + 194);
