@@ -42,6 +42,17 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
   let ticker = null;
 
   io.on("connection", (socket) => {
+    // sync a joiner to the round in progress: without this a missed crash:start leaves
+    // them stuck at 1x with the idle animation until the next round. the crash point is
+    // never sent, only the phase and start time, so nothing about the outcome leaks.
+    const sendState = () =>
+      socket.emit("crash:sync", {
+        phase: bettingOpen ? "betting" : gameState.gameStartTime ? "running" : "idle",
+        ...publicState(gameState),
+      });
+    sendState();
+    socket.on("crash:requestState", sendState);
+
     socket.on("crash:bet", async (bet, callback) => {
       // the client used to get no answer at all when a bet was refused
       const reply = (result) => {
