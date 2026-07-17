@@ -13,10 +13,13 @@ const crashPointFromRandom = (h) => {
   return Math.floor((100 * e - h) / (e - h)) / 100;
 };
 
-// the outcome derived from one seed so the round is verifiable: two disjoint words of
-// sha256(seed) drive the instant bust and the curve, matching the old random distribution.
+// the outcome is derived by an hmac KEYED with the seed, not by sha256(seed): the round's
+// published commitment is sha256(seed), so deriving the outcome from that same hash let
+// anyone read the crash point off the commitment before betting closed. hmac(seed, "crash")
+// needs the still-secret seed, so it stays unknowable until reveal while sha256(seed) still
+// verifies the chain link. two disjoint words drive the instant bust and the curve.
 const crashPointFromSeed = (serverSeed) => {
-  const hash = crypto.createHash("sha256").update(serverSeed).digest("hex");
+  const hash = crypto.createHmac("sha256", serverSeed).update("crash").digest("hex");
   const bust = parseInt(hash.slice(0, 8), 16) / 2 ** 32; // uniform [0,1)
   if (bust < INSTANT_CRASH_CHANCE) return 1.0;
   return crashPointFromRandom(parseInt(hash.slice(8, 16), 16));
