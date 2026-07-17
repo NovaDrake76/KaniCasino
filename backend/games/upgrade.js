@@ -101,19 +101,16 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
     const reserved = await seeds.reserveNonces(userId, 1);
     const nonce = reserved.startNonce;
 
-    // atomically consume the selected items; the pre-update doc tells us how many
-    // were actually present, so a concurrent request can't spend them twice
+    // consume the selected items in one atomic step. the filter demands every one of
+    // them is still there, so a request that loses the race to a sale or another
+    // upgrade removes nothing at all. it used to $pull first and count afterwards,
+    // which meant losing that race destroyed whichever items it did still find.
+    const consumeIds = selectedItems.map((invItem) => invItem.uniqueId);
     const before = await User.findOneAndUpdate(
-      { _id: userId },
-      { $pull: { inventory: { uniqueId: { $in: selectedItemIds } } } }
+      { _id: userId, "inventory.uniqueId": { $all: consumeIds } },
+      { $pull: { inventory: { uniqueId: { $in: consumeIds } } } }
     );
     if (!before) {
-      return { status: 404, message: "User not found" };
-    }
-    const removedCount = before.inventory.filter((invItem) =>
-      selectedItemIds.includes(invItem.uniqueId)
-    ).length;
-    if (removedCount !== selectedItems.length) {
       return { status: 400, message: "Items no longer available" };
     }
 
