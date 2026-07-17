@@ -31,6 +31,7 @@ const COUNTERPARTY_FOR_TYPE = {
   item_sell: HOUSE,
   market_order: ESCROW,
   market_order_refund: ESCROW,
+  opening_balance: GENESIS,
 };
 
 module.exports = {
