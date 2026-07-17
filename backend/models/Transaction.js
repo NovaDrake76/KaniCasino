@@ -26,6 +26,13 @@ const TransactionSchema = new mongoose.Schema({
   balanceAfter: {
     type: Number,
   },
+  // the account on the other side of the movement (a user or a system account), so a
+  // row is a complete double entry and every account's balance is derivable
+  counterparty: {
+    type: mongoose.Schema.Types.ObjectId,
+    index: true,
+    sparse: true,
+  },
   meta: {
     type: mongoose.Schema.Types.Mixed,
     default: {},

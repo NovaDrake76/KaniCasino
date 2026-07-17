@@ -1,5 +1,7 @@
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const Transaction = require("../models/Transaction");
+const { COUNTERPARTY_FOR_TYPE, MINT } = require("./accounts");
 
 const BASE_XP = 1000; // xp required for the first level
 const GROWTH_RATE = 1.25; // growth rate for each level
@@ -21,8 +23,10 @@ const TX = {
   BATTLE_REFUND: "battle_refund",
   MARKET_BUY: "market_buy",
   MARKET_SALE: "market_sale",
+  MARKET_FEE: "market_fee", // the house cut on a settled trade, credited to HOUSE
   MARKET_ORDER: "market_order", // KP escrowed when a buy order is placed
   MARKET_ORDER_REFUND: "market_order_refund", // escrow returned on cancel
+  MARKET_ORDER_FILL: "market_order_fill", // escrow paid out to a seller on a fill
   ITEM_SELL: "item_sell",
   ADMIN_ADJUST: "admin_adjust",
   MISSION_REWARD: "mission_reward",
@@ -43,8 +47,11 @@ function calculateLevelFromXp(xp) {
 
 // append a balance-history entry. best-effort audit: a failed write here must
 // never break the money path, so it logs and swallows rather than throwing.
-async function recordTransaction({ userId, type, direction, amount, balanceAfter, meta }) {
+async function recordTransaction({ userId, type, direction, amount, balanceAfter, meta, counterparty }) {
   if (!userId || !amount) return null;
+  // counterparty is the account on the other side; most types have a fixed one, and
+  // caller-supplied wins so market trades can name the actual player or system leg
+  const other = counterparty !== undefined ? counterparty : COUNTERPARTY_FOR_TYPE[type];
   try {
     return await Transaction.create({
       userId,
@@ -52,6 +59,7 @@ async function recordTransaction({ userId, type, direction, amount, balanceAfter
       direction,
       amount: Math.abs(amount),
       balanceAfter,
+      counterparty: other,
       meta: meta || {},
     });
   } catch (err) {
@@ -60,9 +68,38 @@ async function recordTransaction({ userId, type, direction, amount, balanceAfter
   }
 }
 
+// any account's balance derived from the ledger: each row is a transfer between userId
+// and counterparty, so the two sides read its signed amount oppositely
+async function accountBalance(accountId) {
+  const id = new mongoose.Types.ObjectId(String(accountId));
+  const [row] = await Transaction.aggregate([
+    { $match: { $or: [{ userId: id }, { counterparty: id }] } },
+    {
+      $group: {
+        _id: null,
+        bal: {
+          $sum: {
+            $cond: [
+              { $eq: ["$userId", id] },
+              { $cond: [{ $eq: ["$direction", "credit"] }, "$amount", { $multiply: ["$amount", -1] }] },
+              { $cond: [{ $eq: ["$direction", "credit"] }, { $multiply: ["$amount", -1] }, "$amount"] },
+            ],
+          },
+        },
+      },
+    },
+  ]);
+  return row ? row.bal : 0;
+}
+
+// total KP in circulation is everything the mint has issued and not taken back
+async function ledgerSupply() {
+  return -(await accountBalance(MINT));
+}
+
 // atomically debit `cost` only if the balance covers it, optionally granting xp.
 // returns the updated user, or null when funds are insufficient.
-async function chargeUser(userId, cost, { awardXp = true, type, meta } = {}) {
+async function chargeUser(userId, cost, { awardXp = true, type, meta, counterparty } = {}) {
   const inc = awardXp
     ? { walletBalance: -cost, xp: cost * 5 }
     : { walletBalance: -cost };
@@ -92,6 +129,7 @@ async function chargeUser(userId, cost, { awardXp = true, type, meta } = {}) {
     amount: cost,
     balanceAfter: user.walletBalance,
     meta,
+    counterparty,
   });
 
   return user;
@@ -99,7 +137,7 @@ async function chargeUser(userId, cost, { awardXp = true, type, meta } = {}) {
 
 // atomically credit winnings to the wallet (and weekly winnings).
 // returns the updated user, or null when the account no longer exists.
-async function creditUser(userId, amount, winnings = 0, { type, meta } = {}) {
+async function creditUser(userId, amount, winnings = 0, { type, meta, counterparty } = {}) {
   const user = await User.findByIdAndUpdate(
     userId,
     { $inc: { walletBalance: amount, weeklyWinnings: winnings } },
@@ -117,6 +155,7 @@ async function creditUser(userId, amount, winnings = 0, { type, meta } = {}) {
     amount,
     balanceAfter: user.walletBalance,
     meta,
+    counterparty,
   });
 
   return user;
@@ -149,5 +188,7 @@ module.exports = {
   chargeUser,
   creditUser,
   awardXp,
+  accountBalance,
+  ledgerSupply,
   TX,
 };
