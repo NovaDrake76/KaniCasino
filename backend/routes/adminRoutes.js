@@ -6,6 +6,45 @@ const Case = require("../models/Case");
 const Item = require("../models/Item");
 const { recomputeCaseValues } = require("../utils/itemValue");
 const { recordTransaction, runAtomic, TX } = require("../utils/economy");
+const adminStats = require("../utils/adminStats");
+
+// the backoffice dashboard: everything is derived from the ledger, ?days= windows it
+router.get("/stats/overview", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json(await adminStats.overview(req.query.days));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/stats/games", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json(await adminStats.gameStats(req.query.days));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/stats/cases", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json(await adminStats.caseStats(req.query.days));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/stats/users", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const { days, page, search, sort } = req.query;
+    res.json(await adminStats.userStats({ days, page, search, sort }));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
   try {

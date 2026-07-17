@@ -1,6 +1,6 @@
 import { BsCoin } from "react-icons/bs";
 import { GiUpgrade, GiCrossedSwords } from "react-icons/gi";
-import { MdOutlineSell } from "react-icons/md";
+import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { SlPlane } from "react-icons/sl";
 import { FaHome, FaUserFriends } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -58,7 +58,12 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: "Affiliates",
             path: "/affiliates",
             icon: <FaUserFriends className="text-2xl" />,
-        }
+        },
+        ...(userData?.isAdmin ? [{
+            name: "Backoffice",
+            path: "/backoffice",
+            icon: <MdOutlineAdminPanelSettings className="text-2xl" />,
+        }] : [])
     ];
 
     return (

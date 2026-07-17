@@ -44,5 +44,6 @@ const TransactionSchema = new mongoose.Schema({
 });
 
 TransactionSchema.index({ userId: 1, createdAt: -1 });
+TransactionSchema.index({ type: 1, createdAt: -1 });
 
 module.exports = mongoose.model("Transaction", TransactionSchema);
