@@ -70,6 +70,7 @@ const io = socketIO(server, {
 const coinFlip = require("./games/coinFlip");
 const crash = require("./games/crash");
 const caseBattle = require("./games/caseBattle");
+const { recoverStuckRounds } = require("./utils/rounds");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
 const itemRoutes = require("./routes/itemRoutes");
@@ -110,6 +111,10 @@ app.use("/friends", friendsRoutes);
 app.use("/fair", fairRoutes);
 app.use("/collections", collectionsRoutes);
 app.use("/missions", missionsRoutes);
+
+// settle whatever the last shutdown interrupted before dealing anyone in again: a live
+// crash or coin flip round holds real stakes, and until this runs they are unaccounted
+recoverStuckRounds(io, coinFlip.winPayout).catch((e) => console.log(e));
 
 // Start the games
 coinFlip(io);
