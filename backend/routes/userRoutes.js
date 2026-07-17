@@ -12,6 +12,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const { loginLimiter, registerLimiter } = require("../middleware/rateLimit");
 const { sellValue } = require("../utils/itemValue");
 const { creditUser, recordTransaction, runAtomic, TX } = require("../utils/economy");
+const { findReferrer, payReferralBonuses } = require("../utils/referrals");
 const { sellUniqueIds } = require("../utils/inventorySell");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
@@ -39,7 +40,7 @@ router.post(
     }
 
 
-    const { email, password, username, profilePicture } = req.body;
+    const { email, password, username, profilePicture, referralCode } = req.body;
 
     try {
       // Check if user already exists
@@ -54,10 +55,14 @@ router.post(
 
       if (!isValidBase64(profilePicture) && profilePicture !== "") return res.status(400).json({ message: "Invalid profile picture" })
 
+      // an unknown referral code is ignored rather than blocking the signup
+      const referrer = referralCode ? await findReferrer(referralCode) : null;
+
       // Create new user. accept the password as plain text; for backwards
       // compatibility, decrypt a legacy AES-wrapped value if detected.
       const originalPassword = resolvePassword(password);
       user = new User({ email, username, profilePicture, isAdmin: false });
+      if (referrer) user.referredBy = referrer._id;
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
@@ -79,6 +84,8 @@ router.post(
         balanceAfter: user.walletBalance,
         meta: { source: "register" },
       });
+
+      if (referrer) await payReferralBonuses(user, referrer);
 
       // Generate and send JWT
       const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
@@ -155,7 +162,7 @@ router.post(
 
 // Google login
 router.post('/googlelogin', async (req, res) => {
-  const { token } = req.body;
+  const { token, referralCode } = req.body;
   try {
     const ticket = await client.verifyIdToken({
       idToken: token,
@@ -173,11 +180,14 @@ router.post('/googlelogin', async (req, res) => {
         username = googlePayload.name + Math.floor(Math.random() * 1000);
         existingUser = await User.findOne({ username });
       }
+      // a referral only counts at account creation, never on a later login
+      const referrer = referralCode ? await findReferrer(referralCode) : null;
       user = new User({
         email: googlePayload.email,
         username: username,
         profilePicture: googlePayload.picture,
       });
+      if (referrer) user.referredBy = referrer._id;
       await user.save();
 
       await recordTransaction({
@@ -188,6 +198,8 @@ router.post('/googlelogin', async (req, res) => {
         balanceAfter: user.walletBalance,
         meta: { source: "google" },
       });
+
+      if (referrer) await payReferralBonuses(user, referrer);
     }
     // Generate and send JWT
     const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };

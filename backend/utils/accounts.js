@@ -16,6 +16,8 @@ const COUNTERPARTY_FOR_TYPE = {
   signup: MINT,
   bonus: MINT,
   mission_reward: MINT,
+  referral_bonus: MINT,
+  referral_commission: HOUSE, // the house shares its edge with the affiliate
   admin_adjust: MINT,
   case_open: HOUSE,
   slot_bet: HOUSE,

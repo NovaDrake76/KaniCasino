@@ -6,6 +6,7 @@ import "./UserFlow.css";
 import UserContext from "../../../UserContext";
 import useOutsideClick from "../../../hooks/useOutsideClick";
 import Modal from "../../Modal";
+import { getPendingReferralCode } from "../../../services/referrals/ReferralServices";
 
 // the provider fetches google's sign-in script the moment it mounts, so it lives here
 // with the only two components that need it (Login and SignUp) rather than around the
@@ -14,7 +15,8 @@ import Modal from "../../Modal";
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const UserFlow: React.FC = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+  // a visitor arriving through a referral link is here to create the account
+  const [isLogin, setIsLogin] = useState<boolean>(() => !getPendingReferralCode());
   const { toogleUserFlow } = useContext(UserContext);
   const loginRef = useRef(null);
 
@@ -29,7 +31,7 @@ const UserFlow: React.FC = () => {
         <Modal open={true} setOpen={toogleUserFlow} width={"400px"}>
           <div className="flex items-center justify-center p-8" >
             <div
-              className={`flex flex-col justify-center transition-all ${isLogin ? "h-[340px]" : "h-[380px]"
+              className={`flex flex-col justify-center transition-all ${isLogin ? "h-[340px]" : "h-[460px]"
                 }`}
             >
               {isLogin ? <Login /> : <SignUp />}

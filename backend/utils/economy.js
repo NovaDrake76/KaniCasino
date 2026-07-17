@@ -30,8 +30,13 @@ const TX = {
   ITEM_SELL: "item_sell",
   ADMIN_ADJUST: "admin_adjust",
   MISSION_REWARD: "mission_reward",
+  REFERRAL_BONUS: "referral_bonus", // one-time signup bonus, both sides of a referral
+  REFERRAL_COMMISSION: "referral_commission", // the referrer's cut of referred wagers
   OPENING: "opening_balance", // the pre-ledger balance, booked once against genesis
 };
+
+// every KP put at risk on a game; missions and referral commission both count these
+const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN];
 
 function calculateXPForLevel(level) {
   return Math.floor(BASE_XP * Math.pow(GROWTH_RATE, level - 1));
@@ -235,4 +240,5 @@ module.exports = {
   setTransactionsSupported,
   transactionsSupported,
   TX,
+  STAKE_TYPES,
 };

@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { login, googleLogin } from "../../../services/auth/auth";
 import { saveTokens } from "../../../services/auth/authUtils";
+import { getPendingReferralCode, clearPendingReferralCode } from "../../../services/referrals/ReferralServices";
 import MainButton from "../../MainButton";
 import UserContext from "../../../UserContext";
 import { Tooltip } from "react-tooltip";
@@ -38,10 +39,12 @@ const LoginPage = () => {
 
   const handleGoogleLoginSuccess = async (credentialResponse: any) => {
     try {
-      const response = await googleLogin(credentialResponse.credential)
+      // a first google sign-in creates the account, so the referral code rides along
+      const response = await googleLogin(credentialResponse.credential, getPendingReferralCode() || undefined)
       const data = await response;
       if (data.token) {
         saveTokens(data.token, "");
+        clearPendingReferralCode();
         toggleLogin();
       }
     } catch (error) {

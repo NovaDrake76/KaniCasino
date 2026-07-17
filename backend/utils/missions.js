@@ -4,7 +4,7 @@ const Battle = require("../models/Battle");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const MissionState = require("../models/MissionState");
-const { creditUser, runAtomic, TX } = require("./economy");
+const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { CATALOG, byKey, missionsLaunchAt } = require("./missionsCatalog");
 
 // a "big win" is any single game payout (slots / crash cashout / coin flip win)
@@ -36,9 +36,6 @@ async function collectionsProgress(userId) {
 async function countCompletedCollections(userId) {
   return (await collectionsProgress(userId)).done;
 }
-
-// the stakes the "total wagered" mission counts: every KP put at risk on a game
-const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN];
 
 // ensure the per-user state doc exists, then return it
 async function getState(userId) {

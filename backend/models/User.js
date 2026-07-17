@@ -94,7 +94,23 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // affiliate identity: the vanity code others register with, set once
+  referralCode: {
+    type: String,
+  },
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  // commission already paid out, so available = earned - claimed stays ledger-derived
+  referralClaimed: {
+    type: Number,
+    default: 0,
+  },
 
 });
+
+UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
+UserSchema.index({ referredBy: 1 }, { sparse: true });
 
 module.exports = User = mongoose.model("User", UserSchema);

@@ -5,15 +5,16 @@ export async function login(email: string, password: string) {
     return response.data;
 }
 
-export async function googleLogin(token: string) {
-    const response = await api.post('/users/googlelogin', { token });
+export async function googleLogin(token: string, referralCode?: string) {
+    const response = await api.post('/users/googlelogin', { token, referralCode });
     return response.data;
 }
 
-export async function register(email: string, password: string, username: string, profilePicture: any) {
+export async function register(email: string, password: string, username: string, profilePicture: any, referralCode?: string) {
     const response = await api.post('/users/register', {
         email, password, username,
-        profilePicture: profilePicture ? profilePicture : ""
+        profilePicture: profilePicture ? profilePicture : "",
+        referralCode
     });
     return response.data;
 }
