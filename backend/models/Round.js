@@ -34,6 +34,12 @@ const RoundSchema = new mongoose.Schema(
       default: "betting",
     },
     outcome: mongoose.Schema.Types.Mixed, // { crashPoint } | { result, winningSide }
+    // provable fairness: the seed is committed as serverSeedHash before betting and
+    // revealed when the round ends; the outcome is derived from it and reproducible.
+    serverSeed: String, // revealed at round end
+    serverSeedHash: String, // the commitment, public from betting open
+    chainId: { type: mongoose.Schema.Types.ObjectId, ref: "GameSeedChain" },
+    chainIndex: Number,
     bets: { type: [roundBetSchema], default: [] },
     startedAt: Date,
     settledAt: Date,
