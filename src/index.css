@@ -109,6 +109,30 @@
   }
 }
 
+/* plinko peg struck by a ball; runs outside react so mass drops stay smooth */
+.peg-pulse {
+  animation: peg-pulse 0.35s ease-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes peg-pulse {
+  0% {
+    transform: scale(1);
+    fill: #cfccdf;
+  }
+
+  40% {
+    transform: scale(1.8);
+    fill: #ffe08a;
+  }
+
+  100% {
+    transform: scale(1);
+    fill: #cfccdf;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
