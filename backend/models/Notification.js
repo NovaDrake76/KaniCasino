@@ -26,4 +26,8 @@ const NotificationSchema = new mongoose.Schema({
     }
 });
 
+// notifications are ephemeral; drop them a week after creation so the collection does not
+// grow without bound (mongo's ttl monitor sweeps expired docs about once a minute)
+NotificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 7 });
+
 module.exports = mongoose.model("Notification", NotificationSchema);
