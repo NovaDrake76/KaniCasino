@@ -89,7 +89,7 @@ const Home = () => {
         <CaseListing
           name="NEW CASES"
           loading={loading}
-          cases={loading ? [] : cases.length > 6 ? cases.slice(0, 6) : cases}
+          cases={loading ? [] : [...cases].sort((a: any, b: any) => (a._id < b._id ? 1 : -1))}
         />
 
         {discordURL && (
