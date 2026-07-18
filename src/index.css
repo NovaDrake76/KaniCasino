@@ -77,6 +77,38 @@
   animation: fadeOut 2s ease-in-out forwards;
 }
 
+/* live drop entry: the wrapper opens a gap in the row, then the card falls into it */
+.animate-livedrop-gap {
+  animation: livedrop-gap 0.2s ease-out both;
+}
+
+.animate-livedrop-fall {
+  animation: livedrop-fall 0.5s ease-out both;
+}
+
+@keyframes livedrop-gap {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 10rem;
+  }
+}
+
+@keyframes livedrop-fall {
+  0%,
+  40% {
+    transform: translateY(-120%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
