@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Rarities from "../Rarities";
 import { Link } from "react-router-dom";
 import { BasicItem } from "../Types";
@@ -17,13 +17,7 @@ interface CaseOpenedNotificationProps {
 const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
   user, item, caseImage
 }) => {
-  const [transition, setTransition] = useState<boolean>(false);
   const [isHovering, setIsHovering] = useState<boolean>(false);
-
-
-  useEffect(() => {
-    setTransition(true);
-  }, []);
 
   const getColor = (e: number) => {
     return Rarities.find((rarity) => rarity.id == e)?.color;
@@ -31,9 +25,11 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
 
 
   return (
+    // css keyframes, not react-driven transitions: they run on dom insertion, so the entry
+    // can't be skipped when react batches the mount and the state flip into one paint
+    <div className="h-28 w-40 shrink-0 animate-livedrop-gap">
     <div
-      className={`flex flex-col min-w-[160px] h-28 items-center transition-all duration-500 border bg-[#141225] 
-      ${transition ? "opacity-100" : "opacity-0 "}`}
+      className="flex flex-col min-w-[160px] h-28 items-center animate-livedrop-fall border bg-[#141225]"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       style={{
@@ -93,6 +89,7 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
         </div>
 
       </div>
+    </div>
     </div>
   );
 };

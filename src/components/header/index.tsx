@@ -12,6 +12,7 @@ import Sidebar from "./Sidebar";
 import { BasicItem } from "../Types";
 
 interface CaseOpeningItem {
+  id: string;
   caseImage: string;
   timestamp: number;
   user: {
@@ -30,6 +31,7 @@ interface Header {
 }
 
 interface ItemsQueue {
+  id: string;
   items: BasicItem[];
   caseImages: string[];
   user: {
@@ -82,6 +84,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
       const newQueue = [];
       const newItems = recentCaseOpenings.map((opening) => {
         return {
+          id: opening.id,
           items: opening.winningItems,
           caseImages: [opening.caseImage],
           user: opening.user,
@@ -136,9 +139,9 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
 
             <div className="flex h-28 bg-[#141225] ">
               <div className="flex overflow-hidden justify-start transition-all">
-                {ItemsQueue.map((opening, index) => (
+                {ItemsQueue.map((opening) => (
                   <CaseOpenedNotification
-                    key={index}
+                    key={opening.id}
                     item={opening.items[0]}
                     caseImage={opening.caseImages[0]}
                     user={opening.user}

@@ -90,6 +90,8 @@ function App() {
 
     socket.on("caseOpened", (data) => {
       data.timestamp = Date.now();
+      // stable key so the live drop row can animate new entries in
+      data.id = crypto.randomUUID();
 
       // Wait 7.5 seconds to show the notification
       setTimeout(() => {
