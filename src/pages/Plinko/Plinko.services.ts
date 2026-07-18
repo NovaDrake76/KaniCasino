@@ -26,9 +26,11 @@ export const usePlinkoServices = () => {
   const [balls, setBalls] = useState<PlinkoBall[]>([]);
   const [history, setHistory] = useState<PlinkoBall[]>([]);
   const [lastHit, setLastHit] = useState<{ bin: number; seq: number } | null>(null);
+  const [pegPulses, setPegPulses] = useState<Record<string, number>>({});
 
   const ballSeq = useRef(0);
   const hitSeq = useRef(0);
+  const pulseSeq = useRef(0);
   const settled = useRef<Set<string>>(new Set());
   const autoLeftRef = useRef(0);
   const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -101,6 +103,13 @@ export const usePlinkoServices = () => {
     setDropping(false);
   };
 
+  // a fresh sequence per strike remounts the peg's pulse animation
+  const pulsePeg = useCallback((row: number, index: number) => {
+    pulseSeq.current += 1;
+    const seq = pulseSeq.current;
+    setPegPulses((prev) => ({ ...prev, [`${row}-${index}`]: seq }));
+  }, []);
+
   // guarded by key so a duplicate animation-complete cannot double-record a ball
   const settleBall = useCallback((ball: PlinkoBall) => {
     if (settled.current.has(ball.key)) return;
@@ -148,6 +157,8 @@ export const usePlinkoServices = () => {
     balls,
     history,
     lastHit,
+    pegPulses,
+    pulsePeg,
     settleBall,
     openRoll: (rollId: string) => navigate(`/provably-fair?roll=${rollId}`),
   };

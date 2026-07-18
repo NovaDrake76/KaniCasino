@@ -69,7 +69,7 @@ class PlinkoGameController {
         // delayed so the new balance lands about when the ball does
         const emitTimer = setTimeout(() => {
             io.to(userId.toString()).emit('userDataUpdated', updatedUserData);
-        }, 3000);
+        }, 3200);
         if (emitTimer.unref) emitTimer.unref(); // don't hold the event loop open (tests)
 
         // record the provably-fair audit roll (the path and payout reproduce from the seed);

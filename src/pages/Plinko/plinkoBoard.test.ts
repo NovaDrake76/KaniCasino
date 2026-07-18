@@ -40,17 +40,42 @@ describe("plinko board geometry", () => {
 
   test("ball keyframes follow the path and end at the landing bin", () => {
     const path = "RLRRLLRLRLRRLLRL";
-    const { xs, ys, times, bin } = ballKeyframes(path);
+    const { xs, ys, times, eases, bin, hits } = ballKeyframes(path);
     expect(bin).toBe(path.split("R").length - 1);
     expect(xs).toHaveLength(2 + ROWS * 2);
     expect(ys).toHaveLength(xs.length);
     expect(times).toHaveLength(xs.length);
+    expect(eases).toHaveLength(xs.length - 1);
     expect(times[0]).toBe(0);
     expect(times[times.length - 1]).toBeCloseTo(1, 10);
     for (let i = 1; i < times.length; i++) {
       expect(times[i]).toBeGreaterThan(times[i - 1]);
     }
     expect(xs[xs.length - 1]).toBe(binCenterX(bin));
+  });
+
+  test("every row registers one peg hit at increasing times", () => {
+    const path = "LLLLLLLLRRRRRRRR";
+    const { hits } = ballKeyframes(path);
+    expect(hits).toHaveLength(ROWS);
+    hits.forEach((h, i) => {
+      expect(h.row).toBe(i);
+      expect(Number.isInteger(h.index)).toBe(true);
+      expect(h.index).toBeGreaterThanOrEqual(0);
+      expect(h.index).toBeLessThan(i + 3);
+      if (i > 0) expect(h.t).toBeGreaterThan(hits[i - 1].t);
+    });
+  });
+
+  test("jitter moves arc peaks but never contacts or the landing point", () => {
+    const path = "RLRLRLRLRLRLRLRL";
+    const straight = ballKeyframes(path);
+    const wobbled = ballKeyframes(path, () => 0.9);
+    for (let i = 1; i < straight.xs.length - 1; i += 2) {
+      expect(wobbled.xs[i]).toBe(straight.xs[i]);
+    }
+    expect(wobbled.xs[wobbled.xs.length - 1]).toBe(straight.xs[straight.xs.length - 1]);
+    expect(wobbled.bin).toBe(straight.bin);
   });
 
   test("edge paths land in the outermost bins", () => {

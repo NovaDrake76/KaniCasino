@@ -25,15 +25,15 @@ const PEG_SPACING = 52;
 const ROW_GAP = 46;
 const TOP_Y = 110;
 const DROP_Y = 30;
-const CONTACT_LIFT = 16; // ball center sits a radius above the peg it strikes
-const HOP_LIFT = 12;
+const CONTACT_LIFT = 15; // ball center sits a radius above the peg it strikes
+const HOP_LIFT = 16;
 
 export const PEG_RADIUS = 5;
-export const BALL_RADIUS = 11;
+export const BALL_RADIUS = 10;
 export const BIN_Y = 830;
 export const BIN_W = PEG_SPACING - 6;
 export const BIN_H = 46;
-export const DROP_DURATION_S = 2.5;
+export const DROP_DURATION_S = 3.1;
 
 export const pegRows = (): { x: number; y: number }[][] => {
   const rows: { x: number; y: number }[][] = [];
@@ -53,11 +53,15 @@ export const pegRows = (): { x: number; y: number }[][] => {
 export const binCenterX = (bin: number) => CENTER_X + (bin - ROWS / 2) * PEG_SPACING;
 
 // waypoints the ball passes through for a server path: a contact above each row's peg,
-// a short hop toward the side it deflects to, then the mouth of the landing bin
-export const ballKeyframes = (path: string) => {
+// a bounce arc toward the side it deflects to, then the mouth of the landing bin.
+// falls ease in and bounces ease out so the motion reads as gravity; `rand` adds a
+// per-ball wobble to the arc peaks without ever moving a contact point or the bin
+export const ballKeyframes = (path: string, rand: () => number = () => 0.5) => {
   const xs: number[] = [CENTER_X];
   const ys: number[] = [DROP_Y];
   const weights: number[] = [];
+  const eases: string[] = [];
+  const hits: { row: number; index: number; t: number }[] = [];
   let offset = 0; // in half-spacings from the center line
 
   for (let row = 0; row < ROWS; row++) {
@@ -65,25 +69,32 @@ export const ballKeyframes = (path: string) => {
     const contactY = TOP_Y + row * ROW_GAP - CONTACT_LIFT;
     xs.push(contactX);
     ys.push(contactY);
-    weights.push(row === 0 ? 1.2 : 0.6);
+    weights.push(row === 0 ? 1.3 : 0.55);
+    eases.push("easeIn");
+    hits.push({ row, index: (offset + row + 2) / 2, t: 0 });
 
     const dir = path[row] === "R" ? 1 : -1;
     offset += dir;
-    xs.push(contactX + (dir * PEG_SPACING) / 4);
-    ys.push(contactY - HOP_LIFT);
-    weights.push(0.4);
+    xs.push(contactX + dir * PEG_SPACING * 0.3 + (rand() - 0.5) * 6);
+    ys.push(contactY - HOP_LIFT + (rand() - 0.5) * 8);
+    weights.push(0.45);
+    eases.push("easeOut");
   }
 
   const bin = path.split("R").length - 1;
   xs.push(binCenterX(bin));
   ys.push(BIN_Y + BIN_H / 2);
-  weights.push(0.8);
+  weights.push(0.9);
+  eases.push("easeIn");
 
   const total = weights.reduce((sum, w) => sum + w, 0);
   let acc = 0;
   const times = [0, ...weights.map((w) => (acc += w) / total)];
+  hits.forEach((h, i) => {
+    h.t = times[1 + 2 * i];
+  });
 
-  return { xs, ys, times, bin };
+  return { xs, ys, times, eases, bin, hits };
 };
 
 // bin fills fade from blue at the center to gold at the rims

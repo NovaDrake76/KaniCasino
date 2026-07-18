@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import Title from "../../components/Title";
 import MainButton from "../../components/MainButton";
@@ -28,8 +28,25 @@ import { PlinkoBall, PlinkoViewProps } from "./Plinko.types";
 
 const PEG_ROWS = pegRows();
 
-const FallingBall = ({ ball, onSettle }: { ball: PlinkoBall; onSettle: (ball: PlinkoBall) => void }) => {
-  const frames = useMemo(() => ballKeyframes(ball.path), [ball.path]);
+const FallingBall = ({
+  ball,
+  onSettle,
+  onPegHit,
+}: {
+  ball: PlinkoBall;
+  onSettle: (ball: PlinkoBall) => void;
+  onPegHit: (row: number, index: number) => void;
+}) => {
+  const frames = useMemo(() => ballKeyframes(ball.path, Math.random), [ball.path]);
+
+  // pulse each peg right as the ball reaches it
+  useEffect(() => {
+    const timers = frames.hits.map((h) =>
+      setTimeout(() => onPegHit(h.row, h.index), h.t * DROP_DURATION_S * 1000)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [frames, onPegHit]);
+
   return (
     <motion.circle
       r={BALL_RADIUS}
@@ -38,7 +55,7 @@ const FallingBall = ({ ball, onSettle }: { ball: PlinkoBall; onSettle: (ball: Pl
       strokeWidth={2}
       initial={{ cx: frames.xs[0], cy: frames.ys[0] }}
       animate={{ cx: frames.xs, cy: frames.ys }}
-      transition={{ duration: DROP_DURATION_S, times: frames.times, ease: "linear" }}
+      transition={{ duration: DROP_DURATION_S, times: frames.times, ease: frames.eases }}
       onAnimationComplete={() => onSettle(ball)}
     />
   );
@@ -70,6 +87,8 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   balls,
   history,
   lastHit,
+  pegPulses,
+  pulsePeg,
   settleBall,
   openRoll,
 }) => (
@@ -219,11 +238,26 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
           ))}
         </div>
 
-        <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} className="w-full max-w-[760px]">
+        <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} className="w-full max-w-[680px]">
           {PEG_ROWS.map((row, i) =>
-            row.map((peg, k) => (
-              <circle key={`${i}-${k}`} cx={peg.x} cy={peg.y} r={PEG_RADIUS} fill="#cfccdf" />
-            ))
+            row.map((peg, k) => {
+              const seq = pegPulses[`${i}-${k}`];
+              return seq ? (
+                <motion.circle
+                  key={`${i}-${k}-${seq}`}
+                  cx={peg.x}
+                  cy={peg.y}
+                  initial={{ r: PEG_RADIUS, fill: "#cfccdf" }}
+                  animate={{
+                    r: [PEG_RADIUS, PEG_RADIUS * 1.8, PEG_RADIUS],
+                    fill: ["#cfccdf", "#ffe08a", "#cfccdf"],
+                  }}
+                  transition={{ duration: 0.35 }}
+                />
+              ) : (
+                <circle key={`${i}-${k}`} cx={peg.x} cy={peg.y} r={PEG_RADIUS} fill="#cfccdf" />
+              );
+            })
           )}
 
           {Array.from({ length: BINS }, (_, k) => {
@@ -265,7 +299,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
           })}
 
           {balls.map((ball) => (
-            <FallingBall key={ball.key} ball={ball} onSettle={settleBall} />
+            <FallingBall key={ball.key} ball={ball} onSettle={settleBall} onPegHit={pulsePeg} />
           ))}
         </svg>
       </div>
