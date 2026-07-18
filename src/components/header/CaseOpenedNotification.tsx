@@ -31,9 +31,12 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
 
 
   return (
+    // the wrapper opens a gap in the row first, pushing older drops right, then the
+    // card falls into it from above (the row's overflow-hidden clips it until then)
+    <div className={`h-28 shrink-0 transition-[width] duration-200 ease-out ${transition ? "w-40" : "w-0"}`}>
     <div
-      className={`flex flex-col min-w-[160px] h-28 items-center transition-all duration-500 border bg-[#141225] 
-      ${transition ? "opacity-100" : "opacity-0 "}`}
+      className={`flex flex-col min-w-[160px] h-28 items-center transition-all duration-300 ease-out delay-200 border bg-[#141225]
+      ${transition ? "translate-y-0 opacity-100" : "-translate-y-[120%] opacity-0"}`}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       style={{
@@ -93,6 +96,7 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
         </div>
 
       </div>
+    </div>
     </div>
   );
 };
