@@ -20,7 +20,6 @@ const CasePage = () => {
   const [started, setStarted] = useState<boolean>(false);
   const [openedItems, setOpenedItems] = useState<BasicItem[]>([]);
   const [showPrize, setShowPrize] = useState<boolean>(false);
-  const [hasSpinned, setHasSpinned] = useState<boolean>(false);
   const [animationAux, setAnimationAux] = useState<boolean>(false);
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
@@ -60,7 +59,6 @@ const CasePage = () => {
 
     setTimeout(() => {
       setStarted(true);
-      setHasSpinned(true);
     }, 500);
 
     setTimeout(() => {
@@ -86,7 +84,6 @@ const CasePage = () => {
       toast.success(res.message, { theme: "dark" });
       setShowPrize(false);
       setAnimationAux2(false);
-      setHasSpinned(false);
       setOpenedItems([]);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Could not sell items", { theme: "dark" });
@@ -135,7 +132,7 @@ const CasePage = () => {
           {loading ? <Skeleton width={200} height={30} /> : data && data.title}
         </h1>
 
-        <RouletteContainer started={started} showPrize={showPrize} hasSpinned={hasSpinned} loading={loading} data={data} openedItems={openedItems} animationAux={animationAux} animationAux2={animationAux2} quantity={quantity} />
+        <RouletteContainer started={started} showPrize={showPrize} loading={loading} data={data} openedItems={openedItems} animationAux={animationAux} animationAux2={animationAux2} quantity={quantity} />
         <div
           className={`flex flex-col md:flex-row justify-center items-center gap-4 w-68 mt-8  ${started ? "opacity-0" : "opacity-100"} transition-all`}
         >
