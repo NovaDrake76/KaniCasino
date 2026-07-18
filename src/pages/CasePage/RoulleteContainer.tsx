@@ -9,14 +9,13 @@ interface RouletteContainerProps {
     data: Case;
     started: boolean;
     showPrize: boolean;
-    hasSpinned: boolean;
     animationAux: boolean;
     openedItems: any[];
     animationAux2: boolean;
     quantity: number;
 }
 
-const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, started, showPrize, hasSpinned, animationAux, openedItems, animationAux2, quantity }) => {
+const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, started, showPrize, animationAux, openedItems, animationAux2, quantity }) => {
 
     return (
         <div className="flex">
@@ -42,22 +41,11 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
                         height: "48px"
                     }} />
                 </div>
-                {!started && !showPrize && !hasSpinned ? (
-                    loading ? (
-                        <Skeleton width={208} height={208} />
-                    ) : (
-                        <img
-                            src={data.image}
-                            alt={data.title}
-                            className={classNames(
-                                "w-52 h-52 object-cover z-10",
-                                { "animate-bounce-up-fade": animationAux },
-                                "transition duration-500"
-                            )}
-                            id="caseImage"
-                        />
-                    )
-                ) : started && !showPrize ? (
+                {/* prize renders only once showPrize is set; falling through to it during
+                    the pre-spin delay used to flash the multi-open result names early */}
+                {showPrize ? (
+                    <ShowPrize openedItems={openedItems} showPrize={showPrize} animationAux2={animationAux2} />
+                ) : started ? (
 
                     <div className={`flex gap-8`}>
                         {
@@ -74,8 +62,19 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
 
                         }
                     </div>
+                ) : loading ? (
+                    <Skeleton width={208} height={208} />
                 ) : (
-                    <ShowPrize openedItems={openedItems} showPrize={showPrize} animationAux2={animationAux2} />
+                    <img
+                        src={data.image}
+                        alt={data.title}
+                        className={classNames(
+                            "w-52 h-52 object-cover z-10",
+                            { "animate-bounce-up-fade": animationAux },
+                            "transition duration-500"
+                        )}
+                        id="caseImage"
+                    />
                 )}
             </div>
 
