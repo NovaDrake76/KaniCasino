@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 348">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#221f3d"/>
+      <stop offset="1" stop-color="#151225"/>
+    </linearGradient>
+    <radialGradient id="ball" cx="0.35" cy="0.3" r="1">
+      <stop offset="0" stop-color="#ffe680"/>
+      <stop offset="1" stop-color="#f2b705"/>
+    </radialGradient>
+  </defs>
+  <rect width="256" height="348" rx="14" fill="url(#bg)"/>
+  <g fill="#cfccdf">
+    <circle cx="104" cy="96" r="5"/><circle cx="128" cy="96" r="5"/><circle cx="152" cy="96" r="5"/>
+    <circle cx="92" cy="130" r="5"/><circle cx="116" cy="130" r="5"/><circle cx="140" cy="130" r="5"/><circle cx="164" cy="130" r="5"/>
+    <circle cx="80" cy="164" r="5"/><circle cx="104" cy="164" r="5"/><circle cx="128" cy="164" r="5"/><circle cx="152" cy="164" r="5"/><circle cx="176" cy="164" r="5"/>
+    <circle cx="68" cy="198" r="5"/><circle cx="92" cy="198" r="5"/><circle cx="116" cy="198" r="5"/><circle cx="140" cy="198" r="5"/><circle cx="164" cy="198" r="5"/><circle cx="188" cy="198" r="5"/>
+    <circle cx="56" cy="232" r="5"/><circle cx="80" cy="232" r="5"/><circle cx="104" cy="232" r="5"/><circle cx="128" cy="232" r="5"/><circle cx="152" cy="232" r="5"/><circle cx="176" cy="232" r="5"/><circle cx="200" cy="232" r="5"/>
+  </g>
+  <circle cx="140" cy="146" r="12" fill="url(#ball)" stroke="#151225" stroke-width="2"/>
+  <g>
+    <rect x="46" y="268" width="24" height="26" rx="4" fill="#FFCC00"/>
+    <rect x="74" y="268" width="24" height="26" rx="4" fill="#DF3D6E"/>
+    <rect x="102" y="268" width="24" height="26" rx="4" fill="#8B4ADF"/>
+    <rect x="130" y="268" width="24" height="26" rx="4" fill="#8B4ADF"/>
+    <rect x="158" y="268" width="24" height="26" rx="4" fill="#DF3D6E"/>
+    <rect x="186" y="268" width="24" height="26" rx="4" fill="#FFCC00"/>
+  </g>
+  <text x="128" y="326" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#e1dde9" letter-spacing="6">PLINKO</text>
+</svg>

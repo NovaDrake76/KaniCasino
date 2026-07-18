@@ -13,6 +13,8 @@ const TX = {
   CASE_OPEN: "case_open",
   SLOT_BET: "slot_bet",
   SLOT_WIN: "slot_win",
+  PLINKO_BET: "plinko_bet",
+  PLINKO_WIN: "plinko_win",
   CRASH_BET: "crash_bet",
   CRASH_CASHOUT: "crash_cashout",
   CRASH_REFUND: "crash_refund", // stake returned when a restart voids a live round
@@ -38,7 +40,7 @@ const TX = {
 };
 
 // every KP put at risk on a game; missions and referral commission both count these
-const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN];
+const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.PLINKO_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN];
 
 function calculateXPForLevel(level) {
   return Math.floor(BASE_XP * Math.pow(GROWTH_RATE, level - 1));

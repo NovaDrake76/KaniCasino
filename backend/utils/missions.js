@@ -7,8 +7,8 @@ const MissionState = require("../models/MissionState");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { CATALOG, byKey, missionsLaunchAt } = require("./missionsCatalog");
 
-// a "big win" is any single game payout (slots / crash cashout / coin flip win)
-const WIN_TYPES = [TX.SLOT_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
+// a "big win" is any single game payout (slots / plinko / crash cashout / coin flip win)
+const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
 
 // missions currently offered; a disabled one (active:false) stays defined but is
 // never shown, announced, or claimable

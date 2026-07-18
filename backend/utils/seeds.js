@@ -34,7 +34,12 @@ async function reserveNonces(userId, count = 1) {
     { $inc: { nonce: count } },
     { new: false }
   );
-  if (!before) throw new Error("Seed rotated mid-roll, please retry");
+  if (!before) {
+    // a benign race with a concurrent rotate; callers can surface it as a retryable 409
+    const err = new Error("Seed rotated mid-roll, please retry");
+    err.status = 409;
+    throw err;
+  }
 
   const material = {
     seedId: seed._id,

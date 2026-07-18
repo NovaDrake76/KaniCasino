@@ -28,6 +28,10 @@
       "title": "Slots | KaniCasino",
       "description": "Spin the reels for fake coins. Provably fair, no real money involved."
     },
+    "/plinko": {
+      "title": "Plinko | KaniCasino",
+      "description": "Drop a ball down the pegs and chase the golden edge bins. Provably fair, no real money involved."
+    },
     "/battles": {
       "title": "Case Battles | KaniCasino",
       "description": "Open cases head to head against other players. Best total value takes the pot."

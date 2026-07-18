@@ -4,7 +4,7 @@ import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { SlPlane } from "react-icons/sl";
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { TbCat } from "react-icons/tb";
+import { TbCat, TbGridDots } from "react-icons/tb";
 import ClaimBonus from "../header/ClaimBonus";
 import { useContext } from "react";
 import UserContext from "../../UserContext";
@@ -48,6 +48,11 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: "Slots",
             path: "/slot",
             icon: <TbCat className="text-2xl" />,
+        },
+        {
+            name: "Plinko",
+            path: "/plinko",
+            icon: <TbGridDots className="text-2xl" />,
         },
         {
             name: "Case Battles",

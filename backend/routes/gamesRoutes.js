@@ -7,6 +7,7 @@ const Case = require("../models/Case");
 const Round = require("../models/Round");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
+const PlinkoGameController = require("../games/plinko");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const referrals = require("../utils/referrals");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
@@ -193,6 +194,23 @@ module.exports = (io) => {
       res.json(result);
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // drop a plinko ball
+  router.post('/plinko', isAuthenticated, async (req, res) => {
+    const user = req.user;
+
+    try {
+      const { betAmount, risk } = req.body;
+
+      const result = await PlinkoGameController.drop(user._id, betAmount, risk, io);
+      res.json(result);
+    } catch (error) {
+      // statused errors are intentional answers; anything else stays generic
+      if (error.status) return res.status(error.status).json({ message: error.message });
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
     }
   });
 
