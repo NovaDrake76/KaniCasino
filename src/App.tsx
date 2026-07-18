@@ -95,7 +95,8 @@ function App() {
 
       // Wait 7.5 seconds to show the notification
       setTimeout(() => {
-        setRecentCaseOpenings((prevOpenings: any) => [data, ...prevOpenings]);
+        // cap the queue immutably as it grows; the oldest drop falls off the end
+        setRecentCaseOpenings((prevOpenings: any) => [data, ...prevOpenings].slice(0, 20));
       }, 7500);
     });
 
@@ -166,16 +167,6 @@ function App() {
   const toogleUserFlow = (state: boolean) => {
     setOpenUserFlow(state);
   }
-
-  //if there's more than 20 items, remove the last one from the array
-  useEffect(() => {
-    if (recentCaseOpenings.length > 20) {
-      setRecentCaseOpenings((prevOpenings: any) => {
-        prevOpenings.pop();
-        return prevOpenings;
-      });
-    }
-  }, [recentCaseOpenings]);
 
   return (
     <div className="flex flex-col min-h-screen items-start justify-start bg-[#151225] text-white">
