@@ -25,6 +25,8 @@ const COUNTERPARTY_FOR_TYPE = {
   case_open: HOUSE,
   slot_bet: HOUSE,
   slot_win: HOUSE,
+  plinko_bet: HOUSE,
+  plinko_win: HOUSE,
   crash_bet: HOUSE,
   crash_cashout: HOUSE,
   crash_refund: HOUSE,

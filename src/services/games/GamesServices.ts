@@ -23,3 +23,8 @@ export async function spinSlots(betAmount: number) {
     });
     return response.data;
 }
+
+export async function dropPlinko(betAmount: number, risk: string) {
+    const response = await api.post(`/games/plinko/`, { betAmount, risk });
+    return response.data;
+}

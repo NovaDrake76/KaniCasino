@@ -11,7 +11,7 @@ import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import { GiUpgrade, GiCrossedSwords } from 'react-icons/gi';
-import { TbCat } from "react-icons/tb";
+import { TbCat, TbGridDots } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { FaBars } from 'react-icons/fa';
 import RightContent from "./RightContent";
@@ -89,6 +89,11 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       name: "Slots",
       path: "/slot",
       icon: <TbCat className="text-2xl" />,
+    },
+    {
+      name: "Plinko",
+      path: "/plinko",
+      icon: <TbGridDots className="text-2xl" />,
     },
     {
       name: "Case Battles",

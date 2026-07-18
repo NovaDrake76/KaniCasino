@@ -88,10 +88,10 @@ router.get("/roll-by-item/:uniqueId", async (req, res) => {
   }
 });
 
-// server-side reproduction of a case roll (only possible after reveal)
+// server-side reproduction of a roll (only possible after reveal); case and plinko today
 router.get("/roll/:rollId/verify", async (req, res) => {
   try {
-    res.json(await rolls.verifyCaseRoll(req.params.rollId));
+    res.json(await rolls.verifyRoll(req.params.rollId));
   } catch (e) {
     res.status(500).json({ message: "Server error" });
   }

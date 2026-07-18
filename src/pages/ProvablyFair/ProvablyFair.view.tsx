@@ -32,8 +32,8 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
     <Title title="Provably Fair" />
 
     <p className="text-[#84819a] text-sm max-w-[640px] text-center">
-      Every case, upgrade and slot roll is HMAC-SHA256 of your client seed, a
-      nonce, and a secret server seed we commit to up front.
+      Every case, upgrade, slot and plinko roll is HMAC-SHA256 of your client
+      seed, a nonce, and a secret server seed we commit to up front.
     </p>
 
     {/* roll lookup */}
@@ -63,10 +63,12 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
           </span>
           <button
             onClick={doVerify}
-            disabled={verifying || roll.game !== "case"}
+            disabled={verifying || (roll.game !== "case" && roll.game !== "plinko")}
             className="px-4 py-1.5 rounded bg-green-700 hover:bg-green-600 text-sm font-semibold disabled:opacity-50"
             title={
-              roll.game !== "case" ? "Auto-verify supported for case rolls" : ""
+              roll.game !== "case" && roll.game !== "plinko"
+                ? "Auto-verify supported for case and plinko rolls"
+                : ""
             }
           >
             {verifying ? "Verifying..." : "Verify"}
@@ -112,7 +114,9 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
             }`}
           >
             {verify.ok
-              ? `Verified: recomputed roll ${verify.recomputedRoll} maps to the same item.`
+              ? verify.recomputedPath
+                ? `Verified: the recomputed path lands in bin ${verify.recomputedBin} at x${verify.recomputedMultiplier}.`
+                : `Verified: recomputed roll ${verify.recomputedRoll} maps to the same item.`
               : `Not verified${verify.reason ? `: ${verify.reason}` : ""}.`}
           </div>
         )}

@@ -2,7 +2,8 @@ const crypto = require("crypto");
 const Roll = require("../models/Roll");
 const Seed = require("../models/Seed");
 const CaseConfig = require("../models/CaseConfig");
-const { roll: computeRoll, pickFromRanges } = require("./provablyFair");
+const { roll: computeRoll, pickFromRanges, hashServerSeed } = require("./provablyFair");
+const { PAYOUTS: PLINKO_PAYOUTS, PLINKO_ALGO_VERSION, derivePath, binFromPath } = require("./plinkoMath");
 
 function generateRollId() {
   return "R" + crypto.randomInt(100000000, 1000000000).toString(); // "R" + 9 digits
@@ -91,4 +92,67 @@ async function verifyCaseRoll(rollId) {
   };
 }
 
-module.exports = { generateRollId, recordRoll, getRollForVerify, getRollForItem, verifyCaseRoll };
+// recompute a plinko roll's path and payout from its public inputs; the same steps
+// any third party would run once the seed is revealed
+async function verifyPlinkoRoll(rollId) {
+  const v = await getRollForVerify(rollId);
+  if (!v || v.game !== "plinko") return { ok: false, reason: "not a plinko roll" };
+  if (!v.serverSeed) return { ok: false, reason: "server seed not revealed yet" };
+
+  const outcome = v.outcome || {};
+  // rolls from an older table or row count cannot verify against the current constants
+  if (outcome.algoVersion !== PLINKO_ALGO_VERSION) {
+    return { ok: false, reason: "algorithm version superseded" };
+  }
+  const table = Object.prototype.hasOwnProperty.call(PLINKO_PAYOUTS, outcome.risk)
+    ? PLINKO_PAYOUTS[outcome.risk]
+    : null;
+  if (!table) return { ok: false, reason: "unknown risk level" };
+
+  const commitmentValid = hashServerSeed(v.serverSeed) === v.serverSeedHash;
+  const recomputedRoll = computeRoll(v.serverSeed, v.clientSeed, v.nonce, {
+    total: v.total,
+    cursor: v.cursor,
+  });
+  const path = derivePath(v.serverSeed, v.clientSeed, v.nonce);
+  const bin = binFromPath(path);
+  const multiplier = table[bin] / 100;
+  const ok =
+    commitmentValid &&
+    recomputedRoll === v.roll &&
+    path === outcome.path &&
+    bin === outcome.bin &&
+    multiplier === outcome.multiplier;
+
+  return {
+    ok,
+    commitmentValid,
+    recomputedRoll,
+    expectedRoll: v.roll,
+    recomputedPath: path,
+    recomputedBin: bin,
+    recomputedMultiplier: multiplier,
+    expectedPath: outcome.path,
+    expectedBin: outcome.bin,
+    expectedMultiplier: outcome.multiplier,
+  };
+}
+
+// route a verify request to the game's reference verifier
+async function verifyRoll(rollId) {
+  const r = await Roll.findOne({ rollId }).select("game").lean();
+  if (!r) return { ok: false, reason: "roll not found" };
+  if (r.game === "case") return verifyCaseRoll(rollId);
+  if (r.game === "plinko") return verifyPlinkoRoll(rollId);
+  return { ok: false, reason: "no server-side verifier for this game" };
+}
+
+module.exports = {
+  generateRollId,
+  recordRoll,
+  getRollForVerify,
+  getRollForItem,
+  verifyCaseRoll,
+  verifyPlinkoRoll,
+  verifyRoll,
+};
