@@ -221,7 +221,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
       </div>
 
       {/* board */}
-      <div className="relative flex-1 flex justify-center">
+      <div className="relative flex-1 flex justify-start">
         <div className="absolute right-0 top-0 flex flex-col gap-1 items-end z-10">
           {history.map((h) => (
             <motion.button
