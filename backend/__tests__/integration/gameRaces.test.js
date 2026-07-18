@@ -31,14 +31,19 @@ const start = (game, io) => {
   running.push(game(io));
 };
 
-// betting does not open until the round record exists, so wait for it rather than
-// assume. setImmediate is real here (the fake timers below leave it alone).
-async function untilBettingOpens(game) {
+// the game sets its in-memory bettingOpen flag and then broadcasts its opening state, so
+// that broadcast is the signal a bet will be accepted. waiting on the round doc alone raced
+// the flag: the doc could be visible a tick before bettingOpen flipped, and a bet placed in
+// that window was refused, so nothing was charged. the findOne is what actually paces this
+// loop (a real db round-trip lets openBetting's create finish); the emit is the gate.
+// setImmediate is real here (the fake timers below leave it alone).
+async function untilBettingOpens(emitted, event, game) {
   for (let i = 0; i < 500; i++) {
-    if (await Round.findOne({ game, status: "betting" })) return;
+    if (emitted.includes(event)) return;
+    await Round.findOne({ game, status: "betting" });
     await new Promise((r) => setImmediate(r));
   }
-  throw new Error(`no ${game} round opened`);
+  throw new Error(`no ${event} broadcast`);
 }
 
 afterEach(async () => {
@@ -51,14 +56,15 @@ afterAll(teardownDb);
 // handlers exactly that way, which is how the duplicate-charge races were found
 function fakeIo() {
   let onConnection;
+  const emitted = [];
   const io = {
     on: (event, cb) => {
       if (event === "connection") onConnection = cb;
     },
-    emit: () => {},
+    emit: (event) => emitted.push(event),
     to: () => ({ emit: () => {} }),
   };
-  return { io, connect: (socket) => onConnection(socket) };
+  return { io, emitted, connect: (socket) => onConnection(socket) };
 }
 
 function fakeSocket(userId) {
@@ -94,9 +100,9 @@ describe("crash", () => {
     jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] });
 
     const user = await makeUser(1000);
-    const { io, connect } = fakeIo();
+    const { io, emitted, connect } = fakeIo();
     start(crashGame, io);
-    await untilBettingOpens("crash");
+    await untilBettingOpens(emitted, "crash:gameState", "crash");
     const socket = fakeSocket(user._id);
     connect(socket);
 
@@ -117,9 +123,9 @@ describe("crash", () => {
   test("a bet emitted twice in one tick is only charged once", async () => {
     jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] });
     const user = await makeUser(1000);
-    const { io, connect } = fakeIo();
+    const { io, emitted, connect } = fakeIo();
     start(crashGame, io);
-    await untilBettingOpens("crash");
+    await untilBettingOpens(emitted, "crash:gameState", "crash");
     const socket = fakeSocket(user._id);
     connect(socket);
 
@@ -140,9 +146,9 @@ describe("coin flip", () => {
   test("two bets in one tick cannot back both sides", async () => {
     jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate'] });
     const user = await makeUser(1000);
-    const { io, connect } = fakeIo();
+    const { io, emitted, connect } = fakeIo();
     start(coinFlip, io);
-    await untilBettingOpens("coinflip");
+    await untilBettingOpens(emitted, "coinFlip:gameState", "coinflip");
     const socket = fakeSocket(user._id);
     connect(socket);
 
