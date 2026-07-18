@@ -4,10 +4,12 @@ const Item = require("../models/Item");
 const Case = require("../models/Case");
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const { recomputeCaseValues } = require("../utils/itemValue");
+const { publicCache, TTL } = require("../utils/httpCache");
 
 router.get("/", async (req, res) => {
   try {
     const items = await Item.find();
+    publicCache(res, TTL.itemList);
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -11,6 +11,8 @@ const missionsRoutes = require("../../routes/missionsRoutes");
 const adminRoutes = require("../../routes/adminRoutes");
 const referralRoutes = require("../../routes/referralRoutes");
 const rewardRoutes = require("../../routes/rewardRoutes");
+const caseRoutes = require("../../routes/caseRoutes");
+const itemRoutes = require("../../routes/itemRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -28,6 +30,8 @@ function makeApp() {
   app.use("/admin", adminRoutes);
   app.use("/referrals", referralRoutes(io));
   app.use("/rewards", rewardRoutes(io));
+  app.use("/cases", caseRoutes);
+  app.use("/items", itemRoutes);
   return app;
 }
 

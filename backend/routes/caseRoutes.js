@@ -4,6 +4,7 @@ const Case = require("../models/Case");
 const Item = require("../models/Item");
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const { recomputeCaseValues } = require("../utils/itemValue");
+const { publicCache, TTL } = require("../utils/httpCache");
 
 router.get("/", async (req, res) => {
   try {
@@ -12,6 +13,7 @@ router.get("/", async (req, res) => {
     const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const filter = q ? { title: { $regex: safe, $options: "i" } } : {};
     const cases = await Case.find(filter).select('-items');
+    publicCache(res, TTL.caseList);
     res.json(cases);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -41,6 +43,7 @@ router.get("/:id", async (req, res) => {
       path: "items",
       options: { sort: { rarity: -1 } },
     });
+    publicCache(res, TTL.caseDetail);
     res.json(caseData);
   } catch (err) {
     res.status(500).json({ message: err.message });
