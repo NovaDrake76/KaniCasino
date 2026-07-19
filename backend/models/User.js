@@ -117,5 +117,6 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
 UserSchema.index({ referredBy: 1 }, { sparse: true });
+UserSchema.index({ weeklyWinnings: -1 }); // leaderboard, ranking window, weekly cron
 
 module.exports = User = mongoose.model("User", UserSchema);
