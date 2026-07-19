@@ -12,7 +12,8 @@ router.get("/", async (req, res) => {
     // escape regex metacharacters so search is a literal, injection/ReDoS-safe match
     const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const filter = q ? { title: { $regex: safe, $options: "i" } } : {};
-    const cases = await Case.find(filter).select('-items');
+    // the committed range table is one entry per item and no listing consumer reads it
+    const cases = await Case.find(filter).select('-items -rangeTable');
     publicCache(res, TTL.caseList);
     res.json(cases);
   } catch (err) {
@@ -39,10 +40,12 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const caseData = await Case.findById(req.params.id).populate({
-      path: "items",
-      options: { sort: { rarity: -1 } },
-    });
+    const caseData = await Case.findById(req.params.id)
+      .select("-rangeTable")
+      .populate({
+        path: "items",
+        options: { sort: { rarity: -1 } },
+      });
     publicCache(res, TTL.caseDetail);
     res.json(caseData);
   } catch (err) {
