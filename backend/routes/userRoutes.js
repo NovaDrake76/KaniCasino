@@ -283,25 +283,37 @@ router.get('/topPlayers', async (req, res) => {
 // Fetch user ranking
 router.get('/ranking', authMiddleware.isAuthenticated, async (req, res) => {
   try {
-    const allUsers = await User.find({}).sort({ weeklyWinnings: -1 }).select('username weeklyWinnings');
-    const userIndex = allUsers.findIndex(u => u.id === req.user.id);
+    const me = { _id: req.user._id, username: req.user.username, weeklyWinnings: req.user.weeklyWinnings || 0 };
+    // rank and neighbors come from indexed range queries instead of loading every
+    // user; ties break by _id so two equal players never share a position
+    const aboveFilter = {
+      $or: [
+        { weeklyWinnings: { $gt: me.weeklyWinnings } },
+        { weeklyWinnings: me.weeklyWinnings, _id: { $lt: me._id } },
+      ],
+    };
+    const belowFilter = {
+      $or: [
+        { weeklyWinnings: { $lt: me.weeklyWinnings } },
+        { weeklyWinnings: me.weeklyWinnings, _id: { $gt: me._id } },
+      ],
+    };
 
-    let start = userIndex - 3; // Fetch 3 users above
-    let end = userIndex + 4; // Fetch 3 users below (+1 for inclusive)
+    const [rankAbove, aboveAll, belowAll] = await Promise.all([
+      User.countDocuments(aboveFilter),
+      User.find(aboveFilter).sort({ weeklyWinnings: 1, _id: -1 }).limit(6).select('username weeklyWinnings'),
+      User.find(belowFilter).sort({ weeklyWinnings: -1, _id: 1 }).limit(6).select('username weeklyWinnings'),
+    ]);
 
-    // Adjust if start or end goes out of bounds
-    if (start < 0) {
-      start = 0;
-      end = Math.min(7, allUsers.length); // Adjust end if start is adjusted
-    }
-    if (end > allUsers.length) {
-      end = allUsers.length;
-      start = Math.max(0, end - 7); // Adjust start if end is adjusted
-    }
+    // pad the 7-row window toward the other side when near the top or bottom
+    let aboveTake = Math.min(aboveAll.length, 3);
+    let belowTake = Math.min(belowAll.length, 3);
+    belowTake = Math.min(belowAll.length, belowTake + (3 - aboveTake));
+    aboveTake = Math.min(aboveAll.length, aboveTake + (3 - Math.min(belowAll.length, 3)));
 
-    const surroundingUsers = allUsers.slice(start, end);
+    const users = [...aboveAll.slice(0, aboveTake).reverse(), me, ...belowAll.slice(0, belowTake)];
 
-    res.json({ ranking: userIndex + 1, users: surroundingUsers });
+    res.json({ ranking: rankAbove + 1, users });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
