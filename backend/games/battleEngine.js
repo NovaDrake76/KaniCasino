@@ -38,9 +38,15 @@ async function prerollBattle(battle) {
     return (p && p.clientSeed) || `slot:${slot}`;
   };
 
+  // one batched load: sequential per-case queries made a 20-case start pay dozens
+  // of database round trips; battles also repeat cases, so fetch each id once
+  const uniqueIds = [...new Set(battle.cases.map(String))];
+  const caseDocs = await Case.find({ _id: { $in: uniqueIds } }).populate("items");
+  const caseById = new Map(caseDocs.map((doc) => [String(doc._id), doc]));
+
   const rolls = [];
   for (let c = 0; c < battle.cases.length; c++) {
-    const caseDoc = await Case.findById(battle.cases[c]).populate("items");
+    const caseDoc = caseById.get(String(battle.cases[c]));
     if (!caseDoc) {
       throw new Error(`case ${battle.cases[c]} no longer exists`);
     }
@@ -99,9 +105,11 @@ async function chargeAndStart(battleId, io = noopIo) {
   const humans = battle.players.filter((p) => p.userId && !p.isBot);
 
   // pre-check balances so we don't do partial charges in the common case
+  const balanceDocs = await User.find({ _id: { $in: humans.map((p) => p.userId) } }).select("walletBalance");
+  const balanceById = new Map(balanceDocs.map((u) => [String(u._id), u.walletBalance]));
   for (const p of humans) {
-    const u = await User.findById(p.userId).select("walletBalance");
-    if (!u || u.walletBalance < battle.entryCost) {
+    const balance = balanceById.get(String(p.userId));
+    if (balance === undefined || balance < battle.entryCost) {
       await release();
       return { error: `${p.username} can't cover the entry`, shortSlot: p.slot };
     }
