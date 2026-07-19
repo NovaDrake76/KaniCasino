@@ -11,6 +11,59 @@ export interface GameLine {
   wagered: number;
   paidOut: number;
   net: number;
+  uniquePlayers: number;
+  biggestWin: number;
+  theoRtp: number | null;
+}
+
+export interface TimeseriesPoint {
+  day: string;
+  wagered: number;
+  paidOut: number;
+  ggr: number;
+  faucet: number;
+  players: number;
+}
+
+export interface AdminBigWin {
+  userId: string;
+  username: string;
+  profilePicture: string;
+  type: string;
+  amount: number;
+  bet: number | null;
+  multiple: number | null;
+  at: string;
+}
+
+export interface AdminPlayerDetail {
+  user: {
+    id: string;
+    username: string;
+    profilePicture: string;
+    level: number;
+    xp: number;
+    walletBalance: number;
+    isAdmin: boolean;
+    weeklyWinnings: number;
+    joined: string;
+    inventoryCount: number;
+    referredBy: string | null;
+    referrals: number;
+  };
+  totals: {
+    wagered: number;
+    won: number;
+    net: number;
+    faucet: number;
+    marketSpent: number;
+    marketEarned: number;
+    itemsSold: number;
+    biggestWin: { type: string | null; amount: number };
+    lastActive: string | null;
+  };
+  games: { game: string; plays: number; wagered: number; won: number; net: number }[];
+  recent: { type: string; direction: "credit" | "debit"; amount: number; balanceAfter: number; createdAt: string }[];
 }
 
 export interface AdminGameStats {
@@ -66,3 +119,12 @@ export const getAdminUserStats = async (
   search: string
 ): Promise<AdminUsersPage> =>
   (await api.get("/admin/stats/users", { params: { ...withDays(days), page, search } })).data;
+
+export const getAdminTimeseries = async (days: number | null): Promise<TimeseriesPoint[]> =>
+  (await api.get("/admin/stats/timeseries", { params: withDays(days) })).data;
+
+export const getAdminBigWins = async (days: number | null): Promise<AdminBigWin[]> =>
+  (await api.get("/admin/stats/wins", { params: withDays(days) })).data;
+
+export const getAdminPlayerDetail = async (id: string, days: number | null): Promise<AdminPlayerDetail> =>
+  (await api.get(`/admin/stats/users/${id}`, { params: withDays(days) })).data;

@@ -46,6 +46,35 @@ router.get("/stats/users", isAuthenticated, isAdmin, async (req, res) => {
   }
 });
 
+router.get("/stats/timeseries", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json(await adminStats.timeseries(req.query.days));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/stats/wins", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json(await adminStats.bigWins(req.query.days));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/stats/users/:id", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const detail = await adminStats.playerDetail(req.params.id, req.query.days);
+    if (!detail) return res.status(404).json({ message: "User not found" });
+    res.json(detail);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
   try {
     const users = await User.find().select("-password");

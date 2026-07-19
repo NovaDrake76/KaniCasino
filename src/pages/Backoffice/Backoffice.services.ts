@@ -4,10 +4,16 @@ import {
   getAdminGameStats,
   getAdminCaseStats,
   getAdminUserStats,
+  getAdminTimeseries,
+  getAdminBigWins,
+  getAdminPlayerDetail,
   AdminOverview,
   AdminGameStats,
   AdminCaseRow,
   AdminUsersPage,
+  AdminBigWin,
+  AdminPlayerDetail,
+  TimeseriesPoint,
 } from "../../services/admin/AdminServices";
 import UserContext from "../../UserContext";
 
@@ -19,11 +25,16 @@ export const useBackofficeServices = () => {
   const [overview, setOverview] = useState<AdminOverview | null>(null);
   const [games, setGames] = useState<AdminGameStats | null>(null);
   const [cases, setCases] = useState<AdminCaseRow[] | null>(null);
+  const [series, setSeries] = useState<TimeseriesPoint[] | null>(null);
+  const [wins, setWins] = useState<AdminBigWin[] | null>(null);
   const [usersPage, setUsersPage] = useState<AdminUsersPage | null>(null);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+  const [playerId, setPlayerId] = useState<string | null>(null);
+  const [player, setPlayer] = useState<AdminPlayerDetail | null>(null);
+  const [playerLoading, setPlayerLoading] = useState<boolean>(false);
 
   const isAdmin = !!userData?.isAdmin;
 
@@ -34,12 +45,20 @@ export const useBackofficeServices = () => {
     }
     let active = true;
     setLoading(true);
-    Promise.all([getAdminOverview(days), getAdminGameStats(days), getAdminCaseStats(days)])
-      .then(([o, g, c]) => {
+    Promise.all([
+      getAdminOverview(days),
+      getAdminGameStats(days),
+      getAdminCaseStats(days),
+      getAdminTimeseries(days),
+      getAdminBigWins(days),
+    ])
+      .then(([o, g, c, s, w]) => {
         if (!active) return;
         setOverview(o);
         setGames(g);
         setCases(c);
+        setSeries(s);
+        setWins(w);
         setError(false);
       })
       .catch(() => {
@@ -72,6 +91,26 @@ export const useBackofficeServices = () => {
     };
   }, [isAdmin, days, page, search]);
 
+  // the drill-down loads on open and follows the window toggle while open
+  useEffect(() => {
+    if (!isAdmin || !playerId) return;
+    let active = true;
+    setPlayerLoading(true);
+    getAdminPlayerDetail(playerId, days)
+      .then((d) => {
+        if (active) setPlayer(d);
+      })
+      .catch(() => {
+        if (active) setPlayer(null);
+      })
+      .finally(() => {
+        if (active) setPlayerLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [isAdmin, playerId, days]);
+
   const changeSearch = (value: string) => {
     setSearch(value);
     setPage(1);
@@ -85,6 +124,8 @@ export const useBackofficeServices = () => {
     overview,
     games,
     cases,
+    series,
+    wins,
     usersPage,
     page,
     setPage,
@@ -92,5 +133,13 @@ export const useBackofficeServices = () => {
     changeSearch,
     loading,
     error,
+    playerId,
+    player,
+    playerLoading,
+    openPlayer: (id: string) => setPlayerId(id),
+    closePlayer: () => {
+      setPlayerId(null);
+      setPlayer(null);
+    },
   };
 };

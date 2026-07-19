@@ -3,9 +3,17 @@ const User = require("../models/User");
 const Case = require("../models/Case");
 const Transaction = require("../models/Transaction");
 const { accountBalance, ledgerSupply, TX, STAKE_TYPES } = require("./economy");
-const { HOUSE, MINT, ESCROW } = require("./accounts");
+const { HOUSE, MINT, ESCROW, GENESIS } = require("./accounts");
 
 const PAGE_SIZE = 20;
+
+// KP-paying game wins and stake returns, for daily series and big-win surfacing
+const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
+const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND];
+// KP printed to players outside the games
+const FAUCET_TYPES = [TX.SIGNUP, TX.BONUS, TX.MISSION_REWARD, TX.REFERRAL_BONUS, TX.REFERRAL_MILESTONE, TX.AD_REWARD];
+// designed edges per game, so the realized return can be judged against intent
+const THEO_RTP = { crash: 0.9603, coinflip: 0.97, slots: 0.9645, plinko: 0.9655, cases: 0.9, battles: 0.9 };
 
 // window start, or null for all-time
 const sinceFor = (days) => {
@@ -38,6 +46,7 @@ const GAME_LINES = [
   { game: "crash", bets: [TX.CRASH_BET], outs: [TX.CRASH_CASHOUT, TX.CRASH_REFUND] },
   { game: "coinflip", bets: [TX.COINFLIP_BET], outs: [TX.COINFLIP_WIN, TX.COINFLIP_REFUND] },
   { game: "slots", bets: [TX.SLOT_BET], outs: [TX.SLOT_WIN] },
+  { game: "plinko", bets: [TX.PLINKO_BET], outs: [TX.PLINKO_WIN] },
   { game: "cases", bets: [TX.CASE_OPEN], outs: [] },
   { game: "battles", bets: [TX.BATTLE_ENTRY], outs: [TX.BATTLE_REFUND] },
 ];
@@ -74,17 +83,36 @@ async function gameStats(days) {
   const sumOf = (types, dir) =>
     types.reduce((s, t) => s + ((byTypeDir[`${t}:${dir}`] || {}).amount || 0), 0);
 
+  // per-type reach and outliers feed the enriched game rows
+  const gameTypes = new Set(GAME_LINES.flatMap((g) => [...g.bets, ...g.outs]));
+  const perType = await Transaction.aggregate([
+    { $match: { type: { $in: [...gameTypes] }, ...matchSince(since) } },
+    { $group: { _id: "$type", users: { $addToSet: "$userId" }, maxAmount: { $max: "$amount" } } },
+    { $project: { users: { $size: "$users" }, maxAmount: 1 } },
+  ]);
+  const reach = new Map(perType.map((r) => [r._id, r]));
+
   const games = GAME_LINES.map(({ game, bets, outs }) => {
     const betSlot = byTypeDir[`${bets[0]}:debit`] || { amount: 0, count: 0, qty: 0 };
     const plays = game === "cases" ? betSlot.qty || betSlot.count : betSlot.count;
     const wagered = sumOf(bets, "debit");
     const paidOut = sumOf(outs, "credit");
-    return { game, plays, wagered, paidOut, net: wagered - paidOut };
+    const uniquePlayers = (reach.get(bets[0]) || {}).users || 0;
+    const biggestWin = outs.reduce((m, t) => Math.max(m, (reach.get(t) || {}).maxAmount || 0), 0);
+    return {
+      game,
+      plays,
+      wagered,
+      paidOut,
+      net: wagered - paidOut,
+      uniquePlayers,
+      biggestWin,
+      theoRtp: THEO_RTP[game] || null,
+    };
   }).sort((a, b) => b.net - a.net);
 
   // everything else settling against the house or the mint, signed from the house's
   // and the supply's point of view; grouped by type so new lines appear on their own
-  const gameTypes = new Set(GAME_LINES.flatMap((g) => [...g.bets, ...g.outs]));
   const houseLines = [];
   const issuance = [];
   const acc = {};
@@ -145,6 +173,157 @@ async function caseStats(days) {
   });
 }
 
+// daily buckets for the dashboard charts; all-time falls back to the last 90 days
+// so the series stays bounded. system accounts are excluded so player counts are real.
+async function timeseries(days) {
+  const since = sinceFor(days) || new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+  const rows = await Transaction.aggregate([
+    { $match: { createdAt: { $gte: since }, userId: { $nin: [HOUSE, MINT, ESCROW, GENESIS] } } },
+    {
+      $group: {
+        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+        wagered: { $sum: { $cond: [{ $in: ["$type", STAKE_TYPES] }, "$amount", 0] } },
+        paidOut: { $sum: { $cond: [{ $in: ["$type", [...WIN_TYPES, ...REFUND_TYPES]] }, "$amount", 0] } },
+        faucet: {
+          $sum: {
+            $cond: [
+              { $and: [{ $eq: ["$counterparty", MINT] }, { $eq: ["$direction", "credit"] }] },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        players: { $addToSet: "$userId" },
+      },
+    },
+    { $project: { wagered: 1, paidOut: 1, faucet: 1, players: { $size: "$players" } } },
+    { $sort: { _id: 1 } },
+  ]);
+  return rows.map((r) => ({
+    day: r._id,
+    wagered: r.wagered,
+    paidOut: r.paidOut,
+    ggr: r.wagered - r.paidOut,
+    faucet: r.faucet,
+    players: r.players,
+  }));
+}
+
+// the largest single game payouts in the window, with who hit them
+async function bigWins(days, limit = 10) {
+  const since = sinceFor(days);
+  const rows = await Transaction.find({ type: { $in: WIN_TYPES }, ...matchSince(since) })
+    .sort({ amount: -1 })
+    .limit(limit)
+    .select("userId type amount meta createdAt")
+    .lean();
+  const users = await User.find(
+    { _id: { $in: rows.map((r) => r.userId) } },
+    { username: 1, profilePicture: 1 }
+  ).lean();
+  const byId = new Map(users.map((u) => [String(u._id), u]));
+  return rows.map((r) => {
+    const u = byId.get(String(r.userId));
+    const bet = r.meta && r.meta.betAmount ? r.meta.betAmount : null;
+    return {
+      userId: String(r.userId),
+      username: u ? u.username : "(deleted user)",
+      profilePicture: u ? u.profilePicture || "" : "",
+      type: r.type,
+      amount: r.amount,
+      bet,
+      multiple: bet ? r.amount / bet : null,
+      at: r.createdAt,
+    };
+  });
+}
+
+// everything the backoffice needs about one player, composed from the ledger
+async function playerDetail(id, days) {
+  if (!mongoose.Types.ObjectId.isValid(id)) return null;
+  const user = await User.findById(id)
+    .select("username profilePicture level xp walletBalance isAdmin weeklyWinnings referredBy inventory")
+    .lean();
+  if (!user) return null;
+
+  const since = sinceFor(days);
+  const uid = user._id;
+  const [byTypeDirRows, recent, referrals, referrer] = await Promise.all([
+    Transaction.aggregate([
+      { $match: { userId: uid, ...matchSince(since) } },
+      {
+        $group: {
+          _id: { type: "$type", direction: "$direction" },
+          total: { $sum: "$amount" },
+          count: { $sum: 1 },
+          max: { $max: "$amount" },
+          qty: { $sum: { $ifNull: ["$meta.quantity", 0] } },
+          last: { $max: "$createdAt" },
+        },
+      },
+    ]),
+    Transaction.find({ userId: uid })
+      .sort({ createdAt: -1 })
+      .limit(15)
+      .select("type direction amount balanceAfter createdAt")
+      .lean(),
+    User.countDocuments({ referredBy: uid }),
+    user.referredBy ? User.findById(user.referredBy).select("username").lean() : null,
+  ]);
+
+  const slots = new Map(byTypeDirRows.map((r) => [`${r._id.type}:${r._id.direction}`, r]));
+  const get = (type, direction) => slots.get(`${type}:${direction}`) || { total: 0, count: 0, max: 0, qty: 0 };
+
+  const games = GAME_LINES.map(({ game, bets, outs }) => {
+    const bet = get(bets[0], "debit");
+    const won = outs.reduce((s, o) => s + get(o, "credit").total, 0);
+    const plays = game === "cases" ? bet.qty || bet.count : bet.count;
+    return { game, plays, wagered: bet.total, won, net: bet.total - won };
+  }).filter((g) => g.plays > 0);
+
+  const wagered = games.reduce((s, g) => s + g.wagered, 0);
+  const won = games.reduce((s, g) => s + g.won, 0);
+  const faucet = FAUCET_TYPES.reduce((s, t) => s + get(t, "credit").total, 0);
+  const biggestWin = WIN_TYPES.reduce(
+    (best, t) => {
+      const m = get(t, "credit");
+      return m.max > best.amount ? { type: t, amount: m.max } : best;
+    },
+    { type: null, amount: 0 }
+  );
+  const lastActive = byTypeDirRows.reduce((d, r) => (!d || r.last > d ? r.last : d), null);
+
+  return {
+    user: {
+      id: String(uid),
+      username: user.username,
+      profilePicture: user.profilePicture || "",
+      level: user.level || 0,
+      xp: user.xp || 0,
+      walletBalance: user.walletBalance,
+      isAdmin: !!user.isAdmin,
+      weeklyWinnings: user.weeklyWinnings || 0,
+      joined: uid.getTimestamp(),
+      inventoryCount: (user.inventory || []).length,
+      referredBy: referrer ? referrer.username : null,
+      referrals,
+    },
+    totals: {
+      wagered,
+      won,
+      net: wagered - won,
+      faucet,
+      marketSpent: get(TX.MARKET_BUY, "debit").total,
+      marketEarned: get(TX.MARKET_SALE, "credit").total,
+      itemsSold: get(TX.ITEM_SELL, "credit").total,
+      biggestWin,
+      lastActive,
+    },
+    games,
+    recent,
+  };
+}
+
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const SORTS = { newest: { _id: -1 }, balance: { walletBalance: -1 }, level: { level: -1 } };
 
@@ -201,4 +380,4 @@ async function userStats({ days, page = 1, search = "", sort = "newest" } = {}) 
   };
 }
 
-module.exports = { overview, gameStats, caseStats, userStats, PAGE_SIZE };
+module.exports = { overview, gameStats, caseStats, userStats, timeseries, bigWins, playerDetail, PAGE_SIZE };
