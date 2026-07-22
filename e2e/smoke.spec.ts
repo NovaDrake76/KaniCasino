@@ -39,6 +39,7 @@ test("every game in the listing is clickable and navigates", async ({ page }) =>
     { text: "Play Upgrade", url: /\/upgrade/ },
     { text: "Play Slot", url: /\/slot/ },
     { text: "Play Plinko", url: /\/plinko/ },
+    { text: "Play Blackjack", url: /\/blackjack/ },
   ];
 
   for (const game of games) {

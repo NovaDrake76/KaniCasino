@@ -28,3 +28,28 @@ export async function dropPlinko(betAmount: number, risk: string) {
     const response = await api.post(`/games/plinko/`, { betAmount, risk });
     return response.data;
 }
+
+export async function dealBlackjack(betAmount: number) {
+    const response = await api.post(`/games/blackjack/deal`, { betAmount });
+    return response.data;
+}
+
+export async function hitBlackjack() {
+    const response = await api.post(`/games/blackjack/hit`, {});
+    return response.data;
+}
+
+export async function standBlackjack() {
+    const response = await api.post(`/games/blackjack/stand`, {});
+    return response.data;
+}
+
+export async function doubleBlackjack() {
+    const response = await api.post(`/games/blackjack/double`, {});
+    return response.data;
+}
+
+export async function getActiveBlackjackHand() {
+    const response = await api.get(`/games/blackjack/active`);
+    return response.data;
+}
