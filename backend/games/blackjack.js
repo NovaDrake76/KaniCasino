@@ -12,14 +12,15 @@ const {
   MAX_BET,
   drawCard,
   handTotal,
-  isBlackjack,
-  dealerPlay,
-  settle,
+  dealState,
+  applyInsurance,
+  applyMove,
+  legalMoves,
 } = require("../utils/blackjackMath");
 
 // settle credits land after the dealer-reveal animation; sweeps emit immediately
 const SETTLE_EMIT_DELAY_MS = 1200;
-// a hand idle this long is auto-stood by the sweep (it blocks deals and seed rotation)
+// a hand idle this long is auto-completed by the sweep (it blocks deals and seed rotation)
 const STALE_HAND_MS = 10 * 60 * 1000;
 // a claimed-but-uncommitted money action older than this is recovered from the ledger
 const PENDING_LEASE_MS = 60 * 1000;
@@ -34,13 +35,76 @@ function newHandId() {
   return "BJ" + String(crypto.randomInt(0, 1e9)).padStart(9, "0");
 }
 
+// rebuild the pure machine state from a persisted active hand. transient flags
+// (peeked naturals, ace splits, insurance wins) only exist inside the action
+// that finishes the round, so a stored active hand always restarts them clean.
+function stateFromDoc(hand) {
+  return {
+    hands: hand.hands.map((h) => ({
+      cards: h.cards.slice(),
+      bet: h.bet,
+      doubled: h.doubled,
+      fromSplit: h.fromSplit,
+      done: h.done,
+    })),
+    activeHandIndex: hand.activeHandIndex,
+    dealerCards: hand.dealerCards.slice(),
+    nextCursor: hand.nextCursor,
+    betAmount: hand.betAmount,
+    awaitingInsurance: hand.awaitingInsurance,
+    insuranceBet: hand.insuranceBet,
+    insuranceWon: 0,
+    aceSplit: false,
+    peekedBlackjack: false,
+    finished: false,
+    result: null,
+  };
+}
+
+// the $set that persists a machine state, including settlement when finished
+function setFromState(state) {
+  const set = {
+    hands: state.hands.map((h, i) => ({
+      cards: h.cards,
+      bet: h.bet,
+      doubled: h.doubled,
+      fromSplit: h.fromSplit,
+      done: h.done,
+      outcome: state.result ? state.result.perHand[i].outcome : null,
+      payout: state.result ? state.result.perHand[i].payout : 0,
+    })),
+    activeHandIndex: state.activeHandIndex,
+    dealerCards: state.dealerCards,
+    nextCursor: state.nextCursor,
+    awaitingInsurance: state.awaitingInsurance,
+    insuranceBet: state.insuranceBet,
+    pendingAction: null,
+    pendingAt: null,
+  };
+  if (state.finished) {
+    const now = new Date();
+    Object.assign(set, {
+      status: "settled",
+      dealerTotal: state.result.dealerTotal,
+      totalPayout: state.result.totalPayout,
+      won: state.result.won,
+      settledAt: now,
+      settlementStartedAt: now,
+      settlementDone: state.result.totalPayout === 0,
+    });
+  }
+  return set;
+}
+
 // the only serializer: while active the dealer shows exactly one card, and the
 // hole card never leaves the server in any form
 function publicHandView(hand) {
   const active = hand.status === "active";
+  const state = stateFromDoc(hand);
+  const legal = active
+    ? legalMoves(state)
+    : { canHit: false, canStand: false, canDouble: false, canSplit: false, canInsure: false };
   const dealerCards = active ? [hand.dealerCards[0]] : hand.dealerCards;
-  const first = hand.hands[0];
-  const firstTotal = handTotal(first.cards);
   return {
     handId: hand.handId,
     status: hand.status,
@@ -52,6 +116,8 @@ function publicHandView(hand) {
         cards: h.cards,
         bet: h.bet,
         doubled: h.doubled,
+        fromSplit: h.fromSplit,
+        done: h.done,
         total: t.total,
         soft: t.soft,
         outcome: h.outcome || null,
@@ -59,14 +125,14 @@ function publicHandView(hand) {
       };
     }),
     activeHandIndex: hand.activeHandIndex,
+    awaitingInsurance: active && hand.awaitingInsurance,
+    insuranceBet: hand.insuranceBet,
     dealer: {
       cards: dealerCards,
       total: active ? handTotal(dealerCards).total : hand.dealerTotal,
       hidden: active,
     },
-    canHit: active && firstTotal.total < 21,
-    canStand: active,
-    canDouble: active && first.cards.length === 2 && !first.doubled,
+    ...legal,
     totalPayout: active ? 0 : hand.totalPayout,
     fair: {
       clientSeed: hand.clientSeed,
@@ -90,13 +156,16 @@ async function loadServerSeed(hand) {
   return seed.serverSeed;
 }
 
+function drawFor(hand, serverSeed) {
+  return (cursor) => drawCard(serverSeed, hand.clientSeed, hand.nonce, cursor);
+}
+
 // credit whatever the settled hand owes, exactly once, keyed on the ledger by
 // meta.handId; then mark settlementDone. shared by the live path and the sweep.
 async function paySettlement(hand, io, { emitDelayMs = 0 } = {}) {
   if (hand.totalPayout > 0) {
-    const isPush = hand.hands.every((h) => h.outcome === "push" || h.outcome === "lose");
-    const type = isPush ? TX.BLACKJACK_PUSH : TX.BLACKJACK_WIN;
-    const winnings = isPush ? 0 : hand.totalPayout;
+    const type = hand.won ? TX.BLACKJACK_WIN : TX.BLACKJACK_PUSH;
+    const winnings = hand.won ? hand.totalPayout : 0;
     const natural = hand.hands.some((h) => h.outcome === "blackjack");
     const credited = await creditUser(hand.userId, hand.totalPayout, winnings, {
       type,
@@ -136,11 +205,13 @@ async function recordHandRoll(hand, serverSeed) {
       outcome: {
         algoVersion: BLACKJACK_ALGO_VERSION,
         betAmount: hand.betAmount,
+        insuranceBet: hand.insuranceBet,
         actions: hand.actions.map((a) => (a.auto ? { action: a.action, auto: true } : a.action)),
         playerHands: hand.hands.map((h) => ({
           cards: h.cards,
           bet: h.bet,
           doubled: h.doubled,
+          fromSplit: h.fromSplit,
           outcome: h.outcome,
           payout: h.payout,
         })),
@@ -158,20 +229,6 @@ async function recordHandRoll(hand, serverSeed) {
   }
 }
 
-// dealer draws from the frozen stream, the result is priced, and the whole
-// settlement folds into one compare-and-set write built by the caller
-function computeDealerSettle(serverSeed, hand, playerCards, bet, doubled, startCursor) {
-  let cursor = startCursor;
-  const playerBusted = handTotal(playerCards).total > 21;
-  const dealerCards = playerBusted
-    ? hand.dealerCards.slice()
-    : dealerPlay(hand.dealerCards, () =>
-        drawCard(serverSeed, hand.clientSeed, hand.nonce, cursor++)
-      );
-  const result = settle([{ cards: playerCards, bet, doubled }], dealerCards);
-  return { dealerCards, result, nextCursor: cursor };
-}
-
 // the payout credit and the audit roll are independent, so they share one
 // round-trip window; the response reuses the settled doc instead of re-reading
 async function settleAndRespond(claimed, serverSeed, io) {
@@ -183,25 +240,76 @@ async function settleAndRespond(claimed, serverSeed, io) {
   return publicHandView(claimed);
 }
 
-function settlementSet(playerCards, bet, doubled, dealerCards, result, nextCursor) {
-  const now = new Date();
-  return {
-    "hands.0.cards": playerCards,
-    "hands.0.bet": bet,
-    "hands.0.doubled": doubled,
-    "hands.0.outcome": result.perHand[0].outcome,
-    "hands.0.payout": result.perHand[0].payout,
-    dealerCards,
-    dealerTotal: result.dealerTotal,
-    totalPayout: result.totalPayout,
-    nextCursor,
-    status: "settled",
-    settledAt: now,
-    settlementStartedAt: now,
-    settlementDone: result.totalPayout === 0,
-    pendingAction: null,
-    pendingAt: null,
-  };
+// apply a no-money action (hit / stand / decline insurance) with one CAS write
+async function applyAndCommit(hand, state, actionEntries, io, serverSeed) {
+  const claimed = await BlackjackHand.findOneAndUpdate(
+    { _id: hand._id, status: "active", actionSeq: hand.actionSeq, pendingAction: null },
+    {
+      $set: setFromState(state),
+      $push: { actions: { $each: actionEntries } },
+      $inc: { actionSeq: 1 },
+    },
+    { new: true }
+  );
+  if (!claimed) throw httpError(409, "Action already applied, refresh");
+  if (claimed.status === "settled") return settleAndRespond(claimed, serverSeed, io);
+  return publicHandView(claimed);
+}
+
+async function loadActiveHand(userId) {
+  const hand = await BlackjackHand.findOne({ userId, status: "active" });
+  if (!hand) throw httpError(404, "No active hand");
+  if (hand.pendingAction) throw httpError(409, "Action already in progress");
+  return hand;
+}
+
+// claim -> charge -> commit, for actions that move money mid-hand (double,
+// split, insurance). the claim blocks concurrent actions while the charge is in
+// flight, and the ledger row is what the sweep keys on if we crash in between.
+async function moneyAction(userId, io, { name, legalKey, chargeAmount, metaKey, apply, actionName }) {
+  const hand = await loadActiveHand(userId);
+  const serverSeed = await loadServerSeed(hand);
+  const state = stateFromDoc(hand);
+  if (!legalMoves(state)[legalKey]) throw httpError(400, `Cannot ${name} now`);
+
+  const amount = chargeAmount(state);
+  const claimed = await BlackjackHand.findOneAndUpdate(
+    { _id: hand._id, status: "active", actionSeq: hand.actionSeq, pendingAction: null },
+    { $set: { pendingAction: name, pendingAt: new Date() }, $inc: { actionSeq: 1 } },
+    { new: true }
+  );
+  if (!claimed) throw httpError(409, "Action already applied, refresh");
+
+  const player = await chargeUser(userId, amount, {
+    type: TX.BLACKJACK_BET,
+    meta: { handId: hand.handId, betAmount: amount, [metaKey]: true },
+  });
+  if (!player) {
+    await BlackjackHand.updateOne(
+      { _id: hand._id, pendingAction: name },
+      { $set: { pendingAction: null, pendingAt: null }, $inc: { actionSeq: 1 } }
+    );
+    throw httpError(400, "Insufficient balance");
+  }
+  io.to(userId.toString()).emit("userDataUpdated", {
+    walletBalance: player.walletBalance,
+    xp: player.xp,
+    level: player.level,
+  });
+
+  apply(state, drawFor(hand, serverSeed));
+  const settled = await BlackjackHand.findOneAndUpdate(
+    { _id: hand._id, status: "active", pendingAction: name },
+    {
+      $set: setFromState(state),
+      $push: { actions: { action: actionName, at: new Date() } },
+      $inc: { actionSeq: 1 },
+    },
+    { new: true }
+  );
+  if (!settled) throw httpError(409, "Action already applied, refresh");
+  if (settled.status === "settled") return settleAndRespond(settled, serverSeed, io);
+  return publicHandView(settled);
 }
 
 class BlackjackGameController {
@@ -215,14 +323,9 @@ class BlackjackGameController {
     // reserve the provably-fair nonce up front (atomic, never rolled back)
     const reserved = await seeds.reserveNonces(userId, 1);
     const nonce = reserved.startNonce;
-    const playerCards = [
-      drawCard(reserved.serverSeed, reserved.clientSeed, nonce, 0),
-      drawCard(reserved.serverSeed, reserved.clientSeed, nonce, 2),
-    ];
-    const dealerCards = [
-      drawCard(reserved.serverSeed, reserved.clientSeed, nonce, 1),
-      drawCard(reserved.serverSeed, reserved.clientSeed, nonce, 3),
-    ];
+    const state = dealState(betAmount, (cursor) =>
+      drawCard(reserved.serverSeed, reserved.clientSeed, nonce, cursor)
+    );
 
     // create before charging: an unfunded hand is visible and the sweep voids it
     // from the ledger, while a charge with no hand would be silent lost money
@@ -233,12 +336,14 @@ class BlackjackGameController {
           handId: newHandId(),
           userId,
           betAmount,
-          hands: [{ cards: playerCards, bet: betAmount }],
-          dealerCards,
+          hands: state.hands.map((h) => ({ cards: h.cards, bet: h.bet, done: h.done })),
+          dealerCards: state.dealerCards,
+          awaitingInsurance: state.awaitingInsurance,
           seedId: reserved.seedId,
           clientSeed: reserved.clientSeed,
           serverSeedHash: reserved.serverSeedHash,
           nonce,
+          nextCursor: state.nextCursor,
           actions: [{ action: "deal", at: new Date() }],
         });
       } catch (e) {
@@ -286,157 +391,77 @@ class BlackjackGameController {
       level: player.level,
     });
 
-    // american peek: any two-card 21 settles the hand right now, so a player can
-    // never put more money into a hand the dealer has already won
-    if (isBlackjack(playerCards) || isBlackjack(dealerCards)) {
-      const result = settle(
-        [{ cards: playerCards, bet: betAmount, doubled: false }],
-        dealerCards
-      );
+    // a peeked natural (no ace up) settles the round in the same request
+    if (state.finished) {
       const claimed = await BlackjackHand.findOneAndUpdate(
         { _id: hand._id, status: "active", actionSeq: 0 },
-        {
-          $set: settlementSet(playerCards, betAmount, false, dealerCards, result, 4),
-          $inc: { actionSeq: 1 },
-        },
+        { $set: setFromState(state), $inc: { actionSeq: 1 } },
         { new: true }
       );
-      if (claimed) {
-        return settleAndRespond(claimed, reserved.serverSeed, io);
-      }
+      if (claimed) return settleAndRespond(claimed, reserved.serverSeed, io);
     }
 
     return publicHandView(hand);
   }
 
   static async hit(userId, io) {
-    const hand = await BlackjackHand.findOne({ userId, status: "active" });
-    if (!hand) throw httpError(404, "No active hand");
-    if (hand.pendingAction) throw httpError(409, "Action already in progress");
-    if (handTotal(hand.hands[0].cards).total >= 21) throw httpError(400, "Cannot hit");
-
+    const hand = await loadActiveHand(userId);
     const serverSeed = await loadServerSeed(hand);
-    const card = drawCard(serverSeed, hand.clientSeed, hand.nonce, hand.nextCursor);
-    const newCards = [...hand.hands[0].cards, card];
-    const { total } = handTotal(newCards);
-    const bet = hand.hands[0].bet;
-    const action = { action: "hit", at: new Date() };
-
-    if (total >= 21) {
-      // bust settles with the hole face-down math; 21 auto-stands into dealer play
-      const { dealerCards, result, nextCursor } = computeDealerSettle(
-        serverSeed, hand, newCards, bet, false, hand.nextCursor + 1
-      );
-      const claimed = await BlackjackHand.findOneAndUpdate(
-        { _id: hand._id, status: "active", actionSeq: hand.actionSeq, pendingAction: null },
-        {
-          $set: settlementSet(newCards, bet, false, dealerCards, result, nextCursor),
-          $push: { actions: action },
-          $inc: { actionSeq: 1 },
-        },
-        { new: true }
-      );
-      if (!claimed) throw httpError(409, "Action already applied, refresh");
-      return settleAndRespond(claimed, serverSeed, io);
-    }
-
-    const claimed = await BlackjackHand.findOneAndUpdate(
-      { _id: hand._id, status: "active", actionSeq: hand.actionSeq, pendingAction: null },
-      {
-        $set: { "hands.0.cards": newCards, nextCursor: hand.nextCursor + 1 },
-        $push: { actions: action },
-        $inc: { actionSeq: 1 },
-      },
-      { new: true }
-    );
-    if (!claimed) throw httpError(409, "Action already applied, refresh");
-    return publicHandView(claimed);
+    const state = stateFromDoc(hand);
+    if (!legalMoves(state).canHit) throw httpError(400, "Cannot hit");
+    applyMove(state, "hit", drawFor(hand, serverSeed));
+    return applyAndCommit(hand, state, [{ action: "hit", at: new Date() }], io, serverSeed);
   }
 
   static async stand(userId, io) {
-    const hand = await BlackjackHand.findOne({ userId, status: "active" });
-    if (!hand) throw httpError(404, "No active hand");
-    if (hand.pendingAction) throw httpError(409, "Action already in progress");
-
+    const hand = await loadActiveHand(userId);
     const serverSeed = await loadServerSeed(hand);
-    const first = hand.hands[0];
-    const { dealerCards, result, nextCursor } = computeDealerSettle(
-      serverSeed, hand, first.cards, first.bet, first.doubled, hand.nextCursor
-    );
-    const claimed = await BlackjackHand.findOneAndUpdate(
-      { _id: hand._id, status: "active", actionSeq: hand.actionSeq, pendingAction: null },
-      {
-        $set: settlementSet(first.cards, first.bet, first.doubled, dealerCards, result, nextCursor),
-        $push: { actions: { action: "stand", at: new Date() } },
-        $inc: { actionSeq: 1 },
-      },
-      { new: true }
-    );
-    if (!claimed) throw httpError(409, "Action already applied, refresh");
-    return settleAndRespond(claimed, serverSeed, io);
+    const state = stateFromDoc(hand);
+    if (!legalMoves(state).canStand) throw httpError(400, "Cannot stand");
+    applyMove(state, "stand", drawFor(hand, serverSeed));
+    return applyAndCommit(hand, state, [{ action: "stand", at: new Date() }], io, serverSeed);
   }
 
   static async double(userId, io) {
-    const hand = await BlackjackHand.findOne({ userId, status: "active" });
-    if (!hand) throw httpError(404, "No active hand");
-    if (hand.pendingAction) throw httpError(409, "Action already in progress");
-    if (hand.hands[0].cards.length !== 2 || hand.hands[0].doubled) {
-      throw httpError(400, "Cannot double now");
-    }
-
-    // claim first, charge second: the claim blocks concurrent actions while the
-    // money moves, and the ledger row is what recovery keys on if we crash here
-    const claimed = await BlackjackHand.findOneAndUpdate(
-      {
-        _id: hand._id,
-        status: "active",
-        actionSeq: hand.actionSeq,
-        pendingAction: null,
-        "hands.0.cards": { $size: 2 },
-        "hands.0.doubled": false,
-      },
-      { $set: { pendingAction: "double", pendingAt: new Date() }, $inc: { actionSeq: 1 } },
-      { new: true }
-    );
-    if (!claimed) throw httpError(409, "Action already applied, refresh");
-
-    const player = await chargeUser(userId, hand.betAmount, {
-      type: TX.BLACKJACK_BET,
-      meta: { handId: hand.handId, betAmount: hand.betAmount, double: true },
+    return moneyAction(userId, io, {
+      name: "double",
+      legalKey: "canDouble",
+      chargeAmount: (state) => state.hands[state.activeHandIndex].bet,
+      metaKey: "double",
+      apply: (state, draw) => applyMove(state, "double", draw),
+      actionName: "double",
     });
-    if (!player) {
-      await BlackjackHand.updateOne(
-        { _id: hand._id, pendingAction: "double" },
-        { $set: { pendingAction: null, pendingAt: null }, $inc: { actionSeq: 1 } }
-      );
-      throw httpError(400, "Insufficient balance");
-    }
-    io.to(userId.toString()).emit("userDataUpdated", {
-      walletBalance: player.walletBalance,
-      xp: player.xp,
-      level: player.level,
-    });
+  }
 
+  static async split(userId, io) {
+    return moneyAction(userId, io, {
+      name: "split",
+      legalKey: "canSplit",
+      chargeAmount: (state) => state.betAmount,
+      metaKey: "split",
+      apply: (state, draw) => applyMove(state, "split", draw),
+      actionName: "split",
+    });
+  }
+
+  static async insurance(userId, accept, io) {
+    if (typeof accept !== "boolean") throw httpError(400, "accept must be a boolean");
+    if (accept) {
+      return moneyAction(userId, io, {
+        name: "insurance",
+        legalKey: "canInsure",
+        chargeAmount: (state) => Math.floor(state.betAmount / 2),
+        metaKey: "insurance",
+        apply: (state, draw) => applyInsurance(state, true, draw),
+        actionName: "insure",
+      });
+    }
+    const hand = await loadActiveHand(userId);
+    if (!hand.awaitingInsurance) throw httpError(400, "No insurance offered");
     const serverSeed = await loadServerSeed(hand);
-    const newCards = [
-      ...hand.hands[0].cards,
-      drawCard(serverSeed, hand.clientSeed, hand.nonce, hand.nextCursor),
-    ];
-    const doubledBet = hand.betAmount * 2;
-    const { dealerCards, result, nextCursor } = computeDealerSettle(
-      serverSeed, hand, newCards, doubledBet, true, hand.nextCursor + 1
-    );
-    const settled = await BlackjackHand.findOneAndUpdate(
-      { _id: hand._id, status: "active", pendingAction: "double" },
-      {
-        $set: settlementSet(newCards, doubledBet, true, dealerCards, result, nextCursor),
-        $push: { actions: { action: "double", at: new Date() } },
-        $inc: { actionSeq: 1 },
-      },
-      { new: true }
-    );
-    if (!settled) throw httpError(409, "Action already applied, refresh");
-    return settleAndRespond(settled, serverSeed, io);
+    const state = stateFromDoc(hand);
+    applyInsurance(state, false, drawFor(hand, serverSeed));
+    return applyAndCommit(hand, state, [{ action: "noinsure", at: new Date() }], io, serverSeed);
   }
 
   static async active(userId) {
@@ -446,7 +471,7 @@ class BlackjackGameController {
 }
 
 // three-arm recovery sweep, same lease + ledger discipline as recoverStuckRounds:
-// stale actives are auto-stood (or voided if never funded), settled-but-unpaid
+// stale actives are auto-completed (or voided if never funded), settled-but-unpaid
 // hands are paid from what the ledger says is missing, missing rolls re-recorded
 async function sweepBlackjackHands(io) {
   const now = Date.now();
@@ -461,54 +486,16 @@ async function sweepBlackjackHands(io) {
 
   for (const hand of stale) {
     try {
-      if (hand.pendingAction === "double") {
-        if (hand.pendingAt && hand.pendingAt > leaseCutoff) continue;
-        const doubleCharged = await Transaction.exists({
-          userId: hand.userId,
-          type: TX.BLACKJACK_BET,
-          "meta.handId": hand.handId,
-          "meta.double": true,
-        });
-        if (!doubleCharged) {
-          await BlackjackHand.updateOne(
-            { _id: hand._id, pendingAction: "double" },
-            { $set: { pendingAction: null, pendingAt: null }, $inc: { actionSeq: 1 } }
-          );
-          continue;
-        }
-        // the double was paid for: complete it from the deterministic stream
-        const serverSeed = await loadServerSeed(hand);
-        const newCards = [
-          ...hand.hands[0].cards,
-          drawCard(serverSeed, hand.clientSeed, hand.nonce, hand.nextCursor),
-        ];
-        const doubledBet = hand.betAmount * 2;
-        const { dealerCards, result, nextCursor } = computeDealerSettle(
-          serverSeed, hand, newCards, doubledBet, true, hand.nextCursor + 1
-        );
-        const settled = await BlackjackHand.findOneAndUpdate(
-          { _id: hand._id, status: "active", pendingAction: "double" },
-          {
-            $set: settlementSet(newCards, doubledBet, true, dealerCards, result, nextCursor),
-            $push: { actions: { action: "double", auto: true, at: new Date() } },
-            $inc: { actionSeq: 1 },
-          },
-          { new: true }
-        );
-        if (settled) {
-          await paySettlement(settled, ioSafe);
-          await recordHandRoll(settled, serverSeed);
-        }
-        continue;
-      }
-
       const funded = await Transaction.exists({
         userId: hand.userId,
         type: TX.BLACKJACK_BET,
         "meta.handId": hand.handId,
         "meta.double": { $ne: true },
+        "meta.split": { $ne: true },
+        "meta.insurance": { $ne: true },
       });
       if (!funded) {
+        // the crash window between create and charge: nothing charged, nothing owed
         await BlackjackHand.updateOne(
           { _id: hand._id, status: "active", actionSeq: hand.actionSeq },
           { $set: { status: "voided", settlementDone: true }, $inc: { actionSeq: 1 } }
@@ -517,15 +504,42 @@ async function sweepBlackjackHands(io) {
       }
 
       const serverSeed = await loadServerSeed(hand);
-      const first = hand.hands[0];
-      const { dealerCards, result, nextCursor } = computeDealerSettle(
-        serverSeed, hand, first.cards, first.bet, first.doubled, hand.nextCursor
-      );
+      const draw = drawFor(hand, serverSeed);
+      const state = stateFromDoc(hand);
+      const entries = [];
+      const pending = hand.pendingAction;
+
+      if (pending) {
+        if (hand.pendingAt && hand.pendingAt > leaseCutoff) continue;
+        const charged = await Transaction.exists({
+          userId: hand.userId,
+          type: TX.BLACKJACK_BET,
+          "meta.handId": hand.handId,
+          [`meta.${pending}`]: true,
+        });
+        if (charged) {
+          // the money landed: complete the claimed action from the frozen stream
+          if (pending === "insurance") applyInsurance(state, true, draw);
+          else applyMove(state, pending, draw);
+          entries.push({ action: pending === "insurance" ? "insure" : pending, auto: true, at: new Date() });
+        }
+        // an uncharged claim is simply dropped; the stand-out below finishes the hand
+      }
+
+      if (state.awaitingInsurance && !state.finished) {
+        applyInsurance(state, false, draw);
+        entries.push({ action: "noinsure", auto: true, at: new Date() });
+      }
+      while (!state.finished) {
+        applyMove(state, "stand", draw);
+        entries.push({ action: "stand", auto: true, at: new Date() });
+      }
+
       const settled = await BlackjackHand.findOneAndUpdate(
-        { _id: hand._id, status: "active", actionSeq: hand.actionSeq, pendingAction: null },
+        { _id: hand._id, status: "active", actionSeq: hand.actionSeq, pendingAction: pending },
         {
-          $set: settlementSet(first.cards, first.bet, first.doubled, dealerCards, result, nextCursor),
-          $push: { actions: { action: "stand", auto: true, at: new Date() } },
+          $set: setFromState(state),
+          $push: { actions: { $each: entries } },
           $inc: { actionSeq: 1 },
         },
         { new: true }

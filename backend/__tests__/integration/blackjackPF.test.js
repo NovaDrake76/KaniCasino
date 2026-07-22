@@ -10,7 +10,7 @@ const Transaction = require("../../models/Transaction");
 const BlackjackHand = require("../../models/BlackjackHand");
 const { TX } = require("../../utils/economy");
 const { hashServerSeed } = require("../../utils/provablyFair");
-const { drawCard, handTotal, isBlackjack, naturalPayout } = require("../../utils/blackjackMath");
+const { drawCard, rankOf, handTotal, isBlackjack, naturalPayout, insurancePayout } = require("../../utils/blackjackMath");
 
 let app;
 
@@ -48,7 +48,7 @@ async function pinSeed(userId, wantFn) {
   return clientSeed;
 }
 
-const noNaturals = (p, d) => !isBlackjack(p) && !isBlackjack(d);
+const noNaturals = (p, d) => rankOf(d[0]) !== 0 && !isBlackjack(p) && !isBlackjack(d);
 // an opener a hit can never bust or auto-settle from (total after one hit stays under 21)
 const safeToHit = (p, d, c) =>
   noNaturals(p, d) &&
@@ -185,7 +185,7 @@ test("double without funds answers 400 and leaves the hand playable", async () =
 test("a dealt natural settles immediately at 3:2", async () => {
   const u = await makeUser(1000);
   const auth = { Authorization: `Bearer ${tokenFor(u)}` };
-  await pinSeed(u._id, (p, d) => isBlackjack(p) && !isBlackjack(d));
+  await pinSeed(u._id, (p, d) => rankOf(d[0]) !== 0 && isBlackjack(p) && !isBlackjack(d));
 
   const res = await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 101 });
   expect(res.status).toBe(200);
@@ -202,7 +202,7 @@ test("a dealt natural settles immediately at 3:2", async () => {
 test("both naturals push the stake back with no winnings", async () => {
   const u = await makeUser(1000);
   const auth = { Authorization: `Bearer ${tokenFor(u)}` };
-  await pinSeed(u._id, (p, d) => isBlackjack(p) && isBlackjack(d));
+  await pinSeed(u._id, (p, d) => rankOf(d[0]) !== 0 && isBlackjack(p) && isBlackjack(d));
 
   const res = await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 100 });
   expect(res.body.status).toBe("settled");
@@ -234,7 +234,7 @@ test("seed rotation is refused mid-hand and the verifier reproduces the hand aft
   const verified = await request(app).get(`/fair/roll/${stand.body.rollId}/verify`);
   expect(verified.body.ok).toBe(true);
   expect(verified.body.commitmentValid).toBe(true);
-  expect(verified.body.recomputedPlayerCards).toEqual(stand.body.hands[0].cards);
+  expect(verified.body.recomputedPlayerCards).toEqual([stand.body.hands[0].cards]);
   expect(verified.body.recomputedDealerCards).toEqual(stand.body.dealer.cards);
   expect(verified.body.recomputedPayout).toBe(stand.body.totalPayout);
 });
@@ -274,4 +274,121 @@ test("auto-rotation is deferred while a blackjack hand is live", async () => {
   expect((await request(app).post("/games/plinko").set(auth).send({ betAmount: 10, risk: "low" })).status).toBe(200);
   expect((await Seed.findById(seed._id)).active).toBe(false);
   expect(await Seed.findOne({ userId: u._id, active: true })).toBeTruthy();
+});
+
+// ---- v2: split ----
+
+const splittable = (p, d) =>
+  rankOf(d[0]) !== 0 &&
+  !isBlackjack(p) &&
+  !isBlackjack(d) &&
+  rankOf(p[0]) === rankOf(p[1]) &&
+  rankOf(p[0]) !== 0 &&
+  handTotal(p).total < 21;
+
+test("split charges a second bet and plays two hands to settlement", async () => {
+  const u = await makeUser(1000);
+  const auth = { Authorization: `Bearer ${tokenFor(u)}` };
+  await pinSeed(u._id, splittable);
+
+  await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 100 });
+  const split = await request(app).post("/games/blackjack/split").set(auth).send({});
+  expect(split.status).toBe(200);
+  expect(split.body.hands).toHaveLength(2);
+  expect(split.body.hands[0].fromSplit).toBe(true);
+  expect(split.body.hands[1].bet).toBe(100);
+
+  const bets = await Transaction.find({ userId: u._id, type: TX.BLACKJACK_BET }).sort({ createdAt: 1 });
+  expect(bets).toHaveLength(2);
+  expect(bets[1].meta.split).toBe(true);
+
+  // stand out whichever hands remain active, then verify the settlement adds up
+  let state = split.body;
+  let guard = 0;
+  while (state.status === "active" && guard++ < 6) {
+    const res = await request(app).post("/games/blackjack/stand").set(auth).send({});
+    expect(res.status).toBe(200);
+    state = res.body;
+  }
+  expect(state.status).toBe("settled");
+  expect(state.hands).toHaveLength(2);
+  const perHandSum = state.hands.reduce((s, h) => s + h.payout, 0);
+  expect(state.totalPayout).toBe(perHandSum);
+
+  const wallet = (await User.findById(u._id)).walletBalance;
+  expect(wallet).toBe(1000 - 200 + state.totalPayout);
+});
+
+test("a second split is refused", async () => {
+  const u = await makeUser(1000);
+  const auth = { Authorization: `Bearer ${tokenFor(u)}` };
+  await pinSeed(u._id, splittable);
+
+  await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 50 });
+  const first = await request(app).post("/games/blackjack/split").set(auth).send({});
+  if (first.body.status === "active") {
+    const again = await request(app).post("/games/blackjack/split").set(auth).send({});
+    expect(again.status).toBe(400);
+  }
+});
+
+// ---- v2: insurance ----
+
+const aceUpDealerNatural = (p, d) =>
+  rankOf(d[0]) === 0 && isBlackjack(d) && !isBlackjack(p) && handTotal(p).total < 21;
+const aceUpNoNatural = (p, d) =>
+  rankOf(d[0]) === 0 && !isBlackjack(d) && !isBlackjack(p) && handTotal(p).total < 21;
+
+test("an ace upcard pauses for insurance and hides the peek", async () => {
+  const u = await makeUser(1000);
+  const auth = { Authorization: `Bearer ${tokenFor(u)}` };
+  await pinSeed(u._id, aceUpDealerNatural);
+
+  const deal = await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 100 });
+  expect(deal.status).toBe(200);
+  expect(deal.body.status).toBe("active");
+  expect(deal.body.awaitingInsurance).toBe(true);
+  expect(deal.body.canInsure).toBe(true);
+  expect(deal.body.canHit).toBe(false);
+  expect(deal.body.dealer.cards).toHaveLength(1);
+
+  // no play allowed while the decision is pending
+  expect((await request(app).post("/games/blackjack/hit").set(auth).send({})).status).toBe(400);
+});
+
+test("accepted insurance pays 2:1 against the dealer natural", async () => {
+  const u = await makeUser(1000);
+  const auth = { Authorization: `Bearer ${tokenFor(u)}` };
+  await pinSeed(u._id, aceUpDealerNatural);
+
+  await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 100 });
+  const res = await request(app).post("/games/blackjack/insurance").set(auth).send({ accept: true });
+  expect(res.status).toBe(200);
+  expect(res.body.status).toBe("settled");
+  expect(res.body.insuranceBet).toBe(50);
+  expect(res.body.hands[0].outcome).toBe("lose");
+  expect(res.body.totalPayout).toBe(insurancePayout(50));
+
+  const ins = await Transaction.findOne({ userId: u._id, type: TX.BLACKJACK_BET, "meta.insurance": true });
+  expect(ins.amount).toBe(50);
+  // bet lost, side bet returned with 2:1: the round nets flat
+  expect((await User.findById(u._id)).walletBalance).toBe(1000 - 100 - 50 + 150);
+});
+
+test("declined insurance plays on when the dealer has no natural", async () => {
+  const u = await makeUser(1000);
+  const auth = { Authorization: `Bearer ${tokenFor(u)}` };
+  await pinSeed(u._id, aceUpNoNatural);
+
+  await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 100 });
+  const res = await request(app).post("/games/blackjack/insurance").set(auth).send({ accept: false });
+  expect(res.status).toBe(200);
+  expect(res.body.status).toBe("active");
+  expect(res.body.awaitingInsurance).toBe(false);
+  expect(res.body.canHit).toBe(true);
+  expect(res.body.insuranceBet).toBe(0);
+
+  const stand = await request(app).post("/games/blackjack/stand").set(auth).send({});
+  expect(stand.status).toBe(200);
+  expect(stand.body.status).toBe("settled");
 });

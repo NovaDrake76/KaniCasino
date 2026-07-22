@@ -11,7 +11,7 @@ const BlackjackHand = require("../../models/BlackjackHand");
 const { sweepBlackjackHands } = require("../../games/blackjack");
 const { TX } = require("../../utils/economy");
 const { hashServerSeed } = require("../../utils/provablyFair");
-const { drawCard, isBlackjack } = require("../../utils/blackjackMath");
+const { drawCard, rankOf, isBlackjack } = require("../../utils/blackjackMath");
 
 let app;
 
@@ -43,7 +43,7 @@ async function pinSeed(userId, wantFn) {
   await Seed.create({ userId, serverSeed: SERVER_SEED, serverSeedHash: hashServerSeed(SERVER_SEED), clientSeed });
 }
 
-const noNaturals = (p, d) => !isBlackjack(p) && !isBlackjack(d);
+const noNaturals = (p, d) => rankOf(d[0]) !== 0 && !isBlackjack(p) && !isBlackjack(d);
 
 // bypass mongoose timestamps so a hand can be made to look abandoned
 async function backdate(handId, extra = {}) {
@@ -139,21 +139,30 @@ test("an unfunded active hand is voided with nothing credited", async () => {
   expect(await Transaction.countDocuments({ userId: u._id })).toBe(0);
 });
 
-test("a crashed double claim without a charge is cleared, with one completed after a charge", async () => {
+test("a crashed double claim without a charge is dropped and the hand stood out", async () => {
   const u = await makeUser(1000);
   const auth = { Authorization: `Bearer ${tokenFor(u)}` };
   await pinSeed(u._id, noNaturals);
 
   const deal = await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 100 });
-
-  // claim stuck with no money moved: the claim is released, the hand stays active
   await backdate(deal.body.handId, { pendingAction: "double", pendingAt: OLD });
   await sweepBlackjackHands(io);
-  let hand = await BlackjackHand.findOne({ handId: deal.body.handId });
-  expect(hand.status).toBe("active");
-  expect(hand.pendingAction).toBeNull();
 
-  // claim stuck after the charge landed: the double completes with the doubled stake
+  const hand = await BlackjackHand.findOne({ handId: deal.body.handId });
+  expect(hand.status).toBe("settled");
+  expect(hand.pendingAction).toBeNull();
+  // the unpaid double never happened: original stake, two cards, auto-stood
+  expect(hand.hands[0].doubled).toBe(false);
+  expect(hand.hands[0].bet).toBe(100);
+  expect(hand.actions.some((a) => a.action === "stand" && a.auto)).toBe(true);
+});
+
+test("a crashed double claim with the charge landed completes as doubled", async () => {
+  const u = await makeUser(1000);
+  const auth = { Authorization: `Bearer ${tokenFor(u)}` };
+  await pinSeed(u._id, noNaturals);
+
+  const deal = await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 100 });
   await Transaction.create({
     userId: u._id,
     type: TX.BLACKJACK_BET,
@@ -164,10 +173,28 @@ test("a crashed double claim without a charge is cleared, with one completed aft
   await backdate(deal.body.handId, { pendingAction: "double", pendingAt: OLD });
   await sweepBlackjackHands(io);
 
-  hand = await BlackjackHand.findOne({ handId: deal.body.handId });
+  const hand = await BlackjackHand.findOne({ handId: deal.body.handId });
   expect(hand.status).toBe("settled");
   expect(hand.hands[0].doubled).toBe(true);
   expect(hand.hands[0].bet).toBe(200);
   expect(hand.hands[0].cards).toHaveLength(3);
-  expect(hand.actions[hand.actions.length - 1]).toMatchObject({ action: "double", auto: true });
+  expect(hand.actions.some((a) => a.action === "double" && a.auto)).toBe(true);
+});
+
+test("a stale hand awaiting insurance is auto-declined and stood out", async () => {
+  const u = await makeUser(1000);
+  const auth = { Authorization: `Bearer ${tokenFor(u)}` };
+  await pinSeed(u._id, (p, d) => rankOf(d[0]) === 0 && !isBlackjack(p) && !isBlackjack(d));
+
+  const deal = await request(app).post("/games/blackjack/deal").set(auth).send({ betAmount: 100 });
+  expect(deal.body.awaitingInsurance).toBe(true);
+  await backdate(deal.body.handId);
+
+  await sweepBlackjackHands(io);
+  const hand = await BlackjackHand.findOne({ handId: deal.body.handId });
+  expect(hand.status).toBe("settled");
+  expect(hand.insuranceBet).toBe(0);
+  const acts = hand.actions.map((a) => a.action);
+  expect(acts).toContain("noinsure");
+  expect(hand.settlementDone).toBe(true);
 });

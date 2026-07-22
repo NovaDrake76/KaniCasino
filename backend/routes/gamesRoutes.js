@@ -238,6 +238,12 @@ module.exports = (io) => {
   router.post("/blackjack/double", isAuthenticated, blackjackAction(
     (req) => BlackjackGameController.double(req.user._id, io)
   ));
+  router.post("/blackjack/split", isAuthenticated, blackjackAction(
+    (req) => BlackjackGameController.split(req.user._id, io)
+  ));
+  router.post("/blackjack/insurance", isAuthenticated, blackjackAction(
+    (req) => BlackjackGameController.insurance(req.user._id, req.body.accept, io)
+  ));
   router.get("/blackjack/active", isAuthenticated, blackjackAction(
     async (req) => ({ hand: await BlackjackGameController.active(req.user._id) })
   ));

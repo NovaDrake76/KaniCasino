@@ -160,29 +160,36 @@ async function verifyBlackjackRoll(rollId) {
     betAmount: outcome.betAmount,
     actions: outcome.actions || [],
   });
-  const expectedHand = (outcome.playerHands && outcome.playerHands[0]) || {};
-  const replayedHand = replayed.hands[0];
+  const expectedHands = outcome.playerHands || [];
   const sameCards = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const handsMatch =
+    replayed.hands.length === expectedHands.length &&
+    replayed.hands.every(
+      (h, i) =>
+        sameCards(h.cards, expectedHands[i].cards) &&
+        replayed.perHand[i].outcome === expectedHands[i].outcome &&
+        replayed.perHand[i].payout === expectedHands[i].payout
+    );
   const ok =
     commitmentValid &&
-    sameCards(replayedHand.cards, expectedHand.cards) &&
+    handsMatch &&
     sameCards(replayed.dealerCards, outcome.dealerCards) &&
     replayed.dealerTotal === outcome.dealerTotal &&
-    replayed.perHand[0].outcome === expectedHand.outcome &&
+    replayed.insuranceBet === (outcome.insuranceBet || 0) &&
     replayed.totalPayout === outcome.totalPayout;
 
   return {
     ok,
     commitmentValid,
-    recomputedPlayerCards: replayedHand.cards,
+    recomputedPlayerCards: replayed.hands.map((h) => h.cards),
     recomputedDealerCards: replayed.dealerCards,
     recomputedDealerTotal: replayed.dealerTotal,
-    recomputedOutcome: replayed.perHand[0].outcome,
+    recomputedOutcome: replayed.perHand.map((h) => h.outcome).join("/"),
     recomputedPayout: replayed.totalPayout,
-    expectedPlayerCards: expectedHand.cards,
+    expectedPlayerCards: expectedHands.map((h) => h.cards),
     expectedDealerCards: outcome.dealerCards,
     expectedDealerTotal: outcome.dealerTotal,
-    expectedOutcome: expectedHand.outcome,
+    expectedOutcome: expectedHands.map((h) => h.outcome).join("/"),
     expectedPayout: outcome.totalPayout,
   };
 }

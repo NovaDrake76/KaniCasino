@@ -5,6 +5,8 @@ const playerHandSchema = new mongoose.Schema(
     cards: { type: [Number], required: true },
     bet: { type: Number, required: true },
     doubled: { type: Boolean, default: false },
+    fromSplit: { type: Boolean, default: false },
+    done: { type: Boolean, default: false },
     outcome: { type: String, enum: ["blackjack", "win", "push", "lose", null], default: null },
     payout: { type: Number, default: 0 },
   },
@@ -22,7 +24,7 @@ const blackjackHandSchema = new mongoose.Schema(
     // compare-and-set token: every mutation filters on it and bumps it
     actionSeq: { type: Number, default: 0 },
     // a money-moving action claimed but not yet committed (crash recovery window)
-    pendingAction: { type: String, enum: ["double", null], default: null },
+    pendingAction: { type: String, enum: ["double", "split", "insurance", null], default: null },
     pendingAt: { type: Date, default: null },
 
     betAmount: { type: Number, required: true },
@@ -31,6 +33,9 @@ const blackjackHandSchema = new mongoose.Schema(
     activeHandIndex: { type: Number, default: 0 },
     // [upcard, hole, ...draws]; the hole is never serialized while active
     dealerCards: { type: [Number], required: true },
+    // an ace upcard pauses the hand for the insurance decision before the peek
+    awaitingInsurance: { type: Boolean, default: false },
+    insuranceBet: { type: Number, default: 0 },
 
     seedId: { type: mongoose.Schema.Types.ObjectId, ref: "Seed", required: true },
     clientSeed: { type: String, required: true },
@@ -49,6 +54,8 @@ const blackjackHandSchema = new mongoose.Schema(
 
     dealerTotal: { type: Number, default: null },
     totalPayout: { type: Number, default: 0 },
+    // true when any component of the payout is a win (drives the credit type)
+    won: { type: Boolean, default: false },
     settledAt: { type: Date, default: null },
     settlementStartedAt: { type: Date, default: null },
     settlementDone: { type: Boolean, default: false },
