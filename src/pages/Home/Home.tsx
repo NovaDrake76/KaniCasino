@@ -3,6 +3,7 @@ import Banner from "./Banner";
 import CaseListing from "./CaseListing";
 import GameListing from "./GamesListing";
 import Leaderboard from "./Leaderboard";
+import { groupCasesByCategory } from "./groupCases";
 import { getCases } from "../../services/cases/CaseServices";
 import { toast } from "react-toastify";
 import { BannerProps } from "./Types";
@@ -86,11 +87,23 @@ const Home = () => {
             <Banner key={index} left={_item.left} right={_item.right} />
           ))}
         </Carousel>
-        <CaseListing
-          name="NEW CASES"
-          loading={loading}
-          cases={loading ? [] : [...cases].sort((a: any, b: any) => (a._id < b._id ? 1 : -1))}
-        />
+        <GameListing name="Our Games" />
+
+        {loading ? (
+          <CaseListing name="Cases" loading cases={[]} />
+        ) : (
+          groupCasesByCategory(cases).map((group, index) => (
+            <CaseListing
+              key={group.category}
+              name={`${group.category} Cases`}
+              cases={group.cases}
+              collapsible
+              eager={index === 0}
+            />
+          ))
+        )}
+
+        <Leaderboard />
 
         {discordURL && (
           <div className="flex items-center justify-center w-full">
@@ -115,9 +128,6 @@ const Home = () => {
             </div>
           </div>
         )}
-
-        <GameListing name="Our Games" />
-        <Leaderboard />
       </div>
     </div>
   );

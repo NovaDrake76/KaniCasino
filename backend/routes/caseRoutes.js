@@ -27,6 +27,7 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
     image: req.body.image,
     price: req.body.price,
     items: req.body.items,
+    category: req.body.category,
   });
 
   try {

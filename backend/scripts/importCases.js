@@ -5,7 +5,7 @@
 //   dry run by default (prints what it would do); pass --commit to write.
 //   idempotent: a case whose title already exists is skipped, so re-running is safe.
 //
-// spec shape: { "Millennium": { price: 45, cover: "<url>",
+// spec shape: { "Millennium": { price: 45, cover: "<url>", category: "Blue Archive",
 //   items: [ { name, rarity: "1".."5", image: "<url>" }, ... ] }, ... }
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -43,7 +43,13 @@ async function main() {
     console.log(`"${title}" — ${def.items.length} items, ${def.price} KP, tiers ${JSON.stringify(byTier)}`);
     if (!commit) continue;
 
-    const c = await Case.create({ title, image: def.cover, price: def.price, items: [] });
+    const c = await Case.create({
+      title,
+      image: def.cover,
+      price: def.price,
+      category: def.category || "",
+      items: [],
+    });
     const items = await Item.insertMany(
       def.items.map((i) => ({ name: i.name, image: i.image, rarity: String(i.rarity), case: c._id }))
     );

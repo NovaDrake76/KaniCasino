@@ -5,7 +5,7 @@ const IMG =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
 
 const cases = [
-  { _id: "case1", title: "Starter Case", image: IMG, price: 100 },
+  { _id: "case1", title: "Starter Case", image: IMG, price: 100, category: "Event" },
   { _id: "case2", title: "Pro Case", image: IMG, price: 500 },
 ];
 
@@ -46,6 +46,19 @@ test("every game in the listing is clickable and navigates", async ({ page }) =>
     await page.getByText(game.text).click();
     await expect(page).toHaveURL(game.url);
   }
+});
+
+test("a case section can be hidden and shown again", async ({ page }) => {
+  await page.goto("/");
+  // a case with no category pools into the Other section
+  await expect(page.getByText("Other Cases")).toBeVisible();
+
+  const section = page.locator("section").filter({ hasText: "Event Cases" });
+  await expect(page.getByText("Starter Case")).toBeVisible();
+  await section.getByRole("button", { name: /hide/i }).click();
+  await expect(page.getByText("Starter Case")).toBeHidden();
+  await section.getByRole("button", { name: /show/i }).click();
+  await expect(page.getByText("Starter Case")).toBeVisible();
 });
 
 test("a navbar link is clickable and navigates", async ({ page }) => {
