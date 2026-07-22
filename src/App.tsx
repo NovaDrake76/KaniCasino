@@ -135,6 +135,34 @@ function App() {
     };
   }, [socket]);
 
+  // the tunnel watchdog re-rolls cloudflared on a far-region stall, which briefly drops the
+  // socket; show a sticky toast (announced or on an unexpected drop) and clear it on reconnect
+  useEffect(() => {
+    const RECONNECT_ID = "server-reconnect";
+    const showReconnecting = (msg?: string) => {
+      if (toast.isActive(RECONNECT_ID)) return;
+      toast.loading(msg || "Reconnecting to the server...", { toastId: RECONNECT_ID });
+    };
+    const onNotice = (p: { message?: string; seconds?: number }) => showReconnecting(p?.message);
+    // ignore intentional client disconnects (the login/logout re-handshake below)
+    const onDisconnect = (reason: string) => {
+      if (reason !== "io client disconnect") showReconnecting();
+    };
+    const onConnect = () => {
+      if (toast.isActive(RECONNECT_ID)) {
+        toast.update(RECONNECT_ID, { render: "Reconnected", type: "success", isLoading: false, autoClose: 1500 });
+      }
+    };
+    socket.on("serverNotice", onNotice);
+    socket.on("disconnect", onDisconnect);
+    socket.on("connect", onConnect);
+    return () => {
+      socket.off("serverNotice", onNotice);
+      socket.off("disconnect", onDisconnect);
+      socket.off("connect", onConnect);
+    };
+  }, [socket]);
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token !== null) {
