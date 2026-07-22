@@ -1,6 +1,8 @@
+import { GiCardDraw, GiTwoCoins } from "react-icons/gi";
+import { FaClone, FaHandPaper } from "react-icons/fa";
 import Title from "../../components/Title";
 import Monetary from "../../components/Monetary";
-import PlayingCard, { SuitIcon } from "./PlayingCard";
+import PlayingCard from "./PlayingCard";
 import { outcomeLabel, totalLabel } from "./blackjackCards";
 import { BlackjackViewProps } from "./Blackjack.types";
 
@@ -85,15 +87,15 @@ const Ribbon = () => (
 
 const ActionButton = ({
   label,
-  suit,
-  suitColor,
+  icon,
+  iconColor,
   onClick,
   disabled,
   title,
 }: {
   label: string;
-  suit: number;
-  suitColor: string;
+  icon: React.ReactNode;
+  iconColor: string;
   onClick?: () => void;
   disabled: boolean;
   title?: string;
@@ -105,7 +107,7 @@ const ActionButton = ({
     className="flex items-center justify-center gap-2 min-h-[46px] rounded-md bg-[#281D3F] hover:bg-[#3A2C5C] font-bold text-sm disabled:opacity-40 disabled:hover:bg-[#281D3F] transition-colors"
   >
     {label}
-    <SuitIcon suit={suit} className={`w-3.5 ${suitColor}`} />
+    <span className={iconColor}>{icon}</span>
   </button>
 );
 
@@ -192,10 +194,10 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <ActionButton label="Hit" suit={0} suitColor="text-[#FFCC00]" onClick={hit} disabled={!canHit} />
-            <ActionButton label="Stand" suit={2} suitColor="text-[#A78BFA]" onClick={stand} disabled={!canStand} />
-            <ActionButton label="Split" suit={1} suitColor="text-red-400" disabled title="Split arrives soon" />
-            <ActionButton label="Double" suit={3} suitColor="text-[#5EEAD4]" onClick={double} disabled={!canDouble} />
+            <ActionButton label="Hit" icon={<GiCardDraw size={18} />} iconColor="text-[#FFCC00]" onClick={hit} disabled={!canHit} />
+            <ActionButton label="Stand" icon={<FaHandPaper size={14} />} iconColor="text-[#A78BFA]" onClick={stand} disabled={!canStand} />
+            <ActionButton label="Split" icon={<FaClone size={13} />} iconColor="text-red-400" disabled title="Split arrives soon" />
+            <ActionButton label="Double" icon={<GiTwoCoins size={17} />} iconColor="text-[#5EEAD4]" onClick={double} disabled={!canDouble} />
           </div>
 
           <button
