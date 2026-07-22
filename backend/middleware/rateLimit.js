@@ -35,4 +35,17 @@ const registerLimiter = rateLimit({
   message: { message: "Too many accounts created from this address. Try again later." },
 });
 
-module.exports = { loginLimiter, registerLimiter };
+// hard cap on plinko drops now that the client fires them concurrently; keyed per
+// user (runs after auth), generous enough that a fast human never hits it
+const plinkoDropLimiter = rateLimit({
+  windowMs: 10 * 1000,
+  max: 40,
+  keyGenerator: (req) => String(req.user._id),
+  skip: skipInTests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { message: "Too many drops, slow down a little." },
+});
+
+module.exports = { loginLimiter, registerLimiter, plinkoDropLimiter };

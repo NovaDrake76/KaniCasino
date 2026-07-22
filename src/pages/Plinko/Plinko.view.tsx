@@ -12,6 +12,8 @@ import {
   BOARD_H,
   BOARD_W,
   DROP_DURATION_S,
+  DROP_X,
+  DROP_Y,
   MAX_WIN,
   PAYOUT_MULTIPLIERS,
   PEG_RADIUS,
@@ -96,7 +98,8 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   startAuto,
   stopAuto,
   drop,
-  dropping,
+  canDrop,
+  pendingDrops,
   balls,
   history,
   lastHit,
@@ -202,8 +205,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
               )
             }
             onClick={drop}
-            loading={dropping}
-            disabled={dropping}
+            disabled={!canDrop}
           />
         ) : autoRunning ? (
           <MainButton text={`Stop (${autoLeft} left)`} onClick={stopAuto} type="danger" />
@@ -289,6 +291,19 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
               <g key={`${k}-static`}>{chip}</g>
             );
           })}
+
+          {/* one ghost per drop still waiting on the server, so a click is visibly queued */}
+          {Array.from({ length: pendingDrops }, (_, i) => (
+            <circle
+              key={`q-${i}`}
+              className="ball-queued"
+              cx={DROP_X + (i - (pendingDrops - 1) / 2) * BALL_RADIUS * 2.5}
+              cy={DROP_Y}
+              r={BALL_RADIUS * 0.8}
+              fill="#FFCC00"
+              style={{ animationDelay: `${i * 0.15}s` }}
+            />
+          ))}
 
           {balls.map((ball) => (
             <FallingBall key={ball.key} ball={ball} onSettle={settleBall} />

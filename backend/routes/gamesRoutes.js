@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
+const { plinkoDropLimiter } = require("../middleware/rateLimit");
 
 const User = require("../models/User");
 const Case = require("../models/Case");
@@ -199,7 +200,7 @@ module.exports = (io) => {
   });
 
   // drop a plinko ball
-  router.post('/plinko', isAuthenticated, async (req, res) => {
+  router.post('/plinko', isAuthenticated, plinkoDropLimiter, async (req, res) => {
     const user = req.user;
 
     try {

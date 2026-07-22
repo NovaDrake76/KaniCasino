@@ -24,7 +24,8 @@ const CENTER_X = BOARD_W / 2;
 const PEG_SPACING = 52;
 const ROW_GAP = 46;
 const TOP_Y = 110;
-const DROP_Y = 30;
+export const DROP_X = CENTER_X;
+export const DROP_Y = 30;
 const CONTACT_LIFT = 15; // ball center sits a radius above the peg it strikes
 const HOP_LIFT = 16;
 
