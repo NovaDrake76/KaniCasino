@@ -49,11 +49,16 @@ async function reserveNonces(userId, count = 1) {
     startNonce: before.nonce,
   };
 
-  // auto-rotate exactly when this reservation crosses the threshold: the current
-  // rolls used the (now old) seed, and it is revealed so they become verifiable at
-  // once; future rolls use the fresh seed. the client seed carries over.
-  if (before.nonce < AUTO_ROTATE_NONCE && before.nonce + count >= AUTO_ROTATE_NONCE) {
-    await rotate(userId);
+  // auto-rotate once a reservation reaches the threshold: the current rolls used
+  // the (now old) seed, and it is revealed so they become verifiable at once;
+  // future rolls use the fresh seed. the client seed carries over. >= (not just
+  // crossing) so a rotation deferred by a live blackjack hand re-fires later.
+  if (before.nonce + count >= AUTO_ROTATE_NONCE) {
+    // rotating reveals the server seed, which would hand a mid-hand blackjack
+    // player the hole card and every future draw; defer until the hand settles
+    const BlackjackHand = require("../models/BlackjackHand");
+    const inHand = await BlackjackHand.exists({ userId, status: "active" });
+    if (!inHand) await rotate(userId);
   }
 
   return material;

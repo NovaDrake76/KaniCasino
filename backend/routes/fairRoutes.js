@@ -4,6 +4,7 @@ const { isAuthenticated } = require("../middleware/authMiddleware");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const Round = require("../models/Round");
+const BlackjackHand = require("../models/BlackjackHand");
 const { crashPointFromSeed } = require("../utils/crashMath");
 const { coinResultFromSeed } = require("../utils/coinMath");
 const { sha256 } = require("../utils/hashChain");
@@ -38,6 +39,11 @@ router.post("/client-seed", isAuthenticated, async (req, res) => {
 // rotate: reveal the old serverSeed, commit a fresh one
 router.post("/rotate", isAuthenticated, async (req, res) => {
   try {
+    // revealing mid-hand would hand the player the dealer's hole card and every
+    // future draw of the live blackjack hand
+    if (await BlackjackHand.exists({ userId: req.user._id, status: "active" })) {
+      return res.status(409).json({ message: "Finish your blackjack hand before rotating" });
+    }
     const newClientSeed = req.body.clientSeed ? cleanClientSeed(req.body.clientSeed) : undefined;
     const { revealed, current } = await seeds.rotate(req.user._id, newClientSeed);
     res.json({

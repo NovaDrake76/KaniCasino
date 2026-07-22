@@ -8,7 +8,7 @@ const RollSchema = new mongoose.Schema(
   {
     rollId: { type: String, required: true, unique: true }, // public short id, e.g. R821872881
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    game: { type: String, enum: ["case", "upgrade", "slots", "battle", "plinko"], required: true },
+    game: { type: String, enum: ["case", "upgrade", "slots", "battle", "plinko", "blackjack"], required: true },
 
     seedId: { type: mongoose.Schema.Types.ObjectId, ref: "Seed", required: true },
     clientSeed: { type: String, required: true },
