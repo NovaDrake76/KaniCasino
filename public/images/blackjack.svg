@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <g transform="rotate(-12 84 100)">
+    <rect x="44" y="45" width="80" height="112" rx="10" fill="#281D3F" stroke="#4F46E5" stroke-width="3"/>
+    <path d="M56 57h56v88H56z" fill="none" stroke="#4F46E5" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+  </g>
+  <g transform="rotate(9 122 100)">
+    <rect x="82" y="42" width="80" height="112" rx="10" fill="#ffffff"/>
+    <text x="94" y="74" font-family="Montserrat, Arial, sans-serif" font-size="26" font-weight="800" fill="#151225">A</text>
+    <path d="M101 82 c-6 -8 -18 -2 -14 7 c3 6 14 13 14 13 s11 -7 14 -13 c4 -9 -8 -15 -14 -7z" fill="#151225" transform="translate(0 -3)"/>
+    <g transform="rotate(180 138 128)">
+      <text x="94" y="74" font-family="Montserrat, Arial, sans-serif" font-size="26" font-weight="800" fill="#151225">A</text>
+    </g>
+    <path d="M122 96 l10 14 -10 14 -10 -14z" fill="#dc2626" opacity="0"/>
+  </g>
+  <circle cx="52" cy="164" r="16" fill="#FFCC00"/>
+  <circle cx="52" cy="164" r="11" fill="none" stroke="#151225" stroke-width="2" stroke-dasharray="5 4"/>
+  <circle cx="84" cy="170" r="16" fill="#4F46E5"/>
+  <circle cx="84" cy="170" r="11" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="100" y="192" font-family="Montserrat, Arial, sans-serif" font-size="15" font-weight="700" fill="#C9C6DE" text-anchor="middle">21</text>
+</svg>
