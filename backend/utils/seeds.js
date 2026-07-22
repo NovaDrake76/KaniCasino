@@ -27,14 +27,35 @@ async function getOrCreateActiveSeed(userId) {
 // atomically reserve `count` consecutive nonces before any outcome is computed.
 // returns the secret material + the first reserved nonce. the nonce is never
 // rolled back (a failed charge must not let a user re-roll the same nonce).
+// a single upsert covers both find-active and first-use creation in one round
+// trip; on insert the $inc lands on the default, so nonce - count is always the
+// start regardless of which path ran.
 async function reserveNonces(userId, count = 1) {
-  const seed = await getOrCreateActiveSeed(userId);
-  const before = await Seed.findOneAndUpdate(
-    { _id: seed._id, active: true },
-    { $inc: { nonce: count } },
-    { new: false }
-  );
-  if (!before) {
+  const candidate = generateServerSeed();
+  let seed;
+  try {
+    seed = await Seed.findOneAndUpdate(
+      { userId, active: true },
+      {
+        $inc: { nonce: count },
+        $setOnInsert: {
+          serverSeed: candidate,
+          serverSeedHash: hashServerSeed(candidate),
+          clientSeed: generateClientSeed(),
+        },
+      },
+      { new: true, upsert: true }
+    );
+  } catch (e) {
+    // lost a concurrent first-use creation race: reserve on the winner's doc
+    if (e.code !== 11000) throw e;
+    seed = await Seed.findOneAndUpdate(
+      { userId, active: true },
+      { $inc: { nonce: count } },
+      { new: true }
+    );
+  }
+  if (!seed) {
     // a benign race with a concurrent rotate; callers can surface it as a retryable 409
     const err = new Error("Seed rotated mid-roll, please retry");
     err.status = 409;
@@ -46,14 +67,14 @@ async function reserveNonces(userId, count = 1) {
     serverSeed: seed.serverSeed,
     serverSeedHash: seed.serverSeedHash,
     clientSeed: seed.clientSeed,
-    startNonce: before.nonce,
+    startNonce: seed.nonce - count,
   };
 
   // auto-rotate once a reservation reaches the threshold: the current rolls used
   // the (now old) seed, and it is revealed so they become verifiable at once;
   // future rolls use the fresh seed. the client seed carries over. >= (not just
   // crossing) so a rotation deferred by a live blackjack hand re-fires later.
-  if (before.nonce + count >= AUTO_ROTATE_NONCE) {
+  if (seed.nonce >= AUTO_ROTATE_NONCE) {
     // rotating reveals the server seed, which would hand a mid-hand blackjack
     // player the hole card and every future draw; defer until the hand settles
     const BlackjackHand = require("../models/BlackjackHand");

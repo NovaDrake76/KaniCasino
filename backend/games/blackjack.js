@@ -77,9 +77,16 @@ function publicHandView(hand) {
   };
 }
 
+// a seed doc's serverSeed never changes once created (rotation makes a new doc),
+// so caching it saves a round trip on every mid-hand action
+const seedCache = new Map();
 async function loadServerSeed(hand) {
+  const key = String(hand.seedId);
+  if (seedCache.has(key)) return seedCache.get(key);
   const seed = await Seed.findById(hand.seedId).select("serverSeed");
   if (!seed) throw httpError(500, "Seed material missing");
+  if (seedCache.size > 500) seedCache.clear();
+  seedCache.set(key, seed.serverSeed);
   return seed.serverSeed;
 }
 
@@ -165,6 +172,17 @@ function computeDealerSettle(serverSeed, hand, playerCards, bet, doubled, startC
   return { dealerCards, result, nextCursor: cursor };
 }
 
+// the payout credit and the audit roll are independent, so they share one
+// round-trip window; the response reuses the settled doc instead of re-reading
+async function settleAndRespond(claimed, serverSeed, io) {
+  const [, rollId] = await Promise.all([
+    paySettlement(claimed, io, { emitDelayMs: SETTLE_EMIT_DELAY_MS }),
+    recordHandRoll(claimed, serverSeed),
+  ]);
+  if (rollId) claimed.rollId = rollId;
+  return publicHandView(claimed);
+}
+
 function settlementSet(playerCards, bet, doubled, dealerCards, result, nextCursor) {
   const now = new Date();
   return {
@@ -191,9 +209,8 @@ class BlackjackGameController {
     if (!Number.isInteger(betAmount) || betAmount < MIN_BET || betAmount > MAX_BET) {
       throw httpError(400, "Invalid bet amount");
     }
-    if (await BlackjackHand.exists({ userId, status: "active" })) {
-      throw httpError(409, "Hand in progress");
-    }
+    // no pre-check for a live hand: the partial-unique index rejects a second
+    // active hand at create time, and a burnt nonce on that path is fine
 
     // reserve the provably-fair nonce up front (atomic, never rolled back)
     const reserved = await seeds.reserveNonces(userId, 1);
@@ -234,10 +251,15 @@ class BlackjackGameController {
     }
     if (!hand) throw httpError(500, "Could not create hand");
 
-    const player = await chargeUser(userId, betAmount, {
-      type: TX.BLACKJACK_BET,
-      meta: { handId: hand.handId, betAmount },
-    });
+    // the seed-liveness recheck is independent of the charge, so both run in one
+    // round-trip window; a rotate racing this deal would expose the server seed
+    const [player, stillActive] = await Promise.all([
+      chargeUser(userId, betAmount, {
+        type: TX.BLACKJACK_BET,
+        meta: { handId: hand.handId, betAmount },
+      }),
+      Seed.exists({ _id: reserved.seedId, active: true }),
+    ]);
     if (!player) {
       await BlackjackHand.updateOne(
         { _id: hand._id, status: "active" },
@@ -245,10 +267,6 @@ class BlackjackGameController {
       );
       throw httpError(400, "Insufficient balance");
     }
-
-    // the seed must still be unrevealed: a rotate racing this deal would let the
-    // player finish the hand against a public server seed
-    const stillActive = await Seed.exists({ _id: reserved.seedId, active: true });
     if (!stillActive) {
       await BlackjackHand.updateOne(
         { _id: hand._id, status: "active" },
@@ -284,9 +302,7 @@ class BlackjackGameController {
         { new: true }
       );
       if (claimed) {
-        await paySettlement(claimed, io, { emitDelayMs: SETTLE_EMIT_DELAY_MS });
-        await recordHandRoll(claimed, reserved.serverSeed);
-        return publicHandView(await BlackjackHand.findById(claimed._id));
+        return settleAndRespond(claimed, reserved.serverSeed, io);
       }
     }
 
@@ -321,9 +337,7 @@ class BlackjackGameController {
         { new: true }
       );
       if (!claimed) throw httpError(409, "Action already applied, refresh");
-      await paySettlement(claimed, io, { emitDelayMs: SETTLE_EMIT_DELAY_MS });
-      await recordHandRoll(claimed, serverSeed);
-      return publicHandView(await BlackjackHand.findById(claimed._id));
+      return settleAndRespond(claimed, serverSeed, io);
     }
 
     const claimed = await BlackjackHand.findOneAndUpdate(
@@ -359,9 +373,7 @@ class BlackjackGameController {
       { new: true }
     );
     if (!claimed) throw httpError(409, "Action already applied, refresh");
-    await paySettlement(claimed, io, { emitDelayMs: SETTLE_EMIT_DELAY_MS });
-    await recordHandRoll(claimed, serverSeed);
-    return publicHandView(await BlackjackHand.findById(claimed._id));
+    return settleAndRespond(claimed, serverSeed, io);
   }
 
   static async double(userId, io) {
@@ -424,9 +436,7 @@ class BlackjackGameController {
       { new: true }
     );
     if (!settled) throw httpError(409, "Action already applied, refresh");
-    await paySettlement(settled, io, { emitDelayMs: SETTLE_EMIT_DELAY_MS });
-    await recordHandRoll(settled, serverSeed);
-    return publicHandView(await BlackjackHand.findById(settled._id));
+    return settleAndRespond(settled, serverSeed, io);
   }
 
   static async active(userId) {
