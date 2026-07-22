@@ -22,6 +22,8 @@ const CATALOG = [
   { key: "try-crash", category: "games", title: "Nerves of steel", description: "Place a bet on Crash.", metric: "gamesPlayed:crash", target: 1, reward: 200 },
   { key: "try-coinflip", category: "games", title: "Heads or tails", description: "Place a bet on Coin Flip.", metric: "gamesPlayed:coinflip", target: 1, reward: 200 },
   { key: "try-slots", category: "games", title: "One more spin", description: "Spin the slot machine.", metric: "gamesPlayed:slots", target: 1, reward: 200 },
+  { key: "try-blackjack", category: "games", title: "Twenty-one", description: "Play a hand of Blackjack.", metric: "gamesPlayed:blackjack", target: 1, reward: 200 },
+  { key: "blackjack-25", category: "games", title: "Card counter", description: "Play 25 hands of Blackjack.", metric: "gamesPlayed:blackjack", target: 25, reward: 2000 },
   { key: "coinflip-win", category: "games", title: "Called it", description: "Win a round of Coin Flip.", metric: "coinflipWins", target: 1, reward: 500 },
   { key: "battle-win", category: "games", title: "Last one standing", description: "Win a case battle.", metric: "battlesWon", target: 1, reward: 1000 },
   { key: "cases-10", category: "games", title: "Case cracker", description: "Open 10 cases.", metric: "casesOpened", target: 10, reward: 1500 },

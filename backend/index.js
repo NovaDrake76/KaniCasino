@@ -72,6 +72,7 @@ const crash = require("./games/crash");
 const caseBattle = require("./games/caseBattle");
 const { recoverStuckRounds } = require("./utils/rounds");
 const { completeStuckBattles } = require("./games/battleEngine");
+const { sweepBlackjackHands } = require("./games/blackjack");
 const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
@@ -151,6 +152,7 @@ app.use("/rewards", rewardRoutes);
 const sweepRounds = ({ boot = false } = {}) => {
   recoverStuckRounds(io, coinFlip.winPayout, { boot }).catch((e) => console.log(e));
   completeStuckBattles(io, { boot }).catch((e) => console.log(e));
+  sweepBlackjackHands(io).catch((e) => console.log(e));
 };
 sweepRounds({ boot: true });
 setInterval(() => sweepRounds({ boot: false }), 5 * 60 * 1000);

@@ -4,6 +4,7 @@ const Seed = require("../models/Seed");
 const CaseConfig = require("../models/CaseConfig");
 const { roll: computeRoll, pickFromRanges, hashServerSeed } = require("./provablyFair");
 const { PAYOUTS: PLINKO_PAYOUTS, PLINKO_ALGO_VERSION, derivePath, binFromPath } = require("./plinkoMath");
+const { BLACKJACK_ALGO_VERSION, replayHand } = require("./blackjackMath");
 
 function generateRollId() {
   return "R" + crypto.randomInt(100000000, 1000000000).toString(); // "R" + 9 digits
@@ -138,12 +139,68 @@ async function verifyPlinkoRoll(rollId) {
   };
 }
 
+// replay a blackjack hand from its seed material and recorded action log; the
+// verifier runs the same replayHand the game's recovery path uses, so the two
+// can never disagree about what the cards were
+async function verifyBlackjackRoll(rollId) {
+  const v = await getRollForVerify(rollId);
+  if (!v || v.game !== "blackjack") return { ok: false, reason: "not a blackjack roll" };
+  if (!v.serverSeed) return { ok: false, reason: "server seed not revealed yet" };
+
+  const outcome = v.outcome || {};
+  if (outcome.algoVersion !== BLACKJACK_ALGO_VERSION) {
+    return { ok: false, reason: "algorithm version superseded" };
+  }
+
+  const commitmentValid = hashServerSeed(v.serverSeed) === v.serverSeedHash;
+  const replayed = replayHand({
+    serverSeed: v.serverSeed,
+    clientSeed: v.clientSeed,
+    nonce: v.nonce,
+    betAmount: outcome.betAmount,
+    actions: outcome.actions || [],
+  });
+  const expectedHands = outcome.playerHands || [];
+  const sameCards = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+  const handsMatch =
+    replayed.hands.length === expectedHands.length &&
+    replayed.hands.every(
+      (h, i) =>
+        sameCards(h.cards, expectedHands[i].cards) &&
+        replayed.perHand[i].outcome === expectedHands[i].outcome &&
+        replayed.perHand[i].payout === expectedHands[i].payout
+    );
+  const ok =
+    commitmentValid &&
+    handsMatch &&
+    sameCards(replayed.dealerCards, outcome.dealerCards) &&
+    replayed.dealerTotal === outcome.dealerTotal &&
+    replayed.insuranceBet === (outcome.insuranceBet || 0) &&
+    replayed.totalPayout === outcome.totalPayout;
+
+  return {
+    ok,
+    commitmentValid,
+    recomputedPlayerCards: replayed.hands.map((h) => h.cards),
+    recomputedDealerCards: replayed.dealerCards,
+    recomputedDealerTotal: replayed.dealerTotal,
+    recomputedOutcome: replayed.perHand.map((h) => h.outcome).join("/"),
+    recomputedPayout: replayed.totalPayout,
+    expectedPlayerCards: expectedHands.map((h) => h.cards),
+    expectedDealerCards: outcome.dealerCards,
+    expectedDealerTotal: outcome.dealerTotal,
+    expectedOutcome: expectedHands.map((h) => h.outcome).join("/"),
+    expectedPayout: outcome.totalPayout,
+  };
+}
+
 // route a verify request to the game's reference verifier
 async function verifyRoll(rollId) {
   const r = await Roll.findOne({ rollId }).select("game").lean();
   if (!r) return { ok: false, reason: "roll not found" };
   if (r.game === "case") return verifyCaseRoll(rollId);
   if (r.game === "plinko") return verifyPlinkoRoll(rollId);
+  if (r.game === "blackjack") return verifyBlackjackRoll(rollId);
   return { ok: false, reason: "no server-side verifier for this game" };
 }
 
@@ -154,5 +211,6 @@ module.exports = {
   getRollForItem,
   verifyCaseRoll,
   verifyPlinkoRoll,
+  verifyBlackjackRoll,
   verifyRoll,
 };

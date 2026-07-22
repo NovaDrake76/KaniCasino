@@ -7,8 +7,8 @@ const MissionState = require("../models/MissionState");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { CATALOG, byKey, missionsLaunchAt } = require("./missionsCatalog");
 
-// a "big win" is any single game payout (slots / plinko / crash cashout / coin flip win)
-const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
+// a "big win" is any single game payout; pushes and refunds are returned stakes, not wins
+const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
 
 // missions currently offered; a disabled one (active:false) stays defined but is
 // never shown, announced, or claimable
@@ -57,6 +57,23 @@ async function buildContext(userId, { includeCollections = true, state = null } 
           qty: { $sum: { $ifNull: ["$meta.quantity", 0] } },
           maxAmount: { $max: "$amount" },
           sumAmount: { $sum: "$amount" },
+          // rows without a side-bet marker: for blackjack this counts hands, not
+          // the extra double/split/insurance charges on the same hand
+          baseCount: {
+            $sum: {
+              $cond: [
+                {
+                  $or: [
+                    { $eq: ["$meta.double", true] },
+                    { $eq: ["$meta.split", true] },
+                    { $eq: ["$meta.insurance", true] },
+                  ],
+                },
+                0,
+                1,
+              ],
+            },
+          },
         },
       },
     ]),
@@ -79,7 +96,12 @@ async function buildContext(userId, { includeCollections = true, state = null } 
 
   return {
     casesOpened,
-    games: { crash: count(TX.CRASH_BET), coinflip: count(TX.COINFLIP_BET), slots: count(TX.SLOT_BET) },
+    games: {
+      crash: count(TX.CRASH_BET),
+      coinflip: count(TX.COINFLIP_BET),
+      slots: count(TX.SLOT_BET),
+      blackjack: byType[TX.BLACKJACK_BET] ? byType[TX.BLACKJACK_BET].baseCount || 0 : 0,
+    },
     coinflipWins: count(TX.COINFLIP_WIN),
     crashCashouts: count(TX.CRASH_CASHOUT),
     bonusesClaimed: count(TX.BONUS),
@@ -105,6 +127,7 @@ function currentFor(mission, ctx) {
     case "gamesPlayed:crash": return ctx.games.crash;
     case "gamesPlayed:coinflip": return ctx.games.coinflip;
     case "gamesPlayed:slots": return ctx.games.slots;
+    case "gamesPlayed:blackjack": return ctx.games.blackjack;
     case "coinflipWins": return ctx.coinflipWins;
     case "bonusesClaimed": return ctx.bonusesClaimed;
     case "marketSales": return ctx.marketSales;

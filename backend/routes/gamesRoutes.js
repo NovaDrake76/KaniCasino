@@ -8,6 +8,7 @@ const Round = require("../models/Round");
 const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
 const PlinkoGameController = require("../games/plinko");
+const BlackjackGameController = require("../games/blackjack");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const referrals = require("../utils/referrals");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
@@ -213,6 +214,39 @@ module.exports = (io) => {
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
+  // blackjack: a hand spans several requests, so each action resolves the user's
+  // single active hand; statused errors are intentional answers (409 = resync)
+  const blackjackAction = (fn) => async (req, res) => {
+    try {
+      res.json(await fn(req));
+    } catch (error) {
+      if (error.status) return res.status(error.status).json({ message: error.message });
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+  router.post("/blackjack/deal", isAuthenticated, blackjackAction(
+    (req) => BlackjackGameController.deal(req.user._id, req.body.betAmount, io)
+  ));
+  router.post("/blackjack/hit", isAuthenticated, blackjackAction(
+    (req) => BlackjackGameController.hit(req.user._id, io)
+  ));
+  router.post("/blackjack/stand", isAuthenticated, blackjackAction(
+    (req) => BlackjackGameController.stand(req.user._id, io)
+  ));
+  router.post("/blackjack/double", isAuthenticated, blackjackAction(
+    (req) => BlackjackGameController.double(req.user._id, io)
+  ));
+  router.post("/blackjack/split", isAuthenticated, blackjackAction(
+    (req) => BlackjackGameController.split(req.user._id, io)
+  ));
+  router.post("/blackjack/insurance", isAuthenticated, blackjackAction(
+    (req) => BlackjackGameController.insurance(req.user._id, req.body.accept, io)
+  ));
+  router.get("/blackjack/active", isAuthenticated, blackjackAction(
+    async (req) => ({ hand: await BlackjackGameController.active(req.user._id) })
+  ));
 
   // recent coin flip results, so the page has a history the moment it loads. light and
   // indexed (game + createdAt), capped, public: just the outcome, no bets or seeds.
