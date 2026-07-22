@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { cardAria, isRedSuit, rankLabel, suitOf } from "./blackjackCards";
+import { cardAria, faceArt, isRedSuit, rankLabel, suitOf } from "./blackjackCards";
 
 // inline svg suit marks: unicode suit glyphs render as emoji on ios, so never use them
 export const SuitIcon = ({ suit, className }: { suit: number; className?: string }) => {
@@ -63,15 +63,23 @@ const PlayingCard = ({ card, faceDown = false, delay = 0, instant = false }: Pla
         transition={{ duration: instant ? 0 : 0.5 }}
       >
         <div
-          className={`absolute inset-0 rounded-lg bg-white shadow-[0_4px_14px_rgba(0,0,0,0.45)] ${color}`}
+          className={`absolute inset-0 rounded-lg bg-white shadow-[0_4px_14px_rgba(0,0,0,0.45)] overflow-hidden ${color}`}
           style={{ backfaceVisibility: "hidden" }}
         >
+          {card != null && faceArt(card) && (
+            <img
+              src={faceArt(card)!.src}
+              alt=""
+              draggable={false}
+              className="absolute bottom-0 right-0 h-[82%] max-w-[78%] object-contain object-bottom"
+            />
+          )}
           {card != null && (
             <div className="absolute top-1.5 left-2 flex flex-col items-center leading-none">
-              <span className="font-extrabold text-2xl sm:text-[34px] tracking-tight">
+              <span className="font-extrabold text-2xl sm:text-[34px] tracking-tight [text-shadow:0_0_3px_#fff,0_0_3px_#fff]">
                 {rankLabel(card)}
               </span>
-              <SuitIcon suit={suitOf(card)} className="w-5 sm:w-7 mt-0.5" />
+              <SuitIcon suit={suitOf(card)} className="w-5 sm:w-7 mt-0.5 drop-shadow-[0_0_2px_#fff]" />
             </div>
           )}
         </div>
