@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { cardAria, isRedSuit, rankLabel, suitOf } from "./blackjackCards";
 
 // inline svg suit marks: unicode suit glyphs render as emoji on ios, so never use them
-const SuitIcon = ({ suit, className }: { suit: number; className?: string }) => {
+export const SuitIcon = ({ suit, className }: { suit: number; className?: string }) => {
   if (suit === 1) {
     return (
       <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
@@ -43,17 +43,17 @@ interface PlayingCardProps {
   instant?: boolean;
 }
 
-// code-drawn card: flat white face with corner rank + suit, css 3d flip to reveal
+// code-drawn card, stake-style face: one bold corner index (rank over suit), no pips
 const PlayingCard = ({ card, faceDown = false, delay = 0, instant = false }: PlayingCardProps) => {
   const red = card != null && isRedSuit(card);
-  const color = red ? "text-red-600" : "text-[#151225]";
+  const color = red ? "text-red-600" : "text-[#1c1a31]";
   return (
     <motion.div
-      className="relative w-14 sm:w-[72px] aspect-[5/7] select-none"
+      className="relative w-[74px] sm:w-24 aspect-[5/7] select-none"
       style={{ perspective: 1000 }}
-      initial={instant ? false : { y: -46, x: 30, opacity: 0 }}
-      animate={{ y: 0, x: 0, opacity: 1 }}
-      transition={{ duration: instant ? 0 : 0.3, delay: instant ? 0 : delay, ease: "easeOut" }}
+      initial={instant ? false : { y: -150, x: 110, opacity: 0, rotate: 6 }}
+      animate={{ y: 0, x: 0, opacity: 1, rotate: 0 }}
+      transition={{ duration: instant ? 0 : 0.32, delay: instant ? 0 : delay, ease: "easeOut" }}
       aria-label={faceDown || card == null ? "face-down card" : cardAria(card)}
     >
       <motion.div
@@ -63,35 +63,31 @@ const PlayingCard = ({ card, faceDown = false, delay = 0, instant = false }: Pla
         transition={{ duration: instant ? 0 : 0.5 }}
       >
         <div
-          className={`absolute inset-0 rounded-md bg-white shadow-md p-1 sm:p-1.5 ${color}`}
+          className={`absolute inset-0 rounded-lg bg-white shadow-[0_4px_14px_rgba(0,0,0,0.45)] ${color}`}
           style={{ backfaceVisibility: "hidden" }}
         >
           {card != null && (
-            <>
-              <div className="absolute top-1 left-1.5 flex flex-col items-center leading-none">
-                <span className="font-bold text-sm sm:text-lg">{rankLabel(card)}</span>
-                <SuitIcon suit={suitOf(card)} className="w-3 sm:w-3.5 mt-0.5" />
-              </div>
-              <div className="absolute bottom-1 right-1.5 flex flex-col items-center leading-none rotate-180">
-                <span className="font-bold text-sm sm:text-lg">{rankLabel(card)}</span>
-                <SuitIcon suit={suitOf(card)} className="w-3 sm:w-3.5 mt-0.5" />
-              </div>
-              <SuitIcon
-                suit={suitOf(card)}
-                className="absolute inset-0 m-auto w-5 sm:w-7 opacity-25"
-              />
-            </>
+            <div className="absolute top-1.5 left-2 flex flex-col items-center leading-none">
+              <span className="font-extrabold text-2xl sm:text-[34px] tracking-tight">
+                {rankLabel(card)}
+              </span>
+              <SuitIcon suit={suitOf(card)} className="w-5 sm:w-7 mt-0.5" />
+            </div>
           )}
         </div>
         <div
-          className="absolute inset-0 rounded-md bg-[#281D3F] border-2 border-[#4F46E5]/60 shadow-md"
-          style={{
-            backfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
-            backgroundImage:
-              "repeating-linear-gradient(45deg, rgba(79,70,229,0.25) 0 4px, transparent 4px 9px)",
-          }}
-        />
+          className="absolute inset-0 rounded-lg bg-[#281D3F] border-2 border-[#4F46E5]/70 shadow-[0_4px_14px_rgba(0,0,0,0.45)] flex items-center justify-center"
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+        >
+          <svg viewBox="0 0 24 24" className="w-8 sm:w-10 text-[#4F46E5]/80" aria-hidden="true">
+            <path
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              d="M12 3l6.5 9L12 21l-6.5-9z M12 7l3.6 5L12 17l-3.6-5z"
+            />
+          </svg>
+        </div>
       </motion.div>
     </motion.div>
   );
