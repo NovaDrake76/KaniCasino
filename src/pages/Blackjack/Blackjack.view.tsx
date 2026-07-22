@@ -132,13 +132,30 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
   hit,
   stand,
   double,
+  split,
+  insure,
   canHit,
   canStand,
   canDouble,
+  canSplit,
+  canInsure,
+  awaitingInsurance,
+  insuranceCost,
   openRoll,
 }) => {
   const betting = phase === "idle" || phase === "settled";
-  const settledOutcome = phase === "settled" ? playerHand?.outcome : null;
+  const totalStaked = hand ? hand.hands.reduce((s, h) => s + h.bet, 0) + hand.insuranceBet : 0;
+  // one hand keeps its own outcome; a split summarizes the round in one line
+  const settledOutcome =
+    phase === "settled" && hand
+      ? hand.hands.length === 1
+        ? playerHand?.outcome
+        : hand.totalPayout > totalStaked
+          ? "win"
+          : hand.totalPayout > 0
+            ? "push"
+            : "lose"
+      : null;
   const dealerCards = hand?.dealer.cards ?? [];
   const holeHidden = !!hand && (hand.dealer.hidden || revealStep < 2);
   const dealerFan = hand
@@ -193,10 +210,37 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
             ))}
           </div>
 
+          {awaitingInsurance && (
+            <div className="rounded-md bg-[#19172D] border border-[#2A2840] p-3 flex flex-col gap-2">
+              <span className="text-sm font-bold text-center">
+                Insurance? <span className="text-[#84819a] font-semibold">pays 2:1</span>
+              </span>
+              <span className="text-xs text-[#84819a] text-center">
+                costs <Monetary value={insuranceCost} />
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => insure(true)}
+                  disabled={!canInsure}
+                  className="min-h-[38px] rounded-md bg-[#4F46E5] hover:bg-indigo-500 font-bold text-sm disabled:opacity-40"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => insure(false)}
+                  disabled={acting}
+                  className="min-h-[38px] rounded-md bg-[#281D3F] hover:bg-[#3A2C5C] font-bold text-sm disabled:opacity-40"
+                >
+                  Decline
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-2">
             <ActionButton label="Hit" icon={<GiCardDraw size={18} />} iconColor="text-[#FFCC00]" onClick={hit} disabled={!canHit} />
             <ActionButton label="Stand" icon={<FaHandPaper size={14} />} iconColor="text-[#A78BFA]" onClick={stand} disabled={!canStand} />
-            <ActionButton label="Split" icon={<FaClone size={13} />} iconColor="text-red-400" disabled title="Split arrives soon" />
+            <ActionButton label="Split" icon={<FaClone size={13} />} iconColor="text-red-400" onClick={split} disabled={!canSplit} />
             <ActionButton label="Double" icon={<GiTwoCoins size={17} />} iconColor="text-[#5EEAD4]" onClick={double} disabled={!canDouble} />
           </div>
 
@@ -270,25 +314,46 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
 
           <Ribbon />
 
-          {/* player */}
+          {/* player: one fan per hand, the active split hand highlighted */}
           <div className="flex flex-col items-center min-h-[190px] justify-start">
-            {hand && playerHand ? (
-              <>
-                <CardFan
-                  cards={playerHand.cards}
-                  badge={totalLabel(playerHand.cards)}
-                  badgeTone={phase === "settled" ? OUTCOME_BADGE[playerHand.outcome || ""] : undefined}
-                  instant={instant}
-                  baseDelay={0}
-                  stagger={0.36}
-                />
-                <span className="mt-4 text-xs text-[#84819a]">
-                  bet <Monetary value={playerHand.bet} />
-                  {playerHand.doubled && <span className="text-[#5EEAD4] font-semibold"> · doubled</span>}
-                </span>
-              </>
+            {hand ? (
+              <div className="flex gap-8 sm:gap-12 items-start">
+                {hand.hands.map((h, i) => {
+                  const isActive =
+                    hand.status === "active" && !hand.awaitingInsurance && i === hand.activeHandIndex;
+                  const dimmed = hand.hands.length > 1 && hand.status === "active" && !isActive;
+                  return (
+                    <div
+                      key={`hand${i}`}
+                      className={`flex flex-col items-center transition-opacity ${dimmed ? "opacity-60" : ""}`}
+                    >
+                      <CardFan
+                        cards={h.cards}
+                        badge={totalLabel(h.cards)}
+                        badgeTone={phase === "settled" ? OUTCOME_BADGE[h.outcome || ""] : undefined}
+                        instant={instant}
+                        baseDelay={0}
+                        stagger={hand.hands.length === 1 ? 0.36 : 0}
+                      />
+                      {/* straight accent bar marks the hand in play (house rule: never rounded) */}
+                      {hand.hands.length > 1 && (
+                        <div className={`w-16 h-0.5 mt-2 ${isActive ? "bg-[#4F46E5]" : "bg-transparent"}`} />
+                      )}
+                      <span className="mt-2 text-xs text-[#84819a]">
+                        bet <Monetary value={h.bet} />
+                        {h.doubled && <span className="text-[#5EEAD4] font-semibold"> · doubled</span>}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <span />
+            )}
+            {hand && hand.insuranceBet > 0 && (
+              <span className="mt-2 text-xs text-[#84819a]">
+                insurance <Monetary value={hand.insuranceBet} />
+              </span>
             )}
           </div>
         </div>

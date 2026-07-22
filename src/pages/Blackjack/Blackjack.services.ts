@@ -7,6 +7,8 @@ import {
   doubleBlackjack,
   getActiveBlackjackHand,
   hitBlackjack,
+  insureBlackjack,
+  splitBlackjack,
   standBlackjack,
 } from "../../services/games/GamesServices";
 import { BlackjackHandState, BlackjackHistoryEntry, BlackjackPhase } from "./Blackjack.types";
@@ -161,10 +163,12 @@ export const useBlackjackServices = () => {
   const hit = () => act(hitBlackjack);
   const stand = () => act(standBlackjack);
   const double = () => act(doubleBlackjack);
+  const split = () => act(splitBlackjack);
+  const insure = (accept: boolean) => act(() => insureBlackjack(accept));
   const rebet = (multiplier = 1) =>
     deal(Math.min(MAX_BET, Math.max(MIN_BET, lastBet * multiplier)));
 
-  // keyboard shortcuts: h/s/d during play, space to deal or rebet
+  // keyboard shortcuts: h/s/d/p during play, space to deal or rebet
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || acting) return;
@@ -173,6 +177,7 @@ export const useBlackjackServices = () => {
         if (key === "h") hit();
         if (key === "s") stand();
         if (key === "d") double();
+        if (key === "p") split();
       } else if ((phase === "idle" || phase === "settled") && key === " ") {
         e.preventDefault();
         if (phase === "settled") rebet();
@@ -211,11 +216,18 @@ export const useBlackjackServices = () => {
     hit,
     stand,
     double,
+    split,
+    insure,
     rebet,
     canHit: phase === "player" && !!hand?.canHit && !acting,
     canStand: phase === "player" && !!hand?.canStand && !acting,
     canDouble:
       phase === "player" && !!hand?.canDouble && !acting && walletBalance >= (hand?.betAmount ?? 0),
+    canSplit:
+      phase === "player" && !!hand?.canSplit && !acting && walletBalance >= (hand?.betAmount ?? 0),
+    canInsure: phase === "player" && !!hand?.canInsure && !acting,
+    awaitingInsurance: phase === "player" && !!hand?.awaitingInsurance,
+    insuranceCost: Math.floor((hand?.betAmount ?? 0) / 2),
     openRoll: (rollId: string) => navigate(`/provably-fair?roll=${rollId}`),
   };
 };

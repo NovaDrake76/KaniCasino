@@ -49,6 +49,16 @@ export async function doubleBlackjack() {
     return response.data;
 }
 
+export async function splitBlackjack() {
+    const response = await api.post(`/games/blackjack/split`, {});
+    return response.data;
+}
+
+export async function insureBlackjack(accept: boolean) {
+    const response = await api.post(`/games/blackjack/insurance`, { accept });
+    return response.data;
+}
+
 export async function getActiveBlackjackHand() {
     const response = await api.get(`/games/blackjack/active`);
     return response.data;

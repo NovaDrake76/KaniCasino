@@ -4,6 +4,8 @@ export interface BlackjackHandSide {
   cards: number[];
   bet: number;
   doubled: boolean;
+  fromSplit: boolean;
+  done: boolean;
   total: number;
   soft: boolean;
   outcome: "blackjack" | "win" | "push" | "lose" | null;
@@ -17,10 +19,14 @@ export interface BlackjackHandState {
   betAmount: number;
   hands: BlackjackHandSide[];
   activeHandIndex: number;
+  awaitingInsurance: boolean;
+  insuranceBet: number;
   dealer: { cards: number[]; total: number; hidden: boolean };
   canHit: boolean;
   canStand: boolean;
   canDouble: boolean;
+  canSplit: boolean;
+  canInsure: boolean;
   totalPayout: number;
   fair: { clientSeed: string; serverSeedHash: string; nonce: number };
   rollId: string | null;
