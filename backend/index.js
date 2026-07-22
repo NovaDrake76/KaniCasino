@@ -112,6 +112,17 @@ mongoose
 app.use(express.json());
 app.use(cors(corsOptions));
 
+// internal ops hook: the tunnel watchdog announces an imminent reconnect so clients can
+// toast it before cloudflared re-rolls. token-gated, bypasses the api-key gate, never public.
+app.post("/internal/notice", (req, res) => {
+  if (!process.env.MAINT_TOKEN || req.headers["x-maint-token"] !== process.env.MAINT_TOKEN) {
+    return res.status(403).json({ error: "forbidden" });
+  }
+  const { message, seconds } = req.body || {};
+  io.emit("serverNotice", { message, seconds });
+  res.json({ ok: true });
+});
+
 // block requests from outside
 app.use(checkApiKey);
 
