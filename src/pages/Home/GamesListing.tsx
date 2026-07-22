@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Title from "../../components/Title";
 
 interface GameListingProps {
   name: string;
@@ -46,28 +45,34 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
     },
   ];
   return (
-    <div className="w-full flex flex-col gap-4 py-10 items-center" key={name}>
-      <div className="flex flex-col items-center justify-center max-w-[1600px]">
-        <Title title={name} />
-        {description && <div className="text">{description}</div>}
-        {
-          <div className="flex flex-col md:flex-row items-center w-full justiy-center gap-8 flex-wrap">
-            {games.map((item: any) => (
-              <Link to={item.link} key={item.id}>
-                <div className="flex flex-col">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-[256px] h-[348px] object-contain"
-                  />
-                  <div className="text text-center">Play {item.title}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        }
+    <section className="w-full flex flex-col py-6 items-center">
+      <div className="flex flex-col w-full max-w-[1600px] px-4">
+        <div className="flex items-center justify-between gap-4 pb-3 border-b border-line">
+          <h2 className="text-xl md:text-2xl font-bold uppercase tracking-wide text-white">
+            {name}
+          </h2>
+        </div>
+        {description && <div className="text-sm text-ink-muted pt-3">{description}</div>}
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 pt-6">
+          {games.map((item: any) => (
+            <Link to={item.link} key={item.id}>
+              <div className="relative flex flex-col items-center justify-end h-48 md:h-56 bg-surface rounded-lg p-4 transition-all hover:bg-surface-hover hover:-translate-y-1">
+                <span className="absolute top-3 left-3 text-xs font-semibold text-ink-soft bg-surface-raised px-2 py-0.5 rounded">
+                  {item.title}
+                </span>
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  loading="lazy"
+                  className="h-24 md:h-32 w-full object-contain"
+                />
+                <div className="text-sm font-semibold text-center pt-3">Play {item.title}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

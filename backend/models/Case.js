@@ -10,6 +10,11 @@ const CaseSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  // homepage section label ("Touhou", "Animals"); empty falls into the other group
+  category: {
+    type: String,
+    default: "",
+  },
 
   items: [
     {
