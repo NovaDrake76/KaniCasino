@@ -309,6 +309,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
           <div className="flex flex-col items-center min-h-[170px] justify-start">
             {hand ? (
               <CardFan
+                key={hand.handId}
                 cards={dealerFan}
                 holeHidden={holeHidden}
                 badge={dealerBadge}
@@ -333,7 +334,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
                   const dimmed = hand.hands.length > 1 && hand.status === "active" && !isActive;
                   return (
                     <div
-                      key={`hand${i}`}
+                      key={`${hand.handId}-hand${i}`}
                       className={`flex flex-col items-center transition-opacity ${dimmed ? "opacity-60" : ""}`}
                     >
                       <CardFan

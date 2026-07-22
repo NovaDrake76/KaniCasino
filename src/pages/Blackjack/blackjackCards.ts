@@ -43,6 +43,18 @@ export function totalLabel(cards: number[]) {
   return String(total);
 }
 
+// face cards carry touhou court art: [spades, hearts, diamonds, clubs] per rank
+const FACE_ART: Record<number, [string, string, string, string]> = {
+  10: ["youmu", "sakuya", "sanae", "cirno"],
+  11: ["yuyuko", "flandre", "marisa", "koishi"],
+  12: ["yukari", "remilia", "reimu", "satori"],
+};
+
+export function faceArt(card: number) {
+  const art = FACE_ART[rankOf(card)];
+  return art ? { src: `/images/cards/${art[suitOf(card)]}.webp`, name: art[suitOf(card)] } : null;
+}
+
 export const OUTCOME_LABELS: Record<string, string> = {
   blackjack: "Blackjack!",
   win: "You win",
