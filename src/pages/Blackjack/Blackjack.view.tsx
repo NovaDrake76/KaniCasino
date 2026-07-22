@@ -265,15 +265,24 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
             </div>
           )}
 
-          <label className="flex items-center gap-2 text-xs text-[#84819a] cursor-pointer">
-            <input
-              type="checkbox"
-              checked={instant}
-              onChange={(e) => setInstant(e.target.checked)}
-              className="accent-indigo-600"
-            />
-            Instant reveal
-          </label>
+          <div className="flex items-center justify-between text-xs text-[#84819a]">
+            <span>Instant reveal</span>
+            <button
+              role="switch"
+              aria-checked={instant}
+              aria-label="Instant reveal"
+              onClick={() => setInstant(!instant)}
+              className={`relative w-9 h-5 rounded-full border border-[#2A2840] transition-colors ${
+                instant ? "bg-[#4F46E5]" : "bg-[#19172D]"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-3.5 h-3.5 rounded-full bg-white transition-transform ${
+                  instant ? "translate-x-4" : ""
+                }`}
+              />
+            </button>
+          </div>
 
           {history.length > 0 && (
             <div className="flex flex-col gap-1">

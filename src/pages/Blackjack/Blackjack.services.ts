@@ -189,6 +189,8 @@ export const useBlackjackServices = () => {
   });
 
   const normalizeBet = () => setBetInput(String(betValue));
+  // digits only at the input boundary, so letters and symbols never render
+  const updateBetInput = (raw: string) => setBetInput(raw.replace(/\D/g, "").slice(0, 6));
   const playerHand = hand?.hands[hand.activeHandIndex] ?? null;
   const walletBalance = userData?.walletBalance ?? 0;
 
@@ -197,7 +199,7 @@ export const useBlackjackServices = () => {
     walletBalance,
     betInput,
     betValue,
-    setBetInput,
+    setBetInput: updateBetInput,
     normalizeBet,
     halveBet: () => setBetInput(String(Math.max(MIN_BET, Math.floor(betValue / 2)))),
     doubleBet: () => setBetInput(String(Math.min(MAX_BET, betValue * 2))),
