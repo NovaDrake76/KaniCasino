@@ -1,0 +1,46 @@
+name: API uptime
+
+# scheduled runs only fire from the default branch. the ubuntu runners are US-based,
+# so they enter cloudflare at a non-sydney colo, which is the path that actually breaks.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  probe:
+    name: Probe the API through the tunnel
+    runs-on: ubuntu-latest
+    steps:
+      - name: Measure latency from a non-Sydney vantage
+        env:
+          URL: https://kanicasino.cfhxo.com/health
+          THRESHOLD: '3'
+          SAMPLES: '5'
+          DISCORD_WEBHOOK: ${{ secrets.MONITOR_DISCORD_WEBHOOK }}
+        run: |
+          set -u
+          # first hit pays the tcp+tls+quic setup, so warm the connection before timing
+          curl -s -m 25 -o /dev/null "$URL" || true
+          ray=$(curl -s -m 25 -D - -o /dev/null "$URL" | tr -d '\r' | awk 'tolower($1)=="cf-ray:"{print $2}')
+          bad=0; worst=0; summary=""
+          for i in $(seq 1 "$SAMPLES"); do
+            resp=$(curl -s -m 25 -o /dev/null -w '%{http_code} %{time_total}' "$URL" || echo '000 25')
+            code=${resp%% *}; t=${resp##* }
+            over=$(awk -v t="$t" -v th="$THRESHOLD" 'BEGIN{print (t+0>th+0)?1:0}')
+            if [ "$code" != "200" ] || [ "$over" = "1" ]; then bad=$((bad+1)); fi
+            worst=$(awk -v a="$t" -v b="$worst" 'BEGIN{print (a+0>b+0)?a:b}')
+            summary="${summary}try ${i}: http=${code} time=${t}s"$'\n'
+          done
+          echo "vantage colo: ${ray:-unknown}"
+          printf '%s' "$summary"
+          echo "worst=${worst}s threshold=${THRESHOLD}s bad=${bad}/${SAMPLES}"
+          if [ "$bad" -ge 3 ]; then
+            msg="KaniCasino API slow/unreachable from ${ray:-?}: ${bad}/${SAMPLES} samples bad, worst ${worst}s (threshold ${THRESHOLD}s). Likely the cloudflared tunnel."
+            echo "::error::$msg"
+            if [ -n "${DISCORD_WEBHOOK:-}" ]; then
+              curl -s -m 15 -H 'Content-Type: application/json' -d "$(jq -n --arg c "$msg" '{content:$c}')" "$DISCORD_WEBHOOK" || true
+            fi
+            exit 1
+          fi
+          echo "API healthy from ${ray:-?}"
