@@ -145,6 +145,26 @@
   }
 }
 
+/* plinko ball waiting at the drop mouth while its request is in flight */
+.ball-queued {
+  animation: ball-queued 0.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes ball-queued {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 0.9;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

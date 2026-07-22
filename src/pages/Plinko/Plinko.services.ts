@@ -8,6 +8,8 @@ import { PlinkoBall, PlinkoDropResult } from "./Plinko.types";
 
 const DEFAULT_BET = 10;
 const HISTORY_SIZE = 8;
+// hard cap on concurrent balls (pending requests + falling); the server allows more
+const MAX_IN_FLIGHT = 12;
 // paced so an auto run reads as a stream of balls instead of one burst
 const AUTO_DROP_INTERVAL_MS = 400;
 export const AUTO_COUNTS = [10, 25, 50, 100];
@@ -22,13 +24,14 @@ export const usePlinkoServices = () => {
   const [autoCount, setAutoCount] = useState<number>(AUTO_COUNTS[0]);
   const [autoRunning, setAutoRunning] = useState(false);
   const [autoLeft, setAutoLeft] = useState(0);
-  const [dropping, setDropping] = useState(false);
+  const [pendingDrops, setPendingDrops] = useState(0);
   const [balls, setBalls] = useState<PlinkoBall[]>([]);
   const [history, setHistory] = useState<PlinkoBall[]>([]);
   const [lastHit, setLastHit] = useState<{ bin: number; seq: number } | null>(null);
 
   const ballSeq = useRef(0);
   const hitSeq = useRef(0);
+  const pendingStake = useRef(0);
   const settled = useRef<Set<string>>(new Set());
   const autoLeftRef = useRef(0);
   const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -41,18 +44,24 @@ export const usePlinkoServices = () => {
       toogleUserFlow(true);
       return false;
     }
-    if (userData.walletBalance < betValue) {
+    // the wallet only refreshes when a ball lands, so count the stakes still in the air
+    if (userData.walletBalance - pendingStake.current < betValue) {
       toast.error("Insufficient funds", { theme: "dark" });
       return false;
     }
+    pendingStake.current += betValue;
+    setPendingDrops((n) => n + 1);
     try {
       const result: PlinkoDropResult = await dropPlinko(betValue, risk);
       ballSeq.current += 1;
       setBalls((prev) => [...prev, { ...result, key: `b${ballSeq.current}` }]);
       return true;
     } catch (error: any) {
+      pendingStake.current -= betValue;
       toast.error(error?.response?.data?.message || "Could not drop the ball", { theme: "dark" });
       return false;
+    } finally {
+      setPendingDrops((n) => n - 1);
     }
   };
 
@@ -94,24 +103,25 @@ export const usePlinkoServices = () => {
 
   useEffect(() => () => stopAuto(), [stopAuto]);
 
-  const drop = async () => {
-    if (dropping) return;
-    setDropping(true);
-    await fireDrop();
-    setDropping(false);
+  // drops fire without waiting for the previous one, capped by balls already in play
+  const canDrop = balls.length + pendingDrops < MAX_IN_FLIGHT;
+  const drop = () => {
+    if (!canDrop) return;
+    fireDrop();
   };
 
   // guarded by key so a duplicate animation-complete cannot double-record a ball
   const settleBall = useCallback((ball: PlinkoBall) => {
     if (settled.current.has(ball.key)) return;
     settled.current.add(ball.key);
+    pendingStake.current -= ball.betAmount; // the landing balance update covers it now
     hitSeq.current += 1;
     setBalls((prev) => prev.filter((b) => b.key !== ball.key));
     setLastHit({ bin: ball.bin, seq: hitSeq.current });
     setHistory((h) => [ball, ...h].slice(0, HISTORY_SIZE));
   }, []);
 
-  const canChangeRisk = balls.length === 0 && !autoRunning;
+  const canChangeRisk = balls.length === 0 && pendingDrops === 0 && !autoRunning;
   const changeRisk = (next: PlinkoRisk) => {
     if (!canChangeRisk) return;
     setRisk(next);
@@ -144,7 +154,8 @@ export const usePlinkoServices = () => {
     startAuto,
     stopAuto,
     drop,
-    dropping,
+    canDrop,
+    pendingDrops,
     balls,
     history,
     lastHit,
