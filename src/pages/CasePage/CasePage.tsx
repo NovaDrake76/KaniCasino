@@ -55,7 +55,8 @@ const CasePage = () => {
     setShowPrize(false);
     setAnimationAux2(false);
 
-    setAnimationAux(!animationAux);
+    // set, never toggled: as a toggle the case only flew away on every other open
+    setAnimationAux(true);
 
     setTimeout(() => {
       setStarted(true);
@@ -84,6 +85,8 @@ const CasePage = () => {
       toast.success(res.message, { theme: "dark" });
       setShowPrize(false);
       setAnimationAux2(false);
+      // clear the fly-away too, or the idle case image replays it and holds at opacity 0
+      setAnimationAux(false);
       setOpenedItems([]);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Could not sell items", { theme: "dark" });

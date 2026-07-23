@@ -22,6 +22,16 @@ describe("groupCasesByCategory", () => {
     expect(groups[1].cases).toHaveLength(2);
   });
 
+  it("pins Counter-Strike last even though it is the newest set", () => {
+    const groups = groupCasesByCategory([c("9", "Counter-Strike"), c("1", "Touhou"), c("2", "Animals")]);
+    expect(groups.map((g) => g.category)).toEqual(["Animals", "Touhou", "Counter-Strike"]);
+  });
+
+  it("keeps Other ahead of Counter-Strike when both are present", () => {
+    const groups = groupCasesByCategory([c("9", "Counter-Strike"), c("8"), c("1", "Touhou")]);
+    expect(groups.map((g) => g.category)).toEqual(["Touhou", OTHER_CATEGORY, "Counter-Strike"]);
+  });
+
   it("handles an empty list", () => {
     expect(groupCasesByCategory([])).toEqual([]);
   });

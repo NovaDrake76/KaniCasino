@@ -2,6 +2,7 @@ import Skeleton from "react-loading-skeleton";
 import Monetary from "../../components/Monetary";
 import CompletionBar from "./components/CompletionBar";
 import CollectionCard from "./components/CollectionCard";
+import { groupCollectionsByCategory } from "./groupCollections";
 import { CollectionsViewProps } from "./Collections.types";
 
 const CollectionsView: React.FC<CollectionsViewProps> = ({
@@ -54,16 +55,33 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
             )}
           </div>
 
-          <div className="w-full flex flex-wrap gap-6 justify-center">
-            {summary.collections.map((c) => (
-              <CollectionCard
-                key={c.caseId}
-                collection={c}
-                isOwner={isOwner}
-                onClick={() => openCase(c.caseId)}
-              />
-            ))}
-          </div>
+          {groupCollectionsByCategory(summary.collections).map((group) => (
+            <section key={group.category} className="w-full flex flex-col gap-6">
+              <div className="flex items-center justify-between gap-4 pb-3 border-b border-line">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-lg md:text-xl font-bold uppercase tracking-wide text-white">
+                    {group.category} Collection
+                  </h3>
+                  <span className="text-xs font-semibold text-ink-muted bg-surface-raised px-2 py-0.5 rounded">
+                    {group.complete}/{group.collections.length}
+                  </span>
+                </div>
+                <span className="text-sm text-ink-muted">
+                  {group.slotsOwned}/{group.slotsTotal} items
+                </span>
+              </div>
+              <div className="w-full flex flex-wrap gap-6 justify-center">
+                {group.collections.map((c) => (
+                  <CollectionCard
+                    key={c.caseId}
+                    collection={c}
+                    isOwner={isOwner}
+                    onClick={() => openCase(c.caseId)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
         </>
       ) : null}
     </div>

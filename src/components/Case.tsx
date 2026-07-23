@@ -54,8 +54,8 @@ const Case: React.FC<CaseProps> = ({ id, title, image, price, priority }) => {
           onError={() => setLoaded(true)}
         />
       </div>
-      <div className="flex flex-col gap-2 p-4 items-center">
-        <div className="font-bold text-lg ">{title}</div>
+      <div className="flex flex-col gap-2 p-4 items-center w-full">
+        <div className="font-bold text-lg text-center w-full">{title}</div>
         {/* clip-path clips borders, so the chip outline is an outer notched div (see Banner) */}
         <div className="notched-sm bg-line p-[1px] w-fit">
           <div className="notched-sm bg-surface-deep px-5 py-1 font-semibold text-sm text-green-400">

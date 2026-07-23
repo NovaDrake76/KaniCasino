@@ -5,6 +5,7 @@ export interface CollectionSummaryItem {
   title: string;
   image: string;
   price: number;
+  category?: string;
   slotsTotal: number;
   slotsOwned: number;
   completionPct: number;

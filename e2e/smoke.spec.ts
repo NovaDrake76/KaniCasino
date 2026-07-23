@@ -12,6 +12,9 @@ const cases = [
 // mock every API call the home page makes so the suite needs no backend
 test.beforeEach(async ({ page }) => {
   await page.route("**/cases**", (route) => route.fulfill({ json: cases }));
+  // registered after the catch-all so it wins: playwright matches newest route first.
+  // empty by default, so the same case title never renders in two sections at once
+  await page.route("**/cases/most-opened**", (route) => route.fulfill({ json: [] }));
   await page.route("**/topPlayers**", (route) => route.fulfill({ json: [] }));
   await page.route("**/ranking**", (route) =>
     route.fulfill({ json: { ranking: 0, users: [] } })
@@ -60,6 +63,35 @@ test("a case section can be hidden and shown again", async ({ page }) => {
   await expect(page.getByText("Starter Case")).toBeHidden();
   await section.getByRole("button", { name: /show/i }).click();
   await expect(page.getByText("Starter Case")).toBeVisible();
+});
+
+test("the most opened section renders above the games and category listings", async ({ page }) => {
+  await page.route("**/cases/most-opened**", (route) =>
+    route.fulfill({ json: [{ _id: "case9", title: "Hot Case", image: IMG, price: 250, opens: 42 }] })
+  );
+  await page.goto("/");
+
+  await expect(page.getByText("Most Opened Cases")).toBeVisible();
+  await expect(page.getByText("Hot Case")).toBeVisible();
+
+  const topOf = async (text: string | RegExp) => {
+    const box = await page.getByText(text).first().boundingBox();
+    return box ? box.y : -1;
+  };
+  const ys = [
+    await topOf("Most Opened Cases"),
+    await topOf("Our Games"),
+    await topOf("Join our Discord"),
+    await topOf(/^LEADERBOARD$/),
+    await topOf("Event Cases"),
+  ];
+  expect(ys.every((y) => y > 0)).toBe(true);
+  expect([...ys]).toEqual([...ys].sort((a, b) => a - b));
+});
+
+test("the most opened section is absent when nothing has been opened", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByText("Most Opened Cases")).toHaveCount(0);
 });
 
 test("a navbar link is clickable and navigates", async ({ page }) => {
