@@ -1,12 +1,11 @@
 import { motion } from "framer-motion";
-import Videos from "./Videos";
+import CrashGraph from "./CrashGraph";
 import { Key } from "react";
 
 interface GameHistory {
     crashPoint: number | null;
     multiplier: number;
-    animationSrc: string;
-    setAnimationSrc: any;
+    gameStarted: boolean;
     gameEnded: boolean;
     countDown: number;
     up: string;
@@ -15,46 +14,45 @@ interface GameHistory {
     history: any;
 }
 
-const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, animationSrc, gameEnded, countDown, setAnimationSrc, up, idle, falling, history }) => {
-
-    // Calculate the animation speed based on the multiplier, but don't be faster than 200ms
-    const animationSpeed = Math.max(50 / multiplier, 50);
-
-    const backgroundStyle = gameEnded
-        ? { backgroundColor: '#19172D' }
-        : {
-            background: `linear-gradient(to right, var(--color1), var(--color2), var(--color3), var(--color6))`,
-            backgroundSize: '600% 100%',
-            animation: `gradient ${animationSpeed}s linear infinite`,
-        };
-
+const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, gameStarted, gameEnded, countDown, up, idle, falling, history }) => {
     return (
         <div className="flex flex-col">
             <div className="flex lg:w-[800px] border-b border-gray-700  p-4">
-                <div className="flex rounded items-center flex-col justify-center w-full h-[340px] relative "
-                    style={backgroundStyle}
-                >
+                <div className="flex rounded items-center flex-col justify-center w-full h-[340px] relative overflow-hidden bg-surface-nav">
+                    <CrashGraph
+                        gameStarted={gameStarted}
+                        gameEnded={gameEnded}
+                        multiplier={multiplier}
+                        crashPoint={crashPoint}
+                        up={up}
+                        idle={idle}
+                        falling={falling}
+                    />
 
                     {
-                        gameEnded && <div className="absolute top-0 left-0 p-2">
+                        gameEnded && <div className="absolute top-0 left-0 p-2 z-10">
                             <span>
                                 Next game in: {countDown.toFixed(1)}
                             </span>
                         </div>
                     }
-                    <div className={`font-semibold p-4 min-w-[250px] rounded text-2xl flex items-center z-10 justify-center -mt-32 ${gameEnded ? "bg-red-500" : "bg-[#212031] "}`}>
+                    <div className="z-10 -mt-10 pointer-events-none">
                         {
-                            gameEnded ? <span>Crashed at {crashPoint && crashPoint.toFixed(2)}X</span>
-                                : <div className="flex items-center justify-between w-[93%] ">
-                                    <span>Multiplier:</span> {multiplier.toFixed(2)}X</div>}
-
+                            gameEnded ? (
+                                <div className="flex flex-col items-center">
+                                    <span className="text-5xl font-extrabold text-red-500 drop-shadow-lg">
+                                        {crashPoint && crashPoint.toFixed(2)}x
+                                    </span>
+                                    <span className="text-sm font-semibold uppercase tracking-widest text-ink-soft mt-1">
+                                        Crashed
+                                    </span>
+                                </div>
+                            ) : (
+                                <span className={`text-5xl font-extrabold drop-shadow-lg ${gameStarted ? "text-white" : "text-ink-muted"}`}>
+                                    {multiplier.toFixed(2)}x
+                                </span>
+                            )}
                     </div>
-                    <Videos
-                        animationSrc={animationSrc}
-                        setAnimationSrc={setAnimationSrc}
-                        up={up}
-                        idle={idle}
-                        falling={falling} />
                 </div>
             </div>
             <div className="flex w-screen lg:w-[800px] p-4 flex-col">

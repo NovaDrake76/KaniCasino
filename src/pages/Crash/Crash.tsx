@@ -25,7 +25,6 @@ const CrashGame = () => {
   const [countDown, setCountDown] = useState(0);
   const [userGambled, setUserGambled] = useState(false);
   const [userMultiplier, setUserMultiplier] = useState(0);
-  const [animationSrc, setAnimationSrc] = useState(idle);
   const [userCashedOut, setUserCashedOut] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
   const [gameState, setGameState] = useState<any>({
@@ -105,11 +104,9 @@ const CrashGame = () => {
       if (sync.phase === "running") {
         setGameStarted(true);
         setGameEnded(false);
-        setAnimationSrc(up);
       } else if (sync.phase === "betting") {
         setGameStarted(false);
         setGameEnded(false);
-        setAnimationSrc(idle);
       }
     };
 
@@ -123,7 +120,6 @@ const CrashGame = () => {
 
   useEffect(() => {
     const startListener = () => {
-      setAnimationSrc(up);
       setMultiplier(1.0);
       setCrashPoint(null);
       setGameStarted(true);
@@ -133,10 +129,7 @@ const CrashGame = () => {
       setCountDown(0); // Reset the countdown
     };
 
-    let timeoutId: NodeJS.Timeout;
-
     const resultListener = (crashPoint: number) => {
-      setAnimationSrc(falling);
       setCrashPoint(crashPoint);
 
       setGameStarted(false);
@@ -157,8 +150,6 @@ const CrashGame = () => {
       setHistory((prevHistory) => [...prevHistory, { crashPoint }]);
       setGameEnded(true);
       setCountDown(10.7);
-
-      timeoutId = setTimeout(() => setAnimationSrc(idle), 700);
     };
 
     socket.on("crash:start", startListener);
@@ -168,10 +159,6 @@ const CrashGame = () => {
       // Clean up listeners when the component is unmounted
       socket.off("crash:start", startListener);
       socket.off("crash:result", resultListener);
-
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
     };
   }, [multiplier, userCashedOut]);
 
@@ -203,10 +190,9 @@ const CrashGame = () => {
         <GameContainer
           crashPoint={crashPoint}
           multiplier={multiplier}
-          animationSrc={animationSrc}
+          gameStarted={gameStarted}
           gameEnded={gameEnded}
           countDown={countDown}
-          setAnimationSrc={setAnimationSrc}
           up={up}
           idle={idle}
           falling={falling}
