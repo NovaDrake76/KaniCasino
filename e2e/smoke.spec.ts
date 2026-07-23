@@ -75,18 +75,27 @@ test("the most opened section renders above the games and category listings", as
   await expect(page.getByText("Hot Case")).toBeVisible();
 
   const topOf = async (text: string | RegExp) => {
-    const box = await page.getByText(text).first().boundingBox();
-    return box ? box.y : -1;
+    const el = page.getByText(text).first();
+    if ((await el.count()) === 0) return null;
+    const box = await el.boundingBox();
+    return box ? box.y : null;
   };
+
   const ys = [
     await topOf("Most Opened Cases"),
     await topOf("Our Games"),
-    await topOf("Join our Discord"),
     await topOf(/^LEADERBOARD$/),
     await topOf("Event Cases"),
   ];
-  expect(ys.every((y) => y > 0)).toBe(true);
-  expect([...ys]).toEqual([...ys].sort((a, b) => a - b));
+  expect(ys.every((y) => y !== null)).toBe(true);
+  expect([...ys]).toEqual([...ys].sort((a, b) => (a as number) - (b as number)));
+
+  // the discord block renders only when VITE_DISCORD_INVITE is set, which ci does not
+  const discord = await topOf("Join our Discord");
+  if (discord !== null) {
+    expect(discord).toBeGreaterThan(ys[1] as number);
+    expect(discord).toBeLessThan(ys[2] as number);
+  }
 });
 
 test("the most opened section is absent when nothing has been opened", async ({ page }) => {
