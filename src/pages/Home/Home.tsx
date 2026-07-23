@@ -15,6 +15,7 @@ const Home = () => {
   const [cases, setCases] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
   const [mostOpened, setMostOpened] = useState<MostOpenedCase[]>([]);
+  const [mostOpenedLoading, setMostOpenedLoading] = useState<boolean>(true);
 
   const getNewCases = async () => {
     setLoading(true);
@@ -33,7 +34,8 @@ const Home = () => {
     // the section hides itself if nothing has been opened yet, so a failure is quiet
     getMostOpenedCases(5)
       .then(setMostOpened)
-      .catch(() => setMostOpened([]));
+      .catch(() => setMostOpened([]))
+      .finally(() => setMostOpenedLoading(false));
   }, []);
 
   const BannerContent: BannerProps[] = [
@@ -92,13 +94,18 @@ const Home = () => {
             <Banner key={index} left={_item.left} right={_item.right} />
           ))}
         </Carousel>
-        {mostOpened.length > 0 && (
-          <CaseListing
-            name="Most Opened Cases"
-            description="What everyone is opening right now."
-            cases={mostOpened}
-            eager
-          />
+        {/* the skeleton reserves the row while loading so the sections below do not jump */}
+        {mostOpenedLoading ? (
+          <CaseListing name="Most Opened Cases" loading cases={[]} />
+        ) : (
+          mostOpened.length > 0 && (
+            <CaseListing
+              name="Most Opened Cases"
+              description="What everyone is opening right now."
+              cases={mostOpened}
+              eager
+            />
+          )
         )}
 
         <GameListing name="Our Games" />
