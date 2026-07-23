@@ -14,10 +14,13 @@ interface GameHistory {
     history: any;
 }
 
+// matches the countdown reset in Crash.tsx, itself just under the server's 12s betting window
+const BETTING_COUNTDOWN_S = 10.7;
+
 const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, gameStarted, gameEnded, countDown, up, idle, falling, history }) => {
     return (
         <div className="flex flex-col">
-            <div className="flex lg:w-[800px] border-b border-gray-700  p-4">
+            <div className="flex flex-col gap-2 lg:w-[800px] border-b border-gray-700  p-4">
                 <div className="flex rounded items-center flex-col justify-center w-full h-[340px] relative overflow-hidden bg-surface-nav">
                     <CrashGraph
                         gameStarted={gameStarted}
@@ -53,6 +56,16 @@ const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, gameStar
                                 </span>
                             )}
                     </div>
+                </div>
+                {/* drains through the betting window; the empty track stays so the layout never shifts */}
+                <div className="w-full h-1.5 bg-surface-raised overflow-hidden">
+                    <div
+                        className="h-full bg-accent-gold"
+                        style={{
+                            width: gameEnded ? `${Math.min((countDown / BETTING_COUNTDOWN_S) * 100, 100)}%` : "0%",
+                            transition: "width 100ms linear",
+                        }}
+                    />
                 </div>
             </div>
             <div className="flex w-screen lg:w-[800px] p-4 flex-col">
