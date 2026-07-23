@@ -7,6 +7,7 @@
 //
 // spec shape: { "Millennium": { price: 45, cover: "<url>", category: "Blue Archive",
 //   items: [ { name, rarity: "1".."5", image: "<url>" }, ... ] }, ... }
+//   the title defaults to "<key> Case"; set def.title to override it.
 const mongoose = require("mongoose");
 require("dotenv").config();
 const fs = require("fs");
@@ -34,7 +35,7 @@ async function main() {
 
   let created = 0;
   for (const [name, def] of Object.entries(spec)) {
-    const title = titleFor(name);
+    const title = def.title || titleFor(name);
     if (await Case.findOne({ title })) {
       console.log(`skip "${title}" — already exists`);
       continue;

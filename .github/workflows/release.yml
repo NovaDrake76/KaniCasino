@@ -1,0 +1,32 @@
+name: Release
+
+# cutting a release is just tagging a commit that is already on main and already
+# deployed: the deploy webhook fires on push to main, not on tags. this only turns the
+# tag into a github release with notes, so there is a readable history of what shipped.
+#
+#   npm version minor -m "release: %s"   # bumps package.json and makes the v tag
+#   git push --follow-tags
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            --verify-tag

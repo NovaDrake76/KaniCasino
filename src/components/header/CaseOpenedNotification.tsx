@@ -27,9 +27,9 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
   return (
     // css keyframes, not react-driven transitions: they run on dom insertion, so the entry
     // can't be skipped when react batches the mount and the state flip into one paint
-    <div className="h-28 w-40 shrink-0 animate-livedrop-gap">
+    <div className="h-28 w-40 shrink-0 overflow-hidden animate-livedrop-gap">
     <div
-      className="flex flex-col min-w-[160px] h-28 items-center animate-livedrop-fall border bg-[#141225]"
+      className="flex flex-col w-full h-28 items-center animate-livedrop-fall border bg-[#141225]"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       style={{
@@ -57,7 +57,11 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
                 }`,
             }}
           />
-          <div className="text-white z-10">{item.name}</div>
+          {/* skin names like "M4A1-S | Dark Horse" used to run past the card and shove
+              the next drop sideways; clamp to two lines and ellipsis the rest */}
+          <div className="text-white z-10 w-full px-1 text-center text-xs leading-tight break-words line-clamp-2" title={item.name}>
+            {item.name}
+          </div>
         </div>
         <div className={`absolute top-0 w-full h-full  flex flex-col transition-all duration-300 items-center ${isHovering ? "opacity-100" : "opacity-0"}`}
           style={{

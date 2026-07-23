@@ -17,7 +17,10 @@ const { isRealMoneyMode } = require("../utils/mode");
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
-const MAX_PRICE = 1000000;
+// headroom over the priciest item in the game. the katowice 2014 capsules put a rarity-5
+// sticker around 51M KP, and at the old 1M cap most of that value could only be sold to
+// the house, never listed or bid on.
+const MAX_PRICE = 100000000;
 const MAX_ORDER_QTY = 20;
 const SELL_LEVEL = 5;
 const BUY_LEVEL = 10;

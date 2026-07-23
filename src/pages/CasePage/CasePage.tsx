@@ -13,6 +13,8 @@ import { BasicItem } from "../../components/Types";
 import QuantityButton from "../../components/QuantityButton";
 import RouletteContainer from "./RoulleteContainer";
 import Monetary from '../../components/Monetary';
+import { applyMeta } from "../../seo/meta";
+import { caseMeta } from "../../seo/caseMeta";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -51,11 +53,20 @@ const CasePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // prerender bakes the real name into the html; PageMeta's generic /case/ entry would
+  // overwrite it on hydration, so put it back once the case itself has loaded
+  useEffect(() => {
+    if (!data?.title) return;
+    const { title, description } = caseMeta(data);
+    applyMeta(title, description, `/case/${data._id || id}`);
+  }, [data, id]);
+
   const resetProps = () => {
     setShowPrize(false);
     setAnimationAux2(false);
 
-    setAnimationAux(!animationAux);
+    // set, never toggled: as a toggle the case only flew away on every other open
+    setAnimationAux(true);
 
     setTimeout(() => {
       setStarted(true);
@@ -84,6 +95,8 @@ const CasePage = () => {
       toast.success(res.message, { theme: "dark" });
       setShowPrize(false);
       setAnimationAux2(false);
+      // clear the fly-away too, or the idle case image replays it and holds at opacity 0
+      setAnimationAux(false);
       setOpenedItems([]);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Could not sell items", { theme: "dark" });

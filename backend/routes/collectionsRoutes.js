@@ -147,7 +147,7 @@ router.get("/summary", async (req, res) => {
     }
 
     const { countById } = indexInventory(user.inventory);
-    const cases = await Case.find({}, { title: 1, image: 1, price: 1, items: 1 })
+    const cases = await Case.find({}, { title: 1, image: 1, price: 1, items: 1, category: 1 })
       .populate("items", "rarity baseValue");
 
     const collections = cases.map((c) => ({
@@ -155,6 +155,7 @@ router.get("/summary", async (req, res) => {
       title: c.title,
       image: c.image,
       price: c.price,
+      category: c.category || "",
       ...caseStats(c, countById),
     }));
 

@@ -1,12 +1,24 @@
 {
   "site": "https://kanicasino.com",
   "name": "KaniCasino",
-  "defaultDescription": "KaniCasino is a case opening website where you can open cases of Touhou, CS2, anything! No real money involved.",
+  "defaultDescription": "KaniCasino is a free case opening simulator. Open CS2 cases, gacha character cases and Touhou cases with fake coins. No real money involved.",
   "defaultImage": "https://i.imgur.com/2NEJRGB.jpg",
+  "categories": {
+    "Counter-Strike": "CS2 Case Simulator",
+    "Blue Archive": "Blue Archive Gacha Simulator",
+    "Uma Musume": "Uma Musume Gacha Simulator",
+    "Touhou": "Touhou Casino",
+    "Animals": "Case Simulator"
+  },
+  "defaultCategoryPhrase": "Case Simulator",
+  "caseMeta": {
+    "title": "{name} | {phrase} | KaniCasino",
+    "description": "Open the {name} for K₽{price} on KaniCasino, a free provably fair {phrase}. Fake coins, no real money involved."
+  },
   "static": {
     "/": {
-      "title": "KaniCasino | Open cases, play, and trade with fake coins",
-      "description": "Open Touhou, CS2 and cat cases, play Crash, Coin Flip, Slots and Case Battles, and trade on the market. Fake coins only, no real money."
+      "title": "Case Simulator | CS2, Gacha and Touhou Cases | KaniCasino",
+      "description": "Open CS2 cases, sticker capsules, gacha character cases and Touhou cases for free with fake coins. Provably fair, with Crash, Slots and case battles."
     },
     "/marketplace": {
       "title": "Marketplace | KaniCasino",
@@ -53,8 +65,8 @@
     },
     {
       "pattern": "^/case/",
-      "title": "Open a case | KaniCasino",
-      "description": "Open this case for a shot at its rarest drops. Provably fair, no real money involved."
+      "title": "Open a case | Case Simulator | KaniCasino",
+      "description": "Open this case for a shot at its rarest drops on KaniCasino, a free provably fair case simulator. Fake coins, no real money involved."
     },
     {
       "pattern": "^/profile/",

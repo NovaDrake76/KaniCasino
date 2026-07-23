@@ -181,6 +181,30 @@ describe("GET /admin/stats/users/:id", () => {
     expect(res.body.recent[0].type).toBe(TX.ITEM_SELL);
   });
 
+  test("the recent ledger stays in write order when rows share a timestamp", async () => {
+    const admin = await makeUser({ isAdmin: true });
+    const player = await makeUser();
+
+    // ledger writes land in the same millisecond often enough to matter, and this used
+    // to make recent[0] arbitrary. forced here rather than raced so it cannot flake.
+    const stamp = new Date("2026-07-01T12:00:00.000Z");
+    const order = [TX.SIGNUP, TX.BONUS, TX.SLOT_BET, TX.MARKET_BUY, TX.ITEM_SELL];
+    for (const type of order) {
+      await Transaction.create({
+        userId: player._id,
+        type,
+        direction: "credit",
+        amount: 10,
+        balanceAfter: 0,
+        createdAt: stamp,
+      });
+    }
+
+    const res = await get(`/admin/stats/users/${player._id}`, admin);
+    expect(res.status).toBe(200);
+    expect(res.body.recent.map((r) => r.type)).toEqual([...order].reverse());
+  });
+
   test("unknown and malformed ids answer 404", async () => {
     const admin = await makeUser({ isAdmin: true });
     expect((await get(`/admin/stats/users/${new mongoose.Types.ObjectId()}`, admin)).status).toBe(404);
