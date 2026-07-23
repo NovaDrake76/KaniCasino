@@ -287,8 +287,11 @@ async function playerDetail(id, days) {
       { $match: { userId: uid, ...blackjackHandsMatch(since) } },
       { $count: "n" },
     ]),
+    // _id breaks the tie: ledger writes land in the same millisecond often enough that
+    // sorting on createdAt alone leaves the newest rows in an arbitrary order. objectids
+    // climb with insertion, so this is the order they were actually written in.
     Transaction.find({ userId: uid })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: -1 })
       .limit(15)
       .select("type direction amount balanceAfter createdAt")
       .lean(),
