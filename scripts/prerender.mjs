@@ -74,7 +74,7 @@ const structuredData = (html) => {
       },
       {
         "@type": "VideoGame",
-        name: `${routes.name} CS2 Case Simulator`,
+        name: `${routes.name} Case Simulator`,
         url: `${routes.site}/`,
         description: routes.defaultDescription,
         applicationCategory: "Game",
@@ -86,6 +86,20 @@ const structuredData = (html) => {
   };
   const json = JSON.stringify(data).replace(/</g, "\\u003c");
   return html.replace("</head>", `  <script type="application/ld+json">${json}</script>\n</head>`);
+};
+
+// mirrors src/seo/caseMeta.ts. only the interpolation is duplicated: the phrases and both
+// templates come from routes.json, so the two sides cannot say different things. this file
+// is .mjs and cannot import the .ts one, and the runtime needs it because PageMeta's
+// generic /case/ entry would otherwise overwrite these titles on hydration.
+const fill = (tpl, vars) => tpl.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
+const caseMeta = (c) => {
+  const phrase = (c.category && routes.categories[String(c.category).trim()]) || routes.defaultCategoryPhrase;
+  const vars = { name: c.title, price: String(c.price ?? 0), phrase };
+  return {
+    title: fill(routes.caseMeta.title, vars),
+    description: fill(routes.caseMeta.description, vars),
+  };
 };
 
 // generated rather than shipped in public/, so it can never drift from routes.json and so
@@ -155,15 +169,19 @@ if (!base) {
     // first six), so the first cover is the one to preload
     const first = cases.find((c) => c?.image);
     if (first) {
+      // this rewrites the "/" the static loop already wrote, so it has to re-apply the
+      // json-ld too or the homepage silently loses it whenever the api answers
       write(
         "/",
         preloadImage(
-          render(shell, {
-            title: routes.static["/"].title,
-            description: routes.static["/"].description,
-            url: routes.site + "/",
-            image: routes.defaultImage,
-          }),
+          structuredData(
+            render(shell, {
+              title: routes.static["/"].title,
+              description: routes.static["/"].description,
+              url: routes.site + "/",
+              image: routes.defaultImage,
+            })
+          ),
           first.image
         )
       );
@@ -176,14 +194,12 @@ if (!base) {
       // of dist, and mongo ids are hex anyway, so refuse the rest rather than sanitise
       if (!c?._id || !/^[a-f0-9]{24}$/i.test(String(c._id))) continue;
       const route = `/case/${c._id}`;
-      // the counter-strike pages are the ones with search demand, so name the thing
-      // people actually type. everything else keeps the plain wording.
-      const kind = c.category === "Counter-Strike" ? "CS2 Case Simulator" : "Case Simulator";
+      const { title, description } = caseMeta(c);
       write(
         route,
         render(shell, {
-          title: `${c.title} | ${kind} | KaniCasino`,
-          description: `Open the ${c.title} for K₽${c.price} on KaniCasino, a free provably fair case simulator. Fake coins, no real money involved.`,
+          title,
+          description,
           url: routes.site + route,
           image: c.image || routes.defaultImage,
         })

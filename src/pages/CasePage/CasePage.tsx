@@ -13,6 +13,8 @@ import { BasicItem } from "../../components/Types";
 import QuantityButton from "../../components/QuantityButton";
 import RouletteContainer from "./RoulleteContainer";
 import Monetary from '../../components/Monetary';
+import { applyMeta } from "../../seo/meta";
+import { caseMeta } from "../../seo/caseMeta";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -50,6 +52,14 @@ const CasePage = () => {
     //scroll to top
     window.scrollTo(0, 0);
   }, []);
+
+  // prerender bakes the real name into the html; PageMeta's generic /case/ entry would
+  // overwrite it on hydration, so put it back once the case itself has loaded
+  useEffect(() => {
+    if (!data?.title) return;
+    const { title, description } = caseMeta(data);
+    applyMeta(title, description, `/case/${data._id || id}`);
+  }, [data, id]);
 
   const resetProps = () => {
     setShowPrize(false);
