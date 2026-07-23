@@ -25,4 +25,12 @@ const crashPointFromSeed = (serverSeed) => {
   return crashPointFromRandom(parseInt(hash.slice(8, 16), 16));
 };
 
-module.exports = { GROWTH, INSTANT_CRASH_CHANCE, multiplierAt, crashPointFromRandom, crashPointFromSeed };
+// an auto-cashout target off the wire: cents precision, 1.01x..10000x; null = invalid
+const normalizeAutoCashout = (value) => {
+  if (typeof value !== "number" || !Number.isFinite(value)) return null;
+  const rounded = Math.round(value * 100) / 100;
+  if (rounded < 1.01 || rounded > 10000) return null;
+  return rounded;
+};
+
+module.exports = { GROWTH, INSTANT_CRASH_CHANCE, multiplierAt, crashPointFromRandom, crashPointFromSeed, normalizeAutoCashout };

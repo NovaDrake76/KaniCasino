@@ -1,12 +1,14 @@
 const Round = require("../models/Round");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
-const { multiplierAt, crashPointFromSeed } = require("../utils/crashMath");
+const { multiplierAt, crashPointFromSeed, normalizeAutoCashout } = require("../utils/crashMath");
 const { consumeNextSeed } = require("../utils/gameChain");
 const { sha256 } = require("../utils/hashChain");
 
 const freshState = () => ({
   gameBets: {},
   gamePlayers: {},
+  // per-user auto-cashout targets; server-enforced so a lagging tab still cashes out
+  autoCashouts: {},
   crashPoint: 1.0,
   gameStartTime: null,
   serverSeed: null, // the round's seed, kept secret until the round ends
@@ -64,7 +66,15 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
         if (!userId) return reply({ error: "You must be logged in to bet" });
         if (!bettingOpen || !round) return reply({ error: "Betting is closed for this round" });
 
-        if (!Number.isInteger(bet) || bet < 1 || bet > 1000000) {
+        // the bet panel sends { amount, autoCashoutAt }; a bare number still works
+        const payload = typeof bet === "object" && bet !== null ? bet : { amount: bet };
+        const amount = payload.amount;
+        const autoCashoutAt =
+          payload.autoCashoutAt == null ? null : normalizeAutoCashout(payload.autoCashoutAt);
+        if (payload.autoCashoutAt != null && autoCashoutAt === null) {
+          return reply({ error: "Invalid auto cashout target" });
+        }
+        if (!Number.isInteger(amount) || amount < 1 || amount > 1000000) {
           return reply({ error: "Invalid bet amount" });
         }
 
@@ -79,10 +89,10 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
         pendingBets.add(userId);
         let updatedUser;
         try {
-          updatedUser = await chargeUser(userId, bet, {
+          updatedUser = await chargeUser(userId, amount, {
             awardXp: false,
             type: TX.CRASH_BET,
-            meta: { bet, roundId },
+            meta: { bet: amount, roundId },
           });
         } finally {
           pendingBets.delete(userId);
@@ -97,12 +107,13 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
           { _id: round._id },
           {
             $push: {
-              bets: { userId, username: updatedUser.username, amount: bet, payout: 0 },
+              bets: { userId, username: updatedUser.username, amount, payout: 0 },
             },
           }
         );
 
-        gameState.gameBets[userId] = bet;
+        gameState.gameBets[userId] = amount;
+        if (autoCashoutAt) gameState.autoCashouts[userId] = autoCashoutAt;
         gameState.gamePlayers[userId] = {
           _id: updatedUser._id,
           username: updatedUser.username,
@@ -143,45 +154,8 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
         const multiplier = calculateMultiplier();
 
         if (multiplier < gameState.crashPoint) {
-          const betAmount = gameState.gameBets[userId];
-          const payout = betAmount * multiplier;
-
-          // claim the cashout before paying: a second emit in the same tick must
-          // not be paid again while this credit is still in flight
-          const roundId = round ? String(round._id) : null;
-          pendingCashouts.add(userId);
-          let updatedUser;
-          try {
-            updatedUser = await creditUser(userId, payout, payout - betAmount, {
-              type: TX.CRASH_CASHOUT,
-              meta: { betAmount, multiplier, roundId },
-            });
-          } finally {
-            pendingCashouts.delete(userId);
-          }
-          if (!updatedUser) {
-            return done(); // account is gone; leave the bet uncashed
-          }
-
-          if (round) {
-            await Round.updateOne(
-              { _id: round._id, "bets.userId": userId },
-              { $set: { "bets.$.payout": payout, "bets.$.multiplier": multiplier, "bets.$.settledAt": new Date() } }
-            );
-          }
-
-          // keep the player visible with their locked-in payout
-          player.payout = multiplier;
-
-          io.to(userId.toString()).emit("userDataUpdated", {
-            walletBalance: updatedUser.walletBalance,
-            xp: updatedUser.xp,
-            level: updatedUser.level,
-          });
-
-          io.emit("crash:gameState", publicState(gameState));
-
-          socket.emit("crash:cashoutSuccess", { userId, payout, multiplier });
+          delete gameState.autoCashouts[userId]; // the manual click beat the target
+          await settleCashout(userId, multiplier, (data) => socket.emit("crash:cashoutSuccess", data));
         }
 
         return done();
@@ -191,6 +165,57 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
       }
     });
   });
+
+  // pay one player's bet at `multiplier` and lock the payout in; shared by the manual
+  // cashout and the auto-cashout sweep. returns true only when the credit landed.
+  const settleCashout = async (userId, multiplier, notify) => {
+    const player = gameState.gamePlayers[userId];
+    if (!player || player.payout != null || pendingCashouts.has(userId)) return false;
+
+    const betAmount = gameState.gameBets[userId];
+    const payout = betAmount * multiplier;
+    // capture the round now: a settle in flight while the round turns over must not
+    // write into the next round's record
+    const activeRound = round;
+    const roundId = activeRound ? String(activeRound._id) : null;
+
+    // claim the cashout before paying: a second attempt in the same tick must
+    // not be paid again while this credit is still in flight
+    pendingCashouts.add(userId);
+    let updatedUser;
+    try {
+      updatedUser = await creditUser(userId, payout, payout - betAmount, {
+        type: TX.CRASH_CASHOUT,
+        meta: { betAmount, multiplier, roundId },
+      });
+    } finally {
+      pendingCashouts.delete(userId);
+    }
+    if (!updatedUser) {
+      return false; // account is gone; leave the bet uncashed
+    }
+
+    if (activeRound) {
+      await Round.updateOne(
+        { _id: activeRound._id, "bets.userId": userId },
+        { $set: { "bets.$.payout": payout, "bets.$.multiplier": multiplier, "bets.$.settledAt": new Date() } }
+      );
+    }
+
+    // keep the player visible with their locked-in payout
+    player.payout = multiplier;
+
+    io.to(userId.toString()).emit("userDataUpdated", {
+      walletBalance: updatedUser.walletBalance,
+      xp: updatedUser.xp,
+      level: updatedUser.level,
+    });
+
+    io.emit("crash:gameState", publicState(gameState));
+
+    notify({ userId, payout, multiplier });
+    return true;
+  };
 
   const calculateMultiplier = () => {
     if (!gameState.gameStartTime) return 1.0; // no round running
@@ -250,9 +275,38 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
       ).catch((e) => console.log(e));
     }
 
+    // the sweep awaits credits, so a slow one must not let the next tick run the
+    // bust branch concurrently and settle the round twice
+    let ticking = false;
     const multiplierInterval = setInterval(async () => {
       if (stopped) return clearInterval(multiplierInterval);
+      if (ticking) return;
+      ticking = true;
+      try {
+        await tick();
+      } finally {
+        ticking = false;
+      }
+    }, tickMs);
+
+    const tick = async () => {
       const currentMultiplier = calculateMultiplier();
+
+      // pay due auto-cashouts at exactly their target before the bust check, so a
+      // target the curve did reach still pays on the very tick the round ends
+      const due = Object.entries(gameState.autoCashouts).filter(
+        ([, target]) => target <= currentMultiplier && target < gameState.crashPoint
+      );
+      if (due.length) {
+        for (const [userId] of due) delete gameState.autoCashouts[userId];
+        await Promise.all(
+          due.map(([userId, target]) =>
+            settleCashout(userId, target, (data) =>
+              io.to(userId).emit("crash:cashoutSuccess", data)
+            ).catch((e) => console.log(e))
+          )
+        );
+      }
 
       if (currentMultiplier >= gameState.crashPoint) {
         clearInterval(multiplierInterval);
@@ -278,7 +332,7 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
       } else {
         io.emit("crash:multiplier", currentMultiplier);
       }
-    }, tickMs);
+    };
     ticker = multiplierInterval;
   };
 

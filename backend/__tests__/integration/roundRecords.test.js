@@ -144,6 +144,48 @@ test("crash writes a round, ties the stake to it, and settles it at the bust", a
   expect(done.bets[0].payout).toBe(0); // an instant bust pays nobody
 });
 
+test("an auto cashout pays at exactly its target", async () => {
+  // a seed with a high crash point, and a low target: the curve grows in real time
+  // (1.05x lands ~0.8s in), so the test never has to wait out a whole round
+  mockCrashSeed = RUNNING_SEED;
+  const user = await makeUser(5000);
+  const io = makeIo();
+
+  start(crashGame, io, FAST_CRASH);
+  const socket = makeSocket(String(user._id));
+  io.connection(socket);
+  const opened = await betOnRound("crash", "crash:bet", socket, [
+    { amount: 100, autoCashoutAt: 1.05 },
+  ]);
+
+  const paid = await until(async () => {
+    const r = await Round.findById(opened._id);
+    return r && r.bets[0] && r.bets[0].payout > 0 ? r : null;
+  }, "the auto cashout to land on the round");
+  // paid at the target, not at whatever multiplier the tick happened to see
+  expect(paid.bets[0].multiplier).toBe(1.05);
+  expect(paid.bets[0].payout).toBeCloseTo(105, 6);
+  const tx = await Transaction.findOne({ userId: user._id, type: TX.CRASH_CASHOUT });
+  expect(tx.amount).toBeCloseTo(105, 6);
+  expect(tx.meta.multiplier).toBe(1.05);
+});
+
+test("a bad auto-cashout target refuses the bet before any money moves", async () => {
+  mockCrashSeed = RUNNING_SEED;
+  const user = await makeUser(5000);
+  const io = makeIo();
+
+  start(crashGame, io, FAST_CRASH);
+  const socket = makeSocket(String(user._id));
+  io.connection(socket);
+
+  await until(roundIn("crash", "betting"), "crash betting to open");
+  let reply;
+  await socket.handlers["crash:bet"]({ amount: 100, autoCashoutAt: 0.5 }, (r) => { reply = r; });
+  expect(reply.error).toBeTruthy();
+  expect(await Transaction.findOne({ userId: user._id, type: TX.CRASH_BET })).toBeNull();
+});
+
 test("a crash cashout is recorded on the round", async () => {
   // a seed with a high crash point, so the round is comfortably still running at cashout
   mockCrashSeed = RUNNING_SEED;

@@ -1,4 +1,4 @@
-const { multiplierAt, crashPointFromRandom, crashPointFromSeed, INSTANT_CRASH_CHANCE } = require("../../utils/crashMath");
+const { multiplierAt, crashPointFromRandom, crashPointFromSeed, normalizeAutoCashout, INSTANT_CRASH_CHANCE } = require("../../utils/crashMath");
 const { sha256 } = require("../../utils/hashChain");
 
 // the OLD, broken derivation: read the outcome straight off sha256(seed). since sha256(seed)
@@ -57,5 +57,20 @@ describe("crash math", () => {
       expect(m).toBeGreaterThanOrEqual(prev);
       prev = m;
     }
+  });
+
+  test("auto-cashout targets are rounded to cents and bounded", () => {
+    expect(normalizeAutoCashout(2)).toBe(2);
+    expect(normalizeAutoCashout(1.238)).toBe(1.24);
+    expect(normalizeAutoCashout(1.01)).toBe(1.01);
+    expect(normalizeAutoCashout(10000)).toBe(10000);
+    // below the floor, above the cap, or not a finite number -> refused
+    expect(normalizeAutoCashout(1.004)).toBe(null); // rounds under the 1.01 floor
+    expect(normalizeAutoCashout(0.5)).toBe(null);
+    expect(normalizeAutoCashout(10001)).toBe(null);
+    expect(normalizeAutoCashout(NaN)).toBe(null);
+    expect(normalizeAutoCashout(Infinity)).toBe(null);
+    expect(normalizeAutoCashout("2")).toBe(null);
+    expect(normalizeAutoCashout(null)).toBe(null);
   });
 });
