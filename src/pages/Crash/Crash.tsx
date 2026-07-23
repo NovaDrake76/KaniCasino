@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import SocketConnection from "../../services/socket"
 import UserContext from "../../UserContext";
@@ -17,6 +17,8 @@ interface GameHistory {
 
 const CrashGame = () => {
   const [bet, setBet] = useState<number | null>(null);
+  const [cashoutAt, setCashoutAt] = useState<string>("2.00");
+  const [queued, setQueued] = useState(false);
   const [multiplier, setMultiplier] = useState(1.0);
   const [crashPoint, setCrashPoint] = useState(null as number | null);
   const [history, setHistory] = useState<GameHistory[]>([]);
@@ -36,6 +38,34 @@ const CrashGame = () => {
 
   const { isLogged, toogleUserData, userData, toogleUserFlow } = useContext(UserContext);
 
+  const queuedRef = useRef<{ amount: number; autoCashoutAt: number | null } | null>(null);
+
+  const buildPayload = () => {
+    const target = parseFloat(cashoutAt);
+    return {
+      amount: bet as number,
+      autoCashoutAt: Number.isFinite(target) && target >= 1.01 ? Math.round(target * 100) / 100 : null,
+    };
+  };
+
+  const placeBet = (payload: { amount: number; autoCashoutAt: number | null }) => {
+    setUserGambled(true);
+    setUserCashedOut(false);
+
+    // the server has the final word: a refused bet used to leave the ui claiming
+    // the player was in the round
+    socket.emit("crash:bet", payload, (result: { ok?: boolean; error?: string }) => {
+      if (result?.error) {
+        setUserGambled(false);
+        toast.error(result.error);
+      }
+    });
+  };
+  // the queue flush lives in a socket listener registered once; the ref keeps it
+  // reading the current closure instead of the mount-time one
+  const placeBetRef = useRef(placeBet);
+  placeBetRef.current = placeBet;
+
   const handleBet = () => {
     if (!isLogged) {
       toogleUserFlow(true);
@@ -43,17 +73,19 @@ const CrashGame = () => {
     }
 
     if (bet === null || bet < 1) return;
-    setUserGambled(true);
-    setUserCashedOut(false);
 
-    // the server has the final word: a refused bet used to leave the ui claiming
-    // the player was in the round
-    socket.emit("crash:bet", bet, (result: { ok?: boolean; error?: string }) => {
-      if (result?.error) {
-        setUserGambled(false);
-        toast.error(result.error);
+    // a click while a round runs queues the bet for the next window; a second click cancels
+    if (gameStarted) {
+      if (queuedRef.current) {
+        queuedRef.current = null;
+        setQueued(false);
+      } else {
+        queuedRef.current = buildPayload();
+        setQueued(true);
       }
-    });
+      return;
+    }
+    placeBet(buildPayload());
   };
 
   const handleCashout = () => {
@@ -81,6 +113,13 @@ const CrashGame = () => {
   useEffect(() => {
     const gameStateListener = (gameState: any) => {
       setGameState(gameState);
+      // a null start time means the betting window is open: flush a queued bet
+      if (gameState.gameStartTime == null && queuedRef.current) {
+        const payload = queuedRef.current;
+        queuedRef.current = null;
+        setQueued(false);
+        placeBetRef.current(payload);
+      }
     };
 
     socket.on("crash:gameState", gameStateListener);
@@ -185,7 +224,8 @@ const CrashGame = () => {
   return (
     <div className="w-screen flex flex-col items-center justify-center gap-12">
       <div className="flex bg-[#212031] rounded flex-col lg:flex-row">
-        <SideMenu bet={bet} setBet={setBet} gameStarted={gameStarted} handleBet={handleBet} handleCashout={handleCashout}
+        <SideMenu bet={bet} setBet={setBet} cashoutAt={cashoutAt} setCashoutAt={setCashoutAt} queued={queued}
+         multiplier={multiplier} gameStarted={gameStarted} handleBet={handleBet} handleCashout={handleCashout}
          isLogged={isLogged} userGambled={userGambled} userCashedOut={userCashedOut} userData={userData} userMultiplier={userMultiplier} disableButton={disableButton}/>
         <GameContainer
           crashPoint={crashPoint}
