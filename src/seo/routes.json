@@ -1,12 +1,12 @@
 {
   "site": "https://kanicasino.com",
   "name": "KaniCasino",
-  "defaultDescription": "KaniCasino is a case opening website where you can open cases of Touhou, CS2, anything! No real money involved.",
+  "defaultDescription": "KaniCasino is a free CS2 case simulator. Open every CS2 case, sticker capsule and souvenir package with fake coins. No real money involved.",
   "defaultImage": "https://i.imgur.com/2NEJRGB.jpg",
   "static": {
     "/": {
-      "title": "KaniCasino | Open cases, play, and trade with fake coins",
-      "description": "Open Touhou, CS2 and cat cases, play Crash, Coin Flip, Slots and Case Battles, and trade on the market. Fake coins only, no real money."
+      "title": "CS2 Case Simulator | Open CS2 Cases Free | KaniCasino",
+      "description": "Open every CS2 case, sticker capsule and souvenir package for free with fake coins. A provably fair case opening simulator with Crash, Slots and case battles."
     },
     "/marketplace": {
       "title": "Marketplace | KaniCasino",
@@ -53,8 +53,8 @@
     },
     {
       "pattern": "^/case/",
-      "title": "Open a case | KaniCasino",
-      "description": "Open this case for a shot at its rarest drops. Provably fair, no real money involved."
+      "title": "Open a case | CS2 Case Simulator | KaniCasino",
+      "description": "Open this case for a shot at its rarest drops on KaniCasino, a free provably fair case simulator. Fake coins, no real money involved."
     },
     {
       "pattern": "^/profile/",

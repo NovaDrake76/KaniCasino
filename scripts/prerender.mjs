@@ -59,6 +59,52 @@ const preloadImage = (html, url) =>
     `  <link rel="preload" as="image" href="${esc(url)}" fetchpriority="high" />\n</head>`
   );
 
+// search engines read this to render the sitelinks search box and to understand that the
+// site is a game rather than a shop. inlined as json-ld because nothing renders it.
+const structuredData = (html) => {
+  const data = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${routes.site}/#website`,
+        url: `${routes.site}/`,
+        name: routes.name,
+        description: routes.defaultDescription,
+      },
+      {
+        "@type": "VideoGame",
+        name: `${routes.name} CS2 Case Simulator`,
+        url: `${routes.site}/`,
+        description: routes.defaultDescription,
+        applicationCategory: "Game",
+        operatingSystem: "Web browser",
+        playMode: "MultiPlayer",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      },
+    ],
+  };
+  const json = JSON.stringify(data).replace(/</g, "\\u003c");
+  return html.replace("</head>", `  <script type="application/ld+json">${json}</script>\n</head>`);
+};
+
+// generated rather than shipped in public/, so it can never drift from routes.json and so
+// every case page is listed. case urls are appended once the api answers.
+const writeSitemap = (caseRoutes) => {
+  const entry = (loc, priority) =>
+    `  <url>\n    <loc>${esc(loc)}</loc>\n    <priority>${priority}</priority>\n  </url>`;
+  const priorities = { "/": "1.0", "/provably-fair": "0.6", "/privacy-policy": "0.3" };
+  const urls = Object.keys(routes.static).map((r) =>
+    entry(routes.site + r, priorities[r] || "0.8")
+  );
+  for (const r of caseRoutes) urls.push(entry(routes.site + r, "0.7"));
+  writeFileSync(
+    join(dist, "sitemap.xml"),
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>\n`
+  );
+  console.log(`prerender: sitemap with ${urls.length} urls`);
+};
+
 // "/" is dist/index.html itself; "/crash" becomes dist/crash/index.html
 const write = (route, html) => {
   const dir = route === "/" ? dist : join(dist, route);
@@ -75,15 +121,13 @@ const shell = readFileSync(indexPath, "utf8");
 
 let count = 0;
 for (const [route, meta] of Object.entries(routes.static)) {
-  write(
-    route,
-    render(shell, {
-      title: meta.title,
-      description: meta.description,
-      url: routes.site + route,
-      image: routes.defaultImage,
-    })
-  );
+  const html = render(shell, {
+    title: meta.title,
+    description: meta.description,
+    url: routes.site + route,
+    image: routes.defaultImage,
+  });
+  write(route, route === "/" ? structuredData(html) : html);
   count++;
 }
 console.log(`prerender: ${count} static routes`);
@@ -92,6 +136,7 @@ console.log(`prerender: ${count} static routes`);
 // art and name. best effort by design: the api being down must never fail a deploy, and
 // a case added after this build still renders through the /case/* rewrite with the
 // generic card.
+const caseRoutes = [];
 const base = env.VITE_BASE_URL;
 const apiKey = env.VITE_API_KEY;
 if (!base) {
@@ -131,15 +176,19 @@ if (!base) {
       // of dist, and mongo ids are hex anyway, so refuse the rest rather than sanitise
       if (!c?._id || !/^[a-f0-9]{24}$/i.test(String(c._id))) continue;
       const route = `/case/${c._id}`;
+      // the counter-strike pages are the ones with search demand, so name the thing
+      // people actually type. everything else keeps the plain wording.
+      const kind = c.category === "Counter-Strike" ? "CS2 Case Simulator" : "Case Simulator";
       write(
         route,
         render(shell, {
-          title: `${c.title} | KaniCasino`,
-          description: `Open the ${c.title} on KaniCasino for K₽${c.price}. Provably fair, no real money involved.`,
+          title: `${c.title} | ${kind} | KaniCasino`,
+          description: `Open the ${c.title} for K₽${c.price} on KaniCasino, a free provably fair case simulator. Fake coins, no real money involved.`,
           url: routes.site + route,
           image: c.image || routes.defaultImage,
         })
       );
+      caseRoutes.push(route);
       n++;
     }
     console.log(`prerender: ${n} case pages`);
@@ -147,3 +196,5 @@ if (!base) {
     console.log(`prerender: skipping case pages (${err.message})`);
   }
 }
+
+writeSitemap(caseRoutes);
