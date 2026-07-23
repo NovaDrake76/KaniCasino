@@ -17,7 +17,8 @@ interface GameHistory {
 
 const CrashGame = () => {
   const [bet, setBet] = useState<number | null>(null);
-  const [cashoutAt, setCashoutAt] = useState<string>("2.00");
+  // empty = no auto cashout; the field shows "Off" until the player opts in
+  const [cashoutAt, setCashoutAt] = useState<string>("");
   const [queued, setQueued] = useState(false);
   const [multiplier, setMultiplier] = useState(1.0);
   const [crashPoint, setCrashPoint] = useState(null as number | null);

@@ -36,8 +36,9 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
             : 0;
 
     const stepTarget = (dir: 1 | -1) => {
-        const base = hasTarget ? target : 2;
-        const next = Math.max(1.01, Math.round((base + dir * 0.5) * 100) / 100);
+        // from "off", either arrow lands on the classic default first
+        if (!hasTarget) return setCashoutAt("2.00");
+        const next = Math.max(1.01, Math.round((target + dir * 0.5) * 100) / 100);
         setCashoutAt(next.toFixed(2));
     };
 
@@ -97,7 +98,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
           />
           <button
             onClick={() => setBet(Math.max(1, Math.floor((bet || 0) / 2)))}
-            className="px-3 bg-surface-raised hover:bg-surface-hover border-y border-line text-sm font-semibold"
+            className="px-3 bg-surface-raised hover:bg-surface-hover border-y border-line rounded-none text-sm font-semibold"
           >
             ½
           </button>
@@ -124,7 +125,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
           />
           <button
             onClick={() => stepTarget(-1)}
-            className="px-3 bg-surface-raised hover:bg-surface-hover border-y border-line"
+            className="px-3 bg-surface-raised hover:bg-surface-hover border-y border-line rounded-none"
           >
             <AiFillCaretDown />
           </button>
