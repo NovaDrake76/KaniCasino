@@ -113,6 +113,31 @@ describe("GET /admin/stats/games enrichment", () => {
     });
     expect(plinko.theoRtp).toBeCloseTo(0.9655, 4);
   });
+
+  test("blackjack rows count hands, not the double/split/insurance charges", async () => {
+    const admin = await makeUser({ isAdmin: true });
+    const a = await makeUser();
+    const b = await makeUser();
+    // player a: one hand, doubled (two BLACKJACK_BET rows, one hand); won
+    await row(a._id, TX.BLACKJACK_BET, "debit", 100, { handId: "BJ1" });
+    await row(a._id, TX.BLACKJACK_BET, "debit", 100, { handId: "BJ1", double: true });
+    await row(a._id, TX.BLACKJACK_WIN, "credit", 400, { handId: "BJ1", betAmount: 200 });
+    // player b: one hand, took insurance, then pushed
+    await row(b._id, TX.BLACKJACK_BET, "debit", 100, { handId: "BJ2" });
+    await row(b._id, TX.BLACKJACK_BET, "debit", 50, { handId: "BJ2", insurance: true });
+    await row(b._id, TX.BLACKJACK_PUSH, "credit", 100, { handId: "BJ2" });
+
+    const res = await get("/admin/stats/games", admin);
+    const blackjack = res.body.games.find((g) => g.game === "blackjack");
+    expect(blackjack).toMatchObject({
+      plays: 2, // two hands, not the four BLACKJACK_BET rows
+      wagered: 350, // 100 + 100 + 100 + 50, every KP staked
+      paidOut: 500, // win 400 + push 100
+      net: -150,
+      uniquePlayers: 2,
+    });
+    expect(blackjack.theoRtp).toBeCloseTo(0.9943, 4);
+  });
 });
 
 describe("GET /admin/stats/users/:id", () => {

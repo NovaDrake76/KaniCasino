@@ -47,9 +47,21 @@ const GAME_LINES = [
   { game: "coinflip", bets: [TX.COINFLIP_BET], outs: [TX.COINFLIP_WIN, TX.COINFLIP_REFUND] },
   { game: "slots", bets: [TX.SLOT_BET], outs: [TX.SLOT_WIN] },
   { game: "plinko", bets: [TX.PLINKO_BET], outs: [TX.PLINKO_WIN] },
+  { game: "blackjack", bets: [TX.BLACKJACK_BET], outs: [TX.BLACKJACK_WIN, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND] },
   { game: "cases", bets: [TX.CASE_OPEN], outs: [] },
   { game: "battles", bets: [TX.BATTLE_ENTRY], outs: [TX.BATTLE_REFUND] },
 ];
+
+// blackjack charges BLACKJACK_BET again on double/split/insurance, so a raw debit
+// count overcounts hands; the deal row is the only one with no side-action marker
+const blackjackHandsMatch = (since) => ({
+  type: TX.BLACKJACK_BET,
+  direction: "debit",
+  "meta.double": { $ne: true },
+  "meta.split": { $ne: true },
+  "meta.insurance": { $ne: true },
+  ...matchSince(since),
+});
 
 async function gameStats(days) {
   const since = sinceFor(days);
@@ -92,9 +104,18 @@ async function gameStats(days) {
   ]);
   const reach = new Map(perType.map((r) => [r._id, r]));
 
+  const [bjHands] = await Transaction.aggregate([
+    { $match: blackjackHandsMatch(since) },
+    { $count: "n" },
+  ]);
+  const blackjackHands = bjHands ? bjHands.n : 0;
+
   const games = GAME_LINES.map(({ game, bets, outs }) => {
     const betSlot = byTypeDir[`${bets[0]}:debit`] || { amount: 0, count: 0, qty: 0 };
-    const plays = game === "cases" ? betSlot.qty || betSlot.count : betSlot.count;
+    const plays =
+      game === "cases" ? betSlot.qty || betSlot.count
+      : game === "blackjack" ? blackjackHands
+      : betSlot.count;
     const wagered = sumOf(bets, "debit");
     const paidOut = sumOf(outs, "credit");
     const uniquePlayers = (reach.get(bets[0]) || {}).users || 0;
@@ -248,7 +269,7 @@ async function playerDetail(id, days) {
 
   const since = sinceFor(days);
   const uid = user._id;
-  const [byTypeDirRows, recent, referrals, referrer] = await Promise.all([
+  const [byTypeDirRows, bjHandsRows, recent, referrals, referrer] = await Promise.all([
     Transaction.aggregate([
       { $match: { userId: uid, ...matchSince(since) } },
       {
@@ -262,6 +283,10 @@ async function playerDetail(id, days) {
         },
       },
     ]),
+    Transaction.aggregate([
+      { $match: { userId: uid, ...blackjackHandsMatch(since) } },
+      { $count: "n" },
+    ]),
     Transaction.find({ userId: uid })
       .sort({ createdAt: -1 })
       .limit(15)
@@ -274,10 +299,14 @@ async function playerDetail(id, days) {
   const slots = new Map(byTypeDirRows.map((r) => [`${r._id.type}:${r._id.direction}`, r]));
   const get = (type, direction) => slots.get(`${type}:${direction}`) || { total: 0, count: 0, max: 0, qty: 0 };
 
+  const blackjackHands = bjHandsRows[0] ? bjHandsRows[0].n : 0;
   const games = GAME_LINES.map(({ game, bets, outs }) => {
     const bet = get(bets[0], "debit");
     const won = outs.reduce((s, o) => s + get(o, "credit").total, 0);
-    const plays = game === "cases" ? bet.qty || bet.count : bet.count;
+    const plays =
+      game === "cases" ? bet.qty || bet.count
+      : game === "blackjack" ? blackjackHands
+      : bet.count;
     return { game, plays, wagered: bet.total, won, net: bet.total - won };
   }).filter((g) => g.plays > 0);
 
