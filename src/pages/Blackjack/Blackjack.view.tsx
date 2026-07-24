@@ -1,6 +1,8 @@
 import { GiCardDraw, GiTwoCoins } from "react-icons/gi";
 import { FaClone, FaHandPaper } from "react-icons/fa";
-import Title from "../../components/Title";
+import GameLayout from "../../components/game/GameLayout";
+import GameButton from "../../components/game/GameButton";
+import BetAmount from "../../components/game/BetAmount";
 import Monetary from "../../components/Monetary";
 import PlayingCard from "./PlayingCard";
 import { outcomeLabel, totalLabel } from "./blackjackCards";
@@ -171,44 +173,30 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
       : totalLabel(dealerShown.length > 1 ? dealerShown : dealerCards.slice(0, 2));
 
   return (
-    <div className="w-full flex flex-col items-center py-6 px-3">
-      <Title title="Blackjack" />
-      <div className="flex flex-col lg:flex-row gap-6 w-full max-w-[1100px] mt-4">
-        {/* control panel: one stable layout, actions always visible */}
-        <div className="w-full lg:w-72 shrink-0 order-2 lg:order-1 bg-[#212031] rounded-lg p-4 flex flex-col gap-3 h-fit">
-          <div className="flex items-center justify-between">
-            <label className="text-xs uppercase tracking-wider text-[#84819a]">Bet amount</label>
-            <span className="text-xs text-[#84819a]">
-              <Monetary value={walletBalance} />
-            </span>
-          </div>
-          <div className="flex items-stretch bg-[#19172D] border border-[#2A2840] focus-within:border-indigo-500 rounded-md overflow-hidden">
-            <span className="flex items-center pl-3 pr-1 text-[#FFCC00] font-extrabold text-sm">
-              K₽
-            </span>
-            <input
-              value={betInput}
-              onChange={(e) => setBetInput(e.target.value)}
-              onBlur={normalizeBet}
-              disabled={!betting || acting}
-              inputMode="numeric"
-              className="flex-1 min-w-0 bg-transparent outline-none px-2 py-2.5 text-sm font-semibold disabled:opacity-60"
-            />
-            {[
-              { label: "½", fn: halveBet },
-              { label: "2×", fn: doubleBet },
-              { label: "Max", fn: maxOutBet },
-            ].map((b) => (
-              <button
-                key={b.label}
-                onClick={b.fn}
-                disabled={!betting || acting}
-                className="px-3 border-l border-[#2A2840] text-sm font-bold text-[#C9C6DE] hover:bg-[#281D3F] disabled:opacity-40"
-              >
-                {b.label}
-              </button>
-            ))}
-          </div>
+    <GameLayout
+      title="Blackjack"
+      footer={
+        <button
+          onClick={() => hand?.rollId && openRoll(hand.rollId)}
+          disabled={!hand?.rollId}
+          className="text-xs text-[#625F7E] hover:text-[#84819a] disabled:cursor-default"
+        >
+          Provably fair · one seed per hand, one cursor per card
+        </button>
+      }
+      panel={
+        <>
+          <BetAmount
+            value={betInput}
+            onChange={setBetInput}
+            onBlur={normalizeBet}
+            onHalve={halveBet}
+            onDouble={doubleBet}
+            onMax={maxOutBet}
+            betValue={betValue}
+            disabled={!betting || acting}
+            hint={<>Balance <Monetary value={walletBalance} /></>}
+          />
 
           {awaitingInsurance && (
             <div className="rounded-md bg-[#19172D] border border-[#2A2840] p-3 flex flex-col gap-2">
@@ -244,13 +232,9 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
             <ActionButton label="Double" icon={<GiTwoCoins size={17} />} iconColor="text-[#5EEAD4]" onClick={double} disabled={!canDouble} />
           </div>
 
-          <button
-            onClick={() => deal()}
-            disabled={!betting || acting || betValue > walletBalance}
-            className="min-h-[50px] rounded-md bg-green-600 hover:bg-green-500 font-extrabold text-base tracking-wide disabled:opacity-40 disabled:hover:bg-green-600 transition-colors"
-          >
+          <GameButton onClick={() => deal()} disabled={!betting || acting || betValue > walletBalance}>
             {acting ? "Dealing..." : phase === "settled" ? "Rebet" : "Deal"}
-          </button>
+          </GameButton>
 
           {phase === "settled" && settledOutcome && (
             <div className="rounded-md bg-[#19172D] px-3 py-2 text-center">
@@ -301,10 +285,10 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
               </div>
             </div>
           )}
-        </div>
-
-        {/* table */}
-        <div className="flex-1 order-1 lg:order-2 rounded-lg p-4 sm:p-8 flex flex-col items-center justify-between min-h-[460px] sm:min-h-[540px] [background:radial-gradient(ellipse_at_50%_-20%,#2a2650_0%,#1a1830_55%,#151225_100%)]">
+        </>
+      }
+    >
+      <div className="w-full rounded-lg p-4 sm:p-8 flex flex-col items-center justify-between min-h-[460px] sm:min-h-[540px] [background:radial-gradient(ellipse_at_50%_-20%,#2a2650_0%,#1a1830_55%,#151225_100%)]">
           {/* dealer */}
           <div className="flex flex-col items-center min-h-[170px] justify-start">
             {hand ? (
@@ -365,18 +349,9 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
                 insurance <Monetary value={hand.insuranceBet} />
               </span>
             )}
-          </div>
         </div>
       </div>
-
-      <button
-        onClick={() => hand?.rollId && openRoll(hand.rollId)}
-        disabled={!hand?.rollId}
-        className="mt-4 text-xs text-[#625F7E] hover:text-[#84819a] disabled:cursor-default"
-      >
-        Provably fair · one seed per hand, one cursor per card
-      </button>
-    </div>
+    </GameLayout>
   );
 };
 

@@ -1,5 +1,7 @@
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
 import Monetary from '../../components/Monetary';
+import GameButton from '../../components/game/GameButton';
+import BetAmount from '../../components/game/BetAmount';
 import { User } from '../../components/Types';
 
 interface SideMenuProps {
@@ -76,39 +78,13 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
 
     return (
       <div className="lg:w-[340px] flex flex-col gap-2 border-r border-gray-700 py-4 px-6">
-        <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
-          <span>Bet Amount</span>
-          <span><Monetary value={bet || 0} /></span>
-        </div>
-        <div className="flex">
-          <input
-            type="number"
-            value={bet || ""}
-            onKeyDown={(event) => {
-              if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
-                event.preventDefault();
-              }
-            }}
-            max={MAX_BET}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              setBet(value < 0 ? 0 : value);
-            }}
-            className="p-2 bg-surface-nav border border-line rounded-l rounded-r-none w-full text-sm"
-          />
-          <button
-            onClick={() => setBet(Math.max(1, Math.floor((bet || 0) / 2)))}
-            className="px-3 bg-surface-raised hover:bg-surface-hover border-y border-line rounded-none text-sm font-semibold"
-          >
-            ½
-          </button>
-          <button
-            onClick={() => setBet(Math.min(MAX_BET, (bet || 1) * 2))}
-            className="px-3 bg-surface-raised hover:bg-surface-hover border border-line rounded-r rounded-l-none text-sm font-semibold"
-          >
-            2×
-          </button>
-        </div>
+        <BetAmount
+          value={bet === null ? "" : String(bet)}
+          onChange={(value) => setBet(value === "" ? null : Math.min(MAX_BET, Number(value)))}
+          onHalve={() => setBet(Math.max(1, Math.floor((bet || 0) / 2)))}
+          onDouble={() => setBet(Math.min(MAX_BET, (bet || 1) * 2))}
+          betValue={bet || 0}
+        />
 
         <div className="flex items-center justify-between text-xs font-semibold text-ink-muted mt-2">
           <span>Cashout At</span>
@@ -144,13 +120,14 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
           </span>
         </div>
 
-        <button
-          onClick={userGambled && gameStarted ? handleCashout : handleBet}
-          className="p-3 rounded bg-green-500 hover:bg-green-400 text-[#10241A] font-bold w-full mt-2 disabled:opacity-40 disabled:hover:bg-green-500 transition-colors"
-          disabled={disabled}
-        >
-          {renderMessage()}
-        </button>
+        <div className="mt-2">
+          <GameButton
+            onClick={userGambled && gameStarted ? handleCashout : handleBet}
+            disabled={disabled}
+          >
+            {renderMessage()}
+          </GameButton>
+        </div>
       </div>
     );
   }

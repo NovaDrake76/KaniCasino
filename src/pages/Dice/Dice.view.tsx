@@ -1,7 +1,10 @@
-import Title from "../../components/Title";
+import GameLayout from "../../components/game/GameLayout";
+import GameButton from "../../components/game/GameButton";
+import BetAmount from "../../components/game/BetAmount";
+import ModeToggle from "../../components/game/ModeToggle";
+import OptionRow from "../../components/game/OptionRow";
 import Monetary from "../../components/Monetary";
 import { AUTO_COUNTS } from "./Dice.services";
-import { MAX_BET } from "./diceControls";
 import { DiceViewProps } from "./Dice.types";
 
 const TICKS = [0, 25, 50, 75, 100];
@@ -49,55 +52,26 @@ const DiceView: React.FC<DiceViewProps> = ({
       : `linear-gradient(to right, ${GREEN} 0%, ${GREEN} ${targetPct}%, ${RED} ${targetPct}%, ${RED} 100%)`;
 
   return (
-    <div className="w-screen flex flex-col items-center py-6 gap-6 px-4">
-      <Title title="Dice" />
+    <GameLayout
+      title="Dice"
+      footer={
+        <p className="text-ink-muted text-xs max-w-[640px] text-center">
+          Balance: <Monetary value={walletBalance} />. Every roll is provably fair. 99% RTP, 1% house edge.
+        </p>
+      }
+      panel={
+        <>
+          <ModeToggle mode={mode} setMode={setMode} />
 
-      <div className="flex flex-col lg:flex-row w-full max-w-[1100px] bg-surface rounded-lg overflow-hidden border border-line">
-        <div className="lg:w-[320px] flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-line p-5">
-          <div className="flex bg-surface-nav rounded p-1 text-sm font-semibold">
-            <button
-              onClick={() => setMode("manual")}
-              className={`flex-1 py-1.5 rounded ${mode === "manual" ? "bg-surface-raised text-white" : "text-ink-muted"}`}
-            >
-              Manual
-            </button>
-            <button
-              onClick={() => setMode("auto")}
-              className={`flex-1 py-1.5 rounded ${mode === "auto" ? "bg-surface-raised text-white" : "text-ink-muted"}`}
-            >
-              Auto
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
-            <span>Bet Amount</span>
-            <span><Monetary value={betValue} /></span>
-          </div>
-          <div className="flex">
-            <input
-              type="number"
-              value={betInput}
-              max={MAX_BET}
-              onChange={(e) => setBetInput(e.target.value.replace(/[^0-9]/g, ""))}
-              onBlur={normalizeBet}
-              disabled={autoRunning}
-              className="p-2 bg-surface-nav border border-line rounded-l rounded-r-none w-full text-sm disabled:opacity-50"
-            />
-            <button
-              onClick={halveBet}
-              disabled={autoRunning}
-              className="px-3 bg-surface-raised hover:bg-surface-hover border-y border-line rounded-none text-sm font-semibold disabled:opacity-50"
-            >
-              ½
-            </button>
-            <button
-              onClick={doubleBet}
-              disabled={autoRunning}
-              className="px-3 bg-surface-raised hover:bg-surface-hover border border-line rounded-r rounded-l-none text-sm font-semibold disabled:opacity-50"
-            >
-              2×
-            </button>
-          </div>
+          <BetAmount
+            value={betInput}
+            onChange={setBetInput}
+            onBlur={normalizeBet}
+            onHalve={halveBet}
+            onDouble={doubleBet}
+            betValue={betValue}
+            disabled={autoRunning}
+          />
 
           <div className="flex items-center justify-between text-xs font-semibold text-ink-muted mt-1">
             <span>Profit on Win</span>
@@ -105,42 +79,22 @@ const DiceView: React.FC<DiceViewProps> = ({
           </div>
 
           {mode === "auto" && (
-            <div className="flex flex-col gap-2 mt-1">
-              <span className="text-xs font-semibold text-ink-muted">Number of Bets</span>
-              <div className="grid grid-cols-4 gap-1">
-                {AUTO_COUNTS.map((n) => (
-                  <button
-                    key={n}
-                    onClick={() => setAutoCount(n)}
-                    disabled={autoRunning}
-                    className={`py-1.5 rounded text-sm font-semibold ${autoCount === n ? "bg-surface-raised text-white" : "bg-surface-nav text-ink-muted"} disabled:opacity-50`}
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <OptionRow label="Number of Bets" options={AUTO_COUNTS} value={autoCount} onChange={setAutoCount} disabled={autoRunning} />
           )}
 
           {mode === "manual" ? (
-            <button
-              onClick={roll}
-              disabled={rolling}
-              className="p-3 rounded bg-green-500 hover:bg-green-400 text-[#10241A] font-bold w-full mt-2 disabled:opacity-40 transition-colors"
-            >
+            <GameButton onClick={roll} disabled={rolling}>
               {isLogged ? "Roll Dice" : "Sign in to play"}
-            </button>
+            </GameButton>
           ) : (
-            <button
-              onClick={autoRunning ? stopAuto : startAuto}
-              className={`p-3 rounded font-bold w-full mt-2 transition-colors ${autoRunning ? "bg-red-500 hover:bg-red-400 text-white" : "bg-green-500 hover:bg-green-400 text-[#10241A]"}`}
-            >
+            <GameButton onClick={autoRunning ? stopAuto : startAuto} variant={autoRunning ? "danger" : "primary"}>
               {autoRunning ? `Stop (${autoLeft} left)` : isLogged ? `Start ${autoCount} Bets` : "Sign in to play"}
-            </button>
+            </GameButton>
           )}
-        </div>
-
-        <div className="flex-1 flex flex-col p-6 gap-6">
+        </>
+      }
+    >
+      <div className="w-full flex flex-col gap-6">
           <div className="flex items-center justify-end gap-2 h-8 overflow-hidden">
             {history.map((h) => (
               <button
@@ -228,13 +182,8 @@ const DiceView: React.FC<DiceViewProps> = ({
             </div>
           </div>
 
-        </div>
       </div>
-
-      <p className="text-ink-muted text-xs max-w-[640px] text-center">
-        Balance: <Monetary value={walletBalance} />. Every roll is provably fair. 99% RTP, 1% house edge.
-      </p>
-    </div>
+    </GameLayout>
   );
 };
 
