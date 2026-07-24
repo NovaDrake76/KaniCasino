@@ -43,6 +43,9 @@ const GAME_LABELS: Record<string, string> = {
   coinflip: "Coin Flip",
   slots: "Slots",
   plinko: "Plinko",
+  blackjack: "Blackjack",
+  dice: "Dice",
+  mines: "Mines",
   cases: "Case openings",
   battles: "Case battles",
 };
@@ -70,8 +73,10 @@ const label = (type: string) => LINE_LABELS[type] || type.replace(/_/g, " ");
 
 const netClass = (n: number) => (n > 0 ? "text-green-400" : n < 0 ? "text-red-400" : "text-ink-soft");
 
-// KP-paying games can be judged against their designed return; item games cannot
-const KP_GAMES = new Set(["crash", "coinflip", "slots", "plinko"]);
+// KP-paying games can be judged against their designed return; item games (cases,
+// battles) pay in items, so they have no KP RTP. listing the exceptions keeps new KP
+// games from silently falling through as item games.
+const ITEM_GAMES = new Set(["cases", "battles"]);
 const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
 const rtpClass = (actual: number, theo: number | null, wagered: number) => {
   if (theo === null || wagered < 10000) return "text-ink-soft";
@@ -374,7 +379,7 @@ const BackofficeView: React.FC<Props> = ({
                   </thead>
                   <tbody>
                     {games.games.map((g) => {
-                      const kpGame = KP_GAMES.has(g.game);
+                      const kpGame = !ITEM_GAMES.has(g.game);
                       const actual = kpGame && g.wagered > 0 ? g.paidOut / g.wagered : null;
                       return (
                         <tr key={g.game} className="border-t border-line">
@@ -384,7 +389,7 @@ const BackofficeView: React.FC<Props> = ({
                           <td className="py-3 pr-4 text-ink-soft"><Monetary value={g.wagered} /></td>
                           <td className="py-3 pr-4 text-ink-soft"><Monetary value={g.paidOut} /></td>
                           <td className={`py-3 pr-4 font-semibold ${actual !== null ? rtpClass(actual, g.theoRtp, g.wagered) : "text-ink-muted"}`}>
-                            {actual !== null ? pct(actual) : "items"}
+                            {actual !== null ? pct(actual) : kpGame ? "-" : "items"}
                           </td>
                           <td className="py-3 pr-4 text-ink-muted">{kpGame && g.theoRtp ? pct(g.theoRtp) : "-"}</td>
                           <td className="py-3 pr-4 text-ink-soft">{g.biggestWin > 0 ? <Monetary value={g.biggestWin} /> : "-"}</td>

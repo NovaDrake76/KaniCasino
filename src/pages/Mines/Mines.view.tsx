@@ -253,7 +253,7 @@ const MinesView: React.FC<MinesViewProps> = ({
       </div>
 
       <p className="text-ink-muted text-xs max-w-[640px] text-center">
-        Balance: <Monetary value={walletBalance} />. Collect diamonds, avoid the bombs. Every game is provably fair, 99% RTP.
+        Balance: <Monetary value={walletBalance} />. Collect diamonds, avoid the bombs.
       </p>
     </div>
   );
