@@ -60,4 +60,17 @@ const diceRollLimiter = rateLimit({
   message: { message: "Too many rolls, slow down a little." },
 });
 
-module.exports = { loginLimiter, registerLimiter, plinkoDropLimiter, diceRollLimiter };
+// mines fires one request per tile revealed, so a player clicking through a board needs
+// more headroom than a one-roll game; keyed per user (after auth)
+const minesActionLimiter = rateLimit({
+  windowMs: 10 * 1000,
+  max: 80,
+  keyGenerator: (req) => String(req.user._id),
+  skip: skipInTests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { message: "Too many actions, slow down a little." },
+});
+
+module.exports = { loginLimiter, registerLimiter, plinkoDropLimiter, diceRollLimiter, minesActionLimiter };

@@ -22,7 +22,7 @@ export interface RollRange {
 
 export interface RollView {
   rollId: string;
-  game: "case" | "upgrade" | "slots" | "battle" | "plinko" | "blackjack" | "dice";
+  game: "case" | "upgrade" | "slots" | "battle" | "plinko" | "blackjack" | "dice" | "mines";
   clientSeed: string;
   serverSeedHash: string;
   serverSeed: string | null;
@@ -62,6 +62,9 @@ export interface VerifyResult {
   expectedResult?: number;
   expectedWon?: boolean;
   expectedPayout?: number;
+  recomputedMineSet?: number[];
+  recomputedGems?: number;
+  recomputedBusted?: boolean;
 }
 
 export const getSeed = () => api.get<SeedState>("/fair/seed").then((r) => r.data);

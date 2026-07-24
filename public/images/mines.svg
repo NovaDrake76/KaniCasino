@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 348">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#221f3d"/>
+      <stop offset="1" stop-color="#151225"/>
+    </linearGradient>
+    <linearGradient id="star" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe680"/>
+      <stop offset="1" stop-color="#f2b705"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="348" rx="14" fill="url(#bg)"/>
+  <g>
+    <rect x="40" y="70" width="48" height="48" rx="8" fill="#281d3f"/>
+    <rect x="96" y="70" width="48" height="48" rx="8" fill="#281d3f"/>
+    <rect x="152" y="70" width="48" height="48" rx="8" fill="#3a2c5c"/>
+    <rect x="40" y="126" width="48" height="48" rx="8" fill="#3a2c5c"/>
+    <rect x="96" y="126" width="48" height="48" rx="8" fill="#281d3f"/>
+    <rect x="152" y="126" width="48" height="48" rx="8" fill="#281d3f"/>
+    <rect x="40" y="182" width="48" height="48" rx="8" fill="#281d3f"/>
+    <rect x="96" y="182" width="48" height="48" rx="8" fill="#3a2c5c"/>
+    <rect x="152" y="182" width="48" height="48" rx="8" fill="#281d3f"/>
+  </g>
+  <path fill="url(#star)" stroke="#7a5c00" stroke-width="1.5" transform="translate(120 94) scale(1.5)" d="M0 -11l2.6 6.3 6.8.5-5.2 4.4 1.7 6.6L0 4.9 -5.7 8.3l1.7-6.6L-9.2 -2.7l6.8-.5z"/>
+  <g fill="#ef4444" transform="translate(64 150) scale(1.4)">
+    <circle cx="0" cy="0" r="6"/>
+    <path d="M0 0 L11 0 L6 3 Z"/><path d="M0 0 L0 11 L-3 6 Z"/><path d="M0 0 L-11 0 L-6 -3 Z"/><path d="M0 0 L0 -11 L3 -6 Z"/>
+    <path d="M0 0 L8 8 L3 6 Z"/><path d="M0 0 L-8 8 L-6 3 Z"/><path d="M0 0 L-8 -8 L-3 -6 Z"/><path d="M0 0 L8 -8 L6 -3 Z"/>
+  </g>
+  <text x="128" y="272" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#e1dde9" letter-spacing="5">MINES</text>
+</svg>

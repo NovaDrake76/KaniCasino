@@ -34,6 +34,26 @@ export async function rollDice(betAmount: number, target: number, direction: "ov
     return response.data;
 }
 
+export async function startMines(betAmount: number, mineCount: number) {
+    const response = await api.post(`/games/mines/start`, { betAmount, mineCount });
+    return response.data;
+}
+
+export async function revealMines(tile: number) {
+    const response = await api.post(`/games/mines/reveal`, { tile });
+    return response.data;
+}
+
+export async function cashoutMines() {
+    const response = await api.post(`/games/mines/cashout`, {});
+    return response.data;
+}
+
+export async function getActiveMinesGame() {
+    const response = await api.get(`/games/mines/active`);
+    return response.data;
+}
+
 export async function dealBlackjack(betAmount: number) {
     const response = await api.post(`/games/blackjack/deal`, { betAmount });
     return response.data;

@@ -6,6 +6,7 @@ const { roll: computeRoll, pickFromRanges, hashServerSeed } = require("./provabl
 const { PAYOUTS: PLINKO_PAYOUTS, PLINKO_ALGO_VERSION, derivePath, binFromPath } = require("./plinkoMath");
 const { BLACKJACK_ALGO_VERSION, replayHand } = require("./blackjackMath");
 const { DICE_ALGO_VERSION, resolveRoll: resolveDiceRoll } = require("./diceMath");
+const { MINES_ALGO_VERSION, deriveMines, multiplierFor: minesMultiplierFor, payoutCentsFor: minesPayoutCentsFor } = require("./minesMath");
 const { rollFloat } = require("./provablyFair");
 
 function generateRollId() {
@@ -232,6 +233,55 @@ async function verifyDiceRoll(rollId) {
   };
 }
 
+// recompute a mines game from its public inputs: re-derive the committed mine layout,
+// confirm no revealed tile was a mine (unless it busted on the last one), and re-price
+// the payout. folds through the same minesMath the game uses.
+async function verifyMinesRoll(rollId) {
+  const v = await getRollForVerify(rollId);
+  if (!v || v.game !== "mines") return { ok: false, reason: "not a mines roll" };
+  if (!v.serverSeed) return { ok: false, reason: "server seed not revealed yet" };
+
+  const outcome = v.outcome || {};
+  if (outcome.algoVersion !== MINES_ALGO_VERSION) {
+    return { ok: false, reason: "algorithm version superseded" };
+  }
+
+  const commitmentValid = hashServerSeed(v.serverSeed) === v.serverSeedHash;
+  const mineSet = deriveMines(v.serverSeed, v.clientSeed, v.nonce, outcome.mineCount);
+  const mineSetMatches = JSON.stringify(mineSet) === JSON.stringify((outcome.mineSet || []).slice().sort((a, b) => a - b));
+
+  const revealed = outcome.revealed || [];
+  const busted = !!outcome.busted;
+  // on a bust the last revealed tile is the mine and the rest are gems; on a cashout
+  // every revealed tile must be a gem
+  const safeReveals = busted ? revealed.slice(0, -1) : revealed;
+  const gemsAllSafe = safeReveals.every((t) => !mineSet.includes(t));
+  const bustTileIsMine = busted ? mineSet.includes(revealed[revealed.length - 1]) : true;
+
+  const gems = safeReveals.length;
+  const expectedPayout = busted ? 0 : minesPayoutCentsFor(outcome.betAmount, outcome.mineCount, gems) / 100;
+  const expectedMultiplier = busted ? 0 : minesMultiplierFor(outcome.mineCount, gems);
+
+  const ok =
+    commitmentValid &&
+    mineSetMatches &&
+    gemsAllSafe &&
+    bustTileIsMine &&
+    expectedPayout === outcome.payout;
+
+  return {
+    ok,
+    commitmentValid,
+    recomputedMineSet: mineSet,
+    recomputedGems: gems,
+    recomputedMultiplier: expectedMultiplier,
+    recomputedPayout: expectedPayout,
+    recomputedBusted: busted,
+    expectedMineSet: outcome.mineSet,
+    expectedPayout: outcome.payout,
+  };
+}
+
 // route a verify request to the game's reference verifier
 async function verifyRoll(rollId) {
   const r = await Roll.findOne({ rollId }).select("game").lean();
@@ -240,6 +290,7 @@ async function verifyRoll(rollId) {
   if (r.game === "plinko") return verifyPlinkoRoll(rollId);
   if (r.game === "blackjack") return verifyBlackjackRoll(rollId);
   if (r.game === "dice") return verifyDiceRoll(rollId);
+  if (r.game === "mines") return verifyMinesRoll(rollId);
   return { ok: false, reason: "no server-side verifier for this game" };
 }
 
@@ -252,5 +303,6 @@ module.exports = {
   verifyPlinkoRoll,
   verifyBlackjackRoll,
   verifyDiceRoll,
+  verifyMinesRoll,
   verifyRoll,
 };
