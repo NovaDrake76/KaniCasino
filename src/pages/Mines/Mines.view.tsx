@@ -4,37 +4,28 @@ import { AUTO_COUNTS } from "./Mines.services";
 import { MAX_BET, TILES, mineOptions } from "./minesGrid";
 import { MinesViewProps } from "./Mines.types";
 
-const StarGem = () => (
+const Diamond = () => (
   <svg viewBox="0 0 24 24" className="w-3/5 h-3/5 drop-shadow">
     <defs>
-      <linearGradient id="mines-star" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stopColor="#ffe680" />
-        <stop offset="1" stopColor="#f2b705" />
+      <linearGradient id="mines-gem" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#7bffbe" />
+        <stop offset="1" stopColor="#17c964" />
       </linearGradient>
     </defs>
-    <path
-      fill="url(#mines-star)"
-      stroke="#7a5c00"
-      strokeWidth="0.6"
-      d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.7 6.6L12 16.9 6.3 20.3l1.7-6.6L2.8 9.3l6.8-.5z"
-    />
+    <g stroke="#0c6b39" strokeWidth="0.5" strokeLinejoin="round">
+      <polygon points="6,3 18,3 22,9 12,22 2,9" fill="url(#mines-gem)" />
+      <path d="M2 9h20M6 3l2 6-2 0M18 3l-2 6 2 0M8 9l4 13 4-13" fill="none" opacity="0.5" />
+    </g>
   </svg>
 );
 
-const Seal = ({ hit }: { hit: boolean }) => (
-  <svg viewBox="0 0 24 24" className={`w-2/3 h-2/3 ${hit ? "" : "opacity-70"}`}>
-    <g fill={hit ? "#ef4444" : "#b0355f"}>
-      <circle cx="12" cy="12" r="5" />
-      {Array.from({ length: 8 }).map((_, i) => {
-        const a = (i * Math.PI) / 4;
-        return (
-          <path
-            key={i}
-            d={`M12 12 L${12 + Math.cos(a) * 10} ${12 + Math.sin(a) * 10} L${12 + Math.cos(a + 0.28) * 6} ${12 + Math.sin(a + 0.28) * 6} Z`}
-          />
-        );
-      })}
-    </g>
+const Bomb = ({ hit }: { hit: boolean }) => (
+  <svg viewBox="0 0 24 24" className={`w-3/5 h-3/5 ${hit ? "" : "opacity-80"}`}>
+    <circle cx="11" cy="14" r="7" fill="#161421" />
+    <circle cx="8.5" cy="11.5" r="2" fill="#3a3550" />
+    <rect x="12" y="4" width="3" height="4" rx="1" fill="#5a5470" transform="rotate(-20 13 6)" />
+    <path d="M15 5c3-2 4 1 6-1" fill="none" stroke="#8a8398" strokeWidth="1.2" strokeLinecap="round" />
+    <circle cx="21" cy="4" r="1.6" fill={hit ? "#f97316" : "#eab308"} />
   </svg>
 );
 
@@ -242,17 +233,17 @@ const MinesView: React.FC<MinesViewProps> = ({
                   key={tile}
                   onClick={() => clickable && reveal(tile)}
                   disabled={!clickable}
-                  className={`aspect-square rounded-lg flex items-center justify-center transition-all
+                  className={`aspect-square rounded-lg flex items-center justify-center transition-all duration-150
                     ${face.kind === "covered"
-                      ? `bg-surface-raised ${clickable ? "hover:bg-surface-hover hover:-translate-y-0.5 cursor-pointer" : "cursor-default"}`
+                      ? `bg-gradient-to-b from-[#3a3560] to-[#2c2846] shadow-[0_4px_0_#1a1830] ${clickable ? "cursor-pointer hover:-translate-y-1 hover:shadow-[0_6px_0_#1a1830] hover:brightness-110 active:translate-y-0 active:shadow-[0_2px_0_#1a1830]" : "cursor-default"}`
                       : face.kind === "gem"
-                        ? "bg-green-500/15 border border-green-500/40"
+                        ? "bg-green-500/15 shadow-[inset_0_2px_6px_rgba(0,0,0,0.4)] border border-green-500/40"
                         : face.kind === "mine"
-                          ? `${face.hit ? "bg-red-500/30 border border-red-500" : "bg-surface-nav border border-line"}`
-                          : "bg-surface-nav border border-line opacity-60"}`}
+                          ? `${face.hit ? "bg-red-500/30 border border-red-500 shadow-[0_0_16px_rgba(239,68,68,0.6)]" : "bg-surface-nav shadow-[inset_0_2px_6px_rgba(0,0,0,0.4)] border border-line"}`
+                          : "bg-surface-nav border border-line opacity-50"}`}
                 >
-                  {face.kind === "gem" && <StarGem />}
-                  {face.kind === "mine" && <Seal hit={face.hit} />}
+                  {face.kind === "gem" && <Diamond />}
+                  {face.kind === "mine" && <Bomb hit={face.hit} />}
                   {face.kind === "faint" && <div className="w-2 h-2 rounded-full bg-line" />}
                 </button>
               );
@@ -262,7 +253,7 @@ const MinesView: React.FC<MinesViewProps> = ({
       </div>
 
       <p className="text-ink-muted text-xs max-w-[640px] text-center">
-        Balance: <Monetary value={walletBalance} />. Collect stars, avoid the spell-card seals. Every game is provably fair, 99% RTP.
+        Balance: <Monetary value={walletBalance} />. Collect diamonds, avoid the bombs. Every game is provably fair, 99% RTP.
       </p>
     </div>
   );
