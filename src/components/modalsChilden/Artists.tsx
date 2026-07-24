@@ -20,6 +20,14 @@ const Assets = () => {
                 <p className="text-md">
                     All cats items are from the Hello Street Cat Wiki: <a href="https://streetcat.wiki/index.php/Main_Page" target="_blank" rel="noreferrer" className="text-blue-500">https://streetcat.wiki/index.php/Main_Page</a>.
                 </p>
+
+                <p className="text-md">
+                    All Uma Musume items are from Cygames: <a href="https://umamusume.jp/" target="_blank" rel="noreferrer" className="text-blue-500">https://umamusume.jp/</a>.
+                </p>
+
+                <p className="text-md">
+                    All Blue Archive items are from NEXON Games: <a href="https://bluearchive.nexon.com/" target="_blank" rel="noreferrer" className="text-blue-500">https://bluearchive.nexon.com/</a>.
+                </p>
             </div>
 
             <div className="mb-4 flex flex-col gap-2">
