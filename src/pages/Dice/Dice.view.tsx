@@ -170,19 +170,21 @@ const DiceView: React.FC<DiceViewProps> = ({
               className="relative h-4 rounded-full cursor-pointer touch-none select-none"
               style={{ background: winGradient }}
             >
-              {/* the result die, sitting just over the bar */}
-              <div
-                className={`absolute bottom-full mb-2 -translate-x-1/2 flex flex-col items-center ${dragging ? "" : "transition-all duration-500 ease-out"}`}
-                style={{ left: `${markerPct}%` }}
-              >
+              {/* the result die appears only after the first roll, sitting just over the bar */}
+              {last && (
                 <div
-                  className={`w-12 h-12 rounded-lg rotate-45 flex items-center justify-center shadow-lg ${last ? (last.won ? "bg-green-500" : "bg-red-500") : "bg-surface-raised"}`}
+                  className={`absolute bottom-full mb-2 -translate-x-1/2 flex flex-col items-center ${dragging ? "" : "transition-all duration-500 ease-out"}`}
+                  style={{ left: `${markerPct}%` }}
                 >
-                  <span className="-rotate-45 text-white font-extrabold text-xs">
-                    {last ? last.resultValue.toFixed(2) : "?"}
-                  </span>
+                  <div
+                    className={`w-12 h-12 rounded-lg rotate-45 flex items-center justify-center shadow-lg ${last.won ? "bg-green-500" : "bg-red-500"}`}
+                  >
+                    <span className="-rotate-45 text-white font-extrabold text-xs">
+                      {last.resultValue.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
               {/* the draggable target handle, grabbable on the bar */}
               <div
                 className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-9 bg-accent rounded shadow-md border-2 border-white/80 ${dragging ? "cursor-grabbing scale-110" : "cursor-grab"} transition-transform`}
