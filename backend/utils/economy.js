@@ -29,6 +29,8 @@ const TX = {
   BLACKJACK_REFUND: "blackjack_refund", // stake returned when a deal is voided
   DICE_BET: "dice_bet",
   DICE_WIN: "dice_win",
+  MINES_BET: "mines_bet",
+  MINES_WIN: "mines_win",
   MARKET_BUY: "market_buy",
   MARKET_SALE: "market_sale",
   MARKET_FEE: "market_fee", // the house cut on a settled trade, credited to HOUSE
@@ -46,7 +48,7 @@ const TX = {
 };
 
 // every KP put at risk on a game; missions and referral commission both count these
-const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.PLINKO_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN];
+const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.PLINKO_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN];
 
 function calculateXPForLevel(level) {
   return Math.floor(BASE_XP * Math.pow(GROWTH_RATE, level - 1));

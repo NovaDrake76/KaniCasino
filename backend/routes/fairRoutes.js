@@ -5,6 +5,7 @@ const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const Round = require("../models/Round");
 const BlackjackHand = require("../models/BlackjackHand");
+const MinesGame = require("../models/MinesGame");
 const { crashPointFromSeed } = require("../utils/crashMath");
 const { coinResultFromSeed } = require("../utils/coinMath");
 const { sha256 } = require("../utils/hashChain");
@@ -43,6 +44,10 @@ router.post("/rotate", isAuthenticated, async (req, res) => {
     // future draw of the live blackjack hand
     if (await BlackjackHand.exists({ userId: req.user._id, status: "active" })) {
       return res.status(409).json({ message: "Finish your blackjack hand before rotating" });
+    }
+    // and mid-mines would reveal the committed mine layout
+    if (await MinesGame.exists({ userId: req.user._id, status: "active" })) {
+      return res.status(409).json({ message: "Finish your mines game before rotating" });
     }
     const newClientSeed = req.body.clientSeed ? cleanClientSeed(req.body.clientSeed) : undefined;
     const { revealed, current } = await seeds.rotate(req.user._id, newClientSeed);

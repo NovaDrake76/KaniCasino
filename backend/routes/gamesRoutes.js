@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
-const { plinkoDropLimiter, diceRollLimiter } = require("../middleware/rateLimit");
+const { plinkoDropLimiter, diceRollLimiter, minesActionLimiter } = require("../middleware/rateLimit");
 
 const User = require("../models/User");
 const Case = require("../models/Case");
@@ -11,6 +11,7 @@ const SlotGameController = require("../games/slot");
 const PlinkoGameController = require("../games/plinko");
 const BlackjackGameController = require("../games/blackjack");
 const DiceGameController = require("../games/dice");
+const MinesGameController = require("../games/mines");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const referrals = require("../utils/referrals");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
@@ -265,6 +266,21 @@ module.exports = (io) => {
   ));
   router.get("/blackjack/active", isAuthenticated, blackjackAction(
     async (req) => ({ hand: await BlackjackGameController.active(req.user._id) })
+  ));
+
+  // mines: a game spans several requests, so each action resolves the user's single
+  // active game; reuses the statused-error wrapper (409 = resync)
+  router.post("/mines/start", isAuthenticated, minesActionLimiter, blackjackAction(
+    (req) => MinesGameController.start(req.user._id, req.body.betAmount, req.body.mineCount, io)
+  ));
+  router.post("/mines/reveal", isAuthenticated, minesActionLimiter, blackjackAction(
+    (req) => MinesGameController.reveal(req.user._id, req.body.tile, io)
+  ));
+  router.post("/mines/cashout", isAuthenticated, minesActionLimiter, blackjackAction(
+    (req) => MinesGameController.cashout(req.user._id, io)
+  ));
+  router.get("/mines/active", isAuthenticated, blackjackAction(
+    async (req) => ({ game: await MinesGameController.active(req.user._id) })
   ));
 
   // recent coin flip results, so the page has a history the moment it loads. light and
