@@ -8,7 +8,6 @@ const TICKS = [0, 25, 50, 75, 100];
 const GREEN = "#22C55E";
 const RED = "#EF4444";
 
-// the marker sits at result/100 across the track; the win zone is green, the rest red
 const DiceView: React.FC<DiceViewProps> = ({
   isLogged,
   walletBalance,
@@ -54,7 +53,6 @@ const DiceView: React.FC<DiceViewProps> = ({
       <Title title="Dice" />
 
       <div className="flex flex-col lg:flex-row w-full max-w-[1100px] bg-surface rounded-lg overflow-hidden border border-line">
-        {/* control panel */}
         <div className="lg:w-[320px] flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-line p-5">
           <div className="flex bg-surface-nav rounded p-1 text-sm font-semibold">
             <button
@@ -142,9 +140,7 @@ const DiceView: React.FC<DiceViewProps> = ({
           )}
         </div>
 
-        {/* board */}
         <div className="flex-1 flex flex-col p-6 gap-6">
-          {/* history chips */}
           <div className="flex items-center justify-end gap-2 h-8 overflow-hidden">
             {history.map((h) => (
               <button
@@ -157,22 +153,18 @@ const DiceView: React.FC<DiceViewProps> = ({
             ))}
           </div>
 
-          {/* the track: the bar itself is the target control, wrapped in a thick dark
-              housing, with the result number + die riding over it */}
           <div className="px-2 pt-14 pb-1">
             <div className="flex justify-between text-xs text-ink-muted mb-2 font-semibold px-3">
               {TICKS.map((t) => (
                 <span key={t}>{t}</span>
               ))}
             </div>
-            {/* thick rounded housing around the bar */}
             <div className="bg-surface-deep rounded-full p-2.5 border border-line shadow-inner">
               <div
                 {...trackHandlers}
                 className="relative h-3.5 rounded-full cursor-pointer touch-none select-none"
                 style={{ background: winGradient }}
               >
-                {/* the result die appears only after the first roll, over the housing */}
                 {last && (
                   <div
                     className={`absolute bottom-full mb-2 -translate-x-1/2 flex flex-col items-center pointer-events-none ${dragging ? "" : "transition-all duration-500 ease-out"}`}
@@ -187,7 +179,6 @@ const DiceView: React.FC<DiceViewProps> = ({
                     </div>
                   </div>
                 )}
-                {/* the draggable target handle, grabbable on the bar */}
                 <div
                   className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-8 bg-accent rounded shadow-md border-2 border-white/80 ${dragging ? "cursor-grabbing scale-110" : "cursor-grab"} transition-transform`}
                   style={{ left: `${targetPct}%` }}
@@ -196,7 +187,6 @@ const DiceView: React.FC<DiceViewProps> = ({
             </div>
           </div>
 
-          {/* the three interlinked fields, Stake-style */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="flex flex-col gap-1">
               <span className="text-xs font-semibold text-ink-muted">Multiplier</span>
