@@ -43,6 +43,8 @@ const COUNTERPARTY_FOR_TYPE = {
   dice_win: HOUSE,
   mines_bet: HOUSE,
   mines_win: HOUSE,
+  hilo_bet: HOUSE,
+  hilo_win: HOUSE,
   item_sell: HOUSE,
   market_order: ESCROW,
   market_order_refund: ESCROW,

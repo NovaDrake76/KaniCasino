@@ -32,7 +32,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
     <Title title="Provably Fair" />
 
     <p className="text-[#84819a] text-sm max-w-[640px] text-center">
-      Every case, upgrade, slot, plinko, blackjack, dice and mines roll is HMAC-SHA256 of your
+      Every case, upgrade, slot, plinko, blackjack, dice, mines and hilo roll is HMAC-SHA256 of your
       client seed, a nonce, and a secret server seed we commit to up front.
     </p>
 
@@ -63,11 +63,11 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
           </span>
           <button
             onClick={doVerify}
-            disabled={verifying || (roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines")}
+            disabled={verifying || (roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines" && roll.game !== "hilo")}
             className="px-4 py-1.5 rounded bg-green-700 hover:bg-green-600 text-sm font-semibold disabled:opacity-50"
             title={
-              roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines"
-                ? "Auto-verify supported for case, plinko, blackjack, dice and mines rolls"
+              roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines" && roll.game !== "hilo"
+                ? "Auto-verify supported for case, plinko, blackjack, dice, mines and hilo rolls"
                 : ""
             }
           >
@@ -122,7 +122,9 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
                     ? `Verified: the recomputed roll is ${verify.recomputedResult}, a ${verify.recomputedWon ? "win" : "loss"} at x${verify.recomputedMultiplier}, payout ${verify.recomputedPayout}.`
                     : verify.recomputedMineSet
                       ? `Verified: the mines were at ${verify.recomputedMineSet.join(", ")}; ${verify.recomputedGems} gems, ${verify.recomputedBusted ? "busted" : "cashed"}, payout ${verify.recomputedPayout}.`
-                      : `Verified: recomputed roll ${verify.recomputedRoll} maps to the same item.`
+                      : verify.recomputedCards
+                        ? `Verified: the cards were ${verify.recomputedCards.join(", ")}; ${verify.recomputedGuesses} correct, ${verify.recomputedBusted ? "busted" : "cashed"}, payout ${verify.recomputedPayout}.`
+                        : `Verified: recomputed roll ${verify.recomputedRoll} maps to the same item.`
               : `Not verified${verify.reason ? `: ${verify.reason}` : ""}.`}
           </div>
         )}

@@ -54,6 +54,31 @@ export async function getActiveMinesGame() {
     return response.data;
 }
 
+export async function startHilo(betAmount: number) {
+    const response = await api.post(`/games/hilo/start`, { betAmount });
+    return response.data;
+}
+
+export async function guessHilo(direction: "hi" | "lo") {
+    const response = await api.post(`/games/hilo/guess`, { direction });
+    return response.data;
+}
+
+export async function skipHilo() {
+    const response = await api.post(`/games/hilo/skip`, {});
+    return response.data;
+}
+
+export async function cashoutHilo() {
+    const response = await api.post(`/games/hilo/cashout`, {});
+    return response.data;
+}
+
+export async function getActiveHiloGame() {
+    const response = await api.get(`/games/hilo/active`);
+    return response.data;
+}
+
 export async function dealBlackjack(betAmount: number) {
     const response = await api.post(`/games/blackjack/deal`, { betAmount });
     return response.data;

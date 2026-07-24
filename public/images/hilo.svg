@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 348">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#221f3d"/>
+      <stop offset="1" stop-color="#151225"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="348" rx="14" fill="url(#bg)"/>
+  <g transform="translate(38 96) rotate(-10)">
+    <rect x="0" y="0" width="86" height="120" rx="10" fill="#ffffff" stroke="#0c0a18" stroke-width="2"/>
+    <text x="14" y="34" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#e02020">Q</text>
+    <path fill="#e02020" d="M20 44l7 10-7 10-7-10z"/>
+  </g>
+  <g transform="translate(132 96) rotate(8)">
+    <rect x="0" y="0" width="86" height="120" rx="10" fill="#ffffff" stroke="#0c0a18" stroke-width="2"/>
+    <text x="14" y="34" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#1c1a31">K</text>
+    <path fill="#1c1a31" d="M27 42s7 6 7 10a3.5 3.5 0 0 1-7 1.6A3.5 3.5 0 0 1 20 52c0-4 7-10 7-10z"/>
+  </g>
+  <g transform="translate(175 84)">
+    <circle cx="0" cy="0" r="17" fill="#17c964"/>
+    <path fill="#0c0a18" d="M0 -9l3 5h-6z"/>
+    <rect x="-2" y="-4" width="4" height="11" rx="2" fill="#0c0a18"/>
+  </g>
+  <g transform="translate(70 210)">
+    <circle cx="0" cy="0" r="17" fill="#e02020"/>
+    <path fill="#ffffff" d="M0 9l3 -5h-6z"/>
+    <rect x="-2" y="-7" width="4" height="11" rx="2" fill="#ffffff"/>
+  </g>
+  <text x="128" y="272" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#e1dde9" letter-spacing="5">HILO</text>
+</svg>
