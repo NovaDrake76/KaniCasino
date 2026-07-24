@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import UserContext from "../../UserContext";
 import LiveBets from "./LiveBets";
 import GameButton from "../../components/game/GameButton";
+import BetAmount from "../../components/game/BetAmount";
 import { getCoinFlipHistory } from "../../services/games/GamesServices";
 
 const socket = SocketConnection.getInstance();
@@ -146,20 +147,15 @@ const CoinFlip = () => {
     <div className="w-screen flex flex-col items-center justify-center gap-12">
       <div className="flex bg-[#212031] rounded flex-col lg:flex-row">
         <div className="lg:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
-          <input
-            type="number"
-            value={bet}
-            onKeyDown={(event) => {
-              if (!/[0-9]/.test(event.key) && event.key !== "Backspace") {
-                event.preventDefault();
-              }
-            }}
-            onChange={(e) => {
-              const value = Number(e.target.value);
-              setBet(value < 0 ? 0 : value);
-            }}
-            className="p-2 border rounded w-1/2 lg:w-full"
-          />
+          <div className="w-full">
+            <BetAmount
+              value={bet === 0 ? "" : String(bet)}
+              onChange={(value) => setBet(value === "" ? 0 : Math.min(MAX_BET, Number(value)))}
+              onHalve={() => setBet(Math.max(MIN_BET, Math.floor(bet / 2)))}
+              onDouble={() => setBet(Math.min(MAX_BET, (bet || MIN_BET) * 2))}
+              betValue={bet}
+            />
+          </div>
           <div className="flex flex-col gap-2 w-full">
             <label className="text-lg font-semibold">Choose a side</label>
             <div className="flex items-center justify-between gap-2 w-full flex-col lg:flex-row">
@@ -184,7 +180,7 @@ const CoinFlip = () => {
                 ))
               }
             </div></div>
-          <div className="mt-4">
+          <div className="w-full mt-4">
             <GameButton
               onClick={handleBet}
               disabled={

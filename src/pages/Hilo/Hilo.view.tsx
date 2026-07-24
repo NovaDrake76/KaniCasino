@@ -1,10 +1,11 @@
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import GameLayout from "../../components/game/GameLayout";
 import GameButton from "../../components/game/GameButton";
+import BetAmount from "../../components/game/BetAmount";
 import Monetary from "../../components/Monetary";
 import PlayingCard, { SuitIcon } from "../Blackjack/PlayingCard";
 import { isRedSuit, rankLabel, suitOf } from "../Blackjack/blackjackCards";
-import { MAX_BET, pct } from "./hiloCards";
+import { pct } from "./hiloCards";
 import { HiloViewProps } from "./Hilo.types";
 
 const CardChip = ({ card, label }: { card: number; label?: string }) => (
@@ -49,23 +50,15 @@ const HiloView: React.FC<HiloViewProps> = ({
       }
       panel={
         <>
-          <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
-            <span>Bet Amount</span>
-            <span><Monetary value={betValue} /></span>
-          </div>
-          <div className="flex">
-            <input
-              type="number"
-              value={betInput}
-              max={MAX_BET}
-              onChange={(e) => setBetInput(e.target.value.replace(/[^0-9]/g, ""))}
-              onBlur={normalizeBet}
-              disabled={controlsLocked}
-              className="p-2 bg-surface-nav border border-line rounded-l rounded-r-none w-full text-sm disabled:opacity-50"
-            />
-            <button onClick={halveBet} disabled={controlsLocked} className="px-3 bg-surface-raised hover:bg-surface-hover border-y border-line rounded-none text-sm font-semibold disabled:opacity-50">½</button>
-            <button onClick={doubleBet} disabled={controlsLocked} className="px-3 bg-surface-raised hover:bg-surface-hover border border-line rounded-r rounded-l-none text-sm font-semibold disabled:opacity-50">2×</button>
-          </div>
+          <BetAmount
+            value={betInput}
+            onChange={setBetInput}
+            onBlur={normalizeBet}
+            onHalve={halveBet}
+            onDouble={doubleBet}
+            betValue={betValue}
+            disabled={controlsLocked}
+          />
 
           {active ? (
             <GameButton onClick={cashout} disabled={busy || !game?.canCashout} variant="cashout">

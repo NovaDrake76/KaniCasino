@@ -2,6 +2,9 @@ import { memo, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import GameLayout from "../../components/game/GameLayout";
 import GameButton from "../../components/game/GameButton";
+import BetAmount from "../../components/game/BetAmount";
+import ModeToggle from "../../components/game/ModeToggle";
+import OptionRow from "../../components/game/OptionRow";
 import Monetary from "../../components/Monetary";
 import {
   BALL_RADIUS,
@@ -110,84 +113,23 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
     title="Plinko"
     panel={
       <>
-        <div className="flex bg-[#19172D] rounded p-1">
-          {(["manual", "auto"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              disabled={autoRunning}
-              className={`flex-1 py-2 rounded text-sm font-semibold capitalize transition-colors ${
-                mode === m ? "bg-[#281D3F]" : "text-[#84819a] hover:text-white"
-              } disabled:opacity-50`}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
+        <ModeToggle mode={mode} setMode={setMode} manualDisabled={autoRunning} autoDisabled={autoRunning} />
 
-        <div className="flex flex-col gap-1">
-          <span className="text-xs uppercase tracking-wider text-[#84819a]">Amount</span>
-          <div className="flex gap-2">
-            <input
-              type="number"
-              min={1}
-              max={maxBet}
-              value={betInput}
-              onChange={(e) => setBetInput(e.target.value)}
-              onBlur={normalizeBet}
-              className="w-full min-w-0 bg-[#19172D] border border-gray-700 focus:border-indigo-500 outline-none rounded px-3 py-2 text-sm"
-            />
-            <button onClick={halveBet} className="px-2 rounded bg-[#281D3F] hover:bg-[#3a2c5c] text-xs font-semibold">
-              1/2
-            </button>
-            <button onClick={doubleBet} className="px-2 rounded bg-[#281D3F] hover:bg-[#3a2c5c] text-xs font-semibold">
-              x2
-            </button>
-            <button onClick={maxOutBet} className="px-2 rounded bg-[#281D3F] hover:bg-[#3a2c5c] text-xs font-semibold">
-              Max
-            </button>
-          </div>
-          <span className="text-xs text-[#84819a]">
-            Bet 1 to {maxBet.toLocaleString("en-US")} on {risk} risk
-          </span>
-        </div>
+        <BetAmount
+          value={betInput}
+          onChange={setBetInput}
+          onBlur={normalizeBet}
+          onHalve={halveBet}
+          onDouble={doubleBet}
+          onMax={maxOutBet}
+          betValue={betValue}
+          hint={`Bet 1 to ${maxBet.toLocaleString("en-US")} on ${risk} risk`}
+        />
 
-        <div className="flex flex-col gap-1">
-          <span className="text-xs uppercase tracking-wider text-[#84819a]">Risk</span>
-          <div className="flex gap-2">
-            {RISKS.map((r) => (
-              <button
-                key={r}
-                onClick={() => changeRisk(r)}
-                disabled={!canChangeRisk}
-                className={`flex-1 py-2 rounded text-sm font-semibold capitalize transition-colors ${
-                  risk === r ? "bg-indigo-600" : "bg-[#19172D] text-[#84819a] hover:text-white"
-                } disabled:opacity-50`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
-        </div>
+        <OptionRow label="Risk" options={RISKS} value={risk} onChange={changeRisk} disabled={!canChangeRisk} />
 
         {mode === "auto" && (
-          <div className="flex flex-col gap-1">
-            <span className="text-xs uppercase tracking-wider text-[#84819a]">Balls</span>
-            <div className="flex gap-2">
-              {AUTO_COUNTS.map((n) => (
-                <button
-                  key={n}
-                  onClick={() => setAutoCount(n)}
-                  disabled={autoRunning}
-                  className={`flex-1 py-2 rounded text-sm font-semibold ${
-                    autoCount === n ? "bg-indigo-600" : "bg-[#19172D] text-[#84819a] hover:text-white"
-                  } disabled:opacity-50`}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
-          </div>
+          <OptionRow label="Balls" options={AUTO_COUNTS} value={autoCount} onChange={setAutoCount} disabled={autoRunning} />
         )}
 
         {mode === "manual" ? (
