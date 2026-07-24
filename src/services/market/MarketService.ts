@@ -65,6 +65,12 @@ export async function sellItem(item: any, price: number) {
     return response.data;
 }
 
+// lists several copies of one item at the same price, resolved server-side
+export async function sellItemStack(itemId: string, price: number, quantity: number) {
+    const response = await api.post(`/marketplace/`, { itemId, price, quantity });
+    return response.data;
+}
+
 export async function buyItem(id: string) {
     const response = await api.post(`/marketplace/buy/${id}`);
     return response.data;

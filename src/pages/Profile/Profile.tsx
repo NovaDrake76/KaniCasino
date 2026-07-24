@@ -14,6 +14,7 @@ import CollectionsPanel from "../Collections/CollectionsPanel";
 import MissionsPanel from "../Missions/MissionsPanel";
 import AffiliatesPanel from "../Affiliates/AffiliatesPanel";
 import { resolveTab, Tab } from "./tabs";
+import ItemCopiesModal from "./ItemCopiesModal";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -36,6 +37,7 @@ const Profile = () => {
   const { userData } = useContext(UserContext);
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [openItem, setOpenItem] = useState<any>(null);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const activeTab = resolveTab(searchParams.get("tab"), isSameUser);
@@ -78,7 +80,7 @@ const Profile = () => {
       const response = await getInventory(
         id as string,
         page,
-        filters
+        { ...filters, grouped: true }
       );
       setInventory(response);
       newPage
@@ -264,6 +266,7 @@ const Profile = () => {
                   fixable={isSameUser}
                   sellable={isSameUser}
                   setRefresh={setRefresh}
+                  onClick={() => setOpenItem(item)}
                 />
               ))
             ) : (
@@ -279,6 +282,17 @@ const Profile = () => {
           )}
         </div>
       </div>
+
+      {openItem && (
+        <ItemCopiesModal
+          userId={id as string}
+          item={openItem}
+          isOwner={isSameUser}
+          open={!!openItem}
+          setOpen={(v) => !v && setOpenItem(null)}
+          onSold={() => setRefresh((prev) => !prev)}
+        />
+      )}
     </div>
   );
 };

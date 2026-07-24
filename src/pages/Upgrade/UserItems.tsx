@@ -61,7 +61,11 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                 if (selectedCase) {
                     newFilters.caseId = selectedCase;
                 }
-                const inventory = await getInventory(userData.id, currentPage, newFilters);
+                const inventory = await getInventory(userData.id, currentPage, {
+                    ...newFilters,
+                    grouped: true,
+                    withIds: true,
+                });
                 setInventory(inventory.items);
                 setPageLimit(inventory.totalPages);
             } catch (error) {
@@ -71,16 +75,30 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
         setLoading(false);
     };
 
+    // a stacked card adds one copy per click and gives the copies back one per click,
+    // so the same card can be tapped up to the number owned
     const handleItemClick = (item: any) => {
-        const itemIdentifier = item.uniqueId;
-        const itemExists = selectedItems.some((selectedItem: { identifier: string }) => selectedItem.identifier === itemIdentifier);
-
-        setSelectedItems(
-            itemExists
-                ? selectedItems.filter((selectedItem: { identifier: string }) => selectedItem.identifier !== itemIdentifier)
-                : [...selectedItems, { item: item, identifier: itemIdentifier }]
+        const ids: string[] = item.uniqueIds?.length ? item.uniqueIds : [item.uniqueId];
+        const taken = new Set(
+            selectedItems.map((s: { identifier: string }) => s.identifier)
         );
+        const next = ids.find((id) => !taken.has(id));
+
+        if (!next) {
+            // every copy on this card is already in, so a further click gives them all back
+            setSelectedItems(
+                selectedItems.filter((s: { identifier: string }) => !ids.includes(s.identifier))
+            );
+            return;
+        }
+
+        setSelectedItems([...selectedItems, { item, identifier: next }]);
         setSelectedCase(item.case);
+    };
+
+    const selectedCountFor = (item: any) => {
+        const ids: string[] = item.uniqueIds?.length ? item.uniqueIds : [item.uniqueId];
+        return selectedItems.filter((s: { identifier: string }) => ids.includes(s.identifier)).length;
     };
 
     const clearCase = () => {
@@ -154,13 +172,19 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                 ) : inventory.length > 0 ? (
                     inventory.map((item: any, index: number) => {
                         if (item.case) {
+                            const picked = selectedCountFor(item);
                             return (
                                 <div
                                     key={index}
                                     onClick={() => handleItemClick(item)}
-                                    className={`cursor-pointer border-2 h-min ${selectedItems.some((selectedItem: { identifier: string }) => selectedItem.identifier === item.uniqueId) ? " border-[#606bc7]" : "border-transparent"}`}
+                                    className={`relative cursor-pointer border-2 h-min ${picked ? " border-[#606bc7]" : "border-transparent"}`}
                                 >
                                     <Item item={item} />
+                                    {picked > 0 && (
+                                        <span className="absolute top-1 right-1 z-20 min-w-[22px] h-[22px] px-1 flex items-center justify-center rounded-full text-xs font-bold bg-[#606bc7] text-white">
+                                            {picked}
+                                        </span>
+                                    )}
                                 </div>
                             );
                         }

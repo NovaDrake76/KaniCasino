@@ -124,12 +124,29 @@ module.exports = (io) => {
         return res.status(400).json({ message: `You must be at least level ${SELL_LEVEL} to sell items` });
       }
 
-      const inventoryItem = user.inventory.find((item) => item.uniqueId === uniqueId);
-      if (!inventoryItem) {
+      // one call can list several copies of the same item at one price. the copies are
+      // resolved here rather than sent as ids, and each still goes through the pull,
+      // the bid crossing and the publish on its own, so a batch is just a loop over
+      // the single-copy path and never a shortcut around it.
+      let copies;
+      if (uniqueId) {
+        const found = user.inventory.find((item) => item.uniqueId === uniqueId);
+        copies = found ? [found] : [];
+      } else if (req.body.itemId && isValidId(req.body.itemId)) {
+        const asked = Math.floor(Number(req.body.quantity));
+        const owned = user.inventory
+          .filter((e) => e && String(e._id) === String(req.body.itemId))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        copies = owned.slice(0, Number.isFinite(asked) && asked > 0 ? asked : 1);
+      } else {
+        copies = [];
+      }
+
+      if (!copies.length) {
         return res.status(404).json({ message: "Item not found in inventory" });
       }
 
-      const itemDocument = await Item.findById(inventoryItem._id);
+      const itemDocument = await Item.findById(copies[0]._id);
       if (!itemDocument) {
         return res.status(404).json({ message: "Item not found" });
       }
@@ -139,47 +156,77 @@ module.exports = (io) => {
         return res.status(400).json({ message: `Price too high: at most ${ceiling} K₽ for this item` });
       }
 
-      // atomically remove exactly this item; if it's already gone, abort without listing
-      const pull = await User.updateOne({ _id: user._id }, { $pull: { inventory: { uniqueId } } });
-      if (pull.modifiedCount === 0) {
+      const listOne = async (inventoryItem) => {
+        // atomically remove exactly this item; if it's already gone, skip it
+        const pull = await User.updateOne(
+          { _id: user._id },
+          { $pull: { inventory: { uniqueId: inventoryItem.uniqueId } } }
+        );
+        if (pull.modifiedCount === 0) return null;
+
+        const pending = {
+          sellerId: user._id,
+          item: itemDocument._id,
+          case: itemDocument.case,
+          price,
+          itemName: itemDocument.name,
+          itemImage: itemDocument.image,
+          rarity: itemDocument.rarity,
+          uniqueId: inventoryItem.uniqueId,
+        };
+
+        // cross the best resting bids BEFORE publishing, so nobody can front-run the
+        // bid at the lower ask. a lost claim race just means trying the next best bid.
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const order = await market.findMatchingOrder({
+            itemId: itemDocument._id,
+            price,
+            excludeUserId: user._id,
+          });
+          if (!order) break;
+          const filled = await market.fillOrderWithItem({ pending, order, io });
+          if (filled.ok) {
+            return { sold: true, soldFor: filled.price, received: sellerNet(filled.price) };
+          }
+          if (filled.reason === "seller gone") break;
+        }
+
+        const marketplaceItem = new Marketplace(pending);
+        await marketplaceItem.save();
+        return { sold: false, listing: marketplaceItem };
+      };
+
+      const results = [];
+      for (const copy of copies) {
+        const r = await listOne(copy);
+        if (r) results.push(r);
+      }
+
+      if (!results.length) {
         return res.status(404).json({ message: "Item not found in inventory" });
       }
 
-      const pending = {
-        sellerId: user._id,
-        item: itemDocument._id,
-        case: itemDocument.case,
-        price,
-        itemName: itemDocument.name,
-        itemImage: itemDocument.image,
-        rarity: itemDocument.rarity,
-        uniqueId: inventoryItem.uniqueId,
-      };
-
-      // cross the best resting bids BEFORE publishing, so nobody can front-run the
-      // bid at the lower ask. a lost claim race just means trying the next best bid.
-      for (let attempt = 0; attempt < 3; attempt++) {
-        const order = await market.findMatchingOrder({
-          itemId: itemDocument._id,
-          price,
-          excludeUserId: user._id,
-        });
-        if (!order) break;
-        const filled = await market.fillOrderWithItem({ pending, order, io });
-        if (filled.ok) {
+      // one copy keeps the original response shape, so existing callers are untouched
+      const soldNow = results.filter((r) => r.sold);
+      if (results.length === 1) {
+        const only = results[0];
+        if (only.sold) {
           return res.json({
             soldInstantly: true,
-            soldFor: filled.price,
-            received: sellerNet(filled.price),
+            soldFor: only.soldFor,
+            received: only.received,
             itemName: itemDocument.name,
           });
         }
-        if (filled.reason === "seller gone") break;
+        return res.json(only.listing);
       }
 
-      const marketplaceItem = new Marketplace(pending);
-      await marketplaceItem.save();
-      res.json(marketplaceItem);
+      res.json({
+        listed: results.length - soldNow.length,
+        soldInstantly: soldNow.length,
+        received: soldNow.reduce((s, r) => s + r.received, 0),
+        itemName: itemDocument.name,
+      });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal server error" });
