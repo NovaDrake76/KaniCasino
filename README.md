@@ -120,6 +120,8 @@ KaniCasino is a non-commercial fan project. All trademarks and art belong to the
 - Touhou items by [dairi](https://www.pixiv.net/en/users/4920496)
 - Counter-Strike items by [Valve](https://store.steampowered.com/app/730/CounterStrike_2/)
 - Cats items from the [Hello Street Cat Wiki](https://streetcat.wiki/index.php/Main_Page)
+- Uma Musume items by [Cygames](https://umamusume.jp/)
+- Blue Archive items by [NEXON Games](https://bluearchive.nexon.com/)
 
 **Games**
 
