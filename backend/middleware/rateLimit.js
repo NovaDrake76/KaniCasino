@@ -73,4 +73,16 @@ const minesActionLimiter = rateLimit({
   message: { message: "Too many actions, slow down a little." },
 });
 
-module.exports = { loginLimiter, registerLimiter, plinkoDropLimiter, diceRollLimiter, minesActionLimiter };
+// hilo fires one request per prediction/skip; keyed per user (after auth), same headroom as mines
+const hiloActionLimiter = rateLimit({
+  windowMs: 10 * 1000,
+  max: 80,
+  keyGenerator: (req) => String(req.user._id),
+  skip: skipInTests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { message: "Too many actions, slow down a little." },
+});
+
+module.exports = { loginLimiter, registerLimiter, plinkoDropLimiter, diceRollLimiter, minesActionLimiter, hiloActionLimiter };

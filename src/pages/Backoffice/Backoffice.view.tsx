@@ -46,6 +46,7 @@ const GAME_LABELS: Record<string, string> = {
   blackjack: "Blackjack",
   dice: "Dice",
   mines: "Mines",
+  hilo: "HiLo",
   cases: "Case openings",
   battles: "Case battles",
 };

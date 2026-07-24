@@ -7,6 +7,8 @@ const { PAYOUTS: PLINKO_PAYOUTS, PLINKO_ALGO_VERSION, derivePath, binFromPath } 
 const { BLACKJACK_ALGO_VERSION, replayHand } = require("./blackjackMath");
 const { DICE_ALGO_VERSION, resolveRoll: resolveDiceRoll } = require("./diceMath");
 const { MINES_ALGO_VERSION, deriveMines, multiplierFor: minesMultiplierFor, payoutCentsFor: minesPayoutCentsFor } = require("./minesMath");
+const { HILO_ALGO_VERSION, resolveHilo, rankOf: hiloRankOf } = require("./hiloMath");
+const HILO_RANK_LABELS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 const { rollFloat } = require("./provablyFair");
 
 function generateRollId() {
@@ -282,6 +284,45 @@ async function verifyMinesRoll(rollId) {
   };
 }
 
+// replay a hilo game from its seed material and recorded action log; the verifier runs
+// the same resolveHilo the game and its recovery path use, so they cannot disagree about
+// the cards drawn or the payout
+async function verifyHiloRoll(rollId) {
+  const v = await getRollForVerify(rollId);
+  if (!v || v.game !== "hilo") return { ok: false, reason: "not a hilo roll" };
+  if (!v.serverSeed) return { ok: false, reason: "server seed not revealed yet" };
+
+  const outcome = v.outcome || {};
+  if (outcome.algoVersion !== HILO_ALGO_VERSION) {
+    return { ok: false, reason: "algorithm version superseded" };
+  }
+
+  const commitmentValid = hashServerSeed(v.serverSeed) === v.serverSeedHash;
+  const replayed = resolveHilo({
+    serverSeed: v.serverSeed,
+    clientSeed: v.clientSeed,
+    nonce: v.nonce,
+    betAmount: outcome.betAmount,
+    actions: outcome.actions || [],
+  });
+  const sameCards = JSON.stringify(replayed.cards) === JSON.stringify(outcome.cards);
+  const ok =
+    commitmentValid &&
+    sameCards &&
+    replayed.busted === !!outcome.busted &&
+    replayed.payout === outcome.payout;
+
+  return {
+    ok,
+    commitmentValid,
+    recomputedCards: replayed.cards.map((c) => HILO_RANK_LABELS[hiloRankOf(c)]),
+    recomputedGuesses: replayed.guesses,
+    recomputedBusted: replayed.busted,
+    recomputedPayout: replayed.payout,
+    expectedPayout: outcome.payout,
+  };
+}
+
 // route a verify request to the game's reference verifier
 async function verifyRoll(rollId) {
   const r = await Roll.findOne({ rollId }).select("game").lean();
@@ -291,6 +332,7 @@ async function verifyRoll(rollId) {
   if (r.game === "blackjack") return verifyBlackjackRoll(rollId);
   if (r.game === "dice") return verifyDiceRoll(rollId);
   if (r.game === "mines") return verifyMinesRoll(rollId);
+  if (r.game === "hilo") return verifyHiloRoll(rollId);
   return { ok: false, reason: "no server-side verifier for this game" };
 }
 
@@ -304,5 +346,6 @@ module.exports = {
   verifyBlackjackRoll,
   verifyDiceRoll,
   verifyMinesRoll,
+  verifyHiloRoll,
   verifyRoll,
 };

@@ -74,6 +74,7 @@ const { recoverStuckRounds } = require("./utils/rounds");
 const { completeStuckBattles } = require("./games/battleEngine");
 const { sweepBlackjackHands } = require("./games/blackjack");
 const { sweepMinesGames } = require("./games/mines");
+const { sweepHiloGames } = require("./games/hilo");
 const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
@@ -155,6 +156,7 @@ const sweepRounds = ({ boot = false } = {}) => {
   completeStuckBattles(io, { boot }).catch((e) => console.log(e));
   sweepBlackjackHands(io).catch((e) => console.log(e));
   sweepMinesGames(io).catch((e) => console.log(e));
+  sweepHiloGames(io).catch((e) => console.log(e));
 };
 sweepRounds({ boot: true });
 setInterval(() => sweepRounds({ boot: false }), 5 * 60 * 1000);
