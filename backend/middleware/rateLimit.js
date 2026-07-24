@@ -48,4 +48,16 @@ const plinkoDropLimiter = rateLimit({
   message: { message: "Too many drops, slow down a little." },
 });
 
-module.exports = { loginLimiter, registerLimiter, plinkoDropLimiter };
+// dice rolls are one request each and fire fast on autobet; keyed per user (after auth)
+const diceRollLimiter = rateLimit({
+  windowMs: 10 * 1000,
+  max: 40,
+  keyGenerator: (req) => String(req.user._id),
+  skip: skipInTests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { message: "Too many rolls, slow down a little." },
+});
+
+module.exports = { loginLimiter, registerLimiter, plinkoDropLimiter, diceRollLimiter };

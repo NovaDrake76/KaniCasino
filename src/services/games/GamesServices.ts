@@ -29,6 +29,11 @@ export async function dropPlinko(betAmount: number, risk: string) {
     return response.data;
 }
 
+export async function rollDice(betAmount: number, target: number, direction: "over" | "under") {
+    const response = await api.post(`/games/dice/`, { betAmount, target, direction });
+    return response.data;
+}
+
 export async function dealBlackjack(betAmount: number) {
     const response = await api.post(`/games/blackjack/deal`, { betAmount });
     return response.data;

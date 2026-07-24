@@ -39,6 +39,8 @@ const COUNTERPARTY_FOR_TYPE = {
   blackjack_win: HOUSE,
   blackjack_push: HOUSE,
   blackjack_refund: HOUSE,
+  dice_bet: HOUSE,
+  dice_win: HOUSE,
   item_sell: HOUSE,
   market_order: ESCROW,
   market_order_refund: ESCROW,

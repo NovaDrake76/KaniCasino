@@ -5,6 +5,8 @@ const CaseConfig = require("../models/CaseConfig");
 const { roll: computeRoll, pickFromRanges, hashServerSeed } = require("./provablyFair");
 const { PAYOUTS: PLINKO_PAYOUTS, PLINKO_ALGO_VERSION, derivePath, binFromPath } = require("./plinkoMath");
 const { BLACKJACK_ALGO_VERSION, replayHand } = require("./blackjackMath");
+const { DICE_ALGO_VERSION, resolveRoll: resolveDiceRoll } = require("./diceMath");
+const { rollFloat } = require("./provablyFair");
 
 function generateRollId() {
   return "R" + crypto.randomInt(100000000, 1000000000).toString(); // "R" + 9 digits
@@ -194,6 +196,42 @@ async function verifyBlackjackRoll(rollId) {
   };
 }
 
+// recompute a dice roll's result and payout from its public inputs; folds through the
+// same diceMath the game uses, so verification and the live roll cannot disagree
+async function verifyDiceRoll(rollId) {
+  const v = await getRollForVerify(rollId);
+  if (!v || v.game !== "dice") return { ok: false, reason: "not a dice roll" };
+  if (!v.serverSeed) return { ok: false, reason: "server seed not revealed yet" };
+
+  const outcome = v.outcome || {};
+  if (outcome.algoVersion !== DICE_ALGO_VERSION) {
+    return { ok: false, reason: "algorithm version superseded" };
+  }
+
+  const commitmentValid = hashServerSeed(v.serverSeed) === v.serverSeedHash;
+  const float = rollFloat(v.serverSeed, v.clientSeed, v.nonce, 0);
+  const replayed = resolveDiceRoll(float, outcome.betAmount, outcome.target, outcome.direction);
+  const ok =
+    commitmentValid &&
+    replayed.result === outcome.result &&
+    replayed.won === outcome.won &&
+    replayed.multiplier === outcome.multiplier &&
+    replayed.payout === outcome.payout;
+
+  return {
+    ok,
+    commitmentValid,
+    recomputedResult: replayed.resultValue,
+    recomputedMultiplier: replayed.multiplier,
+    recomputedWon: replayed.won,
+    recomputedPayout: replayed.payout,
+    expectedResult: outcome.result / 100,
+    expectedMultiplier: outcome.multiplier,
+    expectedWon: outcome.won,
+    expectedPayout: outcome.payout,
+  };
+}
+
 // route a verify request to the game's reference verifier
 async function verifyRoll(rollId) {
   const r = await Roll.findOne({ rollId }).select("game").lean();
@@ -201,6 +239,7 @@ async function verifyRoll(rollId) {
   if (r.game === "case") return verifyCaseRoll(rollId);
   if (r.game === "plinko") return verifyPlinkoRoll(rollId);
   if (r.game === "blackjack") return verifyBlackjackRoll(rollId);
+  if (r.game === "dice") return verifyDiceRoll(rollId);
   return { ok: false, reason: "no server-side verifier for this game" };
 }
 
@@ -212,5 +251,6 @@ module.exports = {
   verifyCaseRoll,
   verifyPlinkoRoll,
   verifyBlackjackRoll,
+  verifyDiceRoll,
   verifyRoll,
 };

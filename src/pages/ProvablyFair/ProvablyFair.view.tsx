@@ -32,7 +32,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
     <Title title="Provably Fair" />
 
     <p className="text-[#84819a] text-sm max-w-[640px] text-center">
-      Every case, upgrade, slot, plinko and blackjack roll is HMAC-SHA256 of your
+      Every case, upgrade, slot, plinko, blackjack and dice roll is HMAC-SHA256 of your
       client seed, a nonce, and a secret server seed we commit to up front.
     </p>
 
@@ -63,11 +63,11 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
           </span>
           <button
             onClick={doVerify}
-            disabled={verifying || (roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack")}
+            disabled={verifying || (roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice")}
             className="px-4 py-1.5 rounded bg-green-700 hover:bg-green-600 text-sm font-semibold disabled:opacity-50"
             title={
-              roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack"
-                ? "Auto-verify supported for case, plinko and blackjack rolls"
+              roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice"
+                ? "Auto-verify supported for case, plinko, blackjack and dice rolls"
                 : ""
             }
           >
@@ -118,7 +118,9 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
                 ? `Verified: the recomputed path lands in bin ${verify.recomputedBin} at x${verify.recomputedMultiplier}.`
                 : verify.recomputedDealerCards
                   ? `Verified: ${verify.recomputedPlayerCards?.length} player and ${verify.recomputedDealerCards.length} dealer cards replay to dealer ${verify.recomputedDealerTotal}, ${verify.recomputedOutcome}, payout ${verify.recomputedPayout}.`
-                  : `Verified: recomputed roll ${verify.recomputedRoll} maps to the same item.`
+                  : verify.recomputedResult !== undefined
+                    ? `Verified: the recomputed roll is ${verify.recomputedResult}, a ${verify.recomputedWon ? "win" : "loss"} at x${verify.recomputedMultiplier}, payout ${verify.recomputedPayout}.`
+                    : `Verified: recomputed roll ${verify.recomputedRoll} maps to the same item.`
               : `Not verified${verify.reason ? `: ${verify.reason}` : ""}.`}
           </div>
         )}
