@@ -157,39 +157,43 @@ const DiceView: React.FC<DiceViewProps> = ({
             ))}
           </div>
 
-          {/* the track: the bar itself is the target control, and the die rides just
-              above it, sliding to the result when a roll lands */}
+          {/* the track: the bar itself is the target control, wrapped in a thick dark
+              housing, with the result number + die riding over it */}
           <div className="px-2 pt-14 pb-1">
-            <div className="flex justify-between text-xs text-ink-muted mb-2 font-semibold">
+            <div className="flex justify-between text-xs text-ink-muted mb-2 font-semibold px-3">
               {TICKS.map((t) => (
                 <span key={t}>{t}</span>
               ))}
             </div>
-            <div
-              {...trackHandlers}
-              className="relative h-4 rounded-full cursor-pointer touch-none select-none"
-              style={{ background: winGradient }}
-            >
-              {/* the result die appears only after the first roll, sitting just over the bar */}
-              {last && (
-                <div
-                  className={`absolute bottom-full mb-2 -translate-x-1/2 flex flex-col items-center ${dragging ? "" : "transition-all duration-500 ease-out"}`}
-                  style={{ left: `${markerPct}%` }}
-                >
+            {/* thick rounded housing around the bar */}
+            <div className="bg-surface-deep rounded-full p-2.5 border border-line shadow-inner">
+              <div
+                {...trackHandlers}
+                className="relative h-3.5 rounded-full cursor-pointer touch-none select-none"
+                style={{ background: winGradient }}
+              >
+                {/* the result number + die appear only after the first roll, over the housing */}
+                {last && (
                   <div
-                    className={`w-12 h-12 rounded-lg rotate-45 flex items-center justify-center shadow-lg ${last.won ? "bg-green-500" : "bg-red-500"}`}
+                    className={`absolute bottom-full mb-3 -translate-x-1/2 flex flex-col items-center pointer-events-none ${dragging ? "" : "transition-all duration-500 ease-out"}`}
+                    style={{ left: `${markerPct}%` }}
                   >
-                    <span className="-rotate-45 text-white font-extrabold text-xs">
+                    <span
+                      className={`text-base font-extrabold leading-none mb-1 ${last.won ? "text-green-400" : "text-red-400"}`}
+                    >
                       {last.resultValue.toFixed(2)}
                     </span>
+                    <div
+                      className={`w-4 h-4 rotate-45 shadow ${last.won ? "bg-green-400" : "bg-red-400"}`}
+                    />
                   </div>
-                </div>
-              )}
-              {/* the draggable target handle, grabbable on the bar */}
-              <div
-                className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-9 bg-accent rounded shadow-md border-2 border-white/80 ${dragging ? "cursor-grabbing scale-110" : "cursor-grab"} transition-transform`}
-                style={{ left: `${targetPct}%` }}
-              />
+                )}
+                {/* the draggable target handle, grabbable on the bar */}
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-8 bg-accent rounded shadow-md border-2 border-white/80 ${dragging ? "cursor-grabbing scale-110" : "cursor-grab"} transition-transform`}
+                  style={{ left: `${targetPct}%` }}
+                />
+              </div>
             </div>
           </div>
 
