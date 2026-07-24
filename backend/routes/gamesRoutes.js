@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
-const { plinkoDropLimiter, diceRollLimiter, minesActionLimiter } = require("../middleware/rateLimit");
+const { plinkoDropLimiter, diceRollLimiter, minesActionLimiter, hiloActionLimiter } = require("../middleware/rateLimit");
 
 const User = require("../models/User");
 const Case = require("../models/Case");
@@ -12,6 +12,7 @@ const PlinkoGameController = require("../games/plinko");
 const BlackjackGameController = require("../games/blackjack");
 const DiceGameController = require("../games/dice");
 const MinesGameController = require("../games/mines");
+const HiloGameController = require("../games/hilo");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const referrals = require("../utils/referrals");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
@@ -281,6 +282,24 @@ module.exports = (io) => {
   ));
   router.get("/mines/active", isAuthenticated, blackjackAction(
     async (req) => ({ game: await MinesGameController.active(req.user._id) })
+  ));
+
+  // hilo: a game spans several requests, so each action resolves the user's single
+  // active game; reuses the statused-error wrapper (409 = resync)
+  router.post("/hilo/start", isAuthenticated, hiloActionLimiter, blackjackAction(
+    (req) => HiloGameController.start(req.user._id, req.body.betAmount, io)
+  ));
+  router.post("/hilo/guess", isAuthenticated, hiloActionLimiter, blackjackAction(
+    (req) => HiloGameController.guess(req.user._id, req.body.direction, io)
+  ));
+  router.post("/hilo/skip", isAuthenticated, hiloActionLimiter, blackjackAction(
+    (req) => HiloGameController.skip(req.user._id, io)
+  ));
+  router.post("/hilo/cashout", isAuthenticated, hiloActionLimiter, blackjackAction(
+    (req) => HiloGameController.cashout(req.user._id, io)
+  ));
+  router.get("/hilo/active", isAuthenticated, blackjackAction(
+    async (req) => ({ game: await HiloGameController.active(req.user._id) })
   ));
 
   // recent coin flip results, so the page has a history the moment it loads. light and
