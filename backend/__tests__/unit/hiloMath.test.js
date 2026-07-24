@@ -32,14 +32,20 @@ describe("hilo math", () => {
     expect(stepMultiplier(q, "lo")).toBeCloseTo(1.0725, 4); // 0.99 * 13/12
   });
 
-  test("ace and king are the extremes", () => {
-    expect(hiChance(0)).toBeCloseTo(1, 8); // higher-or-equal to ace is everything
+  test("the extremes never offer a 100% bet: the tie falls to the minority side", () => {
+    // ace: "higher" is strictly higher (12/13), the tie goes to "lower" (1/13)
+    expect(hiChance(0)).toBeCloseTo(12 / 13, 8);
     expect(loChance(0)).toBeCloseTo(1 / 13, 8);
+    expect(guessWins(0, 0, "hi")).toBe(false); // another ace does not win "higher"
+    expect(guessWins(0, 0, "lo")).toBe(true);
+    // king: "lower" is strictly lower (12/13), the tie goes to "higher" (1/13)
     expect(hiChance(12)).toBeCloseTo(1 / 13, 8);
-    expect(loChance(12)).toBeCloseTo(1, 8); // lower-or-equal to king is everything
+    expect(loChance(12)).toBeCloseTo(12 / 13, 8);
+    expect(guessWins(12, 12, "lo")).toBe(false); // another king does not win "lower"
+    expect(guessWins(12, 12, "hi")).toBe(true);
   });
 
-  test("a guess wins on its side, ties included", () => {
+  test("a guess wins on its side, ties win both on a middle card", () => {
     expect(guessWins(5, 7, "hi")).toBe(true);
     expect(guessWins(5, 5, "hi")).toBe(true); // tie wins higher-or-equal
     expect(guessWins(5, 5, "lo")).toBe(true); // and lower-or-equal

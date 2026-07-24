@@ -83,7 +83,7 @@ const HiloView: React.FC<HiloViewProps> = ({
           <button
             onClick={skip}
             disabled={busy || !game?.canSkip}
-            className="p-2.5 rounded bg-surface-raised hover:bg-surface-hover text-ink-soft font-semibold w-full flex items-center justify-center gap-2 disabled:opacity-40 transition"
+            className="p-2.5 rounded-md bg-surface-raised border border-line-strong hover:bg-surface-hover text-ink-soft font-semibold w-full flex items-center justify-center gap-2 shadow-sm hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-40 disabled:hover:translate-y-0 transition"
           >
             Skip Card <span className="text-xs">»</span>
           </button>
@@ -91,18 +91,18 @@ const HiloView: React.FC<HiloViewProps> = ({
           <button
             onClick={() => guess("hi")}
             disabled={busy || !active}
-            className="flex items-center justify-between p-2.5 rounded bg-surface-raised hover:bg-surface-hover disabled:opacity-40 transition text-sm font-semibold"
+            className="flex items-center justify-between p-3 rounded-md bg-green-500/15 border border-green-500/50 hover:bg-green-500/25 hover:border-green-400 text-green-300 shadow-sm hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-40 disabled:hover:translate-y-0 transition text-sm font-bold"
           >
-            <span className="flex items-center gap-2 text-ink-soft">Higher or Equal <AiFillCaretUp className="text-green-400" /></span>
-            <span className="text-ink-muted">{game?.hiChance != null ? pct(game.hiChance) : "-"}</span>
+            <span className="flex items-center gap-2">Higher or Equal <AiFillCaretUp /></span>
+            <span className="text-green-200/80">{game?.hiChance != null ? pct(game.hiChance) : "-"}</span>
           </button>
           <button
             onClick={() => guess("lo")}
             disabled={busy || !active}
-            className="flex items-center justify-between p-2.5 rounded bg-surface-raised hover:bg-surface-hover disabled:opacity-40 transition text-sm font-semibold"
+            className="flex items-center justify-between p-3 rounded-md bg-red-500/15 border border-red-500/50 hover:bg-red-500/25 hover:border-red-400 text-red-300 shadow-sm hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-40 disabled:hover:translate-y-0 transition text-sm font-bold"
           >
-            <span className="flex items-center gap-2 text-ink-soft">Lower or Equal <AiFillCaretDown className="text-red-400" /></span>
-            <span className="text-ink-muted">{game?.loChance != null ? pct(game.loChance) : "-"}</span>
+            <span className="flex items-center gap-2">Lower or Equal <AiFillCaretDown /></span>
+            <span className="text-red-200/80">{game?.loChance != null ? pct(game.loChance) : "-"}</span>
           </button>
 
           <div className="flex items-center justify-between text-xs font-semibold text-ink-muted mt-1">

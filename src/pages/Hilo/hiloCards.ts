@@ -7,7 +7,8 @@ export const MAX_BET = 10000;
 export const MAX_SKIPS = 52;
 
 export const rankOf = (card: number) => card % RANKS;
-export const hiChance = (rank: number) => (RANKS - rank) / RANKS;
-export const loChance = (rank: number) => (rank + 1) / RANKS;
+// the tie falls to the minority side on the extremes, so neither ace nor king is a 100% bet
+export const hiChance = (rank: number) => (rank === 0 ? RANKS - 1 : RANKS - rank) / RANKS;
+export const loChance = (rank: number) => (rank === RANKS - 1 ? RANKS - 1 : rank + 1) / RANKS;
 
 export const pct = (chance: number) => `${(chance * 100).toFixed(2)}%`;

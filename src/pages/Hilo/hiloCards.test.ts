@@ -14,11 +14,11 @@ describe("hilo card odds", () => {
         expect(loChance(11)).toBeCloseTo(12 / 13, 8);
     });
 
-    it("handles the ace and king extremes", () => {
-        expect(hiChance(0)).toBeCloseTo(1, 8);
+    it("never offers a 100% bet on the extremes", () => {
+        expect(hiChance(0)).toBeCloseTo(12 / 13, 8);
         expect(loChance(0)).toBeCloseTo(1 / 13, 8);
         expect(hiChance(12)).toBeCloseTo(1 / 13, 8);
-        expect(loChance(12)).toBeCloseTo(1, 8);
+        expect(loChance(12)).toBeCloseTo(12 / 13, 8);
     });
 
     it("has a 13-rank deck", () => {

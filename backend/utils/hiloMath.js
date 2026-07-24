@@ -19,10 +19,12 @@ function cardAt(serverSeed, clientSeed, nonce, cursor) {
 }
 const rankOf = (card) => card % RANKS;
 
-// higher-or-equal covers ranks >= r, lower-or-equal covers ranks <= r; both include r,
-// so a tie wins either bet (the Stake model) and the two chances overlap on that rank
-const hiCount = (rank) => RANKS - rank;
-const loCount = (rank) => rank + 1;
+// a tie (same rank) wins both sides for a middle card, so their chances overlap on that
+// rank. for the extremes the tie only wins the minority side, so neither ace nor king
+// ever offers a 100% (0.99x) bet: an ace's "higher" is strictly higher (the tie falls to
+// "lower"), a king's "lower" is strictly lower (the tie falls to "higher").
+const hiCount = (rank) => (rank === 0 ? RANKS - 1 : RANKS - rank);
+const loCount = (rank) => (rank === RANKS - 1 ? RANKS - 1 : rank + 1);
 const hiChance = (rank) => hiCount(rank) / RANKS;
 const loChance = (rank) => loCount(rank) / RANKS;
 
@@ -32,9 +34,13 @@ function stepMultiplier(rank, direction) {
   return RTP / chance;
 }
 
-// a guess wins if the next card lands on the predicted side, ties included
+// a guess wins if the next card lands on the predicted side. a tie wins both, except on
+// an ace (the tie goes only to "lower") and a king (only to "higher"), matching the counts
 function guessWins(currentRank, nextRank, direction) {
-  return direction === "hi" ? nextRank >= currentRank : nextRank <= currentRank;
+  if (direction === "hi") {
+    return nextRank > currentRank || (nextRank === currentRank && currentRank !== 0);
+  }
+  return nextRank < currentRank || (nextRank === currentRank && currentRank !== RANKS - 1);
 }
 
 function validBet(betAmount) {
