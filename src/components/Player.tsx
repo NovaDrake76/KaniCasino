@@ -46,7 +46,7 @@ const Player: React.FC<Player> = ({ user, size, direction = "row", showLevel = "
             }
             <Link to={`/profile/${user._id}`}>
                 <div className={`flex items-center justify-center text-white ${direction == "row" ? "gap-4" : "flex-col"}`}>
-                    <Avatar id={user._id} image={user.profilePicture} size={size} showLevel={!!showLevel} level={user.level} />
+                    <Avatar id={user._id} image={user.profilePicture} size={size} showLevel={!!showLevel} level={user.level} noLink />
                     <span className="mt-2 font-semibold text-center">{user.username}</span>
                 </div>
             </Link>

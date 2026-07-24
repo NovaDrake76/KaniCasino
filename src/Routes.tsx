@@ -11,6 +11,7 @@ import Plinko from "./pages/Plinko";
 import Blackjack from "./pages/Blackjack";
 import Dice from "./pages/Dice";
 import Mines from "./pages/Mines";
+import Hilo from "./pages/Hilo";
 import PrivacyPolicy from "./pages/About/PrivacyPolicy"
 import ItemPage from "./pages/Market/ItemPage";
 import Battles from "./pages/Battles/Battles";
@@ -34,6 +35,7 @@ const defaultRoutes = (
     <Route path="/blackjack" element={<Blackjack />} />
     <Route path="/dice" element={<Dice />} />
     <Route path="/mines" element={<Mines />} />
+    <Route path="/hilo" element={<Hilo />} />
     <Route path="/battles" element={<Battles />} />
     <Route path="/battles/:id" element={<BattleRoom />} />
     <Route path="/provably-fair" element={<ProvablyFair />} />
