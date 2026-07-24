@@ -1,10 +1,12 @@
 interface TitleProps {
   title: string;
+  // game pages only: the full py-10 pushed the board too far down the page
+  compact?: boolean;
 }
 
-const Title: React.FC<TitleProps> = ({ title }) => {
+const Title: React.FC<TitleProps> = ({ title, compact = false }) => {
   return (
-    <div className="w-fit py-10">
+    <div className={`w-fit ${compact ? "pb-4" : "py-10"}`}>
       <div className="text-white w-auto text-3xl font-semibold">
         {title.toUpperCase()}
       </div>

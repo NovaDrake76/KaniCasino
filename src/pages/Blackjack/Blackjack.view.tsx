@@ -1,6 +1,7 @@
 import { GiCardDraw, GiTwoCoins } from "react-icons/gi";
 import { FaClone, FaHandPaper } from "react-icons/fa";
-import Title from "../../components/Title";
+import GameLayout from "../../components/game/GameLayout";
+import GameButton from "../../components/game/GameButton";
 import Monetary from "../../components/Monetary";
 import PlayingCard from "./PlayingCard";
 import { outcomeLabel, totalLabel } from "./blackjackCards";
@@ -171,11 +172,19 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
       : totalLabel(dealerShown.length > 1 ? dealerShown : dealerCards.slice(0, 2));
 
   return (
-    <div className="w-full flex flex-col items-center py-6 px-3">
-      <Title title="Blackjack" />
-      <div className="flex flex-col lg:flex-row gap-6 w-full max-w-[1100px] mt-4">
-        {/* control panel: one stable layout, actions always visible */}
-        <div className="w-full lg:w-72 shrink-0 order-2 lg:order-1 bg-[#212031] rounded-lg p-4 flex flex-col gap-3 h-fit">
+    <GameLayout
+      title="Blackjack"
+      footer={
+        <button
+          onClick={() => hand?.rollId && openRoll(hand.rollId)}
+          disabled={!hand?.rollId}
+          className="text-xs text-[#625F7E] hover:text-[#84819a] disabled:cursor-default"
+        >
+          Provably fair · one seed per hand, one cursor per card
+        </button>
+      }
+      panel={
+        <>
           <div className="flex items-center justify-between">
             <label className="text-xs uppercase tracking-wider text-[#84819a]">Bet amount</label>
             <span className="text-xs text-[#84819a]">
@@ -192,6 +201,9 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
               onBlur={normalizeBet}
               disabled={!betting || acting}
               inputMode="numeric"
+              // size 1 kills the input's default 20-character intrinsic width, which flex-1
+              // cannot shrink past and which pushed the whole page wider than a phone
+              size={1}
               className="flex-1 min-w-0 bg-transparent outline-none px-2 py-2.5 text-sm font-semibold disabled:opacity-60"
             />
             {[
@@ -244,13 +256,9 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
             <ActionButton label="Double" icon={<GiTwoCoins size={17} />} iconColor="text-[#5EEAD4]" onClick={double} disabled={!canDouble} />
           </div>
 
-          <button
-            onClick={() => deal()}
-            disabled={!betting || acting || betValue > walletBalance}
-            className="min-h-[50px] rounded-md bg-green-600 hover:bg-green-500 font-extrabold text-base tracking-wide disabled:opacity-40 disabled:hover:bg-green-600 transition-colors"
-          >
+          <GameButton onClick={() => deal()} disabled={!betting || acting || betValue > walletBalance}>
             {acting ? "Dealing..." : phase === "settled" ? "Rebet" : "Deal"}
-          </button>
+          </GameButton>
 
           {phase === "settled" && settledOutcome && (
             <div className="rounded-md bg-[#19172D] px-3 py-2 text-center">
@@ -301,10 +309,10 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
               </div>
             </div>
           )}
-        </div>
-
-        {/* table */}
-        <div className="flex-1 order-1 lg:order-2 rounded-lg p-4 sm:p-8 flex flex-col items-center justify-between min-h-[460px] sm:min-h-[540px] [background:radial-gradient(ellipse_at_50%_-20%,#2a2650_0%,#1a1830_55%,#151225_100%)]">
+        </>
+      }
+    >
+      <div className="w-full rounded-lg p-4 sm:p-8 flex flex-col items-center justify-between min-h-[460px] sm:min-h-[540px] [background:radial-gradient(ellipse_at_50%_-20%,#2a2650_0%,#1a1830_55%,#151225_100%)]">
           {/* dealer */}
           <div className="flex flex-col items-center min-h-[170px] justify-start">
             {hand ? (
@@ -365,18 +373,9 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
                 insurance <Monetary value={hand.insuranceBet} />
               </span>
             )}
-          </div>
         </div>
       </div>
-
-      <button
-        onClick={() => hand?.rollId && openRoll(hand.rollId)}
-        disabled={!hand?.rollId}
-        className="mt-4 text-xs text-[#625F7E] hover:text-[#84819a] disabled:cursor-default"
-      >
-        Provably fair · one seed per hand, one cursor per card
-      </button>
-    </div>
+    </GameLayout>
   );
 };
 

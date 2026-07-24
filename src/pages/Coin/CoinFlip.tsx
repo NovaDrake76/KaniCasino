@@ -5,6 +5,7 @@ import Coin from "./Coin"
 import { motion } from "framer-motion";
 import UserContext from "../../UserContext";
 import LiveBets from "./LiveBets";
+import GameButton from "../../components/game/GameButton";
 import { getCoinFlipHistory } from "../../services/games/GamesServices";
 
 const socket = SocketConnection.getInstance();
@@ -183,21 +184,25 @@ const CoinFlip = () => {
                 ))
               }
             </div></div>
-          <button onClick={handleBet} className=" p-2 border rounded bg-indigo-600 hover:bg-indigo-700 w-full mt-4" disabled={
-            choice === null || bet < MIN_BET || userGambled || (userData !== null && userData.walletBalance < bet) || spinning || bet > MAX_BET
-          }>
-            {
-
-              spinning ? "Spinning..."
-                : choice === null ? "Choose a side"
-                  : bet === 0 ? "Place the bet value"
-                    : bet < MIN_BET ? `Min bet is ${MIN_BET}`
-                      : bet > MAX_BET ? "Max bet is 1M"
-                        : userGambled ? "You're in!"
-                          : userData !== null && userData.walletBalance < bet ? "Not enough money"
-                            : "Enter the Game"
-            }
-          </button>
+          <div className="mt-4">
+            <GameButton
+              onClick={handleBet}
+              disabled={
+                choice === null || bet < MIN_BET || userGambled || (userData !== null && userData.walletBalance < bet) || spinning || bet > MAX_BET
+              }
+            >
+              {
+                spinning ? "Spinning..."
+                  : choice === null ? "Choose a side"
+                    : bet === 0 ? "Place the bet value"
+                      : bet < MIN_BET ? `Min bet is ${MIN_BET}`
+                        : bet > MAX_BET ? "Max bet is 1M"
+                          : userGambled ? "You're in!"
+                            : userData !== null && userData.walletBalance < bet ? "Not enough money"
+                              : "Enter the Game"
+              }
+            </GameButton>
+          </div>
           {/* the payout is not 2x, so it says so rather than leaving it to be inferred */}
           <div className="flex justify-between text-xs text-[#84819a] pt-2">
             <span>Win pays {WIN_MULTIPLIER}x</span>

@@ -1,4 +1,5 @@
-import Title from "../../components/Title";
+import GameLayout from "../../components/game/GameLayout";
+import GameButton from "../../components/game/GameButton";
 import Monetary from "../../components/Monetary";
 import { AUTO_COUNTS } from "./Dice.services";
 import { MAX_BET } from "./diceControls";
@@ -49,11 +50,15 @@ const DiceView: React.FC<DiceViewProps> = ({
       : `linear-gradient(to right, ${GREEN} 0%, ${GREEN} ${targetPct}%, ${RED} ${targetPct}%, ${RED} 100%)`;
 
   return (
-    <div className="w-screen flex flex-col items-center py-6 gap-6 px-4">
-      <Title title="Dice" />
-
-      <div className="flex flex-col lg:flex-row w-full max-w-[1100px] bg-surface rounded-lg overflow-hidden border border-line">
-        <div className="lg:w-[320px] flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-line p-5">
+    <GameLayout
+      title="Dice"
+      footer={
+        <p className="text-ink-muted text-xs max-w-[640px] text-center">
+          Balance: <Monetary value={walletBalance} />. Every roll is provably fair. 99% RTP, 1% house edge.
+        </p>
+      }
+      panel={
+        <>
           <div className="flex bg-surface-nav rounded p-1 text-sm font-semibold">
             <button
               onClick={() => setMode("manual")}
@@ -123,24 +128,18 @@ const DiceView: React.FC<DiceViewProps> = ({
           )}
 
           {mode === "manual" ? (
-            <button
-              onClick={roll}
-              disabled={rolling}
-              className="p-3 rounded bg-green-500 hover:bg-green-400 text-[#10241A] font-bold w-full mt-2 disabled:opacity-40 transition-colors"
-            >
+            <GameButton onClick={roll} disabled={rolling}>
               {isLogged ? "Roll Dice" : "Sign in to play"}
-            </button>
+            </GameButton>
           ) : (
-            <button
-              onClick={autoRunning ? stopAuto : startAuto}
-              className={`p-3 rounded font-bold w-full mt-2 transition-colors ${autoRunning ? "bg-red-500 hover:bg-red-400 text-white" : "bg-green-500 hover:bg-green-400 text-[#10241A]"}`}
-            >
+            <GameButton onClick={autoRunning ? stopAuto : startAuto} variant={autoRunning ? "danger" : "primary"}>
               {autoRunning ? `Stop (${autoLeft} left)` : isLogged ? `Start ${autoCount} Bets` : "Sign in to play"}
-            </button>
+            </GameButton>
           )}
-        </div>
-
-        <div className="flex-1 flex flex-col p-6 gap-6">
+        </>
+      }
+    >
+      <div className="w-full flex flex-col gap-6">
           <div className="flex items-center justify-end gap-2 h-8 overflow-hidden">
             {history.map((h) => (
               <button
@@ -228,13 +227,8 @@ const DiceView: React.FC<DiceViewProps> = ({
             </div>
           </div>
 
-        </div>
       </div>
-
-      <p className="text-ink-muted text-xs max-w-[640px] text-center">
-        Balance: <Monetary value={walletBalance} />. Every roll is provably fair. 99% RTP, 1% house edge.
-      </p>
-    </div>
+    </GameLayout>
   );
 };
 

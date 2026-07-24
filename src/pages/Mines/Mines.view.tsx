@@ -1,4 +1,5 @@
-import Title from "../../components/Title";
+import GameLayout from "../../components/game/GameLayout";
+import GameButton from "../../components/game/GameButton";
 import Monetary from "../../components/Monetary";
 import { AUTO_COUNTS } from "./Mines.services";
 import { MAX_BET, TILES, mineOptions } from "./minesGrid";
@@ -76,11 +77,15 @@ const MinesView: React.FC<MinesViewProps> = ({
   };
 
   return (
-    <div className="w-screen flex flex-col items-center py-6 gap-6 px-4">
-      <Title title="Mines" />
-
-      <div className="flex flex-col lg:flex-row w-full max-w-[1000px] bg-surface rounded-lg overflow-hidden border border-line">
-        <div className="lg:w-[300px] flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-line p-5">
+    <GameLayout
+      title="Mines"
+      footer={
+        <p className="text-ink-muted text-xs max-w-[640px] text-center">
+          Balance: <Monetary value={walletBalance} />. Collect diamonds, avoid the bombs.
+        </p>
+      }
+      panel={
+        <>
           <div className="flex bg-surface-nav rounded p-1 text-sm font-semibold">
             <button
               onClick={() => setMode("manual")}
@@ -167,13 +172,9 @@ const MinesView: React.FC<MinesViewProps> = ({
           {mode === "manual" ? (
             active ? (
               <>
-                <button
-                  onClick={cashout}
-                  disabled={busy || gems === 0}
-                  className="p-3 rounded bg-accent-gold hover:brightness-110 text-[#2a2100] font-bold w-full disabled:opacity-40 transition"
-                >
+                <GameButton onClick={cashout} disabled={busy || gems === 0} variant="cashout">
                   {gems > 0 ? <>Cash Out <Monetary value={currentPayout} showFraction /></> : "Reveal a tile"}
-                </button>
+                </GameButton>
                 <button
                   onClick={randomTile}
                   disabled={busy}
@@ -183,21 +184,14 @@ const MinesView: React.FC<MinesViewProps> = ({
                 </button>
               </>
             ) : (
-              <button
-                onClick={start}
-                disabled={busy}
-                className="p-3 rounded bg-green-500 hover:bg-green-400 text-[#10241A] font-bold w-full disabled:opacity-40 transition"
-              >
+              <GameButton onClick={start} disabled={busy}>
                 {isLogged ? "Bet" : "Sign in to play"}
-              </button>
+              </GameButton>
             )
           ) : (
-            <button
-              onClick={autoRunning ? stopAuto : startAuto}
-              className={`p-3 rounded font-bold w-full transition ${autoRunning ? "bg-red-500 hover:bg-red-400 text-white" : "bg-green-500 hover:bg-green-400 text-[#10241A]"}`}
-            >
+            <GameButton onClick={autoRunning ? stopAuto : startAuto} variant={autoRunning ? "danger" : "primary"}>
               {autoRunning ? `Stop (${autoLeft} left)` : isLogged ? `Start ${autoCount} Bets` : "Sign in to play"}
-            </button>
+            </GameButton>
           )}
 
           {ended && game && (
@@ -209,9 +203,10 @@ const MinesView: React.FC<MinesViewProps> = ({
               {game.status === "cashed" ? <>Won <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : "Boom! Verify roll"}
             </button>
           )}
-        </div>
-
-        <div className="flex-1 flex flex-col p-5 gap-4">
+        </>
+      }
+    >
+      <div className="w-full flex flex-col gap-4">
           <div className="flex items-center justify-end gap-2 h-7 overflow-hidden">
             {history.map((h) => (
               <button
@@ -249,13 +244,8 @@ const MinesView: React.FC<MinesViewProps> = ({
               );
             })}
           </div>
-        </div>
       </div>
-
-      <p className="text-ink-muted text-xs max-w-[640px] text-center">
-        Balance: <Monetary value={walletBalance} />. Collect diamonds, avoid the bombs.
-      </p>
-    </div>
+    </GameLayout>
   );
 };
 

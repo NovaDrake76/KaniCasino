@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import Title from "../../components/Title";
-import MainButton from "../../components/MainButton";
+import GameLayout from "../../components/game/GameLayout";
+import GameButton from "../../components/game/GameButton";
 import Monetary from "../../components/Monetary";
 import {
   BALL_RADIUS,
@@ -106,12 +106,10 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   settleBall,
   openRoll,
 }) => (
-  <div className="w-screen flex flex-col items-center py-6 px-4">
-    <Title title="Plinko" />
-
-    <div className="flex flex-col lg:flex-row gap-6 w-full max-w-[1300px] pt-6">
-      {/* control panel */}
-      <div className="w-full lg:w-72 shrink-0 bg-[#212031] rounded-lg p-4 flex flex-col gap-4 self-start">
+  <GameLayout
+    title="Plinko"
+    panel={
+      <>
         <div className="flex bg-[#19172D] rounded p-1">
           {(["manual", "auto"] as const).map((m) => (
             <button
@@ -193,36 +191,29 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
         )}
 
         {mode === "manual" ? (
-          <MainButton
-            text={
-              isLogged ? (
-                <div className="flex items-center justify-center text-base">
-                  <span className="mr-1">Drop ball - </span>
-                  <Monetary value={betValue} />
-                </div>
-              ) : (
-                "Sign in to play"
-              )
-            }
-            onClick={drop}
-            disabled={!canDrop}
-          />
+          <GameButton onClick={drop} disabled={!canDrop}>
+            {isLogged ? (
+              <span className="flex items-center justify-center gap-1">
+                Drop ball <Monetary value={betValue} />
+              </span>
+            ) : (
+              "Sign in to play"
+            )}
+          </GameButton>
         ) : autoRunning ? (
-          <MainButton text={`Stop (${autoLeft} left)`} onClick={stopAuto} type="danger" />
+          <GameButton onClick={stopAuto} variant="danger">
+            {`Stop (${autoLeft} left)`}
+          </GameButton>
         ) : (
-          <MainButton
-            text={
-              isLogged ? (
-                <div className="flex items-center justify-center text-base">
-                  <span className="mr-1">Drop {autoCount} balls - </span>
-                  <Monetary value={betValue * autoCount} />
-                </div>
-              ) : (
-                "Sign in to play"
-              )
-            }
-            onClick={startAuto}
-          />
+          <GameButton onClick={startAuto}>
+            {isLogged ? (
+              <span className="flex items-center justify-center gap-1">
+                Drop {autoCount} balls <Monetary value={betValue * autoCount} />
+              </span>
+            ) : (
+              "Sign in to play"
+            )}
+          </GameButton>
         )}
 
         <div className="text-xs text-[#84819a] border-t border-[#2a2840] pt-3 flex flex-col gap-1">
@@ -231,87 +222,86 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
           </span>
           <span>Every drop is provably fair; click a result to verify it.</span>
         </div>
+      </>
+    }
+  >
+    <div className="relative w-full flex justify-center">
+      <div className="absolute right-0 top-0 flex flex-col gap-1 items-end z-10">
+        {history.map((h) => (
+          <motion.button
+            key={h.key}
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={() => h.rollId && openRoll(h.rollId)}
+            title={h.rollId ? `Roll ${h.rollId}` : undefined}
+            className="px-2 py-1 rounded text-xs font-bold"
+            style={{ backgroundColor: binColor(h.bin), color: binTextColor(h.bin) }}
+          >
+            {formatMultiplier(h.multiplier)}
+          </motion.button>
+        ))}
       </div>
 
-      {/* board */}
-      <div className="relative flex-1 flex justify-start">
-        <div className="absolute right-0 top-0 flex flex-col gap-1 items-end z-10">
-          {history.map((h) => (
-            <motion.button
-              key={h.key}
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              onClick={() => h.rollId && openRoll(h.rollId)}
-              title={h.rollId ? `Roll ${h.rollId}` : undefined}
-              className="px-2 py-1 rounded text-xs font-bold"
-              style={{ backgroundColor: binColor(h.bin), color: binTextColor(h.bin) }}
-            >
-              {formatMultiplier(h.multiplier)}
-            </motion.button>
-          ))}
-        </div>
+      <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} className="w-full max-w-[680px]">
+        <PegField />
 
-        <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} className="w-full max-w-[680px]">
-          <PegField />
-
-          {Array.from({ length: BINS }, (_, k) => {
-            const label = formatMultiplier(PAYOUT_MULTIPLIERS[risk][k]);
-            const chip = (
-              <>
-                <rect
-                  x={binCenterX(k) - BIN_W / 2}
-                  y={BIN_Y}
-                  width={BIN_W}
-                  height={BIN_H}
-                  rx={6}
-                  fill={binColor(k)}
-                />
-                <text
-                  x={binCenterX(k)}
-                  y={BIN_Y + BIN_H / 2 + 4}
-                  textAnchor="middle"
-                  fontSize={label.length > 4 ? 11 : 13}
-                  fontWeight={700}
-                  fill={binTextColor(k)}
-                >
-                  {label}
-                </text>
-              </>
-            );
-            return lastHit && lastHit.bin === k ? (
-              <motion.g
-                key={`${k}-${lastHit.seq}`}
-                initial={{ y: 0 }}
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 0.3 }}
+        {Array.from({ length: BINS }, (_, k) => {
+          const label = formatMultiplier(PAYOUT_MULTIPLIERS[risk][k]);
+          const chip = (
+            <>
+              <rect
+                x={binCenterX(k) - BIN_W / 2}
+                y={BIN_Y}
+                width={BIN_W}
+                height={BIN_H}
+                rx={6}
+                fill={binColor(k)}
+              />
+              <text
+                x={binCenterX(k)}
+                y={BIN_Y + BIN_H / 2 + 4}
+                textAnchor="middle"
+                fontSize={label.length > 4 ? 11 : 13}
+                fontWeight={700}
+                fill={binTextColor(k)}
               >
-                {chip}
-              </motion.g>
-            ) : (
-              <g key={`${k}-static`}>{chip}</g>
-            );
-          })}
+                {label}
+              </text>
+            </>
+          );
+          return lastHit && lastHit.bin === k ? (
+            <motion.g
+              key={`${k}-${lastHit.seq}`}
+              initial={{ y: 0 }}
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 0.3 }}
+            >
+              {chip}
+            </motion.g>
+          ) : (
+            <g key={`${k}-static`}>{chip}</g>
+          );
+        })}
 
-          {/* one ghost per drop still waiting on the server, so a click is visibly queued */}
-          {Array.from({ length: pendingDrops }, (_, i) => (
-            <circle
-              key={`q-${i}`}
-              className="ball-queued"
-              cx={DROP_X + (i - (pendingDrops - 1) / 2) * BALL_RADIUS * 2.5}
-              cy={DROP_Y}
-              r={BALL_RADIUS * 0.8}
-              fill="#FFCC00"
-              style={{ animationDelay: `${i * 0.15}s` }}
-            />
-          ))}
+        {/* one ghost per drop still waiting on the server, so a click is visibly queued */}
+        {Array.from({ length: pendingDrops }, (_, i) => (
+          <circle
+            key={`q-${i}`}
+            className="ball-queued"
+            cx={DROP_X + (i - (pendingDrops - 1) / 2) * BALL_RADIUS * 2.5}
+            cy={DROP_Y}
+            r={BALL_RADIUS * 0.8}
+            fill="#FFCC00"
+            style={{ animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
 
-          {balls.map((ball) => (
-            <FallingBall key={ball.key} ball={ball} onSettle={settleBall} />
-          ))}
-        </svg>
-      </div>
+        {balls.map((ball) => (
+          <FallingBall key={ball.key} ball={ball} onSettle={settleBall} />
+        ))}
+      </svg>
     </div>
-  </div>
+  </GameLayout>
 );
 
 export default PlinkoView;

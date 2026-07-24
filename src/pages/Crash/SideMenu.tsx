@@ -1,5 +1,6 @@
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
 import Monetary from '../../components/Monetary';
+import GameButton from '../../components/game/GameButton';
 import { User } from '../../components/Types';
 
 interface SideMenuProps {
@@ -144,13 +145,14 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
           </span>
         </div>
 
-        <button
-          onClick={userGambled && gameStarted ? handleCashout : handleBet}
-          className="p-3 rounded bg-green-500 hover:bg-green-400 text-[#10241A] font-bold w-full mt-2 disabled:opacity-40 disabled:hover:bg-green-500 transition-colors"
-          disabled={disabled}
-        >
-          {renderMessage()}
-        </button>
+        <div className="mt-2">
+          <GameButton
+            onClick={userGambled && gameStarted ? handleCashout : handleBet}
+            disabled={disabled}
+          >
+            {renderMessage()}
+          </GameButton>
+        </div>
       </div>
     );
   }

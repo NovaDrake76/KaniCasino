@@ -1,5 +1,6 @@
 import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
-import Title from "../../components/Title";
+import GameLayout from "../../components/game/GameLayout";
+import GameButton from "../../components/game/GameButton";
 import Monetary from "../../components/Monetary";
 import PlayingCard, { SuitIcon } from "../Blackjack/PlayingCard";
 import { isRedSuit, rankLabel, suitOf } from "../Blackjack/blackjackCards";
@@ -39,11 +40,15 @@ const HiloView: React.FC<HiloViewProps> = ({
   const currentPayout = game ? betValue * game.multiplier : betValue;
 
   return (
-    <div className="w-screen flex flex-col items-center py-6 gap-6 px-4">
-      <Title title="HiLo" />
-
-      <div className="flex flex-col lg:flex-row w-full max-w-[1100px] bg-surface rounded-lg overflow-hidden border border-line">
-        <div className="lg:w-[320px] flex flex-col gap-3 border-b lg:border-b-0 lg:border-r border-line p-5">
+    <GameLayout
+      title="HiLo"
+      footer={
+        <p className="text-ink-muted text-xs max-w-[640px] text-center">
+          Balance: <Monetary value={walletBalance} />. Predict if the next card is higher or lower, then cash out before you miss.
+        </p>
+      }
+      panel={
+        <>
           <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
             <span>Bet Amount</span>
             <span><Monetary value={betValue} /></span>
@@ -63,21 +68,13 @@ const HiloView: React.FC<HiloViewProps> = ({
           </div>
 
           {active ? (
-            <button
-              onClick={cashout}
-              disabled={busy || !game?.canCashout}
-              className="p-3 rounded bg-accent-gold hover:brightness-110 text-[#2a2100] font-bold w-full disabled:opacity-40 transition"
-            >
+            <GameButton onClick={cashout} disabled={busy || !game?.canCashout} variant="cashout">
               {game?.canCashout ? <>Cash Out <Monetary value={currentPayout} showFraction /></> : "Make a prediction"}
-            </button>
+            </GameButton>
           ) : (
-            <button
-              onClick={start}
-              disabled={busy}
-              className="p-3 rounded bg-green-500 hover:bg-green-400 text-[#10241A] font-bold w-full disabled:opacity-40 transition"
-            >
+            <GameButton onClick={start} disabled={busy}>
               {isLogged ? "Bet" : "Sign in to play"}
-            </button>
+            </GameButton>
           )}
 
           <button
@@ -119,9 +116,10 @@ const HiloView: React.FC<HiloViewProps> = ({
               {game.status === "cashed" ? <>Won <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : "Busted! Verify roll"}
             </button>
           )}
-        </div>
-
-        <div className="flex-1 flex flex-col items-center p-6 gap-6">
+        </>
+      }
+    >
+      <div className="w-full flex flex-col items-center gap-6">
           <div className="flex items-center justify-center gap-6 sm:gap-14 w-full">
             <div className="hidden sm:flex flex-col items-center gap-2 opacity-40">
               <div className="w-16 h-24 rounded-lg border-2 border-line flex flex-col items-center justify-center text-ink-soft">
@@ -166,13 +164,8 @@ const HiloView: React.FC<HiloViewProps> = ({
               ))}
             </div>
           )}
-        </div>
       </div>
-
-      <p className="text-ink-muted text-xs max-w-[640px] text-center">
-        Balance: <Monetary value={walletBalance} />. Predict if the next card is higher or lower, then cash out before you miss.
-      </p>
-    </div>
+    </GameLayout>
   );
 };
 
