@@ -172,20 +172,19 @@ const DiceView: React.FC<DiceViewProps> = ({
                 className="relative h-3.5 rounded-full cursor-pointer touch-none select-none"
                 style={{ background: winGradient }}
               >
-                {/* the result number + die appear only after the first roll, over the housing */}
+                {/* the result die appears only after the first roll, over the housing */}
                 {last && (
                   <div
-                    className={`absolute bottom-full mb-3 -translate-x-1/2 flex flex-col items-center pointer-events-none ${dragging ? "" : "transition-all duration-500 ease-out"}`}
+                    className={`absolute bottom-full mb-2 -translate-x-1/2 flex flex-col items-center pointer-events-none ${dragging ? "" : "transition-all duration-500 ease-out"}`}
                     style={{ left: `${markerPct}%` }}
                   >
-                    <span
-                      className={`text-base font-extrabold leading-none mb-1 ${last.won ? "text-green-400" : "text-red-400"}`}
-                    >
-                      {last.resultValue.toFixed(2)}
-                    </span>
                     <div
-                      className={`w-4 h-4 rotate-45 shadow ${last.won ? "bg-green-400" : "bg-red-400"}`}
-                    />
+                      className={`w-12 h-12 rounded-lg rotate-45 flex items-center justify-center shadow-lg ${last.won ? "bg-green-500" : "bg-red-500"}`}
+                    >
+                      <span className="-rotate-45 text-white font-extrabold text-xs">
+                        {last.resultValue.toFixed(2)}
+                      </span>
+                    </div>
                   </div>
                 )}
                 {/* the draggable target handle, grabbable on the bar */}
