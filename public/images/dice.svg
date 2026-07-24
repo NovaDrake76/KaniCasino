@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 348">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#221f3d"/>
+      <stop offset="1" stop-color="#151225"/>
+    </linearGradient>
+    <linearGradient id="die" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffe680"/>
+      <stop offset="1" stop-color="#f2b705"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="348" rx="14" fill="url(#bg)"/>
+  <g>
+    <rect x="60" y="118" width="88" height="88" rx="16" fill="#2a2740" transform="rotate(-12 104 162)"/>
+    <g fill="#cfccdf" transform="rotate(-12 104 162)">
+      <circle cx="84" cy="142" r="7"/><circle cx="124" cy="142" r="7"/>
+      <circle cx="104" cy="162" r="7"/>
+      <circle cx="84" cy="182" r="7"/><circle cx="124" cy="182" r="7"/>
+    </g>
+    <rect x="120" y="100" width="82" height="82" rx="15" fill="url(#die)" stroke="#151225" stroke-width="3" transform="rotate(10 161 141)"/>
+    <g fill="#151225" transform="rotate(10 161 141)">
+      <circle cx="142" cy="122" r="7"/><circle cx="180" cy="122" r="7"/>
+      <circle cx="142" cy="160" r="7"/><circle cx="180" cy="160" r="7"/>
+    </g>
+  </g>
+  <g>
+    <rect x="46" y="256" width="24" height="26" rx="4" fill="#DF3D6E"/>
+    <rect x="74" y="256" width="24" height="26" rx="4" fill="#DF3D6E"/>
+    <rect x="102" y="256" width="24" height="26" rx="4" fill="#22C55E"/>
+    <rect x="130" y="256" width="24" height="26" rx="4" fill="#22C55E"/>
+    <rect x="158" y="256" width="24" height="26" rx="4" fill="#22C55E"/>
+    <rect x="186" y="256" width="24" height="26" rx="4" fill="#22C55E"/>
+  </g>
+  <text x="128" y="326" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#e1dde9" letter-spacing="6">DICE</text>
+</svg>

@@ -49,6 +49,12 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
       image: "/images/blackjack.svg",
       link: "/blackjack",
     },
+    {
+      id: "8",
+      title: "Dice",
+      image: "/images/dice.svg",
+      link: "/dice",
+    },
   ];
   return (
     <section className="w-full flex flex-col py-6 items-center">

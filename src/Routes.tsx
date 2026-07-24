@@ -9,6 +9,7 @@ import Upgrade from "./pages/Upgrade/Upgrade";
 import Slot from "./pages/Slot/Slot";
 import Plinko from "./pages/Plinko";
 import Blackjack from "./pages/Blackjack";
+import Dice from "./pages/Dice";
 import PrivacyPolicy from "./pages/About/PrivacyPolicy"
 import ItemPage from "./pages/Market/ItemPage";
 import Battles from "./pages/Battles/Battles";
@@ -30,6 +31,7 @@ const defaultRoutes = (
     <Route path="/slot" element={<Slot />} />
     <Route path="/plinko" element={<Plinko />} />
     <Route path="/blackjack" element={<Blackjack />} />
+    <Route path="/dice" element={<Dice />} />
     <Route path="/battles" element={<Battles />} />
     <Route path="/battles/:id" element={<BattleRoom />} />
     <Route path="/provably-fair" element={<ProvablyFair />} />

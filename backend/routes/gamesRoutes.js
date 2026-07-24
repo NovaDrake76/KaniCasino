@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
-const { plinkoDropLimiter } = require("../middleware/rateLimit");
+const { plinkoDropLimiter, diceRollLimiter } = require("../middleware/rateLimit");
 
 const User = require("../models/User");
 const Case = require("../models/Case");
@@ -10,6 +10,7 @@ const upgradeItems = require("../games/upgrade");
 const SlotGameController = require("../games/slot");
 const PlinkoGameController = require("../games/plinko");
 const BlackjackGameController = require("../games/blackjack");
+const DiceGameController = require("../games/dice");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const referrals = require("../utils/referrals");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
@@ -207,6 +208,23 @@ module.exports = (io) => {
       const { betAmount, risk } = req.body;
 
       const result = await PlinkoGameController.drop(user._id, betAmount, risk, io);
+      res.json(result);
+    } catch (error) {
+      // statused errors are intentional answers; anything else stays generic
+      if (error.status) return res.status(error.status).json({ message: error.message });
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // roll the dice
+  router.post('/dice', isAuthenticated, diceRollLimiter, async (req, res) => {
+    const user = req.user;
+
+    try {
+      const { betAmount, target, direction } = req.body;
+
+      const result = await DiceGameController.roll(user._id, betAmount, target, direction, io);
       res.json(result);
     } catch (error) {
       // statused errors are intentional answers; anything else stays generic

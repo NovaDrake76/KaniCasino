@@ -8,12 +8,12 @@ const { HOUSE, MINT, ESCROW, GENESIS } = require("./accounts");
 const PAGE_SIZE = 20;
 
 // KP-paying game wins and stake returns, for daily series and big-win surfacing
-const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
+const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
 const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND];
 // KP printed to players outside the games
 const FAUCET_TYPES = [TX.SIGNUP, TX.BONUS, TX.MISSION_REWARD, TX.REFERRAL_BONUS, TX.REFERRAL_MILESTONE, TX.AD_REWARD];
 // designed edges per game, so the realized return can be judged against intent
-const THEO_RTP = { crash: 0.9603, coinflip: 0.97, slots: 0.9645, plinko: 0.9655, blackjack: 0.9943, cases: 0.9, battles: 0.9 };
+const THEO_RTP = { crash: 0.9603, coinflip: 0.97, slots: 0.9645, plinko: 0.9655, blackjack: 0.9943, dice: 0.99, cases: 0.9, battles: 0.9 };
 
 // window start, or null for all-time
 const sinceFor = (days) => {
@@ -48,6 +48,7 @@ const GAME_LINES = [
   { game: "slots", bets: [TX.SLOT_BET], outs: [TX.SLOT_WIN] },
   { game: "plinko", bets: [TX.PLINKO_BET], outs: [TX.PLINKO_WIN] },
   { game: "blackjack", bets: [TX.BLACKJACK_BET], outs: [TX.BLACKJACK_WIN, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND] },
+  { game: "dice", bets: [TX.DICE_BET], outs: [TX.DICE_WIN] },
   { game: "cases", bets: [TX.CASE_OPEN], outs: [] },
   { game: "battles", bets: [TX.BATTLE_ENTRY], outs: [TX.BATTLE_REFUND] },
 ];
