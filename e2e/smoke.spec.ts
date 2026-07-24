@@ -11,6 +11,9 @@ const cases = [
 
 // mock every API call the home page makes so the suite needs no backend
 test.beforeEach(async ({ page }) => {
+  // a fresh context counts as a first visit, so the onboarding modal would
+  // overlay the page and intercept every click below (it has its own spec)
+  await page.addInitScript(() => localStorage.setItem("kani.onboardingSeen", "1"));
   await page.route("**/cases**", (route) => route.fulfill({ json: cases }));
   // registered after the catch-all so it wins: playwright matches newest route first.
   // empty by default, so the same case title never renders in two sections at once

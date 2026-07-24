@@ -16,6 +16,7 @@ import { toastMissionComplete } from "./pages/Missions/components/missionComplet
 import NavigationBridge from "./components/NavigationBridge";
 import PageMeta from "./components/PageMeta";
 import BootLoader from "./components/BootLoader";
+import OnboardingModal from "./components/OnboardingModal";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -228,6 +229,7 @@ function App() {
                   notification={notification}
                   setNotification={setNotification}
                 />
+                <OnboardingModal />
                 <div className="flex w-full">
                   <AppRoutes />
                 </div>
