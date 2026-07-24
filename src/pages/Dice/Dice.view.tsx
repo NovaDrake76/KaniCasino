@@ -22,10 +22,11 @@ const DiceView: React.FC<DiceViewProps> = ({
   direction,
   controls,
   profitOnWin,
-  changeTarget,
   changeWinChance,
   changeMultiplier,
   toggleDirection,
+  dragging,
+  trackHandlers,
   mode,
   setMode,
   autoCount,
@@ -156,36 +157,35 @@ const DiceView: React.FC<DiceViewProps> = ({
             ))}
           </div>
 
-          {/* the die marker + result */}
-          <div className="relative h-24">
-            <div
-              className="absolute -translate-x-1/2 flex flex-col items-center transition-all duration-500 ease-out"
-              style={{ left: `${markerPct}%`, top: 0 }}
-            >
-              <div
-                className={`w-14 h-14 rounded-lg rotate-45 flex items-center justify-center shadow-lg ${last ? (last.won ? "bg-green-500" : "bg-red-500") : "bg-surface-raised"}`}
-              >
-                <span className="-rotate-45 text-white font-extrabold text-sm">
-                  {last ? last.resultValue.toFixed(2) : "?"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* the track */}
-          <div className="px-2">
+          {/* the track: the bar itself is the target control, and the die rides just
+              above it, sliding to the result when a roll lands */}
+          <div className="px-2 pt-14 pb-1">
             <div className="flex justify-between text-xs text-ink-muted mb-2 font-semibold">
               {TICKS.map((t) => (
                 <span key={t}>{t}</span>
               ))}
             </div>
             <div
-              className="relative h-3 rounded-full"
+              {...trackHandlers}
+              className="relative h-4 rounded-full cursor-pointer touch-none select-none"
               style={{ background: winGradient }}
             >
-              {/* the target handle */}
+              {/* the result die, sitting just over the bar */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-7 bg-accent rounded shadow-md border-2 border-white/70"
+                className={`absolute bottom-full mb-2 -translate-x-1/2 flex flex-col items-center ${dragging ? "" : "transition-all duration-500 ease-out"}`}
+                style={{ left: `${markerPct}%` }}
+              >
+                <div
+                  className={`w-12 h-12 rounded-lg rotate-45 flex items-center justify-center shadow-lg ${last ? (last.won ? "bg-green-500" : "bg-red-500") : "bg-surface-raised"}`}
+                >
+                  <span className="-rotate-45 text-white font-extrabold text-xs">
+                    {last ? last.resultValue.toFixed(2) : "?"}
+                  </span>
+                </div>
+              </div>
+              {/* the draggable target handle, grabbable on the bar */}
+              <div
+                className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-9 bg-accent rounded shadow-md border-2 border-white/80 ${dragging ? "cursor-grabbing scale-110" : "cursor-grab"} transition-transform`}
                 style={{ left: `${targetPct}%` }}
               />
             </div>
@@ -233,16 +233,6 @@ const DiceView: React.FC<DiceViewProps> = ({
             </div>
           </div>
 
-          {/* drag the target line directly (0.01 units; the 2%..98% band is [200, 9800]) */}
-          <input
-            type="range"
-            min={200}
-            max={9800}
-            value={target}
-            onChange={(e) => changeTarget(Number(e.target.value))}
-            disabled={autoRunning}
-            className="w-full accent-accent disabled:opacity-50"
-          />
         </div>
       </div>
 

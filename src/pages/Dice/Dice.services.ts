@@ -7,6 +7,7 @@ import {
   Direction,
   MAX_BET,
   MIN_BET,
+  OUTCOMES,
   clampTarget,
   controlsFor,
   targetForMultiplier,
@@ -38,6 +39,7 @@ export const useDiceServices = () => {
   const rollSeq = useRef(0);
   const autoLeftRef = useRef(0);
   const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [dragging, setDragging] = useState(false);
 
   const controls = controlsFor(target, direction);
   const betValue = Math.min(Math.max(Math.floor(Number(betInput)) || MIN_BET, MIN_BET), MAX_BET);
@@ -45,6 +47,34 @@ export const useDiceServices = () => {
 
   // the slider and the three number fields all drive the same target
   const changeTarget = (next: number) => setTarget(clampTarget(next, direction));
+
+  // dragging the handle on the bar: map the pointer x within the track to a target.
+  // pointer capture (set on pointerdown) keeps the events coming even off the element,
+  // so getBoundingClientRect on the currentTarget stays the track the whole drag.
+  const targetFromPointer = (clientX: number, rect: DOMRect) => {
+    const pct = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+    return clampTarget(Math.round(pct * OUTCOMES), direction);
+  };
+  const trackHandlers = {
+    onPointerDown: (e: React.PointerEvent) => {
+      if (autoRunning) return;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      setDragging(true);
+      setTarget(targetFromPointer(e.clientX, e.currentTarget.getBoundingClientRect()));
+    },
+    onPointerMove: (e: React.PointerEvent) => {
+      if (!dragging) return;
+      setTarget(targetFromPointer(e.clientX, e.currentTarget.getBoundingClientRect()));
+    },
+    onPointerUp: (e: React.PointerEvent) => {
+      setDragging(false);
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        // capture may already be gone; nothing to release
+      }
+    },
+  };
   const changeWinChance = (chance: number) => {
     if (Number.isFinite(chance)) setTarget(targetForWinChance(chance, direction));
   };
@@ -144,6 +174,8 @@ export const useDiceServices = () => {
     changeWinChance,
     changeMultiplier,
     toggleDirection,
+    dragging,
+    trackHandlers,
     mode,
     setMode,
     autoCount,
