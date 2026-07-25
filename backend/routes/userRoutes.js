@@ -376,11 +376,28 @@ router.get('/transactions', authMiddleware.isAuthenticated, async (req, res) => 
 // Sell items back to the house for coins (base value x sell rate)
 router.post("/inventory/sell", authMiddleware.isAuthenticated, async (req, res) => {
   try {
-    const ids = Array.isArray(req.body.uniqueIds)
+    let ids = Array.isArray(req.body.uniqueIds)
       ? req.body.uniqueIds
       : req.body.uniqueId
         ? [req.body.uniqueId]
         : [];
+
+    // selling a whole stack by id: resolving the copies here keeps a 800-copy
+    // "sell all" from shipping 800 uuids up the wire. newest first, to match the
+    // card's single sell button.
+    if (!ids.length && req.body.itemId && ObjectId.isValid(req.body.itemId)) {
+      const asked = Math.floor(Number(req.body.quantity));
+      const owner = await User.findById(req.user._id, { inventory: 1 });
+      if (!owner) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const copies = (owner.inventory || [])
+        .filter((e) => e && String(e._id) === String(req.body.itemId))
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const take = Number.isFinite(asked) && asked > 0 ? Math.min(asked, copies.length) : copies.length;
+      ids = copies.slice(0, take).map((e) => e.uniqueId);
+    }
+
     if (!ids.length) {
       return res.status(400).json({ message: "No items selected" });
     }
@@ -574,6 +591,7 @@ router.get("/:id", async (req, res) => {
 
 // Get user inventory
 const ITEMS_PER_PAGE = 18;
+const STACK_IDS_LIMIT = 100;
 
 
 router.get("/inventory/:userId", async (req, res) => {
@@ -617,6 +635,15 @@ router.get("/inventory/:userId", async (req, res) => {
       countPipeline.push({ $match: { "inventory.rarity": rarity } });
     }
 
+    // grouped mode stacks duplicates into one row, so a page is a page of distinct
+    // items. a 21k-item inventory is ~130 distinct, which is the difference between
+    // 1200 pages and 8, and it collapses before the sort rather than after it.
+    const grouped = req.query.grouped === "true";
+    const withIds = grouped && req.query.withIds === "true";
+
+    if (grouped) {
+      countPipeline.push({ $group: { _id: "$inventory._id" } });
+    }
     countPipeline.push({ $count: "totalItems" });
 
     const totalCount = await User.aggregate(countPipeline);
@@ -649,16 +676,51 @@ router.get("/inventory/:userId", async (req, res) => {
       mostRare: { "inventory.rarity": -1 },
       mostCommon: { "inventory.rarity": 1 },
     };
-    if (sortBy && SORTS[sortBy]) {
-      pipeline.push({ $sort: SORTS[sortBy] });
-    }
-    pipeline.push(
-      { $group: { _id: null, inventory: { $push: "$inventory" } } },
-      { $project: { inventory: { $slice: ["$inventory", (page - 1) * ITEMS_PER_PAGE, ITEMS_PER_PAGE] } } }
-    );
+    let items;
+    if (grouped) {
+      // newest first before the group, so $first is the newest copy: that is the one
+      // the card's sell button and its provably-fair link point at
+      pipeline.push({ $sort: { "inventory.createdAt": -1 } });
+      pipeline.push({
+        $group: {
+          _id: "$inventory._id",
+          name: { $first: "$inventory.name" },
+          image: { $first: "$inventory.image" },
+          rarity: { $first: "$inventory.rarity" },
+          case: { $first: "$inventory.case" },
+          uniqueId: { $first: "$inventory.uniqueId" },
+          createdAt: { $first: "$inventory.createdAt" },
+          oldestAt: { $min: "$inventory.createdAt" },
+          quantity: { $sum: 1 },
+          ...(withIds ? { uniqueIds: { $push: "$inventory.uniqueId" } } : {}),
+        },
+      });
+      if (withIds) {
+        // capped: a stack can run to hundreds of copies and no screen picks that many
+        // one at a time, so shipping the whole list would be pure payload
+        pipeline.push({ $addFields: { uniqueIds: { $slice: ["$uniqueIds", STACK_IDS_LIMIT] } } });
+      }
+      const GROUPED_SORTS = {
+        older: { oldestAt: 1 },
+        newer: { createdAt: -1 },
+        mostRare: { rarity: -1 },
+        mostCommon: { rarity: 1 },
+      };
+      pipeline.push({ $sort: (sortBy && GROUPED_SORTS[sortBy]) || { createdAt: -1 } });
+      pipeline.push({ $skip: (page - 1) * ITEMS_PER_PAGE }, { $limit: ITEMS_PER_PAGE });
+      items = await User.aggregate(pipeline);
+    } else {
+      if (sortBy && SORTS[sortBy]) {
+        pipeline.push({ $sort: SORTS[sortBy] });
+      }
+      pipeline.push(
+        { $group: { _id: null, inventory: { $push: "$inventory" } } },
+        { $project: { inventory: { $slice: ["$inventory", (page - 1) * ITEMS_PER_PAGE, ITEMS_PER_PAGE] } } }
+      );
 
-    const inventoryItems = await User.aggregate(pipeline);
-    const items = inventoryItems[0]?.inventory || [];
+      const inventoryItems = await User.aggregate(pipeline);
+      items = inventoryItems[0]?.inventory || [];
+    }
 
     // attach authoritative base/sell value from the item catalog
     const ids = [...new Set(items.map((i) => String(i._id)))];
@@ -673,6 +735,49 @@ router.get("/inventory/:userId", async (req, res) => {
       items: withValue,
       currentPage: page,
       totalPages: totalPages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+const COPIES_PER_PAGE = 10;
+
+// every copy of one item the user owns, newest first. the grouped card only carries a
+// count and its newest copy, so this is what backs the per-copy list: one row per
+// copy, each with its own uniqueId to verify or sell.
+router.get("/inventory/:userId/copies/:itemId", async (req, res) => {
+  try {
+    const { userId, itemId } = req.params;
+    const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
+
+    if (!ObjectId.isValid(userId) || !ObjectId.isValid(itemId)) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    const user = await User.findById(userId, { inventory: 1 });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const copies = (user.inventory || [])
+      .filter((e) => e && String(e._id) === String(itemId))
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    const item = await Item.findById(itemId, { baseValue: 1, name: 1, image: 1, rarity: 1 });
+    const base = item?.baseValue || 0;
+
+    const start = (page - 1) * COPIES_PER_PAGE;
+    res.json({
+      copies: copies.slice(start, start + COPIES_PER_PAGE).map((e) => ({
+        uniqueId: e.uniqueId,
+        createdAt: e.createdAt,
+      })),
+      total: copies.length,
+      currentPage: page,
+      totalPages: Math.ceil(copies.length / COPIES_PER_PAGE),
+      sellValue: sellValue(base),
     });
   } catch (error) {
     console.error(error);

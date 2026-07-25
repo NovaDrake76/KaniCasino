@@ -105,6 +105,17 @@ export async function sellItems(uniqueIds: string[]) {
     return response.data;
 }
 
+// sells a whole stack without shipping one id per copy; omit quantity to sell them all
+export async function sellStack(itemId: string, quantity?: number) {
+    const response = await api.post(`/users/inventory/sell`, { itemId, quantity });
+    return response.data;
+}
+
+export async function getItemCopies(userId: string, itemId: string, page = 1) {
+    const response = await api.get(`/users/inventory/${userId}/copies/${itemId}?page=${page}`);
+    return response.data;
+}
+
 export async function getTransactions(page = 1, filters?: { type?: string; direction?: string }) {
     let url = `/users/transactions?page=${page}`;
 

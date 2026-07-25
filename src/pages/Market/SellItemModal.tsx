@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { sellItem, getItemHistory, ItemHistory } from "../../services/market/MarketService";
+import { sellItem, sellItemStack, getItemHistory, ItemHistory } from "../../services/market/MarketService";
 import { getInventory } from "../../services/users/UserServices";
 import UserContext from "../../UserContext";
 import Item from "../../components/Item";
@@ -49,6 +49,7 @@ const Stat: React.FC<{ label: string; value: React.ReactNode; hint?: string; acc
 const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [selectedItem, setSelectedItem] = useState<any>();
   const [price, setPrice] = useState<number | undefined>();
+  const [quantity, setQuantity] = useState<number>(1);
   const [inventory, setInventory] = useState<Inventory>();
   const [invItems, setInvItems] = useState<InventoryItem[]>([]);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -105,9 +106,19 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
       return toast.error("Price must be between 1 and 1.000.000", {});
     }
     try {
-      const res = await sellItem(selectedItem.uniqueId, price);
+      const res = quantity > 1
+        ? await sellItemStack(selectedItem._id, price, quantity)
+        : await sellItem(selectedItem.uniqueId, price);
       setRefresh && setRefresh(true);
-      if (res?.soldInstantly) {
+      if (quantity > 1) {
+        const sold = res?.soldInstantly || 0;
+        const listed = res?.listed || 0;
+        toast.success(
+          sold
+            ? `${sold} sold instantly for K₽${res.received}, ${listed} listed`
+            : `${listed} items listed for sale!`
+        );
+      } else if (res?.soldInstantly) {
         toast.success(`Sold instantly to a buy order for K₽${res.soldFor}! You received K₽${res.received}`);
       } else {
         toast.success("Item listed for sale!", {});
@@ -121,7 +132,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
 
   const getInventoryInfo = async (newPage?: number) => {
     try {
-      const response = await getInventory(userData.id, page, filters);
+      const response = await getInventory(userData.id, page, { ...filters, grouped: true });
       setInventory(response);
       newPage
         ? setInvItems((prev) => [...prev, ...response.items])
@@ -161,6 +172,10 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
 
   if (!isOpen) return null;
 
+  const maxQuantity = selectedItem?.quantity ?? 1;
+  const clampQuantity = (raw: string) =>
+    Math.min(Math.max(1, Math.floor(Number(raw)) || 1), maxQuantity);
+
   const stats = history?.stats;
   const feeRate = stats?.feeRate ?? 0.05;
   const p = price || 0;
@@ -194,7 +209,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                 return (
                   <div
                     key={item._id + index}
-                    onClick={() => setSelectedItem(item)}
+                    onClick={() => { setSelectedItem(item); setQuantity(1); }}
                     className={`rounded-lg cursor-pointer transition-all p-1 border-2 ${
                       isSelected ? "border-accent bg-accent/10" : "border-transparent hover:bg-surface"
                     }`}
@@ -330,6 +345,22 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                   className="w-full sm:w-36 bg-surface-nav border border-line focus:border-accent outline-none rounded pl-9 pr-3 py-2 text-sm"
                 />
               </div>
+              {maxQuantity > 1 && (
+                <div className="relative shrink-0">
+                  <span className="absolute inset-y-0 left-3 flex items-center text-ink-muted text-sm pointer-events-none">
+                    ×
+                  </span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={maxQuantity}
+                    value={quantity}
+                    onChange={(e) => setQuantity(clampQuantity(e.target.value))}
+                    title={`You own ${maxQuantity}`}
+                    className="w-24 bg-surface-nav border border-line focus:border-accent outline-none rounded pl-7 pr-2 py-2 text-sm"
+                  />
+                </div>
+              )}
               <button
                 onClick={CloseModal}
                 className="px-4 py-2 rounded bg-surface-raised hover:bg-red-700 text-sm font-semibold"
@@ -349,7 +380,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           </div>
           {crossesBid && (
             <span className="text-xs text-accent-gold">
-              A buy order is bidding <Monetary value={stats?.bestBid || 0} /> — this sells instantly at that price.
+              A buy order is bidding <Monetary value={stats?.bestBid || 0} />, so this sells instantly at that price.
             </span>
           )}
         </div>
