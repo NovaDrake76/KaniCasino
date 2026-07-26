@@ -63,8 +63,10 @@ function withFooter(html, unsub, kind) {
     kind === "marketing"
       ? `You are getting this because you opted in to updates from KaniCasino. <a href="${unsub}">Unsubscribe</a>.`
       : `This is a service message about your KaniCasino account. <a href="${unsub}">Manage email preferences</a>.`;
-  return `${html}<hr style="border:none;border-top:1px solid #2A2840;margin:24px 0" />
-<p style="font:12px sans-serif;color:#84819a">${line}</p>`;
+  return `${html}
+<div style="background:#F1F0F5;padding:0 16px 32px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+  <p style="max-width:560px;margin:0 auto;padding:0 8px;font-size:12px;line-height:1.6;color:#6B6880">${line}</p>
+</div>`;
 }
 
 module.exports = { sendMail, unsubscribeUrl, oneClickUrl, enabled };
