@@ -109,8 +109,6 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
     try {
       const started = await startAdWatch();
       if (adStatus.provider === "adsense") {
-        // a token that never gets its ad goes straight back, otherwise a no-fill or a
-        // blocked script quietly costs the player one of their ten tries for the day
         const giveBack = async (message: string) => {
           await abandonAdWatch(started.token);
           setAdStatus((s) => (s ? { ...s } : s));

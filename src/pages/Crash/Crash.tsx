@@ -67,6 +67,9 @@ const CrashGame = () => {
   const placeBetRef = useRef(placeBet);
   placeBetRef.current = placeBet;
 
+  const userIdRef = useRef<string | undefined>(userData?.id);
+  userIdRef.current = userData?.id;
+
   const handleBet = () => {
     if (!isLogged) {
       toogleUserFlow(true);
@@ -148,6 +151,16 @@ const CrashGame = () => {
         setGameStarted(false);
         setGameEnded(false);
       }
+
+      // leaving the page and coming back remounts this with a blank slate, so the
+      // player's own stake has to be read back or the cashout button never returns
+      const id = userIdRef.current;
+      const stake = id ? sync.gameBets?.[id] : undefined;
+      if (stake == null) return;
+      const payout = sync.gamePlayers?.[id as string]?.payout;
+      setUserGambled(true);
+      setUserCashedOut(payout != null);
+      if (payout != null) setUserMultiplier(payout / stake);
     };
 
     socket.on("crash:sync", syncListener);

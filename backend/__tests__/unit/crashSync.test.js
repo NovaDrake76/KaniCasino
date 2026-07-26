@@ -68,4 +68,23 @@ describe("crash sync on entry", () => {
     expect(sync.p.gameStartTime).toBeTruthy();
     expect(sync.p).not.toHaveProperty("crashPoint");
   });
+
+  // the page reads its own stake back out of these on remount, which is the only way
+  // the cashout button survives navigating away mid-round
+  test("the state carries the caller's own bet and whether it is still uncashed", async () => {
+    const { chargeUser } = require("../../utils/economy");
+    chargeUser.mockResolvedValue({ _id: "u1", username: "p", profilePicture: "", level: 1, fixedItem: null });
+
+    const socket = makeSocket();
+    socket.userId = "u1";
+    io.connection(socket);
+    await socket.handlers["crash:bet"]({ amount: 100, autoCashoutAt: null }, () => {});
+
+    socket.emitted.length = 0;
+    socket.handlers["crash:requestState"]();
+    const sync = socket.emitted.find((m) => m.e === "crash:sync");
+
+    expect(sync.p.gameBets.u1).toBe(100);
+    expect(sync.p.gamePlayers.u1.payout).toBeNull();
+  });
 });
