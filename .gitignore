@@ -42,3 +42,6 @@ backend/scripts/updateItems.js
 backend/scripts/sendNotificationToAll.js
 backend/scripts/populateUniqueId.js
 backend/scripts/buyAllItems.js
+
+# banner renders; the shipped webp lives in public/images/banners
+tools/banners/out/

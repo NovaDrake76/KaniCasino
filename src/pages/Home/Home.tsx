@@ -54,12 +54,68 @@ const Home = () => {
     },
     {
       left: {
-        image: "/images/paris.webp",
-        title: "NEW UPGRADE GAME",
-        description: "Go big or go home. Try your luck now!",
-        link: "/upgrade",
+        image: "/images/banners/blackjack-plate.webp",
+        title: "BLACKJACK",
+        description: "Hit, stand, and beat the dealer.",
+        link: "/blackjack",
       },
-      right: null,
+      right: (
+        <div>
+          <img src="/images/banners/blackjack-lockup.webp" alt="Blackjack" />
+        </div>
+      ),
+    },
+    {
+      left: {
+        image: "/images/banners/plinko-plate.webp",
+        title: "PLINKO",
+        description: "Drop the ball and watch it fall.",
+        link: "/plinko",
+      },
+      right: (
+        <div>
+          <img src="/images/banners/plinko-lockup.webp" alt="Plinko" />
+        </div>
+      ),
+    },
+    {
+      left: {
+        image: "/images/banners/counter-strike-plate.webp",
+        title: "COUNTER-STRIKE",
+        description: "Open the cases, collect the rarest.",
+        link: "/case/646ca0a4e9b0e208f5ddcfa6",
+      },
+      right: (
+        <div>
+          <img src="/images/banners/counter-strike-lockup.webp" alt="Counter-Strike cases" />
+        </div>
+      ),
+    },
+    {
+      left: {
+        image: "/images/banners/blue-archive-plate.webp",
+        title: "BLUE ARCHIVE",
+        description: "Four cases from Kivotos.",
+        link: "/case/6a5afb4e445211422b946280",
+      },
+      right: (
+        <div>
+          <img src="/images/banners/blue-archive-lockup.webp" alt="Blue Archive cases" />
+        </div>
+      ),
+    },
+    {
+      left: {
+        image: "/images/banners/uma-musume-plate.webp",
+        title: "UMA MUSUME",
+        description: "Five cases, one winner.",
+        link: "/case/6a6029119cfaa53787df47d0",
+      },
+      right: (
+        <div>
+          <img src="/images/banners/uma-musume-lockup.webp" alt="Uma Musume cases" />
+        </div>
+      ),
     },
     {
       left: {

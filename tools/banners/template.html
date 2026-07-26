@@ -1,0 +1,205 @@
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: "MontserratBanner";
+    src: url("file:///e:/codes 2/KaniCasino/public/fonts/montserrat-latin.woff2") format("woff2");
+    /* the site's own descriptor stops at 800, but banners bake to pixels so they can use 900 */
+    font-weight: 100 900;
+    font-display: block;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { overflow: hidden; background: transparent; }
+
+  .plate {
+    position: relative;
+    width: 1920px;
+    height: 460px;
+    overflow: hidden;
+    font-family: "MontserratBanner", sans-serif;
+    background: var(--base);
+  }
+
+  .wash {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(110% 150% at 50% 62%, var(--glow) 0%, transparent 56%),
+      radial-gradient(90% 120% at 12% 25%, var(--lift) 0%, transparent 62%),
+      linear-gradient(100deg, var(--dark) 0%, var(--base) 50%, var(--mid) 100%);
+  }
+
+  .rings {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 1000px; height: 1000px; border-radius: 50%;
+    background: repeating-radial-gradient(circle, transparent 0 28px, var(--ring) 28px 29px);
+    opacity: .45;
+    -webkit-mask-image: radial-gradient(circle, #000 38%, transparent 70%);
+  }
+
+  .streaks {
+    position: absolute; inset: -20%;
+    background: repeating-linear-gradient(72deg, transparent 0 40px, var(--streak) 40px 42px);
+    opacity: .3;
+    -webkit-mask-image: radial-gradient(60% 100% at 50% 50%, #000 20%, transparent 75%);
+  }
+
+  .vignette {
+    position: absolute; inset: 0; z-index: 6;
+    background: radial-gradient(115% 100% at 50% 50%, transparent 42%, rgba(0,0,0,.58) 100%);
+  }
+
+  /* subjects sit near the middle: cover crops from both edges, so anything near an
+     edge is the first thing a narrow viewport loses */
+  .subject { position: absolute; bottom: 0; filter: drop-shadow(0 16px 28px rgba(0,0,0,.55)); }
+
+  .peg { position: absolute; border-radius: 50%; background: var(--motif); z-index: 1; }
+  .ball {
+    position: absolute; border-radius: 50%; background: var(--accent); z-index: 2;
+    box-shadow: 0 0 14px var(--accent);
+  }
+  .card {
+    position: absolute; z-index: 4;
+    width: 104px; height: 146px; border-radius: 10px;
+    background: linear-gradient(160deg, #FFFFFF 0%, #E8E6F0 100%);
+    box-shadow: 0 12px 26px rgba(0,0,0,.45);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 58px; font-weight: 700; line-height: 1;
+  }
+
+  .lockup {
+    width: 640px; height: 300px;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-end;
+    font-family: "MontserratBanner", sans-serif;
+    padding: 12px 16px;
+  }
+  .title {
+    font-size: 78px; font-weight: 900; letter-spacing: -2px; line-height: .95;
+    max-width: 100%;
+    color: var(--ink); white-space: nowrap; transform: skewX(-9deg);
+    text-shadow: 3px 3px 0 var(--ink-shadow), 6px 6px 0 var(--ink-shadow), 0 0 34px var(--glow-text);
+  }
+  .sub {
+    margin-top: 14px; font-size: 23px; font-weight: 800; letter-spacing: 1.4px;
+    color: var(--accent); white-space: nowrap; transform: skewX(-9deg);
+    text-shadow: 0 2px 8px rgba(0,0,0,.55);
+  }
+  .spark { position: absolute; border-radius: 50%; background: var(--accent); z-index: 5; }
+</style>
+
+<div class="plate" id="plate">
+  <div class="wash"></div>
+  <div class="rings"></div>
+  <div class="streaks"></div>
+  <div class="vignette"></div>
+</div>
+
+<div class="lockup" id="lockup">
+  <div class="title" id="title"></div>
+  <div class="sub" id="sub"></div>
+</div>
+
+<script>
+  const theme = (el, t) => {
+    for (const [k, v] of Object.entries(t)) el.style.setProperty("--" + k, v);
+  };
+
+  const add = (parent, cls, style) => {
+    const d = document.createElement("div");
+    d.className = cls;
+    Object.assign(d.style, style);
+    parent.appendChild(d);
+    return d;
+  };
+
+  // a triangular peg field with a few balls in flight, so the slide reads as plinko
+  function plinkoMotif(plate, rnd) {
+    const rows = 9, top = 40, gapY = 40, gapX = 46, cx = 960;
+    for (let r = 0; r < rows; r++) {
+      const n = r + 3;
+      for (let c = 0; c < n; c++) {
+        const x = cx + (c - (n - 1) / 2) * gapX;
+        add(plate, "peg", {
+          width: "9px", height: "9px",
+          left: x + "px", top: top + r * gapY + "px",
+          opacity: String(0.18 + rnd() * 0.3),
+        });
+      }
+    }
+    for (let i = 0; i < 5; i++) {
+      const s = 16 + rnd() * 8;
+      add(plate, "ball", {
+        width: s + "px", height: s + "px",
+        left: cx + (rnd() - 0.5) * 460 + "px",
+        top: 30 + rnd() * 330 + "px",
+        opacity: String(0.55 + rnd() * 0.45),
+      });
+    }
+  }
+
+  // a loose fan of cards, the hand you are dealt
+  function cardsMotif(plate, rnd) {
+    // low and in front, so they read as cards on the felt with the dealer behind them
+    const hand = [
+      { pip: "A", suit: "♠", color: "#16151F", x: 556, y: 300, rot: -19 },
+      { pip: "K", suit: "♥", color: "#C2274B", x: 690, y: 322, rot: -5 },
+      { pip: "Q", suit: "♦", color: "#C2274B", x: 824, y: 306, rot: 12 },
+    ];
+    for (const c of hand) {
+      const el = add(plate, "card", {
+        left: c.x + "px", top: c.y + "px",
+        transform: `rotate(${c.rot}deg)`,
+        color: c.color,
+      });
+      el.textContent = c.pip + c.suit;
+      el.style.fontSize = "44px";
+    }
+  }
+
+  const MOTIFS = { plinko: plinkoMotif, cards: cardsMotif };
+
+  function render(cfg) {
+    const plate = document.getElementById("plate");
+    const lockup = document.getElementById("lockup");
+    theme(plate, cfg.theme);
+    theme(lockup, cfg.theme);
+
+    const titleEl = document.getElementById("title");
+    titleEl.textContent = cfg.title;
+    document.getElementById("sub").textContent = cfg.sub;
+
+    // shrink to fit rather than clip: COUNTER-STRIKE is far wider than BLACKJACK
+    const room = lockup.clientWidth - 32;
+    for (let px = 78; px > 40 && titleEl.scrollWidth > room; px -= 2) {
+      titleEl.style.fontSize = px + "px";
+    }
+
+    // deterministic, so the same config always renders an identical file
+    let seed = cfg.seed || 7;
+    const rnd = () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296;
+
+    if (cfg.motif && MOTIFS[cfg.motif]) MOTIFS[cfg.motif](plate, rnd);
+
+    (cfg.subjects || []).forEach((s) => {
+      const img = document.createElement("img");
+      img.className = "subject";
+      img.src = s.src;
+      img.style.height = s.height + "px";
+      img.style.left = s.left + "px";
+      img.style.bottom = (s.bottom || 0) + "px";
+      img.style.zIndex = s.z || 3;
+      if (s.opacity) img.style.opacity = s.opacity;
+      if (s.flip) img.style.transform = "scaleX(-1)";
+      plate.appendChild(img);
+    });
+
+    for (let i = 0; i < 22; i++) {
+      const size = 3 + rnd() * 9;
+      add(plate, "spark", {
+        width: size + "px", height: size + "px",
+        left: 380 + rnd() * 1160 + "px",
+        top: rnd() * 460 + "px",
+        opacity: String(0.14 + rnd() * 0.44),
+        filter: "blur(" + (rnd() * 2).toFixed(1) + "px)",
+      });
+    }
+  }
+</script>
