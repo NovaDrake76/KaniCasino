@@ -26,10 +26,7 @@ async function recordMarketFee({ price, buyerId, meta }) {
 function inventoryEntryFrom(listing) {
   return {
     _id: listing.item,
-    name: listing.itemName,
-    image: listing.itemImage,
     rarity: listing.rarity,
-    case: listing.case,
     createdAt: new Date(),
     uniqueId: listing.uniqueId,
   };
