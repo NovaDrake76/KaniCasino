@@ -16,7 +16,9 @@ const build = (name) => {
 <div style="background:#F1F0F5;padding:32px 16px;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
   <div style="max-width:560px;margin:0 auto">
     <div style="font:700 20px/1 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#4F46E5;padding:0 8px 20px">KaniCasino</div>
-    <div style="background:#FFFFFF;border-radius:10px;padding:36px 32px">
+    <div style="background:#FFFFFF;border-radius:10px;overflow:hidden">
+    <a href="${SITE}"><img src="${SITE}/images/email/crash-banner.jpg" width="560" alt="KaniCasino" style="display:block;width:100%;max-width:560px;height:auto;border:0" /></a>
+    <div style="padding:34px 32px 36px">
       <h1 style="margin:0 0 28px;font-size:23px;line-height:1.3;color:#16151F">KaniCasino 1.0 is here, with a new Privacy Policy</h1>
 
       <p style="margin:0 0 16px;font-size:15px;line-height:1.65;color:#3C3A4B"><strong>Hi, ${name}!</strong></p>
@@ -37,6 +39,7 @@ const build = (name) => {
       <p style="margin:0 0 16px;font-size:15px;line-height:1.65;color:#3C3A4B">Nothing. Your account and the way you play are unchanged. KP is still fictional, there are no deposits or withdrawals, and we never ask for payment details.</p>
 
       <p style="margin:24px 0 0;font-size:15px;line-height:1.65;color:#3C3A4B">If anything here is unclear, just reply to this email and we will explain.</p>
+    </div>
     </div>
   </div>
 </div>`;

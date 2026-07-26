@@ -6,7 +6,7 @@ import { BannerProps } from "./Types";
 const Banner: React.FC<BannerProps> = ({ left, right }) => {
   return (
     <div
-      className={`w-screen  max-w-[1920px] h-[460px]  bg-no-repeat hidden md:flex bg-cover`}
+      className={`w-screen  max-w-[1920px] h-[460px]  bg-no-repeat hidden md:flex bg-cover bg-center`}
       style={{ backgroundImage: `url(${left.image})` }}
     >
       <div className="flex items-center justify-center w-full ">
