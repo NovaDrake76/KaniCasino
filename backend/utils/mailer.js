@@ -3,6 +3,7 @@ const User = require("../models/User");
 
 const FROM = process.env.MAIL_FROM || "KaniCasino <no-reply@kanicasino.com>";
 const SITE = process.env.SITE_URL || "https://kanicasino.com";
+const API = process.env.API_URL || "https://kanicasino.cfhxo.com";
 const REGION = process.env.AWS_REGION || "sa-east-1";
 
 // unset means email is off, so a misconfigured box stays silent instead of throwing
@@ -12,6 +13,10 @@ let client = null;
 const ses = () => (client = client || new SESv2Client({ region: REGION }));
 
 const unsubscribeUrl = (user) => `${SITE}/unsubscribe?u=${user._id}&t=${user.unsubscribeToken}`;
+
+// the header URL is POSTed by the mail provider itself, so it has to be the api and not
+// the SPA, which would answer 200 with a page nobody runs and drop the opt-out.
+const oneClickUrl = (user) => `${API}/email/unsubscribe?u=${user._id}&t=${user.unsubscribeToken}`;
 
 // "service" is account mail nobody opts out of (password resets, policy notices);
 // "marketing" needs consent and is refused without it.
@@ -27,7 +32,7 @@ async function sendMail({ to, subject, html, text, kind = "service" }) {
 
   const unsub = unsubscribeUrl(user);
   const headers = [
-    { Name: "List-Unsubscribe", Value: `<${unsub}>` },
+    { Name: "List-Unsubscribe", Value: `<${oneClickUrl(user)}>` },
     { Name: "List-Unsubscribe-Post", Value: "List-Unsubscribe=One-Click" },
   ];
 
@@ -59,4 +64,4 @@ function withFooter(html, unsub, kind) {
 <p style="font:12px sans-serif;color:#84819a">${line}</p>`;
 }
 
-module.exports = { sendMail, unsubscribeUrl, enabled };
+module.exports = { sendMail, unsubscribeUrl, oneClickUrl, enabled };
