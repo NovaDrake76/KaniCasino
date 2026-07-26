@@ -54,6 +54,19 @@ const Home = () => {
     },
     {
       left: {
+        image: "/images/banners/blue-archive-plate.webp",
+        title: "BLUE ARCHIVE",
+        description: "Four cases from Kivotos.",
+        link: "/case/6a5afb4e445211422b946280",
+      },
+      right: (
+        <div>
+          <img src="/images/banners/blue-archive-lockup.webp" alt="Blue Archive cases" />
+        </div>
+      ),
+    },
+    {
+      left: {
         image: "/images/banners/blackjack-plate.webp",
         title: "BLACKJACK",
         description: "Hit, stand, and beat the dealer.",
@@ -62,6 +75,19 @@ const Home = () => {
       right: (
         <div>
           <img src="/images/banners/blackjack-lockup.webp" alt="Blackjack" />
+        </div>
+      ),
+    },
+    {
+      left: {
+        image: "/images/banners/uma-musume-plate.webp",
+        title: "UMA MUSUME",
+        description: "Five cases, one winner.",
+        link: "/case/6a6029119cfaa53787df47d0",
+      },
+      right: (
+        <div>
+          <img src="/images/banners/uma-musume-lockup.webp" alt="Uma Musume cases" />
         </div>
       ),
     },
@@ -88,32 +114,6 @@ const Home = () => {
       right: (
         <div>
           <img src="/images/banners/counter-strike-lockup.webp" alt="Counter-Strike cases" />
-        </div>
-      ),
-    },
-    {
-      left: {
-        image: "/images/banners/blue-archive-plate.webp",
-        title: "BLUE ARCHIVE",
-        description: "Four cases from Kivotos.",
-        link: "/case/6a5afb4e445211422b946280",
-      },
-      right: (
-        <div>
-          <img src="/images/banners/blue-archive-lockup.webp" alt="Blue Archive cases" />
-        </div>
-      ),
-    },
-    {
-      left: {
-        image: "/images/banners/uma-musume-plate.webp",
-        title: "UMA MUSUME",
-        description: "Five cases, one winner.",
-        link: "/case/6a6029119cfaa53787df47d0",
-      },
-      right: (
-        <div>
-          <img src="/images/banners/uma-musume-lockup.webp" alt="Uma Musume cases" />
         </div>
       ),
     },
