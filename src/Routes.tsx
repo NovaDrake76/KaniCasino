@@ -13,6 +13,7 @@ import Dice from "./pages/Dice";
 import Mines from "./pages/Mines";
 import Hilo from "./pages/Hilo";
 import PrivacyPolicy from "./pages/About/PrivacyPolicy"
+import Unsubscribe from "./pages/About/Unsubscribe"
 import ItemPage from "./pages/Market/ItemPage";
 import Battles from "./pages/Battles/Battles";
 import BattleRoom from "./pages/Battles/BattleRoom";
@@ -42,6 +43,7 @@ const defaultRoutes = (
     <Route path="/r/:code" element={<ReferralRedirect />} />
     <Route path="/backoffice" element={<Backoffice />} />
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+    <Route path="/unsubscribe" element={<Unsubscribe />} />
   </>
 );
 

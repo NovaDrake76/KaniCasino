@@ -15,6 +15,7 @@ import MissionsPanel from "../Missions/MissionsPanel";
 import AffiliatesPanel from "../Affiliates/AffiliatesPanel";
 import { resolveTab, Tab } from "./tabs";
 import ItemCopiesModal from "./ItemCopiesModal";
+import EmailSettings from "./EmailSettings";
 import { User } from '../../components/Types'
 
 interface Inventory {
@@ -152,6 +153,7 @@ const Profile = () => {
           { key: "missions" as const, label: "Missions" },
           { key: "affiliates" as const, label: "Affiliates" },
           { key: "history" as const, label: "Balance history" },
+          { key: "settings" as const, label: "Settings" },
         ]
       : []),
   ];
@@ -230,6 +232,8 @@ const Profile = () => {
             <MissionsPanel userId={id as string} isOwner={isSameUser} />
           ) : activeTab === "affiliates" ? (
             <AffiliatesPanel isOwner={isSameUser} />
+          ) : activeTab === "settings" ? (
+            <EmailSettings />
           ) : activeTab === "collections" ? (
             <CollectionsPanel userId={id as string} isOwner={isSameUser} />
           ) : (
