@@ -30,35 +30,81 @@ export const startAdWatch = async (): Promise<AdWatchStart> =>
 export const claimAdReward = async (token: string): Promise<AdRewardClaim> =>
   (await api.post("/rewards/ads/claim", { token })).data;
 
-// google's ad placement api (h5 games ads). the page already loads adsbygoogle, so
-// adBreak is just the queued call; this only runs when the provider is "adsense".
+// hands a token back when its ad never played, so a no-fill does not spend one of the
+// day's tries
+export const abandonAdWatch = async (token: string): Promise<void> => {
+  try {
+    await api.post("/rewards/ads/abandon", { token });
+  } catch {
+    // best effort: the token expires with the day anyway
+  }
+};
+
+// google's ad placement api (h5 games ads), which rides on the adsense tag loaded in
+// index.html. that tag is fetched after the load event, so adBreak can be minutes late
+// or never arrive at all (blocked, not enrolled, no fill).
 declare global {
   interface Window {
     adsbygoogle: unknown[];
     adBreak?: (o: Record<string, unknown>) => void;
+    adConfig?: (o: Record<string, unknown>) => void;
   }
 }
 
-export const showRewardedAd = (handlers: {
+const AD_SCRIPT_WAIT_MS = 6000;
+
+// resolves once the placement api is live, or false if it never turns up
+const waitForAdBreak = (): Promise<boolean> =>
+  new Promise((resolve) => {
+    if (typeof window.adBreak === "function") return resolve(true);
+    const started = Date.now();
+    const tick = window.setInterval(() => {
+      if (typeof window.adBreak === "function") {
+        window.clearInterval(tick);
+        resolve(true);
+      } else if (Date.now() - started > AD_SCRIPT_WAIT_MS) {
+        window.clearInterval(tick);
+        resolve(false);
+      }
+    }, 200);
+  });
+
+export const showRewardedAd = async (handlers: {
   onGranted: () => void;
   onDismissed: () => void;
   onUnavailable: () => void;
 }) => {
-  const adBreak =
-    window.adBreak || ((o: Record<string, unknown>) => (window.adsbygoogle = window.adsbygoogle || []).push(o));
+  const ready = await waitForAdBreak();
+  if (!ready) {
+    // never queue onto adsbygoogle as a fallback: that array is for display slots and
+    // swallows a reward request without ever calling back, which reads as a dead button
+    handlers.onUnavailable();
+    return;
+  }
+
+  // the placement api wants its config before the first break is requested
+  window.adConfig?.({ preloadAdBreaks: "on", sound: "on" });
+
   let shown = false;
-  adBreak({
+  let settled = false;
+  const once = (fn: () => void) => () => {
+    if (settled) return;
+    settled = true;
+    fn();
+  };
+
+  window.adBreak?.({
     type: "reward",
     name: "kp-reward",
     beforeReward: (showAdFn: () => void) => {
       shown = true;
       showAdFn();
     },
-    adViewed: () => handlers.onGranted(),
-    adDismissed: () => handlers.onDismissed(),
+    adViewed: once(handlers.onGranted),
+    adDismissed: once(handlers.onDismissed),
     adBreakDone: () => {
       // no fill: beforeReward never ran, so nothing was ever shown
-      if (!shown) handlers.onUnavailable();
+      if (!shown) once(handlers.onUnavailable)();
     },
   });
 };

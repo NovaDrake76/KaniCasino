@@ -11,6 +11,7 @@ import {
   startAdWatch,
   claimAdReward,
   showRewardedAd,
+  abandonAdWatch,
   AdRewardStatus,
 } from "../../services/rewards/AdRewardServices";
 
@@ -108,10 +109,17 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
     try {
       const started = await startAdWatch();
       if (adStatus.provider === "adsense") {
-        showRewardedAd({
+        // a token that never gets its ad goes straight back, otherwise a no-fill or a
+        // blocked script quietly costs the player one of their ten tries for the day
+        const giveBack = async (message: string) => {
+          await abandonAdWatch(started.token);
+          setAdStatus((s) => (s ? { ...s } : s));
+          toast.info(message, { theme: "dark" });
+        };
+        await showRewardedAd({
           onGranted: () => finishAd(started.token),
-          onDismissed: () => toast.info("Ad closed early, no reward", { theme: "dark" }),
-          onUnavailable: () => toast.info("No ad available right now, try later", { theme: "dark" }),
+          onDismissed: () => giveBack("Ad closed early, no reward"),
+          onUnavailable: () => giveBack("No ad available right now, try later"),
         });
       } else {
         startMock(started.token, started.minWatchMs);
@@ -164,7 +172,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
           <div className="flex flex-col items-center gap-4 p-6">
             <div className="w-full aspect-video bg-surface-nav rounded-md flex items-center justify-center relative overflow-hidden">
               <BiMoviePlay className="text-6xl text-ink-faint" />
-              <span className="absolute top-2 left-2 text-xs text-ink-muted uppercase">Ad</span>
+              <span className="absolute top-2 left-2 text-xs text-ink-muted uppercase">Test placeholder</span>
               <div
                 className="absolute bottom-0 left-0 h-1 bg-accent-gold"
                 style={{
@@ -174,7 +182,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
               />
             </div>
             <p className="text-ink-soft text-sm text-center">
-              {canClaimAd ? "All done, enjoy your coins." : "Watching the ad..."}
+              {canClaimAd ? "All done, enjoy your coins." : "No real ad here yet, this is a test placeholder..."}
             </p>
             <MainButton
               text={`Claim +${adStatus?.amount} K₽`}

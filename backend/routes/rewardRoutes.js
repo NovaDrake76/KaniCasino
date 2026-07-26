@@ -26,6 +26,17 @@ module.exports = (io) => {
     }
   });
 
+  // POST /rewards/ads/abandon : hand back a token whose ad never played
+  router.post("/ads/abandon", isAuthenticated, async (req, res) => {
+    try {
+      const r = await adRewards.abandonWatch(req.user._id, req.body.token);
+      res.status(r.code).json(r.body);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   // POST /rewards/ads/claim : redeem the token once the view is plausible (atomic)
   router.post("/ads/claim", isAuthenticated, async (req, res) => {
     try {
