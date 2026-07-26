@@ -24,7 +24,7 @@ const TermsOfPrivacy = () => {
                 the rights you have over it. It is written to meet the Brazilian General Data
                 Protection Law (LGPD, Law 13.709/2018). For anything in this policy, including the
                 rights in section 8, write to{" "}
-                <span className="text-blue-500">privacy@kanicasino.com</span> and a person will
+                <span className="text-blue-500">novadrake77@gmail.com</span> and a person will
                 answer you.
             </span>
 
@@ -139,7 +139,7 @@ const TermsOfPrivacy = () => {
                     Under LGPD Art. 18 you can ask us to confirm whether we process your data,
                     access it, correct it, anonymise or delete it, receive it in a portable form,
                     know who we have shared it with, and withdraw consent. To exercise any of these,
-                    email <span className="text-blue-500">privacy@kanicasino.com</span>. We answer
+                    email <span className="text-blue-500">novadrake77@gmail.com</span>. We answer
                     within 15 days. You may also complain to the ANPD, Brazil's data protection
                     authority.
                 </span>
@@ -172,9 +172,8 @@ const TermsOfPrivacy = () => {
 
             <Section title="12. Contact">
                 <span>
-                    Privacy questions and rights requests:{" "}
-                    <span className="text-blue-500">privacy@kanicasino.com</span>. Anything else:{" "}
-                    <span className="text-blue-500">contact@kanicasino.com</span>.
+                    Privacy questions, rights requests and anything else:{" "}
+                    <span className="text-blue-500">novadrake77@gmail.com</span>.
                 </span>
             </Section>
         </div>

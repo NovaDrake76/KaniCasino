@@ -127,6 +127,10 @@ app.post("/internal/notice", (req, res) => {
   res.json({ ok: true });
 });
 
+// SNS and mail clients hitting the one-click unsubscribe carry no api key, so this
+// mounts above the gate. everything inside that touches a session still needs a JWT.
+app.use("/email", emailRoutes);
+
 // block requests from outside
 app.use(checkApiKey);
 
@@ -144,7 +148,6 @@ app.use("/collections", collectionsRoutes);
 app.use("/missions", missionsRoutes);
 app.use("/referrals", referralRoutes);
 app.use("/rewards", rewardRoutes);
-app.use("/email", emailRoutes);
 
 // settle whatever the last shutdown interrupted before dealing anyone in again: a live
 // crash or coin flip round holds real stakes, and until this runs they are unaccounted.
