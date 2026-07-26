@@ -147,8 +147,6 @@ describe("real-money mode turns ad rewards off", () => {
   });
 });
 
-// paying 500 KP per view for a placeholder is a faucet, so an unconfigured server must
-// not quietly serve one: the offer only exists once a player is named on purpose
 describe("no configured provider turns ad rewards off", () => {
   afterEach(() => {
     process.env.AD_REWARDS_PROVIDER = "mock";
@@ -192,7 +190,6 @@ describe("handing a token back when the ad never played", () => {
     expect(res.body.released).toBe(true);
     expect(await AdWatch.countDocuments({ userId: u._id })).toBe(0);
 
-    // and the freed try really is usable again
     const again = await watchOne(u);
     expect(again.status).toBe(200);
   });
@@ -215,7 +212,6 @@ describe("handing a token back when the ad never played", () => {
 
     const res = await abandon(u, s.body.token);
     expect(res.body.released).toBe(false);
-    // the paid row survives, so the claim still counts against the day
     expect(await AdWatch.countDocuments({ userId: u._id })).toBe(1);
     expect(await Transaction.countDocuments({ userId: u._id, type: TX.AD_REWARD })).toBe(1);
   });
