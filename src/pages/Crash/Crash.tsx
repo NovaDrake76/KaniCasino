@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import SocketConnection from "../../services/socket"
+import { setStakeAtRisk } from "../../services/stakeGuard";
 import UserContext from "../../UserContext";
 import falling from "/images/crash/falling.gif";
 import idle from "/images/crash/idle.gif";
@@ -69,6 +70,13 @@ const CrashGame = () => {
 
   const userIdRef = useRef<string | undefined>(userData?.id);
   userIdRef.current = userData?.id;
+
+  useEffect(() => {
+    setStakeAtRisk(userGambled && gameStarted && !userCashedOut);
+  }, [userGambled, gameStarted, userCashedOut]);
+
+  // leaving the page is the player's own choice; the guard only holds while they are on it
+  useEffect(() => () => setStakeAtRisk(false), []);
 
   const handleBet = () => {
     if (!isLogged) {
