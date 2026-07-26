@@ -2,6 +2,8 @@ const { SESv2Client, SendEmailCommand } = require("@aws-sdk/client-sesv2");
 const User = require("../models/User");
 
 const FROM = process.env.MAIL_FROM || "KaniCasino <no-reply@kanicasino.com>";
+// the from address can send but cannot receive, so replies need somewhere real to go
+const REPLY_TO = process.env.MAIL_REPLY_TO;
 const SITE = process.env.SITE_URL || "https://kanicasino.com";
 const API = process.env.API_URL || "https://kanicasino.cfhxo.com";
 const REGION = process.env.AWS_REGION || "sa-east-1";
@@ -40,6 +42,7 @@ async function sendMail({ to, subject, html, text, kind = "service" }) {
     new SendEmailCommand({
       FromEmailAddress: FROM,
       Destination: { ToAddresses: [to] },
+      ...(REPLY_TO ? { ReplyToAddresses: [REPLY_TO] } : {}),
       Content: {
         Simple: {
           Subject: { Data: subject, Charset: "UTF-8" },
