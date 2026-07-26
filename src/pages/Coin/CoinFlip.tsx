@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import SocketConnection from "../../services/socket"
+import { setStakeAtRisk } from "../../services/stakeGuard";
 import Coin from "./Coin"
 import { motion } from "framer-motion";
 import UserContext from "../../UserContext";
@@ -134,6 +135,12 @@ const CoinFlip = () => {
     };
   }, []);
 
+
+  useEffect(() => {
+    setStakeAtRisk(userGambled || spinning);
+  }, [userGambled, spinning]);
+
+  useEffect(() => () => setStakeAtRisk(false), []);
 
   useEffect(() => {
     if (countDown > 0.1 && !spinning) {

@@ -30,8 +30,7 @@ export const startAdWatch = async (): Promise<AdWatchStart> =>
 export const claimAdReward = async (token: string): Promise<AdRewardClaim> =>
   (await api.post("/rewards/ads/claim", { token })).data;
 
-// hands a token back when its ad never played, so a no-fill does not spend one of the
-// day's tries
+// a no-fill must not spend one of the day's tries
 export const abandonAdWatch = async (token: string): Promise<void> => {
   try {
     await api.post("/rewards/ads/abandon", { token });
@@ -40,9 +39,7 @@ export const abandonAdWatch = async (token: string): Promise<void> => {
   }
 };
 
-// google's ad placement api (h5 games ads), which rides on the adsense tag loaded in
-// index.html. that tag is fetched after the load event, so adBreak can be minutes late
-// or never arrive at all (blocked, not enrolled, no fill).
+// the adsense tag loads after the page, so adBreak can be late or never arrive at all
 declare global {
   interface Window {
     adsbygoogle: unknown[];
@@ -76,8 +73,7 @@ export const showRewardedAd = async (handlers: {
 }) => {
   const ready = await waitForAdBreak();
   if (!ready) {
-    // never queue onto adsbygoogle as a fallback: that array is for display slots and
-    // swallows a reward request without ever calling back, which reads as a dead button
+    // adsbygoogle is the display-slot queue: it swallows a reward request without calling back
     handlers.onUnavailable();
     return;
   }

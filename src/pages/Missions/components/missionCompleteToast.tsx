@@ -3,12 +3,17 @@ import { GiTrophyCup } from "react-icons/gi";
 import { FiArrowRight } from "react-icons/fi";
 import Monetary from "../../../components/Monetary";
 import { navigateTo } from "../../../services/navigation";
+import { whenStakeClears } from "../../../services/stakeGuard";
 import { PendingMission } from "../../../services/missions/MissionService";
 
 // the styled real-time "mission complete" toast, shown app-wide the moment a
 // mission becomes claimable (server guarantees it fires once per mission). When a
 // targetPath is given the whole toast is a link to the missions page.
 export function toastMissionComplete(m: PendingMission, targetPath?: string) {
+  whenStakeClears(() => showMissionToast(m, targetPath));
+}
+
+function showMissionToast(m: PendingMission, targetPath?: string) {
   toast(
     <div className={`flex items-center gap-3 ${targetPath ? "cursor-pointer" : ""}`}>
       <GiTrophyCup className="text-3xl text-accent-gold shrink-0" />

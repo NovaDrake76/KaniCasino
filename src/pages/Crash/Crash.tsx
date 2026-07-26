@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import SocketConnection from "../../services/socket"
+import { setStakeAtRisk } from "../../services/stakeGuard";
 import UserContext from "../../UserContext";
 import falling from "/images/crash/falling.gif";
 import idle from "/images/crash/idle.gif";
@@ -66,6 +67,16 @@ const CrashGame = () => {
   // reading the current closure instead of the mount-time one
   const placeBetRef = useRef(placeBet);
   placeBetRef.current = placeBet;
+
+  const userIdRef = useRef<string | undefined>(userData?.id);
+  userIdRef.current = userData?.id;
+
+  useEffect(() => {
+    setStakeAtRisk(userGambled && gameStarted && !userCashedOut);
+  }, [userGambled, gameStarted, userCashedOut]);
+
+  // leaving the page is the player's own choice; the guard only holds while they are on it
+  useEffect(() => () => setStakeAtRisk(false), []);
 
   const handleBet = () => {
     if (!isLogged) {
@@ -148,6 +159,16 @@ const CrashGame = () => {
         setGameStarted(false);
         setGameEnded(false);
       }
+
+      // leaving the page and coming back remounts this with a blank slate, so the
+      // player's own stake has to be read back or the cashout button never returns
+      const id = userIdRef.current;
+      const stake = id ? sync.gameBets?.[id] : undefined;
+      if (stake == null) return;
+      const payout = sync.gamePlayers?.[id as string]?.payout;
+      setUserGambled(true);
+      setUserCashedOut(payout != null);
+      if (payout != null) setUserMultiplier(payout / stake);
     };
 
     socket.on("crash:sync", syncListener);
