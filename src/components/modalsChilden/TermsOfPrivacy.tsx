@@ -18,11 +18,14 @@ const TermsOfPrivacy = () => {
             <span className="font-bold text-lg mb-1">Privacy Policy</span>
             <span className="mb-1 italic">Last updated: 26 July 2026</span>
             <span className="mb-4 text-ink-muted">
-                KaniCasino Comercio De Jogos E Skins Ltda, CNPJ 40.981.116/0001-73 ("KaniCasino",
-                "we"), is the controller of the personal data described below. This policy explains
-                what we collect when you use <span className="text-blue-500">kanicasino.com</span>,
-                why, and the rights you have over it. It is written to meet the Brazilian General
-                Data Protection Law (LGPD, Law 13.709/2018).
+                KaniCasino ("we") is an independent project run from Brazil, and is the controller
+                of the personal data described below. This policy explains what we
+                collect when you use <span className="text-blue-500">kanicasino.com</span>, why, and
+                the rights you have over it. It is written to meet the Brazilian General Data
+                Protection Law (LGPD, Law 13.709/2018). For anything in this policy, including the
+                rights in section 8, write to{" "}
+                <span className="text-blue-500">privacy@kanicasino.com</span> and a person will
+                answer you.
             </span>
 
             <Section title="1. What KaniCasino is">

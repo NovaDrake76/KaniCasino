@@ -144,7 +144,7 @@ function Footer() {
       <div className="w-full mt-4 flex flex-col items-center justify-center gap-3">
         <div className="w-full h-[1px] bg-gray-500 opacity-10" />
         <span className="text-sm text-center">
-          KaniCasino Comercio De Jogos E Skins Ltda - CNPJ: 40.981.116/0001-73 © All Rights Reserved. {new Date().getFullYear()}
+          KaniCasino © All Rights Reserved. {new Date().getFullYear()}
         </span>
       </div>
 
