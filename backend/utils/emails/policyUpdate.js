@@ -2,6 +2,13 @@ const SITE = process.env.SITE_URL || "https://kanicasino.com";
 
 const subject = "KaniCasino 1.0, and an updated Privacy Policy";
 
+// google accounts only. nothing else here is a confirmed address, and mailing unverified
+// ones would put the bounce rate, and the sending domain with it, at risk on the first run.
+// google never sets a password, and no route has ever written one after registration.
+const audience = {
+  $or: [{ googleId: { $exists: true, $nin: [null, ""] } }, { password: { $in: [null, ""] } }, { password: { $exists: false } }],
+};
+
 const build = (name) => {
   const url = `${SITE}/privacy-policy`;
 
@@ -54,4 +61,4 @@ If anything here is unclear, just reply to this email and we will explain.`;
   return { subject, html, text };
 };
 
-module.exports = { subject, build };
+module.exports = { subject, audience, build };

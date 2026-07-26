@@ -81,20 +81,20 @@ describe("who the campaign would target", () => {
   const audienceFilter = {
     email: { $exists: true, $nin: [null, ""] },
     emailSuppressed: { $ne: true },
+    ...policyUpdate.audience,
   };
+
+  const googleUser = (s) => User.create({ username: `g-${s}`, email: `g-${s}@example.com` });
+  const registered = (s) =>
+    User.create({ username: `r-${s}`, email: `r-${s}@example.com`, password: "hashed" });
 
   it("skips suppressed addresses and anyone without an email", async () => {
     const s = uniqueSuffix();
-    const ok = await User.create({ username: `ok-${s}`, email: `ok-${s}@example.com`, password: "x" });
-    await User.create({
-      username: `sup-${s}`,
-      email: `sup-${s}@example.com`,
-      password: "x",
-      emailSuppressed: true,
-    });
+    const ok = await googleUser(s);
+    await User.create({ username: `sup-${s}`, email: `sup-${s}@example.com`, emailSuppressed: true });
     // the schema requires email now, but older docs predate that, which is what the guard is for
-    await User.collection.insertOne({ username: `none-${s}`, password: "x" });
-    await User.collection.insertOne({ username: `blank-${s}`, password: "x", email: "" });
+    await User.collection.insertOne({ username: `none-${s}` });
+    await User.collection.insertOne({ username: `blank-${s}`, email: "" });
 
     const found = await User.find(audienceFilter).select("_id");
 
@@ -102,12 +102,33 @@ describe("who the campaign would target", () => {
   });
 
   it("includes people who never opted in to marketing, because this is service mail", async () => {
-    const s = uniqueSuffix();
-    await User.create({ username: `u-${s}`, email: `u-${s}@example.com`, password: "x" });
+    await googleUser(uniqueSuffix());
 
     const found = await User.find(audienceFilter);
 
     expect(found).toHaveLength(1);
     expect(found[0].marketingOptIn).toBe(false);
+  });
+
+  it("leaves out accounts registered with a password, whose address nobody ever confirmed", async () => {
+    const s = uniqueSuffix();
+    const g = await googleUser(s);
+    await registered(s);
+
+    const found = await User.find(audienceFilter).select("_id");
+
+    expect(found.map((u) => String(u._id))).toEqual([String(g._id)]);
+  });
+
+  it("counts an account carrying a googleId even if it somehow also has a password", async () => {
+    const s = uniqueSuffix();
+    await User.create({
+      username: `both-${s}`,
+      email: `both-${s}@example.com`,
+      password: "hashed",
+      googleId: "1234567890",
+    });
+
+    expect(await User.countDocuments(audienceFilter)).toBe(1);
   });
 });

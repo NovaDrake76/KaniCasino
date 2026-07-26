@@ -46,7 +46,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   const filter = ONLY
     ? { email: ONLY }
-    : { email: { $exists: true, $nin: [null, ""] }, emailSuppressed: { $ne: true } };
+    : {
+        email: { $exists: true, $nin: [null, ""] },
+        emailSuppressed: { $ne: true },
+        ...(template.audience || {}),
+      };
 
   const already = new Set(
     (await EmailSend.find({ campaign, status: "sent" }).select("user")).map((r) => String(r.user))
