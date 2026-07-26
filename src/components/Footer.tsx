@@ -90,12 +90,6 @@ function Footer() {
           onClick: () => handleModalInfo(<FAQ />),
         },
       ],
-    }, {
-      title: "Payment Forms",
-      children: <div className="flex flex-col items-start gap-2">
-        <img src="/images/PIX_Logo2.webp" alt="PIX" width={150} height={58} loading="lazy" />
-        <img src="/images/cards.webp" alt="cards" width={200} height={24} loading="lazy" />
-      </div>
     }
   ];
 
@@ -141,7 +135,6 @@ function Footer() {
                     ))
                   }
                 </div>
-                {section.children}
               </div>
             ))
           }

@@ -31,9 +31,7 @@
           s.src = src;
           s.async = true;
           s.crossOrigin = 'anonymous';
-          // the ad placement api (rewarded ads) only initialises when the adsense tag
-          // carries a frequency hint; without it window.adBreak never appears and a
-          // reward request is silently dropped
+          // without this hint the placement api never defines window.adBreak
           if (src.indexOf('adsbygoogle') !== -1) {
             s.setAttribute('data-ad-frequency-hint', '30s');
           }

@@ -9,17 +9,14 @@ const AD_REWARD_DAILY_CAP = 10;
 // a claim younger than this cannot have played a real video; env override for tests
 const minWatchMs = () => Number(process.env.AD_REWARD_MIN_WATCH_MS || 5000);
 
-// which player the frontend should use. unset means off: "mock" pays full price for a
-// placeholder with no ad in it, so it has to be asked for by name rather than being
-// what an unconfigured server quietly falls back to.
+// unset means off: "mock" pays full price for a placeholder, so it is opt-in by name
 const PROVIDERS = ["adsense", "mock"];
 const provider = () => {
   const configured = String(process.env.AD_REWARDS_PROVIDER || "").toLowerCase();
   return PROVIDERS.includes(configured) ? configured : null;
 };
 
-// paying users KP for ad views only makes sense while the KP is play money, and only
-// when there is actually a player configured to show them something
+// paying users KP for ad views only makes sense while the KP is play money
 const adRewardsEnabled = () => !isRealMoneyMode() && provider() !== null;
 
 const startOfToday = () => {
@@ -110,9 +107,7 @@ async function claimWatch(userId, token) {
   };
 }
 
-// give a token back when the ad never played (no fill, dismissed, script blocked).
-// only an unclaimed token of the caller's can go, so this can never mint anything; it
-// just stops a broken or empty ad break from costing one of the day's ten tries.
+// only an unclaimed token of the caller's can go, so this can never mint anything
 async function abandonWatch(userId, token) {
   const res = await AdWatch.deleteOne({
     token: String(token || ""),
