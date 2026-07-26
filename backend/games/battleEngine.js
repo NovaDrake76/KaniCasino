@@ -228,10 +228,7 @@ async function finishBattle(battle, io = noopIo) {
     winnerUserIds.push(w.userId);
     const invItems = (shares[i] || []).map((it) => ({
       _id: it._id,
-      name: it.name,
-      image: it.image,
       rarity: it.rarity,
-      case: it.case,
       createdAt: new Date(),
       uniqueId: it.uniqueId,
     }));

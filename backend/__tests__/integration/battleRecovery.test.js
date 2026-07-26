@@ -107,7 +107,8 @@ test("a battle interrupted mid-reveal still finishes from its preroll", async ()
   expect(done.status).toBe("finished");
   expect(done.winningTeam).toBe(0);
   const winner = await User.findById(a._id);
-  expect(winner.inventory.map((i) => i.name)).toContain("won");
+  expect(winner.inventory.map((i) => String(i._id))).toContain(String(item._id));
+  expect(winner.inventory.map((i) => i.uniqueId)).toContain(item.uniqueId);
 });
 
 test("the periodic sweep leaves a live in-progress battle for the engine to finish", async () => {

@@ -65,8 +65,18 @@ const addUniqueInfoToItem = (item) => {
   };
 };
 
+// what actually gets stored on the user. the drawn item above is also handed to the
+// client to animate, but name, image and case are catalog data and are joined on read.
+const toInventoryEntry = (item) => ({
+  _id: item._id,
+  rarity: item.rarity,
+  uniqueId: item.uniqueId,
+  createdAt: new Date(),
+});
+
 module.exports = {
   Rarities,
   getWinningItem,
   addUniqueInfoToItem,
+  toInventoryEntry,
 };

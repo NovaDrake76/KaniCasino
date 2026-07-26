@@ -15,7 +15,7 @@ const MinesGameController = require("../games/mines");
 const HiloGameController = require("../games/hilo");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const referrals = require("../utils/referrals");
-const { addUniqueInfoToItem } = require("../utils/caseOpening");
+const { addUniqueInfoToItem, toInventoryEntry } = require("../utils/caseOpening");
 const { buildRangeTable } = require("../utils/caseRanges");
 const { roll, pickFromRanges, TOTAL } = require("../utils/provablyFair");
 const seeds = require("../utils/seeds");
@@ -93,7 +93,7 @@ module.exports = (io) => {
           { _id: user._id, walletBalance: { $gte: cost } },
           {
             $inc: { walletBalance: -cost, xp: cost * 5 },
-            $push: { inventory: { $each: winningItems } },
+            $push: { inventory: { $each: winningItems.map(toInventoryEntry) } },
           },
           { new: true, session }
         );

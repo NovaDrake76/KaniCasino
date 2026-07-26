@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const User = require('../models/User');
 const Notification = require("../models/Notification");
+const { pruneEmptyRounds } = require("../utils/roundPrune");
 
 module.exports = {
     startCronJobs: function (io) {
@@ -40,6 +41,15 @@ module.exports = {
                 console.log('Weekly winnings reset successfully.');
             } catch (error) {
                 console.error('Error resetting weekly winnings:', error);
+            }
+        })
+
+        cron.schedule('30 4 * * *', async () => {
+            try {
+                const removed = await pruneEmptyRounds();
+                console.log(`Pruned ${removed} rounds nobody bet on.`);
+            } catch (error) {
+                console.error('Error pruning empty rounds:', error);
             }
         })
     }

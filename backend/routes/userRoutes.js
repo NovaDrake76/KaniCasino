@@ -444,11 +444,16 @@ router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
     }
 
 
+    const catalogItem = await Item.findById(inventoryItemIndex._id, { name: 1, image: 1, rarity: 1 }).lean();
+    if (!catalogItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
     // Update fixed item, keeping the same description
     user.fixedItem = {
-      name: inventoryItemIndex.name,
-      image: inventoryItemIndex.image,
-      rarity: inventoryItemIndex.rarity,
+      name: catalogItem.name,
+      image: catalogItem.image,
+      rarity: catalogItem.rarity,
       description: user.fixedItem.description,
     };
     await user.save();
@@ -617,6 +622,17 @@ router.get("/inventory/:userId", async (req, res) => {
       ? new RegExp(String(name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
       : null;
 
+    // name and case live on the catalog, not on the entry, so they resolve to a set of
+    // item ids first and the inventory is then matched on _id
+    let idFilter = null;
+    if (nameRegex || caseFilter) {
+      const catalogQuery = {};
+      if (nameRegex) catalogQuery.name = nameRegex;
+      if (caseFilter) catalogQuery.case = caseFilter;
+      const matches = await Item.find(catalogQuery, { _id: 1 }).lean();
+      idFilter = matches.map((m) => m._id);
+    }
+
     // Count Pipeline
     let countPipeline = [
       { $match: query },
@@ -624,12 +640,8 @@ router.get("/inventory/:userId", async (req, res) => {
       { $unwind: "$inventory" }
     ];
 
-    if (caseFilter) {
-      countPipeline.push({ $match: { "inventory.case": caseFilter } });
-    }
-
-    if (nameRegex) {
-      countPipeline.push({ $match: { "inventory.name": nameRegex } });
+    if (idFilter) {
+      countPipeline.push({ $match: { "inventory._id": { $in: idFilter } } });
     }
     if (rarity) {
       countPipeline.push({ $match: { "inventory.rarity": rarity } });
@@ -657,12 +669,8 @@ router.get("/inventory/:userId", async (req, res) => {
       { $unwind: "$inventory" }
     ];
 
-    if (caseFilter) {
-      pipeline.push({ $match: { "inventory.case": caseFilter } });
-    }
-
-    if (nameRegex) {
-      pipeline.push({ $match: { "inventory.name": nameRegex } });
+    if (idFilter) {
+      pipeline.push({ $match: { "inventory._id": { $in: idFilter } } });
     }
     if (rarity) {
       pipeline.push({ $match: { "inventory.rarity": rarity } });
@@ -684,10 +692,7 @@ router.get("/inventory/:userId", async (req, res) => {
       pipeline.push({
         $group: {
           _id: "$inventory._id",
-          name: { $first: "$inventory.name" },
-          image: { $first: "$inventory.image" },
           rarity: { $first: "$inventory.rarity" },
-          case: { $first: "$inventory.case" },
           uniqueId: { $first: "$inventory.uniqueId" },
           createdAt: { $first: "$inventory.createdAt" },
           oldestAt: { $min: "$inventory.createdAt" },
@@ -722,13 +727,26 @@ router.get("/inventory/:userId", async (req, res) => {
       items = inventoryItems[0]?.inventory || [];
     }
 
-    // attach authoritative base/sell value from the item catalog
+    // the entry only identifies the copy; name, image and case come from the catalog,
+    // along with the authoritative base/sell value
     const ids = [...new Set(items.map((i) => String(i._id)))];
-    const catalog = await Item.find({ _id: { $in: ids } }, { baseValue: 1 });
-    const baseById = new Map(catalog.map((i) => [String(i._id), i.baseValue || 0]));
+    const catalog = await Item.find(
+      { _id: { $in: ids } },
+      { baseValue: 1, name: 1, image: 1, rarity: 1, case: 1 }
+    ).lean();
+    const byId = new Map(catalog.map((i) => [String(i._id), i]));
     const withValue = items.map((i) => {
-      const base = baseById.get(String(i._id)) || 0;
-      return { ...i, baseValue: base, sellValue: sellValue(base) };
+      const cat = byId.get(String(i._id)) || {};
+      const base = cat.baseValue || 0;
+      return {
+        ...i,
+        name: cat.name,
+        image: cat.image,
+        rarity: i.rarity ?? cat.rarity,
+        case: cat.case,
+        baseValue: base,
+        sellValue: sellValue(base),
+      };
     });
 
     res.json({
