@@ -183,6 +183,7 @@ router.post('/googlelogin', async (req, res) => {
       // a referral only counts at account creation, never on a later login
       const referrer = referralCode ? await findReferrer(referralCode) : null;
       user = new User({
+        googleId: googlePayload.sub,
         email: googlePayload.email,
         username: username,
         profilePicture: googlePayload.picture,
@@ -200,6 +201,9 @@ router.post('/googlelogin', async (req, res) => {
       });
 
       if (referrer) await payReferralBonuses(user, referrer);
+    } else if (!user.googleId) {
+      // the field was never written before, so it backfills as older accounts sign in
+      await User.updateOne({ _id: user._id }, { $set: { googleId: googlePayload.sub } });
     }
     // Generate and send JWT
     const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
