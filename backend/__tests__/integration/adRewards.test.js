@@ -1,6 +1,8 @@
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
 // tests should not sit through a real watch window
 process.env.AD_REWARD_MIN_WATCH_MS = "50";
+// the feature is off unless a player is named, so these tests have to name one
+process.env.AD_REWARDS_PROVIDER = "mock";
 
 const request = require("supertest");
 const { setupDb, clearDb, teardownDb } = require("./db");
@@ -142,5 +144,79 @@ describe("real-money mode turns ad rewards off", () => {
     expect((await auth(request(app).get("/rewards/ads"), u)).body).toEqual({ enabled: false });
     expect((await start(u)).status).toBe(403);
     expect((await claim(u, "any")).status).toBe(403);
+  });
+});
+
+// paying 500 KP per view for a placeholder is a faucet, so an unconfigured server must
+// not quietly serve one: the offer only exists once a player is named on purpose
+describe("no configured provider turns ad rewards off", () => {
+  afterEach(() => {
+    process.env.AD_REWARDS_PROVIDER = "mock";
+  });
+
+  test("unset provider disables the offer and both endpoints", async () => {
+    delete process.env.AD_REWARDS_PROVIDER;
+    const u = await makeUser();
+    expect((await auth(request(app).get("/rewards/ads"), u)).body).toEqual({ enabled: false });
+    expect((await start(u)).status).toBe(403);
+    expect((await claim(u, "any")).status).toBe(403);
+  });
+
+  test("an unrecognised provider is treated as off, not as a default", async () => {
+    process.env.AD_REWARDS_PROVIDER = "somethingelse";
+    const u = await makeUser();
+    expect((await auth(request(app).get("/rewards/ads"), u)).body).toEqual({ enabled: false });
+    expect((await start(u)).status).toBe(403);
+  });
+
+  test("adsense is a valid provider and is reported to the client", async () => {
+    process.env.AD_REWARDS_PROVIDER = "adsense";
+    const u = await makeUser();
+    const res = await auth(request(app).get("/rewards/ads"), u);
+    expect(res.body.enabled).toBe(true);
+    expect(res.body.provider).toBe("adsense");
+  });
+});
+
+describe("handing a token back when the ad never played", () => {
+  const abandon = (user, token) =>
+    auth(request(app).post("/rewards/ads/abandon"), user).send({ token });
+
+  test("releases the token so the try is not spent", async () => {
+    const u = await makeUser();
+    const s = await start(u);
+    expect(await AdWatch.countDocuments({ userId: u._id })).toBe(1);
+
+    const res = await abandon(u, s.body.token);
+    expect(res.status).toBe(200);
+    expect(res.body.released).toBe(true);
+    expect(await AdWatch.countDocuments({ userId: u._id })).toBe(0);
+
+    // and the freed try really is usable again
+    const again = await watchOne(u);
+    expect(again.status).toBe(200);
+  });
+
+  test("cannot release someone else's token", async () => {
+    const owner = await makeUser();
+    const other = await makeUser();
+    const s = await start(owner);
+
+    const res = await abandon(other, s.body.token);
+    expect(res.body.released).toBe(false);
+    expect(await AdWatch.countDocuments({ userId: owner._id })).toBe(1);
+  });
+
+  test("cannot release a token that was already paid", async () => {
+    const u = await makeUser();
+    const s = await start(u);
+    await sleep(80);
+    expect((await claim(u, s.body.token)).status).toBe(200);
+
+    const res = await abandon(u, s.body.token);
+    expect(res.body.released).toBe(false);
+    // the paid row survives, so the claim still counts against the day
+    expect(await AdWatch.countDocuments({ userId: u._id })).toBe(1);
+    expect(await Transaction.countDocuments({ userId: u._id, type: TX.AD_REWARD })).toBe(1);
   });
 });
