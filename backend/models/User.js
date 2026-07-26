@@ -113,6 +113,26 @@ const UserSchema = new mongoose.Schema({
     default: false,
   },
 
+  // marketing consent is opt-in and defaults to off: nobody who signed up before it
+  // existed is treated as having agreed. service mail does not consult it.
+  marketingOptIn: {
+    type: Boolean,
+    default: false,
+  },
+  marketingOptInAt: Date,
+  // secret in the one-click unsubscribe link, so it works without a login
+  unsubscribeToken: {
+    type: String,
+    default: () => uuid.v4(),
+  },
+  // set by the SES bounce/complaint feed; nothing is ever sent to a suppressed address
+  emailSuppressed: {
+    type: Boolean,
+    default: false,
+  },
+  emailSuppressedReason: String,
+  emailSuppressedAt: Date,
+
 });
 
 UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });

@@ -11,6 +11,7 @@ const missionsRoutes = require("../../routes/missionsRoutes");
 const adminRoutes = require("../../routes/adminRoutes");
 const referralRoutes = require("../../routes/referralRoutes");
 const rewardRoutes = require("../../routes/rewardRoutes");
+const emailRoutes = require("../../routes/emailRoutes");
 const caseRoutes = require("../../routes/caseRoutes");
 const itemRoutes = require("../../routes/itemRoutes");
 
@@ -30,6 +31,7 @@ function makeApp() {
   app.use("/admin", adminRoutes);
   app.use("/referrals", referralRoutes(io));
   app.use("/rewards", rewardRoutes(io));
+  app.use("/email", emailRoutes);
   app.use("/cases", caseRoutes);
   app.use("/items", itemRoutes);
   return app;
