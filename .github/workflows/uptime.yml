@@ -18,29 +18,56 @@ jobs:
           THRESHOLD: '3'
           SAMPLES: '5'
           DISCORD_WEBHOOK: ${{ secrets.MONITOR_DISCORD_WEBHOOK }}
+          MAINT_TOKEN: ${{ secrets.MAINT_TOKEN }}
         run: |
           set -u
           # first hit pays the tcp+tls+quic setup, so warm the connection before timing
           curl -s -m 25 -o /dev/null "$URL" || true
           ray=$(curl -s -m 25 -D - -o /dev/null "$URL" | tr -d '\r' | awk 'tolower($1)=="cf-ray:"{print $2}')
-          bad=0; worst=0; summary=""
+          bad=0; slow=0; errored=0; worst=0; summary=""; codes=""
           for i in $(seq 1 "$SAMPLES"); do
             resp=$(curl -s -m 25 -o /dev/null -w '%{http_code} %{time_total}' "$URL" || echo '000 25')
             code=${resp%% *}; t=${resp##* }
             over=$(awk -v t="$t" -v th="$THRESHOLD" 'BEGIN{print (t+0>th+0)?1:0}')
-            if [ "$code" != "200" ] || [ "$over" = "1" ]; then bad=$((bad+1)); fi
+            if [ "$code" != "200" ]; then errored=$((errored+1)); bad=$((bad+1));
+            elif [ "$over" = "1" ]; then slow=$((slow+1)); bad=$((bad+1)); fi
             worst=$(awk -v a="$t" -v b="$worst" 'BEGIN{print (a+0>b+0)?a:b}')
+            codes="${codes}${code} "
             summary="${summary}try ${i}: http=${code} time=${t}s"$'\n'
           done
           echo "vantage colo: ${ray:-unknown}"
           printf '%s' "$summary"
-          echo "worst=${worst}s threshold=${THRESHOLD}s bad=${bad}/${SAMPLES}"
-          if [ "$bad" -ge 3 ]; then
-            msg="KaniCasino API slow/unreachable from ${ray:-?}: ${bad}/${SAMPLES} samples bad, worst ${worst}s (threshold ${THRESHOLD}s). Likely the cloudflared tunnel."
-            echo "::error::$msg"
-            if [ -n "${DISCORD_WEBHOOK:-}" ]; then
-              curl -s -m 15 -H 'Content-Type: application/json' -d "$(jq -n --arg c "$msg" '{content:$c}')" "$DISCORD_WEBHOOK" || true
-            fi
-            exit 1
+          echo "worst=${worst}s threshold=${THRESHOLD}s bad=${bad}/${SAMPLES} (${errored} non-200, ${slow} slow)"
+
+          if [ "$bad" -lt 3 ]; then
+            echo "API healthy from ${ray:-?}"
+            exit 0
           fi
-          echo "API healthy from ${ray:-?}"
+
+          # say which failure it was: a fast non-200 and a 20s stall look identical in a
+          # bad count, and they are different problems
+          msg="KaniCasino API bad from ${ray:-?}: ${bad}/${SAMPLES} samples (${errored} non-200 [${codes%% }], ${slow} over ${THRESHOLD}s), worst ${worst}s. Likely the cloudflared tunnel."
+
+          # ask the origin to re-roll its edge servers. reaching the endpoint at all proves
+          # the origin is up, so the fault is the path between. the api rate limits this to
+          # one restart per 15 min, so a flapping probe cannot cause a restart loop.
+          action="no restart requested (MAINT_TOKEN unset)"
+          if [ -n "${MAINT_TOKEN:-}" ]; then
+            body=$(jq -n --arg r "uptime probe from ${ray:-?}: ${bad}/${SAMPLES} bad" '{reason:$r}')
+            out=$(curl -s -m 30 -o /dev/null -w '%{http_code}' -X POST \
+              -H 'Content-Type: application/json' -H "x-maint-token: ${MAINT_TOKEN}" \
+              -d "$body" https://kanicasino.cfhxo.com/internal/tunnel-restart || echo 000)
+            case "$out" in
+              202) action="restarted cloudflared" ;;
+              429) action="restart skipped, still within the 15 min cooldown" ;;
+              *)   action="restart request failed (http ${out})" ;;
+            esac
+          fi
+          echo "$action"
+
+          echo "::error::${msg} ${action}."
+          if [ -n "${DISCORD_WEBHOOK:-}" ]; then
+            curl -s -m 15 -H 'Content-Type: application/json' \
+              -d "$(jq -n --arg c "${msg} ${action}." '{content:$c}')" "$DISCORD_WEBHOOK" || true
+          fi
+          exit 1
