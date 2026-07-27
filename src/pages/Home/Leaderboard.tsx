@@ -6,7 +6,9 @@ import TopPlayer from '../../components/TopPlayer';
 import Player from '../../components/Player';
 import Skeleton from 'react-loading-skeleton';
 
-const Leaderboard = () => {
+// `aside` sits beside the ranked table, below the podium, and drops under everything
+// once there is no room for it
+const Leaderboard = ({ aside }: { aside?: React.ReactNode }) => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -27,7 +29,11 @@ const Leaderboard = () => {
         <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none  z-50 ">
             <Title title="Leaderboard" />
 
-            {!loading && users[1] ? (
+            <div className="grid w-full max-w-[1620px] gap-8 px-4 lg:grid-cols-[340px_minmax(0,1fr)_340px]">
+            <div className="flex flex-col items-center lg:col-start-2 lg:row-start-1">
+
+            {/* the podium reads three entries, so two ranked players used to crash the page */}
+            {!loading && users.length >= 3 ? (
                 <div className="flex gap-14 my-16 ">
                     <TopPlayer key={users[1]._id} user={users[1]} rank={2} />
                     <TopPlayer key={users[0]._id} user={users[0]} rank={1} />
@@ -39,7 +45,9 @@ const Leaderboard = () => {
                 </div>
             )}
 
-            <div className="w-full overflow-x-auto max-w-4xl">
+            </div>
+
+            <div className="w-full min-w-0 overflow-x-auto lg:col-start-2 lg:row-start-2">
                 <table className="min-w-full divide-y divide-gray-500">
                     <thead className="bg-[#19172d]">
                         <tr>
@@ -65,9 +73,7 @@ const Leaderboard = () => {
                                     #{index + 4}
                                 </td>
 
-                                <td className="flex p-4 items-center gap-2"
-
-                                >
+                                <td className="flex p-4 items-center gap-2">
                                     <Player user={user} size="small" />
 
                                 </td>
@@ -84,6 +90,9 @@ const Leaderboard = () => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            {aside && <div className="w-full lg:col-start-3 lg:row-start-2">{aside}</div>}
             </div>
         </div>
     );

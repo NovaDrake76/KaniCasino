@@ -3,9 +3,13 @@ import Banner from "./Banner";
 import CaseListing from "./CaseListing";
 import GameListing from "./GamesListing";
 import Leaderboard from "./Leaderboard";
-import DiscordCta from "./DiscordCta";
+import DiscordWidget from "./DiscordWidget";
 import { groupCasesByCategory } from "./groupCases";
-import { getCases, getMostOpenedCases, MostOpenedCase } from "../../services/cases/CaseServices";
+import {
+  getCases,
+  getMostOpenedCases,
+  MostOpenedCase,
+} from "../../services/cases/CaseServices";
 import { toast } from "react-toastify";
 import { BannerProps } from "./Types";
 import { Carousel } from "react-responsive-carousel";
@@ -61,7 +65,10 @@ const Home = () => {
       },
       right: (
         <div>
-          <img src="/images/banners/blue-archive-lockup.webp" alt="Blue Archive cases" />
+          <img
+            src="/images/banners/blue-archive-lockup.webp"
+            alt="Blue Archive cases"
+          />
         </div>
       ),
     },
@@ -87,7 +94,10 @@ const Home = () => {
       },
       right: (
         <div>
-          <img src="/images/banners/uma-musume-lockup.webp" alt="Uma Musume cases" />
+          <img
+            src="/images/banners/uma-musume-lockup.webp"
+            alt="Uma Musume cases"
+          />
         </div>
       ),
     },
@@ -113,7 +123,10 @@ const Home = () => {
       },
       right: (
         <div>
-          <img src="/images/banners/counter-strike-lockup.webp" alt="Counter-Strike cases" />
+          <img
+            src="/images/banners/counter-strike-lockup.webp"
+            alt="Counter-Strike cases"
+          />
         </div>
       ),
     },
@@ -166,9 +179,7 @@ const Home = () => {
 
         <GameListing name="Our Games" />
 
-        <DiscordCta />
-
-        <Leaderboard />
+        <Leaderboard aside={<DiscordWidget />} />
 
         {loading ? (
           <CaseListing name="Cases" loading cases={[]} />
