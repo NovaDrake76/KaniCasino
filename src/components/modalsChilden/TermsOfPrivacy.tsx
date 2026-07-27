@@ -103,6 +103,7 @@ const TermsOfPrivacy = () => {
                     <li>Cloudflare (content delivery and protection)</li>
                     <li>Google Analytics (usage measurement) and Google AdSense (advertising)</li>
                     <li>Google Sign-In, if you choose to use it</li>
+                    <li>Discord, whose public server widget on our home page receives your IP address so it can load</li>
                 </ul>
                 <span>
                     We do not sell your personal data and we do not share it for anyone else's
