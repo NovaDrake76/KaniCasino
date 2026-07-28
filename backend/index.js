@@ -5,6 +5,7 @@ const http = require("http");
 const socketIO = require("socket.io");
 const cronJobs = require("./tasks/cronJobs");
 const checkApiKey = require("./middleware/checkApiKey");
+const tunnel = require("./utils/tunnel");
 const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
@@ -125,6 +126,17 @@ app.post("/internal/notice", (req, res) => {
   const { message, seconds } = req.body || {};
   io.emit("serverNotice", { message, seconds });
   res.json({ ok: true });
+});
+
+// the uptime workflow probes from a non-sydney colo, which is the only vantage that can
+// see the tunnel degrade, and asks for a restart when it does. reaching this handler at
+// all proves the origin is up, so the fault is the path in between.
+app.post("/internal/tunnel-restart", (req, res) => {
+  if (!process.env.MAINT_TOKEN || req.headers["x-maint-token"] !== process.env.MAINT_TOKEN) {
+    return res.status(403).json({ error: "forbidden" });
+  }
+  const result = tunnel.requestRestart({ reason: String(req.body?.reason || "").slice(0, 200) });
+  res.status(result.ok ? 202 : 429).json(result);
 });
 
 // SNS and mail clients hitting the one-click unsubscribe carry no api key, so this
