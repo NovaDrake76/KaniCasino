@@ -36,13 +36,13 @@ const BattleReelView: React.FC<BattleReelViewProps> = ({
     <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-[#151225] to-transparent z-10 pointer-events-none" />
     <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#151225] to-transparent z-10 pointer-events-none" />
     <img
-      src="/images/arrowSelector.svg"
+      src="/images/reelMarker.svg"
       alt=""
       className="absolute left-0 top-1/2 z-20 pointer-events-none"
       style={{ width: 46, transform: "translateY(-50%) rotate(90deg)" }}
     />
     <img
-      src="/images/arrowSelector.svg"
+      src="/images/reelMarker.svg"
       alt=""
       className="absolute right-0 top-1/2 z-20 pointer-events-none"
       style={{ width: 46, transform: "translateY(-50%) rotate(270deg)" }}

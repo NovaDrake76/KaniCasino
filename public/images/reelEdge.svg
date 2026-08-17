@@ -1,0 +1,23 @@
+<svg width="186" height="291" viewBox="0 0 186 291" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Reel edge</title>
+  <defs>
+    <linearGradient id="reelEdgeFill" x1="186" y1="0" x2="60" y2="291" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5" stop-opacity="0.55" />
+      <stop offset="0.55" stop-color="#4F46E5" stop-opacity="0.14" />
+      <stop offset="1" stop-color="#4F46E5" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="reelEdgeRule" x1="186" y1="20" x2="186" y2="271" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5" stop-opacity="0" />
+      <stop offset="0.5" stop-color="#8C86F5" />
+      <stop offset="1" stop-color="#4F46E5" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- three stacked rails that taper toward the reel, so the frame reads as depth
+       rather than as a single drawn arrow -->
+  <path d="M186 0 L186 26 L118 145.5 L186 265 L186 291 L104 145.5 Z" fill="url(#reelEdgeFill)" />
+  <path d="M186 44 L186 62 L140 145.5 L186 229 L186 247 L126 145.5 Z" fill="url(#reelEdgeFill)" opacity="0.75" />
+  <path d="M186 82 L186 94 L162 145.5 L186 197 L186 209 L150 145.5 Z" fill="url(#reelEdgeFill)" opacity="0.5" />
+
+  <path d="M186 12 L100 145.5 L186 279" stroke="url(#reelEdgeRule)" stroke-width="2" />
+</svg>

@@ -37,13 +37,13 @@ const TieBreakerView: React.FC<TieBreakerViewProps> = ({
     <div className="absolute left-0 inset-y-0 w-16 bg-gradient-to-r from-[#151225] to-transparent pointer-events-none z-10" />
     <div className="absolute right-0 inset-y-0 w-16 bg-gradient-to-l from-[#151225] to-transparent pointer-events-none z-10" />
     <img
-      src="/images/arrowSelector.svg"
+      src="/images/reelMarker.svg"
       alt=""
       className="absolute left-1/2 top-0 z-20 pointer-events-none"
       style={{ width: 40, transform: "translateX(-50%) rotate(180deg)" }}
     />
     <img
-      src="/images/arrowSelector.svg"
+      src="/images/reelMarker.svg"
       alt=""
       className="absolute left-1/2 bottom-0 z-20 pointer-events-none"
       style={{ width: 40, transform: "translateX(-50%)" }}
