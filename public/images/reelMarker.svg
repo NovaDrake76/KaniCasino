@@ -1,0 +1,19 @@
+<svg width="94" height="48" viewBox="0 0 94 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Reel marker</title>
+  <defs>
+    <linearGradient id="reelMarkerFill" x1="47" y1="12" x2="47" y2="34" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF6FA8" />
+      <stop offset="1" stop-color="#CF3464" />
+    </linearGradient>
+    <linearGradient id="reelMarkerRule" x1="0" y1="0" x2="94" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#CF3464" stop-opacity="0" />
+      <stop offset="0.5" stop-color="#CF3464" stop-opacity="0.85" />
+      <stop offset="1" stop-color="#CF3464" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- a solid wedge with a notched base, so the pointer reads at a glance instead of
+       relying on a hairline outline -->
+  <path d="M47 11 L59 33 L47 27.5 L35 33 Z" fill="url(#reelMarkerFill)" />
+  <line x1="0" y1="34" x2="94" y2="34" stroke="url(#reelMarkerRule)" stroke-width="2" />
+</svg>

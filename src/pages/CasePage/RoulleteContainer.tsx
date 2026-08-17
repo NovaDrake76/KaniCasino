@@ -20,14 +20,14 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
     return (
         <div className="flex">
             <img
-                src="/images/arrow.svg"
+                src="/images/reelEdge.svg"
                 alt="left arrow"
                 className="hidden lg:flex"
             />
             <div className="flex flex-col overflow-hidden max-w-[120vw] md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative z-10">
                 <div className={`absolute flex w-full items-center ${quantity < 2 ? 'flex-col' : 'flex-row'} justify-between h-[calc(100%+50px)] `}>
                     <img
-                        src="/images/arrowSelector.svg"
+                        src="/images/reelMarker.svg"
                         alt="top arrow"
                         style={{
                             transform: quantity < 2 ? "rotate(180deg)" : "rotate(90deg)",
@@ -35,7 +35,7 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
                             height: "48px"
                         }}
                     />
-                    <img src="/images/arrowSelector.svg" alt="bottom arrow" style={{
+                    <img src="/images/reelMarker.svg" alt="bottom arrow" style={{
                         transform: quantity < 2 ? "rotate(0deg)" : "rotate(270deg)",
                         width: "94px",
                         height: "48px"
@@ -79,7 +79,7 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
             </div>
 
             <img
-                src="/images/arrow.svg"
+                src="/images/reelEdge.svg"
                 alt="right arrow"
                 className="hidden lg:flex"
                 style={{
