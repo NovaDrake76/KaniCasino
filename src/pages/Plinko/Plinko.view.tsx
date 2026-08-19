@@ -124,7 +124,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
           onDouble={doubleBet}
           onMax={maxOutBet}
           betValue={betValue}
-          hint={`Bet 1 to ${maxBet.toLocaleString("en-US")} on ${risk} risk`}
+          hint={i18n.t("plinko.betRange", { max: maxBet.toLocaleString("en-US"), risk })}
         />
 
         <OptionRow label={i18n.t("plinko.risk")} options={RISKS} value={risk} onChange={changeRisk} disabled={!canChangeRisk} />
@@ -140,12 +140,12 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
                 Drop ball <Monetary value={betValue} />
               </span>
             ) : (
-              "Sign in to play"
+              i18n.t("upgrade.signInToPlay")
             )}
           </GameButton>
         ) : autoRunning ? (
           <GameButton onClick={stopAuto} variant="danger">
-            {`Stop (${autoLeft} left)`}
+            {i18n.t("common.stopAuto", { left: autoLeft })}
           </GameButton>
         ) : (
           <GameButton onClick={startAuto}>
@@ -154,7 +154,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
                 Drop {autoCount} balls <Monetary value={betValue * autoCount} />
               </span>
             ) : (
-              "Sign in to play"
+              i18n.t("upgrade.signInToPlay")
             )}
           </GameButton>
         )}
@@ -176,7 +176,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
             initial={{ opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
             onClick={() => h.rollId && openRoll(h.rollId)}
-            title={h.rollId ? `Roll ${h.rollId}` : undefined}
+            title={h.rollId ? i18n.t("plinko.rollId", { id: h.rollId }) : undefined}
             className="px-2 py-1 rounded text-xs font-bold"
             style={{ backgroundColor: binColor(h.bin), color: binTextColor(h.bin) }}
           >

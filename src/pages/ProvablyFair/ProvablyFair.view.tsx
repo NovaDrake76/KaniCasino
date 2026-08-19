@@ -33,8 +33,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
     <Title title={i18n.t("footer.provablyFair")} />
 
     <p className="text-[#84819a] text-sm max-w-[640px] text-center">
-      Every case, upgrade, slot, plinko, blackjack, dice, mines and hilo roll is HMAC-SHA256 of your
-      client seed, a nonce, and a secret server seed we commit to up front.
+      {i18n.t("fair.everyCaseUpgradeSlot")}
     </p>
 
     {/* roll lookup */}
@@ -68,7 +67,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
             className="px-4 py-1.5 rounded bg-green-700 hover:bg-green-600 text-sm font-semibold disabled:opacity-50"
             title={
               roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines" && roll.game !== "hilo"
-                ? "Auto-verify supported for case, plinko, blackjack, dice, mines and hilo rolls"
+                ? i18n.t("fair.autoVerifySupportedFor")
                 : ""
             }
           >
@@ -83,7 +82,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
           value={
             roll.serverSeed || (
               <span className="text-[#84819a]">
-                hidden until the seed is rotated
+                {i18n.t("fair.hiddenUntilTheSeed")}
               </span>
             )
           }
@@ -116,17 +115,43 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
           >
             {verify.ok
               ? verify.recomputedPath
-                ? `Verified: the recomputed path lands in bin ${verify.recomputedBin} at x${verify.recomputedMultiplier}.`
+                ? i18n.t("fair.verifiedPlinko", {
+                    bin: verify.recomputedBin,
+                    multiplier: verify.recomputedMultiplier,
+                  })
                 : verify.recomputedDealerCards
-                  ? `Verified: ${verify.recomputedPlayerCards?.length} player and ${verify.recomputedDealerCards.length} dealer cards replay to dealer ${verify.recomputedDealerTotal}, ${verify.recomputedOutcome}, payout ${verify.recomputedPayout}.`
+                  ? i18n.t("fair.verifiedBlackjack", {
+                      player: verify.recomputedPlayerCards?.length,
+                      dealer: verify.recomputedDealerCards.length,
+                      total: verify.recomputedDealerTotal,
+                      outcome: verify.recomputedOutcome,
+                      payout: verify.recomputedPayout,
+                    })
                   : verify.recomputedResult !== undefined
-                    ? `Verified: the recomputed roll is ${verify.recomputedResult}, a ${verify.recomputedWon ? "win" : "loss"} at x${verify.recomputedMultiplier}, payout ${verify.recomputedPayout}.`
+                    ? i18n.t("fair.verifiedDice", {
+                        result: verify.recomputedResult,
+                        outcome: i18n.t(verify.recomputedWon ? "fair.win" : "fair.loss"),
+                        multiplier: verify.recomputedMultiplier,
+                        payout: verify.recomputedPayout,
+                      })
                     : verify.recomputedMineSet
-                      ? `Verified: the mines were at ${verify.recomputedMineSet.join(", ")}; ${verify.recomputedGems} gems, ${verify.recomputedBusted ? "busted" : "cashed"}, payout ${verify.recomputedPayout}.`
+                      ? i18n.t("fair.verifiedMines", {
+                          mines: verify.recomputedMineSet.join(", "),
+                          gems: verify.recomputedGems,
+                          outcome: i18n.t(verify.recomputedBusted ? "fair.busted" : "fair.cashed"),
+                          payout: verify.recomputedPayout,
+                        })
                       : verify.recomputedCards
-                        ? `Verified: the cards were ${verify.recomputedCards.join(", ")}; ${verify.recomputedGuesses} correct, ${verify.recomputedBusted ? "busted" : "cashed"}, payout ${verify.recomputedPayout}.`
-                        : `Verified: recomputed roll ${verify.recomputedRoll} maps to the same item.`
-              : `Not verified${verify.reason ? `: ${verify.reason}` : ""}.`}
+                        ? i18n.t("fair.verifiedHilo", {
+                            cards: verify.recomputedCards.join(", "),
+                            correct: verify.recomputedGuesses,
+                            outcome: i18n.t(verify.recomputedBusted ? "fair.busted" : "fair.cashed"),
+                            payout: verify.recomputedPayout,
+                          })
+                        : i18n.t("fair.verifiedCase", { roll: verify.recomputedRoll })
+              : verify.reason
+                ? i18n.t("fair.notVerifiedReason", { reason: verify.reason })
+                : i18n.t("fair.notVerified")}
           </div>
         )}
       </div>
@@ -141,7 +166,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
 
         <div className="flex flex-col gap-1">
           <span className="text-xs uppercase tracking-wider text-[#84819a]">
-            Client seed
+            {i18n.t("fair.clientSeed")}
           </span>
           <div className="flex gap-2">
             <input
@@ -164,13 +189,13 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
           disabled={rotating}
           className="self-start px-5 py-2 rounded bg-pink-700 hover:bg-pink-600 font-semibold text-sm disabled:opacity-50"
         >
-          {rotating ? "Rotating..." : "Rotate & reveal server seed"}
+          {rotating ? "Rotating..." : i18n.t("fair.rotateRevealServerSeed")}
         </button>
 
         {revealed && (
           <div className="rounded bg-[#151225] border border-gray-700 p-3 text-sm flex flex-col gap-1">
             <span className="text-yellow-300 font-semibold">
-              Previous seed revealed, verify it:
+              {i18n.t("fair.previousSeedRevealedVerify")}
             </span>
             <Row label={i18n.t("fair.serverSeed")} value={revealed.serverSeed} />
             <Row label={i18n.t("fair.itsHash")} value={revealed.serverSeedHash} />

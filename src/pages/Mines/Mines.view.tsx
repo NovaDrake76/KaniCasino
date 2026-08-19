@@ -142,24 +142,24 @@ const MinesView: React.FC<MinesViewProps> = ({
             active ? (
               <>
                 <GameButton onClick={cashout} disabled={busy || gems === 0} variant="cashout">
-                  {gems > 0 ? <>{i18n.t("common.cashOut")} <Monetary value={currentPayout} showFraction /></> : "Reveal a tile"}
+                  {gems > 0 ? <>{i18n.t("common.cashOut")} <Monetary value={currentPayout} showFraction /></> : i18n.t("mines.revealATile")}
                 </GameButton>
                 <button
                   onClick={randomTile}
                   disabled={busy}
                   className="p-2.5 rounded bg-surface-raised hover:bg-surface-hover text-ink-soft font-semibold w-full disabled:opacity-40 transition"
                 >
-                  Random Tile
+                  {i18n.t("mines.randomTile")}
                 </button>
               </>
             ) : (
               <GameButton onClick={start} disabled={busy}>
-                {isLogged ? "Bet" : "Sign in to play"}
+                {isLogged ? "Bet" : i18n.t("upgrade.signInToPlay")}
               </GameButton>
             )
           ) : (
             <GameButton onClick={autoRunning ? stopAuto : startAuto} variant={autoRunning ? "danger" : "primary"}>
-              {autoRunning ? `Stop (${autoLeft} left)` : isLogged ? `Start ${autoCount} Bets` : "Sign in to play"}
+              {autoRunning ? i18n.t("common.stopAuto", { left: autoLeft }) : isLogged ? i18n.t("common.startBets", { count: autoCount }) : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           )}
 
@@ -169,7 +169,7 @@ const MinesView: React.FC<MinesViewProps> = ({
               disabled={!game.rollId}
               className={`text-xs font-semibold text-center py-1 rounded ${game.status === "cashed" ? "text-green-400" : "text-red-400"} disabled:opacity-50`}
             >
-              {game.status === "cashed" ? <>{i18n.t("common.won")} <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : "Boom! Verify roll"}
+              {game.status === "cashed" ? <>{i18n.t("common.won")} <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : i18n.t("mines.boomVerifyRoll")}
             </button>
           )}
         </>

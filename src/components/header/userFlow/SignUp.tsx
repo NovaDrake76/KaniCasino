@@ -37,7 +37,7 @@ const SignUpPage: React.FC = () => {
         .catch((error) => {
           console.log(error);
           setError(
-            error.response.data.message || error.response.data.errors[0].msg || "Invalid format. Please try again."
+            error.response.data.message || error.response.data.errors[0].msg || i18n.t("nav.invalidFormatPleaseTry")
           );
         })
         .then(() => {
@@ -45,7 +45,7 @@ const SignUpPage: React.FC = () => {
         });
     } catch (error) {
       console.log(error)
-      setError("Invalid format. Please try again.");
+      setError(i18n.t("nav.invalidFormatPleaseTry"));
       setLoading(false);
     }
   };
@@ -200,7 +200,7 @@ const SignUpPage: React.FC = () => {
                   {/* Uncomment to enable Google Login */}
                   {/* <GoogleLogin
                       clientId="<YOUR_GOOGLE_CLIENT_ID>"
-                      buttonText="Sign up with Google"
+                      buttonText={i18n.t("nav.signUpWithGoogle")}
                       onSuccess={handleGoogleSuccess}
                       onFailure={handleGoogleFailure}
                       cookiePolicy={"single_host_origin"}

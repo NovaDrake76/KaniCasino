@@ -85,7 +85,7 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                                 className="w-16 h-16 object-contain"
                             />
                             <div className="font-normal text-xl text-white">
-                                KaniCasino
+                                {i18n.t("nav.kanicasino")}
                             </div>
                         </div>
                         <button onClick={closeSidebar} className="bg-transparent">

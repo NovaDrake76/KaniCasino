@@ -28,7 +28,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
       // the balance comes back over the socket, so it stays in step with the server
       toast.success(i18n.t("market.purchaseSuccessful"));
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Could not complete the purchase");
+      toast.error(error?.response?.data?.message || i18n.t("market.couldNotCompleteThe"));
     } finally {
       setLoading(false);
       onClose();
@@ -55,7 +55,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
             className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
             onClick={onClose}
           >
-            Cancel
+            {i18n.t("collections.cancel")}
           </button>
           <div className="w-44">
             <MainButton

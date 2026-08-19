@@ -10,7 +10,7 @@ const steps = () => [
   {
     image: "/images/coinHeads.webp",
     title: i18n.t("common.startWithFreeCoins"),
-    text: `Get K₽ by clicking on the bouncing "Claim Bonus" button on the navbar.`,
+    text: `Get K₽ by clicking on the bouncing i18n.t("bonus.claim") button on the navbar.`,
   },
   {
     image: "/images/boo.webp",
@@ -49,11 +49,10 @@ const OnboardingModal = () => {
     <Modal open={open} setOpen={dismiss} width="520px">
       <div className="flex flex-col items-center gap-5">
         <h2 className="text-2xl font-bold text-center">
-          Welcome to KaniCasino!
+          {i18n.t("common.welcomeToKanicasino")}
         </h2>
         <p className="text-ink-soft text-sm text-center">
-          Everything here runs on K₽, a fictional coin. It is not real money, so
-          play as much as you want.
+          {i18n.t("common.everythingHereRunsOn")}
         </p>
         <div className="flex flex-col gap-3 w-full">
           {steps().map((step) => (

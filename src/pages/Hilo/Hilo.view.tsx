@@ -63,11 +63,11 @@ const HiloView: React.FC<HiloViewProps> = ({
 
           {active ? (
             <GameButton onClick={cashout} disabled={busy || !game?.canCashout} variant="cashout">
-              {game?.canCashout ? <>{i18n.t("common.cashOut")} <Monetary value={currentPayout} showFraction /></> : "Make a prediction"}
+              {game?.canCashout ? <>{i18n.t("common.cashOut")} <Monetary value={currentPayout} showFraction /></> : i18n.t("hilo.makeAPrediction")}
             </GameButton>
           ) : (
             <GameButton onClick={start} disabled={busy}>
-              {isLogged ? "Bet" : "Sign in to play"}
+              {isLogged ? "Bet" : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           )}
 
@@ -107,7 +107,7 @@ const HiloView: React.FC<HiloViewProps> = ({
               disabled={!game.rollId}
               className={`text-xs font-semibold text-center py-1 rounded ${game.status === "cashed" ? "text-green-400" : "text-red-400"} disabled:opacity-50`}
             >
-              {game.status === "cashed" ? <>{i18n.t("common.won")} <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : "Busted! Verify roll"}
+              {game.status === "cashed" ? <>{i18n.t("common.won")} <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : i18n.t("hilo.bustedVerifyRoll")}
             </button>
           )}
         </>

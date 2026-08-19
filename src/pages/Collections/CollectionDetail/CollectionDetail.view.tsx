@@ -145,7 +145,7 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
               <div className="flex flex-col gap-1">
                 <h3 className="text-lg font-semibold text-ink">{i18n.t("collections.noLongerInThis")}</h3>
                 <span className="text-sm text-ink-muted">
-                  Items you collected that have since been removed from the case.
+                  {i18n.t("collections.itemsYouCollectedThat")}
                 </span>
               </div>
               <div className="flex flex-wrap gap-4 md:gap-6 justify-center">

@@ -197,13 +197,13 @@ const CoinFlip = () => {
             >
               {
                 spinning ? "Spinning..."
-                  : choice === null ? "Choose a side"
-                    : bet === 0 ? "Place the bet value"
-                      : bet < MIN_BET ? `Min bet is ${MIN_BET}`
-                        : bet > MAX_BET ? "Max bet is 1M"
+                  : choice === null ? i18n.t("coin.chooseASide")
+                    : bet === 0 ? i18n.t("coin.placeTheBetValue")
+                      : bet < MIN_BET ? i18n.t("coin.minBet", { amount: MIN_BET })
+                        : bet > MAX_BET ? i18n.t("coin.maxBetIs1m")
                           : userGambled ? "You're in!"
-                            : userData !== null && userData.walletBalance < bet ? "Not enough money"
-                              : "Enter the Game"
+                            : userData !== null && userData.walletBalance < bet ? i18n.t("coin.notEnoughMoney")
+                              : i18n.t("coin.enterTheGame")
               }
             </GameButton>
           </div>

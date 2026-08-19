@@ -75,10 +75,10 @@ const Ribbon = () => (
     </svg>
     <div className="text-center">
       <p className="text-[13px] font-extrabold tracking-[0.25em] text-[#C9C6DE]">
-        BLACKJACK PAYS 3 TO 2
+        {i18n.t("blackjack.blackjackPays3To")}
       </p>
       <p className="text-[10px] font-semibold tracking-[0.3em] text-[#625F7E] mt-1">
-        DEALER STANDS ON SOFT 17
+        {i18n.t("blackjack.dealerStandsOnSoft")}
       </p>
     </div>
     <svg viewBox="0 0 28 24" className="w-5 text-[#2A2840] rotate-180" aria-hidden="true">
@@ -182,7 +182,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
           disabled={!hand?.rollId}
           className="text-xs text-[#625F7E] hover:text-[#84819a] disabled:cursor-default"
         >
-          Provably fair · one seed per hand, one cursor per card
+          {i18n.t("blackjack.provablyFairOneSeed")}
         </button>
       }
       panel={
@@ -213,14 +213,14 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
                   disabled={!canInsure}
                   className="min-h-[38px] rounded-md bg-[#4F46E5] hover:bg-indigo-500 font-bold text-sm disabled:opacity-40"
                 >
-                  Accept
+                  {i18n.t("blackjack.accept")}
                 </button>
                 <button
                   onClick={() => insure(false)}
                   disabled={acting}
                   className="min-h-[38px] rounded-md bg-[#281D3F] hover:bg-[#3A2C5C] font-bold text-sm disabled:opacity-40"
                 >
-                  Decline
+                  {i18n.t("blackjack.decline")}
                 </button>
               </div>
             </div>
@@ -277,7 +277,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
                   <button
                     key={h.handId}
                     onClick={() => h.rollId && openRoll(h.rollId)}
-                    title={h.rollId ? `Verify ${h.rollId}` : "No roll id"}
+                    title={h.rollId ? i18n.t("blackjack.verifyRoll", { id: h.rollId }) : i18n.t("blackjack.noRollId")}
                     className={`px-2 py-0.5 rounded text-xs font-semibold bg-[#19172D] border border-[#2A2840] hover:bg-[#281D3F] ${OUTCOME_TEXT[h.outcome || ""] || "text-white"}`}
                   >
                     {h.payout > 0 ? `+${h.payout}` : `-${h.betAmount}`}

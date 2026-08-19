@@ -52,23 +52,23 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
       let message = "";
 
       if (!isLogged) {
-        message = "Sign in to play";
+        message = i18n.t("upgrade.signInToPlay");
       } else if (userCashedOut && gameStarted) {
-        message = `Cashed Out at x${userMultiplier.toFixed(2)}`;
+        message = i18n.t("crash.cashedOutAt", { multiplier: userMultiplier.toFixed(2) });
       } else if (userGambled) {
-        message = gameStarted ? "Cash Out" : "You're in!";
+        message = gameStarted ? i18n.t("common.cashOut") : "You're in!";
       } else if (!bet || bet < 1) {
-        message = "Place the bet value";
+        message = i18n.t("coin.placeTheBetValue");
       } else if (bet > MAX_BET) {
-        message = "Max bet is 1M";
+        message = i18n.t("coin.maxBetIs1m");
       } else if (userData.walletBalance < bet) {
-        message = "Not enough money";
+        message = i18n.t("coin.notEnoughMoney");
       } else if (queued) {
-        message = "Queued (click to cancel)";
+        message = i18n.t("crash.queuedClickToCancel");
       } else if (gameStarted) {
-        message = "Bet (Next Round)";
+        message = i18n.t("crash.betNextRound");
       } else {
-        message = "Place Bet";
+        message = i18n.t("crash.placeBet");
       }
       return message;
     }

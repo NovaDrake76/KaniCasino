@@ -42,12 +42,12 @@ const UserInfo: React.FC<UserProps> = ({
       const isValidFileType = validFileTypes.includes(file.type);
 
       if (fileSizeMB > 3) {
-        toast.error('File size must be less than 3MB');
+        toast.error(i18n.t("profile.fileSizeMustBe"));
         return;
       }
 
       if (!isValidFileType) {
-        toast.error('File type must be jpeg, jpg or png');
+        toast.error(i18n.t("profile.fileTypeMustBe"));
         return;
       }
 
@@ -146,7 +146,7 @@ const UserInfo: React.FC<UserProps> = ({
                 data-tooltip-id="my-tooltip"
                 data-tooltip-content={i18n.t("profile.toEvery1kSpent")}
               >
-                How XP works?
+                {i18n.t("profile.howXpWorks")}
               </span>
             </div>
           </div>

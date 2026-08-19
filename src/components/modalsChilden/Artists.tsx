@@ -34,7 +34,7 @@ const Assets = () => {
             <div className="mb-4 flex flex-col gap-2">
                 <span className="text-xl font-bold mb-2">{i18n.t("footer.games")}</span>
                 <p className="text-md">
-                    Crash arts and banner art are from Urban Legend in Limbo.
+                    {i18n.t("help.crashArtsAndBanner")}
                 </p>
 
                 <p className="text-md">

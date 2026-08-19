@@ -11,7 +11,7 @@ const HowGamesWork = () => {
         <div className="p-4">
             <h2 className="text-2xl font-bold mb-4">{i18n.t("footer.howGamesWork")}</h2>
             <p className="mb-4">
-                Welcome to the gaming section! Here's a brief overview of how each game works:
+                {i18n.t("help.welcomeToTheGaming")}
             </p>
 
             <GameDescription
@@ -21,21 +21,21 @@ const HowGamesWork = () => {
 
             <GameDescription
                 title={i18n.t("help.crashGame")}
-                description="The Crash Game features a multiplier that grows over time. Players can place bets and choose to cash out at any point before the game crashes. If a player cashes out successfully, they receive a payout based on the current multiplier."
+                description={i18n.t("help.theCrashGameFeatures")}
             />
 
             <GameDescription
                 title={i18n.t("help.slotGame")}
-                description="In the Slot Game, players spin a slot machine with various symbols. Different symbol combinations result in wins with varying payouts. The cat symbol is the highest paying symbol, and it can substitute for any other symbol."
+                description={i18n.t("help.inTheSlotGame")}
             />
 
             <GameDescription
                 title={i18n.t("help.upgradeItems")}
-                description="The Upgrade Items feature allows users to select multiple items from their inventory and attempt to upgrade them to a higher rarity. The success rate is calculated based on the selected items and the target rarity."
+                description={i18n.t("help.theUpgradeItemsFeature")}
             />
 
             <p className="text-lg">
-                Enjoy playing the games and good luck!
+                {i18n.t("help.enjoyPlayingTheGames")}
             </p>
         </div>
     );

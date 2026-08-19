@@ -120,13 +120,13 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             : `${listed} items listed for sale!`
         );
       } else if (res?.soldInstantly) {
-        toast.success(`Sold instantly to a buy order for K₽${res.soldFor}! You received K₽${res.received}`);
+        toast.success(i18n.t("market.soldToBuyOrder", { price: res.soldFor, received: res.received }));
       } else {
         toast.success(i18n.t("market.itemListedForSale"), {});
       }
       CloseModal();
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Could not list the item");
+      toast.error(error?.response?.data?.message || i18n.t("market.couldNotListThe"));
     }
     setLoadingButton(false);
   };
@@ -238,19 +238,19 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <Stat
                 label={i18n.t("market.median7d")}
-                value={stats?.median7d ? <Monetary value={stats.median7d} /> : "No sales"}
+                value={stats?.median7d ? <Monetary value={stats.median7d} /> : i18n.t("market.noSales")}
                 hint={stats?.volume7d ? `${stats.volume7d} sold this week` : "nothing sold recently"}
                 accent="text-ink"
               />
               <Stat
                 label={i18n.t("market.lowestListing")}
-                value={stats?.lowestListing ? <Monetary value={stats.lowestListing} /> : "None listed"}
+                value={stats?.lowestListing ? <Monetary value={stats.lowestListing} /> : i18n.t("market.noneListed")}
                 hint={stats?.totalListings ? `${stats.totalListings} on sale` : "you'd be the only one"}
                 accent="text-accent"
               />
               <Stat
                 label={i18n.t("market.bestBuyOrder")}
-                value={stats?.bestBid ? <Monetary value={stats.bestBid} /> : "No bids"}
+                value={stats?.bestBid ? <Monetary value={stats.bestBid} /> : i18n.t("market.noBids")}
                 hint={stats?.bestBid ? "sells instantly at or below" : undefined}
                 accent="text-accent-gold"
               />
@@ -271,7 +271,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                   onClick={() => setPrice(stats.median7d as number)}
                   className="px-2 py-1 rounded border border-line text-xs hover:bg-surface-raised"
                 >
-                  Median
+                  {i18n.t("market.median")}
                 </button>
               ) : null}
               {stats?.lowestListing ? (
@@ -280,13 +280,13 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                     onClick={() => setPrice(stats.lowestListing as number)}
                     className="px-2 py-1 rounded border border-line text-xs hover:bg-surface-raised"
                   >
-                    Match lowest
+                    {i18n.t("market.matchLowest")}
                   </button>
                   <button
                     onClick={() => setPrice(Math.max(1, (stats.lowestListing as number) - 1))}
                     className="px-2 py-1 rounded border border-line text-xs hover:bg-surface-raised"
                   >
-                    Undercut by 1
+                    {i18n.t("market.undercutBy1")}
                   </button>
                 </>
               ) : null}
@@ -295,7 +295,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                   onClick={() => setPrice(stats.bestBid as number)}
                   className="px-2 py-1 rounded border border-accent-gold/50 text-accent-gold text-xs hover:bg-accent-gold/10"
                 >
-                  Sell to bid now
+                  {i18n.t("market.sellToBidNow")}
                 </button>
               ) : null}
             </div>
@@ -357,7 +357,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                     max={maxQuantity}
                     value={quantity}
                     onChange={(e) => setQuantity(clampQuantity(e.target.value))}
-                    title={`You own ${maxQuantity}`}
+                    title={i18n.t("market.youOwnCount", { count: maxQuantity })}
                     className="w-24 bg-surface-nav border border-line focus:border-accent outline-none rounded pl-7 pr-2 py-2 text-sm"
                   />
                 </div>
@@ -366,11 +366,11 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                 onClick={CloseModal}
                 className="px-4 py-2 rounded bg-surface-raised hover:bg-red-700 text-sm font-semibold"
               >
-                Close
+                {i18n.t("market.close")}
               </button>
               <div className="w-32 shrink-0">
                 <MainButton
-                  text={crossesBid ? "Sell now" : "List item"}
+                  text={crossesBid ? i18n.t("market.sellNow") : i18n.t("market.listItem")}
                   onClick={handleSubmit}
                   loading={loadingButton}
                   disabled={!selectedItem || !price || loadingButton}

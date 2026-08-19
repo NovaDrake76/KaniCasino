@@ -27,13 +27,13 @@ const LoginPage = () => {
         .catch((error) => {
           console.log(error);
           setErrorMessage(
-            error.response.data.message || "Invalid email or password."
+            error.response.data.message || i18n.t("nav.invalidEmailOrPassword")
           );
         });
 
       setLoadingButton(false);
     } catch (error) {
-      setErrorMessage("Invalid email or password");
+      setErrorMessage(i18n.t("nav.invalidEmailOrPassword2"));
       setLoadingButton(false);
     }
   };
@@ -59,7 +59,7 @@ const LoginPage = () => {
       <div className="max-w-md w-full space-y-4">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
-            Sign in to your account
+            {i18n.t("nav.signInToYour")}
           </h2>
         </div>
         {errorMessage && (
@@ -110,7 +110,7 @@ const LoginPage = () => {
                 href="#"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
-                Forgot your password?
+                {i18n.t("nav.forgotYourPassword")}
               </a>
             </div>
           </div>

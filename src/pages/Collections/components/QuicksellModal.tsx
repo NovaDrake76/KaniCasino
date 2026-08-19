@@ -84,7 +84,7 @@ const QuicksellModal: React.FC<Props> = ({ open, setOpen, preview, committing, o
             disabled={committing}
           />
           <MainButton
-            text={`Sell ${totalItems} duplicate${totalItems !== 1 ? "s" : ""}`}
+            text={i18n.t(totalItems === 1 ? "collections.sellDuplicatesCount" : "collections.sellDuplicatesCountPlural", { count: totalItems })}
             onClick={onConfirm}
             type="danger"
             loading={committing}

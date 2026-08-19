@@ -212,7 +212,7 @@ const Profile = () => {
                       {t.label}
                       {isNew && (
                         <span className="absolute -top-2 -right-2 flex items-center rounded-full bg-accent-gold px-1.5 py-0.5 text-[9px] font-extrabold uppercase leading-none text-black shadow animate-pulse">
-                          New
+                          {i18n.t("profile.new")}
                         </span>
                       )}
                       <span

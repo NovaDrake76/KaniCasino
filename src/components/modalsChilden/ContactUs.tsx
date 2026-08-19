@@ -5,7 +5,7 @@ const ContactUs = () => {
             <span className="text-2xl font-bold mb-4">{i18n.t("help.contactUs")}</span>
 
             <p className="text-lg mb-4">
-                Have questions or need assistance? Feel free to reach out to us through the following channels:
+                {i18n.t("help.haveQuestionsOrNeed")}
             </p>
 
             <div className="mb-4">

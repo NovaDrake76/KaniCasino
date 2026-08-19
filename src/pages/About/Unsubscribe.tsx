@@ -26,12 +26,10 @@ const Unsubscribe = () => {
                     <>
                         <span className="text-xl font-bold">{i18n.t("about.youAreUnsubscribed")}</span>
                         <span className="text-sm text-ink-soft">
-                            We will not send you any more updates about new cases and games. You will
-                            still get service messages about your account, like security and policy
-                            notices.
+                            {i18n.t("about.weWillNotSend")}
                         </span>
                         <span className="text-sm text-ink-muted">
-                            Changed your mind? You can turn updates back on in your profile settings.
+                            {i18n.t("about.changedYourMindYou")}
                         </span>
                     </>
                 )}
@@ -39,8 +37,7 @@ const Unsubscribe = () => {
                     <>
                         <span className="text-xl font-bold">{i18n.t("about.thatLinkDidNot")}</span>
                         <span className="text-sm text-ink-soft">
-                            It may have already been used. You can always manage email in your profile
-                            settings.
+                            {i18n.t("about.itMayHaveAlready")}
                         </span>
                     </>
                 )}

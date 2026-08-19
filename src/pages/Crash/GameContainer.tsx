@@ -48,7 +48,7 @@ const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, gameStar
                                         {crashPoint && crashPoint.toFixed(2)}x
                                     </span>
                                     <span className="text-sm font-semibold uppercase tracking-widest text-ink-soft mt-1">
-                                        Crashed
+                                        {i18n.t("crash.crashed")}
                                     </span>
                                 </div>
                             ) : (

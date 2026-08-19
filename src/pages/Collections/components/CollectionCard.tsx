@@ -40,7 +40,7 @@ const CollectionCard: React.FC<Props> = ({ collection, isOwner, onClick }) => {
       {isOwner && (
         <div className="flex items-center justify-between text-xs pt-1 border-t border-line w-full">
           <span className="text-ink-muted">
-            {c.duplicatesCount > 0 ? `${c.duplicatesCount} duplicates` : "No duplicates"}
+            {c.duplicatesCount > 0 ? `${c.duplicatesCount} duplicates` : i18n.t("collections.noDuplicates")}
           </span>
           {c.duplicatesValue > 0 && (
             <span className="text-accent-gold font-medium">

@@ -41,7 +41,7 @@ const ItemDetailModal: React.FC<Props> = ({
 
         <div className="w-full flex items-center justify-between px-1 text-sm">
           <span className={locked ? "text-ink-faint" : "text-ink-soft"}>
-            {locked ? "Not yet collected" : `You own ×${item.owned}`}
+            {locked ? i18n.t("collections.notYetCollected") : i18n.t("collections.youOwn", { count: item.owned })}
           </span>
           <span className="text-ink-muted">
             Sell value <Monetary value={item.sellValue} /> each

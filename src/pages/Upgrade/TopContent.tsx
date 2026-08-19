@@ -71,7 +71,7 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
             }, 8000);
 
         } catch (err: any) {
-            const errorMessage = err.response && err.response.data ? err.response.data.message : "An error occurred";
+            const errorMessage = err.response && err.response.data ? err.response.data.message : i18n.t("upgrade.anErrorOccurred");
             toast.error(errorMessage, {
                 theme: "dark",
             });
@@ -151,7 +151,7 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
             {
                 selectedItems.length > 0 ? <div className="flex flex-col relative">
                     {renderSelectedItems(selectedItems)}
-                    <MainButton text={`Clear Items ${selectedItems.length > 1 ? `(${selectedItems.length})` : ''}`} icon={<AiOutlineClose />} onClick={ClearItems} disabled={spinning} />
+                    <MainButton text={selectedItems.length > 1 ? i18n.t("upgrade.clearItemsCount", { count: selectedItems.length }) : i18n.t("upgrade.clearItems")} icon={<AiOutlineClose />} onClick={ClearItems} disabled={spinning} />
                     {
                         !spinning && renderCloseButton("selected", setSelectedTarget, setSelectedItems)
                     }

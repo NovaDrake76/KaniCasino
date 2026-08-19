@@ -91,7 +91,7 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
                   loading="lazy"
                   className="h-24 md:h-32 w-full object-contain"
                 />
-                <div className="text-sm font-semibold text-center pt-3">Play {item.title}</div>
+                <div className="text-sm font-semibold text-center pt-3">{i18n.t("home.playGame", { game: item.title })}</div>
               </div>
             </Link>
           ))}

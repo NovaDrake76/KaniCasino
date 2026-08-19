@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Rarities from "../../components/Rarities";
 import { BasicItem } from "../../components/Types";
+import i18n from "../../i18n";
 
 interface ShowPrizeProps {
     openedItems: BasicItem[];
@@ -40,7 +41,7 @@ const ShowPrize: React.FC<ShowPrizeProps> = ({ openedItems, showPrize, animation
                                         to={`/provably-fair?roll=${openedItem.rollId}`}
                                         className="text-[10px] text-[#84819a] hover:text-white underline"
                                     >
-                                        provably fair
+                                        {i18n.t("casePage.provablyFair")}
                                     </Link>
                                 )}
                             </div>

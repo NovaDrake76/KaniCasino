@@ -23,6 +23,7 @@ const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
 const environment = import.meta.env.VITE_NODE_ENV || "";
 import { User } from './components/Types'
+import i18n from "./i18n";
 
 interface userDataSocketProps {
   walletBalance: number;
@@ -31,8 +32,9 @@ interface userDataSocketProps {
 }
 
 function App() {
-  const { i18n } = useTranslation();
-  const language = i18n.language;
+  // the hook is only here to re-render on a language change; strings come from the singleton
+  const { i18n: translator } = useTranslation();
+  const language = translator.language;
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [onlineUsers, setOnlineUsers] = useState<number>(0);
   const [userData, setUserData] = useState<User | null>(null);
@@ -145,7 +147,7 @@ function App() {
     const RECONNECT_ID = "server-reconnect";
     const showReconnecting = (msg?: string) => {
       if (toast.isActive(RECONNECT_ID)) return;
-      toast.loading(msg || "Reconnecting to the server...", { toastId: RECONNECT_ID });
+      toast.loading(msg || i18n.t("common.reconnectingToTheServer"), { toastId: RECONNECT_ID });
     };
     const onNotice = (p: { message?: string; seconds?: number }) => showReconnecting(p?.message);
     // ignore intentional client disconnects (the login/logout re-handshake below)

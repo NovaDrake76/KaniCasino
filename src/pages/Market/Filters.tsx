@@ -84,7 +84,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
           onChange={(e) => set({ listedOnly: e.target.checked })}
           className="accent-indigo-600"
         />
-        On sale only
+        {i18n.t("market.onSaleOnly")}
       </label>
     </div>
   );

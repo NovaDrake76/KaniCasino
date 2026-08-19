@@ -42,11 +42,11 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             className="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
         >
             <option value="">{i18n.t("common.allRarities")}</option>
-            <option value="1">{i18n.t("common.common")}</option>
-            <option value="2">{i18n.t("common.rare")}</option>
-            <option value="3">{i18n.t("common.epic")}</option>
-            <option value="4">{i18n.t("common.ultraRare")}</option>
-            <option value="5">{i18n.t("common.unique")}</option>
+            <option value="1">{i18n.t("rarity.1")}</option>
+            <option value="2">{i18n.t("rarity.2")}</option>
+            <option value="3">{i18n.t("rarity.3")}</option>
+            <option value="4">{i18n.t("rarity.4")}</option>
+            <option value="5">{i18n.t("rarity.5")}</option>
         </select>
 
         {/* Sort by */}
@@ -80,7 +80,7 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             onClick={() => setFilters({ name: '', rarity: '', sortBy: '', order: 'asc' })}
             className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200"
         >
-            Clear Filters
+            {i18n.t("common.clearFilters")}
         </button>
     </div>
 )

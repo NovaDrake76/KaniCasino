@@ -90,7 +90,7 @@ const Rung = ({ rung, charging, active, landed }: RungProps) => (
       {rung.multiplier}x
     </div>
     <div className="mt-0.5 text-[10px] text-ink-muted">
-      {rung.locked ? `Level ${rung.minLevel}` : rung.multiplier === 1 ? "no bonus" : `${rung.chance}%`}
+      {rung.locked ? i18n.t("gift.levelLocked", { level: rung.minLevel }) : rung.multiplier === 1 ? "no bonus" : `${rung.chance}%`}
     </div>
   </div>
 );
@@ -175,7 +175,7 @@ const GiftView = ({
           </div>
 
           <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">
-            Rare prizes likelier
+            {i18n.t("gift.rarePrizesLikelier")}
           </span>
           <div className={`flex items-end ${atBestStreak ? "justify-center" : "justify-between"}`}>
             <div className={`flex flex-col gap-1 ${atBestStreak ? "items-center" : ""}`}>
@@ -223,7 +223,7 @@ const GiftView = ({
             ))}
           </div>
           <span className="text-[13px] text-ink-muted">
-            Multiplies whatever the reel gives you. Higher levels unlock bigger multipliers.
+            {i18n.t("gift.multipliesWhateverTheReel")}
           </span>
         </div>
       </div>
@@ -240,7 +240,7 @@ const GiftView = ({
       {stage === "picking" && state.canSpin && (
         <>
           <div className="mb-3 w-full text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">
-            Choose a collection
+            {i18n.t("gift.chooseACollection")}
           </div>
           <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {state.categories.map((c) => (
@@ -301,11 +301,11 @@ const GiftView = ({
           {stage === "charging" && (
             <div className="flex flex-col items-center gap-3">
               <span className="text-[13px] text-ink-muted">
-                Your streak is charging the top slot. Every day back widens the good rungs.
+                {i18n.t("gift.yourStreakIsCharging")}
               </span>
               <div className="w-full max-w-xs">
                 <GameButton onClick={onSpin} disabled={pending || spinning}>
-                  Spin the daily gift
+                  {i18n.t("gift.spinTheDailyGift")}
                 </GameButton>
               </div>
             </div>
@@ -343,8 +343,8 @@ const GiftView = ({
                   }`}
                 >
                   {result.topSlot.hit
-                    ? `LEVEL ${state.level} · ${result.topSlot.multiplier}x TOP SLOT`
-                    : "TOP SLOT 1x · NO BONUS"}
+                    ? i18n.t("gift.topSlotBadge", { level: state.level, multiplier: result.topSlot.multiplier })
+                    : i18n.t("gift.topSlot1xNo")}
                 </span>
                 <div className="relative flex items-baseline gap-3">
                   {result.topSlot.hit && (
@@ -376,7 +376,7 @@ const GiftView = ({
       {state.grants.length > 0 && stage !== "won" && (
         <div className="notched mt-8 flex w-full flex-col gap-3 bg-surface p-5">
           <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-accent-gold">
-            Free openings waiting
+            {i18n.t("gift.freeOpeningsWaiting")}
           </span>
           <div className="flex flex-wrap gap-3">
             {state.grants.map((g) => (

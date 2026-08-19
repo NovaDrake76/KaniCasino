@@ -113,7 +113,7 @@ function Footer() {
           </div>
         </Link>
         <span className="font-bold hidden md:flex">
-          KANICASINO - Cases - Upgrade - Touhou
+          {i18n.t("footer.kanicasinoCasesUpgradeTouhou")}
         </span>
       </div>
 

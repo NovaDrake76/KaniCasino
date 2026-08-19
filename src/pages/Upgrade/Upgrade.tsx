@@ -35,12 +35,9 @@ const Upgrade: React.FC = () => {
                     <span
                         className="text-[#3a365a] underline -translate-x-1 cursor-help z-30"
                         data-tooltip-id="my-tooltip"
-                        data-tooltip-content={
-                            `Upgrade items from your inventory for a chance to get a more rare one. ` +
-                            `The closer the rarity of your current item to the desired item, the higher the success rate. `
-                        }
+                        data-tooltip-content={i18n.t("upgrade.howItWorksBody")}
                     >
-                        How it works?
+                        {i18n.t("upgrade.howItWorks")}
                     </span>
                 </div>
 

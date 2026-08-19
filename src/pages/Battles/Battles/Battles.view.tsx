@@ -34,12 +34,11 @@ const BattlesView: React.FC<BattlesViewProps> = ({
     <div className="flex flex-col gap-4 w-full max-w-[1100px] bg-[#212031] rounded-lg p-5">
       <div className="flex flex-col gap-2">
         <span className="text-sm text-[#84819a]">
-          Selected cases ({selected.length})
+          {i18n.t("battles.selectedCases", { count: selected.length })}
         </span>
         {selected.length === 0 ? (
           <div className="text-[#56528b] text-sm py-3">
-            Click cases below to add them. Click the same case again to add more
-            than one.
+            {i18n.t("battles.clickCasesBelowTo")}
           </div>
         ) : (
           <div className="flex gap-2 overflow-x-auto pb-2">
@@ -91,7 +90,7 @@ const BattlesView: React.FC<BattlesViewProps> = ({
           </button>
           <div className="pointer-events-none absolute left-0 bottom-full mb-2 w-64 rounded-lg bg-[#151225] border border-gray-700 p-3 text-xs text-[#c9c6de] shadow-xl opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-30">
             <span className="font-bold text-pink-400 block mb-1">
-              Baka mode
+              {i18n.t("battles.bakaMode")}
             </span>
             Flips the win condition: the player or team with the{" "}
             <span className="text-white font-semibold">{i18n.t("battles.lowest")}</span> total value
@@ -103,7 +102,7 @@ const BattlesView: React.FC<BattlesViewProps> = ({
             onClick={clearSelected}
             className="text-xs text-gray-400 hover:text-white ml-auto"
           >
-            Clear
+            {i18n.t("battles.clear")}
           </button>
         )}
       </div>
@@ -122,7 +121,7 @@ const BattlesView: React.FC<BattlesViewProps> = ({
           disabled={creating || !selected.length}
           className="px-6 py-2.5 rounded bg-green-700 hover:bg-green-600 font-semibold disabled:opacity-50"
         >
-          {creating ? "Creating..." : "Create battle"}
+          {creating ? "Creating..." : i18n.t("battles.createBattle")}
         </button>
       </div>
     </div>
@@ -143,14 +142,14 @@ const BattlesView: React.FC<BattlesViewProps> = ({
           <span className="text-[#84819a] py-6">{i18n.t("battles.loadingCases")}</span>
         ) : cases.length === 0 ? (
           <span className="text-[#84819a] py-6">
-            {search ? `No cases match "${search}".` : "No cases available."}
+            {search ? i18n.t("battles.noCasesMatch", { search }) : i18n.t("battles.noCasesAvailable")}
           </span>
         ) : (
           cases.map((c) => (
             <button
               key={c._id}
               onClick={() => addCase(c)}
-              title={`Add ${c.title}`}
+              title={i18n.t("battles.addCase", { case: c.title })}
               className="relative flex flex-col items-center w-36 rounded-lg bg-[#212031] hover:bg-[#2a2840] p-3 transition-all border-2 border-transparent hover:border-indigo-500"
             >
               {countOf(c._id) > 0 && (
@@ -210,7 +209,7 @@ const BattlesView: React.FC<BattlesViewProps> = ({
                 ))}
               </div>
               <span className="px-4 py-2 rounded bg-indigo-600 font-semibold text-sm">
-                View
+                {i18n.t("battles.view")}
               </span>
             </div>
           </div>

@@ -76,7 +76,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
       // the ad offer now fills the cooldown window; its status is already loaded and a
       // bonus claim does not change how many ads are left, so nothing to refetch here
     } catch (error: any) {
-      toast.error(`${error.response?.data?.message || "Could not claim the bonus"}!`, { theme: "dark" });
+      toast.error(`${error.response?.data?.message || i18n.t("nav.couldNotClaimThe")}!`, { theme: "dark" });
     } finally {
       setLoadingBonus(false);
     }
@@ -89,7 +89,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
       toogleUserData({ ...userData, walletBalance: res.walletBalance });
       setAdStatus((s) => (s ? { ...s, remainingToday: res.remainingToday } : s));
     } catch (e: any) {
-      toast.error(e.response?.data?.message || "Could not pay the reward", { theme: "dark" });
+      toast.error(e.response?.data?.message || i18n.t("nav.couldNotPayThe"), { theme: "dark" });
     }
   };
 
@@ -117,14 +117,14 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
         };
         await showRewardedAd({
           onGranted: () => finishAd(started.token),
-          onDismissed: () => giveBack("Ad closed early, no reward"),
-          onUnavailable: () => giveBack("No ad available right now, try later"),
+          onDismissed: () => giveBack(i18n.t("nav.adClosedEarlyNo")),
+          onUnavailable: () => giveBack(i18n.t("nav.noAdAvailableRight")),
         });
       } else {
         startMock(started.token, started.minWatchMs);
       }
     } catch (e: any) {
-      toast.error(e.response?.data?.message || "Could not start the ad", { theme: "dark" });
+      toast.error(e.response?.data?.message || i18n.t("nav.couldNotStartThe"), { theme: "dark" });
     } finally {
       setAdBusy(false);
     }
@@ -181,10 +181,10 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
               />
             </div>
             <p className="text-ink-soft text-sm text-center">
-              {canClaimAd ? "All done, enjoy your coins." : "No real ad here yet, this is a test placeholder..."}
+              {canClaimAd ? i18n.t("nav.allDoneEnjoyYour") : i18n.t("nav.noRealAdHere")}
             </p>
             <MainButton
-              text={`Claim +${adStatus?.amount} K₽`}
+              text={i18n.t("bonus.adClaim", { amount: adStatus?.amount })}
               onClick={claimMockAd}
               disabled={!canClaimAd || adBusy}
               loading={adBusy}

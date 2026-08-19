@@ -26,7 +26,7 @@ const EmailSettings = () => {
         setOptIn(next);
         try {
             await setMarketingOptIn(next);
-            toast.success(next ? "You will get updates about new cases and games" : "Updates turned off", {
+            toast.success(next ? i18n.t("profile.youWillGetUpdates") : i18n.t("profile.updatesTurnedOff"), {
                 theme: "dark",
             });
         } catch {
@@ -53,8 +53,7 @@ const EmailSettings = () => {
                 <div className="flex flex-col gap-1">
                     <span className="font-semibold">{i18n.t("settings.updates")}</span>
                     <span className="text-sm text-ink-muted">
-                        Occasional email when something new ships. Off unless you turn it on, and you
-                        can stop it any time.
+                        {i18n.t("profile.occasionalEmailWhenSomething")}
                     </span>
                 </div>
                 <button
@@ -76,14 +75,12 @@ const EmailSettings = () => {
             </div>
 
             <p className="text-sm text-ink-muted">
-                Service messages about your account, such as security and policy notices, are sent
-                whatever this is set to.
+                {i18n.t("profile.serviceMessagesAboutYour")}
             </p>
 
             {suppressed && (
                 <p className="text-sm text-red-400">
-                    We are not sending to your address because a previous email bounced or was
-                    reported as spam. Contact us if you think that is wrong.
+                    {i18n.t("profile.weAreNotSending")}
                 </p>
             )}
         </div>

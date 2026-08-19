@@ -53,13 +53,13 @@ const Leaderboard = ({ aside }: { aside?: React.ReactNode }) => {
                     <thead className="bg-[#19172d]">
                         <tr>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Rank
+                                {i18n.t("home.rank")}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Name
+                                {i18n.t("home.name")}
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Winnings
+                                {i18n.t("home.winnings")}
                             </th>
                         </tr>
                     </thead>

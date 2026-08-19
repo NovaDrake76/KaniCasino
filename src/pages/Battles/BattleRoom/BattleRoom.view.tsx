@@ -63,7 +63,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
             onClick={onCopyLink}
             className="text-sm text-[#84819a] hover:text-white"
           >
-            Copy link
+            {i18n.t("battles.copyLink")}
           </button>
         ) : (
           <span className="w-24" />
@@ -73,7 +73,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
       <div className="w-full max-w-[1200px] flex items-stretch gap-3 rounded-xl bg-[#212031] p-3">
         <div className="flex flex-col justify-center px-2">
           <span className="text-[10px] text-[#84819a] tracking-wider">
-            ROUND
+            {i18n.t("battles.round")}
           </span>
           <span className="font-bold text-lg whitespace-nowrap">
             {displayRound}{" "}
@@ -109,7 +109,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
         </div>
         <div className="flex flex-col justify-center px-2 items-end">
           <span className="text-[10px] text-[#84819a] tracking-wider">
-            TOTAL COST
+            {i18n.t("battles.totalCost")}
           </span>
           <span className="font-bold text-lg text-green-400 whitespace-nowrap">
             <Monetary value={entryCost} showFraction />
@@ -120,7 +120,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
       {tie && (
         <div className="w-full max-w-[1200px] flex flex-col items-center gap-2 animate-fade-in">
           <span className="text-yellow-300 font-bold text-lg">
-            It's a tie, spinning for the winner
+            {i18n.t("battles.itSATie")}
           </span>
           <TieBreaker
             players={tie.players}
@@ -135,7 +135,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
           className={`w-full max-w-[1200px] rounded-xl border py-3 text-center animate-fade-in bg-red-500/10 border-red-500/30`}
         >
           <span className={`font-bold text-red-300`}>
-            {"You lost this battle"}
+            {i18n.t("battles.youLostThisBattle")}
           </span>
         </div>
       )}
@@ -148,8 +148,8 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
           </span>
           <span className="text-xl font-extrabold flex items-center gap-1">
             {banner.perItemEach
-              ? `Split ${banner.totalItems} item${banner.totalItems === 1 ? "" : "s"} between ${banner.teamSize}`
-              : `Takes all ${banner.totalItems} item${banner.totalItems === 1 ? "" : "s"}`}
+              ? i18n.t(banner.totalItems === 1 ? "battles.splitItems" : "battles.splitItemsPlural", { count: banner.totalItems, players: banner.teamSize })
+              : i18n.t(banner.totalItems === 1 ? "battles.takesAll" : "battles.takesAllPlural", { count: banner.totalItems })}
           </span>
           <span className="text-sm text-[#c9c6de] flex items-center gap-1">
             worth <Monetary value={banner.value} showFraction />
@@ -173,7 +173,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
                   onClick={col.onJoin}
                   className="px-3 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-sm"
                 >
-                  Join
+                  {i18n.t("battles.join")}
                 </button>
               )}
               {col.canAddBot && (
@@ -181,7 +181,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
                   onClick={col.onAddBot}
                   className="px-3 py-1 rounded bg-[#281D3F] hover:bg-[#3a2c5c] text-white text-sm"
                 >
-                  Add bot
+                  {i18n.t("battles.addBot")}
                 </button>
               )}
             </div>
@@ -207,7 +207,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
                   </span>
                   {col.player.isBot && (
                     <span className="text-[10px] bg-[#19172D] px-1 rounded">
-                      BOT
+                      {i18n.t("battles.bot")}
                     </span>
                   )}
                   {col.teamTag && (
@@ -302,7 +302,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
                   onClick={col.onKick}
                   className="text-xs text-red-400 hover:text-red-300 mt-auto"
                 >
-                  Kick
+                  {i18n.t("battles.kick")}
                 </button>
               )}
             </div>
@@ -342,7 +342,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
             onClick={onBack}
             className="px-4 py-2 rounded bg-[#281D3F] hover:bg-[#3a2c5c] font-semibold"
           >
-            Back to battles
+            {i18n.t("battles.backToBattles")}
           </button>
         )}
       </div>

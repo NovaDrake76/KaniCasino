@@ -73,7 +73,7 @@ const Gift = () => {
         setPending(false);
       }, REEL_MS);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Could not open your gift", { theme: "dark" });
+      toast.error(err?.response?.data?.message || i18n.t("gift.couldNotOpenYour"), { theme: "dark" });
       setPending(false);
     }
   };

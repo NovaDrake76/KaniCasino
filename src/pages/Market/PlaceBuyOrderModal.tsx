@@ -33,9 +33,9 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
     try {
       const res = await placeBuyOrder(item._id, price, quantity);
       if (res.filled > 0 && res.order) {
-        toast.success(`Bought ${res.filled} now, ${res.order.quantity} left as a buy order`);
+        toast.success(i18n.t("market.boughtNowRest", { filled: res.filled, left: res.order.quantity }));
       } else if (res.filled > 0) {
-        toast.success(`Bought ${res.filled} instantly`);
+        toast.success(i18n.t("market.boughtInstantly", { filled: res.filled }));
       } else {
         toast.success(i18n.t("market.buyOrderPlaced"));
       }
@@ -43,7 +43,7 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
       onPlaced && onPlaced();
       onClose();
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Could not place the order");
+      toast.error(err?.response?.data?.message || i18n.t("market.couldNotPlaceThe"));
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
           <div className="rounded border border-line bg-surface p-2">
             <div className="text-ink-muted">{i18n.t("market.median7d")}</div>
             <div className="text-ink font-semibold">
-              {stats?.median7d ? <Monetary value={stats.median7d} /> : "No sales"}
+              {stats?.median7d ? <Monetary value={stats.median7d} /> : i18n.t("market.noSales")}
             </div>
           </div>
         </div>
@@ -109,19 +109,18 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
           </div>
           {fillsNow ? (
             <span className="text-accent-gold">
-              Anything already listed at or below your bid is bought immediately (spent, not refundable).
-              Only the unfilled rest is held as escrow and refunded if you cancel.
+              {i18n.t("market.anythingAlreadyListedAt")}
             </span>
           ) : (
             <span className="text-ink-faint">
-              Held as escrow and refunded in full if you cancel. This guarantees your order can pay when it matches.
+              {i18n.t("market.heldAsEscrowAnd")}
             </span>
           )}
         </div>
 
         <div className="flex gap-2">
           <button onClick={onClose} className="px-4 py-2 rounded bg-surface-raised text-sm font-semibold">
-            Cancel
+            {i18n.t("collections.cancel")}
           </button>
           <div className="flex-1">
             <MainButton

@@ -155,10 +155,10 @@ const ItemPage: React.FC = () => {
   const cancelOrder = async (id: string) => {
     try {
       const res = await cancelBuyOrder(id);
-      toast.success(`Order cancelled, K₽${res.refunded} refunded`);
+      toast.success(i18n.t("market.orderCancelled", { amount: res.refunded }));
       setRefresh(true);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Could not cancel the order");
+      toast.error(err?.response?.data?.message || i18n.t("market.couldNotCancelThe"));
     }
   };
 
@@ -196,7 +196,7 @@ const ItemPage: React.FC = () => {
               }}
               className="px-3 py-1 rounded border border-red-400/50 text-xs hover:bg-red-500/20"
             >
-              Retry
+              {i18n.t("market.retry")}
             </button>
           </div>
         )}
@@ -225,13 +225,13 @@ const ItemPage: React.FC = () => {
               onClick={() => setOpenOrderModal(true)}
               className="px-4 h-10 rounded-md border border-accent-gold/50 text-accent-gold text-sm font-semibold hover:bg-accent-gold/10"
             >
-              Place buy order
+              {i18n.t("market.placeBuyOrder")}
             </button>
             <button
               onClick={() => setOpenSellModal(true)}
               className="px-4 h-10 rounded-md bg-accent hover:bg-accent-light text-sm font-semibold text-white"
             >
-              Sell an item
+              {i18n.t("market.sellAnItem")}
             </button>
           </div>
         </div>
@@ -246,17 +246,17 @@ const ItemPage: React.FC = () => {
           />
           <Stat
             label={i18n.t("market.median7d")}
-            value={stats?.median7d ? <Monetary value={stats.median7d} /> : "No sales"}
+            value={stats?.median7d ? <Monetary value={stats.median7d} /> : i18n.t("market.noSales")}
             hint={stats ? `${stats.volume7d} sold` : ""}
           />
           <Stat
             label={i18n.t("market.median30d")}
-            value={stats?.median30d ? <Monetary value={stats.median30d} /> : "No sales"}
+            value={stats?.median30d ? <Monetary value={stats.median30d} /> : i18n.t("market.noSales")}
             hint={stats ? `${stats.volume30d} sold` : ""}
           />
           <Stat
             label={i18n.t("market.bestBuyOrder")}
-            value={stats?.bestBid ? <Monetary value={stats.bestBid} /> : "No bids"}
+            value={stats?.bestBid ? <Monetary value={stats.bestBid} /> : i18n.t("market.noBids")}
             accent="text-accent-gold"
           />
           <Stat
@@ -331,7 +331,7 @@ const ItemPage: React.FC = () => {
                     onClick={() => cancelOrder(o._id)}
                     className="px-2 py-1 rounded border border-line text-xs text-ink-muted hover:text-red-400 hover:border-red-400/50"
                   >
-                    Cancel
+                    {i18n.t("collections.cancel")}
                   </button>
                 </div>
               ))
@@ -371,7 +371,7 @@ const ItemPage: React.FC = () => {
                 onClick={() => setOpenOrderModal(true)}
                 className="px-4 h-10 rounded-md border border-accent-gold/50 text-accent-gold text-sm font-semibold hover:bg-accent-gold/10"
               >
-                Place a buy order instead
+                {i18n.t("market.placeABuyOrder")}
               </button>
             </div>
           )}

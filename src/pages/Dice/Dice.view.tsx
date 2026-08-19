@@ -85,11 +85,11 @@ const DiceView: React.FC<DiceViewProps> = ({
 
           {mode === "manual" ? (
             <GameButton onClick={roll} disabled={rolling}>
-              {isLogged ? "Roll Dice" : "Sign in to play"}
+              {isLogged ? i18n.t("dice.rollDice") : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           ) : (
             <GameButton onClick={autoRunning ? stopAuto : startAuto} variant={autoRunning ? "danger" : "primary"}>
-              {autoRunning ? `Stop (${autoLeft} left)` : isLogged ? `Start ${autoCount} Bets` : "Sign in to play"}
+              {autoRunning ? i18n.t("common.stopAuto", { left: autoLeft }) : isLogged ? i18n.t("common.startBets", { count: autoCount }) : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           )}
         </>

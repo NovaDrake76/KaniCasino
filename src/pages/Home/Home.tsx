@@ -166,19 +166,19 @@ const Home = () => {
         </Carousel>
         {/* the skeleton reserves the row while loading so the sections below do not jump */}
         {mostOpenedLoading ? (
-          <CaseListing name="Most Opened Cases" loading cases={[]} />
+          <CaseListing name={i18n.t("home.mostOpenedCases")} loading cases={[]} />
         ) : (
           mostOpened.length > 0 && (
             <CaseListing
-              name="Most Opened Cases"
-              description="What everyone is opening right now."
+              name={i18n.t("home.mostOpenedCases")}
+              description={i18n.t("home.whatEveryoneIsOpening")}
               cases={mostOpened}
               eager
             />
           )
         )}
 
-        <GameListing name="Our Games" />
+        <GameListing name={i18n.t("home.ourGames")} />
 
         <Leaderboard aside={<DiscordWidget />} />
 

@@ -55,9 +55,9 @@ const ReferralTable = ({ referrals, milestoneLevel }: { referrals: ReferralRow[]
               {r.milestonePaid && (
                 <span
                   className="ml-2 text-xs px-1.5 py-0.5 rounded bg-accent-gold/15 text-accent-gold"
-                  title={`Reached level ${milestoneLevel}, milestone paid`}
+                  title={i18n.t("affiliates.reachedLevel", { level: milestoneLevel })}
                 >
-                  paid
+                  {i18n.t("affiliates.paid")}
                 </span>
               )}
             </td>
@@ -153,7 +153,7 @@ const AffiliatesView: React.FC<Props> = ({
             )}
             <p className="text-xs text-ink-muted">
               {data.referralCode
-                ? "Share it anywhere. The code never changes, so old links keep working."
+                ? i18n.t("affiliates.shareItAnywhereThe")
                 : "3-16 letters or numbers. Choose well, it cannot be changed later."}
             </p>
           </div>
@@ -176,7 +176,7 @@ const AffiliatesView: React.FC<Props> = ({
           <h2 className="text-ink font-semibold mb-3">{i18n.t("affiliates.yourReferrals")}</h2>
           {data.referrals.length === 0 ? (
             <p className="text-ink-muted text-sm py-6 text-center">
-              No one yet. Share your link and both of you get paid.
+              {i18n.t("affiliates.noOneYetShare")}
             </p>
           ) : (
             <ReferralTable referrals={data.referrals} milestoneLevel={data.milestoneLevel} />

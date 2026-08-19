@@ -3,6 +3,7 @@ import { RiDoubleQuotesL } from "react-icons/ri";
 import { putFixDescription } from "../../services/users/UserServices";
 import { useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
+import i18n from "../../i18n";
 
 
 interface IfixedItem {
@@ -52,7 +53,7 @@ const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) =>
                         setIsEditing(false);
                     }}
                 >
-                    Save
+                    {i18n.t("affiliates.save")}
                 </button>
             </div>
         );

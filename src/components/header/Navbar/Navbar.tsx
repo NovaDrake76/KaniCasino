@@ -145,7 +145,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
                 />
                 <div className="hidden md:flex flex-col justify-center">
                   <div className="font-normal text-xl text-white">
-                    KaniCasino
+                    {i18n.t("nav.kanicasino")}
                   </div>
 
                   <div className="absolute">
@@ -155,7 +155,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
                         : "opacity-100 mt-10"
                         }`}
                     >
-                      REIMU FUMO ᗜ˰ᗜ
+                      {i18n.t("nav.reimuFumo")}
                     </div>
                   </div>
                 </div>

@@ -77,7 +77,7 @@ const PriceChart: React.FC<Props> = ({ points, floor, height = 220, loading }) =
         className="w-full rounded-lg bg-surface-nav border border-line flex items-center justify-center text-sm text-ink-muted"
         style={{ height: H }}
       >
-        No sales recorded in this period yet.
+        {i18n.t("common.noSalesRecordedIn")}
       </div>
     );
   }
@@ -137,7 +137,7 @@ const PriceChart: React.FC<Props> = ({ points, floor, height = 220, loading }) =
               opacity="0.7"
             />
             <text x={W - PAD.right} y={y(floor) - 4} textAnchor="end" fontSize="9" fill="#FFCC00">
-              house floor
+              {i18n.t("common.houseFloor")}
             </text>
           </g>
         )}

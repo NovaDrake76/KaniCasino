@@ -104,7 +104,7 @@ const Slots = () => {
             }, 3000);
         } catch (e: any) {
             console.error(e.response?.data.message || "Error spinning slots");
-            toast.error(e.response?.data.message || "Error spinning slots");
+            toast.error(e.response?.data.message || i18n.t("slot.errorSpinningSlots"));
             setIsSpinning(false);
         }
     };
@@ -185,7 +185,7 @@ const Slots = () => {
                                 boxShadow: "inset 0px 0px 14px 1px #000",
                             }}
                         >
-                            Spin
+                            {i18n.t("gift.spin")}
                         </button>
                         {handleChangeBet("add")}
                     </div>

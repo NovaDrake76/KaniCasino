@@ -56,7 +56,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
       toast.success(res.message, { theme: "dark" });
       setRefresh && setRefresh((prev) => !prev);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Could not sell item", { theme: "dark" });
+      toast.error(error?.response?.data?.message || i18n.t("common.couldNotSellItem"), { theme: "dark" });
       setSelling(false);
     }
   };

@@ -61,7 +61,7 @@ const ItemCopiesModal: React.FC<Props> = ({ userId, item, isOwner, open, setOpen
       setPage(nextPage);
       await load(nextPage);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Could not sell item", { theme: "dark" });
+      toast.error(error?.response?.data?.message || i18n.t("common.couldNotSellItem"), { theme: "dark" });
     }
     setSellingId(null);
   };

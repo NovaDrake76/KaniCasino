@@ -69,7 +69,7 @@ const MarketItem: React.FC<Props> = ({ item }) => {
             <span className="text-xs text-ink-faint">{i18n.t("market.noListings")}</span>
           )}
           <span className="text-[10px] text-ink-faint shrink-0 group-hover:text-ink-muted">
-            {listed ? "View" : "Place bid"}
+            {listed ? "View" : i18n.t("market.placeBid")}
           </span>
         </div>
       </div>

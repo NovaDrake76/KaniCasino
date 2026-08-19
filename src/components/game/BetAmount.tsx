@@ -25,7 +25,7 @@ const BetAmount: React.FC<BetAmountProps> = ({
   onMax,
   betValue,
   disabled,
-  label = "Bet Amount",
+  label,
   hint,
 }) => {
   const steps = [
@@ -37,7 +37,7 @@ const BetAmount: React.FC<BetAmountProps> = ({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
-        <span>{label}</span>
+        <span>{label || i18n.t("common.betAmount")}</span>
         <span><Monetary value={betValue} /></span>
       </div>
       <div className="flex">
