@@ -11,8 +11,9 @@ import fr from "./locales/fr.json";
 import de from "./locales/de.json";
 import italian from "./locales/it.json";
 import vi from "./locales/vi.json";
+import id from "./locales/id.json";
 
-const locales: Record<string, unknown> = { en, zh, ja, ko, es, pt, fr, de, it: italian, vi };
+const locales: Record<string, unknown> = { en, zh, ja, ko, es, pt, fr, de, it: italian, vi, id };
 
 const flatten = (node: unknown, prefix = ""): Record<string, string> => {
   const out: Record<string, string> = {};

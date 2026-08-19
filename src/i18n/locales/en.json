@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "Yes, you can upgrade items by selecting them and choosing a target item with a higher rarity. The success rate depends on the rarity of the items."
   },
   "hilo": {
-    "aceBeing": "Ace being",
+    "aceIsLowest": "Ace being the lowest",
     "bustedVerifyRoll": "Busted! Verify roll",
     "higherOrEqual": "Higher or Equal",
     "hilo": "HiLo",
-    "kingBeing": "King being",
+    "kingIsHighest": "King being the highest",
     "lowerOrEqual": "Lower or Equal",
     "makeAPrediction": "Make a prediction"
   },

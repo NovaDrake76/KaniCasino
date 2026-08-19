@@ -72,6 +72,12 @@ const flags: Record<string, JSX.Element> = {
       <rect x="16" width="8" height="16" fill="#CD212A" />
     </>
   ),
+  id: (
+    <>
+      <rect width="24" height="16" fill="#fff" />
+      <rect width="24" height="8" fill="#CE1126" />
+    </>
+  ),
   vi: (
     <>
       <rect width="24" height="16" fill="#DA251D" />

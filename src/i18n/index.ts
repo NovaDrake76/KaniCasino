@@ -13,10 +13,11 @@ import fr from "./locales/fr.json";
 import de from "./locales/de.json";
 import it from "./locales/it.json";
 import vi from "./locales/vi.json";
+import id from "./locales/id.json";
 
 export const LANGUAGE_KEY = "kani.language";
 
-const resources = { en, zh, ja, ko, es, pt, fr, de, it, vi };
+const resources = { en, zh, ja, ko, es, pt, fr, de, it, vi, id };
 
 i18n
   .use(LanguageDetector)
