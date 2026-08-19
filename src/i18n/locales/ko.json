@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "네. 아이템을 선택하고 더 높은 등급의 목표 아이템을 고르면 업그레이드할 수 있습니다. 성공률은 아이템 등급에 따라 달라집니다."
   },
   "hilo": {
-    "aceBeing": "에이스는",
+    "aceIsLowest": "에이스가 가장 낮음",
     "bustedVerifyRoll": "실패! 롤 검증",
     "higherOrEqual": "크거나 같음",
     "hilo": "HiLo",
-    "kingBeing": "킹은",
+    "kingIsHighest": "킹이 가장 높음",
     "lowerOrEqual": "작거나 같음",
     "makeAPrediction": "예측해 보세요"
   },

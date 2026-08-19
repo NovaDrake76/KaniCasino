@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "Ja, du kannst Gegenstände verbessern, indem du sie auswählst und ein Ziel mit höherer Seltenheit wählst. Die Erfolgschance hängt von der Seltenheit ab."
   },
   "hilo": {
-    "aceBeing": "Ass ist",
+    "aceIsLowest": "Ass ist die niedrigste",
     "bustedVerifyRoll": "Daneben! Roll prüfen",
     "higherOrEqual": "Höher oder gleich",
     "hilo": "HiLo",
-    "kingBeing": "König ist",
+    "kingIsHighest": "König ist die höchste",
     "lowerOrEqual": "Niedriger oder gleich",
     "makeAPrediction": "Triff eine Vorhersage"
   },

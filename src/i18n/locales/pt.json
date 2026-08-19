@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "Sim, você pode melhorar itens selecionando-os e escolhendo um item alvo de raridade maior. A chance de sucesso depende da raridade dos itens."
   },
   "hilo": {
-    "aceBeing": "Ás sendo",
+    "aceIsLowest": "Ás é a mais baixa",
     "bustedVerifyRoll": "Errou! Verificar roll",
     "higherOrEqual": "Maior ou igual",
     "hilo": "HiLo",
-    "kingBeing": "Rei sendo",
+    "kingIsHighest": "Rei é a mais alta",
     "lowerOrEqual": "Menor ou igual",
     "makeAPrediction": "Faça um palpite"
   },

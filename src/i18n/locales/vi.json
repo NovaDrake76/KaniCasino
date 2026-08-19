@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "Có. Bạn chọn vật phẩm rồi chọn một vật phẩm mục tiêu có độ hiếm cao hơn. Tỉ lệ thành công phụ thuộc vào độ hiếm của các vật phẩm."
   },
   "hilo": {
-    "aceBeing": "Át là",
+    "aceIsLowest": "A là thấp nhất",
     "bustedVerifyRoll": "Trượt rồi! Kiểm chứng roll",
     "higherOrEqual": "Lớn hơn hoặc bằng",
     "hilo": "HiLo",
-    "kingBeing": "K là",
+    "kingIsHighest": "K là cao nhất",
     "lowerOrEqual": "Nhỏ hơn hoặc bằng",
     "makeAPrediction": "Hãy đưa ra dự đoán"
   },

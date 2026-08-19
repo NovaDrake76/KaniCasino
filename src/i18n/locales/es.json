@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "Sí, puedes mejorar objetos seleccionándolos y eligiendo un objetivo de mayor rareza. La probabilidad de éxito depende de la rareza de los objetos."
   },
   "hilo": {
-    "aceBeing": "As siendo",
+    "aceIsLowest": "El as es la más baja",
     "bustedVerifyRoll": "¡Fallaste! Verificar tirada",
     "higherOrEqual": "Mayor o igual",
     "hilo": "HiLo",
-    "kingBeing": "Rey siendo",
+    "kingIsHighest": "El rey es la más alta",
     "lowerOrEqual": "Menor o igual",
     "makeAPrediction": "Haz una predicción"
   },

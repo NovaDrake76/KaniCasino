@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "できます。アイテムを選び、よりレアなアイテムを目標に指定してください。成功率はアイテムのレアリティによって決まります。"
   },
   "hilo": {
-    "aceBeing": "エースは",
+    "aceIsLowest": "エースが最低",
     "bustedVerifyRoll": "はずれ！ ロールを検証",
     "higherOrEqual": "以上",
     "hilo": "HiLo",
-    "kingBeing": "キングは",
+    "kingIsHighest": "キングが最高",
     "lowerOrEqual": "以下",
     "makeAPrediction": "予想してください"
   },
