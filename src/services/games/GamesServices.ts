@@ -1,8 +1,9 @@
 import api from '../api';
 
-export async function openBox(id: string, quantity: number) {
+export async function openBox(id: string, quantity: number, grantId?: string) {
     const response = await api.post(`/games/openCase/${id}`, {
-        quantity: quantity || 1
+        quantity: quantity || 1,
+        ...(grantId ? { grantId } : {})
     });
     return response.data;
 }

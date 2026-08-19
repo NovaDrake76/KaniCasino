@@ -8,9 +8,12 @@ interface Roulette {
   spin: boolean;
   className?: string;
   direction?: "horizontal" | "vertical";
+  // optional per-item badge. the daily gift needs the prize size on the face of each
+  // slot; cases and battles pass nothing and render exactly as before.
+  overlay?: (item: BasicItem) => React.ReactNode;
 }
 
-const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, direction = "horizontal" }) => {
+const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, direction = "horizontal", overlay }) => {
   const [rouletteItems, setRouletteItems] = useState<BasicItem[]>([]);
   const [translateValue, setTranslateValue] = useState<string>("-6180px");
   const rouletteRef = useRef<HTMLDivElement | null>(null);
@@ -90,6 +93,7 @@ const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, dire
               alt={item && item.name}
               className={`object-cover w-full h-full`}
             />
+            {overlay && overlay(item)}
           </div>
         ))}
         <style>{`

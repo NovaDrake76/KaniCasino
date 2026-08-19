@@ -11,10 +11,12 @@ import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { BsCoin } from "react-icons/bs";
 import { SlPlane } from "react-icons/sl";
 import { GiUpgrade, GiCrossedSwords } from 'react-icons/gi';
-import { TbCat, TbGridDots } from "react-icons/tb";
+import { TbCat } from "react-icons/tb";
 import { toast } from "react-toastify";
-import { FaBars } from 'react-icons/fa';
+import { FaBars, FaGift } from 'react-icons/fa';
 import RightContent from "./RightContent";
+import GiftTag from "../GiftTag";
+import useGiftReady from "../useGiftReady";
 
 interface Navbar {
   openNotifications: boolean;
@@ -28,6 +30,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
   const [loading, setLoading] = useState<boolean>(true);
 
   const { isLogged, toggleLogin, toogleUserData, userData, openUserFlow, toogleUserFlow } = useContext(UserContext);
+  const giftReady = useGiftReady();
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -64,7 +67,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
   };
 
 
-  const links = [
+  const links: { name: string; path: string; icon: JSX.Element; badge?: JSX.Element }[] = [
     {
       name: "Market",
       path: "/marketplace",
@@ -91,9 +94,10 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       icon: <TbCat className="text-2xl" />,
     },
     {
-      name: "Plinko",
-      path: "/plinko",
-      icon: <TbGridDots className="text-2xl" />,
+      name: "Daily Gift",
+      path: "/gift",
+      icon: <FaGift className="text-2xl" />,
+      badge: giftReady ? <GiftTag /> : undefined,
     },
     {
       name: "Case Battles",
@@ -169,6 +173,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
                   <span className="text-white hover:text-gray-200 transition-all ">
                     {link.name}
                   </span>
+                  {link.badge}
                 </Link>
                 ))}
               </div>
