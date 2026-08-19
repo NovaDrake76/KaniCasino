@@ -54,7 +54,25 @@ module.exports = (io) => {
         return res.status(400).json({ message: "You need to open at least 1 case" });
       }
 
-      const cost = caseData.price * quantityToOpen;
+      // a daily-gift grant pays for openings of one specific case and nothing else, so a
+      // cheap win cannot be spent on the dearest case in the same category
+      const grantId = req.body.grantId;
+      let grant = null;
+      if (grantId) {
+        grant = (user.freeOpens || []).find((g) => g.grantId === grantId);
+        if (!grant) return res.status(404).json({ message: "Gift not found" });
+        if (String(grant.caseId) !== String(caseData._id)) {
+          return res.status(400).json({ message: "That gift is for a different case" });
+        }
+        if (new Date(grant.expiresAt) <= new Date()) {
+          return res.status(400).json({ message: "That gift has expired" });
+        }
+        if (grant.remaining < quantityToOpen) {
+          return res.status(400).json({ message: "That gift has fewer openings left" });
+        }
+      }
+
+      const cost = grant ? 0 : caseData.price * quantityToOpen;
 
       // reserve the nonces atomically up front (never rolled back), then derive each
       // item from the case's committed range table (provably fair, one draw per open)
@@ -89,26 +107,42 @@ module.exports = (io) => {
       // charge the cost, add the items and write the ledger row together: a failed row
       // rolls the charge back, so the player is never charged without a record
       const updatedUser = await runAtomic(async (session) => {
-        const u = await User.findOneAndUpdate(
-          { _id: user._id, walletBalance: { $gte: cost } },
-          {
-            $inc: { walletBalance: -cost, xp: cost * 5 },
-            $push: { inventory: { $each: winningItems.map(toInventoryEntry) } },
-          },
-          { new: true, session }
-        );
+        const filter = { _id: user._id, walletBalance: { $gte: cost } };
+        const update = {
+          $inc: { walletBalance: -cost, xp: cost * 5 },
+          $push: { inventory: { $each: winningItems.map(toInventoryEntry) } },
+        };
+        const options = { new: true, session };
+
+        // spend the openings in the same update that hands over the items, and require
+        // the count to still cover it, so two concurrent opens cannot overdraw one grant
+        if (grant) {
+          filter.freeOpens = {
+            $elemMatch: { grantId: grant.grantId, remaining: { $gte: quantityToOpen } },
+          };
+          update.$inc["freeOpens.$[g].remaining"] = -quantityToOpen;
+          options.arrayFilters = [
+            { "g.grantId": grant.grantId, "g.remaining": { $gte: quantityToOpen } },
+          ];
+        }
+
+        const u = await User.findOneAndUpdate(filter, update, options);
         if (!u) return null;
-        await recordTransaction(
-          {
-            userId: user._id,
-            type: TX.CASE_OPEN,
-            direction: "debit",
-            amount: cost,
-            balanceAfter: u.walletBalance,
-            meta: { caseId: caseData._id, caseTitle: caseData.title, quantity: quantityToOpen },
-          },
-          session
-        );
+        // a gift open moves no coins, so it gets no ledger row: the ledger records
+        // balance changes and a zero one would only be noise
+        if (cost > 0) {
+          await recordTransaction(
+            {
+              userId: user._id,
+              type: TX.CASE_OPEN,
+              direction: "debit",
+              amount: cost,
+              balanceAfter: u.walletBalance,
+              meta: { caseId: caseData._id, caseTitle: caseData.title, quantity: quantityToOpen },
+            },
+            session
+          );
+        }
         return u;
       });
 

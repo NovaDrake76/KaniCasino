@@ -133,6 +133,26 @@ const UserSchema = new mongoose.Schema({
   emailSuppressedReason: String,
   emailSuppressedAt: Date,
 
+  // the daily gift. one spin every 24h; the streak tilts the odds toward the rarer
+  // slots and resets the moment a calendar day is missed.
+  giftNextAt: Date,
+  giftLastAt: Date,
+  giftStreak: {
+    type: Number,
+    default: 0,
+  },
+  // free openings of one specific case. the grant is per case, never per category, so a
+  // cheap win cannot be spent on the dearest thing in the same theme.
+  freeOpens: [
+    {
+      grantId: { type: String, default: () => uuid.v4() },
+      caseId: { type: mongoose.Schema.Types.ObjectId, ref: "Case", required: true },
+      remaining: { type: Number, required: true, min: 0 },
+      wonAt: { type: Date, default: Date.now },
+      expiresAt: { type: Date, required: true },
+    },
+  ],
+
 });
 
 UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });

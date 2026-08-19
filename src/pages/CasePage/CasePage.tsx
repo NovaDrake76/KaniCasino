@@ -13,6 +13,10 @@ import { BasicItem } from "../../components/Types";
 import QuantityButton from "../../components/QuantityButton";
 import RouletteContainer from "./RoulleteContainer";
 import Monetary from '../../components/Monetary';
+import { FaGift } from "react-icons/fa";
+import { getGrants } from "../../services/gift/GiftService";
+import type { GiftGrant } from "../../services/gift/GiftService";
+import FreeOpenings from "./FreeOpenings";
 import { applyMeta } from "../../seo/meta";
 import { caseMeta } from "../../seo/caseMeta";
 
@@ -26,6 +30,7 @@ const CasePage = () => {
   const [animationAux2, setAnimationAux2] = useState<boolean>(false);
   const [loadingButton, setLoadingButton] = useState<boolean>(false);
   const [quantity, setQuantity] = useState<number>(1);
+  const [grant, setGrant] = useState<GiftGrant | null>(null);
 
   const { userData, toogleUserFlow, toogleUserData } = useContext(UserContext);
   const [sellingAll, setSellingAll] = useState<boolean>(false);
@@ -47,11 +52,22 @@ const CasePage = () => {
       });
   };
 
+  // a daily-gift grant pays for this case, so the page has to know about it before the
+  // open button decides whether it is charging anything
+  const getGrant = () => {
+    if (!userData?.id) return setGrant(null);
+    getGrants(id)
+      .then((gs) => setGrant(gs[0] || null))
+      .catch(() => setGrant(null));
+  };
+
   useEffect(() => {
     getCaseInfo();
     //scroll to top
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(getGrant, [userData?.id, id]);
 
   // prerender bakes the real name into the html; PageMeta's generic /case/ entry would
   // overwrite it on hydration, so put it back once the case itself has loaded
@@ -106,6 +122,9 @@ const CasePage = () => {
 
   const openedSellTotal = openedItems.reduce((s, i) => s + (i.sellValue || 0), 0);
 
+  // the gift covers the open only while it has enough left for the chosen quantity
+  const freeNow = !!grant && grant.remaining >= quantity;
+
   const openCase = async () => {
 
     if (userData == null) {
@@ -116,8 +135,9 @@ const CasePage = () => {
     setLoadingButton(true);
 
     try {
-      const response = await openBox(id, quantity);
+      const response = await openBox(id, quantity, freeNow ? grant?.grantId : undefined);
       setOpenedItems(response.items);
+      if (freeNow) getGrant();
     } catch (error: any) {
       console.log(error);
       setLoadingButton(false);
@@ -145,6 +165,12 @@ const CasePage = () => {
           {loading ? <Skeleton width={200} height={30} /> : data && data.title}
         </h1>
 
+        {grant && !started && (
+          <div className="mb-2">
+            <FreeOpenings grant={grant} />
+          </div>
+        )}
+
         <RouletteContainer started={started} showPrize={showPrize} loading={loading} data={data} openedItems={openedItems} animationAux={animationAux} animationAux2={animationAux2} quantity={quantity} />
         <div
           className={`flex flex-col md:flex-row justify-center items-center gap-4 w-68 mt-8  ${started ? "opacity-0" : "opacity-100"} transition-all`}
@@ -155,14 +181,19 @@ const CasePage = () => {
           ) : (
             <div className="w-60 ml-0 md:ml-20">
               <MainButton
-                text={userData == null ? "Sign in to play" : <div className="flex items-center justify-center text-base">
+                text={userData == null ? "Sign in to play" : freeNow ? (
+                  <div className="flex items-center justify-center gap-1 text-base">
+                    <FaGift />
+                    <span>Open free{quantity > 1 ? ` x${quantity}` : ""}</span>
+                  </div>
+                ) : <div className="flex items-center justify-center text-base">
                 <span className="mr-1">Open case - </span>{<Monetary value={data.price * quantity}/>}
                 </div>}
                 onClick={openCase}
                 loading={loadingButton}
                 disabled={
                   loadingButton ||
-                  (userData && data.price > userData.walletBalance)
+                  (!freeNow && userData && data.price > userData.walletBalance)
                 }
               />
             </div>

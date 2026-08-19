@@ -2,13 +2,15 @@ import { BsCoin } from "react-icons/bs";
 import { GiUpgrade, GiCrossedSwords } from "react-icons/gi";
 import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { SlPlane } from "react-icons/sl";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaGift } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { TbCat, TbGridDots } from "react-icons/tb";
+import { TbCat } from "react-icons/tb";
 import ClaimBonus from "../header/ClaimBonus";
 import { useContext } from "react";
 import UserContext from "../../UserContext";
 import Monetary from "../Monetary";
+import GiftTag from "./GiftTag";
+import useGiftReady from "./useGiftReady";
 
 interface Sidebar {
     closeSidebar: () => void;
@@ -16,9 +18,10 @@ interface Sidebar {
 
 const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
     const { userData } = useContext(UserContext);
+    const giftReady = useGiftReady();
 
 
-    const links = [
+    const links: { name: string; path: string; icon: JSX.Element; badge?: JSX.Element }[] = [
         {
             name: "Home",
             path: "/",
@@ -50,9 +53,10 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             icon: <TbCat className="text-2xl" />,
         },
         {
-            name: "Plinko",
-            path: "/plinko",
-            icon: <TbGridDots className="text-2xl" />,
+            name: "Daily Gift",
+            path: "/gift",
+            icon: <FaGift className="text-2xl" />,
+            badge: giftReady ? <GiftTag /> : undefined,
         },
         {
             name: "Case Battles",
@@ -104,6 +108,7 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                                 <div className="flex items-center gap-4 p-2 text-white">
                                     {link.icon}
                                     <p className="">{link.name}</p>
+                                    {link.badge}
                                 </div>
                             </Link>
                         ))}
