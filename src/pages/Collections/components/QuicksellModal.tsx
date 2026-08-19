@@ -4,6 +4,7 @@ import MainButton from "../../../components/MainButton";
 import Monetary from "../../../components/Monetary";
 import { rarityColor } from "../../../utils/rarity";
 import { QuicksellPreview } from "../../../services/collections/CollectionService";
+import i18n from "../../../i18n";
 
 interface Props {
   open: boolean;
@@ -23,15 +24,15 @@ const QuicksellModal: React.FC<Props> = ({ open, setOpen, preview, committing, o
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
           <FiAlertTriangle className="text-2xl text-accent-amber" />
-          <h3 className="text-lg font-semibold text-ink">Sell duplicates?</h3>
+          <h3 className="text-lg font-semibold text-ink">{i18n.t("collections.sellDuplicates")}</h3>
         </div>
         <p className="text-sm text-ink-muted">
           Keeps <span className="text-ink font-medium">1 of each</span> item and sells the rest.{" "}
-          <span className="text-red-400">This cannot be undone.</span>
+          <span className="text-red-400">{i18n.t("collections.thisCannotBeUndone")}</span>
         </p>
 
         {totalItems === 0 ? (
-          <p className="text-ink-muted py-6 text-center">No duplicates to sell.</p>
+          <p className="text-ink-muted py-6 text-center">{i18n.t("collections.noDuplicatesToSell")}</p>
         ) : (
           <div className="flex flex-col gap-2 max-h-[50vh] overflow-y-auto pr-1">
             {lines.map((l) => {
@@ -77,7 +78,7 @@ const QuicksellModal: React.FC<Props> = ({ open, setOpen, preview, committing, o
 
         <div className="flex items-center gap-3">
           <MainButton
-            text="Cancel"
+            text={i18n.t("collections.cancel")}
             onClick={() => setOpen(false)}
             type="dark"
             disabled={committing}

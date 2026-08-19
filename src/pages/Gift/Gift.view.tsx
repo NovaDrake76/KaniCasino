@@ -5,6 +5,7 @@ import Roulette from "../../components/Roulette";
 import GameButton from "../../components/game/GameButton";
 import { boost, countdown, kp } from "./Gift.services";
 import type { GiftViewProps, TopSlotRung } from "./Gift.types";
+import i18n from "../../i18n";
 
 const useTick = () => {
   const [, set] = useState(0);
@@ -126,7 +127,7 @@ const GiftView = ({
       </div>
     );
   }
-  if (!state) return <span className="p-8 text-ink-muted">Could not load your daily gift.</span>;
+  if (!state) return <span className="p-8 text-ink-muted">{i18n.t("gift.couldNotLoadYour")}</span>;
 
   const pips = Array.from({ length: state.streakMax }, (_, i) => i < state.streak);
   const atBestStreak = state.streak >= state.streakMax;
@@ -150,15 +151,15 @@ const GiftView = ({
         .gift-flare { animation: giftFlare 900ms ease-out both; }
       `}</style>
 
-      <Title title="Daily Gift" />
+      <Title title={i18n.t("nav.dailyGift")} />
 
       <div className="mb-8 grid w-full grid-cols-1 gap-5 lg:grid-cols-[380px_minmax(0,1fr)]">
         <div className="notched flex flex-col gap-4 bg-surface p-6">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">Streak</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.streak")}</span>
             <span className="text-[11px] text-ink-faint">
               {atBestStreak ? (
-                <b className="text-accent-gold">full streak</b>
+                <b className="text-accent-gold">{i18n.t("gift.fullStreak")}</b>
               ) : (
                 <>
                   day <b className="text-ink-soft">{state.streak}</b> of {state.streakMax}
@@ -185,7 +186,7 @@ const GiftView = ({
               >
                 {boost(state.rareBoost)}
               </span>
-              <span className="text-[11px] uppercase tracking-[0.14em] text-ink-faint">now</span>
+              <span className="text-[11px] uppercase tracking-[0.14em] text-ink-faint">{i18n.t("gift.now")}</span>
             </div>
             {!atBestStreak && (
               <>
@@ -205,7 +206,7 @@ const GiftView = ({
 
         <div className="notched flex flex-col gap-3 bg-surface p-6">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">Top slot</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.topSlot")}</span>
             <span className="text-[11px] text-ink-faint">
               your level <b className="text-ink-soft">{state.level}</b>
             </span>
@@ -229,7 +230,7 @@ const GiftView = ({
 
       {!state.canSpin && stage === "picking" && (
         <div className="notched mb-8 flex w-full flex-col items-center gap-2 bg-surface p-8">
-          <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">Next gift in</span>
+          <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.nextGiftIn")}</span>
           <span className="font-mono text-3xl font-bold text-accent-gold">
             {countdown(state.nextAt) || "any moment"}
           </span>
@@ -258,7 +259,7 @@ const GiftView = ({
                     <span className="text-xs text-ink-faint">{c.eligible} cases in the pool</span>
                   </div>
                   <div className="mt-auto">
-                    <GameButton onClick={() => onPick(c.category)}>Spin</GameButton>
+                    <GameButton onClick={() => onPick(c.category)}>{i18n.t("gift.spin")}</GameButton>
                   </div>
                 </div>
               </div>
@@ -324,7 +325,7 @@ const GiftView = ({
                 >
                   <div className="notched z-30 flex h-[184px] w-[184px] flex-col items-center justify-center gap-1 bg-[#151225] px-3 text-center">
                     <span className="text-xl font-bold text-[#e1dde9]">{result.won.title}</span>
-                    <span className="text-[11px] uppercase tracking-[0.16em] text-ink-muted">the reel gave</span>
+                    <span className="text-[11px] uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.theReelGave")}</span>
                     <span className="text-3xl font-extrabold leading-none">{result.won.opens}x</span>
                     <span
                       className={`text-sm font-bold ${result.topSlot.hit ? "text-accent-gold" : "text-ink-muted"}`}
@@ -352,7 +353,7 @@ const GiftView = ({
                   <span className="relative text-6xl font-extrabold leading-none text-accent-gold">
                     {kp(pumped)}
                   </span>
-                  <span className="relative text-xl font-bold">free openings</span>
+                  <span className="relative text-xl font-bold">{i18n.t("gift.freeOpenings")}</span>
                 </div>
                 <span className="text-[13px] text-ink-muted">
                   Expires in <b className="text-ink-soft">{countdown(result.expiresAt) || "any moment"}</b>
@@ -365,7 +366,7 @@ const GiftView = ({
               </div>
 
               <div className="w-full max-w-xs">
-                <GameButton onClick={() => onOpen(result.won.caseId)}>Open them now</GameButton>
+                <GameButton onClick={() => onOpen(result.won.caseId)}>{i18n.t("gift.openThemNow")}</GameButton>
               </div>
             </div>
           )}

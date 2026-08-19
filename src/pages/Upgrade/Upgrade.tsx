@@ -4,6 +4,7 @@ import Title from "../../components/Title";
 import { Tooltip } from "react-tooltip";
 import Items from "./Items";
 import TopContent from "./TopContent";
+import i18n from "../../i18n";
 
 interface selectedItems {
     identifier: string;
@@ -48,7 +49,7 @@ const Upgrade: React.FC = () => {
                     toggleReload={toggleReload} setToggleReload={setToggleReload} setSelectedCase={setSelectedCase}
                     spinning={spinning} setSpinning={setSpinning} />
                 <div className="flex justify-center">
-                    <Title title="Upgrade Items" />
+                    <Title title={i18n.t("help.upgradeItems")} />
                 </div>
 
                 <Items selectedItems={selectedItems} setSelectedItems={setSelectedItems}

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import CrashGraph from "./CrashGraph";
 import { Key } from "react";
+import i18n from "../../i18n";
 
 interface GameHistory {
     crashPoint: number | null;
@@ -69,7 +70,7 @@ const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, gameStar
                 </div>
             </div>
             <div className="flex w-screen lg:w-[800px] p-4 flex-col">
-                <h3 className="mb-2 text-lg font-semibold">Game History:</h3>
+                <h3 className="mb-2 text-lg font-semibold">{i18n.t("coin.gameHistory")}</h3>
                 <div className="flex items-center gap-2 justify-end w-full overflow-hidden h-[24px]">
                     {history.map((e: { crashPoint: number | null }, i: Key) => (
                         <motion.div

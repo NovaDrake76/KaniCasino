@@ -11,6 +11,7 @@ import UserContext from "../../UserContext";
 import Monetary from "../Monetary";
 import GiftTag from "./GiftTag";
 import useGiftReady from "./useGiftReady";
+import i18n from "../../i18n";
 
 interface Sidebar {
     closeSidebar: () => void;
@@ -23,48 +24,48 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
 
     const links: { name: string; path: string; icon: JSX.Element; badge?: JSX.Element }[] = [
         {
-            name: "Home",
+            name: i18n.t("nav.home"),
             path: "/",
             icon: <FaHome className="text-2xl" />,
         },
         {
-            name: "Market",
+            name: i18n.t("nav.market"),
             path: "/marketplace",
             icon: <MdOutlineSell className="text-2xl" />,
         },
         {
-            name: "Coin Flip",
+            name: i18n.t("nav.coinFlip"),
             path: "/coinflip",
             icon: <BsCoin className="text-2xl" />,
         },
         {
-            name: "Crash",
+            name: i18n.t("nav.crash"),
             path: "/crash",
             icon: <SlPlane className="text-2xl" />,
         },
         {
-            name: "Upgrade",
+            name: i18n.t("nav.upgrade"),
             path: "/upgrade",
             icon: <GiUpgrade className="text-2xl" />,
         },
         {
-            name: "Slots",
+            name: i18n.t("nav.slots"),
             path: "/slot",
             icon: <TbCat className="text-2xl" />,
         },
         {
-            name: "Daily Gift",
+            name: i18n.t("nav.dailyGift"),
             path: "/gift",
             icon: <FaGift className="text-2xl" />,
             badge: giftReady ? <GiftTag /> : undefined,
         },
         {
-            name: "Case Battles",
+            name: i18n.t("nav.caseBattles"),
             path: "/battles",
             icon: <GiCrossedSwords className="text-2xl" />,
         },
         ...(userData?.isAdmin ? [{
-            name: "Backoffice",
+            name: i18n.t("nav.backoffice"),
             path: "/backoffice",
             icon: <MdOutlineAdminPanelSettings className="text-2xl" />,
         }] : [])
@@ -80,7 +81,7 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                         >
                             <img
                                 src="/images/logo.webp"
-                                alt="logo"
+                                alt={i18n.t("common.logo")}
                                 className="w-16 h-16 object-contain"
                             />
                             <div className="font-normal text-xl text-white">

@@ -5,6 +5,7 @@ import Title from '../../components/Title';
 import TopPlayer from '../../components/TopPlayer';
 import Player from '../../components/Player';
 import Skeleton from 'react-loading-skeleton';
+import i18n from "../../i18n";
 
 // `aside` sits beside the ranked table, below the podium, and drops under everything
 // once there is no room for it
@@ -27,7 +28,7 @@ const Leaderboard = ({ aside }: { aside?: React.ReactNode }) => {
 
     return (
         <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none  z-50 ">
-            <Title title="Leaderboard" />
+            <Title title={i18n.t("home.leaderboard")} />
 
             <div className="grid w-full max-w-[1620px] gap-8 px-4 lg:grid-cols-[340px_minmax(0,1fr)_340px]">
             <div className="flex flex-col items-center lg:col-start-2 lg:row-start-1">

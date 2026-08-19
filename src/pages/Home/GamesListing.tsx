@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import i18n from "../../i18n";
 
 interface GameListingProps {
   name: string;
@@ -9,61 +10,61 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
   const games = [
     {
       id: "1",
-      title: "Crash",
+      title: i18n.t("nav.crash"),
       image: "/images/crash/idle.gif",
       link: "/crash",
     },
     {
       id: "2",
-      title: "CoinFlip",
+      title: i18n.t("home.coinflip"),
       image: "/images/coinHeads.webp",
       link: "/coinflip",
     },
     {
       id: "3",
-      title: "Upgrade",
+      title: i18n.t("nav.upgrade"),
       image: "/images/upgrade.webp",
       link: "/upgrade",
     },
     {
       id: "4",
-      title: "Slot",
+      title: i18n.t("footer.slot"),
       image: "/images/slot/wild.webp",
       link: "/slot",
     },
     {
       id: "5",
-      title: "Case Battles",
+      title: i18n.t("nav.caseBattles"),
       image: "/images/boo.webp",
       link: "/battles",
     },
     {
       id: "6",
-      title: "Plinko",
+      title: i18n.t("nav.plinko"),
       image: "/images/plinko.svg",
       link: "/plinko",
     },
     {
       id: "7",
-      title: "Blackjack",
+      title: i18n.t("blackjack.blackjack"),
       image: "/images/blackjack.svg",
       link: "/blackjack",
     },
     {
       id: "8",
-      title: "Dice",
+      title: i18n.t("dice.dice"),
       image: "/images/dice.svg",
       link: "/dice",
     },
     {
       id: "9",
-      title: "Mines",
+      title: i18n.t("mines.mines"),
       image: "/images/mines.svg",
       link: "/mines",
     },
     {
       id: "10",
-      title: "HiLo",
+      title: i18n.t("hilo.hilo"),
       image: "/images/hilo.svg",
       link: "/hilo",
     },

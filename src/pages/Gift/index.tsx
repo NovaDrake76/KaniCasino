@@ -7,6 +7,7 @@ import { reelItems, wonItem } from "./Gift.services";
 import GiftView from "./Gift.view";
 import type { BasicItem } from "../../components/Types";
 import type { GiftCategory, GiftStage, GiftState, SpinResult } from "./Gift.types";
+import i18n from "../../i18n";
 
 // the reel animation the shared Roulette runs, so the prize lands with it rather than before
 const REEL_MS = 7100;
@@ -80,7 +81,7 @@ const Gift = () => {
   if (!userData?.id) {
     return (
       <div className="flex w-full justify-center p-16">
-        <span className="text-ink-muted">Log in to open your daily gift.</span>
+        <span className="text-ink-muted">{i18n.t("gift.logInToOpen")}</span>
       </div>
     );
   }

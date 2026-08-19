@@ -14,6 +14,7 @@ import {
   abandonAdWatch,
   AdRewardStatus,
 } from "../../services/rewards/AdRewardServices";
+import i18n from "../../i18n";
 
 interface IBonus {
   bonusDate: string;
@@ -144,7 +145,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
   return (
     <>
       {bonusAvailable ? (
-        <MainButton text="Claim Bonus" onClick={claimUserBonus} pulse disabled={loadingBonus} />
+        <MainButton text={i18n.t("bonus.claim")} onClick={claimUserBonus} pulse disabled={loadingBonus} />
       ) : adOffered ? (
         <MainButton
           onClick={beginAd}
@@ -170,7 +171,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
           <div className="flex flex-col items-center gap-4 p-6">
             <div className="w-full aspect-video bg-surface-nav rounded-md flex items-center justify-center relative overflow-hidden">
               <BiMoviePlay className="text-6xl text-ink-faint" />
-              <span className="absolute top-2 left-2 text-xs text-ink-muted uppercase">Test placeholder</span>
+              <span className="absolute top-2 left-2 text-xs text-ink-muted uppercase">{i18n.t("bonus.adPlaceholder")}</span>
               <div
                 className="absolute bottom-0 left-0 h-1 bg-accent-gold"
                 style={{

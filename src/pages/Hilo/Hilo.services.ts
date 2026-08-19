@@ -11,6 +11,7 @@ import {
 } from "../../services/games/GamesServices";
 import { MAX_BET, MIN_BET } from "./hiloCards";
 import { HiloGameState } from "./Hilo.types";
+import i18n from "../../i18n";
 
 const DEFAULT_BET = 10;
 const HISTORY_SIZE = 10;
@@ -66,7 +67,7 @@ export const useHiloServices = () => {
 
   const start = () => {
     if (userData == null) return toogleUserFlow(true);
-    if (userData.walletBalance < betValue) return toast.error("Insufficient funds", { theme: "dark" });
+    if (userData.walletBalance < betValue) return toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
     run(() => startHilo(betValue));
   };
   const guess = (direction: "hi" | "lo") => {

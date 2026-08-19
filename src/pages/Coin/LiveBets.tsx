@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import PlayerPreview from "../../components/PlayerPreview";
 import Avatar from "../../components/Avatar";
+import i18n from "../../i18n";
 
 interface GameHistory {
     gameState: any;
@@ -51,7 +52,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
             </div>
             <div className="flex border-t border-gray-700 flex-col ">
                 <div className="flex items-center justify-between py-4">
-                    <span className="font-bold text-sm">Total Bets</span>
+                    <span className="font-bold text-sm">{i18n.t("coin.totalBets")}</span>
                     <span className="font-bold text-sm">K₽{totalBets}</span>
                 </div>
                 {betsInfo && betsInfo.players && Object.keys(betsInfo.players).map(playerId => {

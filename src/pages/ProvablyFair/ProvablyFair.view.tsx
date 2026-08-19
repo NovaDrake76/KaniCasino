@@ -1,5 +1,6 @@
 import Title from "../../components/Title";
 import { ProvablyFairViewProps } from "./ProvablyFair.types";
+import i18n from "../../i18n";
 
 const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4 border-b border-[#2a2840] py-2">
@@ -29,7 +30,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
   doVerify,
 }) => (
   <div className="w-screen flex flex-col items-center py-8 gap-6 px-4">
-    <Title title="Provably Fair" />
+    <Title title={i18n.t("footer.provablyFair")} />
 
     <p className="text-[#84819a] text-sm max-w-[640px] text-center">
       Every case, upgrade, slot, plinko, blackjack, dice, mines and hilo roll is HMAC-SHA256 of your
@@ -42,7 +43,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
         value={rollIdInput}
         onChange={(e) => setRollIdInput(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && lookup()}
-        placeholder="Enter a roll id, e.g. R821872881"
+        placeholder={i18n.t("fair.enterARollId")}
         className="flex-1 bg-[#19172D] border border-gray-700 focus:border-indigo-500 outline-none rounded px-3 py-2 text-sm"
       />
       <button
@@ -75,10 +76,10 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
           </button>
         </div>
 
-        <Row label="Client seed" value={roll.clientSeed} />
-        <Row label="Server seed hash" value={roll.serverSeedHash} />
+        <Row label={i18n.t("fair.clientSeed")} value={roll.clientSeed} />
+        <Row label={i18n.t("fair.serverSeedHash")} value={roll.serverSeedHash} />
         <Row
-          label="Server seed"
+          label={i18n.t("fair.serverSeed")}
           value={
             roll.serverSeed || (
               <span className="text-[#84819a]">
@@ -87,18 +88,18 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
             )
           }
         />
-        <Row label="Nonce" value={roll.nonce} />
-        <Row label="Roll" value={`${roll.roll} / ${roll.total}`} />
+        <Row label={i18n.t("fair.nonce")} value={roll.nonce} />
+        <Row label={i18n.t("fair.roll")} value={`${roll.roll} / ${roll.total}`} />
         {roll.game === "case" && (
           <>
-            <Row label="Item" value={String(roll.itemId)} />
-            <Row label="Config version" value={roll.caseConfigVersion} />
-            <Row label="Config hash" value={roll.caseConfigHash} />
+            <Row label={i18n.t("fair.item")} value={String(roll.itemId)} />
+            <Row label={i18n.t("fair.configVersion")} value={roll.caseConfigVersion} />
+            <Row label={i18n.t("fair.configHash")} value={roll.caseConfigHash} />
           </>
         )}
         {!!roll.outcome && (
           <Row
-            label="Outcome"
+            label={i18n.t("fair.outcome")}
             value={
               <code className="text-xs">{JSON.stringify(roll.outcome)}</code>
             }
@@ -134,9 +135,9 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
     {/* seed settings (authenticated) */}
     {seed && (
       <div className="w-full max-w-[900px] bg-[#212031] rounded-lg p-5 flex flex-col gap-3">
-        <span className="font-bold text-lg">Your seed</span>
-        <Row label="Server seed hash" value={seed.serverSeedHash} />
-        <Row label="Nonce" value={seed.nonce} />
+        <span className="font-bold text-lg">{i18n.t("fair.yourSeed")}</span>
+        <Row label={i18n.t("fair.serverSeedHash")} value={seed.serverSeedHash} />
+        <Row label={i18n.t("fair.nonce")} value={seed.nonce} />
 
         <div className="flex flex-col gap-1">
           <span className="text-xs uppercase tracking-wider text-[#84819a]">
@@ -171,9 +172,9 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
             <span className="text-yellow-300 font-semibold">
               Previous seed revealed, verify it:
             </span>
-            <Row label="Server seed" value={revealed.serverSeed} />
-            <Row label="Its hash" value={revealed.serverSeedHash} />
-            <Row label="Client seed" value={revealed.clientSeed} />
+            <Row label={i18n.t("fair.serverSeed")} value={revealed.serverSeed} />
+            <Row label={i18n.t("fair.itsHash")} value={revealed.serverSeedHash} />
+            <Row label={i18n.t("fair.clientSeed")} value={revealed.clientSeed} />
           </div>
         )}
       </div>

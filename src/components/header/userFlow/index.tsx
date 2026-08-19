@@ -7,6 +7,7 @@ import UserContext from "../../../UserContext";
 import useOutsideClick from "../../../hooks/useOutsideClick";
 import Modal from "../../Modal";
 import { getPendingReferralCode } from "../../../services/referrals/ReferralServices";
+import i18n from "../../../i18n";
 
 // the provider fetches google's sign-in script the moment it mounts, so it lives here
 // with the only two components that need it (Login and SignUp) rather than around the
@@ -42,9 +43,9 @@ const UserFlow: React.FC = () => {
                 }}
               >
                 {isLogin ? (
-                  <div className="text-blue-500 underline">Or create an account</div>
+                  <div className="text-blue-500 underline">{i18n.t("auth.createAccount")}</div>
                 ) : (
-                  <div className="text-blue-500 underline">Or Login</div>
+                  <div className="text-blue-500 underline">{i18n.t("auth.orLogin")}</div>
                 )}
               </div>
             </div>

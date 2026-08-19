@@ -6,6 +6,7 @@ import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
 import Avatar from "../../components/Avatar";
 import { User } from '../../components/Types'
+import i18n from "../../i18n";
 
 interface UserProps {
   user: User;
@@ -94,7 +95,7 @@ const UserInfo: React.FC<UserProps> = ({
               className="absolute inset-0 w-full h-full opacity-0 hover:opacity-70 bg-blue-500 transition-all flex items-center justify-center rounded-full cursor-pointer group-hover:opacity-70"
             // onClick={handleChangePictureClick}
             >
-              <span className="text-white">It's you!</span>
+              <span className="text-white">{i18n.t("profile.itSYou")}</span>
             </button>
           )}
           <input
@@ -143,7 +144,7 @@ const UserInfo: React.FC<UserProps> = ({
               <span
                 className="text-[#3a365a] underline -translate-x-1 cursor-help"
                 data-tooltip-id="my-tooltip"
-                data-tooltip-content="To every 1K₽ spent, you get 5 XP."
+                data-tooltip-content={i18n.t("profile.toEvery1kSpent")}
               >
                 How XP works?
               </span>

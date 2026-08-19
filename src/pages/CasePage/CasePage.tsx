@@ -19,6 +19,7 @@ import type { GiftGrant } from "../../services/gift/GiftService";
 import FreeOpenings from "./FreeOpenings";
 import { applyMeta } from "../../seo/meta";
 import { caseMeta } from "../../seo/caseMeta";
+import i18n from "../../i18n";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -187,7 +188,7 @@ const CasePage = () => {
                     <span>Open free{quantity > 1 ? ` x${quantity}` : ""}</span>
                   </div>
                 ) : <div className="flex items-center justify-center text-base">
-                <span className="mr-1">Open case - </span>{<Monetary value={data.price * quantity}/>}
+                <span className="mr-1">{i18n.t("casePage.openCase")} </span>{<Monetary value={data.price * quantity}/>}
                 </div>}
                 onClick={openCase}
                 loading={loadingButton}
@@ -217,7 +218,7 @@ const CasePage = () => {
         </div>
 
         <div className="flex flex-col md:p-8 gap-2 items-center ">
-          <Title title="Items in this case" />
+          <Title title={i18n.t("casePage.itemsInThisCase")} />
           <div className="flex flex-wrap gap-6 px-8 justify-center w-screen max-w-[1920px]">
             {loading
               ? { array: Array(12).fill(0) }.array.map((_, i) => (

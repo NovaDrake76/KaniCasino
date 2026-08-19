@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { upgradeItem } from "../../services/games/GamesServices";
 import React from "react";
+import i18n from "../../i18n";
 
 interface Props {
     selectedItems: any[];
@@ -84,11 +85,11 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
     const itemPlaceholder = [
         {
             imgSrc: "/images/item1.webp",
-            text: "Select an item that you want to upgrade"
+            text: i18n.t("upgrade.selectAnItemThat")
         },
         {
             imgSrc: "/images/item2.webp",
-            text: "Select an item that you want to obtain"
+            text: i18n.t("upgrade.selectAnItemThat2")
         }
     ];
 
@@ -97,7 +98,7 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
             <div className="flex flex-col items-center justify-center gap-2 text-center w-[333px] fadeIn">
                 <img
                     src={itemPlaceholder[i].imgSrc}
-                    alt="upgrade"
+                    alt={i18n.t("home.upgrade")}
                     className="object-contain h-[280px]"
                 />
                 <span className="text-[#3D3A4E] w-2/3 font-semibold">{itemPlaceholder[i].text}</span>
@@ -113,12 +114,12 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
                     <React.Fragment key={index}>
                         <img
                             src={selectedItem.item?.image ? selectedItem.item?.image : selectedItem.image}
-                            alt="selected-item"
+                            alt={i18n.t("upgrade.selectedItem")}
                             style={{ width: `${heightPercent}%`, display: loadedImages[index] ? 'block' : 'none' }}
                             className="object-contain"
                             onLoad={() => handleImageLoaded(index)}
                         />
-                        {!loadedImages[index] && <div>Loading...</div>}
+                        {!loadedImages[index] && <div>{i18n.t("common.loading")}</div>}
                     </React.Fragment>
                 ))}
             </div>
@@ -168,7 +169,7 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
             {
                 selectedTarget ? <div className="flex flex-col relative">
                     {renderSelectedItems([selectedTarget])}
-                    <MainButton text="Upgrade" icon={<GiUpgrade />} type="danger" iconPosition="right" onClick={UpgradeItems}
+                    <MainButton text={i18n.t("nav.upgrade")} icon={<GiUpgrade />} type="danger" iconPosition="right" onClick={UpgradeItems}
                         disabled={loadingUpgrade || spinning || selectedItems.length < 1} loading={loadingUpgrade} />
                     {
                         !spinning && renderCloseButton("target", setSelectedTarget, setSelectedItems)

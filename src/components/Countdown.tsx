@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import i18n from "../i18n";
 
 interface CountdownProps {
     nextBonus: any;
@@ -35,7 +36,7 @@ const Countdown: React.FC<CountdownProps> = ({ nextBonus, color = "#2d2b49", bol
                 <p style={{
                     color: color,
                     fontWeight: bold ? "bold" : "normal"
-                }}>Bonus available now!</p>
+                }}>{i18n.t("common.bonusAvailableNow")}</p>
             )}
         </div>
     );

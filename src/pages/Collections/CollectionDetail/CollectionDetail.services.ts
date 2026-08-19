@@ -12,6 +12,7 @@ import {
   AlbumItem,
   QuicksellPreview,
 } from "../../../services/collections/CollectionService";
+import i18n from "../../../i18n";
 
 export type AlbumFilter = "all" | "owned" | "missing" | "duplicates";
 export type AlbumSort = "mostRare" | "mostCommon";
@@ -229,7 +230,7 @@ export const useCollectionDetailServices = ({ userId, isOwner, caseId, onBack }:
           totalValue: res.totalValue || 0,
           plan: res.plan || [],
         });
-        toast.info("Your items changed since the preview. Review the update and confirm again.", {
+        toast.info(i18n.t("collections.yourItemsChangedSince"), {
           theme: "dark",
         });
         setRefresh((r) => !r);
@@ -243,7 +244,7 @@ export const useCollectionDetailServices = ({ userId, isOwner, caseId, onBack }:
           theme: "dark",
         });
       } else {
-        toast.info("Nothing to sell.", { theme: "dark" });
+        toast.info(i18n.t("collections.nothingToSell"), { theme: "dark" });
       }
       setQuicksellOpen(false);
       setQuicksellPreview(null);

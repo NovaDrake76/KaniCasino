@@ -3,6 +3,7 @@ import { buyItem } from "../../services/market/MarketService";
 import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import { IMarketItem } from "../../components/Types";
+import i18n from "../../i18n";
 
 interface Props {
   item: IMarketItem;
@@ -25,7 +26,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
       await buyItem(item._id as string);
       setRefresh && setRefresh(true);
       // the balance comes back over the socket, so it stays in step with the server
-      toast.success("Purchase successful!");
+      toast.success(i18n.t("market.purchaseSuccessful"));
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Could not complete the purchase");
     } finally {
@@ -41,7 +42,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   return (
     <div className="fixed flex items-center justify-center h-screen w-screen z-50 top-[40px] bg-black/40">
       <div className="bg-[#17132B] p-8 rounded w-[600px] min-h-[290px] ">
-        <h2 className="text-lg font-semibold mb-2">Confirm Purchase</h2>
+        <h2 className="text-lg font-semibold mb-2">{i18n.t("market.confirmPurchase")}</h2>
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-white text-lg">
             Are you sure you want to buy the {item.item.name} for {item.price} KP?
@@ -58,7 +59,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
           </button>
           <div className="w-44">
             <MainButton
-              text="Confirm"
+              text={i18n.t("market.confirm")}
               onClick={handleConfirm}
               loading={loading}
               disabled={loading}

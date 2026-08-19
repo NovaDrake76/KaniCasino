@@ -10,6 +10,7 @@ import {
 } from "../../services/games/GamesServices";
 import { MAX_BET, MIN_BET, MIN_MINES, TILES, gemsFor, payoutFor } from "./minesGrid";
 import { MinesGameState } from "./Mines.types";
+import i18n from "../../i18n";
 
 const DEFAULT_BET = 10;
 const DEFAULT_MINES = 3;
@@ -71,7 +72,7 @@ export const useMinesServices = () => {
       return null;
     }
     if (userData.walletBalance < betValue) {
-      toast.error("Insufficient funds", { theme: "dark" });
+      toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
       return null;
     }
     setBusy(true);

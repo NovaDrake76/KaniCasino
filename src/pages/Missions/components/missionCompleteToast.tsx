@@ -5,6 +5,7 @@ import Monetary from "../../../components/Monetary";
 import { navigateTo } from "../../../services/navigation";
 import { whenStakeClears } from "../../../services/stakeGuard";
 import { PendingMission } from "../../../services/missions/MissionService";
+import i18n from "../../../i18n";
 
 // the styled real-time "mission complete" toast, shown app-wide the moment a
 // mission becomes claimable (server guarantees it fires once per mission). When a
@@ -18,7 +19,7 @@ function showMissionToast(m: PendingMission, targetPath?: string) {
     <div className={`flex items-center gap-3 ${targetPath ? "cursor-pointer" : ""}`}>
       <GiTrophyCup className="text-3xl text-accent-gold shrink-0" />
       <div className="flex flex-col min-w-0">
-        <span className="text-[11px] uppercase tracking-wide text-ink-muted">Mission complete</span>
+        <span className="text-[11px] uppercase tracking-wide text-ink-muted">{i18n.t("missions.missionComplete")}</span>
         <span className="text-sm font-semibold text-ink truncate">{m.title}</span>
         <span className="text-xs text-accent-gold font-medium">
           <Monetary value={m.reward} /> ready to claim

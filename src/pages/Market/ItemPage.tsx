@@ -21,6 +21,7 @@ import { IMarketItem } from "../../components/Types";
 import SellItemModal from "./SellItemModal";
 import ConfirmPurchaseModal from "./ConfirmPurchaseModal";
 import PlaceBuyOrderModal from "./PlaceBuyOrderModal";
+import i18n from "../../i18n";
 
 interface ItemData {
   totalPages: number;
@@ -39,11 +40,11 @@ const defaultItem: IMarketItem = {
   uniqueId: "",
 };
 
-const RANGES = [
-  { key: "week", label: "Week" },
-  { key: "month", label: "Month" },
-  { key: "year", label: "Year" },
-  { key: "lifetime", label: "Lifetime" },
+const RANGES = () => [
+  { key: "week", label: i18n.t("market.week") },
+  { key: "month", label: i18n.t("market.month") },
+  { key: "year", label: i18n.t("market.year") },
+  { key: "lifetime", label: i18n.t("market.lifetime") },
 ];
 
 const Stat: React.FC<{ label: string; value: React.ReactNode; hint?: string; accent?: string }> = ({
@@ -187,7 +188,7 @@ const ItemPage: React.FC = () => {
       <div className="w-full max-w-[1312px] px-4 md:px-8 py-6 flex flex-col gap-6">
         {historyError && (
           <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm text-red-300 flex items-center justify-between gap-3">
-            <span>Could not load market data for this item.</span>
+            <span>{i18n.t("market.couldNotLoadMarket")}</span>
             <button
               onClick={() => {
                 setLoadingHistory(true);
@@ -238,28 +239,28 @@ const ItemPage: React.FC = () => {
         {/* the numbers a trader actually needs */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           <Stat
-            label="Lowest listing"
+            label={i18n.t("market.lowestListing")}
             value={stats?.lowestListing ? <Monetary value={stats.lowestListing} /> : "None"}
             hint={stats ? `${stats.totalListings} on sale` : ""}
             accent="text-accent"
           />
           <Stat
-            label="Median (7d)"
+            label={i18n.t("market.median7d")}
             value={stats?.median7d ? <Monetary value={stats.median7d} /> : "No sales"}
             hint={stats ? `${stats.volume7d} sold` : ""}
           />
           <Stat
-            label="Median (30d)"
+            label={i18n.t("market.median30d")}
             value={stats?.median30d ? <Monetary value={stats.median30d} /> : "No sales"}
             hint={stats ? `${stats.volume30d} sold` : ""}
           />
           <Stat
-            label="Best buy order"
+            label={i18n.t("market.bestBuyOrder")}
             value={stats?.bestBid ? <Monetary value={stats.bestBid} /> : "No bids"}
             accent="text-accent-gold"
           />
           <Stat
-            label="House floor"
+            label={i18n.t("market.houseFloor")}
             value={stats ? <Monetary value={stats.floor} /> : "-"}
             hint="instant sell price"
             accent="text-ink-muted"
@@ -269,9 +270,9 @@ const ItemPage: React.FC = () => {
         {/* price history */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h2 className="text-lg font-semibold text-ink">Median sale prices</h2>
+            <h2 className="text-lg font-semibold text-ink">{i18n.t("market.medianSalePrices")}</h2>
             <div className="inline-flex rounded-lg border border-line overflow-hidden">
-              {RANGES.map((r) => (
+              {RANGES().map((r) => (
                 <button
                   key={r.key}
                   onClick={() => setRange(r.key)}
@@ -296,9 +297,9 @@ const ItemPage: React.FC = () => {
         {/* buy orders */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="rounded-xl border border-line bg-surface p-4 flex flex-col gap-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Buy orders</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">{i18n.t("market.buyOrders")}</h3>
             {book.length === 0 ? (
-              <span className="text-sm text-ink-muted py-2">Nobody is bidding on this item yet.</span>
+              <span className="text-sm text-ink-muted py-2">{i18n.t("market.nobodyIsBiddingOn")}</span>
             ) : (
               <div className="flex flex-col gap-1">
                 {book.slice(0, 6).map((b) => (
@@ -316,9 +317,9 @@ const ItemPage: React.FC = () => {
           </div>
 
           <div className="rounded-xl border border-line bg-surface p-4 flex flex-col gap-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Your orders</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">{i18n.t("market.yourOrders")}</h3>
             {myOrders.length === 0 ? (
-              <span className="text-sm text-ink-muted py-2">You have no buy orders for this item.</span>
+              <span className="text-sm text-ink-muted py-2">{i18n.t("market.youHaveNoBuy")}</span>
             ) : (
               myOrders.map((o) => (
                 <div key={o._id} className="flex items-center justify-between gap-2 text-sm">
@@ -365,7 +366,7 @@ const ItemPage: React.FC = () => {
             </div>
           ) : (
             <div className="rounded-xl border border-line bg-surface p-8 text-center flex flex-col items-center gap-3">
-              <span className="text-ink-muted">Nobody is selling this item right now.</span>
+              <span className="text-ink-muted">{i18n.t("market.nobodyIsSellingThis")}</span>
               <button
                 onClick={() => setOpenOrderModal(true)}
                 className="px-4 h-10 rounded-md border border-accent-gold/50 text-accent-gold text-sm font-semibold hover:bg-accent-gold/10"

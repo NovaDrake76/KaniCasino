@@ -11,6 +11,7 @@ import Skeleton from "react-loading-skeleton";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/InventoryFilters";
 import Modal from "../../components/Modal";
+import i18n from "../../i18n";
 
 interface Props {
   isOpen: boolean;
@@ -103,7 +104,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     setLoadingButton(true);
     if (!price || price < 1 || price > 1000000) {
       setLoadingButton(false);
-      return toast.error("Price must be between 1 and 1.000.000", {});
+      return toast.error(i18n.t("market.priceMustBeBetween"), {});
     }
     try {
       const res = quantity > 1
@@ -121,7 +122,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
       } else if (res?.soldInstantly) {
         toast.success(`Sold instantly to a buy order for K₽${res.soldFor}! You received K₽${res.received}`);
       } else {
-        toast.success("Item listed for sale!", {});
+        toast.success(i18n.t("market.itemListedForSale"), {});
       }
       CloseModal();
     } catch (error: any) {
@@ -189,7 +190,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   return (
     <Modal open={isOpen} setOpen={onClose} width="min(980px, 95vw)">
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-bold">Sell an item</h2>
+        <h2 className="text-xl font-bold">{i18n.t("market.sellAnItem")}</h2>
 
         <Filters filters={filters} setFilters={setFilters} onKeyPress={handleEnterPress} />
 
@@ -201,7 +202,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               ))}
             </div>
           ) : invItems.length === 0 ? (
-            <div className="text-center text-ink-muted py-12">No items to sell.</div>
+            <div className="text-center text-ink-muted py-12">{i18n.t("market.noItemsToSell")}</div>
           ) : (
             <div className="flex flex-wrap justify-center gap-3">
               {invItems.map((item, index) => {
@@ -236,25 +237,25 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
           <div className="rounded-lg border border-line bg-surface p-3 flex flex-col gap-3">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <Stat
-                label="Median (7d)"
+                label={i18n.t("market.median7d")}
                 value={stats?.median7d ? <Monetary value={stats.median7d} /> : "No sales"}
                 hint={stats?.volume7d ? `${stats.volume7d} sold this week` : "nothing sold recently"}
                 accent="text-ink"
               />
               <Stat
-                label="Lowest listing"
+                label={i18n.t("market.lowestListing")}
                 value={stats?.lowestListing ? <Monetary value={stats.lowestListing} /> : "None listed"}
                 hint={stats?.totalListings ? `${stats.totalListings} on sale` : "you'd be the only one"}
                 accent="text-accent"
               />
               <Stat
-                label="Best buy order"
+                label={i18n.t("market.bestBuyOrder")}
                 value={stats?.bestBid ? <Monetary value={stats.bestBid} /> : "No bids"}
                 hint={stats?.bestBid ? "sells instantly at or below" : undefined}
                 accent="text-accent-gold"
               />
               <Stat
-                label="House floor"
+                label={i18n.t("market.houseFloor")}
                 value={stats ? <Monetary value={stats.floor} /> : "-"}
                 hint="instant sell, no wait"
                 accent="text-ink-muted"
@@ -264,7 +265,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             <PriceChart points={history?.points || []} floor={stats?.floor} height={120} loading={loadingHistory} />
 
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] text-ink-muted mr-1">Quick price:</span>
+              <span className="text-[11px] text-ink-muted mr-1">{i18n.t("market.quickPrice")}</span>
               {stats?.median7d ? (
                 <button
                   onClick={() => setPrice(stats.median7d as number)}
@@ -318,7 +319,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                   </div>
                 </>
               ) : (
-                <span className="text-ink-muted text-sm">Pick an item above to sell it.</span>
+                <span className="text-ink-muted text-sm">{i18n.t("market.pickAnItemAbove")}</span>
               )}
             </div>
 
@@ -331,7 +332,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                   type="number"
                   min={0}
                   max={1000000}
-                  placeholder="Price"
+                  placeholder={i18n.t("market.price")}
                   value={price ?? ""}
                   onKeyDown={(event) => {
                     if (

@@ -4,6 +4,7 @@ import Modal from "../../components/Modal";
 import MainButton from "../../components/MainButton";
 import Monetary from "../../components/Monetary";
 import { placeBuyOrder, MarketStats } from "../../services/market/MarketService";
+import i18n from "../../i18n";
 
 interface Props {
   isOpen: boolean;
@@ -26,8 +27,8 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
   const fillsNow = !!(stats?.lowestListing && price >= stats.lowestListing);
 
   const submit = async () => {
-    if (!price || price < 1 || price > 1000000) return toast.error("Price must be between 1 and 1.000.000");
-    if (!quantity || quantity < 1 || quantity > 20) return toast.error("Quantity must be between 1 and 20");
+    if (!price || price < 1 || price > 1000000) return toast.error(i18n.t("market.priceMustBeBetween"));
+    if (!quantity || quantity < 1 || quantity > 20) return toast.error(i18n.t("market.quantityMustBeBetween"));
     setLoading(true);
     try {
       const res = await placeBuyOrder(item._id, price, quantity);
@@ -36,7 +37,7 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
       } else if (res.filled > 0) {
         toast.success(`Bought ${res.filled} instantly`);
       } else {
-        toast.success("Buy order placed");
+        toast.success(i18n.t("market.buyOrderPlaced"));
       }
       if (res.message) toast.info(res.message);
       onPlaced && onPlaced();
@@ -54,20 +55,20 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
         <div className="flex items-center gap-3">
           <img src={item.image} alt={item.name} className="w-12 h-12 object-contain" />
           <div className="flex flex-col">
-            <h3 className="font-semibold text-ink">Place a buy order</h3>
+            <h3 className="font-semibold text-ink">{i18n.t("market.placeABuyOrder2")}</h3>
             <span className="text-xs text-ink-muted">{item.name}</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div className="rounded border border-line bg-surface p-2">
-            <div className="text-ink-muted">Lowest listing</div>
+            <div className="text-ink-muted">{i18n.t("market.lowestListing")}</div>
             <div className="text-accent font-semibold">
               {stats?.lowestListing ? <Monetary value={stats.lowestListing} /> : "None"}
             </div>
           </div>
           <div className="rounded border border-line bg-surface p-2">
-            <div className="text-ink-muted">Median (7d)</div>
+            <div className="text-ink-muted">{i18n.t("market.median7d")}</div>
             <div className="text-ink font-semibold">
               {stats?.median7d ? <Monetary value={stats.median7d} /> : "No sales"}
             </div>
@@ -76,7 +77,7 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
 
         <div className="flex gap-3">
           <label className="flex flex-col gap-1 flex-1">
-            <span className="text-xs text-ink-muted">Price each</span>
+            <span className="text-xs text-ink-muted">{i18n.t("market.priceEach")}</span>
             <input
               type="number"
               min={1}
@@ -87,7 +88,7 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
             />
           </label>
           <label className="flex flex-col gap-1 w-24">
-            <span className="text-xs text-ink-muted">Quantity</span>
+            <span className="text-xs text-ink-muted">{i18n.t("market.quantity")}</span>
             <input
               type="number"
               min={1}
@@ -101,7 +102,7 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
 
         <div className="rounded border border-line bg-surface p-3 text-xs flex flex-col gap-1">
           <div className="flex justify-between">
-            <span className="text-ink-muted">Charged now, up to</span>
+            <span className="text-ink-muted">{i18n.t("market.chargedNowUpTo")}</span>
             <span className="text-ink font-semibold">
               <Monetary value={total} />
             </span>
@@ -124,7 +125,7 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
           </button>
           <div className="flex-1">
             <MainButton
-              text="Place buy order"
+              text={i18n.t("market.placeBuyOrder")}
               onClick={submit}
               loading={loading}
               disabled={loading || !price}

@@ -6,6 +6,7 @@ import MainButton from "../../MainButton";
 import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
 import { getPendingReferralCode, clearPendingReferralCode } from "../../../services/referrals/ReferralServices";
+import i18n from "../../../i18n";
 // import { FaImage } from "react-icons/fa";
 // import { toast } from "react-toastify";
 
@@ -101,11 +102,11 @@ const SignUpPage: React.FC = () => {
             <div className="flex justify-center items-center w-full">
               {/* <label className="flex flex-col items-center justify-center w-32 h-32 rounded-full group bg-gray-200 hover:bg-gray-400 transition-all text-gray-700 hover:text-white cursor-pointer overflow-hidden">
                 {imagePreview ? (
-                  <img className="object-cover w-full h-full" src={imagePreview} alt="Profile preview" />
+                  <img className="object-cover w-full h-full" src={imagePreview} alt={i18n.t("header.profilePreview")} />
                 ) : (
                   <div className="flex flex-col items-center justify-center">
                     <FaImage className="w-6 h-6" />
-                    <p className="lowercase text-sm tracking-wider text-center">Select a profile picture</p>
+                    <p className="lowercase text-sm tracking-wider text-center">{i18n.t("header.selectAProfilePicture")}</p>
                   </div>
                 )}
                 <input type="file" className="hidden" onChange={handleProfilePictureChange} accept="
@@ -127,8 +128,8 @@ const SignUpPage: React.FC = () => {
                       value: nickname,
                       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                         setNickname(e.target.value),
-                      placeholder: "Nickname",
-                      label: "Nickname",
+                      placeholder: i18n.t("auth.nickname"),
+                      label: i18n.t("auth.nickname"),
                     },
                     {
                       name: "email",
@@ -138,8 +139,8 @@ const SignUpPage: React.FC = () => {
                       value: email,
                       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                         setEmail(e.target.value),
-                      placeholder: "Email",
-                      label: "Email",
+                      placeholder: i18n.t("auth.emailShort"),
+                      label: i18n.t("auth.emailShort"),
                     },
                     {
                       name: "password",
@@ -149,8 +150,8 @@ const SignUpPage: React.FC = () => {
                       value: password,
                       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                         setPassword(e.target.value),
-                      placeholder: "Password",
-                      label: "Password",
+                      placeholder: i18n.t("auth.password"),
+                      label: i18n.t("auth.password"),
                     },
                     {
                       name: "referralCode",
@@ -159,8 +160,8 @@ const SignUpPage: React.FC = () => {
                       value: referralCode,
                       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                         setReferralCode(e.target.value.toUpperCase()),
-                      placeholder: "Referral code",
-                      label: "Referral code (optional)",
+                      placeholder: i18n.t("auth.referral"),
+                      label: i18n.t("auth.referralOptional"),
                     }
                   ].map((input) => (
                     <div className="relative" key={input.name}>
@@ -187,7 +188,7 @@ const SignUpPage: React.FC = () => {
                 </div>
                 <div className="flex flex-col ">
                   <MainButton
-                    text="Sign up"
+                    text={i18n.t("auth.signUp")}
                     // eslint-disable-next-line @typescript-eslint/no-empty-function
                     onClick={() => { }}
                     disabled={loading}

@@ -9,6 +9,8 @@ import HowGamesWork from "./modalsChilden/HowGamesWork";
 import ContactUs from "./modalsChilden/ContactUs";
 import FAQ from "./modalsChilden/FAQ";
 import Artists from "./modalsChilden/Artists";
+import LanguageSelector from "./LanguageSelector";
+import i18n from "../i18n";
 
 function Footer() {
   // Toggle modal
@@ -24,69 +26,69 @@ function Footer() {
 
   const sections = [
     {
-      title: "Main",
+      title: i18n.t("footer.main"),
       links: [
         {
-          title: "How to Play",
+          title: i18n.t("footer.howToPlay"),
           onClick: () => handleModalInfo(<HowToPlay />),
         },
         {
-          title: "About the Market",
+          title: i18n.t("footer.aboutTheMarket"),
           onClick: () => handleModalInfo(<AboutTheMarket />),
         },
         {
-          title: "How Games Work",
+          title: i18n.t("footer.howGamesWork"),
           onClick: () => handleModalInfo(<HowGamesWork />),
         },
       ],
     },
     {
-      title: "About us",
+      title: i18n.t("footer.aboutUs"),
       links: [
         {
-          title: "Terms of Privacy",
+          title: i18n.t("footer.termsOfPrivacy"),
           onClick: () => handleModalInfo(<TermsOfPrivacy />),
         },
         {
-          title: "User Agreement",
+          title: i18n.t("footer.userAgreement"),
           onClick: () => handleModalInfo(<UserAgreement />),
         },
         {
-          title: "Artists",
+          title: i18n.t("footer.artists"),
           onClick: () => handleModalInfo(<Artists />),
         }
       ],
     },
     {
-      title: "Games",
+      title: i18n.t("footer.games"),
       links: [
         {
-          title: "Crash",
+          title: i18n.t("nav.crash"),
           onClick: () => navigate("/crash"),
         },
         {
-          title: "Coinflip",
+          title: i18n.t("footer.coinflip"),
           onClick: () => navigate("/coinflip"),
         },
         {
-          title: "Slot",
+          title: i18n.t("footer.slot"),
           onClick: () => navigate("/slot"),
         },
       ],
     },
     {
-      title: "Support",
+      title: i18n.t("footer.support"),
       links: [
         {
-          title: "Provably Fair",
+          title: i18n.t("footer.provablyFair"),
           onClick: () => navigate("/provably-fair"),
         },
         {
-          title: "Contact us",
+          title: i18n.t("footer.contactUs"),
           onClick: () => handleModalInfo(<ContactUs />),
         },
         {
-          title: "FAQ",
+          title: i18n.t("footer.faq"),
           onClick: () => handleModalInfo(<FAQ />),
         },
       ],
@@ -104,7 +106,7 @@ function Footer() {
           <div className="flex items-center ">
             <img
               src="/images/logo.webp"
-              alt="logo"
+              alt={i18n.t("common.logo")}
               className="w-36 h-24 object-contain"
             />
 
@@ -143,9 +145,12 @@ function Footer() {
 
       <div className="w-full mt-4 flex flex-col items-center justify-center gap-3">
         <div className="w-full h-[1px] bg-gray-500 opacity-10" />
-        <span className="text-sm text-center">
-          KaniCasino © All Rights Reserved. {new Date().getFullYear()}
-        </span>
+        <div className="flex flex-col items-center gap-3 w-10/12 md:flex-row md:justify-between">
+          <span className="text-sm text-center">
+            KaniCasino © All Rights Reserved. {new Date().getFullYear()}
+          </span>
+          <LanguageSelector compact />
+        </div>
       </div>
 
 

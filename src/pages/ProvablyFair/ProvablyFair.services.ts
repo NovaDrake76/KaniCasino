@@ -13,6 +13,7 @@ import {
   RollView,
   VerifyResult,
 } from "../../services/fair/FairServices";
+import i18n from "../../i18n";
 
 export const useProvablyFairServices = () => {
   const [searchParams] = useSearchParams();
@@ -36,7 +37,7 @@ export const useProvablyFairServices = () => {
     try {
       setRoll(await getRoll(rid));
     } catch {
-      toast.error("Roll not found", { theme: "dark" });
+      toast.error(i18n.t("fair.rollNotFound"), { theme: "dark" });
     }
     setLookingUp(false);
   };
@@ -51,7 +52,7 @@ export const useProvablyFairServices = () => {
       setRoll(r);
       setRollIdInput(r.rollId);
     } catch {
-      toast.error("No provably-fair roll found for this item", { theme: "dark" });
+      toast.error(i18n.t("fair.noProvablyFairRoll"), { theme: "dark" });
     }
     setLookingUp(false);
   };
@@ -80,9 +81,9 @@ export const useProvablyFairServices = () => {
     setSavingSeed(true);
     try {
       setSeed(await setClientSeed(v));
-      toast.success("Client seed updated", { theme: "dark" });
+      toast.success(i18n.t("fair.clientSeedUpdated"), { theme: "dark" });
     } catch {
-      toast.error("Could not update client seed", { theme: "dark" });
+      toast.error(i18n.t("fair.couldNotUpdateClient"), { theme: "dark" });
     }
     setSavingSeed(false);
   };
@@ -94,9 +95,9 @@ export const useProvablyFairServices = () => {
       setSeed(res.current);
       setClientSeedInput(res.current.clientSeed);
       setRevealed(res.revealed);
-      toast.success("Server seed rotated and revealed", { theme: "dark" });
+      toast.success(i18n.t("fair.serverSeedRotatedAnd"), { theme: "dark" });
     } catch {
-      toast.error("Could not rotate seed", { theme: "dark" });
+      toast.error(i18n.t("fair.couldNotRotateSeed"), { theme: "dark" });
     }
     setRotating(false);
   };
@@ -107,7 +108,7 @@ export const useProvablyFairServices = () => {
     try {
       setVerify(await verifyRoll(roll.rollId));
     } catch {
-      toast.error("Could not verify", { theme: "dark" });
+      toast.error(i18n.t("fair.couldNotVerify"), { theme: "dark" });
     }
     setVerifying(false);
   };

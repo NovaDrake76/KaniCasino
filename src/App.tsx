@@ -16,6 +16,7 @@ import { toastMissionComplete } from "./pages/Missions/components/missionComplet
 import NavigationBridge from "./components/NavigationBridge";
 import PageMeta from "./components/PageMeta";
 import BootLoader from "./components/BootLoader";
+import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
 
 const Header = lazy(() => import("./components/header/index"));
@@ -30,6 +31,8 @@ interface userDataSocketProps {
 }
 
 function App() {
+  const { i18n } = useTranslation();
+  const language = i18n.language;
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [onlineUsers, setOnlineUsers] = useState<number>(0);
   const [userData, setUserData] = useState<User | null>(null);
@@ -178,7 +181,7 @@ function App() {
       setIsLogged(false);
       setUserData(null);
       setOpenUserFlow(true);
-      toast.info("Your session expired. Please log in again.");
+      toast.info(i18n.t("common.yourSessionExpiredPlease"));
     };
 
     window.addEventListener(SESSION_EXPIRED_EVENT, onSessionExpired);
@@ -198,7 +201,10 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen items-start justify-start bg-[#151225] text-white">
+    <div
+      key={language}
+      className="flex flex-col min-h-screen items-start justify-start bg-[#151225] text-white"
+    >
       <UserContext.Provider
         value={{
           isLogged,

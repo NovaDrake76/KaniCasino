@@ -2,24 +2,25 @@ import { useState } from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import Modal from "./Modal";
 import MainButton from "./MainButton";
+import i18n from "../i18n";
 
 const SEEN_KEY = "kani.onboardingSeen";
 
-const steps = [
+const steps = () => [
   {
     image: "/images/coinHeads.webp",
-    title: "Start with free coins",
+    title: i18n.t("common.startWithFreeCoins"),
     text: `Get K₽ by clicking on the bouncing "Claim Bonus" button on the navbar.`,
   },
   {
     image: "/images/boo.webp",
-    title: "Play and win",
-    text: "Bet on the games, open cases, and sell or upgrade the items you unbox.",
+    title: i18n.t("common.playAndWin"),
+    text: i18n.t("common.betOnTheGames"),
   },
   {
     icon: <AiOutlineClockCircle className="w-14 h-14 shrink-0 text-accent-gold" />,
-    title: "Empty on cash?",
-    text: "The free bonus comes back every 8 minutes. Wait out the cooldown, claim it, and keep playing.",
+    title: i18n.t("common.emptyOnCash"),
+    text: i18n.t("common.theFreeBonusComes"),
   },
 ];
 
@@ -55,7 +56,7 @@ const OnboardingModal = () => {
           play as much as you want.
         </p>
         <div className="flex flex-col gap-3 w-full">
-          {steps.map((step) => (
+          {steps().map((step) => (
             <div
               key={step.title}
               className="flex items-center gap-4 bg-surface rounded-md p-4"
@@ -74,7 +75,7 @@ const OnboardingModal = () => {
             </div>
           ))}
         </div>
-        <MainButton text="Got it, let's play!" onClick={dismiss} />
+        <MainButton text={i18n.t("common.gotItLetS")} onClick={dismiss} />
       </div>
     </Modal>
   );

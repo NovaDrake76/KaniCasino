@@ -5,6 +5,7 @@ import Avatar from "../../../components/Avatar";
 import BattleReel from "../../../components/battle/BattleReel";
 import TieBreaker from "../../../components/battle/TieBreaker";
 import { BattleRoomViewProps } from "./BattleRoom.types";
+import i18n from "../../../i18n";
 
 const BattleRoomView: React.FC<BattleRoomViewProps> = ({
   loading,
@@ -40,9 +41,9 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
   onLeave,
 }) => {
   if (loading)
-    return <div className="w-screen py-16 text-center">Loading battle...</div>;
+    return <div className="w-screen py-16 text-center">{i18n.t("battles.loadingBattle")}</div>;
   if (notFound)
-    return <div className="w-screen py-16 text-center">Battle not found.</div>;
+    return <div className="w-screen py-16 text-center">{i18n.t("battles.battleNotFound")}</div>;
 
   return (
     <div className="w-screen flex flex-col items-center py-6 gap-5 px-4">
@@ -166,7 +167,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
               className="flex flex-col items-center justify-center gap-3 rounded-xl p-3 w-[280px] bg-[#212031] border-2 border-transparent text-[#84819a]"
               style={{ minHeight: windowHeight + 120 }}
             >
-              <span>Waiting for player</span>
+              <span>{i18n.t("battles.waitingForPlayer")}</span>
               {col.canJoin && (
                 <button
                   onClick={col.onJoin}
@@ -218,7 +219,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
                 {col.showTotal && (
                   <span
                     className="font-bold text-green-400 flex items-center gap-1 text-sm whitespace-nowrap"
-                    title="value of items unboxed so far"
+                    title={i18n.t("battles.valueOfItemsUnboxed")}
                   >
                     <Monetary value={col.total} showFraction />
                   </span>
@@ -268,7 +269,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
                       className="h-32 w-32 object-contain opacity-70"
                     />
                   ) : (
-                    <span className="text-[#84819a] text-sm">Ready</span>
+                    <span className="text-[#84819a] text-sm">{i18n.t("battles.ready")}</span>
                   )}
                 </div>
               )}
@@ -334,7 +335,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
           </button>
         )}
         {showCancelled && (
-          <span className="text-red-400">This battle was cancelled.</span>
+          <span className="text-red-400">{i18n.t("battles.thisBattleWasCancelled")}</span>
         )}
         {showBack && (
           <button

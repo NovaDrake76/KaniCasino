@@ -3,6 +3,7 @@ import Roulette from "../../components/Roulette";
 import classNames from "classnames";
 import Skeleton from "react-loading-skeleton";
 import { Case } from "../../components/Types";
+import i18n from "../../i18n";
 
 interface RouletteContainerProps {
     loading: boolean;
@@ -21,21 +22,21 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
         <div className="flex">
             <img
                 src="/images/reelEdge.svg"
-                alt="left arrow"
+                alt={i18n.t("casePage.leftArrow")}
                 className="hidden lg:flex"
             />
             <div className="flex flex-col overflow-hidden max-w-[120vw] md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative z-10">
                 <div className={`absolute flex w-full items-center ${quantity < 2 ? 'flex-col' : 'flex-row'} justify-between h-[calc(100%+50px)] `}>
                     <img
                         src="/images/reelMarker.svg"
-                        alt="top arrow"
+                        alt={i18n.t("casePage.topArrow")}
                         style={{
                             transform: quantity < 2 ? "rotate(180deg)" : "rotate(90deg)",
                             width: "94px",
                             height: "48px"
                         }}
                     />
-                    <img src="/images/reelMarker.svg" alt="bottom arrow" style={{
+                    <img src="/images/reelMarker.svg" alt={i18n.t("casePage.bottomArrow")} style={{
                         transform: quantity < 2 ? "rotate(0deg)" : "rotate(270deg)",
                         width: "94px",
                         height: "48px"
@@ -80,7 +81,7 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
 
             <img
                 src="/images/reelEdge.svg"
-                alt="right arrow"
+                alt={i18n.t("casePage.rightArrow")}
                 className="hidden lg:flex"
                 style={{
                     transform: "rotate(180deg)",

@@ -3,6 +3,7 @@ import Skeleton from "react-loading-skeleton";
 import { getTransactions } from "../../services/users/UserServices";
 import Monetary from "../../components/Monetary";
 import Pagination from "../../components/Pagination";
+import i18n from "../../i18n";
 
 interface Transaction {
   _id: string;
@@ -94,7 +95,7 @@ const BalanceHistory: React.FC = () => {
           <Skeleton key={i} height={64} baseColor="#1c1a31" highlightColor="#161427" />
         ))
       ) : transactions.length === 0 ? (
-        <div className="text-center text-[#84819a] py-12">No transactions yet.</div>
+        <div className="text-center text-[#84819a] py-12">{i18n.t("profile.noTransactionsYet")}</div>
       ) : (
         transactions.map((tx) => {
           const credit = tx.direction === "credit";

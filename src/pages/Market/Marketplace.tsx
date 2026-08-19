@@ -9,6 +9,7 @@ import Monetary from "../../components/Monetary";
 import Filters, { MarketFilters } from "./Filters";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import i18n from "../../i18n";
 
 interface MarketRow {
   image: string;
@@ -111,7 +112,7 @@ const Marketplace: React.FC = () => {
       <div className="w-full max-w-[1312px] px-4 md:px-8 py-6 flex flex-col gap-5">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold text-ink">Marketplace</h1>
+            <h1 className="text-2xl font-bold text-ink">{i18n.t("market.marketplace")}</h1>
             <span className="text-xs text-ink-muted">
               Buy from other players, or place a buy order and let the market come to you.
             </span>

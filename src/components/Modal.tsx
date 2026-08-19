@@ -1,4 +1,5 @@
 import { IoMdClose } from "react-icons/io";
+import i18n from "../i18n";
 
 interface ModalProps {
   children: JSX.Element;
@@ -26,7 +27,7 @@ const Modal: React.FC<ModalProps> = ({ children, open, setOpen, width = "600px" 
       <div className={` max-h-[70vh] flex flex-col overflow-auto`} style={{
         width: width
       }}
-        aria-label="modal"
+        aria-label={i18n.t("common.modal")}
       >
         <div className="p-6 text-white rounded bg-[#19172D] relative">
 
@@ -34,7 +35,7 @@ const Modal: React.FC<ModalProps> = ({ children, open, setOpen, width = "600px" 
           <button
             className="absolute top-2 right-2 text-2xl bg-none  border-none place-self-end bg-inherit focus:outline-none"
             onClick={() => setOpen(false)}
-            aria-label="close modal"
+            aria-label={i18n.t("common.closeModal")}
           >
             <IoMdClose />
           </button>

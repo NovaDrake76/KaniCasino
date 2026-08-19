@@ -5,6 +5,7 @@ import { getCases, getCase } from "../../services/cases/CaseServices";
 import Item from "../../components/Item";  // Import your Item component if you have one
 import Skeleton from "react-loading-skeleton";
 import { AiOutlineClose } from "react-icons/ai";
+import i18n from "../../i18n";
 
 interface ChooseUpgradeItems {
     setSelectedItems: React.Dispatch<React.SetStateAction<any>>;
@@ -71,7 +72,7 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
     return (
         <div className="flex flex-col md:w-1/2 gap-2 ">
             <div className="flex w-full items-center justify-between bg-[#1C1A33] rounded px-6 h-24">
-                <span>Get one Item</span>
+                <span>{i18n.t("upgrade.getOneItem")}</span>
                 <div className="flex gap-4">
                     {
                         selectedCase !== null && (
@@ -84,7 +85,7 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
                                 }
                             }>
                                 <AiOutlineClose />
-                                <span>Clear</span>
+                                <span>{i18n.t("battles.clear")}</span>
 
                             </div>
                         )
@@ -105,7 +106,7 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
                                 )
                             }}>
 
-                                <span>Rarity</span>
+                                <span>{i18n.t("upgrade.rarity")}</span>
                                 <AiOutlineArrowDown style={{
                                     transform: itemFilters.sortBy === 'mostRare' ? 'rotate(180deg)' : '',
                                     transition: 'transform 0.2s ease-in-out'

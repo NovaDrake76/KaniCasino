@@ -3,6 +3,7 @@ import Monetary from '../../components/Monetary';
 import GameButton from '../../components/game/GameButton';
 import BetAmount from '../../components/game/BetAmount';
 import { User } from '../../components/Types';
+import i18n from "../../i18n";
 
 interface SideMenuProps {
     bet: number | null;
@@ -87,7 +88,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
         />
 
         <div className="flex items-center justify-between text-xs font-semibold text-ink-muted mt-2">
-          <span>Cashout At</span>
+          <span>{i18n.t("crash.cashoutAt")}</span>
           <span>{hasTarget ? `x${target.toFixed(2)}` : "Off"}</span>
         </div>
         <div className="flex">
@@ -95,7 +96,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
             type="text"
             inputMode="decimal"
             value={cashoutAt}
-            placeholder="Off"
+            placeholder={i18n.t("crash.off")}
             onChange={(e) => setCashoutAt(e.target.value.replace(/[^0-9.]/g, ""))}
             className="p-2 bg-surface-nav border border-line rounded-l rounded-r-none w-full text-sm"
           />
@@ -114,7 +115,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
         </div>
 
         <div className="flex items-center justify-between text-xs font-semibold text-ink-muted mt-2">
-          <span>Profit on Win</span>
+          <span>{i18n.t("crash.profitOnWin")}</span>
           <span className="text-accent-gold">
             <Monetary value={profit} showFraction />
           </span>

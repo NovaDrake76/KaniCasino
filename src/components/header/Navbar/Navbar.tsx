@@ -17,6 +17,7 @@ import { FaBars, FaGift } from 'react-icons/fa';
 import RightContent from "./RightContent";
 import GiftTag from "../GiftTag";
 import useGiftReady from "../useGiftReady";
+import i18n from "../../../i18n";
 
 interface Navbar {
   openNotifications: boolean;
@@ -59,7 +60,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       .catch((error: any) => {
         // a 401 is already handled globally (session expired)
         if (error?.response?.status !== 401) {
-          toast.error("Please, login again");
+          toast.error(i18n.t("header.pleaseLoginAgain"));
           Logout();
         }
         setLoading(false);
@@ -69,44 +70,44 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
 
   const links: { name: string; path: string; icon: JSX.Element; badge?: JSX.Element }[] = [
     {
-      name: "Market",
+      name: i18n.t("nav.market"),
       path: "/marketplace",
       icon: <MdOutlineSell className="text-2xl" />,
     },
     {
-      name: "Coin Flip",
+      name: i18n.t("nav.coinFlip"),
       path: "/coinflip",
       icon: <BsCoin className="text-2xl" />,
     },
     {
-      name: "Crash",
+      name: i18n.t("nav.crash"),
       path: "/crash",
       icon: <SlPlane className="text-2xl" />,
     },
     {
-      name: "Upgrade",
+      name: i18n.t("nav.upgrade"),
       path: "/upgrade",
       icon: <GiUpgrade className="text-2xl" />,
     },
     {
-      name: "Slots",
+      name: i18n.t("nav.slots"),
       path: "/slot",
       icon: <TbCat className="text-2xl" />,
     },
     {
-      name: "Daily Gift",
+      name: i18n.t("nav.dailyGift"),
       path: "/gift",
       icon: <FaGift className="text-2xl" />,
       badge: giftReady ? <GiftTag /> : undefined,
     },
     {
-      name: "Case Battles",
+      name: i18n.t("nav.caseBattles"),
       path: "/battles",
       icon: <GiCrossedSwords className="text-2xl" />,
     },
     // only admins see the backoffice; the api refuses everyone else anyway
     ...(userData?.isAdmin ? [{
-      name: "Backoffice",
+      name: i18n.t("nav.backoffice"),
       path: "/backoffice",
       icon: <MdOutlineAdminPanelSettings className="text-2xl" />,
     }] : [])
@@ -139,7 +140,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
               >
                 <img
                   src="/images/logo.webp"
-                  alt="logo"
+                  alt={i18n.t("common.logo")}
                   className="w-12 h-12 object-contain"
                 />
                 <div className="hidden md:flex flex-col justify-center">
@@ -187,7 +188,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
           ) : (
             <div className="flex items-center gap-4">
               <MainButton
-                text="Sign In"
+                text={i18n.t("nav.signIn")}
                 onClick={toggleUserFlow} />
             </div>
           )}

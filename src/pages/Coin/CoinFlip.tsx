@@ -9,6 +9,7 @@ import LiveBets from "./LiveBets";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
 import { getCoinFlipHistory } from "../../services/games/GamesServices";
+import i18n from "../../i18n";
 
 const socket = SocketConnection.getInstance();
 
@@ -164,15 +165,15 @@ const CoinFlip = () => {
             />
           </div>
           <div className="flex flex-col gap-2 w-full">
-            <label className="text-lg font-semibold">Choose a side</label>
+            <label className="text-lg font-semibold">{i18n.t("coin.chooseASide")}</label>
             <div className="flex items-center justify-between gap-2 w-full flex-col lg:flex-row">
               {
                 [{
-                  name: "Heads",
+                  name: i18n.t("coin.heads"),
                   color: "red",
                   id: 0
                 }, {
-                  name: "Tails",
+                  name: i18n.t("coin.tails"),
                   color: "green",
                   id: 1
                 }
@@ -228,7 +229,7 @@ const CoinFlip = () => {
             </div>
           </div>
           <div className="flex w-screen lg:w-[800px] p-4 flex-col">
-            <h3 className="mb-2 text-lg font-semibold">Game History:</h3>
+            <h3 className="mb-2 text-lg font-semibold">{i18n.t("coin.gameHistory")}</h3>
             <div className="flex items-center gap-2 justify-end w-full  overflow-hidden h-[24px]">
               {history.map((e, i) => (
                 <motion.div

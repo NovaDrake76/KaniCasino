@@ -1,6 +1,7 @@
 import Monetary from "../../../components/Monetary";
 import CompletionBar from "./CompletionBar";
 import { CollectionSummaryItem } from "../../../services/collections/CollectionService";
+import i18n from "../../../i18n";
 
 interface Props {
   collection: CollectionSummaryItem;
@@ -25,7 +26,7 @@ const CollectionCard: React.FC<Props> = ({ collection, isOwner, onClick }) => {
       <div className="flex items-center justify-between gap-2 w-full">
         <span className="font-semibold text-ink truncate">{c.title}</span>
         {c.complete && (
-          <span className="text-xs font-bold text-accent-gold shrink-0">COMPLETE</span>
+          <span className="text-xs font-bold text-accent-gold shrink-0">{i18n.t("common.complete")}</span>
         )}
       </div>
 

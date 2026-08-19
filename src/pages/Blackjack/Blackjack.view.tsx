@@ -7,6 +7,7 @@ import Monetary from "../../components/Monetary";
 import PlayingCard from "./PlayingCard";
 import { outcomeLabel, totalLabel } from "./blackjackCards";
 import { BlackjackViewProps } from "./Blackjack.types";
+import i18n from "../../i18n";
 
 const OUTCOME_TEXT: Record<string, string> = {
   blackjack: "text-[#FFCC00]",
@@ -174,7 +175,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
 
   return (
     <GameLayout
-      title="Blackjack"
+      title={i18n.t("blackjack.blackjack")}
       footer={
         <button
           onClick={() => hand?.rollId && openRoll(hand.rollId)}
@@ -195,13 +196,13 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
             onMax={maxOutBet}
             betValue={betValue}
             disabled={!betting || acting}
-            hint={<>Balance <Monetary value={walletBalance} /></>}
+            hint={<>{i18n.t("common.balance")} <Monetary value={walletBalance} /></>}
           />
 
           {awaitingInsurance && (
             <div className="rounded-md bg-[#19172D] border border-[#2A2840] p-3 flex flex-col gap-2">
               <span className="text-sm font-bold text-center">
-                Insurance? <span className="text-[#84819a] font-semibold">pays 2:1</span>
+                Insurance? <span className="text-[#84819a] font-semibold">{i18n.t("blackjack.pays21")}</span>
               </span>
               <span className="text-xs text-[#84819a] text-center">
                 costs <Monetary value={insuranceCost} />
@@ -226,10 +227,10 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
           )}
 
           <div className="grid grid-cols-2 gap-2">
-            <ActionButton label="Hit" icon={<GiCardDraw size={18} />} iconColor="text-[#FFCC00]" onClick={hit} disabled={!canHit} />
-            <ActionButton label="Stand" icon={<FaHandPaper size={14} />} iconColor="text-[#A78BFA]" onClick={stand} disabled={!canStand} />
-            <ActionButton label="Split" icon={<FaClone size={13} />} iconColor="text-red-400" onClick={split} disabled={!canSplit} />
-            <ActionButton label="Double" icon={<GiTwoCoins size={17} />} iconColor="text-[#5EEAD4]" onClick={double} disabled={!canDouble} />
+            <ActionButton label={i18n.t("blackjack.hit")} icon={<GiCardDraw size={18} />} iconColor="text-[#FFCC00]" onClick={hit} disabled={!canHit} />
+            <ActionButton label={i18n.t("blackjack.stand")} icon={<FaHandPaper size={14} />} iconColor="text-[#A78BFA]" onClick={stand} disabled={!canStand} />
+            <ActionButton label={i18n.t("blackjack.split")} icon={<FaClone size={13} />} iconColor="text-red-400" onClick={split} disabled={!canSplit} />
+            <ActionButton label={i18n.t("blackjack.double")} icon={<GiTwoCoins size={17} />} iconColor="text-[#5EEAD4]" onClick={double} disabled={!canDouble} />
           </div>
 
           <GameButton onClick={() => deal()} disabled={!betting || acting || betValue > walletBalance}>
@@ -250,11 +251,11 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
           )}
 
           <div className="flex items-center justify-between text-xs text-[#84819a]">
-            <span>Instant reveal</span>
+            <span>{i18n.t("blackjack.instantReveal")}</span>
             <button
               role="switch"
               aria-checked={instant}
-              aria-label="Instant reveal"
+              aria-label={i18n.t("blackjack.instantReveal")}
               onClick={() => setInstant(!instant)}
               className={`relative w-9 h-5 rounded-full border border-[#2A2840] transition-colors ${
                 instant ? "bg-[#4F46E5]" : "bg-[#19172D]"
@@ -270,7 +271,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
 
           {history.length > 0 && (
             <div className="flex flex-col gap-1">
-              <span className="text-xs uppercase tracking-wider text-[#84819a]">History</span>
+              <span className="text-xs uppercase tracking-wider text-[#84819a]">{i18n.t("blackjack.history")}</span>
               <div className="flex flex-wrap gap-1.5">
                 {history.map((h) => (
                   <button
@@ -302,7 +303,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
                 stagger={hand.dealer.hidden ? 0.36 : 0}
               />
             ) : (
-              <span className="text-[#625F7E] text-sm mt-12">Place a bet to start</span>
+              <span className="text-[#625F7E] text-sm mt-12">{i18n.t("blackjack.placeABetTo")}</span>
             )}
           </div>
 

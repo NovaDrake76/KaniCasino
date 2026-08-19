@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { BannerProps } from "./Types";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import i18n from "../../i18n";
 
 const Home = () => {
   const [cases, setCases] = useState<any>();
@@ -28,7 +29,7 @@ const Home = () => {
       setCases(response);
     } catch {
       setCases([]);
-      toast.error("Error while connecting to the server");
+      toast.error(i18n.t("home.errorWhileConnectingTo"));
     }
     setLoading(false);
   };
@@ -46,28 +47,28 @@ const Home = () => {
     {
       left: {
         image: "/images/marisaBanner.webp",
-        title: "CRASH GAME",
-        description: "Don't burn, fly high! Try your luck now!",
+        title: i18n.t("home.crashGame"),
+        description: i18n.t("home.dontBurnFlyHigh"),
         link: "/crash",
       },
       right: (
         <div>
-          <img src="/images/crashBannerTitle.webp" alt="upgrade" />
+          <img src="/images/crashBannerTitle.webp" alt={i18n.t("home.upgrade")} />
         </div>
       ),
     },
     {
       left: {
         image: "/images/banners/blue-archive-plate.webp",
-        title: "BLUE ARCHIVE",
-        description: "Four cases from Kivotos.",
+        title: i18n.t("home.blueArchive"),
+        description: i18n.t("home.fourCasesFromKivotos"),
         link: "/case/6a5afb4e445211422b946280",
       },
       right: (
         <div>
           <img
             src="/images/banners/blue-archive-lockup.webp"
-            alt="Blue Archive cases"
+            alt={i18n.t("home.blueArchiveCases")}
           />
         </div>
       ),
@@ -75,28 +76,28 @@ const Home = () => {
     {
       left: {
         image: "/images/banners/blackjack-plate.webp",
-        title: "BLACKJACK",
-        description: "Hit, stand, and beat the dealer.",
+        title: i18n.t("home.blackjack"),
+        description: i18n.t("home.hitStandAndBeat"),
         link: "/blackjack",
       },
       right: (
         <div>
-          <img src="/images/banners/blackjack-lockup.webp" alt="Blackjack" />
+          <img src="/images/banners/blackjack-lockup.webp" alt={i18n.t("blackjack.blackjack")} />
         </div>
       ),
     },
     {
       left: {
         image: "/images/banners/uma-musume-plate.webp",
-        title: "UMA MUSUME",
-        description: "Five cases, one winner.",
+        title: i18n.t("home.umaMusume"),
+        description: i18n.t("home.fiveCasesOneWinner"),
         link: "/case/6a6029119cfaa53787df47d0",
       },
       right: (
         <div>
           <img
             src="/images/banners/uma-musume-lockup.webp"
-            alt="Uma Musume cases"
+            alt={i18n.t("home.umaMusumeCases")}
           />
         </div>
       ),
@@ -104,28 +105,28 @@ const Home = () => {
     {
       left: {
         image: "/images/banners/plinko-plate.webp",
-        title: "PLINKO",
-        description: "Drop the ball and watch it fall.",
+        title: i18n.t("home.plinko"),
+        description: i18n.t("home.dropTheBallAnd"),
         link: "/plinko",
       },
       right: (
         <div>
-          <img src="/images/banners/plinko-lockup.webp" alt="Plinko" />
+          <img src="/images/banners/plinko-lockup.webp" alt={i18n.t("nav.plinko")} />
         </div>
       ),
     },
     {
       left: {
         image: "/images/banners/counter-strike-plate.webp",
-        title: "COUNTER-STRIKE",
-        description: "Open the cases, collect the rarest.",
+        title: i18n.t("home.counterStrike"),
+        description: i18n.t("home.openTheCasesCollect"),
         link: "/case/646ca0a4e9b0e208f5ddcfa6",
       },
       right: (
         <div>
           <img
             src="/images/banners/counter-strike-lockup.webp"
-            alt="Counter-Strike cases"
+            alt={i18n.t("home.counterStrikeCases")}
           />
         </div>
       ),
@@ -135,12 +136,12 @@ const Home = () => {
         image: "/images/homeBanner.webp",
         //if title is hide, it will hide the information component on the left side
         title: "hide",
-        description: "Try your luck now!",
+        description: i18n.t("home.tryYourLuckNow"),
         link: "/slots",
       },
       right: (
         <div className="hidden 2xl:flex 2xl:mr-36">
-          <img src="/images/KANICASINO.webp" alt="kanicasino" />
+          <img src="/images/KANICASINO.webp" alt={i18n.t("home.kanicasino")} />
         </div>
       ),
     },

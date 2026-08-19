@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 const HowToPlaySection = ({ title, content }: { title: string, content: string }) => (
     <div className="mb-2">
         <span className="font-bold">{title}: </span>
@@ -8,7 +9,7 @@ const HowToPlaySection = ({ title, content }: { title: string, content: string }
 const HowToPlay = () => {
     return (
         <div className="flex flex-col text-sm text-white">
-            <span className="font-bold text-lg mb-4">How to Play at KaniCasino</span>
+            <span className="font-bold text-lg mb-4">{i18n.t("help.howToPlayAt")}</span>
 
 
             {[

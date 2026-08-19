@@ -25,6 +25,7 @@ import {
   TieView,
   WinnerBanner,
 } from "./BattleRoom.types";
+import i18n from "../../../i18n";
 
 const REEL_MS = 4200; // must stay under the backend's REVEAL_MS (4500)
 const WINDOW_H = 420; // must match the BattleReel window (ITEM_H * WINDOW_CELLS)
@@ -188,7 +189,7 @@ export const useBattleRoomServices = () => {
   };
   const onCopyLink = () => {
     navigator.clipboard?.writeText(window.location.href);
-    toast.success("Invite link copied", { theme: "dark" });
+    toast.success(i18n.t("battles.inviteLinkCopied"), { theme: "dark" });
   };
   const onBack = () => navigate("/battles");
 

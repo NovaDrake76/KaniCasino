@@ -1,3 +1,4 @@
+import i18n from "../../i18n";
 const AboutMarketSection = ({ title, content }: { title: string, content: string }) => (
     <div className="mb-2">
         <span className="font-bold">{title}: </span>
@@ -8,7 +9,7 @@ const AboutMarketSection = ({ title, content }: { title: string, content: string
 const AboutTheMarket = () => {
     return (
         <div className="flex flex-col text-sm text-white">
-            <span className="font-bold text-lg mb-4">About the KaniCasino Market</span>
+            <span className="font-bold text-lg mb-4">{i18n.t("help.aboutTheKanicasinoMarket")}</span>
             <span className="mb-2">
                 Explore the virtual marketplace at KaniCasino, where you can buy and sell in-game items with other players. Read on to understand how the market works.
             </span>

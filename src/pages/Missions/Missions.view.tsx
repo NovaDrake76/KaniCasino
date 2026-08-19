@@ -1,6 +1,7 @@
 import Skeleton from "react-loading-skeleton";
 import MissionCard from "./components/MissionCard";
 import { MissionsData } from "../../services/missions/MissionService";
+import i18n from "../../i18n";
 
 interface Props {
   data: MissionsData | null;
@@ -33,7 +34,7 @@ const MissionsView: React.FC<Props> = ({
   caseImage,
 }) => {
   if (!isOwner) {
-    return <p className="text-ink-muted py-8 text-center">Missions are private.</p>;
+    return <p className="text-ink-muted py-8 text-center">{i18n.t("missions.missionsArePrivate")}</p>;
   }
   if (loading) {
     return (
@@ -47,7 +48,7 @@ const MissionsView: React.FC<Props> = ({
     );
   }
   if (error || !data) {
-    return <p className="text-ink-muted py-8 text-center">Could not load missions.</p>;
+    return <p className="text-ink-muted py-8 text-center">{i18n.t("missions.couldNotLoadMissions")}</p>;
   }
 
   const grouped = CATEGORY_ORDER.map((cat) => ({

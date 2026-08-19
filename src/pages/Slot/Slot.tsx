@@ -8,6 +8,7 @@ import RenderMike from './RenderMike';
 import bigwin from "/bigwin.mp3"
 import ValueViewer from './ValueViewer';
 import UserContext from '../../UserContext';
+import i18n from "../../i18n";
 // import { RotatingLines } from "react-loader-spinner";
 
 const renderPlaceholder = () => {
@@ -74,7 +75,7 @@ const Slots = () => {
         }
 
         if (userData?.walletBalance < betAmount) {
-            toast.error("Insufficient funds");
+            toast.error(i18n.t("blackjack.insufficientFunds"));
             return;
         }
 

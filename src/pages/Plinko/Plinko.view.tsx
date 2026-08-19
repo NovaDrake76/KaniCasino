@@ -30,6 +30,7 @@ import {
 } from "./plinkoBoard";
 import { AUTO_COUNTS } from "./Plinko.services";
 import { PlinkoBall, PlinkoViewProps } from "./Plinko.types";
+import i18n from "../../i18n";
 
 const PEG_ROWS = pegRows();
 
@@ -110,7 +111,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   openRoll,
 }) => (
   <GameLayout
-    title="Plinko"
+    title={i18n.t("nav.plinko")}
     panel={
       <>
         <ModeToggle mode={mode} setMode={setMode} manualDisabled={autoRunning} autoDisabled={autoRunning} />
@@ -126,10 +127,10 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
           hint={`Bet 1 to ${maxBet.toLocaleString("en-US")} on ${risk} risk`}
         />
 
-        <OptionRow label="Risk" options={RISKS} value={risk} onChange={changeRisk} disabled={!canChangeRisk} />
+        <OptionRow label={i18n.t("plinko.risk")} options={RISKS} value={risk} onChange={changeRisk} disabled={!canChangeRisk} />
 
         {mode === "auto" && (
-          <OptionRow label="Balls" options={AUTO_COUNTS} value={autoCount} onChange={setAutoCount} disabled={autoRunning} />
+          <OptionRow label={i18n.t("plinko.balls")} options={AUTO_COUNTS} value={autoCount} onChange={setAutoCount} disabled={autoRunning} />
         )}
 
         {mode === "manual" ? (
@@ -162,7 +163,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
           <span className="flex items-center gap-1">
             Max win <Monetary value={MAX_WIN} />
           </span>
-          <span>Every drop is provably fair; click a result to verify it.</span>
+          <span>{i18n.t("plinko.provablyFairHint")}</span>
         </div>
       </>
     }

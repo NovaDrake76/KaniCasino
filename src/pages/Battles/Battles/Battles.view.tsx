@@ -3,6 +3,7 @@ import Title from "../../../components/Title";
 import Monetary from "../../../components/Monetary";
 import Avatar from "../../../components/Avatar";
 import { BattlesViewProps } from "./Battles.types";
+import i18n from "../../../i18n";
 
 const BattlesView: React.FC<BattlesViewProps> = ({
   modes,
@@ -28,7 +29,7 @@ const BattlesView: React.FC<BattlesViewProps> = ({
   slotsFor,
 }) => (
   <div className="w-screen flex flex-col items-center py-8 gap-8 px-4">
-    <Title title="Case Battles" />
+    <Title title={i18n.t("nav.caseBattles")} />
 
     <div className="flex flex-col gap-4 w-full max-w-[1100px] bg-[#212031] rounded-lg p-5">
       <div className="flex flex-col gap-2">
@@ -93,7 +94,7 @@ const BattlesView: React.FC<BattlesViewProps> = ({
               Baka mode
             </span>
             Flips the win condition: the player or team with the{" "}
-            <span className="text-white font-semibold">lowest</span> total value
+            <span className="text-white font-semibold">{i18n.t("battles.lowest")}</span> total value
             wins the pot instead of the highest. Bad luck pays off.
           </div>
         </div>
@@ -128,18 +129,18 @@ const BattlesView: React.FC<BattlesViewProps> = ({
 
     <div className="flex flex-col gap-3 w-full max-w-[1100px]">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <span className="font-bold text-lg">Pick cases</span>
+        <span className="font-bold text-lg">{i18n.t("battles.pickCases")}</span>
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search cases..."
+          placeholder={i18n.t("battles.searchCases")}
           className="bg-[#19172D] border border-gray-700 focus:border-indigo-500 outline-none rounded px-3 py-1.5 text-sm w-full sm:w-64 transition-all"
         />
       </div>
       <div className="flex flex-wrap gap-4 justify-center">
         {loadingCases ? (
-          <span className="text-[#84819a] py-6">Loading cases...</span>
+          <span className="text-[#84819a] py-6">{i18n.t("battles.loadingCases")}</span>
         ) : cases.length === 0 ? (
           <span className="text-[#84819a] py-6">
             {search ? `No cases match "${search}".` : "No cases available."}
@@ -175,9 +176,9 @@ const BattlesView: React.FC<BattlesViewProps> = ({
     </div>
 
     <div className="flex flex-col gap-2 w-full max-w-[1100px]">
-      <span className="font-bold text-lg">Open battles</span>
+      <span className="font-bold text-lg">{i18n.t("battles.openBattles")}</span>
       {waiting.length === 0 ? (
-        <span className="text-[#84819a]">No open battles yet.</span>
+        <span className="text-[#84819a]">{i18n.t("battles.noOpenBattlesYet")}</span>
       ) : (
         waiting.map((b) => (
           <div

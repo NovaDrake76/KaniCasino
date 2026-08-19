@@ -7,6 +7,7 @@ import { RotatingLines } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import UserContext from "../UserContext";
 import Monetary from "./Monetary";
+import i18n from "../i18n";
 
 
 interface itemProps {
@@ -116,7 +117,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
           <Link
             to={`/provably-fair?item=${item.uniqueId}`}
             className="absolute top-9 right-1 z-30 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
-            title="Verify this drop (provably fair)"
+            title={i18n.t("common.verifyThisDropProvably")}
           >
             <BsShieldFillCheck className="text-2xl text-green-500 hover:text-green-300 transition-all cursor-pointer" />
           </Link>
@@ -144,7 +145,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
             disabled={selling}
             className="w-full rounded px-3 py-1.5 text-xs md:text-sm font-semibold bg-[#19172D] hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap"
           >
-            {selling ? "Selling..." : <span className="flex items-center justify-center gap-1">Sell <Monetary value={item.sellValue ?? 0} /></span>}
+            {selling ? "Selling..." : <span className="flex items-center justify-center gap-1">{i18n.t("common.sell")} <Monetary value={item.sellValue ?? 0} /></span>}
           </button>
           {quantity > 1 && (
             <button

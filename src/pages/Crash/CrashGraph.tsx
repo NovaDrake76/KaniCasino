@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { multiplierAt, elapsedFor, axisRange, pointFor, yTicks, xTicks } from "./crashCurve";
+import i18n from "../../i18n";
 
 interface CrashGraphProps {
     gameStarted: boolean;
@@ -285,7 +286,7 @@ const CrashGraph: React.FC<CrashGraphProps> = ({ gameStarted, gameEnded, multipl
             <img
                 ref={spriteRef}
                 src={idle}
-                alt="marisa"
+                alt={i18n.t("crash.marisa")}
                 width={SPRITE_W}
                 className="absolute top-0 left-0 w-20 select-none"
             />
