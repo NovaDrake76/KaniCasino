@@ -7,6 +7,7 @@ import {
   ReferralDashboard,
 } from "../../services/referrals/ReferralServices";
 import UserContext from "../../UserContext";
+import i18n from "../../i18n";
 
 export const useAffiliatesServices = () => {
   const { userData } = useContext(UserContext);
@@ -39,7 +40,7 @@ export const useAffiliatesServices = () => {
     setSaving(true);
     try {
       await createReferralCode(code);
-      toast.success("Your referral link is live");
+      toast.success(i18n.t("affiliates.yourReferralLinkIs"));
       await load();
     } catch (e: any) {
       toast.error(e.response?.data?.message || "Could not save the code");
@@ -52,7 +53,7 @@ export const useAffiliatesServices = () => {
 
   const copyLink = () => {
     navigator.clipboard.writeText(link);
-    toast.info("Link copied");
+    toast.info(i18n.t("affiliates.linkCopied"));
   };
 
   const claim = async () => {

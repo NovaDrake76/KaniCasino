@@ -1,23 +1,24 @@
+import i18n from "../../i18n";
 const FrequentlyAskedQuestions = () => {
 
     const faqData = [
         {
-            question: 'Is my personal information safe?',
-            answer: 'Yes, we prioritize the security of your personal information. We use industry-standard encryption and follow best practices to ensure your data is kept safe and secure.'
+            question: i18n.t("help.isMyPersonalInformation"),
+            answer: i18n.t("help.yesWePrioritizeThe")
         },
         {
-            question: 'Can I upgrade items in my inventory?',
-            answer: 'Yes, you can upgrade items by selecting them and choosing a target item with a higher rarity. The success rate depends on the rarity of the items.'
+            question: i18n.t("help.canIUpgradeItems"),
+            answer: i18n.t("help.yesYouCanUpgrade")
         },
         {
-            question: 'How can I contact support?',
-            answer: 'If you need assistance or have any questions, you can contact us via email at novadrake76@gmail.com or on Discord: novadrake76'
+            question: i18n.t("help.howCanIContact"),
+            answer: i18n.t("help.ifYouNeedAssistance")
         },
     ];
 
     return (
         <div className="p-4">
-            <span className="text-2xl font-bold mb-4 ">Frequently Asked Questions</span>
+            <span className="text-2xl font-bold mb-4 ">{i18n.t("help.frequentlyAskedQuestions")}</span>
 
             <div className="flex flex-col gap-4 mt-2">  {faqData.map((item, index) => (
                 <div key={index} className="mb-6">

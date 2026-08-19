@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Monetary from "../../components/Monetary";
 import { rarityColor, rarityName } from "../../utils/rarity";
+import i18n from "../../i18n";
 
 interface Props {
   item: {
@@ -59,16 +60,16 @@ const MarketItem: React.FC<Props> = ({ item }) => {
         <div className="mt-1 flex items-end justify-between gap-2">
           {listed ? (
             <div className="flex flex-col min-w-0">
-              <span className="text-[10px] text-ink-muted">Starting at</span>
+              <span className="text-[10px] text-ink-muted">{i18n.t("market.startingAt")}</span>
               <span className="text-sm font-bold text-accent truncate">
                 <Monetary value={item.cheapestPrice || 0} />
               </span>
             </div>
           ) : (
-            <span className="text-xs text-ink-faint">No listings</span>
+            <span className="text-xs text-ink-faint">{i18n.t("market.noListings")}</span>
           )}
           <span className="text-[10px] text-ink-faint shrink-0 group-hover:text-ink-muted">
-            {listed ? "View" : "Place bid"}
+            {listed ? "View" : i18n.t("market.placeBid")}
           </span>
         </div>
       </div>

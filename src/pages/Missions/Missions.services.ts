@@ -9,6 +9,7 @@ import {
 } from "../../services/missions/MissionService";
 import { getCases } from "../../services/cases/CaseServices";
 import { toastMissionComplete } from "./components/missionCompleteToast";
+import i18n from "../../i18n";
 
 export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
   const [data, setData] = useState<MissionsData | null>(null);
@@ -74,10 +75,10 @@ export const useMissionsServices = ({ isOwner }: { isOwner: boolean }) => {
     try {
       const res = await claimMission(key);
       if (res.claimed) toast.success(`Reward claimed: +${res.reward} K₽`);
-      else if (res.alreadyClaimed) toast.info("Already claimed");
+      else if (res.alreadyClaimed) toast.info(i18n.t("affiliates.alreadyClaimed"));
       await load();
     } catch {
-      toast.error("Could not claim reward");
+      toast.error(i18n.t("missions.couldNotClaimReward"));
     } finally {
       setClaimingKey(null);
     }

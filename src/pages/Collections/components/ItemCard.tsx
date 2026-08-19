@@ -1,6 +1,7 @@
 import { BsLockFill } from "react-icons/bs";
 import { rarityColor, rarityName, rarityAbbr } from "../../../utils/rarity";
 import { AlbumItem } from "../../../services/collections/CollectionService";
+import i18n from "../../../i18n";
 
 interface Props {
   item: AlbumItem;
@@ -120,7 +121,7 @@ const ItemCard: React.FC<Props> = ({ item }) => {
                 {item.description}
               </p>
             ) : (
-              <p className="text-sm italic text-[#8A8064]">No description yet.</p>
+              <p className="text-sm italic text-[#8A8064]">{i18n.t("collections.noDescriptionYet")}</p>
             )}
           </div>
           <div

@@ -9,6 +9,7 @@ import LiveBets from "./LiveBets";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
 import { getCoinFlipHistory } from "../../services/games/GamesServices";
+import i18n from "../../i18n";
 
 const socket = SocketConnection.getInstance();
 
@@ -164,15 +165,15 @@ const CoinFlip = () => {
             />
           </div>
           <div className="flex flex-col gap-2 w-full">
-            <label className="text-lg font-semibold">Choose a side</label>
+            <label className="text-lg font-semibold">{i18n.t("coin.chooseASide")}</label>
             <div className="flex items-center justify-between gap-2 w-full flex-col lg:flex-row">
               {
                 [{
-                  name: "Heads",
+                  name: i18n.t("coin.heads"),
                   color: "red",
                   id: 0
                 }, {
-                  name: "Tails",
+                  name: i18n.t("coin.tails"),
                   color: "green",
                   id: 1
                 }
@@ -196,13 +197,13 @@ const CoinFlip = () => {
             >
               {
                 spinning ? "Spinning..."
-                  : choice === null ? "Choose a side"
-                    : bet === 0 ? "Place the bet value"
-                      : bet < MIN_BET ? `Min bet is ${MIN_BET}`
-                        : bet > MAX_BET ? "Max bet is 1M"
+                  : choice === null ? i18n.t("coin.chooseASide")
+                    : bet === 0 ? i18n.t("coin.placeTheBetValue")
+                      : bet < MIN_BET ? i18n.t("coin.minBet", { amount: MIN_BET })
+                        : bet > MAX_BET ? i18n.t("coin.maxBetIs1m")
                           : userGambled ? "You're in!"
-                            : userData !== null && userData.walletBalance < bet ? "Not enough money"
-                              : "Enter the Game"
+                            : userData !== null && userData.walletBalance < bet ? i18n.t("coin.notEnoughMoney")
+                              : i18n.t("coin.enterTheGame")
               }
             </GameButton>
           </div>
@@ -228,7 +229,7 @@ const CoinFlip = () => {
             </div>
           </div>
           <div className="flex w-screen lg:w-[800px] p-4 flex-col">
-            <h3 className="mb-2 text-lg font-semibold">Game History:</h3>
+            <h3 className="mb-2 text-lg font-semibold">{i18n.t("coin.gameHistory")}</h3>
             <div className="flex items-center gap-2 justify-end w-full  overflow-hidden h-[24px]">
               {history.map((e, i) => (
                 <motion.div

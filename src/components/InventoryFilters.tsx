@@ -1,4 +1,5 @@
 import { BsSearch } from 'react-icons/bs';
+import i18n from "../i18n";
 
 interface Filters {
     filters: {
@@ -26,7 +27,7 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             </span>
             <input
                 type="text"
-                placeholder="Search"
+                placeholder={i18n.t("common.search")}
                 value={filters.name}
                 onChange={(e) => setFilters((prev) => ({ ...prev, name: e.target.value }))}
                 onKeyPress={onKeyPress}
@@ -40,12 +41,12 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             onChange={(e) => setFilters((prev) => ({ ...prev, rarity: e.target.value }))}
             className="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
         >
-            <option value="">All Rarities</option>
-            <option value="1">Common</option>
-            <option value="2">Rare</option>
-            <option value="3">Epic</option>
-            <option value="4">Ultra Rare</option>
-            <option value="5">Unique</option>
+            <option value="">{i18n.t("common.allRarities")}</option>
+            <option value="1">{i18n.t("rarity.1")}</option>
+            <option value="2">{i18n.t("rarity.2")}</option>
+            <option value="3">{i18n.t("rarity.3")}</option>
+            <option value="4">{i18n.t("rarity.4")}</option>
+            <option value="5">{i18n.t("rarity.5")}</option>
         </select>
 
         {/* Sort by */}
@@ -54,11 +55,11 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             onChange={(e) => setFilters((prev) => ({ ...prev, sortBy: e.target.value }))}
             className="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
         >
-            <option value="">Sort By</option>
-            <option value="newer">Most Recent</option>
-            <option value="older">Oldest First</option>
-            <option value="mostRare">Most Rare First</option>
-            <option value="mostCommon">Most Common First</option>
+            <option value="">{i18n.t("common.sortBy")}</option>
+            <option value="newer">{i18n.t("common.mostRecent")}</option>
+            <option value="older">{i18n.t("common.oldestFirst")}</option>
+            <option value="mostRare">{i18n.t("common.mostRareFirst")}</option>
+            <option value="mostCommon">{i18n.t("common.mostCommonFirst")}</option>
         </select>
 
 
@@ -68,8 +69,8 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             onChange={(e) => setFilters((prev) => ({ ...prev, order: e.target.value }))}
             className="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
         >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
+            <option value="asc">{i18n.t("common.ascending")}</option>
+            <option value="desc">{i18n.t("common.descending")}</option>
         </select> */}
 
 
@@ -79,7 +80,7 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             onClick={() => setFilters({ name: '', rarity: '', sortBy: '', order: 'asc' })}
             className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200"
         >
-            Clear Filters
+            {i18n.t("common.clearFilters")}
         </button>
     </div>
 )

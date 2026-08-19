@@ -5,6 +5,7 @@ import UserContext from "../../UserContext";
 import { dropPlinko } from "../../services/games/GamesServices";
 import { MAX_BET, PlinkoRisk } from "./plinkoBoard";
 import { PlinkoBall, PlinkoDropResult } from "./Plinko.types";
+import i18n from "../../i18n";
 
 const DEFAULT_BET = 10;
 const HISTORY_SIZE = 8;
@@ -46,7 +47,7 @@ export const usePlinkoServices = () => {
     }
     // the wallet only refreshes when a ball lands, so count the stakes still in the air
     if (userData.walletBalance - pendingStake.current < betValue) {
-      toast.error("Insufficient funds", { theme: "dark" });
+      toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
       return false;
     }
     pendingStake.current += betValue;

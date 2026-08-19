@@ -19,6 +19,7 @@ import type { GiftGrant } from "../../services/gift/GiftService";
 import FreeOpenings from "./FreeOpenings";
 import { applyMeta } from "../../seo/meta";
 import { caseMeta } from "../../seo/caseMeta";
+import i18n from "../../i18n";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -115,7 +116,7 @@ const CasePage = () => {
       setAnimationAux(false);
       setOpenedItems([]);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Could not sell items", { theme: "dark" });
+      toast.error(error?.response?.data?.message || i18n.t("casePage.couldNotSellItems"), { theme: "dark" });
     }
     setSellingAll(false);
   };
@@ -157,7 +158,7 @@ const CasePage = () => {
           onClick={() => navigate(`/battles?add=${id}`)}
           className="absolute top-4 right-4 md:right-8 z-20 px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm"
         >
-          Add to battle
+          {i18n.t("casePage.addToBattle")}
         </button>
       )}
       <div className="flex flex-col items-center overflow-hidden  md:max-w-[1920px]">
@@ -181,13 +182,13 @@ const CasePage = () => {
           ) : (
             <div className="w-60 ml-0 md:ml-20">
               <MainButton
-                text={userData == null ? "Sign in to play" : freeNow ? (
+                text={userData == null ? i18n.t("upgrade.signInToPlay") : freeNow ? (
                   <div className="flex items-center justify-center gap-1 text-base">
                     <FaGift />
                     <span>Open free{quantity > 1 ? ` x${quantity}` : ""}</span>
                   </div>
                 ) : <div className="flex items-center justify-center text-base">
-                <span className="mr-1">Open case - </span>{<Monetary value={data.price * quantity}/>}
+                <span className="mr-1">{i18n.t("casePage.openCase")} </span>{<Monetary value={data.price * quantity}/>}
                 </div>}
                 onClick={openCase}
                 loading={loadingButton}
@@ -217,7 +218,7 @@ const CasePage = () => {
         </div>
 
         <div className="flex flex-col md:p-8 gap-2 items-center ">
-          <Title title="Items in this case" />
+          <Title title={i18n.t("casePage.itemsInThisCase")} />
           <div className="flex flex-wrap gap-6 px-8 justify-center w-screen max-w-[1920px]">
             {loading
               ? { array: Array(12).fill(0) }.array.map((_, i) => (

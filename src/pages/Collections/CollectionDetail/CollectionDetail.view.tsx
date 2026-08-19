@@ -10,12 +10,13 @@ import ItemDetailModal from "../components/ItemDetailModal";
 import QuicksellModal from "../components/QuicksellModal";
 import { CollectionDetailViewProps } from "./CollectionDetail.types";
 import { AlbumFilter } from "./CollectionDetail.services";
+import i18n from "../../../i18n";
 
-const FILTERS: { key: AlbumFilter; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "owned", label: "Owned" },
-  { key: "missing", label: "Missing" },
-  { key: "duplicates", label: "Duplicates" },
+const FILTERS = (): { key: AlbumFilter; label: string }[] => [
+  { key: "all", label: i18n.t("collections.all") },
+  { key: "owned", label: i18n.t("collections.owned") },
+  { key: "missing", label: i18n.t("collections.missing") },
+  { key: "duplicates", label: i18n.t("collections.duplicates") },
 ];
 
 const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
@@ -57,7 +58,7 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
       {loading && !detail ? (
         <Skeleton height={140} borderRadius={12} highlightColor="#161427" baseColor="#1c1a31" />
       ) : error || !detail ? (
-        <p className="text-ink-muted">Could not load this collection.</p>
+        <p className="text-ink-muted">{i18n.t("collections.couldNotLoadThis")}</p>
       ) : (
         <>
           <div className="w-full bg-surface rounded-xl border border-line p-6 flex flex-col md:flex-row items-center gap-6">
@@ -85,7 +86,7 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
             {isOwner && detail.duplicatesValue > 0 && (
               <div className="w-full md:w-52 shrink-0">
                 <MainButton
-                  text={<span className="whitespace-nowrap">Quicksell duplicates</span>}
+                  text={<span className="whitespace-nowrap">{i18n.t("collections.quicksellDuplicates")}</span>}
                   onClick={openQuicksell}
                   icon={<MdOutlineSell />}
                   type="warning"
@@ -99,7 +100,7 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-1 bg-surface rounded-lg p-1 border border-line">
-              {FILTERS.map((f) => (
+              {FILTERS().map((f) => (
                 <button
                   key={f.key}
                   onClick={() => setFilter(f.key)}
@@ -118,13 +119,13 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
               onChange={(e) => setSortBy(e.target.value as "mostRare" | "mostCommon")}
               className="bg-surface-nav border border-line rounded-md px-3 py-2 text-sm text-ink-soft"
             >
-              <option value="mostRare">Rarest first</option>
-              <option value="mostCommon">Most common first</option>
+              <option value="mostRare">{i18n.t("collections.rarestFirst")}</option>
+              <option value="mostCommon">{i18n.t("collections.mostCommonFirst")}</option>
             </select>
           </div>
 
           {detail.items.length === 0 ? (
-            <p className="text-ink-muted py-8 text-center">No items match this filter.</p>
+            <p className="text-ink-muted py-8 text-center">{i18n.t("collections.noItemsMatchThis")}</p>
           ) : (
             <div className="flex flex-wrap gap-4 md:gap-6 justify-center">
               {detail.items.map((item) => (
@@ -142,9 +143,9 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
           {detail.extras.length > 0 && (
             <div className="flex flex-col gap-4 mt-4">
               <div className="flex flex-col gap-1">
-                <h3 className="text-lg font-semibold text-ink">No longer in this case</h3>
+                <h3 className="text-lg font-semibold text-ink">{i18n.t("collections.noLongerInThis")}</h3>
                 <span className="text-sm text-ink-muted">
-                  Items you collected that have since been removed from the case.
+                  {i18n.t("collections.itemsYouCollectedThat")}
                 </span>
               </div>
               <div className="flex flex-wrap gap-4 md:gap-6 justify-center">

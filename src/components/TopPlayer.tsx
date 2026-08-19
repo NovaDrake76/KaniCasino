@@ -1,6 +1,7 @@
 import { User } from '../components/Types';
 import Player from './Player';
 import Monetary from './Monetary';
+import i18n from "../i18n";
 
 interface CardProps {
     user: User;
@@ -22,7 +23,7 @@ const TopPlayer: React.FC<CardProps> = ({ user, rank }) => {
                     <Monetary value={user.weeklyWinnings} />
                 </div>
             </div>
-            <img src="images/podium.svg" alt="podium" className="absolute top-[70px] z-0" />
+            <img src="images/podium.svg" alt={i18n.t("common.podium")} className="absolute top-[70px] z-0" />
         </div>
     );
 };

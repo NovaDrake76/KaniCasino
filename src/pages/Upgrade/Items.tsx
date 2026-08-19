@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import UserContext from "../../UserContext";
 import UserItems from "./UserItems";
 import ChooseUpgradeItems from "./ChooseUpgradeItems";
+import i18n from "../../i18n";
 
 interface Inventory {
     selectedItems: any;
@@ -58,7 +59,7 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
         )
     } else {
         return (
-            <div className="w-full flex justify-center">Sign in to play</div>
+            <div className="w-full flex justify-center">{i18n.t("upgrade.signInToPlay")}</div>
         )
     }
 

@@ -9,6 +9,7 @@ import Monetary from "../../components/Monetary";
 import Filters, { MarketFilters } from "./Filters";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import i18n from "../../i18n";
 
 interface MarketRow {
   image: string;
@@ -97,10 +98,10 @@ const Marketplace: React.FC = () => {
   const cancel = async (id: string) => {
     try {
       const res = await cancelBuyOrder(id);
-      toast.success(`Order cancelled, K₽${res.refunded} refunded`);
+      toast.success(i18n.t("market.orderCancelled", { amount: res.refunded }));
       setRefresh(true);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Could not cancel the order");
+      toast.error(err?.response?.data?.message || i18n.t("market.couldNotCancelThe"));
     }
   };
 
@@ -111,9 +112,9 @@ const Marketplace: React.FC = () => {
       <div className="w-full max-w-[1312px] px-4 md:px-8 py-6 flex flex-col gap-5">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold text-ink">Marketplace</h1>
+            <h1 className="text-2xl font-bold text-ink">{i18n.t("market.marketplace")}</h1>
             <span className="text-xs text-ink-muted">
-              Buy from other players, or place a buy order and let the market come to you.
+              {i18n.t("market.buyFromOtherPlayers")}
             </span>
           </div>
           {isLogged && (
@@ -121,7 +122,7 @@ const Marketplace: React.FC = () => {
               onClick={() => setOpenSellModal(true)}
               className="px-4 h-10 rounded-md bg-accent hover:bg-accent-light text-sm font-semibold text-white"
             >
-              Sell an item
+              {i18n.t("market.sellAnItem")}
             </button>
           )}
         </div>
@@ -153,7 +154,7 @@ const Marketplace: React.FC = () => {
                     onClick={() => cancel(o._id)}
                     className="ml-1 text-[10px] text-ink-faint hover:text-red-400"
                   >
-                    Cancel
+                    {i18n.t("collections.cancel")}
                   </button>
                 </div>
               ))}
@@ -180,7 +181,7 @@ const Marketplace: React.FC = () => {
           </div>
         ) : (
           <div className="rounded-xl border border-line bg-surface p-12 text-center text-ink-muted">
-            Nothing matches those filters.
+            {i18n.t("market.nothingMatchesThoseFilters")}
           </div>
         )}
 

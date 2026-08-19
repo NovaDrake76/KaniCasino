@@ -6,6 +6,7 @@ import OptionRow from "../../components/game/OptionRow";
 import Monetary from "../../components/Monetary";
 import { AUTO_COUNTS } from "./Dice.services";
 import { DiceViewProps } from "./Dice.types";
+import i18n from "../../i18n";
 
 const TICKS = [0, 25, 50, 75, 100];
 const GREEN = "#22C55E";
@@ -53,7 +54,7 @@ const DiceView: React.FC<DiceViewProps> = ({
 
   return (
     <GameLayout
-      title="Dice"
+      title={i18n.t("dice.dice")}
       footer={
         <p className="text-ink-muted text-xs max-w-[640px] text-center">
           Balance: <Monetary value={walletBalance} />. Every roll is provably fair. 99% RTP, 1% house edge.
@@ -74,21 +75,21 @@ const DiceView: React.FC<DiceViewProps> = ({
           />
 
           <div className="flex items-center justify-between text-xs font-semibold text-ink-muted mt-1">
-            <span>Profit on Win</span>
+            <span>{i18n.t("crash.profitOnWin")}</span>
             <span className="text-accent-gold"><Monetary value={profitOnWin} showFraction /></span>
           </div>
 
           {mode === "auto" && (
-            <OptionRow label="Number of Bets" options={AUTO_COUNTS} value={autoCount} onChange={setAutoCount} disabled={autoRunning} />
+            <OptionRow label={i18n.t("dice.numberOfBets")} options={AUTO_COUNTS} value={autoCount} onChange={setAutoCount} disabled={autoRunning} />
           )}
 
           {mode === "manual" ? (
             <GameButton onClick={roll} disabled={rolling}>
-              {isLogged ? "Roll Dice" : "Sign in to play"}
+              {isLogged ? i18n.t("dice.rollDice") : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           ) : (
             <GameButton onClick={autoRunning ? stopAuto : startAuto} variant={autoRunning ? "danger" : "primary"}>
-              {autoRunning ? `Stop (${autoLeft} left)` : isLogged ? `Start ${autoCount} Bets` : "Sign in to play"}
+              {autoRunning ? i18n.t("common.stopAuto", { left: autoLeft }) : isLogged ? i18n.t("common.startBets", { count: autoCount }) : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           )}
         </>
@@ -143,7 +144,7 @@ const DiceView: React.FC<DiceViewProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-ink-muted">Multiplier</span>
+              <span className="text-xs font-semibold text-ink-muted">{i18n.t("dice.multiplier")}</span>
               <input
                 type="number"
                 step="0.0001"
@@ -167,7 +168,7 @@ const DiceView: React.FC<DiceViewProps> = ({
               </button>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-ink-muted">Win Chance</span>
+              <span className="text-xs font-semibold text-ink-muted">{i18n.t("dice.winChance")}</span>
               <div className="relative">
                 <input
                   type="number"

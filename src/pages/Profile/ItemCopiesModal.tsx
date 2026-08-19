@@ -7,6 +7,7 @@ import Monetary from "../../components/Monetary";
 import Pagination from "../../components/Pagination";
 import Rarities from "../../components/Rarities";
 import { getItemCopies, sellItems } from "../../services/users/UserServices";
+import i18n from "../../i18n";
 
 interface Copy {
   uniqueId: string;
@@ -60,7 +61,7 @@ const ItemCopiesModal: React.FC<Props> = ({ userId, item, isOwner, open, setOpen
       setPage(nextPage);
       await load(nextPage);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Could not sell item", { theme: "dark" });
+      toast.error(error?.response?.data?.message || i18n.t("common.couldNotSellItem"), { theme: "dark" });
     }
     setSellingId(null);
   };
@@ -90,9 +91,9 @@ const ItemCopiesModal: React.FC<Props> = ({ userId, item, isOwner, open, setOpen
 
         <div className="flex flex-col gap-1 border-t border-line pt-3">
           {loading ? (
-            <span className="text-sm text-ink-muted py-4 text-center">Loading...</span>
+            <span className="text-sm text-ink-muted py-4 text-center">{i18n.t("common.loading")}</span>
           ) : copies.length === 0 ? (
-            <span className="text-sm text-ink-muted py-4 text-center">No copies left.</span>
+            <span className="text-sm text-ink-muted py-4 text-center">{i18n.t("profile.noCopiesLeft")}</span>
           ) : (
             copies.map((c) => (
               <div
@@ -105,7 +106,7 @@ const ItemCopiesModal: React.FC<Props> = ({ userId, item, isOwner, open, setOpen
                 <div className="flex items-center gap-2 shrink-0">
                   <Link
                     to={`/provably-fair?item=${c.uniqueId}`}
-                    title="Verify this drop (provably fair)"
+                    title={i18n.t("common.verifyThisDropProvably")}
                     className="text-green-500 hover:text-green-300 transition-colors"
                   >
                     <BsShieldFillCheck className="text-lg" />

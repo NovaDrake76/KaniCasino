@@ -5,6 +5,7 @@ import MainButton from "../../components/MainButton";
 import Monetary from "../../components/Monetary";
 import Avatar from "../../components/Avatar";
 import { ReferralDashboard, ReferralRow } from "../../services/referrals/ReferralServices";
+import i18n from "../../i18n";
 
 interface Props {
   userData: any;
@@ -31,12 +32,12 @@ const ReferralTable = ({ referrals, milestoneLevel }: { referrals: ReferralRow[]
     <table className="w-full text-left text-sm">
       <thead>
         <tr className="text-ink-muted">
-          <th className="font-medium py-2 pr-4">User</th>
-          <th className="font-medium py-2 pr-4">Joined</th>
-          <th className="font-medium py-2 pr-4">Level</th>
-          <th className="font-medium py-2 pr-4">Total wagered</th>
-          <th className="font-medium py-2 pr-4">Commission earned</th>
-          <th className="font-medium py-2">Status</th>
+          <th className="font-medium py-2 pr-4">{i18n.t("affiliates.user")}</th>
+          <th className="font-medium py-2 pr-4">{i18n.t("affiliates.joined")}</th>
+          <th className="font-medium py-2 pr-4">{i18n.t("affiliates.level")}</th>
+          <th className="font-medium py-2 pr-4">{i18n.t("affiliates.totalWagered")}</th>
+          <th className="font-medium py-2 pr-4">{i18n.t("affiliates.commissionEarned")}</th>
+          <th className="font-medium py-2">{i18n.t("affiliates.status")}</th>
         </tr>
       </thead>
       <tbody>
@@ -54,9 +55,9 @@ const ReferralTable = ({ referrals, milestoneLevel }: { referrals: ReferralRow[]
               {r.milestonePaid && (
                 <span
                   className="ml-2 text-xs px-1.5 py-0.5 rounded bg-accent-gold/15 text-accent-gold"
-                  title={`Reached level ${milestoneLevel}, milestone paid`}
+                  title={i18n.t("affiliates.reachedLevel", { level: milestoneLevel })}
                 >
-                  paid
+                  {i18n.t("affiliates.paid")}
                 </span>
               )}
             </td>
@@ -82,7 +83,7 @@ const AffiliatesView: React.FC<Props> = ({
   const [draftCode, setDraftCode] = useState<string>("");
 
   if (!userData) {
-    return <div className="w-full flex justify-center py-16 text-ink-soft">Sign in to refer friends</div>;
+    return <div className="w-full flex justify-center py-16 text-ink-soft">{i18n.t("affiliates.signInToRefer")}</div>;
   }
   if (loading) {
     return (
@@ -92,10 +93,10 @@ const AffiliatesView: React.FC<Props> = ({
     );
   }
   if (error || !data) {
-    return <div className="w-full flex justify-center py-16 text-ink-muted">Could not load your referrals.</div>;
+    return <div className="w-full flex justify-center py-16 text-ink-muted">{i18n.t("affiliates.couldNotLoadYour")}</div>;
   }
   if (!data.enabled) {
-    return <div className="w-full flex justify-center py-16 text-ink-muted">Referrals are turned off right now.</div>;
+    return <div className="w-full flex justify-center py-16 text-ink-muted">{i18n.t("affiliates.referralsAreTurnedOff")}</div>;
   }
 
   const { totals } = data;
@@ -111,23 +112,23 @@ const AffiliatesView: React.FC<Props> = ({
         </p>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <StatCard label="Total earned">
+          <StatCard label={i18n.t("affiliates.totalEarned")}>
             <span className="text-accent-gold">
               <Monetary value={totals.earned} />
             </span>
           </StatCard>
-          <StatCard label="Total wagered by referrals">
+          <StatCard label={i18n.t("affiliates.totalWageredByReferrals")}>
             <Monetary value={totals.totalWagered} />
           </StatCard>
-          <StatCard label="Referrals">{totals.referralCount}</StatCard>
-          <StatCard label="Active this week">
+          <StatCard label={i18n.t("affiliates.referrals")}>{totals.referralCount}</StatCard>
+          <StatCard label={i18n.t("affiliates.activeThisWeek")}>
             <span className="text-green-400">{totals.activeCount}</span>
           </StatCard>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div className="bg-surface rounded-lg p-5 flex flex-col gap-3">
-            <h2 className="text-ink font-semibold">Your referral link</h2>
+            <h2 className="text-ink font-semibold">{i18n.t("affiliates.yourReferralLink")}</h2>
             {data.referralCode ? (
               <div className="flex items-center gap-2">
                 <div className="flex-1 bg-surface-nav rounded-md px-3 py-2 text-ink-soft text-sm truncate">{link}</div>
@@ -147,23 +148,23 @@ const AffiliatesView: React.FC<Props> = ({
                   maxLength={16}
                   className="flex-1 bg-surface-nav rounded-md px-3 py-2 text-ink text-sm focus:outline-none"
                 />
-                <MainButton text="Save" onClick={() => saveCode(draftCode)} disabled={saving || draftCode.length < 3} loading={saving} />
+                <MainButton text={i18n.t("affiliates.save")} onClick={() => saveCode(draftCode)} disabled={saving || draftCode.length < 3} loading={saving} />
               </div>
             )}
             <p className="text-xs text-ink-muted">
               {data.referralCode
-                ? "Share it anywhere. The code never changes, so old links keep working."
+                ? i18n.t("affiliates.shareItAnywhereThe")
                 : "3-16 letters or numbers. Choose well, it cannot be changed later."}
             </p>
           </div>
 
           <div className="bg-surface rounded-lg p-5 flex flex-col gap-3">
-            <h2 className="text-ink font-semibold">Available earnings</h2>
+            <h2 className="text-ink font-semibold">{i18n.t("affiliates.availableEarnings")}</h2>
             <div className="flex items-center justify-between gap-2">
               <span className="text-2xl font-semibold text-green-400">
                 <Monetary value={totals.available} />
               </span>
-              <MainButton text="Claim" onClick={claim} disabled={claiming || totals.available < 1} loading={claiming} />
+              <MainButton text={i18n.t("affiliates.claim")} onClick={claim} disabled={claiming || totals.available < 1} loading={claiming} />
             </div>
             <p className="text-xs text-ink-muted">
               Already claimed <Monetary value={totals.claimed} /> in commission.
@@ -172,10 +173,10 @@ const AffiliatesView: React.FC<Props> = ({
         </div>
 
         <div className="bg-surface rounded-lg p-5">
-          <h2 className="text-ink font-semibold mb-3">Your referrals</h2>
+          <h2 className="text-ink font-semibold mb-3">{i18n.t("affiliates.yourReferrals")}</h2>
           {data.referrals.length === 0 ? (
             <p className="text-ink-muted text-sm py-6 text-center">
-              No one yet. Share your link and both of you get paid.
+              {i18n.t("affiliates.noOneYetShare")}
             </p>
           ) : (
             <ReferralTable referrals={data.referrals} milestoneLevel={data.milestoneLevel} />

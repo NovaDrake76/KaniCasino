@@ -10,6 +10,7 @@ import Notifications from "./Navbar/Notifications";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
 import { BasicItem } from "../Types";
+import i18n from "../../i18n";
 
 interface CaseOpeningItem {
   id: string;
@@ -60,7 +61,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
 
   const items = [
     {
-      name: "ONLINE",
+      name: i18n.t("nav.online"),
       icon: <ImConnection />,
       value: onlineUsers,
     },
@@ -135,7 +136,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
       {recentCaseOpenings.length > 0 && (
         <div className="flex flex-col gap-1 pt-1 items-center justify-center ">
           <div className="flex flex-col max-w-[1920px] w-full">
-            <span className="text-[#9793ba] text-[10px] ">LIVE DROP</span>
+            <span className="text-[#9793ba] text-[10px] ">{i18n.t("common.liveDrop")}</span>
 
             <div className="flex h-28 bg-[#141225] ">
               <div className="flex overflow-hidden justify-start transition-all">
@@ -158,7 +159,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
           <div className="p-4">
             <div className="flex items-center gap-2 text-[#84819a] cursor-pointer w-fit" onClick={() => navigate(-1)}>
               <BiArrowBack />
-              <span>Back</span>
+              <span>{i18n.t("header.back")}</span>
             </div>
           </div>
         )

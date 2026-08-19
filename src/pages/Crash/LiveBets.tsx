@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import PlayerPreview from "../../components/PlayerPreview";
 import Avatar from "../../components/Avatar";
+import i18n from "../../i18n";
 
 interface GameHistory {
     gameState: any;
@@ -42,12 +43,12 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
 
             <div className="flex flex-col">
                 <div className="flex items-center justify-between py-4">
-                    <span className="font-bold text-sm">Total Bets</span>
+                    <span className="font-bold text-sm">{i18n.t("coin.totalBets")}</span>
                     <span className="font-bold text-sm">K₽{totalBets}</span>
                 </div>
 
                 <div className="flex items-center w-full justify-between p-2 bg-[#1A152B] rounded">
-                    <span className="font-bold text-sm">User</span>
+                    <span className="font-bold text-sm">{i18n.t("affiliates.user")}</span>
                     <div className="hidden w-1/4 justify-between md:flex">
                         {
                             ["Bet", "Payout", "Profit"].map((item) => (

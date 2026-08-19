@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Rarities from "../../components/Rarities";
 import { FiSearch } from "react-icons/fi";
+import i18n from "../../i18n";
 
 export interface MarketFilters {
   name: string;
@@ -15,12 +16,12 @@ interface FiltersProps {
   setFilters: React.Dispatch<React.SetStateAction<MarketFilters>>;
 }
 
-const SORTS = [
-  { value: "recent", label: "Recently listed" },
-  { value: "price", label: "Price" },
-  { value: "rarity", label: "Rarity" },
-  { value: "listings", label: "Most listings" },
-  { value: "name", label: "Name" },
+const SORTS = () => [
+  { value: "recent", label: i18n.t("market.recentlyListed") },
+  { value: "price", label: i18n.t("market.price") },
+  { value: "rarity", label: i18n.t("upgrade.rarity") },
+  { value: "listings", label: i18n.t("market.mostListings") },
+  { value: "name", label: i18n.t("home.name") },
 ];
 
 const select =
@@ -47,7 +48,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
         <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
         <input
           type="text"
-          placeholder="Search items"
+          placeholder={i18n.t("market.searchItems")}
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full bg-surface-nav border border-line rounded-md pl-9 pr-3 py-2 text-sm text-ink focus:border-accent outline-none"
@@ -55,7 +56,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
       </div>
 
       <select value={filters.rarity} onChange={(e) => set({ rarity: e.target.value })} className={select}>
-        <option value="">All rarities</option>
+        <option value="">{i18n.t("market.allRarities")}</option>
         {Rarities.map((r) => (
           <option key={r.id} value={r.id}>
             {r.name}
@@ -64,7 +65,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
       </select>
 
       <select value={filters.sortBy} onChange={(e) => set({ sortBy: e.target.value })} className={select}>
-        {SORTS.map((s) => (
+        {SORTS().map((s) => (
           <option key={s.value} value={s.value}>
             {s.label}
           </option>
@@ -72,8 +73,8 @@ const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
       </select>
 
       <select value={filters.order} onChange={(e) => set({ order: e.target.value })} className={select}>
-        <option value="asc">Ascending</option>
-        <option value="desc">Descending</option>
+        <option value="asc">{i18n.t("common.ascending")}</option>
+        <option value="desc">{i18n.t("common.descending")}</option>
       </select>
 
       <label className="flex items-center gap-2 text-sm text-ink-soft cursor-pointer select-none px-2">
@@ -83,7 +84,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, setFilters }) => {
           onChange={(e) => set({ listedOnly: e.target.checked })}
           className="accent-indigo-600"
         />
-        On sale only
+        {i18n.t("market.onSaleOnly")}
       </label>
     </div>
   );

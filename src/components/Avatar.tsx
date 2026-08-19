@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
+import i18n from "../i18n";
 
 interface Avatar {
     image: string;
@@ -91,7 +92,7 @@ const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel =
             <div className="relative">
                 <img
                     src={image ? image : "https://i.imgur.com/uUfJSwW.png"}
-                    alt="avatar"
+                    alt={i18n.t("common.avatar")}
                     className={`${sizeClasses} rounded-full object-cover border-2 aspect-square ${loaded ? '' : 'hidden'}`}
                     style={{
                         borderColor: getLevelColor()

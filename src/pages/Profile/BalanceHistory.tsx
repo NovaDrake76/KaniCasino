@@ -3,6 +3,7 @@ import Skeleton from "react-loading-skeleton";
 import { getTransactions } from "../../services/users/UserServices";
 import Monetary from "../../components/Monetary";
 import Pagination from "../../components/Pagination";
+import i18n from "../../i18n";
 
 interface Transaction {
   _id: string;
@@ -14,45 +15,29 @@ interface Transaction {
   createdAt: string;
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  signup: "Welcome bonus",
-  bonus: "Claimed bonus",
-  case_open: "Opened case",
-  slot_bet: "Slot spin",
-  slot_win: "Slot win",
-  crash_bet: "Crash bet",
-  crash_cashout: "Crash cashout",
-  coinflip_bet: "Coin flip bet",
-  coinflip_win: "Coin flip win",
-  battle_entry: "Battle entry",
-  battle_refund: "Battle refund",
-  market_buy: "Marketplace purchase",
-  market_sale: "Marketplace sale",
-  market_order: "Buy order placed",
-  market_order_refund: "Buy order refunded",
-  item_sell: "Sold to shop",
-  admin_adjust: "Admin adjustment",
-  mission_reward: "Mission reward",
-};
-
+// the labels resolve per call rather than sitting in a module map, which would hold
+// whatever language the bundle loaded in
 const describe = (tx: Transaction): string => {
-  const base = TYPE_LABELS[tx.type] || tx.type;
+  const base = i18n.exists(`balance.${tx.type}`) ? i18n.t(`balance.${tx.type}`) : tx.type;
   const m = tx.meta || {};
-  if (tx.type === "market_buy" && m.reversal) return "Purchase reversed";
+  if (tx.type === "market_buy" && m.reversal) return i18n.t("balance.purchaseReversed");
   if (tx.type === "case_open" && m.caseTitle) {
-    return `Opened ${m.caseTitle}${m.quantity > 1 ? ` x${m.quantity}` : ""}`;
+    return m.quantity > 1
+      ? i18n.t("balance.openedCasePlural", { case: m.caseTitle, count: m.quantity })
+      : i18n.t("balance.openedCase", { case: m.caseTitle });
   }
   if ((tx.type === "market_buy" || tx.type === "market_sale") && m.itemName) {
-    return `${base}: ${m.itemName}`;
+    return i18n.t("balance.withItem", { label: base, item: m.itemName });
   }
   if (tx.type === "item_sell" && m.count) {
-    return `Sold ${m.count} item${m.count > 1 ? "s" : ""} to shop`;
+    const key = m.count > 1 ? "balance.soldToShopPlural" : "balance.soldToShop";
+    return i18n.t(key, { count: m.count });
   }
   if (tx.type === "mission_reward" && m.missionTitle) {
-    return `Mission reward: ${m.missionTitle}`;
+    return i18n.t("balance.missionReward", { mission: m.missionTitle });
   }
   if ((tx.type === "market_order" || tx.type === "market_order_refund") && m.itemName) {
-    return `${base}: ${m.itemName}`;
+    return i18n.t("balance.withItem", { label: base, item: m.itemName });
   }
   return base;
 };
@@ -94,7 +79,7 @@ const BalanceHistory: React.FC = () => {
           <Skeleton key={i} height={64} baseColor="#1c1a31" highlightColor="#161427" />
         ))
       ) : transactions.length === 0 ? (
-        <div className="text-center text-[#84819a] py-12">No transactions yet.</div>
+        <div className="text-center text-[#84819a] py-12">{i18n.t("profile.noTransactionsYet")}</div>
       ) : (
         transactions.map((tx) => {
           const credit = tx.direction === "credit";

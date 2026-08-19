@@ -1,6 +1,7 @@
 import Skeleton from "react-loading-skeleton";
 import MissionCard from "./components/MissionCard";
 import { MissionsData } from "../../services/missions/MissionService";
+import i18n from "../../i18n";
 
 interface Props {
   data: MissionsData | null;
@@ -13,12 +14,13 @@ interface Props {
   caseImage?: string;
 }
 
+// resolved per render: a module constant would hold the language the bundle loaded in
 const CATEGORY_LABELS: Record<string, string> = {
-  onboarding: "Getting started",
-  games: "Games",
-  collection: "Collection",
-  community: "Community",
-  endgame: "All In",
+  onboarding: "missions.gettingStarted",
+  games: "missions.games",
+  collection: "missions.collection",
+  community: "missions.community",
+  endgame: "missions.allIn",
 };
 const CATEGORY_ORDER = ["onboarding", "games", "collection", "community", "endgame"];
 
@@ -33,7 +35,7 @@ const MissionsView: React.FC<Props> = ({
   caseImage,
 }) => {
   if (!isOwner) {
-    return <p className="text-ink-muted py-8 text-center">Missions are private.</p>;
+    return <p className="text-ink-muted py-8 text-center">{i18n.t("missions.missionsArePrivate")}</p>;
   }
   if (loading) {
     return (
@@ -47,7 +49,7 @@ const MissionsView: React.FC<Props> = ({
     );
   }
   if (error || !data) {
-    return <p className="text-ink-muted py-8 text-center">Could not load missions.</p>;
+    return <p className="text-ink-muted py-8 text-center">{i18n.t("missions.couldNotLoadMissions")}</p>;
   }
 
   const grouped = CATEGORY_ORDER.map((cat) => ({
@@ -75,7 +77,7 @@ const MissionsView: React.FC<Props> = ({
               cat === "endgame" ? "text-accent-gold" : "text-ink-muted"
             }`}
           >
-            {CATEGORY_LABELS[cat] || cat}
+            {CATEGORY_LABELS[cat] ? i18n.t(CATEGORY_LABELS[cat]) : cat}
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {items.map((m) => (

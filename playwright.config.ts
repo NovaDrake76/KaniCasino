@@ -13,7 +13,8 @@ export default defineConfig({
     baseURL: "http://localhost:4173",
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  // the suite asserts on english copy, so pin the locale rather than inherit the machine's
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"], locale: "en-US" } }],
   webServer: {
     command: "npm run build && npm run preview",
     port: 4173,

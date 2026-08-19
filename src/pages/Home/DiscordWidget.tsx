@@ -5,6 +5,7 @@ import {
   getDiscordWidget,
   type DiscordWidget as Widget,
 } from "../../services/discord/DiscordService";
+import i18n from "../../i18n";
 
 const GUILD_ID = import.meta.env.VITE_DISCORD_GUILD_ID as string | undefined;
 const INVITE = import.meta.env.VITE_DISCORD_INVITE as string | undefined;
@@ -38,7 +39,7 @@ const DiscordWidget = () => {
   return (
     <div className="flex h-full w-full flex-col">
       <span className="px-1 py-3 text-xs font-medium uppercase tracking-wider text-gray-500">
-        Join the discussion!
+        {i18n.t("home.joinTheDiscussion")}
       </span>
 
       <div className="flex flex-1 w-full flex-col gap-4 rounded-xl border border-line bg-[#16142A] p-5">
@@ -46,7 +47,7 @@ const DiscordWidget = () => {
           <FaDiscord className="text-3xl text-[#5865F2]" />
           <div className="flex flex-col">
             <span className="font-bold leading-tight">
-              {widget?.name || "Our Discord"}
+              {widget?.name || i18n.t("home.ourDiscord")}
             </span>
             {loading ? (
               <Skeleton
@@ -108,7 +109,7 @@ const DiscordWidget = () => {
             className="mt-auto flex items-center justify-center gap-2 rounded-lg bg-[#5865F2] px-4 py-3 font-bold text-white transition-all hover:bg-[#4752C4]"
           >
             <FaDiscord className="text-xl" />
-            Join the KaniCasino server
+            {i18n.t("home.joinTheKanicasinoServer")}
           </a>
         )}
       </div>

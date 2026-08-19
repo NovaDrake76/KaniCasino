@@ -1,6 +1,7 @@
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { BannerProps } from "./Types";
+import i18n from "../../i18n";
 
 
 const Banner: React.FC<BannerProps> = ({ left, right }) => {
@@ -24,7 +25,7 @@ const Banner: React.FC<BannerProps> = ({ left, right }) => {
                     </span>
                     <Link to={left?.link}>
                       <div className="flex items-center gap-2 mt-2 text-[#70699b] hover:text-[#CF3464] transition-all ">
-                        Go to page <AiOutlineArrowRight />
+                        {i18n.t("home.goToPage")} <AiOutlineArrowRight />
                       </div>
                     </Link>
                   </div>

@@ -6,6 +6,7 @@ import Item from "../../components/Item";
 import UserContext from "../../UserContext";
 import { getInventory } from "../../services/users/UserServices";
 import Rarities from "../../components/Rarities";
+import i18n from "../../i18n";
 
 interface Inventory {
     selectedItems: any;
@@ -16,11 +17,11 @@ interface Inventory {
     setSelectedTarget: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const sortOptions = [
-    { value: "newer", label: "Newest" },
-    { value: "older", label: "Oldest" },
-    { value: "mostRare", label: "Rarity: high to low" },
-    { value: "mostCommon", label: "Rarity: low to high" },
+const sortOptions = () => [
+    { value: "newer", label: i18n.t("upgrade.newest") },
+    { value: "older", label: i18n.t("upgrade.oldest") },
+    { value: "mostRare", label: i18n.t("upgrade.rarityHighToLow") },
+    { value: "mostCommon", label: i18n.t("upgrade.rarityLowToHigh") },
 ];
 
 const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedCase, setSelectedCase, toggleReload, setSelectedTarget }) => {
@@ -118,14 +119,14 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
         <div className="flex flex-col md:w-1/2 gap-2">
             <div className="flex flex-col gap-3 bg-[#1C1A33] rounded px-6 py-4">
                 <div className="flex items-center justify-between">
-                    <span className="font-semibold">Inventory</span>
+                    <span className="font-semibold">{i18n.t("profile.inventory")}</span>
                     {selectedCase && (
                         <div
                             className="flex items-center gap-1 cursor-pointer border-b border-gray-500 text-gray-400 hover:text-white"
                             onClick={clearCase}
                         >
                             <AiOutlineClose />
-                            <span>Clear case</span>
+                            <span>{i18n.t("upgrade.clearCase")}</span>
                         </div>
                     )}
                 </div>
@@ -136,7 +137,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search items..."
+                            placeholder={i18n.t("upgrade.searchItems")}
                             className="bg-transparent py-1 w-full text-sm focus:outline-none"
                         />
                         {search && (
@@ -148,7 +149,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                         onChange={(e) => updateFilters({ sortBy: e.target.value })}
                         className={selectClass}
                     >
-                        {sortOptions.map((o) => (
+                        {sortOptions().map((o) => (
                             <option key={o.value} value={o.value}>{o.label}</option>
                         ))}
                     </select>
@@ -157,7 +158,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                         onChange={(e) => updateFilters({ rarity: e.target.value })}
                         className={selectClass}
                     >
-                        <option value="">All rarities</option>
+                        <option value="">{i18n.t("market.allRarities")}</option>
                         {Rarities.map((r) => (
                             <option key={r.id} value={String(r.id)}>{r.name}</option>
                         ))}
@@ -191,7 +192,7 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                     })
                 ) : (
                     <div className="flex flex-col items-center justify-center gap-4">
-                        <span className="font-semibold">No items found</span>
+                        <span className="font-semibold">{i18n.t("upgrade.noItemsFound")}</span>
                     </div>
                 )}
             </div>

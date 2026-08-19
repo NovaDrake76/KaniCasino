@@ -12,6 +12,7 @@ import {
   MODES,
 } from "../../../services/battles/BattleService";
 import { CaseInfo } from "./Battles.types";
+import i18n from "../../../i18n";
 
 export const useBattlesServices = () => {
   const { isLogged, toogleUserFlow } = useContext(UserContext);
@@ -91,7 +92,7 @@ export const useBattlesServices = () => {
       return;
     }
     if (!selected.length) {
-      toast.error("Add at least one case", { theme: "dark" });
+      toast.error(i18n.t("battles.addAtLeastOne"), { theme: "dark" });
       return;
     }
     setCreating(true);

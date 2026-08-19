@@ -4,6 +4,7 @@ import CompletionBar from "./components/CompletionBar";
 import CollectionCard from "./components/CollectionCard";
 import { groupCollectionsByCategory } from "./groupCollections";
 import { CollectionsViewProps } from "./Collections.types";
+import i18n from "../../i18n";
 
 const CollectionsView: React.FC<CollectionsViewProps> = ({
   summary,
@@ -28,12 +29,12 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
           ))}
         </div>
       ) : error ? (
-        <p className="text-ink-muted mt-8">Could not load collections. Try again later.</p>
+        <p className="text-ink-muted mt-8">{i18n.t("collections.couldNotLoadCollections")}</p>
       ) : summary ? (
         <>
           <div className="w-full max-w-3xl bg-surface rounded-xl border border-line p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between gap-4">
-              <span className="text-ink-soft font-semibold">Overall progress</span>
+              <span className="text-ink-soft font-semibold">{i18n.t("collections.overallProgress")}</span>
               <span className="text-sm text-ink-muted">
                 {summary.totals.casesComplete}/{summary.totals.cases} collections complete
               </span>

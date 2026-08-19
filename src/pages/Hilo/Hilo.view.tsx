@@ -7,6 +7,7 @@ import PlayingCard, { SuitIcon } from "../Blackjack/PlayingCard";
 import { isRedSuit, rankLabel, suitOf } from "../Blackjack/blackjackCards";
 import { pct } from "./hiloCards";
 import { HiloViewProps } from "./Hilo.types";
+import i18n from "../../i18n";
 
 const CardChip = ({ card, label }: { card: number; label?: string }) => (
   <div className="flex flex-col items-center gap-1 shrink-0">
@@ -42,7 +43,7 @@ const HiloView: React.FC<HiloViewProps> = ({
 
   return (
     <GameLayout
-      title="HiLo"
+      title={i18n.t("hilo.hilo")}
       footer={
         <p className="text-ink-muted text-xs max-w-[640px] text-center">
           Balance: <Monetary value={walletBalance} />. Predict if the next card is higher or lower, then cash out before you miss.
@@ -62,11 +63,11 @@ const HiloView: React.FC<HiloViewProps> = ({
 
           {active ? (
             <GameButton onClick={cashout} disabled={busy || !game?.canCashout} variant="cashout">
-              {game?.canCashout ? <>Cash Out <Monetary value={currentPayout} showFraction /></> : "Make a prediction"}
+              {game?.canCashout ? <>{i18n.t("common.cashOut")} <Monetary value={currentPayout} showFraction /></> : i18n.t("hilo.makeAPrediction")}
             </GameButton>
           ) : (
             <GameButton onClick={start} disabled={busy}>
-              {isLogged ? "Bet" : "Sign in to play"}
+              {isLogged ? "Bet" : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           )}
 
@@ -83,7 +84,7 @@ const HiloView: React.FC<HiloViewProps> = ({
             disabled={busy || !active}
             className="flex items-center justify-between p-3 rounded-md bg-green-500/15 border border-green-500/50 hover:bg-green-500/25 hover:border-green-400 text-green-300 shadow-sm hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-40 disabled:hover:translate-y-0 transition text-sm font-bold"
           >
-            <span className="flex items-center gap-2">Higher or Equal <AiFillCaretUp /></span>
+            <span className="flex items-center gap-2">{i18n.t("hilo.higherOrEqual")} <AiFillCaretUp /></span>
             <span className="text-green-200/80">{game?.hiChance != null ? pct(game.hiChance) : "-"}</span>
           </button>
           <button
@@ -91,7 +92,7 @@ const HiloView: React.FC<HiloViewProps> = ({
             disabled={busy || !active}
             className="flex items-center justify-between p-3 rounded-md bg-red-500/15 border border-red-500/50 hover:bg-red-500/25 hover:border-red-400 text-red-300 shadow-sm hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-40 disabled:hover:translate-y-0 transition text-sm font-bold"
           >
-            <span className="flex items-center gap-2">Lower or Equal <AiFillCaretDown /></span>
+            <span className="flex items-center gap-2">{i18n.t("hilo.lowerOrEqual")} <AiFillCaretDown /></span>
             <span className="text-red-200/80">{game?.loChance != null ? pct(game.loChance) : "-"}</span>
           </button>
 
@@ -106,7 +107,7 @@ const HiloView: React.FC<HiloViewProps> = ({
               disabled={!game.rollId}
               className={`text-xs font-semibold text-center py-1 rounded ${game.status === "cashed" ? "text-green-400" : "text-red-400"} disabled:opacity-50`}
             >
-              {game.status === "cashed" ? <>Won <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : "Busted! Verify roll"}
+              {game.status === "cashed" ? <>{i18n.t("common.won")} <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : i18n.t("hilo.bustedVerifyRoll")}
             </button>
           )}
         </>
@@ -119,7 +120,7 @@ const HiloView: React.FC<HiloViewProps> = ({
                 <span className="font-extrabold text-xl">K</span>
                 <AiFillCaretUp />
               </div>
-              <span className="text-[10px] text-ink-muted font-semibold uppercase text-center w-24">King being<br />the highest</span>
+              <span className="text-[10px] text-ink-muted font-semibold uppercase text-center w-24">{i18n.t("hilo.kingBeing")}<br />the highest</span>
             </div>
 
             <div className={busy ? "opacity-90" : ""}>
@@ -131,7 +132,7 @@ const HiloView: React.FC<HiloViewProps> = ({
                 <span className="font-extrabold text-xl">A</span>
                 <AiFillCaretDown />
               </div>
-              <span className="text-[10px] text-ink-muted font-semibold uppercase text-center w-24">Ace being<br />the lowest</span>
+              <span className="text-[10px] text-ink-muted font-semibold uppercase text-center w-24">{i18n.t("hilo.aceBeing")}<br />the lowest</span>
             </div>
           </div>
 

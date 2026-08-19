@@ -12,6 +12,7 @@ import {
   standBlackjack,
 } from "../../services/games/GamesServices";
 import { BlackjackHandState, BlackjackHistoryEntry, BlackjackPhase } from "./Blackjack.types";
+import i18n from "../../i18n";
 
 const DEFAULT_BET = 10;
 export const MIN_BET = 1;
@@ -130,7 +131,7 @@ export const useBlackjackServices = () => {
       return;
     }
     if (userData.walletBalance < amount) {
-      toast.error("Insufficient funds", { theme: "dark" });
+      toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
       return;
     }
     setActing(true);

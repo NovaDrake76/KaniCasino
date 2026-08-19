@@ -1,5 +1,6 @@
 import { useAffiliatesServices } from "./Affiliates.services";
 import AffiliatesView from "./Affiliates.view";
+import i18n from "../../i18n";
 
 interface Props {
   isOwner: boolean;
@@ -10,7 +11,7 @@ interface Props {
 const AffiliatesPanel: React.FC<Props> = ({ isOwner }) => {
   const service = useAffiliatesServices();
   if (!isOwner) {
-    return <p className="text-ink-muted py-8 text-center">Referrals are private.</p>;
+    return <p className="text-ink-muted py-8 text-center">{i18n.t("affiliates.referralsArePrivate")}</p>;
   }
   return (
     <div className="w-full flex justify-center">

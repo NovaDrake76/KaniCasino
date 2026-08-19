@@ -8,6 +8,7 @@ import {
   declineFriendRequest,
   removeFriend,
 } from "../../services/users/UserServices";
+import i18n from "../../i18n";
 
 interface Props {
   profileId: string;
@@ -45,7 +46,7 @@ const FriendButton: React.FC<Props> = ({ profileId, isSameUser }) => {
       setStatus(successStatus);
       toast.success(message, { theme: "dark" });
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Something went wrong", { theme: "dark" });
+      toast.error(error?.response?.data?.message || i18n.t("profile.somethingWentWrong"), { theme: "dark" });
       loadStatus();
     }
     setLoading(false);
@@ -58,9 +59,9 @@ const FriendButton: React.FC<Props> = ({ profileId, isSameUser }) => {
       <button
         className={`${baseClass} bg-[#281D3F] hover:bg-red-600`}
         disabled={loading}
-        onClick={() => run(() => removeFriend(profileId), "none", "Friend removed")}
+        onClick={() => run(() => removeFriend(profileId), "none", i18n.t("profile.friendRemoved"))}
       >
-        Friends ✓
+        {i18n.t("profile.friends")}
       </button>
     );
   }
@@ -68,7 +69,7 @@ const FriendButton: React.FC<Props> = ({ profileId, isSameUser }) => {
   if (status === "requested") {
     return (
       <button className={`${baseClass} bg-[#281D3F] cursor-default`} disabled>
-        Request sent
+        {i18n.t("profile.requestSent")}
       </button>
     );
   }
@@ -79,16 +80,16 @@ const FriendButton: React.FC<Props> = ({ profileId, isSameUser }) => {
         <button
           className={`${baseClass} bg-indigo-600 hover:bg-indigo-700`}
           disabled={loading}
-          onClick={() => run(() => acceptFriendRequest(profileId), "friends", "Friend request accepted")}
+          onClick={() => run(() => acceptFriendRequest(profileId), "friends", i18n.t("profile.friendRequestAccepted"))}
         >
-          Accept request
+          {i18n.t("profile.acceptRequest")}
         </button>
         <button
           className={`${baseClass} bg-[#281D3F] hover:bg-red-600`}
           disabled={loading}
-          onClick={() => run(() => declineFriendRequest(profileId), "none", "Request declined")}
+          onClick={() => run(() => declineFriendRequest(profileId), "none", i18n.t("profile.requestDeclined"))}
         >
-          Decline
+          {i18n.t("blackjack.decline")}
         </button>
       </div>
     );
@@ -98,9 +99,9 @@ const FriendButton: React.FC<Props> = ({ profileId, isSameUser }) => {
     <button
       className={`${baseClass} bg-indigo-600 hover:bg-indigo-700`}
       disabled={loading}
-      onClick={() => run(() => sendFriendRequest(profileId), "requested", "Friend request sent")}
+      onClick={() => run(() => sendFriendRequest(profileId), "requested", i18n.t("profile.friendRequestSent"))}
     >
-      Add Friend
+      {i18n.t("profile.addFriend")}
     </button>
   );
 };

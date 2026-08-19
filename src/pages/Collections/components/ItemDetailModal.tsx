@@ -6,6 +6,7 @@ import MainButton from "../../../components/MainButton";
 import Monetary from "../../../components/Monetary";
 import ItemCard from "./ItemCard";
 import { AlbumItem } from "../../../services/collections/CollectionService";
+import i18n from "../../../i18n";
 
 interface Props {
   item: AlbumItem | null;
@@ -40,7 +41,7 @@ const ItemDetailModal: React.FC<Props> = ({
 
         <div className="w-full flex items-center justify-between px-1 text-sm">
           <span className={locked ? "text-ink-faint" : "text-ink-soft"}>
-            {locked ? "Not yet collected" : `You own ×${item.owned}`}
+            {locked ? i18n.t("collections.notYetCollected") : i18n.t("collections.youOwn", { count: item.owned })}
           </span>
           <span className="text-ink-muted">
             Sell value <Monetary value={item.sellValue} /> each
@@ -49,20 +50,20 @@ const ItemDetailModal: React.FC<Props> = ({
 
         <div className="flex flex-col gap-2 w-full">
           <MainButton
-            text="Go to case"
+            text={i18n.t("collections.goToCase")}
             onClick={() => navigate(`/case/${caseId}`)}
             icon={<GiOpenChest />}
             type="button"
           />
           <MainButton
-            text="Search on market"
+            text={i18n.t("collections.searchOnMarket")}
             onClick={() => navigate(`/marketplace/item/${item._id}`)}
             icon={<MdStorefront />}
             type="info"
           />
           {canSell && (
             <MainButton
-              text={<span className="flex items-center gap-1">Sell one for <Monetary value={item.sellValue} /></span>}
+              text={<span className="flex items-center gap-1">{i18n.t("collections.sellOneFor")} <Monetary value={item.sellValue} /></span>}
               onClick={() => onSellOne(item.uniqueIds[0])}
               icon={<MdOutlineSell />}
               type="success"

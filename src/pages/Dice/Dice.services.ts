@@ -14,6 +14,7 @@ import {
   targetForWinChance,
 } from "./diceControls";
 import { DiceHistoryEntry, DiceRollResult } from "./Dice.types";
+import i18n from "../../i18n";
 
 const DEFAULT_BET = 10;
 const DEFAULT_TARGET = 5050; // over 50.50 -> 2.0000x, the classic starting point
@@ -94,7 +95,7 @@ export const useDiceServices = () => {
       return false;
     }
     if (userData.walletBalance < betValue) {
-      toast.error("Insufficient funds", { theme: "dark" });
+      toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
       return false;
     }
     setRolling(true);

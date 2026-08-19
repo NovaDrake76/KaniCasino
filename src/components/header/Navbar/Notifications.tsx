@@ -3,6 +3,7 @@ import useOutsideClick from '../../../hooks/useOutsideClick';
 import { getNotifications } from "../../../services/users/UserServices";
 import { RotatingLines } from 'react-loader-spinner';
 import moment from 'moment';
+import i18n from "../../../i18n";
 
 interface NotificationsProps {
     openNotifications: boolean;
@@ -79,7 +80,7 @@ const Notifications: React.FC<NotificationsProps> = ({ openNotifications, setOpe
                         ))
                     ) : (
                         <div className="flex justify-center items-center h-96">
-                            <p className="text-white">No notifications</p>
+                            <p className="text-white">{i18n.t("notifications.empty")}</p>
                         </div>
                     )
             }

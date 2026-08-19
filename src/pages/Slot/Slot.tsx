@@ -8,6 +8,7 @@ import RenderMike from './RenderMike';
 import bigwin from "/bigwin.mp3"
 import ValueViewer from './ValueViewer';
 import UserContext from '../../UserContext';
+import i18n from "../../i18n";
 // import { RotatingLines } from "react-loader-spinner";
 
 const renderPlaceholder = () => {
@@ -74,7 +75,7 @@ const Slots = () => {
         }
 
         if (userData?.walletBalance < betAmount) {
-            toast.error("Insufficient funds");
+            toast.error(i18n.t("blackjack.insufficientFunds"));
             return;
         }
 
@@ -103,7 +104,7 @@ const Slots = () => {
             }, 3000);
         } catch (e: any) {
             console.error(e.response?.data.message || "Error spinning slots");
-            toast.error(e.response?.data.message || "Error spinning slots");
+            toast.error(e.response?.data.message || i18n.t("slot.errorSpinningSlots"));
             setIsSpinning(false);
         }
     };
@@ -184,7 +185,7 @@ const Slots = () => {
                                 boxShadow: "inset 0px 0px 14px 1px #000",
                             }}
                         >
-                            Spin
+                            {i18n.t("gift.spin")}
                         </button>
                         {handleChangeBet("add")}
                     </div>

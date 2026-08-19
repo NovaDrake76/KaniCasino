@@ -7,6 +7,7 @@ import Monetary from "../../components/Monetary";
 import { AUTO_COUNTS } from "./Mines.services";
 import { TILES, mineOptions } from "./minesGrid";
 import { MinesViewProps } from "./Mines.types";
+import i18n from "../../i18n";
 
 const Diamond = () => (
   <svg viewBox="0 0 24 24" className="w-3/5 h-3/5 drop-shadow">
@@ -81,7 +82,7 @@ const MinesView: React.FC<MinesViewProps> = ({
 
   return (
     <GameLayout
-      title="Mines"
+      title={i18n.t("mines.mines")}
       footer={
         <p className="text-ink-muted text-xs max-w-[640px] text-center">
           Balance: <Monetary value={walletBalance} />. Collect diamonds, avoid the bombs.
@@ -103,7 +104,7 @@ const MinesView: React.FC<MinesViewProps> = ({
 
           <div className="flex gap-3">
             <div className="flex-1 flex flex-col gap-1">
-              <span className="text-xs font-semibold text-ink-muted">Mines</span>
+              <span className="text-xs font-semibold text-ink-muted">{i18n.t("mines.mines")}</span>
               <select
                 value={mineCount}
                 onChange={(e) => changeMineCount(Number(e.target.value))}
@@ -116,14 +117,14 @@ const MinesView: React.FC<MinesViewProps> = ({
               </select>
             </div>
             <div className="flex-1 flex flex-col gap-1">
-              <span className="text-xs font-semibold text-ink-muted">Gems</span>
+              <span className="text-xs font-semibold text-ink-muted">{i18n.t("mines.gems")}</span>
               <div className="p-2 bg-surface-nav border border-line rounded text-sm text-ink-soft">{gemsCount}</div>
             </div>
           </div>
 
           {mode === "auto" && (
             <div className="flex flex-col gap-2">
-              <span className="text-xs font-semibold text-ink-muted">Tiles per round</span>
+              <span className="text-xs font-semibold text-ink-muted">{i18n.t("mines.tilesPerRound")}</span>
               <input
                 type="number"
                 min={1}
@@ -133,7 +134,7 @@ const MinesView: React.FC<MinesViewProps> = ({
                 disabled={autoRunning}
                 className="p-2 bg-surface-nav border border-line rounded text-sm disabled:opacity-50"
               />
-              <OptionRow label="Number of Bets" options={AUTO_COUNTS} value={autoCount} onChange={setAutoCount} disabled={autoRunning} />
+              <OptionRow label={i18n.t("dice.numberOfBets")} options={AUTO_COUNTS} value={autoCount} onChange={setAutoCount} disabled={autoRunning} />
             </div>
           )}
 
@@ -141,24 +142,24 @@ const MinesView: React.FC<MinesViewProps> = ({
             active ? (
               <>
                 <GameButton onClick={cashout} disabled={busy || gems === 0} variant="cashout">
-                  {gems > 0 ? <>Cash Out <Monetary value={currentPayout} showFraction /></> : "Reveal a tile"}
+                  {gems > 0 ? <>{i18n.t("common.cashOut")} <Monetary value={currentPayout} showFraction /></> : i18n.t("mines.revealATile")}
                 </GameButton>
                 <button
                   onClick={randomTile}
                   disabled={busy}
                   className="p-2.5 rounded bg-surface-raised hover:bg-surface-hover text-ink-soft font-semibold w-full disabled:opacity-40 transition"
                 >
-                  Random Tile
+                  {i18n.t("mines.randomTile")}
                 </button>
               </>
             ) : (
               <GameButton onClick={start} disabled={busy}>
-                {isLogged ? "Bet" : "Sign in to play"}
+                {isLogged ? "Bet" : i18n.t("upgrade.signInToPlay")}
               </GameButton>
             )
           ) : (
             <GameButton onClick={autoRunning ? stopAuto : startAuto} variant={autoRunning ? "danger" : "primary"}>
-              {autoRunning ? `Stop (${autoLeft} left)` : isLogged ? `Start ${autoCount} Bets` : "Sign in to play"}
+              {autoRunning ? i18n.t("common.stopAuto", { left: autoLeft }) : isLogged ? i18n.t("common.startBets", { count: autoCount }) : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           )}
 
@@ -168,7 +169,7 @@ const MinesView: React.FC<MinesViewProps> = ({
               disabled={!game.rollId}
               className={`text-xs font-semibold text-center py-1 rounded ${game.status === "cashed" ? "text-green-400" : "text-red-400"} disabled:opacity-50`}
             >
-              {game.status === "cashed" ? <>Won <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : "Boom! Verify roll"}
+              {game.status === "cashed" ? <>{i18n.t("common.won")} <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : i18n.t("mines.boomVerifyRoll")}
             </button>
           )}
         </>

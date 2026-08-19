@@ -1,6 +1,7 @@
 import Monetary from "../../../components/Monetary";
 import CompletionBar from "./CompletionBar";
 import { CollectionSummaryItem } from "../../../services/collections/CollectionService";
+import i18n from "../../../i18n";
 
 interface Props {
   collection: CollectionSummaryItem;
@@ -25,7 +26,7 @@ const CollectionCard: React.FC<Props> = ({ collection, isOwner, onClick }) => {
       <div className="flex items-center justify-between gap-2 w-full">
         <span className="font-semibold text-ink truncate">{c.title}</span>
         {c.complete && (
-          <span className="text-xs font-bold text-accent-gold shrink-0">COMPLETE</span>
+          <span className="text-xs font-bold text-accent-gold shrink-0">{i18n.t("common.complete")}</span>
         )}
       </div>
 
@@ -39,7 +40,7 @@ const CollectionCard: React.FC<Props> = ({ collection, isOwner, onClick }) => {
       {isOwner && (
         <div className="flex items-center justify-between text-xs pt-1 border-t border-line w-full">
           <span className="text-ink-muted">
-            {c.duplicatesCount > 0 ? `${c.duplicatesCount} duplicates` : "No duplicates"}
+            {c.duplicatesCount > 0 ? `${c.duplicatesCount} duplicates` : i18n.t("collections.noDuplicates")}
           </span>
           {c.duplicatesValue > 0 && (
             <span className="text-accent-gold font-medium">

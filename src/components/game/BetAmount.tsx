@@ -1,4 +1,5 @@
 import Monetary from "../Monetary";
+import i18n from "../../i18n";
 
 interface BetAmountProps {
   value: string;
@@ -24,19 +25,19 @@ const BetAmount: React.FC<BetAmountProps> = ({
   onMax,
   betValue,
   disabled,
-  label = "Bet Amount",
+  label,
   hint,
 }) => {
   const steps = [
     { key: "half", text: "½", run: onHalve },
     { key: "double", text: "2×", run: onDouble },
-    ...(onMax ? [{ key: "max", text: "Max", run: onMax }] : []),
+    ...(onMax ? [{ key: "max", text: i18n.t("common.max"), run: onMax }] : []),
   ];
 
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
-        <span>{label}</span>
+        <span>{label || i18n.t("common.betAmount")}</span>
         <span><Monetary value={betValue} /></span>
       </div>
       <div className="flex">

@@ -1,5 +1,6 @@
 import React from 'react';
 import SpinningLogic from './SpinningLogic';
+import i18n from "../../i18n";
 
 interface ClockPointerProps {
     successRate: number;
@@ -52,11 +53,11 @@ const ClockPointer: React.FC<ClockPointerProps> = ({ successRate, spinning, succ
                     {
                         success ? (
                             <div className="flex flex-col items-center justify-center gap-4">
-                                <span className="font-semibold">Upgrade Success</span>
+                                <span className="font-semibold">{i18n.t("upgrade.upgradeSuccess")}</span>
                             </div>
                         ) : (
                             <div className="flex flex-col items-center justify-center gap-4">
-                                <span className="font-semibold">Upgrade Failed</span>
+                                <span className="font-semibold">{i18n.t("upgrade.upgradeFailed")}</span>
                             </div>
                         )
                     }

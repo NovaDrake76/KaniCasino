@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import i18n from "../i18n";
 
 export interface PricePoint {
   t: string;
@@ -76,7 +77,7 @@ const PriceChart: React.FC<Props> = ({ points, floor, height = 220, loading }) =
         className="w-full rounded-lg bg-surface-nav border border-line flex items-center justify-center text-sm text-ink-muted"
         style={{ height: H }}
       >
-        No sales recorded in this period yet.
+        {i18n.t("common.noSalesRecordedIn")}
       </div>
     );
   }
@@ -90,7 +91,7 @@ const PriceChart: React.FC<Props> = ({ points, floor, height = 220, loading }) =
 
   return (
     <div className="w-full rounded-lg bg-surface-nav border border-line p-2 relative">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: H }} role="img" aria-label="price history">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: H }} role="img" aria-label={i18n.t("common.priceHistory")}>
         <defs>
           <linearGradient id="pcFill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#4F46E5" stopOpacity="0.35" />
@@ -136,7 +137,7 @@ const PriceChart: React.FC<Props> = ({ points, floor, height = 220, loading }) =
               opacity="0.7"
             />
             <text x={W - PAD.right} y={y(floor) - 4} textAnchor="end" fontSize="9" fill="#FFCC00">
-              house floor
+              {i18n.t("common.houseFloor")}
             </text>
           </g>
         )}
