@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "Oui, vous pouvez améliorer des objets en les sélectionnant et en choisissant une cible de rareté supérieure. Le taux de réussite dépend de la rareté des objets."
   },
   "hilo": {
-    "aceBeing": "L'as étant",
+    "aceIsLowest": "L'as est la plus basse",
     "bustedVerifyRoll": "Perdu ! Vérifier le tirage",
     "higherOrEqual": "Supérieur ou égal",
     "hilo": "HiLo",
-    "kingBeing": "Le roi étant",
+    "kingIsHighest": "Le roi est la plus haute",
     "lowerOrEqual": "Inférieur ou égal",
     "makeAPrediction": "Faites une prédiction"
   },

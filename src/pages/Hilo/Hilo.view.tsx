@@ -120,7 +120,7 @@ const HiloView: React.FC<HiloViewProps> = ({
                 <span className="font-extrabold text-xl">K</span>
                 <AiFillCaretUp />
               </div>
-              <span className="text-[10px] text-ink-muted font-semibold uppercase text-center w-24">{i18n.t("hilo.kingBeing")}<br />the highest</span>
+              <span className="text-[10px] text-ink-muted font-semibold uppercase text-center w-24">{i18n.t("hilo.kingIsHighest")}</span>
             </div>
 
             <div className={busy ? "opacity-90" : ""}>
@@ -132,7 +132,7 @@ const HiloView: React.FC<HiloViewProps> = ({
                 <span className="font-extrabold text-xl">A</span>
                 <AiFillCaretDown />
               </div>
-              <span className="text-[10px] text-ink-muted font-semibold uppercase text-center w-24">{i18n.t("hilo.aceBeing")}<br />the lowest</span>
+              <span className="text-[10px] text-ink-muted font-semibold uppercase text-center w-24">{i18n.t("hilo.aceIsLowest")}</span>
             </div>
           </div>
 

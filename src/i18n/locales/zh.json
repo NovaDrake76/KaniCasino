@@ -404,11 +404,11 @@
     "yesYouCanUpgrade": "可以。选中物品并指定一个更高稀有度的目标即可升级，成功率取决于双方物品的稀有度。"
   },
   "hilo": {
-    "aceBeing": "A 为",
+    "aceIsLowest": "A 最小",
     "bustedVerifyRoll": "猜错了！验证 roll",
     "higherOrEqual": "大于或等于",
     "hilo": "HiLo",
-    "kingBeing": "K 为",
+    "kingIsHighest": "K 最大",
     "lowerOrEqual": "小于或等于",
     "makeAPrediction": "做出你的预测"
   },
