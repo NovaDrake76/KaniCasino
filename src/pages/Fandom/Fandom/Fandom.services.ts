@@ -15,6 +15,9 @@ import { BoardCard, FandomTab, ReachCard } from "./Fandom.types";
 import i18n from "../../../i18n";
 
 const SEARCH_DEBOUNCE_MS = 350;
+// a board is contested when the runner-up is within reach of the leader, not when the
+// character happens to be popular
+const CONTESTED_GAP = 3;
 const TABS: FandomTab[] = ["contested", "biggest", "open", "reach", "collectors"];
 
 const isSort = (tab: FandomTab): tab is BoardSort =>
@@ -119,7 +122,7 @@ export const useFandomServices = () => {
         holderId: board.top && board.topCount > 0 ? board.top.userId : null,
         holderPicture: board.top ? board.top.profilePicture : "",
         count: board.topCount,
-        contested: board.fanCount >= 3,
+        contested: board.topCount > 0 && board.fanCount >= 2 && board.gap <= CONTESTED_GAP,
       })),
     [boards]
   );

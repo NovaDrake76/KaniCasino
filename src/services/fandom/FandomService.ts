@@ -25,6 +25,9 @@ export interface FanBoardSummary {
   caseId: string | null;
   fanCount: number;
   topCount: number;
+  secondCount: number;
+  // how far clear the leader is; a board with nobody chasing carries a large sentinel
+  gap: number;
   top: Fan | null;
 }
 

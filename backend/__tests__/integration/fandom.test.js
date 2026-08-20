@@ -102,6 +102,34 @@ describe("fan boards", () => {
     expect(String(board.top.userId)).toBe(String(early._id));
   });
 
+  it("measures the chase by the leader's margin, not by how popular the character is", async () => {
+    const runaway = await makeItem("Yuuma");
+    const closeRace = await makeItem("Momiji");
+    const lonely = await makeItem("Sannyo");
+
+    // three fans but a 60-copy lead: popular, not contested
+    await makeUser({ pinned: runaway, inventory: copies(runaway, 63) });
+    await makeUser({ pinned: runaway, inventory: copies(runaway, 3) });
+    await makeUser({ pinned: runaway, inventory: copies(runaway, 1) });
+    // two fans, one copy between them
+    await makeUser({ pinned: closeRace, inventory: copies(closeRace, 5) });
+    await makeUser({ pinned: closeRace, inventory: copies(closeRace, 4) });
+    // one fan, nobody chasing
+    await makeUser({ pinned: lonely, inventory: copies(lonely, 2) });
+
+    await fandom.rebuild();
+
+    const board = async (name) => FanBoard.findOne({ name }).lean();
+    expect((await board("Yuuma")).gap).toBe(60);
+    expect((await board("Momiji")).gap).toBe(1);
+    expect((await board("Sannyo")).gap).toBe(999999);
+    expect((await board("Momiji")).secondCount).toBe(4);
+
+    // and the contested tab leads with the close race, not the popular one
+    const res = await request(app).get("/fandom");
+    expect(res.body.boards[0].name).toBe("Momiji");
+  });
+
   it("gives every character a board, so an unheld one can be claimed", async () => {
     await makeItem("Yuuma");
     await makeItem("Sannyo");
