@@ -111,3 +111,22 @@ test("a navbar link is clickable and navigates", async ({ page }) => {
   await page.getByRole("link", { name: "Market" }).first().click();
   await expect(page).toHaveURL(/\/marketplace/);
 });
+
+test("the games menu opens over the navbar and navigates", async ({ page }) => {
+  await page.goto("/");
+  const trigger = page.getByRole("button", { name: "Games" });
+  await trigger.click();
+  // the panel is portalled out of the navbar, whose clip-path would otherwise cut it off
+  const hilo = page.getByRole("link", { name: "HiLo", exact: true });
+  await expect(hilo).toBeVisible();
+  await hilo.click();
+  await expect(page).toHaveURL(/\/hilo/);
+});
+
+test("the games menu closes on escape", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Games" }).click();
+  await expect(page.getByRole("link", { name: "Mines", exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("link", { name: "Mines", exact: true })).toHaveCount(0);
+});

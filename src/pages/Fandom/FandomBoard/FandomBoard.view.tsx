@@ -191,7 +191,7 @@ const FandomBoardView: React.FC<FandomBoardViewProps> = ({
               <button
                 onClick={pin}
                 disabled={pinning}
-                className="notched-sm ml-auto bg-[#4F46E5] px-4 py-2.5 text-xs font-bold text-white disabled:opacity-60"
+                className="notched-sm ml-auto border-0 bg-[#4F46E5] px-4 py-2.5 text-xs font-bold text-white outline-none disabled:opacity-60"
               >
                 {pinnedName ? i18n.t("fandom.pinInstead", { name }) : i18n.t("fandom.pinThis", { name })}
               </button>

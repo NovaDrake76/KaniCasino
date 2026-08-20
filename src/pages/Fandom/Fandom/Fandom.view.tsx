@@ -39,7 +39,7 @@ const FandomView: React.FC<FandomViewProps> = ({
           <button
             key={key}
             onClick={() => selectTab(key)}
-            className={`notched-sm px-4 py-2 text-xs font-semibold transition-all ${
+            className={`notched-sm border-0 px-4 py-2 text-xs font-semibold outline-none transition-all ${
               tab === key ? "bg-[#4F46E5] text-white" : "bg-[#212031] text-[#C9C6DE] hover:text-white"
             }`}
           >
@@ -71,7 +71,7 @@ const FandomView: React.FC<FandomViewProps> = ({
       <div className="notched mt-10 flex flex-col items-center gap-4 bg-[#212031] px-10 py-12">
         <BsHeart className="text-3xl text-[#4F46E5]" />
         <p className="text-sm text-[#C9C6DE]">{i18n.t("fandom.reachSignedOut")}</p>
-        <button onClick={signIn} className="notched-sm bg-[#4F46E5] px-6 py-2 text-xs font-bold text-white">
+        <button onClick={signIn} className="notched-sm border-0 bg-[#4F46E5] px-6 py-2 text-xs font-bold text-white outline-none">
           {i18n.t("fandom.signIn")}
         </button>
       </div>

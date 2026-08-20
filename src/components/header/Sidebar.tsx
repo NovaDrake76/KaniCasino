@@ -1,11 +1,7 @@
-import { BsCoin } from "react-icons/bs";
-import { GiUpgrade, GiCrossedSwords } from "react-icons/gi";
 import { BsHeartFill } from "react-icons/bs";
 import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
-import { SlPlane } from "react-icons/sl";
 import { FaHome, FaGift } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { TbCat } from "react-icons/tb";
 import ClaimBonus from "../header/ClaimBonus";
 import { useContext } from "react";
 import UserContext from "../../UserContext";
@@ -13,6 +9,7 @@ import Monetary from "../Monetary";
 import GiftTag from "./GiftTag";
 import useGiftReady from "./useGiftReady";
 import i18n from "../../i18n";
+import { gameLinks, NavLink } from "./gameLinks";
 
 interface Sidebar {
     closeSidebar: () => void;
@@ -21,9 +18,11 @@ interface Sidebar {
 const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
     const { userData } = useContext(UserContext);
     const giftReady = useGiftReady();
+    const games = gameLinks();
 
 
-    const links: { name: string; path: string; icon: JSX.Element; badge?: JSX.Element }[] = [
+    // same split as the navbar: games under their own heading, everything else above it
+    const links: NavLink[] = [
         {
             name: i18n.t("nav.home"),
             path: "/",
@@ -35,40 +34,15 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             icon: <MdOutlineSell className="text-2xl" />,
         },
         {
-            name: i18n.t("nav.coinFlip"),
-            path: "/coinflip",
-            icon: <BsCoin className="text-2xl" />,
-        },
-        {
-            name: i18n.t("nav.crash"),
-            path: "/crash",
-            icon: <SlPlane className="text-2xl" />,
-        },
-        {
-            name: i18n.t("nav.upgrade"),
-            path: "/upgrade",
-            icon: <GiUpgrade className="text-2xl" />,
-        },
-        {
-            name: i18n.t("nav.slots"),
-            path: "/slot",
-            icon: <TbCat className="text-2xl" />,
+            name: i18n.t("nav.topFan"),
+            path: "/fandom",
+            icon: <BsHeartFill className="text-2xl" />,
         },
         {
             name: i18n.t("nav.dailyGift"),
             path: "/gift",
             icon: <FaGift className="text-2xl" />,
             badge: giftReady ? <GiftTag /> : undefined,
-        },
-        {
-            name: i18n.t("nav.caseBattles"),
-            path: "/battles",
-            icon: <GiCrossedSwords className="text-2xl" />,
-        },
-        {
-            name: i18n.t("nav.topFan"),
-            path: "/fandom",
-            icon: <BsHeartFill className="text-2xl" />,
         },
         ...(userData?.isAdmin ? [{
             name: i18n.t("nav.backoffice"),
@@ -79,7 +53,7 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
 
     return (
         <div className="fixed top-0 left-0 bg-black bg-opacity-50 z-[100]">
-            <div className="bg-[#19172D] p-4  w-screen min-h-[100vh]">
+            <div className="bg-[#19172D] p-4  w-screen h-screen overflow-y-auto">
                 <div className="flex flex-col">
                     <div className="flex justify-between">
                         <div
@@ -116,6 +90,19 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                                     {link.icon}
                                     <p className="">{link.name}</p>
                                     {link.badge}
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                    <p className="mt-8 px-2 text-xs font-extrabold tracking-[0.16em] text-[#625F7E]">
+                        {i18n.t("nav.games").toUpperCase()}
+                    </p>
+                    <div className="flex flex-col space-y-4 mt-3 pb-8">
+                        {games.map((game) => (
+                            <Link key={game.path} to={game.path} onClick={closeSidebar}>
+                                <div className="flex items-center gap-4 p-2 text-white">
+                                    {game.icon}
+                                    <p className="">{game.name}</p>
                                 </div>
                             </Link>
                         ))}
