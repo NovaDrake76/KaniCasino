@@ -267,7 +267,7 @@ async function claimMission(userId, key, io) {
 
   // the last social mission claimed earns the connected badge
   if (mission.metric === "social") {
-    await badges.awardConnected(userId).catch((e) => console.error("connected badge:", e.message));
+    await badges.awardConnected(userId, io).catch((e) => console.error("connected badge:", e.message));
   }
 
   if (io) {

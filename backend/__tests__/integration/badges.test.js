@@ -6,6 +6,7 @@ const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
 
 const User = require("../../models/User");
 const MissionState = require("../../models/MissionState");
+const Notification = require("../../models/Notification");
 const badges = require("../../utils/badges");
 
 let app;
@@ -129,6 +130,60 @@ describe("the connected badge", () => {
 
     const after = await User.findById(user._id).lean();
     expect(badges.heldBadges(after).map((b) => b.key)).toEqual(["connected"]);
+  });
+});
+
+describe("the backfill sweep", () => {
+  it("awards everyone who finished the social missions before the badge existed", async () => {
+    const done = await makeUser();
+    const halfway = await makeUser();
+    const already = await makeUser({ badges: [{ key: "connected", awardedAt: new Date() }] });
+    await MissionState.create({ userId: done._id, claimed: ["join-discord", "follow-x"] });
+    await MissionState.create({ userId: halfway._id, claimed: ["join-discord"] });
+    await MissionState.create({ userId: already._id, claimed: ["join-discord", "follow-x"] });
+
+    expect(await badges.sweepConnected()).toBe(1);
+
+    expect(badges.heldBadges(await User.findById(done._id).lean()).map((b) => b.key)).toEqual(["connected"]);
+    expect(badges.heldBadges(await User.findById(halfway._id).lean())).toHaveLength(0);
+    // a second pass finds nothing left to do
+    expect(await badges.sweepConnected()).toBe(0);
+  });
+
+  it("tells the player, once", async () => {
+    const user = await makeUser();
+    await MissionState.create({ userId: user._id, claimed: ["join-discord", "follow-x"] });
+
+    await badges.sweepConnected();
+    await badges.sweepConnected();
+
+    const notes = await Notification.find({ receiverId: user._id }).lean();
+    expect(notes).toHaveLength(1);
+    expect(notes[0].title).toBe("New badge");
+    expect(notes[0].content).toContain("Connected");
+  });
+
+  it("emits to the player when a socket is passed", async () => {
+    const user = await makeUser();
+    await MissionState.create({ userId: user._id, claimed: ["join-discord", "follow-x"] });
+    const rooms = [];
+    const io = { to: (room) => ({ emit: (event, payload) => rooms.push({ room, event, payload }) }) };
+
+    await badges.sweepConnected(io);
+    expect(rooms).toHaveLength(1);
+    expect(rooms[0]).toMatchObject({ room: String(user._id), event: "newNotification" });
+  });
+
+  it("tells the player about a granted badge too", async () => {
+    const user = await makeUser();
+    await badges.grant(user._id, "contributor", "translation");
+    const notes = await Notification.find({ receiverId: user._id }).lean();
+    expect(notes).toHaveLength(1);
+    expect(notes[0].content).toContain("Contributor");
+
+    // granting again changes nothing, so it says nothing
+    await badges.grant(user._id, "contributor");
+    expect(await Notification.countDocuments({ receiverId: user._id })).toBe(1);
   });
 });
 

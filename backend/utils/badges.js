@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const MissionState = require("../models/MissionState");
+const Notification = require("../models/Notification");
 const { CATALOG } = require("./missionsCatalog");
 
 const TOP_FAN = "topFan";
@@ -10,6 +11,9 @@ const CONNECTED = "connected";
 // those over would let the backoffice fake a standing the sweep is about to overwrite.
 const GRANTABLE = [CONTRIBUTOR];
 const KEYS = [TOP_FAN, CONTRIBUTOR, CONNECTED];
+
+// stored notifications are english everywhere else in the codebase, so these are too
+const TITLES = { [CONTRIBUTOR]: "Contributor", [CONNECTED]: "Connected" };
 
 const SOCIAL_KEYS = CATALOG.filter((m) => m.metric === "social" && m.active !== false).map((m) => m.key);
 
@@ -45,28 +49,61 @@ function wornBadge(user) {
   return heldBadges(user).find((badge) => badge.key === user.selectedBadge) || null;
 }
 
+// a badge lands silently otherwise: it sits on the profile with nothing telling the
+// player it arrived. the socket emit is optional, the stored row is not.
+async function notifyBadge(userId, key, io) {
+  const content = `You earned the ${TITLES[key] || key} badge. Pick it on your profile to wear it.`;
+  await Notification.create({
+    senderId: userId,
+    receiverId: userId,
+    type: "alert",
+    title: "New badge",
+    content,
+  });
+  if (io) io.to(String(userId)).emit("newNotification", { message: content });
+}
+
+// the filter is the mutex: a badge already held is not pushed twice, and only a real
+// award notifies
+async function award(userId, key, io, note) {
+  const badge = { key, awardedAt: new Date() };
+  if (note) badge.note = String(note).slice(0, 120);
+  const res = await User.updateOne(
+    { _id: userId, "badges.key": { $ne: key } },
+    { $push: { badges: badge } }
+  );
+  if (res.modifiedCount !== 1) return false;
+  await notifyBadge(userId, key, io);
+  return true;
+}
+
 // every social mission claimed earns the connected badge. checked on the claim itself, so
-// nothing has to sweep for it.
-async function awardConnected(userId) {
+// a player who has just finished the set gets it immediately.
+async function awardConnected(userId, io) {
   if (!SOCIAL_KEYS.length) return false;
   const state = await MissionState.findOne({ userId }).select("claimed").lean();
   const claimed = new Set((state && state.claimed) || []);
   if (!SOCIAL_KEYS.every((key) => claimed.has(key))) return false;
-
-  const res = await User.updateOne(
-    { _id: userId, "badges.key": { $ne: CONNECTED } },
-    { $push: { badges: { key: CONNECTED, awardedAt: new Date() } } }
-  );
-  return res.modifiedCount === 1;
+  return award(userId, CONNECTED, io);
 }
 
-async function grant(userId, key, note) {
+// the claim hook only fires for a claim made from now on, so this catches everyone who
+// finished the social missions before the badge existed, and anyone the hook missed
+async function sweepConnected(io) {
+  if (!SOCIAL_KEYS.length) return 0;
+  const states = await MissionState.find({ claimed: { $all: SOCIAL_KEYS } })
+    .select("userId")
+    .lean();
+  let awarded = 0;
+  for (const state of states) {
+    if (await award(state.userId, CONNECTED, io)) awarded += 1;
+  }
+  return awarded;
+}
+
+async function grant(userId, key, note, io) {
   if (!GRANTABLE.includes(key)) return { ok: false, message: "That badge is earned, not granted" };
-  const res = await User.updateOne(
-    { _id: userId, "badges.key": { $ne: key } },
-    { $push: { badges: { key, awardedAt: new Date(), note: (note || "").slice(0, 120) } } }
-  );
-  return { ok: true, changed: res.modifiedCount === 1 };
+  return { ok: true, changed: await award(userId, key, io, note) };
 }
 
 async function revoke(userId, key) {
@@ -78,4 +115,17 @@ async function revoke(userId, key) {
   return { ok: true, changed: res.modifiedCount === 1 };
 }
 
-module.exports = { TOP_FAN, CONTRIBUTOR, CONNECTED, KEYS, GRANTABLE, SOCIAL_KEYS, heldBadges, wornBadge, awardConnected, grant, revoke };
+module.exports = {
+  TOP_FAN,
+  CONTRIBUTOR,
+  CONNECTED,
+  KEYS,
+  GRANTABLE,
+  SOCIAL_KEYS,
+  heldBadges,
+  wornBadge,
+  awardConnected,
+  sweepConnected,
+  grant,
+  revoke,
+};
