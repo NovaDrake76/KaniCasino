@@ -90,7 +90,7 @@ const Rung = ({ rung, charging, active, landed }: RungProps) => (
       {rung.multiplier}x
     </div>
     <div className="mt-0.5 text-[10px] text-ink-muted">
-      {rung.locked ? i18n.t("gift.levelLocked", { level: rung.minLevel }) : rung.multiplier === 1 ? "no bonus" : `${rung.chance}%`}
+      {rung.locked ? i18n.t("gift.levelLocked", { level: rung.minLevel }) : rung.multiplier === 1 ? i18n.t("gift.noBonus") : `${rung.chance}%`}
     </div>
   </div>
 );

@@ -10,7 +10,7 @@ const steps = () => [
   {
     image: "/images/coinHeads.webp",
     title: i18n.t("common.startWithFreeCoins"),
-    text: `Get K₽ by clicking on the bouncing i18n.t("bonus.claim") button on the navbar.`,
+    text: i18n.t("common.startWithFreeCoinsBody", { button: i18n.t("bonus.claim") }),
   },
   {
     image: "/images/boo.webp",
