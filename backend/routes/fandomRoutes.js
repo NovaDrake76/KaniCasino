@@ -26,6 +26,8 @@ const publicBoard = (board) => ({
   caseId: board.caseId || null,
   fanCount: board.fanCount,
   topCount: board.topCount || 0,
+  secondCount: board.secondCount || 0,
+  gap: typeof board.gap === "number" ? board.gap : 999999,
   top: board.topCount > 0 ? publicFan(board.top) : null,
 });
 
@@ -45,7 +47,8 @@ router.get("/", async (req, res) => {
         ? { topCount: -1, fanCount: -1, name: 1 }
         : sort === "open"
         ? { name: 1 }
-        : { fanCount: -1, topCount: -1, name: 1 };
+        // closest race first, and a board with nobody chasing sorts behind every real one
+        : { gap: 1, fanCount: -1, name: 1 };
 
     const [boards, total] = await Promise.all([
       FanBoard.find(filter).sort(order).skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).lean(),
@@ -101,7 +104,7 @@ router.get("/reach", isAuthenticated, async (req, res) => {
     if (!held.size) return res.json({ reach: [] });
 
     const boards = await FanBoard.find({ name: { $in: [...held.keys()] } })
-      .select("name image rarity caseId fanCount topCount top")
+      .select("name image rarity caseId fanCount topCount secondCount gap top")
       .lean();
 
     const pinnedName = user.fixedItem && user.fixedItem.name;

@@ -26,6 +26,10 @@ const FanBoardSchema = new mongoose.Schema({
   fanCount: { type: Number, default: 0 },
   // the leader's count, kept flat so browse can sort and filter on it
   topCount: { type: Number, default: 0 },
+  // runner-up, and how far clear the leader is. a board nobody is chasing carries the
+  // sentinel so it sorts last on the contested tab instead of looking like a dead heat.
+  secondCount: { type: Number, default: 0 },
+  gap: { type: Number, default: 999999 },
   top: FanSchema,
   ranks: [FanSchema],
   updatedAt: { type: Date, default: Date.now },
@@ -34,5 +38,6 @@ const FanBoardSchema = new mongoose.Schema({
 // the browse page sorts by these
 FanBoardSchema.index({ fanCount: -1 });
 FanBoardSchema.index({ topCount: -1 });
+FanBoardSchema.index({ gap: 1 });
 
 module.exports = mongoose.model("FanBoard", FanBoardSchema);
