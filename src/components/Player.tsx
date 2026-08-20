@@ -3,6 +3,7 @@ import Avatar from "./Avatar";
 import { User } from "../components/Types";
 import PlayerPreview from "./PlayerPreview";
 import { Link } from "react-router-dom";
+import FanBadge from "./FanBadge";
 
 interface Player {
     user: User
@@ -47,7 +48,10 @@ const Player: React.FC<Player> = ({ user, size, direction = "row", showLevel = "
             <Link to={`/profile/${user._id}`}>
                 <div className={`flex items-center justify-center text-white ${direction == "row" ? "gap-4" : "flex-col"}`}>
                     <Avatar id={user._id} image={user.profilePicture} size={size} showLevel={!!showLevel} level={user.level} noLink />
-                    <span className="mt-2 font-semibold text-center">{user.username}</span>
+                    <span className="mt-2 flex items-center gap-1.5 font-semibold text-center">
+                        <FanBadge fanRank={user.fanRank} linked={false} />
+                        {user.username}
+                    </span>
                 </div>
             </Link>
         </div>

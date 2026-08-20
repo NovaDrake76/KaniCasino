@@ -2,6 +2,7 @@ const cron = require('node-cron');
 const User = require('../models/User');
 const Notification = require("../models/Notification");
 const { pruneEmptyRounds } = require("../utils/roundPrune");
+const fandom = require("../utils/fandom");
 
 module.exports = {
     startCronJobs: function (io) {
@@ -41,6 +42,17 @@ module.exports = {
                 console.log('Weekly winnings reset successfully.');
             } catch (error) {
                 console.error('Error resetting weekly winnings:', error);
+            }
+        })
+
+        // the fan boards are a full recount, so they run on a clock rather than on every
+        // inventory change
+        cron.schedule('*/10 * * * *', async () => {
+            try {
+                const result = await fandom.rebuild();
+                console.log(`Fan boards rebuilt: ${result.boards} boards, ${result.players} ranked.`);
+            } catch (error) {
+                console.error('Error rebuilding fan boards:', error);
             }
         })
 

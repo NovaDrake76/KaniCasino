@@ -3,6 +3,8 @@ import Rarities from "../components/Rarities";
 import { RotatingLines } from "react-loader-spinner";
 import Avatar from "./Avatar";
 import { User } from "../components/Types";
+import FanBadge from "./FanBadge";
+import i18n from "../i18n";
 
 interface Player {
     player: User
@@ -20,8 +22,20 @@ const PlayerPreview: React.FC<Player> = ({ player }) => {
                 <div className="min-w-[96px]">
                     <Avatar image={player.profilePicture} id={player._id} size="large" level={player.level} /></div>
                 <div className="flex flex-col items-start">
-                    <span className="font-bold text-lg max-w-[160px] truncate">{player.username}</span>
+                    <span className="flex items-center gap-1.5 font-bold text-lg max-w-[200px]">
+                        <FanBadge fanRank={player.fanRank} linked={false} />
+                        <span className="truncate">{player.username}</span>
+                    </span>
                     <span className="font-bold text-[#56528b] ">Level {player.level}</span>
+                    {player.fanRank && (
+                        <span className="text-xs text-[#84819A]">
+                            {i18n.t("fandom.standingLine", {
+                                rank: player.fanRank.rank,
+                                name: player.fanRank.name,
+                                count: player.fanRank.count,
+                            })}
+                        </span>
+                    )}
                 </div>
             </div>
             {

@@ -1,5 +1,6 @@
 import { BsCoin } from "react-icons/bs";
 import { GiUpgrade, GiCrossedSwords } from "react-icons/gi";
+import { BsHeartFill } from "react-icons/bs";
 import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { SlPlane } from "react-icons/sl";
 import { FaHome, FaGift } from "react-icons/fa";
@@ -63,6 +64,11 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: i18n.t("nav.caseBattles"),
             path: "/battles",
             icon: <GiCrossedSwords className="text-2xl" />,
+        },
+        {
+            name: i18n.t("nav.topFan"),
+            path: "/fandom",
+            icon: <BsHeartFill className="text-2xl" />,
         },
         ...(userData?.isAdmin ? [{
             name: i18n.t("nav.backoffice"),

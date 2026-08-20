@@ -1,3 +1,5 @@
+import { FanRank } from "../services/fandom/FandomService";
+
 export interface User {
     id: string;
     _id: string;
@@ -15,6 +17,12 @@ export interface User {
         description: string;
         rarity: string;
     }
+    fanRank?: FanRank;
+    collectionRank?: {
+        distinct: number;
+        total: number;
+        rank: number;
+    };
 
 }
 

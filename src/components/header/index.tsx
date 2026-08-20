@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
 import { BasicItem } from "../Types";
 import i18n from "../../i18n";
+import { FanRank } from "../../services/fandom/FandomService";
 
 interface CaseOpeningItem {
   id: string;
@@ -20,6 +21,7 @@ interface CaseOpeningItem {
     id: string;
     name: string;
     profilePicture: string;
+    fanRank?: FanRank;
   };
   winningItems: BasicItem[];
 }
@@ -39,6 +41,7 @@ interface ItemsQueue {
     id: string;
     name: string;
     profilePicture: string;
+    fanRank?: FanRank;
   };
 }
 

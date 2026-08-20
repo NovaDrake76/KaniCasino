@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { toast } from "react-toastify";
 import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
+import FanStanding from "./FanStanding";
 import Avatar from "../../components/Avatar";
 import { User } from '../../components/Types'
 import i18n from "../../i18n";
@@ -25,7 +26,7 @@ const getPercentY = (x: number, y: number) => {
 };
 
 const UserInfo: React.FC<UserProps> = ({
-  user: { id, profilePicture, level, username, xp, fixedItem, nextBonus },
+  user: { id, profilePicture, level, username, xp, fixedItem, nextBonus, fanRank, collectionRank },
   isSameUser,
   setRefresh,
 }) => {
@@ -154,6 +155,7 @@ const UserInfo: React.FC<UserProps> = ({
       </div>
       <div className="mt-4 md:mt-0">
         {fixedItem && <FixedItem fixedItem={fixedItem} isSameUser={isSameUser} setRefresh={setRefresh} />}
+        <FanStanding fanRank={fanRank} collectionRank={collectionRank} />
       </div>
     </div>
   );

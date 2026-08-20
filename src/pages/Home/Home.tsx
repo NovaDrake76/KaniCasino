@@ -4,6 +4,7 @@ import CaseListing from "./CaseListing";
 import GameListing from "./GamesListing";
 import Leaderboard from "./Leaderboard";
 import DiscordWidget from "./DiscordWidget";
+import TopFanPromo from "./TopFanPromo";
 import { groupCasesByCategory } from "./groupCases";
 import {
   getCases,
@@ -181,6 +182,8 @@ const Home = () => {
         <GameListing name={i18n.t("home.ourGames")} />
 
         <Leaderboard aside={<DiscordWidget />} />
+
+        <TopFanPromo />
 
         {loading ? (
           <CaseListing name="Cases" loading cases={[]} />

@@ -181,7 +181,8 @@ module.exports = (io) => {
       const winnerUser = {
         name: user.username,
         id: user._id,
-        profilePicture: user.profilePicture
+        profilePicture: user.profilePicture,
+        fanRank: user.fanRank
       }
 
       // Emit the caseOpened event

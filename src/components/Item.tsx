@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Rarities from "./Rarities";
-import { BsPinAngleFill, BsShieldFillCheck } from "react-icons/bs";
+import { BsHeartFill, BsShieldFillCheck } from "react-icons/bs";
 import { fixItem, sellItems, sellStack } from "../services/users/UserServices";
 import { RotatingLines } from "react-loader-spinner";
 import { toast } from "react-toastify";
@@ -109,8 +109,9 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
           <div
             className="absolute top-1 right-1 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
             onClick={() => fixPlayerItem(item._id)}
+            title={i18n.t("fandom.pinHint", { name: item.name })}
           >
-            <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
+            <BsHeartFill className="text-2xl text-pink-500 hover:text-pink-300 transition-all cursor-pointer" />
           </div>
         )}
         {fixable && item.uniqueId && (

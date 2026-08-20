@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import Rarities from "../Rarities";
 import { Link } from "react-router-dom";
 import { BasicItem } from "../Types";
+import FanBadge from "../FanBadge";
+import { FanRank } from "../../services/fandom/FandomService";
 
 interface CaseOpenedNotificationProps {
   user: {
     name: string;
     profilePicture: string;
     id: string;
+    fanRank?: FanRank;
   };
   item: BasicItem;
   caseImage: string;
@@ -88,7 +91,10 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
               alt={"case"}
               className="w-12 h-12  z-10 object-cover rounded-full p-2 transition-all hover:scale-110 "
             />
-            <div className="z-10 text-base text-gray-200">{user.name.length > 20 ? `${user.name.slice(0, 20)}...` : user.name}</div>
+            <div className="z-10 flex items-center gap-1.5 text-base text-gray-200">
+              <FanBadge fanRank={user.fanRank} linked={false} />
+              {user.name.length > 20 ? `${user.name.slice(0, 20)}...` : user.name}
+            </div>
           </Link>
         </div>
 
