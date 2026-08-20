@@ -29,9 +29,12 @@ const PlayerPreview: React.FC<Player> = ({ player }) => {
         while (host && host.getBoundingClientRect().width === 0) host = host.parentElement;
         const box = host?.getBoundingClientRect();
         if (!box) return;
+        // clamp against the width the card will actually get, not its ideal one: on a
+        // phone the max-width shrinks it, and clamping on CARD_W pinned it off-screen left
+        const wide = Math.min(CARD_W, window.innerWidth - 16);
         const left = Math.min(
-            Math.max(8, box.left + box.width / 2 - CARD_W / 2),
-            window.innerWidth - CARD_W - 8
+            Math.max(8, box.left + box.width / 2 - wide / 2),
+            window.innerWidth - wide - 8
         );
         setAt(
             box.top < FLIP_AT
@@ -46,22 +49,22 @@ const PlayerPreview: React.FC<Player> = ({ player }) => {
     // uncoloured, so the rarity colour is an outer layer with the card 2px inside it
     const card = (
         <div
-            style={{ ...at, width: CARD_W, backgroundColor: player.fixedItem ? color : "#3A365A" }}
+            style={{ ...at, width: CARD_W, maxWidth: "calc(100vw - 16px)", backgroundColor: player.fixedItem ? color : "#3A365A" }}
             className="notched pointer-events-none fixed z-[140] p-[2px]"
         >
             <div className="notched flex items-stretch justify-between overflow-hidden bg-[#281D3F]">
-                <div className="flex items-center gap-2 p-6">
-                    <div className="min-w-[96px]">
+                <div className="flex min-w-0 flex-1 items-center gap-2 p-4 sm:p-6">
+                    <div className="w-24 shrink-0">
                         <Avatar image={player.profilePicture} id={player._id} size="large" level={player.level} noLink />
                     </div>
-                    <div className="flex flex-col items-start">
-                        <span className="flex items-center gap-1.5 font-bold text-lg max-w-[200px]">
+                    <div className="flex min-w-0 flex-col items-start">
+                        <span className="flex min-w-0 max-w-full items-center gap-1.5 font-bold text-lg">
                             <Badge badge={player.badge} linked={false} hoverCard={false} />
                             <span className="truncate text-white">{player.username}</span>
                         </span>
                         <span className="font-bold text-[#56528b] ">Level {player.level}</span>
                         {player.fanRank && (
-                            <span className="whitespace-nowrap text-xs text-[#84819A]">
+                            <span className="max-w-full truncate text-xs text-[#84819A]">
                                 {i18n.t("fandom.standingLine", {
                                     rank: player.fanRank.rank,
                                     name: player.fanRank.name,
@@ -72,7 +75,7 @@ const PlayerPreview: React.FC<Player> = ({ player }) => {
                     </div>
                 </div>
                 {player.fixedItem && (
-                    <div className="relative flex w-[160px] shrink-0 flex-col items-center justify-center px-2 py-4">
+                    <div className="relative flex w-[120px] shrink-0 flex-col items-center justify-center px-2 py-4 sm:w-[160px]">
                         <div
                             className="absolute left-1/2 top-1/2"
                             style={{ width: 1, height: 1, boxShadow: `0 0 60px 34px ${color}` }}
@@ -83,7 +86,7 @@ const PlayerPreview: React.FC<Player> = ({ player }) => {
                             className="relative z-10 h-24 w-24 object-contain"
                         />
                         <span
-                            className="relative z-10 w-full pt-2 text-center text-base font-semibold leading-tight"
+                            className="relative z-10 w-full break-words pt-2 text-center text-sm font-semibold leading-tight sm:text-base"
                             style={{ textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000' }}
                         >
                             {player.fixedItem.name}

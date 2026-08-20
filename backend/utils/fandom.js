@@ -7,6 +7,8 @@ const CollectorBoard = require("../models/CollectorBoard");
 // how many chasers a board keeps. deep enough that anyone in touching distance sees
 // themselves, short enough that a board document stays small.
 const RANKS_KEPT = 50;
+// a board nobody is chasing is not contested; it sorts behind every real race
+const NO_CONTEST = 999999;
 const COLLECTORS_KEPT = 100;
 
 // the same character can appear in more than one case, as separate item rows sharing a
@@ -41,6 +43,13 @@ function countPinned(user, character) {
     if (entry.name === character.name || (entry._id && character.ids.has(String(entry._id)))) held += 1;
   }
   return held;
+}
+
+// how close the chase is: the leader's margin over the runner-up. a board with no leader
+// or nobody behind them is not a contest at all.
+function gapOf(rows) {
+  if (!rows.length || rows[0].count <= 0 || rows.length < 2) return NO_CONTEST;
+  return rows[0].count - rows[1].count;
 }
 
 // count desc, then whoever pinned it first, then account age. never random.
@@ -171,6 +180,8 @@ async function rebuild() {
               caseId: board.caseId,
               fanCount: board.fanCount,
               topCount: board.rows.length ? board.rows[0].count : 0,
+              secondCount: board.rows.length > 1 ? board.rows[1].count : 0,
+              gap: gapOf(board.rows),
               top: board.rows[0] || null,
               ranks: board.rows.slice(0, RANKS_KEPT),
               updatedAt: at,
@@ -269,6 +280,8 @@ async function refreshCharacters(names) {
             caseId: board.caseId,
             fanCount: board.fanCount,
             topCount: board.rows.length ? board.rows[0].count : 0,
+            secondCount: board.rows.length > 1 ? board.rows[1].count : 0,
+            gap: gapOf(board.rows),
             top: board.rows[0] || null,
             ranks: board.rows.slice(0, RANKS_KEPT),
             updatedAt: at,
