@@ -39,6 +39,10 @@ const Profile = () => {
   const { userData } = useContext(UserContext);
   const [isSameUser, setIsSameUser] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+  // pinning an item or picking a badge changes the user, never the inventory, so they
+  // get their own signal instead of pulling the whole grid down with them
+  const [userRefresh, setUserRefresh] = useState<number>(0);
+  const refreshUser = () => setUserRefresh((v) => v + 1);
   const [openItem, setOpenItem] = useState<any>(null);
   const [openFilters, setOpenFilters] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
@@ -117,6 +121,10 @@ const Profile = () => {
   }, [refresh]);
 
   useEffect(() => {
+    if (userRefresh) getUserInfo();
+  }, [userRefresh]);
+
+  useEffect(() => {
     setInvItems([]);
     setPage(1);
     getUserInfo();
@@ -178,7 +186,7 @@ const Profile = () => {
               <UserInfo
                 user={user}
                 isSameUser={isSameUser}
-                setRefresh={setRefresh}
+                setRefresh={refreshUser}
               />
               <FriendButton profileId={id as string} isSameUser={isSameUser} />
             </div>
@@ -251,9 +259,9 @@ const Profile = () => {
             (
               <Pagination totalPages={inventory.totalPages} currentPage={inventory.currentPage} setPage={setPage} />
             )}
-          <div className="flex flex-wrap gap-6  justify-center ">
+          <div className={`flex flex-wrap gap-6 justify-center transition-opacity ${loadingInventory && invItems.length > 0 ? "opacity-60" : ""}`}>
 
-            {loadingInventory ? (
+            {loadingInventory && invItems.length === 0 ? (
               { array: Array(12).fill(0) }.array.map((_, i) => (
                 <Skeleton
                   width={176}
@@ -271,6 +279,7 @@ const Profile = () => {
                   fixable={isSameUser}
                   sellable={isSameUser}
                   setRefresh={setRefresh}
+                  onPinned={refreshUser}
                   onClick={() => setOpenItem(item)}
                 />
               ))

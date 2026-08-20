@@ -26,9 +26,11 @@ interface itemProps {
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
   size?: "small" | "large";
   onClick?: () => void;
+  // pinning changes the profile header, not the inventory, so it does not pull the grid
+  onPinned?: () => void;
 }
 
-const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size = "large", onClick }) => {
+const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinned, size = "large", onClick }) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [selling, setSelling] = useState<boolean>(false);
   const { userData, toogleUserData } = useContext(UserContext);
@@ -37,7 +39,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
   const fixPlayerItem = async (itemId: string) => {
     try {
       await fixItem(itemId);
-      setRefresh && setRefresh((prev) => !prev);
+      onPinned ? onPinned() : setRefresh && setRefresh((prev) => !prev);
     } catch (error) {
       console.log(error);
     }
