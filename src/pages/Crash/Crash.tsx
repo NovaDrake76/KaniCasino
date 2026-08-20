@@ -244,8 +244,8 @@ const CrashGame = () => {
   }, [countDown]);
 
   return (
-    <div className="w-screen flex flex-col items-center justify-center gap-12">
-      <div className="flex bg-[#212031] rounded flex-col lg:flex-row">
+    <div className="w-full flex flex-col items-center justify-center gap-12">
+      <div className="flex w-full max-w-full bg-[#212031] rounded flex-col lg:w-auto lg:flex-row">
         <SideMenu bet={bet} setBet={setBet} cashoutAt={cashoutAt} setCashoutAt={setCashoutAt} queued={queued}
          multiplier={multiplier} gameStarted={gameStarted} handleBet={handleBet} handleCashout={handleCashout}
          isLogged={isLogged} userGambled={userGambled} userCashedOut={userCashedOut} userData={userData} userMultiplier={userMultiplier} disableButton={disableButton}/>

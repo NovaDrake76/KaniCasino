@@ -145,6 +145,8 @@
     "itemsInThisCase": "이 케이스의 아이템",
     "leftArrow": "왼쪽 화살표",
     "openCase": "케이스 열기 -",
+    "openFree": "무료로 열기",
+    "openFreeCount": "무료로 열기 x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "오른쪽 화살표",
     "topArrow": "위 화살표"

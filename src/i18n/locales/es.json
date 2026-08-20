@@ -145,6 +145,8 @@
     "itemsInThisCase": "Objetos de esta caja",
     "leftArrow": "flecha izquierda",
     "openCase": "Abrir caja -",
+    "openFree": "Abrir gratis",
+    "openFreeCount": "Abrir gratis x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "flecha derecha",
     "topArrow": "flecha superior"

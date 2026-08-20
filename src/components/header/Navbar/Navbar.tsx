@@ -1,7 +1,7 @@
 
 
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import UserContext from "../../../UserContext";
 import MainButton from "../../MainButton";
 import { clearTokens } from "../../../services/auth/authUtils";
@@ -15,6 +15,7 @@ import { TbCat } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { FaBars, FaGift } from 'react-icons/fa';
 import RightContent from "./RightContent";
+import { useTranslation } from "react-i18next";
 import GiftTag from "../GiftTag";
 import useGiftReady from "../useGiftReady";
 import i18n from "../../../i18n";
@@ -32,6 +33,9 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
 
   const { isLogged, toggleLogin, toogleUserData, userData, openUserFlow, toogleUserFlow } = useContext(UserContext);
   const giftReady = useGiftReady();
+  const { i18n: translator } = useTranslation();
+
+  const linksRef = useRef<HTMLDivElement | null>(null);
 
   const handleHover = () => {
     setIsHovering(!isHovering);
@@ -114,6 +118,22 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
   ];
 
 
+  // the labelled row needs 1430px to 1890px depending on the language, so no css breakpoint
+  // fits them all. a class hides the labels, keeping the measurement out of react's render.
+  useLayoutEffect(() => {
+    const row = linksRef.current;
+    if (!row) return;
+    const fit = () => {
+      row.classList.remove("nav-icons-only");
+      if (row.scrollWidth > row.clientWidth) row.classList.add("nav-icons-only");
+    };
+    fit();
+    const done = document.fonts?.ready;
+    if (done) done.then(fit).catch(() => undefined);
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [links.length, translator.language, giftReady]);
+
   useEffect(() => {
 
     if (isLogged == true) {
@@ -128,11 +148,11 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
     <div className="w-full flex justify-center">
       <nav className=" py-4 px-8 bg-[#19172D] w-[calc(100vw-2rem)] max-w-[1920px] flex justify-center notched ">
         <div className="flex items-center justify-between w-full ">
-          <div className="md:hidden">
+          <div className="xl:hidden">
             <FaBars onClick={toggleSidebar} className="text-2xl cursor-pointer" />
           </div>
-          <div className="hidden md:flex">
-            <Link to="/">
+          <div className="hidden xl:flex min-w-0 flex-1 items-center">
+            <Link to="/" className="shrink-0">
               <div
                 className="flex items-center gap-2 "
                 onMouseEnter={handleHover}
@@ -162,16 +182,20 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
               </div>
             </Link>
             {
-              <div className="hidden md:flex items-center gap-6 ml-8 overflow-hidden">
+              <div
+                ref={linksRef}
+                className="flex min-w-0 flex-1 items-center gap-4 2xl:gap-6 ml-4 xl:ml-8 overflow-hidden"
+              >
                 {links.map((link, index) => (<Link
                   to={link.path}
                   key={index}
-                  className="flex items-center gap-2 font-normal text-xs 2xl:text-lg cursor-pointer "
+                  title={link.name}
+                  className="flex shrink-0 items-center gap-2 font-normal text-xs 2xl:text-sm cursor-pointer "
                 >
                   <span className="text-[#625F7E] hover:text-gray-200 transition-all ">
                     {link.icon}
                   </span>
-                  <span className="text-white hover:text-gray-200 transition-all ">
+                  <span className="nav-label whitespace-nowrap text-white hover:text-gray-200 transition-all ">
                     {link.name}
                   </span>
                   {link.badge}

@@ -145,6 +145,8 @@
     "itemsInThisCase": "Itens desta caixa",
     "leftArrow": "seta esquerda",
     "openCase": "Abrir caixa -",
+    "openFree": "Abrir grátis",
+    "openFreeCount": "Abrir grátis x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "seta direita",
     "topArrow": "seta superior"

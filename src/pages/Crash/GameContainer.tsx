@@ -21,7 +21,7 @@ const BETTING_COUNTDOWN_S = 10.7;
 const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, gameStarted, gameEnded, countDown, up, idle, falling, history }) => {
     return (
         <div className="flex flex-col">
-            <div className="flex flex-col gap-2 lg:w-[800px] border-b border-gray-700  p-4">
+            <div className="flex flex-col gap-2 w-full lg:max-w-[800px] border-b border-gray-700 p-4">
                 <div className="flex rounded items-center flex-col justify-center w-full h-[340px] relative overflow-hidden bg-surface-nav">
                     <CrashGraph
                         gameStarted={gameStarted}
@@ -69,7 +69,7 @@ const GameContainer: React.FC<GameHistory> = ({ crashPoint, multiplier, gameStar
                     />
                 </div>
             </div>
-            <div className="flex w-screen lg:w-[800px] p-4 flex-col">
+            <div className="flex w-full lg:max-w-[800px] p-4 flex-col">
                 <h3 className="mb-2 text-lg font-semibold">{i18n.t("coin.gameHistory")}</h3>
                 <div className="flex items-center gap-2 justify-end w-full overflow-hidden h-[24px]">
                     {history.map((e: { crashPoint: number | null }, i: Key) => (

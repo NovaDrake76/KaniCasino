@@ -145,6 +145,8 @@
     "itemsInThisCase": "本箱内物品",
     "leftArrow": "左箭头",
     "openCase": "开箱 -",
+    "openFree": "免费开箱",
+    "openFreeCount": "免费开箱 x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "右箭头",
     "topArrow": "上箭头"

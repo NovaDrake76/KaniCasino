@@ -29,7 +29,7 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
   verifying,
   doVerify,
 }) => (
-  <div className="w-screen flex flex-col items-center py-8 gap-6 px-4">
+  <div className="w-full flex flex-col items-center py-8 gap-6 px-4">
     <Title title={i18n.t("footer.provablyFair")} />
 
     <p className="text-[#84819a] text-sm max-w-[640px] text-center">

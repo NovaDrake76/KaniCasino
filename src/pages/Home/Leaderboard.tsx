@@ -35,7 +35,7 @@ const Leaderboard = ({ aside }: { aside?: React.ReactNode }) => {
 
             {/* the podium reads three entries, so two ranked players used to crash the page */}
             {!loading && users.length >= 3 ? (
-                <div className="flex gap-14 my-16 ">
+                <div className="flex gap-4 md:gap-6 xl:gap-14 my-16">
                     <TopPlayer key={users[1]._id} user={users[1]} rank={2} />
                     <TopPlayer key={users[0]._id} user={users[0]} rank={1} />
                     <TopPlayer key={users[2]._id} user={users[2]} rank={3} />

@@ -152,16 +152,16 @@ const CasePage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-screen relative">
+    <div className="flex flex-col items-center w-full relative">
       {!loading && data && (
         <button
           onClick={() => navigate(`/battles?add=${id}`)}
-          className="absolute top-4 right-4 md:right-8 z-20 px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm"
+          className="self-end mr-4 mt-4 md:absolute md:top-4 md:right-8 md:mr-0 md:mt-0 z-20 px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm"
         >
           {i18n.t("casePage.addToBattle")}
         </button>
       )}
-      <div className="flex flex-col items-center overflow-hidden  md:max-w-[1920px]">
+      <div className="flex w-full flex-col items-center overflow-hidden md:max-w-[1920px]">
         <h1 className="text-2xl color-[#e1dde9] font-bold py-7">
           {loading ? <Skeleton width={200} height={30} /> : data && data.title}
         </h1>
@@ -185,7 +185,7 @@ const CasePage = () => {
                 text={userData == null ? i18n.t("upgrade.signInToPlay") : freeNow ? (
                   <div className="flex items-center justify-center gap-1 text-base">
                     <FaGift />
-                    <span>Open free{quantity > 1 ? ` x${quantity}` : ""}</span>
+                    <span>{quantity > 1 ? i18n.t("casePage.openFreeCount", { count: quantity }) : i18n.t("casePage.openFree")}</span>
                   </div>
                 ) : <div className="flex items-center justify-center text-base">
                 <span className="mr-1">{i18n.t("casePage.openCase")} </span>{<Monetary value={data.price * quantity}/>}
@@ -219,7 +219,7 @@ const CasePage = () => {
 
         <div className="flex flex-col md:p-8 gap-2 items-center ">
           <Title title={i18n.t("casePage.itemsInThisCase")} />
-          <div className="flex flex-wrap gap-6 px-8 justify-center w-screen max-w-[1920px]">
+          <div className="flex flex-wrap gap-6 px-8 justify-center w-full max-w-[1920px]">
             {loading
               ? { array: Array(12).fill(0) }.array.map((_, i) => (
                 <Skeleton

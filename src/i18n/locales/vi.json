@@ -145,6 +145,8 @@
     "itemsInThisCase": "Vật phẩm trong hòm này",
     "leftArrow": "mũi tên trái",
     "openCase": "Mở hòm -",
+    "openFree": "Mở miễn phí",
+    "openFreeCount": "Mở miễn phí x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "mũi tên phải",
     "topArrow": "mũi tên trên"

@@ -145,6 +145,8 @@
     "itemsInThisCase": "このケースの中身",
     "leftArrow": "左向き矢印",
     "openCase": "ケースを開ける -",
+    "openFree": "無料で開ける",
+    "openFreeCount": "無料で開ける x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "右向き矢印",
     "topArrow": "上向き矢印"

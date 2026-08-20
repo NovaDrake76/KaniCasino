@@ -39,7 +39,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
     };
 
     return (
-        <div className="flex flex-col px-8 py-4 bg-[#212031] rounded file:h-min lg:w-[1140px] w-full">
+        <div className="flex flex-col px-8 py-4 bg-[#212031] rounded file:h-min w-full lg:max-w-[1140px]">
 
             <div className="flex flex-col">
                 <div className="flex items-center justify-between py-4">

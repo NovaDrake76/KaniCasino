@@ -28,7 +28,7 @@ const BattlesView: React.FC<BattlesViewProps> = ({
   openBattle,
   slotsFor,
 }) => (
-  <div className="w-screen flex flex-col items-center py-8 gap-8 px-4">
+  <div className="w-full flex flex-col items-center py-8 gap-8 px-4">
     <Title title={i18n.t("nav.caseBattles")} />
 
     <div className="flex flex-col gap-4 w-full max-w-[1100px] bg-[#212031] rounded-lg p-5">
