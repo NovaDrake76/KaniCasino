@@ -1,5 +1,3 @@
-
-
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import UserContext from "../../../UserContext";
@@ -8,15 +6,14 @@ import { clearTokens } from "../../../services/auth/authUtils";
 import { me } from "../../../services/auth/auth";
 import "react-loading-skeleton/dist/skeleton.css";
 import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
-import { BsCoin } from "react-icons/bs";
-import { SlPlane } from "react-icons/sl";
-import { GiUpgrade, GiCrossedSwords } from 'react-icons/gi';
-import { TbCat } from "react-icons/tb";
+import { BsHeartFill, BsListCheck } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { FaBars, FaGift } from 'react-icons/fa';
 import RightContent from "./RightContent";
 import { useTranslation } from "react-i18next";
 import GiftTag from "../GiftTag";
+import GamesMenu from "./GamesMenu";
+import { NavLink } from "../gameLinks";
 import useGiftReady from "../useGiftReady";
 import i18n from "../../../i18n";
 
@@ -72,31 +69,18 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
   };
 
 
-  const links: { name: string; path: string; icon: JSX.Element; badge?: JSX.Element }[] = [
+  // the games moved behind GamesMenu: ten of them across the bar stopped fitting in any
+  // language. what stays here is everything that is not a game.
+  const links: NavLink[] = [
     {
       name: i18n.t("nav.market"),
       path: "/marketplace",
       icon: <MdOutlineSell className="text-2xl" />,
     },
     {
-      name: i18n.t("nav.coinFlip"),
-      path: "/coinflip",
-      icon: <BsCoin className="text-2xl" />,
-    },
-    {
-      name: i18n.t("nav.crash"),
-      path: "/crash",
-      icon: <SlPlane className="text-2xl" />,
-    },
-    {
-      name: i18n.t("nav.upgrade"),
-      path: "/upgrade",
-      icon: <GiUpgrade className="text-2xl" />,
-    },
-    {
-      name: i18n.t("nav.slots"),
-      path: "/slot",
-      icon: <TbCat className="text-2xl" />,
+      name: i18n.t("nav.topFan"),
+      path: "/fandom",
+      icon: <BsHeartFill className="text-2xl" />,
     },
     {
       name: i18n.t("nav.dailyGift"),
@@ -104,11 +88,12 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       icon: <FaGift className="text-2xl" />,
       badge: giftReady ? <GiftTag /> : undefined,
     },
-    {
-      name: i18n.t("nav.caseBattles"),
-      path: "/battles",
-      icon: <GiCrossedSwords className="text-2xl" />,
-    },
+    // missions live on the caller's own profile, so there is nowhere to send a guest
+    ...(userData?.id ? [{
+      name: i18n.t("nav.missions"),
+      path: `/profile/${userData.id}?tab=missions`,
+      icon: <BsListCheck className="text-2xl" />,
+    }] : []),
     // only admins see the backoffice; the api refuses everyone else anyway
     ...(userData?.isAdmin ? [{
       name: i18n.t("nav.backoffice"),
@@ -184,8 +169,9 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
             {
               <div
                 ref={linksRef}
-                className="flex min-w-0 flex-1 items-center gap-4 2xl:gap-6 ml-4 xl:ml-8 overflow-hidden"
+                className="flex min-w-0 flex-1 items-center gap-4 2xl:gap-6 ml-4 xl:ml-8"
               >
+                <GamesMenu />
                 {links.map((link, index) => (<Link
                   to={link.path}
                   key={index}

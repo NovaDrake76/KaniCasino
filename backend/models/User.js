@@ -50,6 +50,37 @@ const UserSchema = new mongoose.Schema({
     rarity: String,
     description: String,
   },
+  // when the current character was pinned, so a tie on a fan board goes to whoever
+  // committed first rather than to whichever document mongo happened to return
+  fixedAt: Date,
+  // rebuilt by the fandom sweep, never written by hand. rank 1 is what earns the badge.
+  fanRank: {
+    name: String,
+    image: String,
+    rarity: String,
+    count: Number,
+    rank: Number,
+    fans: Number,
+  },
+  collectionRank: {
+    distinct: Number,
+    total: Number,
+    rank: Number,
+  },
+  // which sweep last saw this account, so the next one can clear whoever it did not touch
+  fanStamp: Date,
+  // earned or granted badges. top fan is not here: it is derived from fanRank, because
+  // it can be taken off a player the moment someone outcollects them.
+  badges: [
+    {
+      _id: false,
+      key: { type: String, required: true },
+      awardedAt: { type: Date, default: Date.now },
+      note: String,
+    },
+  ],
+  // the one badge the player wears around the site. nothing shows until they pick one.
+  selectedBadge: String,
   friends: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -158,5 +189,6 @@ const UserSchema = new mongoose.Schema({
 UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
 UserSchema.index({ referredBy: 1 }, { sparse: true });
 UserSchema.index({ weeklyWinnings: -1 }); // leaderboard, ranking window, weekly cron
+UserSchema.index({ "fixedItem.name": 1 }, { sparse: true }); // fan board recount on pin
 
 module.exports = User = mongoose.model("User", UserSchema);

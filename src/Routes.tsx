@@ -19,6 +19,8 @@ import ItemPage from "./pages/Market/ItemPage";
 import Battles from "./pages/Battles/Battles";
 import BattleRoom from "./pages/Battles/BattleRoom";
 import ProvablyFair from "./pages/ProvablyFair";
+import Fandom from "./pages/Fandom/Fandom";
+import FandomBoard from "./pages/Fandom/FandomBoard";
 import ReferralRedirect from "./pages/Affiliates/ReferralRedirect";
 import Backoffice from "./pages/Backoffice/Backoffice";
 
@@ -40,6 +42,8 @@ const defaultRoutes = (
     <Route path="/hilo" element={<Hilo />} />
     <Route path="/battles" element={<Battles />} />
     <Route path="/battles/:id" element={<BattleRoom />} />
+    <Route path="/fandom" element={<Fandom />} />
+    <Route path="/fandom/:name" element={<FandomBoard />} />
     <Route path="/provably-fair" element={<ProvablyFair />} />
     <Route path="/r/:code" element={<ReferralRedirect />} />
     <Route path="/backoffice" element={<Backoffice />} />

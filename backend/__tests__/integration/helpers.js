@@ -15,6 +15,7 @@ const emailRoutes = require("../../routes/emailRoutes");
 const giftRoutes = require("../../routes/giftRoutes");
 const caseRoutes = require("../../routes/caseRoutes");
 const itemRoutes = require("../../routes/itemRoutes");
+const fandomRoutes = require("../../routes/fandomRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -36,6 +37,7 @@ function makeApp() {
   app.use("/gift", giftRoutes);
   app.use("/cases", caseRoutes);
   app.use("/items", itemRoutes);
+  app.use("/fandom", fandomRoutes);
   return app;
 }
 

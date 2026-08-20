@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
+const badges = require("../utils/badges");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const Item = require("../models/Item");
@@ -191,6 +192,31 @@ router.delete("/items/:id", isAuthenticated, isAdmin, async (req, res) => {
 });
 
 //update wallet balance
+// hand out or take back a badge. only the grantable ones: the earned badges are owned by
+// the code that awards them and would be overwritten anyway.
+router.put("/users/:id/badge", isAuthenticated, isAdmin, async (req, res) => {
+  const { key, note, action } = req.body;
+  if (!badges.GRANTABLE.includes(key)) {
+    return res.status(400).json({ message: "That badge is earned, not granted" });
+  }
+  try {
+    const user = await User.findById(req.params.id).select("_id");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const result =
+      action === "revoke"
+        ? await badges.revoke(user._id, key)
+        : await badges.grant(user._id, key, note);
+    if (!result.ok) return res.status(400).json({ message: result.message });
+
+    const after = await User.findById(user._id).select("fanRank badges selectedBadge").lean();
+    res.json({ badges: badges.heldBadges(after) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 router.put("/users/:id/wallet", isAuthenticated, isAdmin, async (req, res) => {
   const { walletBalance } = req.body;
 

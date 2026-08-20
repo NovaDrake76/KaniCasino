@@ -1,4 +1,8 @@
+import { useState } from "react";
+import { toast } from "react-toastify";
 import Skeleton from "react-loading-skeleton";
+import BadgeMark from "../../components/Badge";
+import { Badge, grantBadge } from "../../services/badges/BadgeService";
 import Avatar from "../../components/Avatar";
 import Monetary from "../../components/Monetary";
 import {
@@ -107,6 +111,55 @@ const WINDOWS: { value: Window; text: string }[] = [
   { value: 7, text: "7 days" },
 ];
 
+const BadgeGrant = ({ userId, held }: { userId: string; held: Badge[] }) => {
+  const [badges, setBadges] = useState<Badge[]>(held);
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+  const has = badges.some((b) => b.key === "contributor");
+
+  const run = async (action: "grant" | "revoke") => {
+    setSaving(true);
+    try {
+      const res = await grantBadge(userId, "contributor", note, action);
+      setBadges(res.badges);
+      setNote("");
+    } catch {
+      toast.error("Could not change that badge", { theme: "dark" });
+    }
+    setSaving(false);
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-3 bg-surface rounded-lg p-5">
+      <span className="text-sm text-ink-muted">Badges</span>
+      <div className="flex items-center gap-2">
+        {badges.length === 0 && <span className="text-xs text-ink-muted">none</span>}
+        {badges.map((b) => (
+          <span key={b.key} className="flex items-center gap-1.5 text-xs text-ink">
+            <BadgeMark badge={b} linked={false} hoverCard={false} />
+            {b.key}
+          </span>
+        ))}
+      </div>
+      {!has && (
+        <input
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="What did they do?"
+          className="ml-auto rounded-md bg-surface-raised px-3 py-1.5 text-sm text-ink outline-none"
+        />
+      )}
+      <button
+        onClick={() => run(has ? "revoke" : "grant")}
+        disabled={saving}
+        className={`rounded-md px-3 py-1.5 text-sm ${has ? "bg-surface-raised text-ink" : "ml-0 bg-accent text-white"}`}
+      >
+        {has ? "Revoke contributor" : "Grant contributor"}
+      </button>
+    </div>
+  );
+};
+
 const PlayerDetail = ({
   player,
   loading,
@@ -158,6 +211,8 @@ const PlayerDetail = ({
           </div>
         </div>
       </div>
+
+      <BadgeGrant userId={user.id} held={user.badges || []} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard title={`House net on this player (${windowText})`}>

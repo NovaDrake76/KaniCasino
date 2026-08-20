@@ -91,6 +91,7 @@ const referralRoutes = require("./routes/referralRoutes")(io);
 const rewardRoutes = require("./routes/rewardRoutes")(io);
 const giftRoutes = require("./routes/giftRoutes");
 const emailRoutes = require("./routes/emailRoutes");
+const fandomRoutes = require("./routes/fandomRoutes");
 
 // Connect to MongoDB
 mongoose
@@ -162,6 +163,7 @@ app.use("/missions", missionsRoutes);
 app.use("/referrals", referralRoutes);
 app.use("/rewards", rewardRoutes);
 app.use("/gift", giftRoutes);
+app.use("/fandom", fandomRoutes);
 
 // settle whatever the last shutdown interrupted before dealing anyone in again: a live
 // crash or coin flip round holds real stakes, and until this runs they are unaccounted.

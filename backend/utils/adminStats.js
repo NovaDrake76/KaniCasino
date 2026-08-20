@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const badges = require("./badges");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const Transaction = require("../models/Transaction");
@@ -266,7 +267,7 @@ async function bigWins(days, limit = 10) {
 async function playerDetail(id, days) {
   if (!mongoose.Types.ObjectId.isValid(id)) return null;
   const user = await User.findById(id)
-    .select("username profilePicture level xp walletBalance isAdmin weeklyWinnings referredBy inventory")
+    .select("username profilePicture level xp walletBalance isAdmin weeklyWinnings referredBy inventory fanRank badges selectedBadge")
     .lean();
   if (!user) return null;
 
@@ -342,6 +343,7 @@ async function playerDetail(id, days) {
       inventoryCount: (user.inventory || []).length,
       referredBy: referrer ? referrer.username : null,
       referrals,
+      badges: badges.heldBadges(user),
     },
     totals: {
       wagered,

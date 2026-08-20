@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Rarities from "./Rarities";
-import { BsPinAngleFill, BsShieldFillCheck } from "react-icons/bs";
+import { BsHeartFill, BsShieldFillCheck } from "react-icons/bs";
 import { fixItem, sellItems, sellStack } from "../services/users/UserServices";
 import { RotatingLines } from "react-loader-spinner";
 import { toast } from "react-toastify";
@@ -26,9 +26,11 @@ interface itemProps {
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
   size?: "small" | "large";
   onClick?: () => void;
+  // pinning changes the profile header, not the inventory, so it does not pull the grid
+  onPinned?: () => void;
 }
 
-const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size = "large", onClick }) => {
+const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinned, size = "large", onClick }) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [selling, setSelling] = useState<boolean>(false);
   const { userData, toogleUserData } = useContext(UserContext);
@@ -37,7 +39,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
   const fixPlayerItem = async (itemId: string) => {
     try {
       await fixItem(itemId);
-      setRefresh && setRefresh((prev) => !prev);
+      onPinned ? onPinned() : setRefresh && setRefresh((prev) => !prev);
     } catch (error) {
       console.log(error);
     }
@@ -108,9 +110,10 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
         {fixable && (
           <div
             className="absolute top-1 right-1 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
-            onClick={() => fixPlayerItem(item._id)}
+            onClick={(e) => { e.stopPropagation(); fixPlayerItem(item._id); }}
+            title={i18n.t("fandom.pinHint", { name: item.name })}
           >
-            <BsPinAngleFill className="text-2xl text-blue-500 hover:text-blue-300 transition-all cursor-pointer" />
+            <BsHeartFill className="text-2xl text-pink-500 hover:text-pink-300 transition-all cursor-pointer" />
           </div>
         )}
         {fixable && item.uniqueId && (
@@ -118,6 +121,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
             to={`/provably-fair?item=${item.uniqueId}`}
             className="absolute top-9 right-1 z-30 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
             title={i18n.t("common.verifyThisDropProvably")}
+            onClick={(e) => e.stopPropagation()}
           >
             <BsShieldFillCheck className="text-2xl text-green-500 hover:text-green-300 transition-all cursor-pointer" />
           </Link>
