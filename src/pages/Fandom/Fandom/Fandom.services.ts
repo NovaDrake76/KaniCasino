@@ -112,7 +112,9 @@ export const useFandomServices = () => {
         fansLabel:
           board.fanCount === 0
             ? i18n.t("fandom.noFansYet")
-            : i18n.t("fandom.fansCount", { count: board.fanCount }),
+            : i18n.t(board.fanCount === 1 ? "fandom.fansCountOne" : "fandom.fansCount", {
+                count: board.fanCount,
+              }),
         holder: board.top && board.topCount > 0 ? board.top.username : null,
         holderId: board.top && board.topCount > 0 ? board.top.userId : null,
         holderPicture: board.top ? board.top.profilePicture : "",

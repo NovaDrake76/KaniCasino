@@ -119,7 +119,10 @@ const FandomBoardView: React.FC<FandomBoardViewProps> = ({
             <p className="text-xs text-[#C9C6DE]">
               {board.fanCount === 0
                 ? i18n.t("fandom.noFansYet")
-                : i18n.t("fandom.peoplePinned", { count: board.fanCount, name })}
+                : i18n.t(board.fanCount === 1 ? "fandom.peoplePinnedOne" : "fandom.peoplePinned", {
+                    count: board.fanCount,
+                    name,
+                  })}
             </p>
             <Link
               to={board.caseId ? `/case/${board.caseId}` : "/"}
