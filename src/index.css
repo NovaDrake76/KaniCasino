@@ -288,6 +288,13 @@ a:hover {
   color: #535bf2;
 }
 
+/* body is a flex container, so #root grows to its widest child: one 120vw reel used to
+   stretch the whole document sideways, and every w-full inside it with it */
+#root {
+  width: 100%;
+  min-width: 0;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -478,4 +485,9 @@ button:focus-visible {
       var(--color2),
       var(--color1));
   background-size: 600% 100%;
+}
+
+/* the navbar drops its link labels when the row runs out of room for them */
+.nav-icons-only .nav-label {
+  display: none;
 }

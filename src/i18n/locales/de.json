@@ -145,6 +145,8 @@
     "itemsInThisCase": "Gegenstände in dieser Kiste",
     "leftArrow": "Pfeil links",
     "openCase": "Kiste öffnen -",
+    "openFree": "Gratis öffnen",
+    "openFreeCount": "Gratis öffnen x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "Pfeil rechts",
     "topArrow": "Pfeil oben"

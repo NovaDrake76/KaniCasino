@@ -145,6 +145,8 @@
     "itemsInThisCase": "Items in this case",
     "leftArrow": "left arrow",
     "openCase": "Open case -",
+    "openFree": "Open free",
+    "openFreeCount": "Open free x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "right arrow",
     "topArrow": "top arrow"

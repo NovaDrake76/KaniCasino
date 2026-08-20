@@ -41,12 +41,12 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
   onLeave,
 }) => {
   if (loading)
-    return <div className="w-screen py-16 text-center">{i18n.t("battles.loadingBattle")}</div>;
+    return <div className="w-full py-16 text-center">{i18n.t("battles.loadingBattle")}</div>;
   if (notFound)
-    return <div className="w-screen py-16 text-center">{i18n.t("battles.battleNotFound")}</div>;
+    return <div className="w-full py-16 text-center">{i18n.t("battles.battleNotFound")}</div>;
 
   return (
-    <div className="w-screen flex flex-col items-center py-6 gap-5 px-4">
+    <div className="w-full flex flex-col items-center py-6 gap-5 px-4">
       <div className="w-full max-w-[1200px] flex items-center justify-between">
         <button
           onClick={onBack}

@@ -145,6 +145,8 @@
     "itemsInThisCase": "Items di kotak ini",
     "leftArrow": "panah kiri",
     "openCase": "Buka kotak -",
+    "openFree": "Buka gratis",
+    "openFreeCount": "Buka gratis x{{count}}",
     "provablyFair": "Gak ngechit, aman",
     "rightArrow": "panah kanan",
     "topArrow": "panah atas"

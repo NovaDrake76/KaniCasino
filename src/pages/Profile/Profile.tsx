@@ -160,7 +160,7 @@ const Profile = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center w-screen">
+    <div className="flex flex-col items-center w-full">
       <div className="flex flex-col max-w-[1312px] py-4 w-full">
         {loading ? (
           <div className="flex items-center justify-start pb-7">

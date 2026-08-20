@@ -145,6 +145,8 @@
     "itemsInThisCase": "Objets de cette caisse",
     "leftArrow": "flèche de gauche",
     "openCase": "Ouvrir la caisse -",
+    "openFree": "Ouvrir gratuitement",
+    "openFreeCount": "Ouvrir gratuitement x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "flèche de droite",
     "topArrow": "flèche du haut"

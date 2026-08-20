@@ -17,7 +17,7 @@ const ClockPointer: React.FC<ClockPointerProps> = ({ successRate, spinning, succ
     const strokeLength = circumference * successRate;
 
     return (
-        <div className="relative w-[380px] h-[380px]" style={{
+        <div className="relative w-[380px] h-[380px] max-w-[88vw] max-h-[88vw]" style={{
             backgroundImage: `url(/images/clock.webp)`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
