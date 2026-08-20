@@ -49,20 +49,30 @@
     "signUp": "Registrarse"
   },
   "badge": {
+    "allCount": "Tienes {{held}} de {{total}}",
+    "allTitle": "Todas las insignias",
     "awarded": "Concedida el {{date}}",
     "chooseHint": "Elige una para llevar por el sitio.",
     "clearHint": "Haz clic en la que llevas para quitártela.",
     "connected": "Conectado",
     "connectedHint": "Se unió al Discord y sigue en X.",
+    "connectedHow": "Reclama las dos misiones sociales en tu pestaña Misiones: unirte al Discord y seguir en X.",
     "contributor": "Colaborador",
     "contributorHint": "Ayudó a construir KaniCasino.",
+    "contributorHow": "Concedida a mano por ayudar a construir KaniCasino: arte, traducciones, código, ideas.",
     "couldNotSave": "No se pudo guardar esa elección",
     "grant": "Conceder insignia",
+    "locked": "NO CONSEGUIDA",
+    "noneTheirs": "Aún sin insignias.",
+    "noneYours": "Aún no tienes insignias.",
     "note": "¿Qué hizo?",
     "revoke": "Retirar",
+    "seeAll": "Ver todas las insignias",
     "shelfTitle": "Insignias",
     "topFan": "Top Fan",
-    "topFanHint": "Tiene más copias de un personaje que nadie."
+    "topFanHint": "Tiene más copias de un personaje que nadie.",
+    "topFanHow": "Fija un personaje en tu perfil y ten más copias suyas que nadie.",
+    "wearing": "EN USO"
   },
   "balance": {
     "admin_adjust": "Ajuste administrativo",

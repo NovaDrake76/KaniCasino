@@ -49,20 +49,30 @@
     "signUp": "Registrati"
   },
   "badge": {
+    "allCount": "Ne hai {{held}} su {{total}}",
+    "allTitle": "Tutti i distintivi",
     "awarded": "Assegnato il {{date}}",
     "chooseHint": "Scegline uno da portare per il sito.",
     "clearHint": "Clicca su quello che porti per toglierlo.",
     "connected": "Connesso",
     "connectedHint": "È entrato nel Discord e segue su X.",
+    "connectedHow": "Riscuoti entrambe le missioni social nella scheda Missioni: entra nel Discord e segui su X.",
     "contributor": "Collaboratore",
     "contributorHint": "Ha aiutato a costruire KaniCasino.",
+    "contributorHow": "Assegnato a mano per aver aiutato a costruire KaniCasino: arte, traduzioni, codice, idee.",
     "couldNotSave": "Impossibile salvare questa scelta",
     "grant": "Assegna distintivo",
+    "locked": "NON OTTENUTO",
+    "noneTheirs": "Ancora nessun distintivo.",
+    "noneYours": "Non hai ancora distintivi.",
     "note": "Che cosa ha fatto?",
     "revoke": "Rimuovi",
+    "seeAll": "Vedi tutti i distintivi",
     "shelfTitle": "Distintivi",
     "topFan": "Top Fan",
-    "topFanHint": "Possiede più copie di un personaggio di chiunque altro."
+    "topFanHint": "Possiede più copie di un personaggio di chiunque altro.",
+    "topFanHow": "Fissa un personaggio sul tuo profilo e possiedine più copie di chiunque altro.",
+    "wearing": "INDOSSATO"
   },
   "balance": {
     "admin_adjust": "Rettifica amministrativa",

@@ -49,20 +49,30 @@
     "signUp": "新規登録"
   },
   "badge": {
+    "allCount": "{{total}} 中 {{held}} 個取得済み",
+    "allTitle": "すべてのバッジ",
     "awarded": "{{date}} に付与",
     "chooseHint": "サイト内で付けるバッジを選んでください。",
     "clearHint": "付けているバッジをクリックすると外せます。",
     "connected": "連携済み",
     "connectedHint": "Discord に参加し、X をフォロー済み。",
+    "connectedHow": "ミッションタブでソーシャルミッションを両方受け取ってください：Discord 参加と X のフォロー。",
     "contributor": "貢献者",
     "contributorHint": "KaniCasino の制作を手伝いました。",
+    "contributorHow": "KaniCasino の制作への協力（アート、翻訳、コード、アイデア）に対して手動で付与されます。",
     "couldNotSave": "この選択を保存できませんでした",
     "grant": "バッジを付与",
+    "locked": "未取得",
+    "noneTheirs": "まだバッジはありません。",
+    "noneYours": "まだバッジがありません。",
     "note": "何をした人ですか？",
     "revoke": "取り消し",
+    "seeAll": "すべてのバッジを見る",
     "shelfTitle": "バッジ",
     "topFan": "トップファン",
-    "topFanHint": "あるキャラクターを誰よりも多く持っています。"
+    "topFanHint": "あるキャラクターを誰よりも多く持っています。",
+    "topFanHow": "キャラクターをプロフィールに固定し、誰よりも多く集めましょう。",
+    "wearing": "付けています"
   },
   "balance": {
     "admin_adjust": "管理者による調整",

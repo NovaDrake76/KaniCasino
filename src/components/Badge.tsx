@@ -15,12 +15,14 @@ interface BadgeProps {
   hoverCard?: boolean;
 }
 
-const MARK = { inline: "h-[18px] w-[18px]", large: "h-6 w-6" };
+const MARK = { inline: "h-[18px] w-[18px]", large: "h-6 w-6", xl: "h-10 w-10" };
 const CARD_GAP = 10;
 const CARD_W = 240;
 
 // one mark per badge, all the same size and shape. the detail that tells them apart lives
 // in the hover card, because a 18px picture of anything is unreadable in a table row.
+export const BADGE_KEYS: BadgeKey[] = ["topFan", "contributor", "connected"];
+
 const FACE: Record<BadgeKey, { from: string; to: string; ink: string; icon: JSX.Element }> = {
   topFan: {
     from: "#FFCC00",
@@ -44,6 +46,27 @@ const FACE: Record<BadgeKey, { from: string; to: string; ink: string; icon: JSX.
     ink: "#ffffff",
     icon: <BsBroadcast size="68%" />,
   },
+};
+
+export const BadgeFace: React.FC<{
+  badgeKey: BadgeKey;
+  size?: keyof typeof MARK;
+  muted?: boolean;
+}> = ({ badgeKey, size = "inline", muted = false }) => {
+  const face = FACE[badgeKey];
+  if (!face) return null;
+  return (
+    <span
+      style={
+        muted
+          ? { backgroundImage: "linear-gradient(to bottom, #3A365A, #2A2840)", color: "#625F7E" }
+          : { backgroundImage: `linear-gradient(to bottom, ${face.from}, ${face.to})`, color: face.ink }
+      }
+      className={`notched-xs inline-flex shrink-0 items-center justify-center ${MARK[size]}`}
+    >
+      {face.icon}
+    </span>
+  );
 };
 
 const Badge: React.FC<BadgeProps> = ({ badge, size = "inline", linked = true, hoverCard = true }) => {

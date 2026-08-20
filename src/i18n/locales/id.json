@@ -49,20 +49,30 @@
     "signUp": "Daftar (member baru)"
   },
   "badge": {
+    "allCount": "Kamu punya {{held}} dari {{total}}",
+    "allTitle": "Semua lencana",
     "awarded": "Diberikan {{date}}",
     "chooseHint": "Pilih satu untuk dipakai di seluruh situs.",
     "clearHint": "Klik lencana yang dipakai untuk melepasnya.",
     "connected": "Terhubung",
     "connectedHint": "Sudah gabung Discord dan mengikuti di X.",
+    "connectedHow": "Klaim kedua misi sosial di tab Misi: gabung Discord dan ikuti di X.",
     "contributor": "Kontributor",
     "contributorHint": "Ikut membangun KaniCasino.",
+    "contributorHow": "Diberikan langsung karena ikut membangun KaniCasino: gambar, terjemahan, kode, ide.",
     "couldNotSave": "Tidak bisa menyimpan pilihan itu",
     "grant": "Beri lencana",
+    "locked": "BELUM DIDAPAT",
+    "noneTheirs": "Belum ada lencana.",
+    "noneYours": "Kamu belum punya lencana.",
     "note": "Apa yang dia lakukan?",
     "revoke": "Cabut",
+    "seeAll": "Lihat semua lencana",
     "shelfTitle": "Lencana",
     "topFan": "Top Fan",
-    "topFanHint": "Punya lebih banyak salinan satu karakter daripada siapa pun."
+    "topFanHint": "Punya lebih banyak salinan satu karakter daripada siapa pun.",
+    "topFanHow": "Sematkan satu karakter di profilmu dan kumpulkan lebih banyak daripada siapa pun.",
+    "wearing": "DIPAKAI"
   },
   "balance": {
     "admin_adjust": "Penyesuaian admin",

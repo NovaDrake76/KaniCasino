@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 import Badge from "../../components/Badge";
+import BadgeCatalog from "./BadgeCatalog";
 import { Badge as BadgeData, BadgeKey, setWornBadge } from "../../services/badges/BadgeService";
 import i18n from "../../i18n";
 
@@ -18,8 +19,9 @@ const BadgeShelf: React.FC<BadgeShelfProps> = ({ badges, selectedBadge, isSameUs
   const { userData, toogleUserData } = useContext(UserContext);
   const [worn, setWorn] = useState<BadgeKey | null>(selectedBadge || null);
   const [saving, setSaving] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
-  if (!badges || badges.length === 0) return null;
+  const held = badges || [];
 
   const choose = async (key: BadgeKey) => {
     if (!isSameUser || saving) return;
@@ -39,29 +41,48 @@ const BadgeShelf: React.FC<BadgeShelfProps> = ({ badges, selectedBadge, isSameUs
 
   return (
     <div className="mt-5 flex flex-col gap-2">
-      <p className="text-[10px] font-extrabold tracking-[0.16em] text-[#625F7E]">
-        {i18n.t("badge.shelfTitle").toUpperCase()}
-      </p>
-      <div className="flex flex-wrap items-center gap-2">
-        {badges.map((badge) => (
-          <button
-            key={badge.key}
-            onClick={() => choose(badge.key)}
-            disabled={!isSameUser || saving}
-            className={`notched-sm flex items-center gap-2 border-0 px-3 py-2 text-xs font-semibold outline-none transition-all ${
-              worn === badge.key ? "bg-[#4F46E5] text-white" : "bg-[#212031] text-[#C9C6DE]"
-            } ${isSameUser ? "hover:text-white" : "cursor-default"}`}
-          >
-            <Badge badge={badge} linked={false} />
-            {i18n.t(`badge.${badge.key}`)}
-          </button>
-        ))}
-      </div>
-      {isSameUser && (
-        <p className="text-[11px] text-[#625F7E]">
-          {worn ? i18n.t("badge.clearHint") : i18n.t("badge.chooseHint")}
+      <div className="flex items-center gap-3">
+        <p className="text-[10px] font-extrabold tracking-[0.16em] text-[#625F7E]">
+          {i18n.t("badge.shelfTitle").toUpperCase()}
         </p>
+        <button
+          onClick={() => setShowAll(true)}
+          className="border-0 bg-transparent p-0 text-[11px] font-semibold text-[#84819A] underline outline-none transition-all hover:text-white"
+        >
+          {i18n.t("badge.seeAll")}
+        </button>
+      </div>
+
+      {held.length === 0 ? (
+        <p className="text-[11px] text-[#625F7E]">
+          {isSameUser ? i18n.t("badge.noneYours") : i18n.t("badge.noneTheirs")}
+        </p>
+      ) : (
+        <>
+          <div className="flex flex-wrap items-center gap-2">
+            {held.map((badge) => (
+              <button
+                key={badge.key}
+                onClick={() => choose(badge.key)}
+                disabled={!isSameUser || saving}
+                className={`notched-sm flex items-center gap-2 border-0 px-3 py-2 text-xs font-semibold outline-none transition-all ${
+                  worn === badge.key ? "bg-[#4F46E5] text-white" : "bg-[#212031] text-[#C9C6DE]"
+                } ${isSameUser ? "hover:text-white" : "cursor-default"}`}
+              >
+                <Badge badge={badge} linked={false} />
+                {i18n.t(`badge.${badge.key}`)}
+              </button>
+            ))}
+          </div>
+          {isSameUser && (
+            <p className="text-[11px] text-[#625F7E]">
+              {worn ? i18n.t("badge.clearHint") : i18n.t("badge.chooseHint")}
+            </p>
+          )}
+        </>
       )}
+
+      <BadgeCatalog badges={held} worn={worn} open={showAll} setOpen={setShowAll} />
     </div>
   );
 };

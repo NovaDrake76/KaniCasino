@@ -49,20 +49,30 @@
     "signUp": "S'inscrire"
   },
   "badge": {
+    "allCount": "Vous en avez {{held}} sur {{total}}",
+    "allTitle": "Tous les badges",
     "awarded": "Attribué le {{date}}",
     "chooseHint": "Choisissez-en un à porter sur le site.",
     "clearHint": "Cliquez sur celui que vous portez pour l'enlever.",
     "connected": "Connecté",
     "connectedHint": "A rejoint le Discord et suit sur X.",
+    "connectedHow": "Réclamez les deux missions sociales dans l'onglet Missions : rejoindre le Discord et suivre sur X.",
     "contributor": "Contributeur",
     "contributorHint": "A participé à la construction de KaniCasino.",
+    "contributorHow": "Attribué à la main pour avoir aidé à construire KaniCasino : art, traductions, code, idées.",
     "couldNotSave": "Impossible d'enregistrer ce choix",
     "grant": "Attribuer un badge",
+    "locked": "NON OBTENU",
+    "noneTheirs": "Pas encore de badge.",
+    "noneYours": "Vous n'avez pas encore de badge.",
     "note": "Qu'a-t-il fait ?",
     "revoke": "Retirer",
+    "seeAll": "Voir tous les badges",
     "shelfTitle": "Badges",
     "topFan": "Top Fan",
-    "topFanHint": "Possède plus d'exemplaires d'un personnage que quiconque."
+    "topFanHint": "Possède plus d'exemplaires d'un personnage que quiconque.",
+    "topFanHow": "Épinglez un personnage sur votre profil et possédez-en plus d'exemplaires que quiconque.",
+    "wearing": "PORTÉ"
   },
   "balance": {
     "admin_adjust": "Ajustement administrateur",

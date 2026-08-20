@@ -49,20 +49,30 @@
     "signUp": "Registrieren"
   },
   "badge": {
+    "allCount": "Du hast {{held}} von {{total}}",
+    "allTitle": "Alle Abzeichen",
     "awarded": "Verliehen am {{date}}",
     "chooseHint": "Wähle eines, das du auf der Seite trägst.",
     "clearHint": "Klicke auf das getragene, um es abzulegen.",
     "connected": "Verbunden",
     "connectedHint": "Ist dem Discord beigetreten und folgt auf X.",
+    "connectedHow": "Hole dir beide sozialen Missionen im Missionen-Tab: dem Discord beitreten und auf X folgen.",
     "contributor": "Mitwirkender",
     "contributorHint": "Hat beim Aufbau von KaniCasino geholfen.",
+    "contributorHow": "Von Hand verliehen für Hilfe beim Aufbau von KaniCasino: Kunst, Übersetzungen, Code, Ideen.",
     "couldNotSave": "Diese Wahl konnte nicht gespeichert werden",
     "grant": "Abzeichen verleihen",
+    "locked": "NICHT ERHALTEN",
+    "noneTheirs": "Noch keine Abzeichen.",
+    "noneYours": "Du hast noch keine Abzeichen.",
     "note": "Was hat die Person getan?",
     "revoke": "Entziehen",
+    "seeAll": "Alle Abzeichen ansehen",
     "shelfTitle": "Abzeichen",
     "topFan": "Top-Fan",
-    "topFanHint": "Besitzt mehr Exemplare eines Charakters als alle anderen."
+    "topFanHint": "Besitzt mehr Exemplare eines Charakters als alle anderen.",
+    "topFanHow": "Hefte einen Charakter an dein Profil und besitze mehr Exemplare davon als alle anderen.",
+    "wearing": "GETRAGEN"
   },
   "balance": {
     "admin_adjust": "Admin-Korrektur",
