@@ -296,6 +296,9 @@
     "yourSeed": "Seed (data) milikmu"
   },
   "fandom": {
+    "aheadOfFans": "Unggul dari {{count}} fan lain",
+    "aheadOfFansNone": "Satu-satunya fan sejauh ini",
+    "aheadOfFansOne": "Unggul dari {{count}} fan lain",
     "allCharacters": "Semua karakter",
     "badgeTitle": "Top fan {{name}} · {{count}}",
     "behind": "TERTINGGAL",
@@ -623,6 +626,7 @@
     "invalidFormatPleaseTry": "Format tidak valid. Silakan coba lagi.",
     "kanicasino": "KaniCasino",
     "market": "Pasar",
+    "missions": "Misi",
     "noAdAvailableRight": "Saat ini tidak ada iklan yang tersedia, coba lagi nanti.",
     "noRealAdHere": "Belum ada iklan sungguhan di sini, ini hanya tempat penampung sementara...",
     "online": "AKTIF",

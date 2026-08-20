@@ -38,18 +38,12 @@ const Player: React.FC<Player> = ({ user, size, direction = "row", showLevel = "
             onMouseEnter={() => handleMouseEnter()}
             onMouseLeave={handleMouseLeave}
         >
-            {
-                showPreview && (
-                    <div className='absolute'>
-                        <PlayerPreview player={user} />
-                    </div>
-                )
-            }
+            {showPreview && <PlayerPreview player={user} />}
             <Link to={`/profile/${user._id}`}>
                 <div className={`flex items-center justify-center text-white ${direction == "row" ? "gap-4" : "flex-col"}`}>
                     <Avatar id={user._id} image={user.profilePicture} size={size} showLevel={!!showLevel} level={user.level} noLink />
                     <span className="mt-2 flex items-center gap-1.5 font-semibold text-center">
-                        <FanBadge fanRank={user.fanRank} linked={false} />
+                        <FanBadge fanRank={user.fanRank} linked={false} hoverCard={false} />
                         {user.username}
                     </span>
                 </div>

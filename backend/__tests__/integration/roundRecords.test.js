@@ -105,8 +105,10 @@ async function betOnRound(game, event, socket, args) {
     let reply;
     await socket.handlers[event](...args, (r) => { reply = r; });
     if (reply && reply.ok) {
+      // newest first: a slow ack can leave an earlier attempt's bet on a closed round,
+      // and an unsorted findOne would then hand back the wrong one
       return until(
-        () => Round.findOne({ game, "bets.userId": socket.userId }),
+        () => Round.findOne({ game, "bets.userId": socket.userId }).sort({ _id: -1 }),
         `${game} round holding the bet`
       );
     }
@@ -136,8 +138,12 @@ test("crash writes a round, ties the stake to it, and settles it at the bust", a
   expect(opened.bets[0].amount).toBe(100);
   expect(String(opened.bets[0].userId)).toBe(String(user._id));
 
-  const betTx = await Transaction.findOne({ userId: user._id, type: TX.CRASH_BET });
-  expect(betTx.meta.roundId).toBe(String(opened._id));
+  const betTx = await Transaction.findOne({
+    userId: user._id,
+    type: TX.CRASH_BET,
+    "meta.roundId": String(opened._id),
+  });
+  expect(betTx).toBeTruthy();
 
   const done = await until(settledById(opened._id), "the crash round to bust and settle");
   expect(done.outcome.crashPoint).toBe(1);

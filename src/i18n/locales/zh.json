@@ -296,6 +296,9 @@
     "yourSeed": "你的种子"
   },
   "fandom": {
+    "aheadOfFans": "领先其他 {{count}} 名粉丝",
+    "aheadOfFansNone": "目前唯一的粉丝",
+    "aheadOfFansOne": "领先其他 {{count}} 名粉丝",
     "allCharacters": "全部角色",
     "badgeTitle": "{{name}} 头号粉丝 · {{count}}",
     "behind": "落后",
@@ -623,6 +626,7 @@
     "invalidFormatPleaseTry": "格式不正确，请重试。",
     "kanicasino": "KaniCasino",
     "market": "市场",
+    "missions": "任务",
     "noAdAvailableRight": "当前没有可用广告，请稍后再试",
     "noRealAdHere": "这里还没有真正的广告，这只是一个测试占位...",
     "online": "在线",

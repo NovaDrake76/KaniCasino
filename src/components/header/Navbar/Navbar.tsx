@@ -6,7 +6,7 @@ import { clearTokens } from "../../../services/auth/authUtils";
 import { me } from "../../../services/auth/auth";
 import "react-loading-skeleton/dist/skeleton.css";
 import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
-import { BsHeartFill } from "react-icons/bs";
+import { BsHeartFill, BsListCheck } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { FaBars, FaGift } from 'react-icons/fa';
 import RightContent from "./RightContent";
@@ -88,6 +88,12 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       icon: <FaGift className="text-2xl" />,
       badge: giftReady ? <GiftTag /> : undefined,
     },
+    // missions live on the caller's own profile, so there is nowhere to send a guest
+    ...(userData?.id ? [{
+      name: i18n.t("nav.missions"),
+      path: `/profile/${userData.id}?tab=missions`,
+      icon: <BsListCheck className="text-2xl" />,
+    }] : []),
     // only admins see the backoffice; the api refuses everyone else anyway
     ...(userData?.isAdmin ? [{
       name: i18n.t("nav.backoffice"),

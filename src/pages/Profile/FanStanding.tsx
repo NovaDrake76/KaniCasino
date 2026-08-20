@@ -28,17 +28,6 @@ const FanStanding: React.FC<FanStandingProps> = ({ fanRank, collectionRank }) =>
                 borderBottom: `3px solid ${rarityColor(fanRank.rarity)}`,
               }}
             />
-            {fanRank.rank === 1 && (
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="#FFCC00"
-                className="absolute -right-1.5 -top-1.5"
-              >
-                <path d="M3 8l4.5 3.5L12 4l4.5 7.5L21 8l-1.6 10.4a1 1 0 0 1-1 .85H5.6a1 1 0 0 1-1-.85z" />
-              </svg>
-            )}
           </span>
           <span className="min-w-0">
             <span

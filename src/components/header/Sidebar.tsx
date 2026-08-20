@@ -1,4 +1,4 @@
-import { BsHeartFill } from "react-icons/bs";
+import { BsHeartFill, BsListCheck } from "react-icons/bs";
 import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
 import { FaHome, FaGift } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -44,6 +44,11 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             icon: <FaGift className="text-2xl" />,
             badge: giftReady ? <GiftTag /> : undefined,
         },
+        ...(userData?.id ? [{
+            name: i18n.t("nav.missions"),
+            path: `/profile/${userData.id}?tab=missions`,
+            icon: <BsListCheck className="text-2xl" />,
+        }] : []),
         ...(userData?.isAdmin ? [{
             name: i18n.t("nav.backoffice"),
             path: "/backoffice",

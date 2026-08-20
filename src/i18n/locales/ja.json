@@ -296,6 +296,9 @@
     "yourSeed": "あなたのシード"
   },
   "fandom": {
+    "aheadOfFans": "他のファン {{count}} 人を押さえて首位",
+    "aheadOfFansNone": "今のところ唯一のファン",
+    "aheadOfFansOne": "他のファン {{count}} 人を押さえて首位",
     "allCharacters": "すべてのキャラクター",
     "badgeTitle": "{{name}} のトップファン · {{count}}",
     "behind": "差",
@@ -623,6 +626,7 @@
     "invalidFormatPleaseTry": "形式が正しくありません。もう一度お試しください。",
     "kanicasino": "KaniCasino",
     "market": "マーケット",
+    "missions": "ミッション",
     "noAdAvailableRight": "いま利用できる広告がありません。しばらくしてからお試しください",
     "noRealAdHere": "ここにはまだ本物の広告はありません。テスト用の枠です...",
     "online": "オンライン",

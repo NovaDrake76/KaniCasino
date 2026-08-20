@@ -296,6 +296,9 @@
     "yourSeed": "Seed của bạn"
   },
   "fandom": {
+    "aheadOfFans": "Vượt {{count}} fan khác",
+    "aheadOfFansNone": "Fan duy nhất cho đến nay",
+    "aheadOfFansOne": "Vượt {{count}} fan khác",
     "allCharacters": "Tất cả nhân vật",
     "badgeTitle": "Fan số một của {{name}} · {{count}}",
     "behind": "KÉM",
@@ -623,6 +626,7 @@
     "invalidFormatPleaseTry": "Định dạng không hợp lệ. Vui lòng thử lại.",
     "kanicasino": "KaniCasino",
     "market": "Chợ",
+    "missions": "Nhiệm vụ",
     "noAdAvailableRight": "Hiện không có quảng cáo nào, hãy thử lại sau",
     "noRealAdHere": "Ở đây chưa có quảng cáo thật, đây chỉ là chỗ thử nghiệm...",
     "online": "TRỰC TUYẾN",

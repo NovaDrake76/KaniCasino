@@ -296,6 +296,9 @@
     "yourSeed": "내 시드"
   },
   "fandom": {
+    "aheadOfFans": "다른 팬 {{count}}명을 앞섭니다",
+    "aheadOfFansNone": "아직까지 유일한 팬",
+    "aheadOfFansOne": "다른 팬 {{count}}명을 앞섭니다",
     "allCharacters": "모든 캐릭터",
     "badgeTitle": "{{name}} 최고의 팬 · {{count}}",
     "behind": "차이",
@@ -623,6 +626,7 @@
     "invalidFormatPleaseTry": "형식이 올바르지 않습니다. 다시 시도해 주세요.",
     "kanicasino": "KaniCasino",
     "market": "마켓",
+    "missions": "미션",
     "noAdAvailableRight": "지금은 사용할 수 있는 광고가 없습니다. 나중에 다시 시도해 주세요",
     "noRealAdHere": "아직 실제 광고는 없고, 테스트용 자리입니다...",
     "online": "접속 중",

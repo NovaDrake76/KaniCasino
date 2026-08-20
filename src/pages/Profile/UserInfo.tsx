@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
 import FanStanding from "./FanStanding";
+import FanBadge from "../../components/FanBadge";
 import Avatar from "../../components/Avatar";
 import { User } from '../../components/Types'
 import i18n from "../../i18n";
@@ -109,9 +110,11 @@ const UserInfo: React.FC<UserProps> = ({
 
         </div>
         <div className="flex flex-col w-80 md:w-[686px]">
-          <div className="flex gap-4 items-center"> <span className="text-2xl font-semibold color-[#dddcfc]">
-            {username}
-          </span>
+          <div className="flex gap-4 items-center">
+            <span className="flex items-center gap-2 text-2xl font-semibold color-[#dddcfc]">
+              {username}
+              <FanBadge fanRank={fanRank} size="large" />
+            </span>
             {
               nextBonus && new Date(nextBonus).getTime() > Date.now() && (
                 <Countdown nextBonus={nextBonus} />

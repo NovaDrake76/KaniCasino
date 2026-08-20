@@ -296,6 +296,9 @@
     "yourSeed": "Il tuo seed"
   },
   "fandom": {
+    "aheadOfFans": "Davanti ad altri {{count}} fan",
+    "aheadOfFansNone": "L'unico fan finora",
+    "aheadOfFansOne": "Davanti ad {{count}} altro fan",
     "allCharacters": "Tutti i personaggi",
     "badgeTitle": "Top fan di {{name}} · {{count}}",
     "behind": "DIETRO",
@@ -623,6 +626,7 @@
     "invalidFormatPleaseTry": "Formato non valido. Riprova.",
     "kanicasino": "KaniCasino",
     "market": "Mercato",
+    "missions": "Missioni",
     "noAdAvailableRight": "Nessun annuncio disponibile ora, riprova più tardi",
     "noRealAdHere": "Qui non c'è ancora un annuncio vero, è uno spazio di prova...",
     "online": "ONLINE",
