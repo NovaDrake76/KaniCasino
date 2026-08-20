@@ -54,6 +54,16 @@
     "awarded": "Attribué le {{date}}",
     "chooseHint": "Choisissez-en un à porter sur le site.",
     "clearHint": "Cliquez sur celui que vous portez pour l'enlever.",
+    "collection": {
+      "animals": "Gardien du Zoo",
+      "blue-archive": "Expert de Kivotos",
+      "counter-strike": "Marchand d'Armes",
+      "touhou": "Expert de Gensokyo",
+      "uma-musume": "Entraîneur Légendaire"
+    },
+    "collectionGeneric": "Expert de {{category}}",
+    "collectionHint": "Possède tous les objets de la collection {{category}}.",
+    "collectionHow": "Réunissez les {{count}} objets de toutes les caisses {{category}}. Acquis une fois, gardé pour toujours.",
     "connected": "Connecté",
     "connectedHint": "A rejoint le Discord et suit sur X.",
     "connectedHow": "Réclamez les deux missions sociales dans l'onglet Missions : rejoindre le Discord et suivre sur X.",

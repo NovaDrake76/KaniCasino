@@ -54,6 +54,16 @@
     "awarded": "Awarded {{date}}",
     "chooseHint": "Pick one to wear around the site.",
     "clearHint": "Click the one you are wearing to take it off.",
+    "collection": {
+      "animals": "Zookeeper",
+      "blue-archive": "Kivotos Expert",
+      "counter-strike": "Arms Dealer",
+      "touhou": "Gensokyo Expert",
+      "uma-musume": "Trainer Legend"
+    },
+    "collectionGeneric": "{{category}} Expert",
+    "collectionHint": "Owns every item in the {{category}} collection.",
+    "collectionHow": "Collect all {{count}} items across every {{category}} case. Kept for good once earned.",
     "connected": "Connected",
     "connectedHint": "Joined the Discord and follows on X.",
     "connectedHow": "Claim both social missions on your Missions tab: join the Discord and follow on X.",

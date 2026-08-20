@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
-import Badge from "../../components/Badge";
+import Badge, { badgeName } from "../../components/Badge";
 import BadgeCatalog from "./BadgeCatalog";
 import { Badge as BadgeData, BadgeKey, setWornBadge } from "../../services/badges/BadgeService";
 import i18n from "../../i18n";
@@ -70,7 +70,7 @@ const BadgeShelf: React.FC<BadgeShelfProps> = ({ badges, selectedBadge, isSameUs
                 } ${isSameUser ? "hover:text-white" : "cursor-default"}`}
               >
                 <Badge badge={badge} linked={false} />
-                {i18n.t(`badge.${badge.key}`)}
+                {badgeName(badge.key, badge.label)}
               </button>
             ))}
           </div>

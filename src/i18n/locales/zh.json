@@ -54,6 +54,16 @@
     "awarded": "授予于 {{date}}",
     "chooseHint": "选一个在全站佩戴。",
     "clearHint": "点击正在佩戴的徽章即可取下。",
+    "collection": {
+      "animals": "动物园园长",
+      "blue-archive": "基维托斯达人",
+      "counter-strike": "军火商",
+      "touhou": "幻想乡达人",
+      "uma-musume": "传奇训练员"
+    },
+    "collectionGeneric": "{{category}} 达人",
+    "collectionHint": "拥有 {{category}} 系列的全部物品。",
+    "collectionHow": "集齐所有 {{category}} 箱子中的 {{count}} 件物品。一旦获得就永久保留。",
     "connected": "已连接",
     "connectedHint": "已加入 Discord 并在 X 上关注。",
     "connectedHow": "在任务页领取两个社交任务：加入 Discord 并在 X 上关注。",

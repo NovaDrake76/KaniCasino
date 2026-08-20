@@ -54,6 +54,16 @@
     "awarded": "{{date}} に付与",
     "chooseHint": "サイト内で付けるバッジを選んでください。",
     "clearHint": "付けているバッジをクリックすると外せます。",
+    "collection": {
+      "animals": "動物園長",
+      "blue-archive": "キヴォトスマスター",
+      "counter-strike": "武器商",
+      "touhou": "幻想郷マスター",
+      "uma-musume": "伝説のトレーナー"
+    },
+    "collectionGeneric": "{{category}} マスター",
+    "collectionHint": "{{category}} コレクションの全アイテムを所持。",
+    "collectionHow": "{{category}} の全ケースから {{count}} 種を集めましょう。一度取ればずっと残ります。",
     "connected": "連携済み",
     "connectedHint": "Discord に参加し、X をフォロー済み。",
     "connectedHow": "ミッションタブでソーシャルミッションを両方受け取ってください：Discord 参加と X のフォロー。",

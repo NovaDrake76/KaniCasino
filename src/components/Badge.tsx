@@ -1,8 +1,8 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { BsBroadcast, BsHammer } from "react-icons/bs";
-import { Badge as BadgeData, BadgeKey } from "../services/badges/BadgeService";
+import { BsBroadcast, BsHammer, BsBoxSeam } from "react-icons/bs";
+import { Badge as BadgeData, BadgeKey, isCollectionBadge } from "../services/badges/BadgeService";
 import { rarityColor, rarityName } from "../utils/rarity";
 import i18n from "../i18n";
 
@@ -23,7 +23,23 @@ const CARD_W = 240;
 // in the hover card, because a 18px picture of anything is unreadable in a table row.
 export const BADGE_KEYS: BadgeKey[] = ["topFan", "contributor", "connected"];
 
-const FACE: Record<BadgeKey, { from: string; to: string; ink: string; icon: JSX.Element }> = {
+interface Face {
+  from: string;
+  to: string;
+  ink: string;
+  icon: JSX.Element;
+}
+
+// every collection badge wears the same face; the category is what tells them apart, and
+// it is in the name rather than the mark
+const COLLECTION_FACE: Face = {
+  from: "#3FCF8E",
+  to: "#1E8E5A",
+  ink: "#062B1B",
+  icon: <BsBoxSeam size="62%" />,
+};
+
+const FACE: Record<string, Face> = {
   topFan: {
     from: "#FFCC00",
     to: "#E0A213",
@@ -48,12 +64,25 @@ const FACE: Record<BadgeKey, { from: string; to: string; ink: string; icon: JSX.
   },
 };
 
+// a collection badge has no entry of its own: they all share one face
+export const faceFor = (key: string): Face | null =>
+  FACE[key] || (isCollectionBadge(key) ? COLLECTION_FACE : null);
+
+// the flavour name for a collection comes from i18n where one exists, and falls back to
+// the category itself so a new category needs no translation to be readable
+export const badgeName = (key: string, label?: string | null): string => {
+  if (!isCollectionBadge(key)) return i18n.t(`badge.${key}`);
+  const flavour = `badge.collection.${key.slice("collection:".length)}`;
+  if (i18n.exists(flavour)) return i18n.t(flavour);
+  return i18n.t("badge.collectionGeneric", { category: label || key });
+};
+
 export const BadgeFace: React.FC<{
   badgeKey: BadgeKey;
   size?: keyof typeof MARK;
   muted?: boolean;
 }> = ({ badgeKey, size = "inline", muted = false }) => {
-  const face = FACE[badgeKey];
+  const face = faceFor(badgeKey);
   if (!face) return null;
   return (
     <span
@@ -84,10 +113,10 @@ const Badge: React.FC<BadgeProps> = ({ badge, size = "inline", linked = true, ho
     setAt({ top: box.bottom + CARD_GAP, left });
   }, [hovered]);
 
-  if (!badge || !FACE[badge.key]) return null;
+  const face = badge ? faceFor(badge.key) : null;
+  if (!badge || !face) return null;
 
-  const face = FACE[badge.key];
-  const name = i18n.t(`badge.${badge.key}`);
+  const name = badgeName(badge.key, badge.label);
   const fandom = badge.fandom;
   const label = fandom ? i18n.t("fandom.badgeTitle", { name: fandom.name, count: fandom.count }) : name;
   const rivals = fandom ? Math.max(0, fandom.fans - 1) : 0;
@@ -153,7 +182,9 @@ const Badge: React.FC<BadgeProps> = ({ badge, size = "inline", linked = true, ho
         ) : (
           <>
             <p className="mt-2 text-[12px] leading-relaxed text-[#C9C6DE]">
-              {i18n.t(`badge.${badge.key}Hint`)}
+              {isCollectionBadge(badge.key)
+                ? i18n.t("badge.collectionHint", { category: badge.label || "" })
+                : i18n.t(`badge.${badge.key}Hint`)}
             </p>
             {badge.note && <p className="mt-2 text-[11px] italic text-[#84819A]">{badge.note}</p>}
             {badge.awardedAt && (

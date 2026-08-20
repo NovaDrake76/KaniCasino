@@ -77,6 +77,9 @@ const UserSchema = new mongoose.Schema({
       key: { type: String, required: true },
       awardedAt: { type: Date, default: Date.now },
       note: String,
+      // the human name behind a keyed badge, so a collection one can be shown without
+      // looking its category up again
+      label: String,
     },
   ],
   // the one badge the player wears around the site. nothing shows until they pick one.

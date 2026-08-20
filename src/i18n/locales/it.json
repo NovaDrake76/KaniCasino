@@ -54,6 +54,16 @@
     "awarded": "Assegnato il {{date}}",
     "chooseHint": "Scegline uno da portare per il sito.",
     "clearHint": "Clicca su quello che porti per toglierlo.",
+    "collection": {
+      "animals": "Guardiano dello Zoo",
+      "blue-archive": "Esperto di Kivotos",
+      "counter-strike": "Trafficante d'Armi",
+      "touhou": "Esperto di Gensokyo",
+      "uma-musume": "Allenatore Leggendario"
+    },
+    "collectionGeneric": "Esperto di {{category}}",
+    "collectionHint": "Possiede ogni oggetto della collezione {{category}}.",
+    "collectionHow": "Raccogli tutti i {{count}} oggetti di ogni cassa {{category}}. Una volta ottenuto, resta per sempre.",
     "connected": "Connesso",
     "connectedHint": "È entrato nel Discord e segue su X.",
     "connectedHow": "Riscuoti entrambe le missioni social nella scheda Missioni: entra nel Discord e segui su X.",

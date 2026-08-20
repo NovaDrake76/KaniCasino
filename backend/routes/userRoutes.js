@@ -279,6 +279,17 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
   }
 });
 
+// what badges exist to be earned. two segments on purpose: a single-segment path here
+// would be swallowed by the GET /:id catch-all at the bottom of the file.
+router.get("/badges/catalog", async (req, res) => {
+  try {
+    res.json({ badges: await badges.catalog() });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // Fetch top players
 router.get('/topPlayers', async (req, res) => {
   try {

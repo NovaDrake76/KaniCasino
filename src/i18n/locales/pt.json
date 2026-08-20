@@ -54,6 +54,16 @@
     "awarded": "Concedido em {{date}}",
     "chooseHint": "Escolha um para usar pelo site.",
     "clearHint": "Clique no que você está usando para tirá-lo.",
+    "collection": {
+      "animals": "Zelador do Zoológico",
+      "blue-archive": "Especialista de Kivotos",
+      "counter-strike": "Traficante de Armas",
+      "touhou": "Especialista de Gensokyo",
+      "uma-musume": "Treinador Lendário"
+    },
+    "collectionGeneric": "Especialista de {{category}}",
+    "collectionHint": "Tem todos os itens da coleção {{category}}.",
+    "collectionHow": "Colecione os {{count}} itens de todas as caixas de {{category}}. Depois de conquistado, é para sempre.",
     "connected": "Conectado",
     "connectedHint": "Entrou no Discord e segue no X.",
     "connectedHow": "Resgate as duas missões sociais na aba Missões: entrar no Discord e seguir no X.",

@@ -7,6 +7,8 @@ const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
 const User = require("../../models/User");
 const MissionState = require("../../models/MissionState");
 const Notification = require("../../models/Notification");
+const Item = require("../../models/Item");
+const Case = require("../../models/Case");
 const badges = require("../../utils/badges");
 
 let app;
@@ -184,6 +186,96 @@ describe("the backfill sweep", () => {
     // granting again changes nothing, so it says nothing
     await badges.grant(user._id, "contributor");
     expect(await Notification.countDocuments({ receiverId: user._id })).toBe(1);
+  });
+});
+
+describe("collection badges", () => {
+  // one category, two cases, four distinct items between them
+  async function makeCategory(category, titles) {
+    const items = [];
+    for (const title of titles) {
+      items.push(await Item.create({ name: title, image: "i.png", rarity: "2", baseValue: 10 }));
+    }
+    const half = Math.ceil(items.length / 2);
+    await Case.create({ title: `${category} A`, image: "c.png", price: 100, category, items: items.slice(0, half).map((i) => i._id) });
+    await Case.create({ title: `${category} B`, image: "c.png", price: 100, category, items: items.slice(half).map((i) => i._id) });
+    return items;
+  }
+
+  const own = (items) =>
+    items.map((it) => ({ _id: it._id, name: it.name, image: it.image, rarity: it.rarity }));
+
+  it("groups a category across all of its cases", async () => {
+    await makeCategory("Blue Archive", ["a", "b", "c", "d"]);
+    const sets = await badges.collectionSets();
+    expect(sets).toHaveLength(1);
+    expect(sets[0]).toMatchObject({ slug: "blue-archive", label: "Blue Archive" });
+    expect(sets[0].ids.size).toBe(4);
+  });
+
+  it("awards only a whole collection, and keeps it afterwards", async () => {
+    const items = await makeCategory("Touhou", ["a", "b", "c", "d"]);
+    const whole = await makeUser({ inventory: own(items) });
+    const nearly = await makeUser({ inventory: own(items.slice(0, 3)) });
+
+    expect(await badges.sweepCollections()).toBe(1);
+    expect(badges.heldBadges(await User.findById(whole._id).lean()).map((b) => b.key)).toEqual([
+      "collection:touhou",
+    ]);
+    expect(badges.heldBadges(await User.findById(nearly._id).lean())).toHaveLength(0);
+
+    // selling the set afterwards does not take the badge back
+    await User.updateOne({ _id: whole._id }, { $set: { inventory: [] } });
+    expect(badges.heldBadges(await User.findById(whole._id).lean()).map((b) => b.key)).toEqual([
+      "collection:touhou",
+    ]);
+    // and a second pass has nothing to do
+    expect(await badges.sweepCollections()).toBe(0);
+  });
+
+  it("carries the category name and tells the player", async () => {
+    const items = await makeCategory("Uma Musume", ["a", "b"]);
+    const user = await makeUser({ inventory: own(items) });
+
+    await badges.sweepCollections();
+    const held = badges.heldBadges(await User.findById(user._id).lean());
+    expect(held[0]).toMatchObject({ key: "collection:uma-musume", label: "Uma Musume" });
+
+    const notes = await Notification.find({ receiverId: user._id }).lean();
+    expect(notes).toHaveLength(1);
+    expect(notes[0].content).toContain("Uma Musume");
+  });
+
+  it("counts duplicates as one slot, not as progress", async () => {
+    const items = await makeCategory("Animals", ["a", "b", "c"]);
+    // three copies of one item is not three slots
+    const hoarder = await makeUser({ inventory: own([items[0], items[0], items[0]]) });
+    expect(await badges.sweepCollections()).toBe(0);
+    expect(badges.heldBadges(await User.findById(hoarder._id).lean())).toHaveLength(0);
+  });
+
+  it("lists every collection in the catalogue", async () => {
+    await makeCategory("Touhou", ["a", "b"]);
+    await makeCategory("Animals", ["c", "d", "e"]);
+    const list = await badges.catalog();
+    expect(list.map((b) => b.key)).toEqual(
+      expect.arrayContaining(["topFan", "contributor", "connected", "collection:touhou", "collection:animals"])
+    );
+    expect(list.find((b) => b.key === "collection:animals")).toMatchObject({ label: "Animals", size: 3 });
+
+    const res = await request(app).get("/users/badges/catalog");
+    expect(res.status).toBe(200);
+    expect(res.body.badges.length).toBe(list.length);
+  });
+
+  it("refuses to hand a collection badge out from the backoffice", async () => {
+    const admin = await makeUser({ isAdmin: true });
+    const target = await makeUser();
+    const res = await request(app)
+      .put(`/admin/users/${target._id}/badge`)
+      .set("Authorization", `Bearer ${tokenFor(admin)}`)
+      .send({ key: "collection:touhou" });
+    expect(res.status).toBe(400);
   });
 });
 

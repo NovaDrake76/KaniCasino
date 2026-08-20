@@ -54,6 +54,8 @@ module.exports = {
                 console.log(`Fan boards rebuilt: ${result.boards} boards, ${result.players} ranked.`);
                 const connected = await badges.sweepConnected(io);
                 if (connected) console.log(`Connected badge awarded to ${connected} players.`);
+                const collections = await badges.sweepCollections(io);
+                if (collections) console.log(`Collection badges awarded: ${collections}.`);
             } catch (error) {
                 console.error('Error rebuilding fan boards:', error);
             }

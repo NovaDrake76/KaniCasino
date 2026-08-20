@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const MissionState = require("../models/MissionState");
 const Notification = require("../models/Notification");
+const Case = require("../models/Case");
 const { CATALOG } = require("./missionsCatalog");
 
 const TOP_FAN = "topFan";
@@ -11,6 +12,12 @@ const CONNECTED = "connected";
 // those over would let the backoffice fake a standing the sweep is about to overwrite.
 const GRANTABLE = [CONTRIBUTOR];
 const KEYS = [TOP_FAN, CONTRIBUTOR, CONNECTED];
+// one badge per case category, keyed off a slug of its name so a new category earns one
+// without a code change
+const COLLECTION = "collection:";
+const isCollection = (key) => typeof key === "string" && key.startsWith(COLLECTION);
+const slugify = (category) =>
+  String(category).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 // stored notifications are english everywhere else in the codebase, so these are too
 const TITLES = { [CONTRIBUTOR]: "Contributor", [CONNECTED]: "Connected" };
@@ -36,8 +43,14 @@ function heldBadges(user) {
     });
   }
   for (const badge of user.badges || []) {
-    if (!KEYS.includes(badge.key) || badge.key === TOP_FAN) continue;
-    held.push({ key: badge.key, awardedAt: badge.awardedAt || null, note: badge.note || null });
+    if (badge.key === TOP_FAN) continue;
+    if (!KEYS.includes(badge.key) && !isCollection(badge.key)) continue;
+    held.push({
+      key: badge.key,
+      awardedAt: badge.awardedAt || null,
+      note: badge.note || null,
+      label: badge.label || null,
+    });
   }
   return held;
 }
@@ -51,8 +64,9 @@ function wornBadge(user) {
 
 // a badge lands silently otherwise: it sits on the profile with nothing telling the
 // player it arrived. the socket emit is optional, the stored row is not.
-async function notifyBadge(userId, key, io) {
-  const content = `You earned the ${TITLES[key] || key} badge. Pick it on your profile to wear it.`;
+async function notifyBadge(userId, key, io, label) {
+  const name = label || TITLES[key] || key;
+  const content = `You earned the ${name} badge. Pick it on your profile to wear it.`;
   await Notification.create({
     senderId: userId,
     receiverId: userId,
@@ -65,15 +79,16 @@ async function notifyBadge(userId, key, io) {
 
 // the filter is the mutex: a badge already held is not pushed twice, and only a real
 // award notifies
-async function award(userId, key, io, note) {
+async function award(userId, key, io, note, label) {
   const badge = { key, awardedAt: new Date() };
   if (note) badge.note = String(note).slice(0, 120);
+  if (label) badge.label = String(label).slice(0, 60);
   const res = await User.updateOne(
     { _id: userId, "badges.key": { $ne: key } },
     { $push: { badges: badge } }
   );
   if (res.modifiedCount !== 1) return false;
-  await notifyBadge(userId, key, io);
+  await notifyBadge(userId, key, io, label);
   return true;
 }
 
@@ -101,6 +116,64 @@ async function sweepConnected(io) {
   return awarded;
 }
 
+// every case category and the item ids that make it whole. a category is complete only
+// when the player owns one of every distinct item across all of its cases.
+async function collectionSets() {
+  const cases = await Case.find({}, { category: 1, items: 1 }).lean();
+  const byCategory = new Map();
+  for (const one of cases) {
+    const label = (one.category || "").trim();
+    if (!label) continue;
+    const slug = slugify(label);
+    if (!slug) continue;
+    if (!byCategory.has(slug)) byCategory.set(slug, { slug, label, ids: new Set() });
+    for (const id of one.items || []) byCategory.get(slug).ids.add(String(id));
+  }
+  return [...byCategory.values()].filter((c) => c.ids.size > 0);
+}
+
+// completing a collection is kept for good: selling something afterwards does not take it
+// back, so nobody has to be afraid to trade once they have it.
+async function sweepCollections(io) {
+  const sets = await collectionSets();
+  if (!sets.length) return 0;
+  const smallest = Math.min(...sets.map((c) => c.ids.size));
+
+  // an inventory shorter than the smallest collection cannot complete anything, which
+  // skips most accounts before their items are ever read
+  const cursor = User.find({ $expr: { $gte: [{ $size: { $ifNull: ["$inventory", []] } }, smallest] } })
+    .select("inventory badges")
+    .lean()
+    .cursor();
+
+  let awarded = 0;
+  for await (const user of cursor) {
+    const owned = new Set();
+    for (const entry of user.inventory || []) if (entry && entry._id) owned.add(String(entry._id));
+    const has = new Set((user.badges || []).map((b) => b.key));
+    for (const set of sets) {
+      const key = COLLECTION + set.slug;
+      if (has.has(key) || owned.size < set.ids.size) continue;
+      let whole = true;
+      for (const id of set.ids) {
+        if (!owned.has(id)) { whole = false; break; }
+      }
+      if (whole && (await award(user._id, key, io, null, set.label))) awarded += 1;
+    }
+  }
+  return awarded;
+}
+
+// what exists to be earned, for the "all badges" list. the collection ones come from the
+// live categories rather than a hardcoded set.
+async function catalog() {
+  const sets = await collectionSets();
+  return [
+    ...KEYS.map((key) => ({ key, label: null })),
+    ...sets.map((set) => ({ key: COLLECTION + set.slug, label: set.label, size: set.ids.size })),
+  ];
+}
+
 async function grant(userId, key, note, io) {
   if (!GRANTABLE.includes(key)) return { ok: false, message: "That badge is earned, not granted" };
   return { ok: true, changed: await award(userId, key, io, note) };
@@ -121,6 +194,12 @@ module.exports = {
   CONNECTED,
   KEYS,
   GRANTABLE,
+  COLLECTION,
+  isCollection,
+  slugify,
+  collectionSets,
+  sweepCollections,
+  catalog,
   SOCIAL_KEYS,
   heldBadges,
   wornBadge,

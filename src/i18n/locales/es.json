@@ -54,6 +54,16 @@
     "awarded": "Concedida el {{date}}",
     "chooseHint": "Elige una para llevar por el sitio.",
     "clearHint": "Haz clic en la que llevas para quitártela.",
+    "collection": {
+      "animals": "Cuidador del Zoo",
+      "blue-archive": "Experto de Kivotos",
+      "counter-strike": "Traficante de Armas",
+      "touhou": "Experto de Gensokyo",
+      "uma-musume": "Entrenador Legendario"
+    },
+    "collectionGeneric": "Experto de {{category}}",
+    "collectionHint": "Tiene todos los objetos de la colección {{category}}.",
+    "collectionHow": "Reúne los {{count}} objetos de todas las cajas de {{category}}. Una vez conseguida, es para siempre.",
     "connected": "Conectado",
     "connectedHint": "Se unió al Discord y sigue en X.",
     "connectedHow": "Reclama las dos misiones sociales en tu pestaña Misiones: unirte al Discord y seguir en X.",

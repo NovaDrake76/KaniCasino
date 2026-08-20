@@ -54,6 +54,16 @@
     "awarded": "Verliehen am {{date}}",
     "chooseHint": "Wähle eines, das du auf der Seite trägst.",
     "clearHint": "Klicke auf das getragene, um es abzulegen.",
+    "collection": {
+      "animals": "Zoowärter",
+      "blue-archive": "Kivotos-Experte",
+      "counter-strike": "Waffenhändler",
+      "touhou": "Gensokyo-Experte",
+      "uma-musume": "Legendärer Trainer"
+    },
+    "collectionGeneric": "{{category}}-Experte",
+    "collectionHint": "Besitzt jeden Gegenstand der {{category}}-Sammlung.",
+    "collectionHow": "Sammle alle {{count}} Gegenstände aus sämtlichen {{category}}-Kisten. Einmal erhalten, bleibt es.",
     "connected": "Verbunden",
     "connectedHint": "Ist dem Discord beigetreten und folgt auf X.",
     "connectedHow": "Hole dir beide sozialen Missionen im Missionen-Tab: dem Discord beitreten und auf X folgen.",

@@ -54,6 +54,16 @@
     "awarded": "Diberikan {{date}}",
     "chooseHint": "Pilih satu untuk dipakai di seluruh situs.",
     "clearHint": "Klik lencana yang dipakai untuk melepasnya.",
+    "collection": {
+      "animals": "Penjaga Kebun Binatang",
+      "blue-archive": "Ahli Kivotos",
+      "counter-strike": "Pedagang Senjata",
+      "touhou": "Ahli Gensokyo",
+      "uma-musume": "Pelatih Legendaris"
+    },
+    "collectionGeneric": "Ahli {{category}}",
+    "collectionHint": "Punya semua item di koleksi {{category}}.",
+    "collectionHow": "Kumpulkan semua {{count}} item dari setiap case {{category}}. Sekali didapat, disimpan selamanya.",
     "connected": "Terhubung",
     "connectedHint": "Sudah gabung Discord dan mengikuti di X.",
     "connectedHow": "Klaim kedua misi sosial di tab Misi: gabung Discord dan ikuti di X.",
