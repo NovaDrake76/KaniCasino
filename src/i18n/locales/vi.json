@@ -48,6 +48,22 @@
     "signIn": "Đăng nhập",
     "signUp": "Đăng ký"
   },
+  "badge": {
+    "awarded": "Trao ngày {{date}}",
+    "chooseHint": "Chọn một cái để đeo khắp trang web.",
+    "clearHint": "Nhấn vào cái đang đeo để gỡ ra.",
+    "connected": "Đã kết nối",
+    "connectedHint": "Đã vào Discord và theo dõi trên X.",
+    "contributor": "Người đóng góp",
+    "contributorHint": "Đã góp sức xây dựng KaniCasino.",
+    "couldNotSave": "Không thể lưu lựa chọn này",
+    "grant": "Trao huy hiệu",
+    "note": "Họ đã làm gì?",
+    "revoke": "Thu hồi",
+    "shelfTitle": "Huy hiệu",
+    "topFan": "Fan Số Một",
+    "topFanHint": "Giữ nhiều bản của một nhân vật hơn bất kỳ ai."
+  },
   "balance": {
     "admin_adjust": "Điều chỉnh của quản trị viên",
     "battle_entry": "Phí vào trận",

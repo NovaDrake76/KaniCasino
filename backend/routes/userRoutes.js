@@ -7,6 +7,7 @@ const { check, validationResult } = require("express-validator");
 const User = require("../models/User");
 const Item = require("../models/Item");
 const fandom = require("../utils/fandom");
+const badges = require("../utils/badges");
 const Notification = require("../models/Notification");
 const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
@@ -265,7 +266,13 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
     const hasUnreadNotifications = unreadNotifications.length > 0;
 
     // isAdmin is the caller's own flag; the public /:id profile keeps hiding it
-    res.json({ id, username, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications, isAdmin: !!isAdmin, fanRank });
+    res.json({
+      id, username, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications,
+      isAdmin: !!isAdmin, fanRank,
+      badges: badges.heldBadges(req.user),
+      selectedBadge: req.user.selectedBadge || null,
+      badge: badges.wornBadge(req.user),
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -278,9 +285,9 @@ router.get('/topPlayers', async (req, res) => {
     const topPlayers = await User.find({})
       .sort({ weeklyWinnings: -1 })
       .limit(10) // Top 10 players
-      .select('username weeklyWinnings profilePicture level fixedItem fanRank');
+      .select('username weeklyWinnings profilePicture level fixedItem fanRank selectedBadge badges');
 
-    res.json(topPlayers);
+    res.json(topPlayers.map((u) => ({ ...u.toObject(), badge: badges.wornBadge(u) })));
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -490,6 +497,32 @@ router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
   }
 });
 
+// pick the badge worn around the site, or clear it. only what the player actually holds.
+router.put("/badge", authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const { badge } = req.body;
+    const user = await User.findById(req.user._id).select("fanRank badges selectedBadge");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (badge === null || badge === "") {
+      user.selectedBadge = undefined;
+      await user.save();
+      return res.json({ selectedBadge: null, badge: null });
+    }
+
+    const held = badges.heldBadges(user);
+    if (!held.some((b) => b.key === badge)) {
+      return res.status(400).json({ message: "You do not have that badge" });
+    }
+    user.selectedBadge = badge;
+    await user.save();
+    res.json({ selectedBadge: badge, badge: badges.wornBadge(user) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // update fixed item description
 router.put(
   "/fixedItem/description",
@@ -606,10 +639,11 @@ router.get("/:id", async (req, res) => {
     if (!ObjectId.isValid(req.params.id)) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json(
-      await User.findById(req.params.id)
-        .select("username profilePicture xp level fixedItem fanRank collectionRank nextBonus weeklyWinnings")
-    );
+    const user = await User.findById(req.params.id)
+      .select("username profilePicture xp level fixedItem fanRank collectionRank nextBonus weeklyWinnings selectedBadge badges")
+      .lean();
+    if (!user) return res.json(null);
+    res.json({ ...user, badges: badges.heldBadges(user), badge: badges.wornBadge(user) });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

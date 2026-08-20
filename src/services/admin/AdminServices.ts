@@ -1,3 +1,4 @@
+import { Badge } from "../badges/BadgeService";
 import api from "../api";
 
 export interface AdminOverview {
@@ -50,6 +51,7 @@ export interface AdminPlayerDetail {
     inventoryCount: number;
     referredBy: string | null;
     referrals: number;
+    badges: Badge[];
   };
   totals: {
     wagered: number;

@@ -48,6 +48,22 @@
     "signIn": "Anmelden",
     "signUp": "Registrieren"
   },
+  "badge": {
+    "awarded": "Verliehen am {{date}}",
+    "chooseHint": "Wähle eines, das du auf der Seite trägst.",
+    "clearHint": "Klicke auf das getragene, um es abzulegen.",
+    "connected": "Verbunden",
+    "connectedHint": "Ist dem Discord beigetreten und folgt auf X.",
+    "contributor": "Mitwirkender",
+    "contributorHint": "Hat beim Aufbau von KaniCasino geholfen.",
+    "couldNotSave": "Diese Wahl konnte nicht gespeichert werden",
+    "grant": "Abzeichen verleihen",
+    "note": "Was hat die Person getan?",
+    "revoke": "Entziehen",
+    "shelfTitle": "Abzeichen",
+    "topFan": "Top-Fan",
+    "topFanHint": "Besitzt mehr Exemplare eines Charakters als alle anderen."
+  },
   "balance": {
     "admin_adjust": "Admin-Korrektur",
     "battle_entry": "Battle-Einsatz",

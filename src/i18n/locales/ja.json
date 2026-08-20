@@ -48,6 +48,22 @@
     "signIn": "ログイン",
     "signUp": "新規登録"
   },
+  "badge": {
+    "awarded": "{{date}} に付与",
+    "chooseHint": "サイト内で付けるバッジを選んでください。",
+    "clearHint": "付けているバッジをクリックすると外せます。",
+    "connected": "連携済み",
+    "connectedHint": "Discord に参加し、X をフォロー済み。",
+    "contributor": "貢献者",
+    "contributorHint": "KaniCasino の制作を手伝いました。",
+    "couldNotSave": "この選択を保存できませんでした",
+    "grant": "バッジを付与",
+    "note": "何をした人ですか？",
+    "revoke": "取り消し",
+    "shelfTitle": "バッジ",
+    "topFan": "トップファン",
+    "topFanHint": "あるキャラクターを誰よりも多く持っています。"
+  },
   "balance": {
     "admin_adjust": "管理者による調整",
     "battle_entry": "バトル参加費",

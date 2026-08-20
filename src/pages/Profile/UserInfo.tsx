@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
 import FanStanding from "./FanStanding";
-import FanBadge from "../../components/FanBadge";
+import Badge from "../../components/Badge";
+import BadgeShelf from "./BadgeShelf";
 import Avatar from "../../components/Avatar";
 import { User } from '../../components/Types'
 import i18n from "../../i18n";
@@ -27,7 +28,7 @@ const getPercentY = (x: number, y: number) => {
 };
 
 const UserInfo: React.FC<UserProps> = ({
-  user: { id, profilePicture, level, username, xp, fixedItem, nextBonus, fanRank, collectionRank },
+  user: { id, profilePicture, level, username, xp, fixedItem, nextBonus, fanRank, collectionRank, badge, badges, selectedBadge },
   isSameUser,
   setRefresh,
 }) => {
@@ -113,7 +114,7 @@ const UserInfo: React.FC<UserProps> = ({
           <div className="flex gap-4 items-center">
             <span className="flex items-center gap-2 text-2xl font-semibold color-[#dddcfc]">
               {username}
-              <FanBadge fanRank={fanRank} size="large" />
+              <Badge badge={badge} size="large" />
             </span>
             {
               nextBonus && new Date(nextBonus).getTime() > Date.now() && (
@@ -154,6 +155,7 @@ const UserInfo: React.FC<UserProps> = ({
               </span>
             </div>
           </div>
+          <BadgeShelf badges={badges} selectedBadge={selectedBadge} isSameUser={isSameUser} setRefresh={setRefresh} />
         </div>
       </div>
       <div className="mt-4 md:mt-0">

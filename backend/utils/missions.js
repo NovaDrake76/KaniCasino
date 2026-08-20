@@ -6,6 +6,7 @@ const Case = require("../models/Case");
 const MissionState = require("../models/MissionState");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { CATALOG, byKey, missionsLaunchAt } = require("./missionsCatalog");
+const badges = require("./badges");
 
 // a "big win" is any single game payout; pushes and refunds are returned stakes, not wins
 const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
@@ -262,6 +263,11 @@ async function claimMission(userId, key, io) {
 
   if (updated === null) {
     return { code: 200, body: { claimed: false, alreadyClaimed: true } };
+  }
+
+  // the last social mission claimed earns the connected badge
+  if (mission.metric === "social") {
+    await badges.awardConnected(userId).catch((e) => console.error("connected badge:", e.message));
   }
 
   if (io) {

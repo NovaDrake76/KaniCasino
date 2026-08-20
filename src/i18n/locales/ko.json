@@ -48,6 +48,22 @@
     "signIn": "로그인",
     "signUp": "회원가입"
   },
+  "badge": {
+    "awarded": "{{date}} 수여",
+    "chooseHint": "사이트에서 달고 다닐 뱃지를 고르세요.",
+    "clearHint": "달고 있는 뱃지를 누르면 벗습니다.",
+    "connected": "연결됨",
+    "connectedHint": "Discord에 참여하고 X를 팔로우합니다.",
+    "contributor": "기여자",
+    "contributorHint": "KaniCasino 제작을 도았습니다.",
+    "couldNotSave": "선택을 저장하지 못했습니다",
+    "grant": "뱃지 수여",
+    "note": "무엇을 했나요?",
+    "revoke": "회수",
+    "shelfTitle": "뱃지",
+    "topFan": "최고의 팬",
+    "topFanHint": "한 캐릭터를 누구보다 많이 가지고 있습니다."
+  },
   "balance": {
     "admin_adjust": "관리자 조정",
     "battle_entry": "배틀 참가비",

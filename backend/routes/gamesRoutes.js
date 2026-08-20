@@ -1,4 +1,5 @@
 const express = require("express");
+const badges = require("../utils/badges");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
 const { plinkoDropLimiter, diceRollLimiter, minesActionLimiter, hiloActionLimiter } = require("../middleware/rateLimit");
@@ -182,7 +183,7 @@ module.exports = (io) => {
         name: user.username,
         id: user._id,
         profilePicture: user.profilePicture,
-        fanRank: user.fanRank
+        badge: badges.wornBadge(user)
       }
 
       // Emit the caseOpened event

@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Avatar from "./Avatar";
 import { User } from "../components/Types";
-import FanBadge from "./FanBadge";
+import Badge from "./Badge";
 import { rarityColor } from "../utils/rarity";
 import i18n from "../i18n";
 
@@ -56,7 +56,7 @@ const PlayerPreview: React.FC<Player> = ({ player }) => {
                     </div>
                     <div className="flex flex-col items-start">
                         <span className="flex items-center gap-1.5 font-bold text-lg max-w-[200px]">
-                            <FanBadge fanRank={player.fanRank} linked={false} hoverCard={false} />
+                            <Badge badge={player.badge} linked={false} hoverCard={false} />
                             <span className="truncate text-white">{player.username}</span>
                         </span>
                         <span className="font-bold text-[#56528b] ">Level {player.level}</span>

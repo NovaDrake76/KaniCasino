@@ -108,7 +108,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
         {fixable && (
           <div
             className="absolute top-1 right-1 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
-            onClick={() => fixPlayerItem(item._id)}
+            onClick={(e) => { e.stopPropagation(); fixPlayerItem(item._id); }}
             title={i18n.t("fandom.pinHint", { name: item.name })}
           >
             <BsHeartFill className="text-2xl text-pink-500 hover:text-pink-300 transition-all cursor-pointer" />
@@ -119,6 +119,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, size =
             to={`/provably-fair?item=${item.uniqueId}`}
             className="absolute top-9 right-1 z-30 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
             title={i18n.t("common.verifyThisDropProvably")}
+            onClick={(e) => e.stopPropagation()}
           >
             <BsShieldFillCheck className="text-2xl text-green-500 hover:text-green-300 transition-all cursor-pointer" />
           </Link>

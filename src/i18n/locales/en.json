@@ -48,6 +48,22 @@
     "signIn": "Sign in",
     "signUp": "Sign up"
   },
+  "badge": {
+    "awarded": "Awarded {{date}}",
+    "chooseHint": "Pick one to wear around the site.",
+    "clearHint": "Click the one you are wearing to take it off.",
+    "connected": "Connected",
+    "connectedHint": "Joined the Discord and follows on X.",
+    "contributor": "Contributor",
+    "contributorHint": "Helped build KaniCasino.",
+    "couldNotSave": "Could not save that choice",
+    "grant": "Grant badge",
+    "note": "What did they do?",
+    "revoke": "Revoke",
+    "shelfTitle": "Badges",
+    "topFan": "Top Fan",
+    "topFanHint": "Holds more of one character than anybody else."
+  },
   "balance": {
     "admin_adjust": "Admin adjustment",
     "battle_entry": "Battle entry",

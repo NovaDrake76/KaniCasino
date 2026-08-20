@@ -48,6 +48,22 @@
     "signIn": "Masuk (member lama)",
     "signUp": "Daftar (member baru)"
   },
+  "badge": {
+    "awarded": "Diberikan {{date}}",
+    "chooseHint": "Pilih satu untuk dipakai di seluruh situs.",
+    "clearHint": "Klik lencana yang dipakai untuk melepasnya.",
+    "connected": "Terhubung",
+    "connectedHint": "Sudah gabung Discord dan mengikuti di X.",
+    "contributor": "Kontributor",
+    "contributorHint": "Ikut membangun KaniCasino.",
+    "couldNotSave": "Tidak bisa menyimpan pilihan itu",
+    "grant": "Beri lencana",
+    "note": "Apa yang dia lakukan?",
+    "revoke": "Cabut",
+    "shelfTitle": "Lencana",
+    "topFan": "Top Fan",
+    "topFanHint": "Punya lebih banyak salinan satu karakter daripada siapa pun."
+  },
   "balance": {
     "admin_adjust": "Penyesuaian admin",
     "battle_entry": "Memasuki sesi adu",

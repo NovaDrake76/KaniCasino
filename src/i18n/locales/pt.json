@@ -48,6 +48,22 @@
     "signIn": "Entrar",
     "signUp": "Cadastrar"
   },
+  "badge": {
+    "awarded": "Concedido em {{date}}",
+    "chooseHint": "Escolha um para usar pelo site.",
+    "clearHint": "Clique no que você está usando para tirá-lo.",
+    "connected": "Conectado",
+    "connectedHint": "Entrou no Discord e segue no X.",
+    "contributor": "Colaborador",
+    "contributorHint": "Ajudou a construir o KaniCasino.",
+    "couldNotSave": "Não foi possível salvar essa escolha",
+    "grant": "Conceder distintivo",
+    "note": "O que essa pessoa fez?",
+    "revoke": "Remover",
+    "shelfTitle": "Distintivos",
+    "topFan": "Top Fã",
+    "topFanHint": "Tem mais cópias de um personagem do que qualquer outro."
+  },
   "balance": {
     "admin_adjust": "Ajuste administrativo",
     "battle_entry": "Entrada em batalha",

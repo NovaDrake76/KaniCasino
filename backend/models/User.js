@@ -69,6 +69,18 @@ const UserSchema = new mongoose.Schema({
   },
   // which sweep last saw this account, so the next one can clear whoever it did not touch
   fanStamp: Date,
+  // earned or granted badges. top fan is not here: it is derived from fanRank, because
+  // it can be taken off a player the moment someone outcollects them.
+  badges: [
+    {
+      _id: false,
+      key: { type: String, required: true },
+      awardedAt: { type: Date, default: Date.now },
+      note: String,
+    },
+  ],
+  // the one badge the player wears around the site. nothing shows until they pick one.
+  selectedBadge: String,
   friends: [
     {
       type: mongoose.Schema.Types.ObjectId,

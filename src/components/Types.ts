@@ -1,4 +1,5 @@
 import { FanRank } from "../services/fandom/FandomService";
+import { Badge, BadgeKey } from "../services/badges/BadgeService";
 
 export interface User {
     id: string;
@@ -18,6 +19,9 @@ export interface User {
         rarity: string;
     }
     fanRank?: FanRank;
+    badge?: Badge | null;
+    badges?: Badge[];
+    selectedBadge?: BadgeKey | null;
     collectionRank?: {
         distinct: number;
         total: number;
