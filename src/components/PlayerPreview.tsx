@@ -42,51 +42,55 @@ const PlayerPreview: React.FC<Player> = ({ player }) => {
 
     const color = rarityColor(player.fixedItem?.rarity || "");
 
+    // clip-path cuts straight through a css border and leaves the four chamfer tips
+    // uncoloured, so the rarity colour is an outer layer with the card 2px inside it
     const card = (
         <div
-            style={{ ...at, width: CARD_W, borderColor: player.fixedItem ? color : "transparent" }}
-            className={`notched pointer-events-none fixed z-[140] flex items-stretch justify-between overflow-hidden bg-[#281D3F] ${player.fixedItem ? "border-2" : ""}`}
+            style={{ ...at, width: CARD_W, backgroundColor: player.fixedItem ? color : "#3A365A" }}
+            className="notched pointer-events-none fixed z-[140] p-[2px]"
         >
-            <div className="flex items-center gap-2 p-6">
-                <div className="min-w-[96px]">
-                    <Avatar image={player.profilePicture} id={player._id} size="large" level={player.level} noLink />
-                </div>
-                <div className="flex flex-col items-start">
-                    <span className="flex items-center gap-1.5 font-bold text-lg max-w-[200px]">
-                        <FanBadge fanRank={player.fanRank} linked={false} hoverCard={false} />
-                        <span className="truncate text-white">{player.username}</span>
-                    </span>
-                    <span className="font-bold text-[#56528b] ">Level {player.level}</span>
-                    {player.fanRank && (
-                        <span className="whitespace-nowrap text-xs text-[#84819A]">
-                            {i18n.t("fandom.standingLine", {
-                                rank: player.fanRank.rank,
-                                name: player.fanRank.name,
-                                count: player.fanRank.count,
-                            })}
+            <div className="notched flex items-stretch justify-between overflow-hidden bg-[#281D3F]">
+                <div className="flex items-center gap-2 p-6">
+                    <div className="min-w-[96px]">
+                        <Avatar image={player.profilePicture} id={player._id} size="large" level={player.level} noLink />
+                    </div>
+                    <div className="flex flex-col items-start">
+                        <span className="flex items-center gap-1.5 font-bold text-lg max-w-[200px]">
+                            <FanBadge fanRank={player.fanRank} linked={false} hoverCard={false} />
+                            <span className="truncate text-white">{player.username}</span>
                         </span>
-                    )}
+                        <span className="font-bold text-[#56528b] ">Level {player.level}</span>
+                        {player.fanRank && (
+                            <span className="whitespace-nowrap text-xs text-[#84819A]">
+                                {i18n.t("fandom.standingLine", {
+                                    rank: player.fanRank.rank,
+                                    name: player.fanRank.name,
+                                    count: player.fanRank.count,
+                                })}
+                            </span>
+                        )}
+                    </div>
                 </div>
+                {player.fixedItem && (
+                    <div className="relative flex w-[160px] shrink-0 flex-col items-center justify-center px-2 py-4">
+                        <div
+                            className="absolute left-1/2 top-1/2"
+                            style={{ width: 1, height: 1, boxShadow: `0 0 60px 34px ${color}` }}
+                        />
+                        <img
+                            src={player.fixedItem.image}
+                            alt={player.fixedItem.name}
+                            className="relative z-10 h-24 w-24 object-contain"
+                        />
+                        <span
+                            className="relative z-10 w-full pt-2 text-center text-base font-semibold leading-tight"
+                            style={{ textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000' }}
+                        >
+                            {player.fixedItem.name}
+                        </span>
+                    </div>
+                )}
             </div>
-            {player.fixedItem && (
-                <div className="relative flex w-[160px] shrink-0 flex-col items-center justify-center px-2 py-4">
-                    <div
-                        className="absolute left-1/2 top-1/2"
-                        style={{ width: 1, height: 1, boxShadow: `0 0 60px 34px ${color}` }}
-                    />
-                    <img
-                        src={player.fixedItem.image}
-                        alt={player.fixedItem.name}
-                        className="relative z-10 h-24 w-24 object-contain"
-                    />
-                    <span
-                        className="relative z-10 w-full pt-2 text-center text-base font-semibold leading-tight"
-                        style={{ textShadow: '1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000' }}
-                    >
-                        {player.fixedItem.name}
-                    </span>
-                </div>
-            )}
         </div>
     );
 
