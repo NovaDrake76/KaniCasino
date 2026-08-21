@@ -22,6 +22,7 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const { resolvePassword } = require("../utils/password");
 const nameFilter = require("../utils/nameFilter");
+const { visible, isVisible } = require("../utils/visibility");
 
 // Register user
 router.post(
@@ -318,7 +319,7 @@ router.get("/badges/catalog", async (req, res) => {
 // Fetch top players
 router.get('/topPlayers', async (req, res) => {
   try {
-    const topPlayers = await User.find({})
+    const topPlayers = await User.find(visible())
       .sort({ weeklyWinnings: -1 })
       .limit(10) // Top 10 players
       .select('username weeklyWinnings profilePicture level fixedItem fanRank selectedBadge badges');
@@ -349,9 +350,9 @@ router.get('/ranking', authMiddleware.isAuthenticated, async (req, res) => {
     };
 
     const [rankAbove, aboveAll, belowAll] = await Promise.all([
-      User.countDocuments(aboveFilter),
-      User.find(aboveFilter).sort({ weeklyWinnings: 1, _id: -1 }).limit(6).select('username weeklyWinnings'),
-      User.find(belowFilter).sort({ weeklyWinnings: -1, _id: 1 }).limit(6).select('username weeklyWinnings'),
+      User.countDocuments(visible(aboveFilter)),
+      User.find(visible(aboveFilter)).sort({ weeklyWinnings: 1, _id: -1 }).limit(6).select('username weeklyWinnings'),
+      User.find(visible(belowFilter)).sort({ weeklyWinnings: -1, _id: 1 }).limit(6).select('username weeklyWinnings'),
     ]);
 
     // pad the 7-row window toward the other side when near the top or bottom
@@ -732,9 +733,9 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     const user = await User.findById(req.params.id)
-      .select("username profilePicture xp level fixedItem fanRank collectionRank nextBonus weeklyWinnings selectedBadge badges")
+      .select("username profilePicture xp level fixedItem fanRank collectionRank nextBonus weeklyWinnings selectedBadge badges disabled")
       .lean();
-    if (!user) return res.json(null);
+    if (!isVisible(user)) return res.json(null);
     res.json({ ...user, badges: badges.heldBadges(user), badge: badges.wornBadge(user) });
   } catch (err) {
     console.error(err.message);
@@ -761,7 +762,7 @@ router.get("/inventory/:userId", async (req, res) => {
     }
 
     const user = await User.findById(userId);
-    if (!user) {
+    if (!isVisible(user)) {
       return res.status(404).json({ message: "User not found" });
     }
 

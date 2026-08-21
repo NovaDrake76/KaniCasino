@@ -6,6 +6,10 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 
 const PUBLIC_FIELDS = "username profilePicture level fixedItem";
+const { VISIBLE, isVisible } = require("../utils/visibility");
+// populate yields null where the match fails, so those are dropped rather than rendered
+const PUBLIC_POPULATE = { select: PUBLIC_FIELDS, match: VISIBLE };
+const seen = (list) => (list || []).filter(Boolean);
 
 // reject malformed ids up front so they return 400 instead of a cast-error 500
 const validId = (req, res, next) => {
@@ -20,14 +24,14 @@ module.exports = (io) => {
   router.get("/me", isAuthenticated, async (req, res) => {
     try {
       const me = await User.findById(req.user._id)
-        .populate("friends", PUBLIC_FIELDS)
-        .populate("friendRequests", PUBLIC_FIELDS);
+        .populate({ path: "friends", ...PUBLIC_POPULATE })
+        .populate({ path: "friendRequests", ...PUBLIC_POPULATE });
 
       if (!me) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      res.json({ friends: me.friends, requests: me.friendRequests });
+      res.json({ friends: seen(me.friends), requests: seen(me.friendRequests) });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Server error" });
@@ -37,11 +41,11 @@ module.exports = (io) => {
   // a user's public friends list
   router.get("/list/:id", validId, async (req, res) => {
     try {
-      const user = await User.findById(req.params.id).populate("friends", PUBLIC_FIELDS);
-      if (!user) {
+      const user = await User.findById(req.params.id).populate({ path: "friends", ...PUBLIC_POPULATE });
+      if (!isVisible(user)) {
         return res.status(404).json({ message: "User not found" });
       }
-      res.json({ friends: user.friends });
+      res.json({ friends: seen(user.friends) });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Server error" });
