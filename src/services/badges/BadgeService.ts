@@ -1,6 +1,10 @@
 import api from "../api";
 
-export type BadgeKey = "topFan" | "contributor" | "connected";
+// a collection badge is keyed off its category slug, so the set is open-ended
+export type BadgeKey = "topFan" | "contributor" | "connected" | `collection:${string}`;
+
+export const COLLECTION_PREFIX = "collection:";
+export const isCollectionBadge = (key: string) => key.startsWith(COLLECTION_PREFIX);
 
 export interface BadgeFandom {
   name: string;
@@ -14,7 +18,20 @@ export interface Badge {
   key: BadgeKey;
   awardedAt: string | null;
   note?: string | null;
+  // the category name behind a collection badge
+  label?: string | null;
   fandom?: BadgeFandom;
+}
+
+export interface CatalogBadge {
+  key: BadgeKey;
+  label: string | null;
+  size?: number;
+}
+
+export async function getBadgeCatalog(): Promise<CatalogBadge[]> {
+  const res = await api.get("/users/badges/catalog");
+  return res.data.badges || [];
 }
 
 export interface BadgeChoice {

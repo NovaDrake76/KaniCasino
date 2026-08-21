@@ -49,20 +49,40 @@
     "signUp": "注册"
   },
   "badge": {
+    "allCount": "你已拥有 {{total}} 中的 {{held}} 个",
+    "allTitle": "全部徽章",
     "awarded": "授予于 {{date}}",
     "chooseHint": "选一个在全站佩戴。",
     "clearHint": "点击正在佩戴的徽章即可取下。",
+    "collection": {
+      "animals": "动物园园长",
+      "blue-archive": "基维托斯达人",
+      "counter-strike": "军火商",
+      "touhou": "幻想乡达人",
+      "uma-musume": "传奇训练员"
+    },
+    "collectionGeneric": "{{category}} 达人",
+    "collectionHint": "拥有 {{category}} 系列的全部物品。",
+    "collectionHow": "集齐所有 {{category}} 箱子中的 {{count}} 件物品。一旦获得就永久保留。",
     "connected": "已连接",
     "connectedHint": "已加入 Discord 并在 X 上关注。",
+    "connectedHow": "在任务页领取两个社交任务：加入 Discord 并在 X 上关注。",
     "contributor": "贡献者",
     "contributorHint": "参与了 KaniCasino 的建设。",
+    "contributorHow": "手动授予，感谢参与 KaniCasino 的建设：美术、翻译、代码、点子。",
     "couldNotSave": "无法保存该选择",
     "grant": "授予徽章",
+    "locked": "尚未获得",
+    "noneTheirs": "还没有徽章。",
+    "noneYours": "你还没有徽章。",
     "note": "他做了什么？",
     "revoke": "收回",
+    "seeAll": "查看全部徽章",
     "shelfTitle": "徽章",
     "topFan": "头号粉丝",
-    "topFanHint": "拥有某个角色的数量超过所有人。"
+    "topFanHint": "拥有某个角色的数量超过所有人。",
+    "topFanHow": "将一个角色固定到个人资料，并拥有比任何人都多的该角色。",
+    "wearing": "佩戴中"
   },
   "balance": {
     "admin_adjust": "管理员调整",

@@ -49,20 +49,40 @@
     "signUp": "Đăng ký"
   },
   "badge": {
+    "allCount": "Bạn có {{held}} trên {{total}}",
+    "allTitle": "Tất cả huy hiệu",
     "awarded": "Trao ngày {{date}}",
     "chooseHint": "Chọn một cái để đeo khắp trang web.",
     "clearHint": "Nhấn vào cái đang đeo để gỡ ra.",
+    "collection": {
+      "animals": "Chủ Sở Thú",
+      "blue-archive": "Cao Thủ Kivotos",
+      "counter-strike": "Trùm Buôn Súng",
+      "touhou": "Cao Thủ Gensokyo",
+      "uma-musume": "Huấn Luyện Viên Huyền Thoại"
+    },
+    "collectionGeneric": "Cao Thủ {{category}}",
+    "collectionHint": "Sở hữu mọi vật phẩm trong bộ {{category}}.",
+    "collectionHow": "Thu thập đủ {{count}} vật phẩm từ mọi rương {{category}}. Đã đạt là giữ mãi.",
     "connected": "Đã kết nối",
     "connectedHint": "Đã vào Discord và theo dõi trên X.",
+    "connectedHow": "Nhận cả hai nhiệm vụ xã hội ở tab Nhiệm vụ: vào Discord và theo dõi trên X.",
     "contributor": "Người đóng góp",
     "contributorHint": "Đã góp sức xây dựng KaniCasino.",
+    "contributorHow": "Trao tay cho người góp sức xây dựng KaniCasino: tranh, bản dịch, mã, ý tưởng.",
     "couldNotSave": "Không thể lưu lựa chọn này",
     "grant": "Trao huy hiệu",
+    "locked": "CHƯA ĐẠT",
+    "noneTheirs": "Chưa có huy hiệu nào.",
+    "noneYours": "Bạn chưa có huy hiệu nào.",
     "note": "Họ đã làm gì?",
     "revoke": "Thu hồi",
+    "seeAll": "Xem tất cả huy hiệu",
     "shelfTitle": "Huy hiệu",
     "topFan": "Fan Số Một",
-    "topFanHint": "Giữ nhiều bản của một nhân vật hơn bất kỳ ai."
+    "topFanHint": "Giữ nhiều bản của một nhân vật hơn bất kỳ ai.",
+    "topFanHow": "Ghim một nhân vật vào hồ sơ và giữ nhiều bản hơn bất kỳ ai.",
+    "wearing": "ĐANG ĐEO"
   },
   "balance": {
     "admin_adjust": "Điều chỉnh của quản trị viên",

@@ -49,20 +49,40 @@
     "signUp": "Sign up"
   },
   "badge": {
+    "allCount": "You have {{held}} of {{total}}",
+    "allTitle": "All badges",
     "awarded": "Awarded {{date}}",
     "chooseHint": "Pick one to wear around the site.",
     "clearHint": "Click the one you are wearing to take it off.",
+    "collection": {
+      "animals": "Zookeeper",
+      "blue-archive": "Kivotos Expert",
+      "counter-strike": "Arms Dealer",
+      "touhou": "Gensokyo Expert",
+      "uma-musume": "Trainer Legend"
+    },
+    "collectionGeneric": "{{category}} Expert",
+    "collectionHint": "Owns every item in the {{category}} collection.",
+    "collectionHow": "Collect all {{count}} items across every {{category}} case. Kept for good once earned.",
     "connected": "Connected",
     "connectedHint": "Joined the Discord and follows on X.",
+    "connectedHow": "Claim both social missions on your Missions tab: join the Discord and follow on X.",
     "contributor": "Contributor",
     "contributorHint": "Helped build KaniCasino.",
+    "contributorHow": "Given by hand for helping build KaniCasino: art, translations, code, ideas.",
     "couldNotSave": "Could not save that choice",
     "grant": "Grant badge",
+    "locked": "NOT EARNED",
+    "noneTheirs": "No badges yet.",
+    "noneYours": "You have no badges yet.",
     "note": "What did they do?",
     "revoke": "Revoke",
+    "seeAll": "See all badges",
     "shelfTitle": "Badges",
     "topFan": "Top Fan",
-    "topFanHint": "Holds more of one character than anybody else."
+    "topFanHint": "Holds more of one character than anybody else.",
+    "topFanHow": "Pin a character to your profile and hold more copies of them than anyone else.",
+    "wearing": "WEARING"
   },
   "balance": {
     "admin_adjust": "Admin adjustment",

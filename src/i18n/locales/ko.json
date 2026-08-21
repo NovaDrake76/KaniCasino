@@ -49,20 +49,40 @@
     "signUp": "회원가입"
   },
   "badge": {
+    "allCount": "{{total}}개 중 {{held}}개 보유",
+    "allTitle": "모든 뱃지",
     "awarded": "{{date}} 수여",
     "chooseHint": "사이트에서 달고 다닐 뱃지를 고르세요.",
     "clearHint": "달고 있는 뱃지를 누르면 벗습니다.",
+    "collection": {
+      "animals": "동물원장",
+      "blue-archive": "키보토스 달인",
+      "counter-strike": "무기상",
+      "touhou": "환상향 달인",
+      "uma-musume": "전설의 트레이너"
+    },
+    "collectionGeneric": "{{category}} 달인",
+    "collectionHint": "{{category}} 컴렉션의 모든 아이템을 보유.",
+    "collectionHow": "모든 {{category}} 케이스의 {{count}}개 아이템을 모으세요. 한 번 받으면 영원합니다.",
     "connected": "연결됨",
     "connectedHint": "Discord에 참여하고 X를 팔로우합니다.",
+    "connectedHow": "미션 탭에서 소셜 미션 두 개를 모두 수령하세요: Discord 참여와 X 팔로우.",
     "contributor": "기여자",
     "contributorHint": "KaniCasino 제작을 도았습니다.",
+    "contributorHow": "KaniCasino 제작을 도운 분께 직접 수여합니다: 그림, 번역, 코드, 아이디어.",
     "couldNotSave": "선택을 저장하지 못했습니다",
     "grant": "뱃지 수여",
+    "locked": "미획득",
+    "noneTheirs": "아직 뱃지가 없습니다.",
+    "noneYours": "아직 뱃지가 없습니다.",
     "note": "무엇을 했나요?",
     "revoke": "회수",
+    "seeAll": "모든 뱃지 보기",
     "shelfTitle": "뱃지",
     "topFan": "최고의 팬",
-    "topFanHint": "한 캐릭터를 누구보다 많이 가지고 있습니다."
+    "topFanHint": "한 캐릭터를 누구보다 많이 가지고 있습니다.",
+    "topFanHow": "프로필에 캐릭터를 고정하고 누구보다 많이 모으세요.",
+    "wearing": "착용 중"
   },
   "balance": {
     "admin_adjust": "관리자 조정",
