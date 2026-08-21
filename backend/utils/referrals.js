@@ -22,6 +22,8 @@ const CODE_PATTERN = /^[A-Z0-9]{3,16}$/;
 const normalizeCode = (raw) => String(raw || "").trim().toUpperCase();
 
 // in-app notification; the bell picks it up on the next fetch, no socket needed here
+const nameFilter = require("./nameFilter");
+
 const notify = (receiverId, senderId, title, content) =>
   Notification.create({ receiverId, senderId, type: "message", title, content }).catch((err) =>
     console.error("referral notify failed:", err)
@@ -35,6 +37,9 @@ async function setReferralCode(userId, raw) {
   const code = normalizeCode(raw);
   if (!CODE_PATTERN.test(code)) {
     return { code: 400, body: { message: "Codes are 3-16 letters or numbers" } };
+  }
+  if (nameFilter.findSlur(code)) {
+    return { code: 400, body: { message: "Please choose a different code" } };
   }
   try {
     const res = await User.updateOne(

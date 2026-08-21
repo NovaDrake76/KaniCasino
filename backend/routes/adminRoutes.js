@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const badges = require("../utils/badges");
+const nameFilter = require("../utils/nameFilter");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const Item = require("../models/Item");
@@ -198,6 +199,10 @@ router.put("/users/:id/badge", isAuthenticated, isAdmin, async (req, res) => {
   const { key, note, action } = req.body;
   if (!badges.GRANTABLE.includes(key)) {
     return res.status(400).json({ message: "That badge is earned, not granted" });
+  }
+  // written by an admin, but it sits on a public profile
+  if (note && nameFilter.findSlur(note)) {
+    return res.status(400).json({ message: "Please write something else" });
   }
   try {
     const user = await User.findById(req.params.id).select("_id");

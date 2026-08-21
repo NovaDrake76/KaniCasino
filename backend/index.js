@@ -69,6 +69,7 @@ const io = socketIO(server, {
 const coinFlip = require("./games/coinFlip");
 const crash = require("./games/crash");
 const caseBattle = require("./games/caseBattle");
+const User = require("./models/User");
 const { recoverStuckRounds } = require("./utils/rounds");
 const { completeStuckBattles } = require("./games/battleEngine");
 const { sweepBlackjackHands } = require("./games/blackjack");
@@ -198,12 +199,15 @@ let onlineUsers = 0;
 
 // optional auth: a valid token binds socket.userId; anonymous sockets may still
 // watch games but the game handlers ignore any client-supplied identity.
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   try {
     const token = socket.handshake.auth && socket.handshake.auth.token;
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      socket.userId = decoded.userId;
+      // the http side refuses a disabled account, and the socket games have to as well or
+      // a banned player can still sit in crash and coin flip on a live connection
+      const account = await User.findById(decoded.userId).select("disabled").lean();
+      if (!account || !account.disabled) socket.userId = decoded.userId;
     }
   } catch (err) {
     // invalid/expired token: continue unauthenticated
