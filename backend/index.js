@@ -70,6 +70,7 @@ const coinFlip = require("./games/coinFlip");
 const crash = require("./games/crash");
 const caseBattle = require("./games/caseBattle");
 const User = require("./models/User");
+const poker = require("./games/poker");
 const { recoverStuckRounds } = require("./utils/rounds");
 const { completeStuckBattles } = require("./games/battleEngine");
 const { sweepBlackjackHands } = require("./games/blackjack");
@@ -171,20 +172,24 @@ app.use("/fandom", fandomRoutes);
 // boot recovers live-looking rounds/battles the restart orphaned; the interval only
 // resumes a give-back loop that died holding a stale lease, so it never touches the
 // rounds the running game loops are still playing.
+// Start the games. this sits above the sweep because the boot sweep asks poker to recover
+// any table a restart caught mid-hand, and it cannot do that before the engine exists.
+coinFlip(io);
+crash(io);
+caseBattle(io);
+const pokerEngine = poker(io);
+
 const sweepRounds = ({ boot = false } = {}) => {
   recoverStuckRounds(io, coinFlip.winPayout, { boot }).catch((e) => console.log(e));
   completeStuckBattles(io, { boot }).catch((e) => console.log(e));
   sweepBlackjackHands(io).catch((e) => console.log(e));
   sweepMinesGames(io).catch((e) => console.log(e));
   sweepHiloGames(io).catch((e) => console.log(e));
+  // a table caught mid-hand is finished from the persisted deck, never voided
+  pokerEngine.recover().catch((e) => console.log(e));
 };
 sweepRounds({ boot: true });
 setInterval(() => sweepRounds({ boot: false }), 5 * 60 * 1000);
-
-// Start the games
-coinFlip(io);
-crash(io);
-caseBattle(io);
 
 // Start the cron jobs
 cronJobs.startCronJobs(io);
