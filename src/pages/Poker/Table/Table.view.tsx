@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
@@ -11,6 +11,7 @@ import Board from "../components/Board";
 import ActionRail from "../components/ActionRail";
 import BuyInModal from "../components/BuyInModal";
 import CashOutModal from "../components/CashOutModal";
+import VerifyHand from "../components/VerifyHand";
 import { PokerSeat } from "../../../services/poker/PokerService";
 import { ShowdownSummary, TableServices } from "./Table.types";
 import i18n from "../../../i18n";
@@ -102,6 +103,7 @@ const Felt = ({ table, liveTotal, feed, showdown }: FeltProps) =>
 const TableView = (service: TableServices) => {
   const { userData } = useContext(UserContext);
   const wide = useIsWide();
+  const [verifying, setVerifying] = useState(false);
   const {
     table,
     loading,
@@ -126,6 +128,8 @@ const TableView = (service: TableServices) => {
     act,
     acting,
     pool,
+    sittingOut,
+    sitBackIn,
   } = service;
 
   if (loading) {
@@ -184,14 +188,24 @@ const TableView = (service: TableServices) => {
             {table.handNumber > 0 && ` · ${i18n.t("poker.handNumber", { n: table.handNumber })}`}
           </p>
         </div>
-        {heroSeated && (
-          <button
-            onClick={openCashOut}
-            className="notched-sm bg-[#3A365A] px-4 py-2 text-xs font-bold text-white transition-all hover:bg-[#4a4570]"
-          >
-            {i18n.t("poker.cashOut")}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {table.handNumber > 0 && (
+            <button
+              onClick={() => setVerifying(true)}
+              className="notched-sm bg-[#281D3F] px-4 py-2 text-xs font-bold text-[#C9C6DE] transition-all hover:bg-[#382a55]"
+            >
+              {i18n.t("poker.verify")}
+            </button>
+          )}
+          {heroSeated && (
+            <button
+              onClick={openCashOut}
+              className="notched-sm bg-[#3A365A] px-4 py-2 text-xs font-bold text-white transition-all hover:bg-[#4a4570]"
+            >
+              {i18n.t("poker.cashOut")}
+            </button>
+          )}
+        </div>
       </div>
 
       {wide ? (
@@ -244,7 +258,17 @@ const TableView = (service: TableServices) => {
       )}
 
       <div className="w-full max-w-3xl">
-        {heroSeated ? (
+        {sittingOut ? (
+          <div className="notched flex w-full flex-col items-center gap-3 bg-[#212031] px-4 py-5">
+            <p className="text-sm text-[#84819A]">{i18n.t("poker.youAreSittingOut")}</p>
+            <button
+              onClick={sitBackIn}
+              className="notched-sm bg-[#4F46E5] px-6 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#5f56f5]"
+            >
+              {i18n.t("poker.sitBackIn")}
+            </button>
+          </div>
+        ) : heroSeated ? (
           <ActionRail
             legal={table.legal}
             pot={liveTotal}
@@ -275,6 +299,12 @@ const TableView = (service: TableServices) => {
         onClose={closeCashOut}
         options={cashOut}
         onSubmit={submitCashOut}
+      />
+      <VerifyHand
+        open={verifying}
+        onClose={() => setVerifying(false)}
+        tableId={table._id}
+        handNumber={table.status === "idle" ? table.handNumber : table.handNumber - 1}
       />
     </div>
   );

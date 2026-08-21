@@ -57,6 +57,8 @@ export interface TableServices {
   closeCashOut: () => void;
   submitCashOut: (picks: string[]) => Promise<void>;
 
+  sittingOut: boolean;
+  sitBackIn: () => void;
   act: (type: LegalAction["type"], to?: number) => void;
   acting: boolean;
   pool: PooledItem[];

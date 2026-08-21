@@ -29,6 +29,8 @@ const AUTOFOLD_LIMIT = 3;
 // a seat below one big blind cannot post, so it is stood up rather than dealt in
 const MIN_TO_PLAY = 1;
 const START_DELAY_MS = 3000;
+// only a rare enough item is worth telling the whole site about
+const TICKER_RARITY = 4;
 const SETTLE_DELAY_MS = 4000;
 
 const room = (tableId) => `poker:${tableId}`;
@@ -525,6 +527,23 @@ function makeEngine(io = noopIo) {
       startedAt: table.lastHandAt,
     });
 
+    // the rest of the site should see a legendary change hands, not just the table
+    const takeable = atRisk.filter((e) => Number(e.rarity) >= TICKER_RARITY);
+    if (takeable.length) {
+      const top = takeable.slice().sort((a, b) => Number(b.rarity) - Number(a.rarity) || b.value - a.value)[0];
+      const winnerSeat = [...result.won.entries()].sort((a, b) => b[1] - a[1])[0];
+      if (winnerSeat && top) {
+        io.emit("poker:onTheLine", {
+          tableId: String(tableId),
+          tableName: table.name,
+          slug: table.slug,
+          item: { name: top.name, image: top.image, rarity: top.rarity, value: top.value },
+          from: table.seats[top.stakedBy] ? table.seats[top.stakedBy].username : null,
+          chasedBy: table.seats[winnerSeat[0]] ? table.seats[winnerSeat[0]].username : null,
+        });
+      }
+    }
+
     io.to(room(tableId)).emit("poker:showdown", {
       handNumber: table.handNumber,
       board,
@@ -559,15 +578,25 @@ function makeEngine(io = noopIo) {
     const leaving = table.seats.filter((s) => s.userId && (s.leaveAfterHand || s.stack < MIN_TO_PLAY));
 
     const patch = { status: "idle", street: null, board: [], deck: [], pots: [], toAct: null, actionDeadline: null, currentBet: 0, pfServerSeed: null };
+    const satOut = [];
     table.seats.forEach((s, i) => {
       if (!s.userId) return;
       patch[`seats.${i}.holeCards`] = [];
-      patch[`seats.${i}.status`] = "sitting";
+      // three timeouts running is somebody who walked away, and dealing them in forever
+      // just makes everyone else wait out the clock every orbit
+      const idle = (s.autoFolds || 0) >= AUTOFOLD_LIMIT;
+      patch[`seats.${i}.status`] = idle ? "sittingout" : "sitting";
+      if (idle) satOut.push({ seat: i, username: s.username, userId: s.userId });
       patch[`seats.${i}.committed`] = 0;
       patch[`seats.${i}.totalCommitted`] = 0;
     });
     const cleared = await commit(tableId, table.actionSeq, { $set: patch });
     if (!cleared) return;
+
+    for (const out of satOut) {
+      io.to(room(tableId)).emit("poker:satOut", { seat: out.seat, username: out.username });
+      io.to(String(out.userId)).emit("poker:youSatOut", { tableId: String(tableId) });
+    }
 
     for (const s of leaving) {
       // a busted seat still owns whatever it can afford out of the cage, which is usually
@@ -718,6 +747,28 @@ function attach(io) {
         ack(cb, await stakeableFor(socket.userId));
       } catch (err) {
         ack(cb, { error: "Could not read your inventory" });
+      }
+    });
+
+    socket.on("poker:sitIn", async (tableId, cb) => {
+      if (!socket.userId) return ack(cb, { error: "Sign in to play" });
+      try {
+        const table = await PokerTable.findById(tableId);
+        if (!table) return ack(cb, { error: "Table not found" });
+        const index = seatOf(table, socket.userId);
+        if (index < 0) return ack(cb, { error: "You are not at this table" });
+        if (table.seats[index].status !== "sittingout") return ack(cb, { ok: true });
+
+        const back = await PokerTable.findOneAndUpdate(
+          { _id: tableId, [`seats.${index}.userId`]: socket.userId },
+          { $set: { [`seats.${index}.status`]: "sitting", [`seats.${index}.autoFolds`]: 0 }, $inc: { actionSeq: 1 } },
+          { new: true }
+        );
+        if (back) await pushTable(io, back);
+        ack(cb, { ok: true });
+        await engine.startIfReady(tableId);
+      } catch (err) {
+        ack(cb, { error: "Could not sit back in" });
       }
     });
 

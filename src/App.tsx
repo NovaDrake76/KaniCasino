@@ -9,6 +9,7 @@ import SocketConnection from "./services/socket"
 import { SESSION_EXPIRED_EVENT } from "./services/api";
 import { clearTokens } from "./services/auth/authUtils";
 import ScrollToTop from "./components/ScrollToTop";
+import PokerAlert, { OnTheLine } from "./components/PokerAlert";
 import Footer from "./components/Footer";
 import {disableReactDevTools} from '@fvilers/disable-react-devtools';
 import { getPendingMissions } from "./services/missions/MissionService";
@@ -86,12 +87,19 @@ function App() {
 
     return () => {
       socket.off("userDataUpdated");
+      socket.off("poker:onTheLine");
     };
   }
 
   useEffect(() => {
     socket.on("onlineUsers", (count) => {
       setOnlineUsers(count);
+    });
+
+    // a legendary going out of reach at a poker table is an invitation, not a result: it
+    // is still winnable, so it goes out as a toast that links straight to the seat
+    socket.on("poker:onTheLine", (alert: OnTheLine) => {
+      toast(<PokerAlert alert={alert} />, { autoClose: 9000, theme: "dark" });
     });
 
     socket.on("caseOpened", (data) => {

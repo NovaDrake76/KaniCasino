@@ -10,6 +10,7 @@ import {
   StakeableItem,
   leaveTable,
   sendAction,
+  sitBackIn as sitBackInCall,
   sitDown,
   unwatchTable,
   watchTable,
@@ -173,6 +174,11 @@ export const useTableServices = (): TableServices => {
     [table]
   );
 
+  const sitBackIn = useCallback(() => {
+    if (!table) return;
+    sitBackInCall(table._id).then((res) => res.error && toast.error(res.error));
+  }, [table]);
+
   const act = useCallback(
     (type: LegalAction["type"], to?: number) => {
       if (!table || acting) return;
@@ -207,6 +213,9 @@ export const useTableServices = (): TableServices => {
     openCashOut,
     closeCashOut: () => setCashOutOpen(false),
     submitCashOut,
+    sittingOut:
+      heroSeat !== null && table?.seats[heroSeat]?.status === "sittingout",
+    sitBackIn,
     act,
     acting,
     pool: table?.pool || [],

@@ -69,6 +69,37 @@ export interface VerifyResult {
   recomputedGuesses?: number;
 }
 
+export interface PokerVerify {
+  tableId?: string;
+  handNumber: number;
+  revealed: boolean;
+  algoVersion?: number;
+  currentAlgoVersion?: number;
+  serverSeed?: string;
+  serverSeedHash: string | null;
+  combinedClientSeed?: string;
+  commitmentValid?: boolean;
+  board?: string[];
+  recomputedBoard?: string[];
+  boardValid?: boolean;
+  players?: {
+    seat: number;
+    username: string;
+    holeCards: string[];
+    recomputed: string[];
+    matches: boolean;
+    wonChips: number;
+    folded: boolean;
+  }[];
+  outcomeValid?: boolean;
+  rake?: number;
+}
+
+// a poker hand is verified as a whole rather than as one player's roll: the deal is keyed
+// by every seated player's client seed, so there is no single roll to look up
+export const verifyPokerHand = (tableId: string, handNumber: number) =>
+  api.get<PokerVerify>(`/fair/poker/${tableId}/${handNumber}`).then((r) => r.data);
+
 export const getSeed = () => api.get<SeedState>("/fair/seed").then((r) => r.data);
 
 export const setClientSeed = (clientSeed: string) =>

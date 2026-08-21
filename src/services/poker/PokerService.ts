@@ -131,6 +131,10 @@ export interface StakeableItem {
 export const getStakeable = () =>
   ack<{ items: StakeableItem[]; walletBalance: number; error?: string }>("poker:stakeable", null);
 
+// three timeouts running sits a player out, and this is how they come back
+export const sitBackIn = (tableId: string) =>
+  ack<{ ok?: boolean; error?: string }>("poker:sitIn", tableId);
+
 export const getCashOutOptions = (tableId: string) =>
   ack<CashOutOptions & { error?: string }>("poker:cashoutOptions", tableId);
 

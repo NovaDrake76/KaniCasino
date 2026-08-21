@@ -7,6 +7,9 @@ const Round = require("../models/Round");
 const BlackjackHand = require("../models/BlackjackHand");
 const MinesGame = require("../models/MinesGame");
 const HiloGame = require("../models/HiloGame");
+const PokerHand = require("../models/PokerHand");
+const PokerTable = require("../models/PokerTable");
+const { shuffle, deal, boardFor, cardName, POKER_ALGO_VERSION } = require("../utils/pokerCards");
 const { crashPointFromSeed } = require("../utils/crashMath");
 const { coinResultFromSeed } = require("../utils/coinMath");
 const { sha256 } = require("../utils/hashChain");
@@ -115,6 +118,71 @@ router.get("/roll/:rollId/verify", async (req, res) => {
 
 // verify a crash round. while it is still live only the commitment is public; once it
 // settles the seed is revealed and anyone can reproduce the crash point and the chain link.
+// verify a finished poker hand. the seed is per hand rather than per player, because a
+// shared deal cannot key off one participant: it is hmac'd with every seated player's
+// locked client seed joined in seat order, so nobody can steer it. it is only revealed
+// once the hand is over, since every hole card falls out of it.
+router.get("/poker/:tableId/:handNumber", async (req, res) => {
+  try {
+    const hand = await PokerHand.findOne({
+      tableId: req.params.tableId,
+      handNumber: Number(req.params.handNumber),
+    }).lean();
+
+    if (!hand) {
+      // a hand still being played has a public commitment and nothing else
+      const table = await PokerTable.findById(req.params.tableId).select("pfServerSeedHash handNumber").lean();
+      if (!table) return res.status(404).json({ message: "Hand not found" });
+      return res.json({
+        handNumber: Number(req.params.handNumber),
+        revealed: false,
+        serverSeedHash: table.handNumber === Number(req.params.handNumber) ? table.pfServerSeedHash : null,
+      });
+    }
+
+    const deck = shuffle(hand.pfServerSeed, hand.combinedClientSeed, hand.handNumber);
+    const dealt = deal(deck, (await PokerTable.findById(hand.tableId).select("seatCount").lean())?.seatCount || 6);
+    const board = boardFor(dealt, hand.lastStreet === "showdown" ? "showdown" : hand.lastStreet);
+
+    const players = hand.players.map((p) => ({
+      seat: p.seat,
+      username: p.username,
+      holeCards: (p.holeCards || []).map(cardName),
+      recomputed: (dealt.holes[p.seat] || []).map(cardName),
+      matches:
+        JSON.stringify(p.holeCards || []) === JSON.stringify(dealt.holes[p.seat] || []),
+      wonChips: p.wonChips,
+      folded: p.folded,
+    }));
+
+    res.json({
+      tableId: String(hand.tableId),
+      handNumber: hand.handNumber,
+      revealed: true,
+      algoVersion: hand.algoVersion,
+      currentAlgoVersion: POKER_ALGO_VERSION,
+      serverSeed: hand.pfServerSeed,
+      serverSeedHash: hand.pfServerSeedHash,
+      combinedClientSeed: hand.combinedClientSeed,
+      commitmentValid: sha256(hand.pfServerSeed) === hand.pfServerSeedHash,
+      board: (hand.board || []).map(cardName),
+      recomputedBoard: board.map(cardName),
+      boardValid: JSON.stringify(hand.board || []) === JSON.stringify(board),
+      players,
+      // one false anywhere is the whole hand failing to reproduce
+      outcomeValid:
+        sha256(hand.pfServerSeed) === hand.pfServerSeedHash &&
+        JSON.stringify(hand.board || []) === JSON.stringify(board) &&
+        players.every((p) => p.matches),
+      rake: hand.rake,
+      pots: hand.pots,
+      endedAt: hand.endedAt,
+    });
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.get("/crash/:roundId", async (req, res) => {
   try {
     const round = await Round.findById(req.params.roundId);
