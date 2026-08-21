@@ -21,6 +21,7 @@ const { ObjectId } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const { resolvePassword } = require("../utils/password");
+const nameFilter = require("../utils/nameFilter");
 
 // Register user
 router.post(
@@ -53,6 +54,12 @@ router.post(
       let userName = await User.findOne({ username });
       if (userName) {
         return res.status(400).json({ message: "Username already registered" });
+      }
+
+      const slur = nameFilter.findSlur(username);
+      if (slur) {
+        console.warn(`register blocked: ${email} tried "${username}" (${slur})`);
+        return res.status(400).json({ message: "Please choose a different username" });
       }
 
       // an unknown referral code is ignored rather than blocking the signup
@@ -179,7 +186,7 @@ router.post('/googlelogin', async (req, res) => {
     // Check if user exists in your DB or create a new one
     let user = await User.findOne({ email: googlePayload.email });
     if (!user) {
-      let username = googlePayload.name;
+      let username = nameFilter.safeUsername(googlePayload.name, googlePayload.sub);
       let existingUser = await User.findOne({ username });
       while (existingUser) {
         // Handle username conflict
@@ -642,8 +649,11 @@ router.put(
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Update fixed item description (crop to 50 characters)
-      user.fixedItem.description = description.substring(0, 50);
+      const cropped = String(description || "").substring(0, 50);
+      if (nameFilter.findSlur(cropped)) {
+        return res.status(400).json({ message: "Please write something else" });
+      }
+      user.fixedItem.description = cropped;
 
       await user.save();
 
