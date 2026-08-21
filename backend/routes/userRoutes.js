@@ -42,7 +42,7 @@ router.post(
     }
 
 
-    const { email, password, username, profilePicture, referralCode } = req.body;
+    const { email, password, username, referralCode } = req.body;
 
     try {
       // Check if user already exists
@@ -55,25 +55,19 @@ router.post(
         return res.status(400).json({ message: "Username already registered" });
       }
 
-      if (!isValidBase64(profilePicture) && profilePicture !== "") return res.status(400).json({ message: "Invalid profile picture" })
-
       // an unknown referral code is ignored rather than blocking the signup
       const referrer = referralCode ? await findReferrer(referralCode) : null;
 
       // Create new user. accept the password as plain text; for backwards
       // compatibility, decrypt a legacy AES-wrapped value if detected.
       const originalPassword = resolvePassword(password);
-      user = new User({ email, username, profilePicture, isAdmin: false });
+      const placeholder = getRandomPlaceholderImage();
+      user = new User({ email, username, profilePicture: placeholder, basePicture: placeholder, isAdmin: false });
       if (referrer) user.referredBy = referrer._id;
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(originalPassword, salt);
-
-      //if profilePicture is not provided, use default image
-      if (!profilePicture || profilePicture === "") {
-        user.profilePicture = getRandomPlaceholderImage();
-      }
 
       // Save user to the database
       await user.save();
@@ -189,6 +183,7 @@ router.post('/googlelogin', async (req, res) => {
         email: googlePayload.email,
         username: username,
         profilePicture: googlePayload.picture,
+        basePicture: googlePayload.picture,
       });
       if (referrer) user.referredBy = referrer._id;
       await user.save();
@@ -534,6 +529,90 @@ router.put("/badge", authMiddleware.isAuthenticated, async (req, res) => {
   }
 });
 
+// every distinct item the player owns, which is the whole set of avatars open to them. the
+// catalog is authoritative for the image: an inventory entry is a copy taken at drop time
+// and can be stale.
+router.get("/avatars", authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("profilePicture basePicture").lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // grouped in mongo rather than here, so a 20k-item inventory never crosses the wire
+    const owned = await User.aggregate([
+      { $match: { _id: user._id } },
+      { $project: { inventory: 1 } },
+      { $unwind: "$inventory" },
+      { $group: { _id: "$inventory._id", count: { $sum: 1 } } },
+    ]);
+
+    const catalog = await Item.find(
+      { _id: { $in: owned.map((row) => row._id) } },
+      { name: 1, image: 1, rarity: 1 }
+    ).lean();
+    const counts = new Map(owned.map((row) => [String(row._id), row.count]));
+
+    const items = catalog
+      .filter((item) => item.image)
+      .map((item) => ({
+        itemId: String(item._id),
+        name: item.name,
+        image: item.image,
+        rarity: item.rarity,
+        count: counts.get(String(item._id)) || 0,
+      }))
+      .sort((a, b) => Number(b.rarity) - Number(a.rarity) || String(a.name).localeCompare(String(b.name)));
+
+    res.json({
+      current: user.profilePicture || "",
+      base: user.basePicture || user.profilePicture || getRandomPlaceholderImage(),
+      items,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// the client sends an item id and never a url, so the image is resolved here and the only
+// pictures that can reach a profile are ones the player holds. an empty id goes back to
+// whatever the account started with.
+router.put("/avatar", authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const { itemId } = req.body;
+    const user = await User.findById(req.user._id).select("profilePicture basePicture").lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // accounts made before this shipped carry no basePicture, so the one they are wearing
+    // becomes it on their first change: a google avatar stays reachable without a migration
+    const base = user.basePicture || user.profilePicture || getRandomPlaceholderImage();
+    let picture = base;
+
+    if (itemId) {
+      if (!ObjectId.isValid(String(itemId))) {
+        return res.status(400).json({ message: "Item not found in inventory" });
+      }
+      // matched in mongo rather than pulled across, since an inventory runs to tens of thousands
+      const holds = await User.exists({
+        _id: user._id,
+        "inventory._id": new ObjectId(String(itemId)),
+      });
+      if (!holds) return res.status(400).json({ message: "Item not found in inventory" });
+
+      const catalogItem = await Item.findById(itemId, { image: 1 }).lean();
+      if (!catalogItem || !catalogItem.image) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      picture = catalogItem.image;
+    }
+
+    await User.updateOne({ _id: user._id }, { $set: { profilePicture: picture, basePicture: base } });
+    res.json({ profilePicture: picture });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // update fixed item description
 router.put(
   "/fixedItem/description",
@@ -606,37 +685,6 @@ router.post('/logout-all', authMiddleware.isAuthenticated, async (req, res) => {
   try {
     await User.updateOne({ _id: req.user._id }, { $inc: { tokenVersion: 1 } });
     res.json({ message: "Signed out of all devices." });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-const isValidBase64 = (str) => {
-  const base64Regex = /^data:image\/(png|jpeg|jpg);base64,/;
-  return base64Regex.test(str);
-};
-
-
-router.put('/profilePicture', authMiddleware.isAuthenticated, async (req, res) => {
-  try {
-    const newProfilePicture = req.body.image;
-
-    if (!isValidBase64(newProfilePicture)) {
-      return res.status(400).json({ message: 'Invalid image format' });
-    }
-
-    const user = await User.findById(req.user._id);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    user.profilePicture = newProfilePicture;
-
-    await user.save();
-
-    res.json({ message: 'Profile picture updated' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

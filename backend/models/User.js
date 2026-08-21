@@ -108,6 +108,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "", // default "" to a default image URL
   },
+  // whatever the account started with, a google picture or the placeholder, kept so an
+  // item avatar can always be undone without guessing which one they came from
+  basePicture: {
+    type: String,
+    default: "",
+  },
   isAdmin: {
     type: Boolean,
     default: false,

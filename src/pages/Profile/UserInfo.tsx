@@ -1,12 +1,11 @@
-import { updateProfilePicture } from "../../services/users/UserServices";
 import { Tooltip } from "react-tooltip";
-import { useRef } from "react";
-import { toast } from "react-toastify";
+import { useState } from "react";
 import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
 import FanStanding from "./FanStanding";
 import Badge from "../../components/Badge";
 import BadgeShelf from "./BadgeShelf";
+import AvatarPicker from "./AvatarPicker";
 import Avatar from "../../components/Avatar";
 import { User } from '../../components/Types'
 import i18n from "../../i18n";
@@ -33,47 +32,7 @@ const UserInfo: React.FC<UserProps> = ({
   setRefresh,
 }) => {
 
-  // Create a reference to the file input element
-  const fileInput = useRef<HTMLInputElement>(null);
-
-  // This function will be called when the user selects a new profile picture
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const fileSizeMB = file.size / 1024 / 1024; // size in MB
-      const validFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-      const isValidFileType = validFileTypes.includes(file.type);
-
-      if (fileSizeMB > 3) {
-        toast.error(i18n.t("profile.fileSizeMustBe"));
-        return;
-      }
-
-      if (!isValidFileType) {
-        toast.error(i18n.t("profile.fileTypeMustBe"));
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          const res = await updateProfilePicture(reader.result as string);
-          setRefresh && setRefresh(true);
-          toast.success(res.message);
-
-
-        } catch (error: any) {
-          console.log(error);
-          toast.error(error.message);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // const handleChangePictureClick = () => {
-  //   fileInput.current?.click();
-  // };
+  const [pickingAvatar, setPickingAvatar] = useState(false);
 
   const calculateRequiredXP = (level: number) => {
     const baseXP = 1000;
@@ -96,19 +55,18 @@ const UserInfo: React.FC<UserProps> = ({
           {isSameUser && (
             <button
               className="absolute inset-0 w-full h-full opacity-0 hover:opacity-70 bg-blue-500 transition-all flex items-center justify-center rounded-full cursor-pointer group-hover:opacity-70"
-            // onClick={handleChangePictureClick}
+              onClick={() => setPickingAvatar(true)}
             >
-              <span className="text-white">{i18n.t("profile.itSYou")}</span>
+              <span className="text-white text-sm px-2 text-center">{i18n.t("profile.avatarChange")}</span>
             </button>
           )}
-          <input
-            type="file"
-            className="hidden"
-            onChange={handleProfilePictureChange}
-            ref={fileInput}
-            accept="image/png, image/jpeg, image/jpg"
-          />
-
+          {isSameUser && (
+            <AvatarPicker
+              open={pickingAvatar}
+              setOpen={setPickingAvatar}
+              onPicked={() => setRefresh && setRefresh(true)}
+            />
+          )}
         </div>
         <div className="flex flex-col w-80 md:w-[686px]">
           <div className="flex gap-4 items-center">

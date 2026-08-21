@@ -7,20 +7,14 @@ import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
 import { getPendingReferralCode, clearPendingReferralCode } from "../../../services/referrals/ReferralServices";
 import i18n from "../../../i18n";
-// import { FaImage } from "react-icons/fa";
-// import { toast } from "react-toastify";
-
-
 
 const SignUpPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
   const [referralCode, setReferralCode] = useState(getPendingReferralCode());
-  const [profilePicture, _setProfilePicture] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  // const [imagePreview, setImagePreview] = useState<any>(null);
 
   const { toggleLogin } = useContext(UserContext);
 
@@ -28,7 +22,7 @@ const SignUpPage: React.FC = () => {
     setLoading(true);
     e.preventDefault();
     try {
-      await register(email, password, nickname, profilePicture, referralCode.trim() || undefined)
+      await register(email, password, nickname, referralCode.trim() || undefined)
         .then((response) => {
           saveTokens(response.token, "");
           clearPendingReferralCode();
@@ -60,36 +54,6 @@ const SignUpPage: React.FC = () => {
   //   // Handle Google sign-up failure here
   // };
 
-  // const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     const file = e.target.files[0];
-  //     const fileSizeMB = file.size / 1024 / 1024; // size in MB
-  //     const validFileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-  //     const isValidFileType = validFileTypes.includes(file.type);
-
-  //     if (fileSizeMB > 3) {
-  //       toast.error('File size must be less than 3MB');
-  //       return;
-  //     }
-
-  //     if (!isValidFileType) {
-  //       toast.error('File type must be jpeg, jpg or png');
-  //       return;
-  //     }
-
-  //     const reader = new FileReader();
-  //     reader.onloadend = async () => {
-  //       try {
-  //         setProfilePicture(reader.result as string);
-  //         setImagePreview(reader.result as string);
-  //       } catch (error: any) {
-  //         console.log(error);
-  //         toast.error(error.message);
-  //       }
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
 
 
   return (
@@ -98,24 +62,6 @@ const SignUpPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-indigo-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative bg-white shadow-lg sm:rounded-3xl p-10">
           <div className="max-w-md mx-auto">
-
-            <div className="flex justify-center items-center w-full">
-              {/* <label className="flex flex-col items-center justify-center w-32 h-32 rounded-full group bg-gray-200 hover:bg-gray-400 transition-all text-gray-700 hover:text-white cursor-pointer overflow-hidden">
-                {imagePreview ? (
-                  <img className="object-cover w-full h-full" src={imagePreview} alt={i18n.t("header.profilePreview")} />
-                ) : (
-                  <div className="flex flex-col items-center justify-center">
-                    <FaImage className="w-6 h-6" />
-                    <p className="lowercase text-sm tracking-wider text-center">{i18n.t("header.selectAProfilePicture")}</p>
-                  </div>
-                )}
-                <input type="file" className="hidden" onChange={handleProfilePictureChange} accept="
-                image/png,
-                image/jpeg,
-                image/jpg" />
-              </label> */}
-            </div>
-
             <form onSubmit={handleSubmit}>
               <div className="divide-y divide-gray-200 mt-2">
                 <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
