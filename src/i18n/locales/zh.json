@@ -40,6 +40,8 @@
     "email": "电子邮箱地址",
     "emailShort": "邮箱",
     "forgotTip": "太可惜了 🙁",
+    "marketingOptIn": "接收新箱子、活动和赠品的邮件通知",
+    "marketingOptInHint": "没有垃圾邮件，随时可退订。",
     "nickname": "昵称",
     "orLogin": "或登录",
     "password": "密码",

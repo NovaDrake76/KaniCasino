@@ -40,6 +40,8 @@
     "email": "Adresse e-mail",
     "emailShort": "E-mail",
     "forgotTip": "Dommage pour vous 🙁",
+    "marketingOptIn": "Recevoir des e-mails sur les nouvelles caisses, événements et cadeaux",
+    "marketingOptInHint": "Pas de spam. Désinscription à tout moment.",
     "nickname": "Pseudo",
     "orLogin": "Ou connectez-vous",
     "password": "Mot de passe",

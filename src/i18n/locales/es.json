@@ -40,6 +40,8 @@
     "email": "Correo electrónico",
     "emailShort": "Correo",
     "forgotTip": "Qué lástima 🙁",
+    "marketingOptIn": "Quiero recibir correos sobre nuevas cajas, eventos y sorteos",
+    "marketingOptInHint": "Sin spam. Cancela cuando quieras.",
     "nickname": "Apodo",
     "orLogin": "O inicia sesión",
     "password": "Contraseña",

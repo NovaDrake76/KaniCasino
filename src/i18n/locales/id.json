@@ -40,6 +40,8 @@
     "email": "Alamat email",
     "emailShort": "Email",
     "forgotTip": "Buruk buat kamu🙁",
+    "marketingOptIn": "Kirimi saya email tentang case baru, event, dan giveaway",
+    "marketingOptInHint": "Tanpa spam. Berhenti berlangganan kapan saja.",
     "nickname": "Nama singkat",
     "orLogin": "Atau masuk",
     "password": "Kata sandi (Pw)",

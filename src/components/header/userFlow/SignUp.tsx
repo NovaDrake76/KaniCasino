@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
-// Import Google Login component (optional)
-// import GoogleLogin from "react-google-login";
-import { register } from "../../../services/auth/auth";
+import { GoogleLogin } from "@react-oauth/google";
+import { register, googleLogin } from "../../../services/auth/auth";
 import MainButton from "../../MainButton";
 import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
@@ -13,6 +12,7 @@ const SignUpPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
   const [referralCode, setReferralCode] = useState(getPendingReferralCode());
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +22,7 @@ const SignUpPage: React.FC = () => {
     setLoading(true);
     e.preventDefault();
     try {
-      await register(email, password, nickname, referralCode.trim() || undefined)
+      await register(email, password, nickname, referralCode.trim() || undefined, marketingOptIn)
         .then((response) => {
           saveTokens(response.token, "");
           clearPendingReferralCode();
@@ -46,15 +46,22 @@ const SignUpPage: React.FC = () => {
 
 
 
-  // const handleGoogleSuccess = (response: any) => {
-  //   // Handle Google sign-up logic here
-  // };
-
-  // const handleGoogleFailure = (error: any) => {
-  //   // Handle Google sign-up failure here
-  // };
-
-
+  // the same endpoint as the login button, but reached from the create-account side, so the
+  // consent ticked above rides along and is kept only if this is what makes the account
+  const handleGoogleSignUp = async (credentialResponse: any) => {
+    try {
+      const code = referralCode.trim() || getPendingReferralCode() || undefined;
+      const data = await googleLogin(credentialResponse.credential, code, marketingOptIn);
+      if (data.token) {
+        saveTokens(data.token, "");
+        clearPendingReferralCode();
+        toggleLogin();
+      }
+    } catch (error) {
+      console.log(error);
+      setError(i18n.t("nav.invalidFormatPleaseTry"));
+    }
+  };
 
   return (
     <div className="flex flex-col justify-center ">
@@ -132,7 +139,19 @@ const SignUpPage: React.FC = () => {
                   ))}
 
                 </div>
-                <div className="flex flex-col ">
+                <div className="flex flex-col gap-3 pt-3">
+                  <label className="flex cursor-pointer items-start gap-2 text-sm text-gray-600">
+                    <input
+                      type="checkbox"
+                      checked={marketingOptIn}
+                      onChange={(e) => setMarketingOptIn(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-indigo-500"
+                    />
+                    <span>
+                      {i18n.t("auth.marketingOptIn")}
+                      <span className="block text-xs text-gray-400">{i18n.t("auth.marketingOptInHint")}</span>
+                    </span>
+                  </label>
                   <MainButton
                     text={i18n.t("auth.signUp")}
                     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -143,15 +162,13 @@ const SignUpPage: React.FC = () => {
                   />
 
                   {error && <p className="text-red-500 text-sm">{error}</p>}
-                  {/* Uncomment to enable Google Login */}
-                  {/* <GoogleLogin
-                      clientId="<YOUR_GOOGLE_CLIENT_ID>"
-                      buttonText={i18n.t("nav.signUpWithGoogle")}
-                      onSuccess={handleGoogleSuccess}
-                      onFailure={handleGoogleFailure}
-                      cookiePolicy={"single_host_origin"}
-                      className="w-full text-white bg-red-500 px-6 py-2 rounded-lg hover:bg-red-400"
-                      /> */}
+                  <div className="flex justify-center">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSignUp}
+                      onError={() => setError(i18n.t("nav.invalidFormatPleaseTry"))}
+                      theme="outline"
+                    />
+                  </div>
                 </div>
               </div>
             </form>

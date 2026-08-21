@@ -40,6 +40,8 @@
     "email": "E-Mail-Adresse",
     "emailShort": "E-Mail",
     "forgotTip": "Pech gehabt 🙁",
+    "marketingOptIn": "E-Mails über neue Kisten, Events und Gewinnspiele erhalten",
+    "marketingOptInHint": "Kein Spam. Jederzeit abbestellbar.",
     "nickname": "Nickname",
     "orLogin": "Oder anmelden",
     "password": "Passwort",

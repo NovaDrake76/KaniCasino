@@ -40,6 +40,8 @@
     "email": "이메일 주소",
     "emailShort": "이메일",
     "forgotTip": "아쉽네요 🙁",
+    "marketingOptIn": "새 케이스, 이벤트, 경품 소식을 이메일로 받기",
+    "marketingOptInHint": "스팸은 없습니다. 언제든 수신을 해지할 수 있습니다.",
     "nickname": "닉네임",
     "orLogin": "또는 로그인",
     "password": "비밀번호",

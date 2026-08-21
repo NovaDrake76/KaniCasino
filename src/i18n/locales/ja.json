@@ -40,6 +40,8 @@
     "email": "メールアドレス",
     "emailShort": "メール",
     "forgotTip": "残念でした 🙁",
+    "marketingOptIn": "新しいケースやイベントのお知らせを受け取る",
+    "marketingOptInHint": "スパムはありません。いつでも配信停止できます。",
     "nickname": "ニックネーム",
     "orLogin": "またはログイン",
     "password": "パスワード",
