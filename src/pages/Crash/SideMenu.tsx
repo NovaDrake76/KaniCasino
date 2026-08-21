@@ -78,7 +78,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
         (isLogged && (userGambled ? !gameStarted || userCashedOut : invalidBet));
 
     return (
-      <div className="lg:w-[340px] flex flex-col gap-2 border-r border-gray-700 py-4 px-6">
+      <div className="w-full min-w-0 xl:w-[340px] xl:shrink-0 flex flex-col gap-2 border-b xl:border-b-0 xl:border-r border-gray-700 py-4 px-6">
         <BetAmount
           value={bet === null ? "" : String(bet)}
           onChange={(value) => setBet(value === "" ? null : Math.min(MAX_BET, Number(value)))}
