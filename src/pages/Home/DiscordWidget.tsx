@@ -106,7 +106,7 @@ const DiscordWidget = () => {
             href={invite}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-auto flex items-center justify-center gap-2 rounded-lg bg-[#5865F2] px-4 py-3 font-bold text-white transition-all hover:bg-[#4752C4]"
+            className="mt-auto flex items-center text-center justify-center gap-2 rounded-lg bg-[#5865F2] px-4 py-3 font-bold text-white transition-all hover:bg-[#4752C4]"
           >
             <FaDiscord className="text-xl" />
             {i18n.t("home.joinTheKanicasinoServer")}
