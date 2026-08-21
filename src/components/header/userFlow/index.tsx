@@ -32,7 +32,7 @@ const UserFlow: React.FC = () => {
         <Modal open={true} setOpen={toogleUserFlow} width={"400px"}>
           <div className="flex items-center justify-center p-8" >
             <div
-              className={`flex flex-col justify-center transition-all ${isLogin ? "h-[340px]" : "h-[460px]"
+              className={`flex flex-col justify-center transition-all ${isLogin ? "h-[340px]" : "h-[520px]"
                 }`}
             >
               {isLogin ? <Login /> : <SignUp />}

@@ -40,6 +40,8 @@
     "email": "Endereço de e-mail",
     "emailShort": "E-mail",
     "forgotTip": "Que pena 🙁",
+    "marketingOptIn": "Quero receber e-mails sobre novas caixas, eventos e sorteios",
+    "marketingOptInHint": "Sem spam. Cancele quando quiser.",
     "nickname": "Apelido",
     "orLogin": "Ou entre",
     "password": "Senha",

@@ -40,6 +40,8 @@
     "email": "Indirizzo e-mail",
     "emailShort": "E-mail",
     "forgotTip": "Peccato per te 🙁",
+    "marketingOptIn": "Inviami email su nuove casse, eventi e giveaway",
+    "marketingOptInHint": "Niente spam. Disiscriviti quando vuoi.",
     "nickname": "Nickname",
     "orLogin": "Oppure accedi",
     "password": "Password",

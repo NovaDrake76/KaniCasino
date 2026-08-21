@@ -40,6 +40,8 @@
     "email": "Email address",
     "emailShort": "Email",
     "forgotTip": "Too bad for you 🙁",
+    "marketingOptIn": "Email me about new cases, events and giveaways",
+    "marketingOptInHint": "No spam. Unsubscribe any time.",
     "nickname": "Nickname",
     "orLogin": "Or Login",
     "password": "Password",

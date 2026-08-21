@@ -42,7 +42,7 @@ router.post(
     }
 
 
-    const { email, password, username, referralCode } = req.body;
+    const { email, password, username, referralCode, marketingOptIn } = req.body;
 
     try {
       // Check if user already exists
@@ -62,7 +62,17 @@ router.post(
       // compatibility, decrypt a legacy AES-wrapped value if detected.
       const originalPassword = resolvePassword(password);
       const placeholder = getRandomPlaceholderImage();
-      user = new User({ email, username, profilePicture: placeholder, basePicture: placeholder, isAdmin: false });
+      // strictly true, so a stray truthy value cannot sign somebody up to the mailing list
+      const consented = marketingOptIn === true;
+      user = new User({
+        email,
+        username,
+        profilePicture: placeholder,
+        basePicture: placeholder,
+        isAdmin: false,
+        marketingOptIn: consented,
+        marketingOptInAt: consented ? new Date() : undefined,
+      });
       if (referrer) user.referredBy = referrer._id;
 
       // Hash password
@@ -158,7 +168,7 @@ router.post(
 
 // Google login
 router.post('/googlelogin', async (req, res) => {
-  const { token, referralCode } = req.body;
+  const { token, referralCode, marketingOptIn } = req.body;
   try {
     const ticket = await client.verifyIdToken({
       idToken: token,
@@ -178,12 +188,17 @@ router.post('/googlelogin', async (req, res) => {
       }
       // a referral only counts at account creation, never on a later login
       const referrer = referralCode ? await findReferrer(referralCode) : null;
+      // consent is taken at signup only: a returning player's choice lives in their email
+      // settings, and a later sign-in must never overwrite it
+      const consented = marketingOptIn === true;
       user = new User({
         googleId: googlePayload.sub,
         email: googlePayload.email,
         username: username,
         profilePicture: googlePayload.picture,
         basePicture: googlePayload.picture,
+        marketingOptIn: consented,
+        marketingOptInAt: consented ? new Date() : undefined,
       });
       if (referrer) user.referredBy = referrer._id;
       await user.save();

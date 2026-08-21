@@ -5,14 +5,15 @@ export async function login(email: string, password: string) {
     return response.data;
 }
 
-export async function googleLogin(token: string, referralCode?: string) {
-    const response = await api.post('/users/googlelogin', { token, referralCode });
+// marketingOptIn only lands if this sign-in is what creates the account
+export async function googleLogin(token: string, referralCode?: string, marketingOptIn?: boolean) {
+    const response = await api.post('/users/googlelogin', { token, referralCode, marketingOptIn });
     return response.data;
 }
 
-export async function register(email: string, password: string, username: string, referralCode?: string) {
+export async function register(email: string, password: string, username: string, referralCode?: string, marketingOptIn?: boolean) {
     const response = await api.post('/users/register', {
-        email, password, username, referralCode
+        email, password, username, referralCode, marketingOptIn
     });
     return response.data;
 }
