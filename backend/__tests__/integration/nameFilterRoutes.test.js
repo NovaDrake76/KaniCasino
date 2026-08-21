@@ -89,6 +89,31 @@ describe("google sign-up", () => {
   });
 });
 
+// a vanity code is set once, never changes, and rides in every link the player shares
+describe("the referral code", () => {
+  const { setReferralCode } = require("../../utils/referrals");
+
+  async function player() {
+    const s = uniqueSuffix();
+    return User.create({ username: `u-${s}`, email: `u-${s}@e.com`, password: "x" });
+  }
+
+  it("turns away a slur", async () => {
+    process.env.REFERRALS_ENABLED = "true";
+    const user = await player();
+    const res = await setReferralCode(user._id, "NIGGA");
+    expect(res.code).toBe(400);
+    expect((await User.findById(user._id)).referralCode).toBeUndefined();
+  });
+
+  it("takes an ordinary code", async () => {
+    process.env.REFERRALS_ENABLED = "true";
+    const user = await player();
+    const res = await setReferralCode(user._id, `REIMU${String(uniqueSuffix()).slice(-4)}`);
+    expect(res.code).toBe(200);
+  });
+});
+
 describe("the pinned item description", () => {
   async function seatedUser() {
     const s = uniqueSuffix();

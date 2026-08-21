@@ -155,6 +155,10 @@ router.post(
         return res.status(400).json({ message: "Invalid credentials" });
       }
 
+      if (user.disabled) {
+        return res.status(403).json({ message: "This account has been disabled." });
+      }
+
       // Generate and send JWT
       const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
       jwt.sign(
@@ -223,6 +227,10 @@ router.post('/googlelogin', async (req, res) => {
     } else if (!user.googleId) {
       // the field was never written before, so it backfills as older accounts sign in
       await User.updateOne({ _id: user._id }, { $set: { googleId: googlePayload.sub } });
+    }
+
+    if (user.disabled) {
+      return res.status(403).json({ message: "This account has been disabled." });
     }
     // Generate and send JWT
     const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };

@@ -118,6 +118,14 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  // a disabled account keeps its rows so the ledger and every board stay consistent, but
+  // nothing it holds can be used again. banning by deletion would tear holes in both.
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  disabledAt: Date,
+  disabledReason: String,
   nextBonus: {
     type: Date,
     default: () => Date.now() - 86400000 // now - 24 hours

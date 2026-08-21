@@ -150,6 +150,47 @@ describe("hiding behind an allowed word", () => {
   });
 });
 
+// an english-only list was wide open on a site whose players are mostly brazilian
+describe("portuguese and spanish", () => {
+  const blocked = [
+    "crioulo", "viado", "boiola", "baitola", "traveco", "travecão",
+    "retardado", "mongoloide", "mongolóide",
+    "maricon", "maricón", "sudaca", "negrata",
+    "cr1oulo", "v-i-a-d-o", "m4ric0n",
+  ];
+  for (const name of blocked) {
+    it(`blocks ${name}`, () => {
+      expect(isClean(name)).toBe(false);
+    });
+  }
+
+  // each of these is an ordinary portuguese word far more often than it is an insult, and
+  // a filter that eats them is worse than one that misses the rare abuse
+  const ordinary = [
+    "preto", "nego", "neguinho", "macaco", "veado", "bicha", "japa", "baiano",
+    "Mongolia", "Mongol", "Criolla", "Retardador", "Bibas", "Panchito",
+    "arigato", "Jumento", "Bianca", "Viadutos",
+  ];
+  for (const name of ordinary) {
+    it(`leaves ${name} alone`, () => {
+      expect(isClean(name)).toBe(true);
+    });
+  }
+
+  // "travecão" would otherwise compile a pattern around a character the normalised input
+  // can never contain
+  it("folds an accented term before compiling its pattern", () => {
+    expect(findSlur("travecao")).toBeTruthy();
+    expect(findSlur("travecão")).toBeTruthy();
+  });
+
+  // an allowed word that is a prefix of a blocked one disarms it entirely
+  it("does not let an allowed prefix disarm a longer slur", () => {
+    expect(isClean("mongoloide")).toBe(false);
+    expect(isClean("Mongolia")).toBe(true);
+  });
+});
+
 describe("normalising", () => {
   it("folds accents to their base letter", () => {
     expect(normalize("Ré1mü")).toBe("re1mu");

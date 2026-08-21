@@ -46,7 +46,38 @@ const SLURS = [
   "retard", "retarded", "mongoloid",
   "paki", "abbo", "gypo", "gyppo",
   "shemale", "dyke",
+
+  // portuguese. most players here are brazilian, so an english-only list left the door
+  // wide open. only terms that are the slur and nothing else are in: the ones that double
+  // as ordinary words are listed under "deliberately not blocked" below.
+  "crioulo", "criolo",
+  "viado", "boiola", "baitola",
+  "traveco", "travecão",
+  "retardado", "mongoloide", "mongolóide",
+
+  // spanish
+  "maricon", "maricona", "sudaca", "negrata",
 ];
+
+// deliberately NOT blocked, because in portuguese each of these is an ordinary word far
+// more often than it is an insult, and a username filter that eats them is worse than one
+// that misses the rare abuse:
+//
+//   preto   the plain word for the colour black, and the ordinary way to say a Black
+//           person. blocking it would be the same mistake as blocking "negro".
+//   nego    affectionate in brazil, closer to "mate" than to anything hostile
+//   macaco  a monkey, and a car jack. an anime site full of animal characters will have
+//           real usernames with it
+//   veado   a deer. only the "viado" spelling is reliably the slur, so only that is above
+//   bicha   a queue in portugal and a worm in brazil
+//   japa    usually casual or self-applied rather than hostile
+//   baiano  a person from Bahia
+//   biba    a slur, but four letters that sit inside the surname Bibas
+//   panchito a slur in spain, and everywhere else the diminutive of Francisco
+//
+// and two that were in a draft of this list by mistake, worth naming so they do not come
+// back: "jumento" is a donkey, which is rude rather than a slur, and "arigato" is Japanese
+// for thank you, which on an anime site would be an absurd thing to reject.
 
 // two terms were tried and taken back out, because a scan of the real user table showed
 // what they cost:
@@ -71,6 +102,12 @@ const ALLOW = [
   "cooney", "cooning", "raccoon", "cocoon", "tycoon", "lagoon", "monsoon",
   "stardust", "custard", "mustard", "bastard", "standard",
   "spice", "spicy", "despicable", "auspicious", "suspicious",
+  // portuguese collisions with the terms above
+  "criolla", "criollo",
+  // "mongol" is not here on purpose: an allowed word that is a prefix of a blocked one
+  // disarms it, and stripping it left "oide" behind, which matches nothing. "mongolia" is
+  // safe because the slur diverges at the sixth letter.
+  "retardador", "mongolia",
 ];
 
 const escape = (ch) => ch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -84,7 +121,9 @@ function letterPattern(letter) {
 }
 
 function compile(term) {
-  return new RegExp(term.split("").map(letterPattern).join(""), "i");
+  // the term is folded exactly like the input is, or "travecão" compiles a pattern built
+  // around a character the normalised text can never contain
+  return new RegExp(normalize(term).split("").map(letterPattern).join(""), "i");
 }
 
 // the allowed words are matched letter for letter, with no repetition. the `+` that lets a

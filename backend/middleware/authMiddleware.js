@@ -33,6 +33,12 @@ const isAuthenticated = async (req, res, next) => {
       return res.status(401).json({ message: "Session expired. Please log in again." });
     }
 
+    // 403 rather than 401: a 401 tells the client the session died and it should log in
+    // again, which would just loop. this is the account, not the session.
+    if (user.disabled) {
+      return res.status(403).json({ message: "This account has been disabled." });
+    }
+
     req.user = user;
     next();
   } catch (error) {
