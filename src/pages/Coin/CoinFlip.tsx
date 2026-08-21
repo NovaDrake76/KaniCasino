@@ -153,8 +153,8 @@ const CoinFlip = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center gap-12">
-      <div className="flex w-full max-w-full bg-[#212031] rounded flex-col lg:w-auto lg:flex-row">
-        <div className="w-full min-w-0 lg:w-[340px] flex flex-col items-center gap-4 border-r border-gray-700 py-4 px-6">
+      <div className="flex w-full max-w-[800px] bg-[#212031] rounded flex-col xl:w-[1140px] xl:max-w-none xl:flex-row">
+        <div className="w-full min-w-0 xl:w-[340px] xl:shrink-0 flex flex-col items-center gap-4 border-b xl:border-b-0 xl:border-r border-gray-700 py-4 px-6">
           <div className="w-full">
             <BetAmount
               value={bet === 0 ? "" : String(bet)}
@@ -215,8 +215,8 @@ const CoinFlip = () => {
             )}
           </div>
         </div>
-        <div className="flex flex-col">
-          <div className="flex w-full lg:max-w-[800px] border-b border-gray-700 p-4">
+        <div className="flex w-full min-w-0 flex-col xl:w-[800px] xl:shrink-0">
+          <div className="flex w-full border-b border-gray-700 p-4">
             <div className="flex bg-[#19172D] rounded items-center justify-center w-full h-[340px] relative ">
               {
                 gameEnded && <div className="absolute top-0 left-0 p-2">
@@ -228,7 +228,7 @@ const CoinFlip = () => {
               <Coin spinning={spinning} result={result} />
             </div>
           </div>
-          <div className="flex w-full lg:max-w-[800px] p-4 flex-col">
+          <div className="flex w-full p-4 flex-col">
             <h3 className="mb-2 text-lg font-semibold">{i18n.t("coin.gameHistory")}</h3>
             <div className="flex items-center gap-2 justify-end w-full  overflow-hidden h-[24px]">
               {history.map((e, i) => (
