@@ -102,7 +102,7 @@ const CasePage = () => {
 
   const sellOpened = async () => {
     const ids = openedItems.map((i) => i.uniqueId).filter(Boolean);
-    if (!ids.length || sellingAll) return;
+    if (!ids.length || sellingAll || loadingButton) return;
     setSellingAll(true);
     try {
       const res = await sellItems(ids);
@@ -194,6 +194,7 @@ const CasePage = () => {
                 loading={loadingButton}
                 disabled={
                   loadingButton ||
+                  sellingAll ||
                   (!freeNow && userData && data.price > userData.walletBalance)
                 }
               />
@@ -205,7 +206,7 @@ const CasePage = () => {
             )
           }
 
-          {showPrize && openedItems.length > 0 && openedSellTotal > 0 && (
+          {showPrize && !loadingButton && openedItems.length > 0 && openedSellTotal > 0 && (
             <button
               onClick={sellOpened}
               disabled={sellingAll}

@@ -10,11 +10,9 @@ export async function googleLogin(token: string, referralCode?: string) {
     return response.data;
 }
 
-export async function register(email: string, password: string, username: string, profilePicture: any, referralCode?: string) {
+export async function register(email: string, password: string, username: string, referralCode?: string) {
     const response = await api.post('/users/register', {
-        email, password, username,
-        profilePicture: profilePicture ? profilePicture : "",
-        referralCode
+        email, password, username, referralCode
     });
     return response.data;
 }

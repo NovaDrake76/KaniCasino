@@ -4,7 +4,7 @@ import { BasicItem } from "./Types";
 
 interface Roulette {
   items: BasicItem[];
-  openedItem: BasicItem;
+  openedItem?: BasicItem;
   spin: boolean;
   className?: string;
   direction?: "horizontal" | "vertical";
@@ -38,7 +38,8 @@ const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, dire
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
 
-      if (currentIndex === winningPosition) {
+      // without a winner the slot would stay empty and every read of it would throw
+      if (currentIndex === winningPosition && openedItem) {
         array[currentIndex] = openedItem;
       }
     }

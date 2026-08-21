@@ -41,12 +41,28 @@ export async function claimBonus() {
     return response.data;
 }
 
-export async function updateProfilePicture(image: string) {
-    const response = await api.put(`/users/profilePicture/`, //put image on body
-        {
-            image
-        });
+export interface AvatarOption {
+    itemId: string;
+    name: string;
+    image: string;
+    rarity: string;
+    count: number;
+}
 
+export interface AvatarOptions {
+    current: string;
+    base: string;
+    items: AvatarOption[];
+}
+
+export async function getAvatarOptions(): Promise<AvatarOptions> {
+    const response = await api.get(`/users/avatars`);
+    return response.data;
+}
+
+// an item id, never an image: the server resolves the picture from what the player owns
+export async function setAvatar(itemId: string | null) {
+    const response = await api.put(`/users/avatar`, { itemId });
     return response.data;
 }
 

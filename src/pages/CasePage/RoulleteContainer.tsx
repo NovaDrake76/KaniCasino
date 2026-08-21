@@ -46,7 +46,7 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
                     the pre-spin delay used to flash the multi-open result names early */}
                 {showPrize ? (
                     <ShowPrize openedItems={openedItems} showPrize={showPrize} animationAux2={animationAux2} />
-                ) : started ? (
+                ) : started && openedItems.length > 0 ? (
 
                     <div className={`flex gap-8`}>
                         {
