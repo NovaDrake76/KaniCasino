@@ -1,3 +1,4 @@
+const User = require("../models/User");
 const PokerTable = require("../models/PokerTable");
 const PokerHand = require("../models/PokerHand");
 const { recordTransaction, TX } = require("../utils/economy");
@@ -16,7 +17,7 @@ const {
   normalizeButton,
   SEAT,
 } = require("../utils/pokerBetting");
-const { seatOf, chipsBySeat, cashOut, cashOutOptions, buyIn, releaseSeat } = require("./pokerTable");
+const { seatOf, chipsBySeat, cashOut, cashOutOptions, buyIn, stakeableFor, releaseSeat } = require("./pokerTable");
 
 const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
 
@@ -31,6 +32,18 @@ const START_DELAY_MS = 3000;
 const SETTLE_DELAY_MS = 4000;
 
 const room = (tableId) => `poker:${tableId}`;
+
+// buying in debits the wallet and cashing out credits it, so the navbar has to be told or
+// it shows a stale balance until the next reload
+async function pushBalance(io, userId) {
+  const user = await User.findById(userId).select("walletBalance xp level").lean();
+  if (!user) return;
+  io.to(String(userId)).emit("userDataUpdated", {
+    walletBalance: user.walletBalance,
+    xp: user.xp,
+    level: user.level,
+  });
+}
 const inHand = (s) => ["active", "folded", "allin"].includes(s.status);
 
 // ---------------------------------------------------------------------------
@@ -41,8 +54,32 @@ function redactFor(table, userId) {
   const raw = table.toObject ? table.toObject() : table;
   const viewer = userId ? String(userId) : null;
   const showdown = raw.status === "showdown" || raw.status === "settling";
+  const yourSeat = viewer
+    ? (raw.seats || []).findIndex((s) => s.userId && String(s.userId) === viewer)
+    : -1;
 
   return {
+    yourSeat: yourSeat < 0 ? null : yourSeat,
+    // the legal actions come from the engine, never from a second copy of the rules on
+    // the client: the rail draws exactly what the server would accept
+    legal:
+      yourSeat >= 0 && raw.toAct === yourSeat && raw.status === "betting"
+        ? legalActions(
+            {
+              seats: (raw.seats || []).map((s) => ({
+                stack: s.stack,
+                committed: s.committed,
+                status: ["active", "folded", "allin"].includes(s.status) ? s.status : "out",
+                hasActed: s.hasActed,
+                canRaise: s.canRaise,
+              })),
+              currentBet: raw.currentBet,
+              minRaise: raw.minRaise,
+              toAct: raw.toAct,
+            },
+            yourSeat
+          )
+        : [],
     _id: raw._id,
     slug: raw.slug,
     name: raw.name,
@@ -644,7 +681,10 @@ function attach(io) {
 
     socket.on("poker:watch", async (tableId, cb) => {
       try {
-        const table = await PokerTable.findById(tableId);
+        // the url carries the slug, the lobby carries the id, so either works
+        const table = /^[0-9a-fA-F]{24}$/.test(String(tableId))
+          ? await PokerTable.findById(tableId)
+          : await PokerTable.findOne({ slug: String(tableId) });
         if (!table) return ack(cb, { error: "Table not found" });
         socket.join(room(table._id));
         ack(cb, { table: redactFor(table, socket.userId) });
@@ -662,12 +702,22 @@ function attach(io) {
         if (res.error) return ack(cb, { error: res.error });
         socket.join(room(tableId));
         await pushTable(io, res.table);
+        await pushBalance(io, socket.userId);
         ack(cb, { ok: true, seat: res.seat, stack: res.stack });
         // a seat that completes a table starts the next hand
         await engine.startIfReady(tableId);
       } catch (err) {
         console.error("poker:sit", err.message);
         ack(cb, { error: "Could not sit down" });
+      }
+    });
+
+    socket.on("poker:stakeable", async (_ignored, cb) => {
+      if (!socket.userId) return ack(cb, { error: "Sign in to play" });
+      try {
+        ack(cb, await stakeableFor(socket.userId));
+      } catch (err) {
+        ack(cb, { error: "Could not read your inventory" });
       }
     });
 
@@ -688,6 +738,7 @@ function attach(io) {
         const res = await cashOut(tableId, socket.userId, picks);
         if (res.error) return ack(cb, { error: res.error });
         if (res.table) await pushTable(io, res.table);
+        if (!res.queued) await pushBalance(io, socket.userId);
         ack(cb, { ok: true, queued: !!res.queued, items: res.items || [], kp: res.kp || 0 });
       } catch (err) {
         console.error("poker:leave", err.message);

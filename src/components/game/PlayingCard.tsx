@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { cardAria, faceArt, isRedSuit, rankLabel, suitOf } from "./blackjackCards";
+import { cardAria, faceArt, isRedSuit, rankLabel, suitOf } from "./cards";
 
 // inline svg suit marks: unicode suit glyphs render as emoji on ios, so never use them
 export const SuitIcon = ({ suit, className }: { suit: number; className?: string }) => {

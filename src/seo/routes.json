@@ -67,6 +67,10 @@
     "/privacy-policy": {
       "title": "Privacy Policy | KaniCasino",
       "description": "How KaniCasino handles your data."
+    },
+    "/poker": {
+      "title": "Waifu Poker | KaniCasino",
+      "description": "Player versus player Texas Hold'em where you can put your rarest characters on the table. Free to play, fake coins, no real money involved."
     }
   },
   "dynamic": [
@@ -89,6 +93,11 @@
       "pattern": "^/battles/",
       "title": "Case Battle | KaniCasino",
       "description": "A live case battle on KaniCasino."
+    },
+    {
+      "pattern": "^/poker/",
+      "title": "Poker table | Waifu Poker | KaniCasino",
+      "description": "Take a seat at this Waifu Poker table. Stake your characters, play the chips, and win them off the other players."
     }
   ]
 }

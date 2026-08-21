@@ -1,18 +1,20 @@
-// pure card logic, mirroring backend/utils/blackjackMath.js exactly:
-// card 0..51, rank = card % 13 (0 = ace, 9..12 = ten/J/Q/K), suit = floor(card / 13)
+// blackjack scoring. the card display helpers moved to components/game/cards.ts once a
+// third game needed them; they are re-exported here so nothing that already imported them
+// from this file had to change.
+export {
+  RANK_LABELS,
+  SUIT_NAMES,
+  rankOf,
+  suitOf,
+  rankLabel,
+  suitName,
+  isRedSuit,
+  cardAria,
+  faceArt,
+} from "../../components/game/cards";
+export type { SuitName } from "../../components/game/cards";
 
-export const RANK_LABELS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-export const SUIT_NAMES = ["spades", "hearts", "diamonds", "clubs"] as const;
-export type SuitName = (typeof SUIT_NAMES)[number];
-
-export const rankOf = (card: number) => card % 13;
-export const suitOf = (card: number) => Math.floor(card / 13);
-export const rankLabel = (card: number) => RANK_LABELS[rankOf(card)];
-export const suitName = (card: number): SuitName => SUIT_NAMES[suitOf(card)];
-export const isRedSuit = (card: number) => suitOf(card) === 1 || suitOf(card) === 2;
-
-const RANK_WORDS = ["ace", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king"];
-export const cardAria = (card: number) => `${RANK_WORDS[rankOf(card)]} of ${suitName(card)}`;
+import { rankOf } from "../../components/game/cards";
 
 export function cardValue(card: number) {
   const rank = rankOf(card);
@@ -41,18 +43,6 @@ export function totalLabel(cards: number[]) {
   const { total, soft } = handTotal(cards);
   if (soft && total !== 21) return `${total - 10}/${total}`;
   return String(total);
-}
-
-// face cards carry touhou court art: [spades, hearts, diamonds, clubs] per rank
-const FACE_ART: Record<number, [string, string, string, string]> = {
-  10: ["youmu", "sakuya", "sanae", "cirno"],
-  11: ["yuyuko", "flandre", "marisa", "koishi"],
-  12: ["yukari", "remilia", "reimu", "satori"],
-};
-
-export function faceArt(card: number) {
-  const art = FACE_ART[rankOf(card)];
-  return art ? { src: `/images/cards/${art[suitOf(card)]}.webp`, name: art[suitOf(card)] } : null;
 }
 
 export const OUTCOME_LABELS: Record<string, string> = {

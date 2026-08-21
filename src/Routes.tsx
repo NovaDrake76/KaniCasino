@@ -18,6 +18,8 @@ import Gift from "./pages/Gift"
 import ItemPage from "./pages/Market/ItemPage";
 import Battles from "./pages/Battles/Battles";
 import BattleRoom from "./pages/Battles/BattleRoom";
+import PokerLobby from "./pages/Poker/Lobby";
+import PokerTable from "./pages/Poker/Table";
 import ProvablyFair from "./pages/ProvablyFair";
 import Fandom from "./pages/Fandom/Fandom";
 import FandomBoard from "./pages/Fandom/FandomBoard";
@@ -42,6 +44,8 @@ const defaultRoutes = (
     <Route path="/hilo" element={<Hilo />} />
     <Route path="/battles" element={<Battles />} />
     <Route path="/battles/:id" element={<BattleRoom />} />
+    <Route path="/poker" element={<PokerLobby />} />
+    <Route path="/poker/:slug" element={<PokerTable />} />
     <Route path="/fandom" element={<Fandom />} />
     <Route path="/fandom/:name" element={<FandomBoard />} />
     <Route path="/provably-fair" element={<ProvablyFair />} />

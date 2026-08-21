@@ -4,7 +4,7 @@ import GameLayout from "../../components/game/GameLayout";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
 import Monetary from "../../components/Monetary";
-import PlayingCard from "./PlayingCard";
+import PlayingCard from "../../components/game/PlayingCard";
 import { outcomeLabel, totalLabel } from "./blackjackCards";
 import { BlackjackViewProps } from "./Blackjack.types";
 import i18n from "../../i18n";

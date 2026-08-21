@@ -245,7 +245,24 @@ function cashOutOptions(table, userId) {
   return { seat: index, stack: table.seats[index].stack, ...redeemable(pool, index, table.seats[index].stack, chipsBySeat(table)) };
 }
 
+// what a player can put on the table, priced the way the table will price it. one row per
+// copy, because escrow takes a specific uniqueId, not a kind of item.
+async function stakeableFor(userId, limit = 200) {
+  const user = await User.findById(userId).select("inventory walletBalance").lean();
+  if (!user) return { items: [], walletBalance: 0 };
+
+  const entries = (user.inventory || []).slice(-limit).reverse();
+  const valued = await valueItems(entries);
+  return {
+    walletBalance: user.walletBalance,
+    items: valued
+      .filter((v) => v.value > 0)
+      .sort((a, b) => b.value - a.value || String(a.name).localeCompare(String(b.name))),
+  };
+}
+
 module.exports = {
+  stakeableFor,
   MAX_STAKED_ITEMS,
   emptySeat,
   blankSeats,
