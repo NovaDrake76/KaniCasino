@@ -130,3 +130,11 @@ test("the games menu closes on escape", async ({ page }) => {
   await page.keyboard.press("Escape");
   await expect(page.getByRole("link", { name: "Mines", exact: true })).toHaveCount(0);
 });
+
+test("the poker lobby opens and settles, with or without a table server", async ({ page }) => {
+  await page.goto("/poker");
+  await expect(page.getByText("Waifu Poker")).toBeVisible();
+  // ci has no backend so this lands on the empty state; a dev box with one lands on the
+  // table list. either is a pass, and hanging on skeletons forever is the failure.
+  await expect(page.getByText(/No tables are open|Blinds/).first()).toBeVisible({ timeout: 15000 });
+});

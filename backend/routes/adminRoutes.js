@@ -3,6 +3,7 @@ const router = express.Router();
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const badges = require("../utils/badges");
 const nameFilter = require("../utils/nameFilter");
+const pokerCollusion = require("../utils/pokerCollusion");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const Item = require("../models/Item");
@@ -14,6 +15,17 @@ const adminStats = require("../utils/adminStats");
 router.get("/stats/overview", isAuthenticated, isAdmin, async (req, res) => {
   try {
     res.json(await adminStats.overview(req.query.days));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// pairs of accounts whose poker looks like a transfer rather than a game. nothing is
+// acted on automatically: a human reads this and decides.
+router.get("/poker/collusion", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json(await pokerCollusion.sweep({ days: Number(req.query.days) || 14 }));
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

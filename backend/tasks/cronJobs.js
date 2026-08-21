@@ -4,6 +4,7 @@ const Notification = require("../models/Notification");
 const { pruneEmptyRounds } = require("../utils/roundPrune");
 const fandom = require("../utils/fandom");
 const badges = require("../utils/badges");
+const pokerCollusion = require("../utils/pokerCollusion");
 
 module.exports = {
     startCronJobs: function (io) {
@@ -67,6 +68,19 @@ module.exports = {
                 console.log(`Pruned ${removed} rounds nobody bet on.`);
             } catch (error) {
                 console.error('Error pruning empty rounds:', error);
+            }
+        })
+
+        // poker is the one game where two accounts can quietly move value at each other,
+        // so the pairs worth a look are surfaced daily rather than waited for
+        cron.schedule('0 5 * * *', async () => {
+            try {
+                const report = await pokerCollusion.sweep();
+                if (report.flagged.length) {
+                    console.log(`Poker: ${report.flagged.length} pairs worth a look across ${report.hands} hands.`);
+                }
+            } catch (error) {
+                console.error('Error sweeping poker pairs:', error);
             }
         })
     }
