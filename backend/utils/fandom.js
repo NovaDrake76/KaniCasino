@@ -3,6 +3,7 @@ const User = require("../models/User");
 const Item = require("../models/Item");
 const FanBoard = require("../models/FanBoard");
 const CollectorBoard = require("../models/CollectorBoard");
+const { visible } = require("./visibility");
 
 // how many chasers a board keeps. deep enough that anyone in touching distance sees
 // themselves, short enough that a board document stays small.
@@ -76,7 +77,7 @@ async function sweep() {
   const pinned = new Map();
   const collectors = [];
 
-  const cursor = User.find({})
+  const cursor = User.find(visible())
     .select("username profilePicture level fixedItem fixedAt inventory")
     .lean()
     .cursor();
@@ -244,7 +245,7 @@ async function refreshCharacters(names) {
   for (const name of wanted) {
     const character = byName.get(name);
     if (!character) continue;
-    const users = await User.find({ "fixedItem.name": name })
+    const users = await User.find(visible({ "fixedItem.name": name }))
       .select("username profilePicture level fixedAt inventory")
       .lean();
     const rows = users
