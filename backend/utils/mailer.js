@@ -5,7 +5,7 @@ const FROM = process.env.MAIL_FROM || "KaniCasino <no-reply@kanicasino.com>";
 // the from address can send but cannot receive, so replies need somewhere real to go
 const REPLY_TO = process.env.MAIL_REPLY_TO;
 const SITE = process.env.SITE_URL || "https://kanicasino.com";
-const API = process.env.API_URL || "https://kanicasino.cfhxo.com";
+const API = process.env.API_URL || "https://kanicasino.fabrixhosting.com.au";
 const REGION = process.env.AWS_REGION || "sa-east-1";
 
 // unset means email is off, so a misconfigured box stays silent instead of throwing

@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Measure latency from a non-Sydney vantage
         env:
-          URL: https://kanicasino.cfhxo.com/health
+          URL: https://kanicasino.fabrixhosting.com.au/health
           THRESHOLD: '3'
           SAMPLES: '5'
           DISCORD_WEBHOOK: ${{ secrets.MONITOR_DISCORD_WEBHOOK }}
@@ -56,7 +56,7 @@ jobs:
             body=$(jq -n --arg r "uptime probe from ${ray:-?}: ${bad}/${SAMPLES} bad" '{reason:$r}')
             out=$(curl -s -m 30 -o /dev/null -w '%{http_code}' -X POST \
               -H 'Content-Type: application/json' -H "x-maint-token: ${MAINT_TOKEN}" \
-              -d "$body" https://kanicasino.cfhxo.com/internal/tunnel-restart || echo 000)
+              -d "$body" https://kanicasino.fabrixhosting.com.au/internal/tunnel-restart || echo 000)
             case "$out" in
               202) action="restarted cloudflared" ;;
               429) action="restart skipped, still within the 15 min cooldown" ;;

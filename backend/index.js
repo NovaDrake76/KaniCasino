@@ -25,12 +25,10 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 // allowed origins are configurable via ALLOWED_ORIGINS (comma-separated); falls
 // back to the production domain so behaviour is unchanged when it isn't set
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://kanicasino.com")
-  .split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
+const { parseOrigins, originAllowed } = require("./utils/cors");
+const allowedOrigins = parseOrigins(process.env.ALLOWED_ORIGINS);
 
-const isOriginAllowed = (origin) => isDevelopment || allowedOrigins.includes(origin);
+const isOriginAllowed = (origin) => originAllowed(origin, { isDevelopment, allowedOrigins });
 
 const corsOrigin = (origin, callback) => {
   if (isOriginAllowed(origin)) {
@@ -49,7 +47,7 @@ const corsOptions = {
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
-  if (isDevelopment || allowedOrigins.includes(origin)) {
+  if (isOriginAllowed(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin || "*");
     res.setHeader("Access-Control-Allow-Credentials", "true");
   } else {

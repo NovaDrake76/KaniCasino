@@ -78,7 +78,7 @@ npm run dev
 Create a `.env` in the project root with:
 
 ```
-VITE_BASE_URL=https://kanicasino.cfhxo.com
+VITE_BASE_URL=https://kanicasino.fabrixhosting.com.au
 ```
 
 ### Run the full stack
