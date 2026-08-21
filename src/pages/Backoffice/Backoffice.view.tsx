@@ -48,6 +48,7 @@ const GAME_LABELS: Record<string, string> = {
   slots: "Slots",
   plinko: "Plinko",
   blackjack: "Blackjack",
+  poker: "Waifu Poker",
   dice: "Dice",
   mines: "Mines",
   hilo: "HiLo",

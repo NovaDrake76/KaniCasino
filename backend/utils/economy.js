@@ -33,6 +33,12 @@ const TX = {
   MINES_WIN: "mines_win",
   HILO_BET: "hilo_bet",
   HILO_WIN: "hilo_win",
+  // poker chips are a table-local unit: the wallet is charged on buy-in and credited on
+  // cash-out, and nothing moves in between. the rake is the house's only income here.
+  POKER_BUYIN: "poker_buyin",
+  POKER_CASHOUT: "poker_cashout",
+  POKER_RAKE: "poker_rake",
+  POKER_REFUND: "poker_refund", // stack returned when a table is voided
   MARKET_BUY: "market_buy",
   MARKET_SALE: "market_sale",
   MARKET_FEE: "market_fee", // the house cut on a settled trade, credited to HOUSE

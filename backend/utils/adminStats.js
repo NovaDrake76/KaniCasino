@@ -3,6 +3,7 @@ const badges = require("./badges");
 const User = require("../models/User");
 const Case = require("../models/Case");
 const Transaction = require("../models/Transaction");
+const PokerHand = require("../models/PokerHand");
 const { accountBalance, ledgerSupply, TX, STAKE_TYPES } = require("./economy");
 const { HOUSE, MINT, ESCROW, GENESIS } = require("./accounts");
 
@@ -10,7 +11,7 @@ const PAGE_SIZE = 20;
 
 // KP-paying game wins and stake returns, for daily series and big-win surfacing
 const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
-const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND];
+const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND, TX.POKER_REFUND];
 // KP printed to players outside the games
 const FAUCET_TYPES = [TX.SIGNUP, TX.BONUS, TX.MISSION_REWARD, TX.REFERRAL_BONUS, TX.REFERRAL_MILESTONE, TX.AD_REWARD];
 // designed edges per game, so the realized return can be judged against intent
@@ -54,6 +55,9 @@ const GAME_LINES = [
   { game: "hilo", bets: [TX.HILO_BET], outs: [TX.HILO_WIN] },
   { game: "cases", bets: [TX.CASE_OPEN], outs: [] },
   { game: "battles", bets: [TX.BATTLE_ENTRY], outs: [TX.BATTLE_REFUND] },
+  // poker has no edge, so this line is not an rtp: buy-ins minus cash-outs is exactly the
+  // rake, and that is the whole of the house's income from the game
+  { game: "poker", bets: [TX.POKER_BUYIN], outs: [TX.POKER_CASHOUT, TX.POKER_REFUND] },
 ];
 
 // blackjack charges BLACKJACK_BET again on double/split/insurance, so a raw debit
@@ -114,11 +118,16 @@ async function gameStats(days) {
   ]);
   const blackjackHands = bjHands ? bjHands.n : 0;
 
+  // a poker player buys in once and plays many hands, so counting buy-in debits would
+  // count sit-downs. the hand collection is the only honest count.
+  const pokerHands = await PokerHand.countDocuments(matchSince(since));
+
   const games = GAME_LINES.map(({ game, bets, outs }) => {
     const betSlot = byTypeDir[`${bets[0]}:debit`] || { amount: 0, count: 0, qty: 0 };
     const plays =
       game === "cases" ? betSlot.qty || betSlot.count
       : game === "blackjack" ? blackjackHands
+      : game === "poker" ? pokerHands
       : betSlot.count;
     const wagered = sumOf(bets, "debit");
     const paidOut = sumOf(outs, "credit");
