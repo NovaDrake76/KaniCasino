@@ -758,6 +758,9 @@
     "working": "处理中...",
     "youHold": "你持有 {{count}}",
     "youPay": "支付",
+    "loss": "亏损",
+    "profit": "盈利",
+    "youPaid": "你支付了",
     "youReceive": "到账"
   },
   "profile": {

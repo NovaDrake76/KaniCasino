@@ -758,6 +758,9 @@
     "working": "Đang xử lý...",
     "youHold": "Bạn có {{count}}",
     "youPay": "Bạn trả",
+    "loss": "Lỗ",
+    "profit": "Lợi nhuận",
+    "youPaid": "Bạn đã trả",
     "youReceive": "Bạn nhận"
   },
   "profile": {

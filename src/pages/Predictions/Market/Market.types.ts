@@ -35,6 +35,7 @@ export interface MarketViewProps {
   bumpShares: (by: number) => void;
   heldOf: (key: string) => number;
   avgOf: (key: string) => number;
+  spentOf: (key: string) => number;
   colorOf: (key: string) => string;
   movedOf: (key: string) => "up" | "down" | null;
 }

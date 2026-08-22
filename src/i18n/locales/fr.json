@@ -758,6 +758,9 @@
     "working": "En cours...",
     "youHold": "Vous détenez {{count}}",
     "youPay": "Vous payez",
+    "loss": "Perte",
+    "profit": "Profit",
+    "youPaid": "Vous avez payé",
     "youReceive": "Vous recevez"
   },
   "profile": {

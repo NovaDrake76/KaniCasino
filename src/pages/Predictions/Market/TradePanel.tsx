@@ -1,6 +1,7 @@
 import Monetary from "../../../components/Monetary";
 import { toPercent } from "../../../services/predictions/PredictionService";
 import { MarketViewProps } from "./Market.types";
+import { paidFor, profitOf } from "./position";
 import i18n from "../../../i18n";
 
 type Props = Pick<
@@ -24,6 +25,8 @@ type Props = Pick<
   | "setSharesTo"
   | "bumpShares"
   | "heldOf"
+  | "avgOf"
+  | "spentOf"
   | "colorOf"
 >;
 
@@ -55,6 +58,8 @@ const TradePanel: React.FC<Props> = ({
   setSharesTo,
   bumpShares,
   heldOf,
+  avgOf,
+  spentOf,
   colorOf,
 }) => {
   if (!market || !selected) return null;
@@ -63,6 +68,9 @@ const TradePanel: React.FC<Props> = ({
   if (!outcome) return null;
 
   const held = heldOf(selected);
+  // what the shares being sold actually cost, so the quote can be read against something
+  const paid = paidFor(spentOf(selected), shares, held);
+  const result = action === "sell" ? profitOf(quote ? quote.amount : null, paid) : null;
   // a yes-or-no market has no outcome list above it, so the two prices are the picker
   const binary = market.outcomes.length === 2;
   const closed = market.status !== "open";
@@ -197,6 +205,26 @@ const TradePanel: React.FC<Props> = ({
             {quoting ? <Pending w="w-20" /> : quote ? `${toPercent(quote.startBps)}% → ${toPercent(quote.endBps)}%` : "-"}
           </span>
         </div>
+        {action === "sell" && held > 0 && (
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-ink-muted">{i18n.t("predictions.youPaid")}</span>
+            <span className="text-ink-soft tabular-nums">
+              <Monetary value={paid} />
+              {avgOf(selected) > 0 && ` · ${(avgOf(selected) / 100).toFixed(1)}%`}
+            </span>
+          </div>
+        )}
+        {result && paid > 0 && (
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-ink-muted">
+              {i18n.t(result.profit >= 0 ? "predictions.profit" : "predictions.loss")}
+            </span>
+            <span className={`tabular-nums ${result.profit >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+              {result.profit >= 0 ? "+" : "-"}
+              <Monetary value={Math.abs(result.profit)} /> ({result.pct}%)
+            </span>
+          </div>
+        )}
         {action === "buy" && quote && (
           <div className="flex items-center justify-between text-xs">
             <span className="text-ink-muted">{i18n.t("predictions.ifItHappens")}</span>

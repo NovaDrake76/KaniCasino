@@ -758,6 +758,9 @@
     "working": "Working...",
     "youHold": "You hold {{count}}",
     "youPay": "You pay",
+    "loss": "Loss",
+    "profit": "Profit",
+    "youPaid": "You paid",
     "youReceive": "You receive"
   },
   "profile": {
