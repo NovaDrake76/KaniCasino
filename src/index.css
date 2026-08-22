@@ -133,28 +133,11 @@
   }
 }
 
-/* plinko peg struck by a ball; runs outside react so mass drops stay smooth */
-.peg-pulse {
-  animation: peg-pulse 0.35s ease-out;
+/* plinko pegs; the strike animation runs off the web animations api, so this only fixes
+   the box the scale is measured from */
+.peg {
   transform-box: fill-box;
   transform-origin: center;
-}
-
-@keyframes peg-pulse {
-  0% {
-    transform: scale(1);
-    fill: #cfccdf;
-  }
-
-  40% {
-    transform: scale(1.8);
-    fill: #ffe08a;
-  }
-
-  100% {
-    transform: scale(1);
-    fill: #cfccdf;
-  }
 }
 
 /* plinko ball waiting at the drop mouth while its request is in flight */

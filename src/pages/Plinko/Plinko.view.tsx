@@ -40,19 +40,33 @@ const PegField = memo(() => (
   <>
     {PEG_ROWS.map((row, i) =>
       row.map((peg, k) => (
-        <circle key={`${i}-${k}`} id={`peg-${i}-${k}`} cx={peg.x} cy={peg.y} r={PEG_RADIUS} fill="#cfccdf" />
+        <circle
+          key={`${i}-${k}`}
+          id={`peg-${i}-${k}`}
+          className="peg"
+          cx={peg.x}
+          cy={peg.y}
+          r={PEG_RADIUS}
+          fill="#cfccdf"
+        />
       ))
     )}
   </>
 ));
 
+const PEG_PULSE: Keyframe[] = [
+  { transform: "scale(1)", fill: "#cfccdf" },
+  { transform: "scale(1.8)", fill: "#ffe08a", offset: 0.4 },
+  { transform: "scale(1)", fill: "#cfccdf" },
+];
+
 const pulsePegElement = (row: number, index: number) => {
   const peg = document.getElementById(`peg-${row}-${index}`);
-  if (!peg) return;
-  // remove and reflow so a peg struck twice in a row restarts its animation
-  peg.classList.remove("peg-pulse");
-  void peg.getBoundingClientRect();
-  peg.classList.add("peg-pulse");
+  if (!peg || typeof peg.animate !== "function") return;
+  // a web animation restarts on its own. the css class needed a forced reflow to do the
+  // same, and sixteen of those per ball is what made a long auto run stutter.
+  peg.getAnimations().forEach((animation) => animation.cancel());
+  peg.animate(PEG_PULSE, { duration: 350, easing: "ease-out" });
 };
 
 const FallingBall = memo(({ ball, onSettle }: { ball: PlinkoBall; onSettle: (ball: PlinkoBall) => void }) => {

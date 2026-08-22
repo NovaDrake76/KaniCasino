@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 import { dropPlinko } from "../../services/games/GamesServices";
-import { MAX_BET, PlinkoRisk } from "./plinkoBoard";
+import { DROP_DURATION_S, MAX_BET, PlinkoRisk } from "./plinkoBoard";
+import { autoStep } from "./autoRun";
 import { PlinkoBall, PlinkoDropResult } from "./Plinko.types";
 import i18n from "../../i18n";
 
@@ -40,25 +41,35 @@ export const usePlinkoServices = () => {
   const maxBet = MAX_BET[risk];
   const betValue = Math.min(Math.max(Math.floor(Number(betInput)) || 1, 1), maxBet);
 
+  // the wallet only refreshes when a ball lands, so count the stakes still in the air
+  const available = () => (userData?.walletBalance ?? 0) - pendingStake.current;
+  const releaseStake = (stake: number) => {
+    pendingStake.current = Math.max(0, pendingStake.current - stake);
+  };
+
   const fireDrop = async (): Promise<boolean> => {
     if (userData == null) {
       toogleUserFlow(true);
       return false;
     }
-    // the wallet only refreshes when a ball lands, so count the stakes still in the air
-    if (userData.walletBalance - pendingStake.current < betValue) {
+    if (available() < betValue) {
       toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
       return false;
     }
-    pendingStake.current += betValue;
+    const stake = betValue;
+    pendingStake.current += stake;
     setPendingDrops((n) => n + 1);
     try {
-      const result: PlinkoDropResult = await dropPlinko(betValue, risk);
+      const result: PlinkoDropResult = await dropPlinko(stake, risk);
       ballSeq.current += 1;
       setBalls((prev) => [...prev, { ...result, key: `b${ballSeq.current}` }]);
+      // released on a clock rather than when the ball lands: the server sends the new
+      // balance on its own schedule, and a dropped frame must not strand a stake and
+      // lock a player out of money they still have
+      window.setTimeout(() => releaseStake(stake), DROP_DURATION_S * 1000);
       return true;
     } catch (error: any) {
-      pendingStake.current -= betValue;
+      releaseStake(stake);
       toast.error(error?.response?.data?.message || "Could not drop the ball", { theme: "dark" });
       return false;
     } finally {
@@ -66,9 +77,18 @@ export const usePlinkoServices = () => {
     }
   };
 
-  // the auto interval reads through a ref so it always sees the current bet and risk
+  // the auto interval reads through refs so it always sees the current bet, risk and board
   const fireDropRef = useRef(fireDrop);
   fireDropRef.current = fireDrop;
+  const stepRef = useRef(() => autoStep({ left: 0, inFlight: 0, available: 0, bet: 1, maxInFlight: MAX_IN_FLIGHT }));
+  stepRef.current = () =>
+    autoStep({
+      left: autoLeftRef.current,
+      inFlight: balls.length + pendingDrops,
+      available: available(),
+      bet: betValue,
+      maxInFlight: MAX_IN_FLIGHT,
+    });
 
   const stopAuto = useCallback(() => {
     if (autoTimer.current) clearInterval(autoTimer.current);
@@ -88,10 +108,15 @@ export const usePlinkoServices = () => {
     autoLeftRef.current = autoCount;
     setAutoLeft(autoCount);
     const tick = async () => {
-      if (autoLeftRef.current <= 0) {
-        stopAuto();
-        return;
+      const step = stepRef.current();
+      if (step === "done") return stopAuto();
+      if (step === "broke") {
+        toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
+        return stopAuto();
       }
+      // a full board or a shortfall a falling ball may still cover costs a tick, never a
+      // ball: the run picks up again on the next one instead of ending half finished
+      if (step === "wait") return;
       autoLeftRef.current -= 1;
       setAutoLeft(autoLeftRef.current);
       const ok = await fireDropRef.current();
@@ -115,7 +140,6 @@ export const usePlinkoServices = () => {
   const settleBall = useCallback((ball: PlinkoBall) => {
     if (settled.current.has(ball.key)) return;
     settled.current.add(ball.key);
-    pendingStake.current -= ball.betAmount; // the landing balance update covers it now
     hitSeq.current += 1;
     setBalls((prev) => prev.filter((b) => b.key !== ball.key));
     setLastHit({ bin: ball.bin, seq: hitSeq.current });
