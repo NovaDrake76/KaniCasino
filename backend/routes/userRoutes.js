@@ -51,11 +51,11 @@ router.post(
 
     try {
       // Check if user already exists
-      let userMail = await User.findOne({ email });
+      let userMail = await User.exists({ email });
       if (userMail) {
         return res.status(400).json({ message: "Email already registered" });
       }
-      let userName = await User.findOne({ username });
+      let userName = await User.exists({ username });
       if (userName) {
         return res.status(400).json({ message: "Username already registered" });
       }
@@ -143,7 +143,7 @@ router.post(
 
     try {
       // Check if user exists
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email }).select("password disabled tokenVersion");
       if (!user) {
         return res.status(400).json({ message: "Email not found" });
       }
@@ -194,14 +194,14 @@ router.post('/googlelogin', registerLimiter, registerDailyLimiter, async (req, r
     const googlePayload = ticket.getPayload();
 
     // Check if user exists in your DB or create a new one
-    let user = await User.findOne({ email: googlePayload.email });
+    let user = await User.findOne({ email: googlePayload.email }).select("googleId disabled tokenVersion");
     if (!user) {
       let username = nameFilter.safeUsername(googlePayload.name, googlePayload.sub);
-      let existingUser = await User.findOne({ username });
+      let existingUser = await User.exists({ username });
       while (existingUser) {
         // Handle username conflict
         username = googlePayload.name + Math.floor(Math.random() * 1000);
-        existingUser = await User.findOne({ username });
+        existingUser = await User.exists({ username });
       }
       // a referral only counts at account creation, never on a later login
       const referrer = referralCode ? await findReferrer(referralCode) : null;
