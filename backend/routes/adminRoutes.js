@@ -79,7 +79,7 @@ router.get("/stats/users/:id", isAuthenticated, isAdmin, async (req, res) => {
 
 router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find().select("-password -inventory");
     res.json(users);
   } catch (err) {
     console.error(err.message);
@@ -233,6 +233,7 @@ router.put("/users/:id/wallet", isAuthenticated, isAdmin, async (req, res) => {
     // set the balance and record the adjustment together, computing the delta inside the
     // transaction so two concurrent admin sets cannot clobber each other or mis-record
     const result = await runAtomic(async (session) => {
+      // inventory-read: the balance edit saves the document it loaded
       const user = await User.findById(req.params.id).session(session);
       if (!user) return { notFound: true };
 
@@ -277,6 +278,7 @@ router.put(
     const { inventory } = req.body;
 
     try {
+      // inventory-read: this is the route that replaces an inventory
       const user = await User.findById(req.params.id);
       if (!user) {
         return res.status(404).json({ message: "User not found" });

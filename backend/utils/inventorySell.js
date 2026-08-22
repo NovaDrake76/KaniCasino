@@ -22,6 +22,7 @@ async function sellUniqueIds(userId, ids, extraMeta = {}) {
   }
 
   // atomic pull; the pre-image (no {new:true}) is exactly what this write removed
+  // inventory-read: the pre-image is what proves which copies were sold
   const before = await User.findOneAndUpdate(
     { _id: userId },
     { $pull: { inventory: { uniqueId: { $in: idList } } } }

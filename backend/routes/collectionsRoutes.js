@@ -203,6 +203,7 @@ router.post("/quicksell/preview", isAuthenticated, async (req, res) => {
     if (!caseDoc) {
       return res.status(404).json({ message: "Case not found" });
     }
+    // inventory-read: quicksell plans over the actual copies it is about to sell
     const user = await User.findById(req.user._id, { inventory: 1 });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -237,6 +238,7 @@ router.post("/quicksell/commit", isAuthenticated, async (req, res) => {
     if (!caseDoc) {
       return res.status(404).json({ message: "Case not found" });
     }
+    // inventory-read: quicksell sells the actual copies, so it plans over them
     const user = await User.findById(req.user._id, { inventory: 1 });
     if (!user) {
       return res.status(404).json({ message: "User not found" });

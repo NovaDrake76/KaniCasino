@@ -6,6 +6,7 @@ const User = require("../models/User");
 const FanBoard = require("../models/FanBoard");
 const CollectorBoard = require("../models/CollectorBoard");
 const fandom = require("../utils/fandom");
+const { countsFor } = require("../utils/inventoryCounts");
 
 const PAGE_SIZE = 24;
 const REACH_KEPT = 12;
@@ -94,16 +95,15 @@ router.get("/collectors", async (req, res) => {
 // must stay above /:name, or a character called "reach" would swallow it
 router.get("/reach", isAuthenticated, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("inventory fixedItem").lean();
+    const user = await User.findById(req.user._id).select("fixedItem").lean();
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const nameById = await fandom.namesByItemId();
     const held = new Map();
-    for (const entry of user.inventory || []) {
-      if (!entry) continue;
-      const name = nameById.get(String(entry._id)) || entry.name;
+    for (const [itemId, count] of await countsFor(req.user._id)) {
+      const name = nameById.get(itemId);
       if (!name) continue;
-      held.set(name, (held.get(name) || 0) + 1);
+      held.set(name, (held.get(name) || 0) + count);
     }
     if (!held.size) return res.json({ reach: [] });
 
@@ -146,16 +146,16 @@ router.get("/reach", isAuthenticated, async (req, res) => {
 router.get("/:name/me", isAuthenticated, async (req, res) => {
   try {
     const name = req.params.name;
-    const user = await User.findById(req.user._id).select("inventory fixedItem").lean();
+    const user = await User.findById(req.user._id).select("fixedItem").lean();
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const character = (await fandom.charactersByName([name])).get(name);
+    const ids = character ? [...character.ids] : [];
     let mine = 0;
     let itemId = null;
-    for (const entry of user.inventory || []) {
-      if (!fandom.isCopyOf(entry, character)) continue;
-      mine += 1;
-      if (!itemId) itemId = entry._id;
+    for (const [held, count] of await countsFor(req.user._id, ids)) {
+      mine += count;
+      if (!itemId) itemId = held;
     }
 
     const board = await FanBoard.findOne({ name }).select("topCount top").lean();

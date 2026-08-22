@@ -6,7 +6,7 @@ const PredictionPosition = require("../models/PredictionPosition");
 const PredictionTrade = require("../models/PredictionTrade");
 const PredictionPricepoint = require("../models/PredictionPricepoint");
 const User = require("../models/User");
-const { chargeUser, creditUser, TX } = require("./economy");
+const { chargeUser, creditUser, TX, WITHOUT_INVENTORY } = require("./economy");
 const { preview, ONE } = require("./predictionMath");
 
 const MAX_SHARES = 1000000;
@@ -208,7 +208,7 @@ async function sell({ userId, prediction, q }) {
   // a share sold at under half a KP rounds down to nothing, which is a real fill of zero
   const credited = q.amount > 0
     ? await creditUser(userId, q.amount, 0, { type: TX.PREDICTION_SELL, meta: tradeMeta(prediction, q) })
-    : await User.findById(userId);
+    : await User.findById(userId).select(WITHOUT_INVENTORY);
 
   const row = await recordTrade(prediction, userId, q, "sell", q.amount);
   return { ok: true, prediction: committed, received: q.amount, user: credited, trade: row };

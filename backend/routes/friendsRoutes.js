@@ -24,6 +24,7 @@ module.exports = (io) => {
   router.get("/me", isAuthenticated, async (req, res) => {
     try {
       const me = await User.findById(req.user._id)
+        .select("friends friendRequests")
         .populate({ path: "friends", ...PUBLIC_POPULATE })
         .populate({ path: "friendRequests", ...PUBLIC_POPULATE });
 
@@ -41,7 +42,9 @@ module.exports = (io) => {
   // a user's public friends list
   router.get("/list/:id", validId, async (req, res) => {
     try {
-      const user = await User.findById(req.params.id).populate({ path: "friends", ...PUBLIC_POPULATE });
+      const user = await User.findById(req.params.id)
+        .select("friends disabled")
+        .populate({ path: "friends", ...PUBLIC_POPULATE });
       if (!isVisible(user)) {
         return res.status(404).json({ message: "User not found" });
       }

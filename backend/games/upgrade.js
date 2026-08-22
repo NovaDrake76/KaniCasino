@@ -43,6 +43,7 @@ const verifyLesserRarity = (selectedItems, targetItem) => {
 const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
   try {
     // Fetch the user
+    // inventory-read: the copies being upgraded are the subject of the call
     const user = await User.findById(userId);
     if (!user) {
       return { status: 404, message: "User not found" };
@@ -105,6 +106,7 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
     // upgrade removes nothing at all. it used to $pull first and count afterwards,
     // which meant losing that race destroyed whichever items it did still find.
     const consumeIds = selectedItems.map((invItem) => invItem.uniqueId);
+    // inventory-read: the pre-image is what proves which copies were taken
     const before = await User.findOneAndUpdate(
       { _id: userId, "inventory.uniqueId": { $all: consumeIds } },
       { $pull: { inventory: { uniqueId: { $in: consumeIds } } } }

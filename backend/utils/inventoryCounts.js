@@ -98,4 +98,14 @@ async function copiesFor(userId, { uniqueId, itemId, limit }) {
   return User.aggregate(stages);
 }
 
-module.exports = { countsFor, holdingsFor, extrasFor, copiesFor };
+
+// how many entries there are, without any of them crossing the wire
+async function sizeFor(userId) {
+  const [row] = await User.aggregate([
+    { $match: { _id: toId(userId) } },
+    { $project: { n: { $size: { $ifNull: ["$inventory", []] } } } },
+  ]);
+  return row ? row.n : 0;
+}
+
+module.exports = { countsFor, holdingsFor, extrasFor, copiesFor, sizeFor };

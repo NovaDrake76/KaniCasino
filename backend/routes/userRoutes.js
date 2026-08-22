@@ -17,6 +17,7 @@ const { sellValue } = require("../utils/itemValue");
 const { creditUser, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = require("../utils/economy");
 const { findReferrer, payReferralBonuses } = require("../utils/referrals");
 const { sellUniqueIds } = require("../utils/inventorySell");
+const { copiesFor, countsFor } = require("../utils/inventoryCounts");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
 const { ObjectId } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
@@ -447,15 +448,11 @@ router.post("/inventory/sell", authMiddleware.isAuthenticated, async (req, res) 
     // card's single sell button.
     if (!ids.length && req.body.itemId && ObjectId.isValid(req.body.itemId)) {
       const asked = Math.floor(Number(req.body.quantity));
-      const owner = await User.findById(req.user._id, { inventory: 1 });
-      if (!owner) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      const copies = (owner.inventory || [])
-        .filter((e) => e && String(e._id) === String(req.body.itemId))
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      const take = Number.isFinite(asked) && asked > 0 ? Math.min(asked, copies.length) : copies.length;
-      ids = copies.slice(0, take).map((e) => e.uniqueId);
+      const copies = await copiesFor(req.user._id, {
+        itemId: req.body.itemId,
+        limit: Number.isFinite(asked) && asked > 0 ? asked : 200,
+      });
+      ids = copies.map((e) => e.uniqueId);
     }
 
     if (!ids.length) {
@@ -487,6 +484,7 @@ router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
   try {
     const { item } = req.body;
 
+    // inventory-read: the pin verifies the copy against the array it lives in
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -960,14 +958,8 @@ router.get("/inventory/:userId/copies/:itemId", async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    const user = await User.findById(userId, { inventory: 1 });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const copies = (user.inventory || [])
-      .filter((e) => e && String(e._id) === String(itemId))
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const total = (await countsFor(userId, [itemId])).get(String(itemId)) || 0;
+    const copies = await copiesFor(userId, { itemId, limit: page * COPIES_PER_PAGE });
 
     const item = await Item.findById(itemId, { baseValue: 1, name: 1, image: 1, rarity: 1 });
     const base = item?.baseValue || 0;
@@ -978,9 +970,9 @@ router.get("/inventory/:userId/copies/:itemId", async (req, res) => {
         uniqueId: e.uniqueId,
         createdAt: e.createdAt,
       })),
-      total: copies.length,
+      total,
       currentPage: page,
-      totalPages: Math.ceil(copies.length / COPIES_PER_PAGE),
+      totalPages: Math.ceil(total / COPIES_PER_PAGE),
       sellValue: sellValue(base),
     });
   } catch (error) {
