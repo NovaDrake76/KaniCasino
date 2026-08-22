@@ -194,9 +194,8 @@ async function ledgerSupply() {
   return -(await accountBalance(MINT));
 }
 
-// what a wallet write is allowed to hand back. never the inventory: a deep one runs to two
-// megabytes, and returning it turned a single bet into a twenty-second write on a link that
-// carries about 100 KB/s. nothing downstream of a money write reads it.
+// what a wallet write hands back. never the inventory: a deep one is two megabytes, and
+// returning it made a single bet a twenty-second write on a 100 KB/s link.
 const WITHOUT_INVENTORY = { inventory: 0 };
 
 // debit `cost` if the balance covers it, with its ledger row in the same transaction:

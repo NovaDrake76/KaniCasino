@@ -9,9 +9,8 @@ beforeAll(setupDb);
 afterEach(clearDb);
 afterAll(teardownDb);
 
-// a wallet write used to hand the whole document back. on production that is a two
-// megabyte inventory for the deepest account, which measured 20.5 seconds against 31 ms
-// with the inventory left out, and every bet does two of them.
+// a wallet write used to hand the whole document back: two megabytes for the deepest
+// account on production, 20.5 seconds against 31 ms without it, and a bet does two.
 const deepUser = async (entries = 200) => {
   const s = uniqueSuffix();
   return User.create({
