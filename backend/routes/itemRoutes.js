@@ -6,6 +6,8 @@ const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const { recomputeCaseValues } = require("../utils/itemValue");
 const { publicCache, TTL } = require("../utils/httpCache");
 const itemCatalog = require("../utils/itemCatalog");
+const artProxy = require("../utils/artProxy");
+const { artLimiter } = require("../middleware/rateLimit");
 
 router.get("/", async (req, res) => {
   try {
@@ -14,6 +16,34 @@ router.get("/", async (req, res) => {
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+// the share card needs the pixels, not just the picture: steam's cdn serves item art
+// without a cors header, so a canvas that drew it straight could never be exported
+router.get("/art", isAuthenticated, artLimiter, async (req, res) => {
+  const target = artProxy.allow(req.query.url);
+  if (!target) return res.status(400).json({ message: "That image is not served from here" });
+
+  try {
+    const upstream = await fetch(target, { signal: AbortSignal.timeout(artProxy.TIMEOUT_MS) });
+    const type = upstream.headers.get("content-type") || "";
+    if (!upstream.ok || !type.startsWith("image/")) {
+      return res.status(502).json({ message: "That artwork could not be fetched" });
+    }
+    if (artProxy.tooBig(upstream.headers.get("content-length"))) {
+      return res.status(502).json({ message: "That artwork is too large" });
+    }
+
+    const body = Buffer.from(await upstream.arrayBuffer());
+    if (body.length > artProxy.MAX_BYTES) {
+      return res.status(502).json({ message: "That artwork is too large" });
+    }
+    res.set("Content-Type", type);
+    res.set("Cache-Control", `public, max-age=${artProxy.CACHE_SECONDS}, immutable`);
+    res.send(body);
+  } catch {
+    res.status(504).json({ message: "That artwork could not be fetched" });
   }
 });
 

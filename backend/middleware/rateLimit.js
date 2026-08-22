@@ -108,7 +108,21 @@ const hiloActionLimiter = rateLimit({
   message: { message: "Too many actions, slow down a little." },
 });
 
+// the share card pulls one image per character it draws, and the browser caches it for
+// a year, so a caller asking for many in a minute is not drawing cards
+const artLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 40,
+  keyGenerator: (req) => String(req.user._id),
+  skip: skipInTests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { message: "Too many images requested, slow down." },
+});
+
 module.exports = {
+  artLimiter,
   loginLimiter,
   registerLimiter,
   registerDailyLimiter,
