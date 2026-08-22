@@ -11,6 +11,8 @@ interface Props {
 
 const SHOWN = 3;
 
+// market art is anchored object-top everywhere it is drawn: it is usually a character, and a
+// square crop out of the middle of a portrait takes the face off
 const MarketCard: React.FC<Props> = ({ market, onClick }) => {
   const held = market.outcomes.reduce((total, o) => total + o.shares, 0);
   const ranked = market.outcomes.map((o, i) => ({ ...o, color: OUTCOME_COLORS[i % OUTCOME_COLORS.length] }));
@@ -26,7 +28,7 @@ const MarketCard: React.FC<Props> = ({ market, onClick }) => {
     >
       <div className="flex items-start gap-3">
         {market.image && (
-          <img src={market.image} alt="" className="w-12 h-12 rounded object-cover bg-surface-nav flex-shrink-0" />
+          <img src={market.image} alt="" className="w-12 h-12 rounded object-cover object-top bg-surface-nav flex-shrink-0" />
         )}
         <div className="flex flex-col gap-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">

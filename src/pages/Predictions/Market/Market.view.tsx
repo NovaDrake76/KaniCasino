@@ -48,7 +48,7 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
 
       <div className="flex items-start gap-4">
         {market.image && (
-          <img src={market.image} alt="" className="w-16 h-16 rounded object-cover bg-surface-nav flex-shrink-0" />
+          <img src={market.image} alt="" className="w-16 h-16 rounded object-cover object-top bg-surface-nav flex-shrink-0" />
         )}
         <div className="flex flex-col gap-2 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -118,7 +118,7 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
                     style={{ backgroundColor: colorOf(outcome.key) }}
                   />
                   {outcome.image && (
-                    <img src={outcome.image} alt="" className="w-8 h-8 rounded object-cover bg-surface-nav" />
+                    <img src={outcome.image} alt="" className="w-8 h-8 rounded object-cover object-top bg-surface-nav" />
                   )}
                   <div className="flex flex-col min-w-0 gap-0.5">
                     <span className="text-ink text-sm truncate">{outcome.label}</span>

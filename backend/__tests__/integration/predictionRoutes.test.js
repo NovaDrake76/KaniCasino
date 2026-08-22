@@ -74,6 +74,35 @@ describe("the board", () => {
     expect(outcome.avgPriceBps).toBeGreaterThan(0);
   });
 
+  it("floats a market by its board order and keeps the rest where they were", async () => {
+    const first = await makeMarket({ title: "Ordinary" });
+    const pinned = await makeMarket({ title: "Pinned", boardOrder: 5 });
+    const sunk = await makeMarket({ title: "Sunk", boardOrder: -5 });
+
+    const res = await request(app).get("/predictions");
+    expect(res.body.predictions.map((p) => p.title)).toEqual(["Pinned", "Ordinary", "Sunk"]);
+    expect(first.boardOrder).toBe(0);
+    expect(pinned.boardOrder).toBe(5);
+    expect(sunk.boardOrder).toBe(-5);
+  });
+
+  // "closed" sorts before "open" alphabetically, which would put a market nobody can trade
+  // at the top of the board
+  it("puts what you can trade above what you cannot", async () => {
+    await makeMarket({ title: "Cancelled one", status: "void" });
+    await makeMarket({ title: "Settled one", status: "resolved" });
+    await makeMarket({ title: "Shut one", status: "closed" });
+    await makeMarket({ title: "Live one" });
+
+    const res = await request(app).get("/predictions");
+    expect(res.body.predictions.map((p) => p.title)).toEqual([
+      "Live one",
+      "Shut one",
+      "Settled one",
+      "Cancelled one",
+    ]);
+  });
+
   it("degrades a dead token to a guest view instead of a 401", async () => {
     await makeMarket();
     const res = await request(app).get("/predictions").set("Authorization", "Bearer not-a-token");

@@ -144,6 +144,7 @@ export interface AdminMarket {
   traders: number;
   vigBps: number;
   exposureCap: number;
+  boardOrder: number;
   resolvedOutcome?: string;
   resolutionNote?: string;
   // the most the house would owe if the worst outcome came true
@@ -160,6 +161,7 @@ export interface NewMarket {
   outcomes: string[];
   impactBps?: number;
   exposureCap?: number;
+  boardOrder?: number;
 }
 
 export const getAdminMarkets = async (status?: string): Promise<AdminMarket[]> =>
@@ -177,3 +179,6 @@ export const resolveAdminMarket = async (id: string, outcome: string, note: stri
 
 export const voidAdminMarket = async (id: string, note: string) =>
   (await api.post(`/admin/predictions/${id}/void`, { note })).data;
+
+export const updateAdminMarket = async (id: string, body: Partial<NewMarket> & { boardOrder?: number }) =>
+  (await api.put(`/admin/predictions/${id}`, body)).data;

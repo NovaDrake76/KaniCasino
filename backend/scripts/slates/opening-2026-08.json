@@ -1,0 +1,119 @@
+[
+  {
+    "title": "Does the Scarlet Devil remake ship on 10 September 2026?",
+    "description": "Touhou Koumakyou: New Classic, the EoSD remake by Team Shanghai Alice Reprise, is dated 10 September 2026. Resolves Yes if it is buyable and playable on Steam on that date. A delay, even by a day, resolves No. Settled from the Steam store page.",
+    "category": "Touhou",
+    "image": "https://kanicasino.com/images/cards/remilia.webp",
+    "outcomes": [
+      "Yes",
+      "No"
+    ],
+    "endsAt": "2026-09-09T23:59:00.000Z",
+    "impactBps": 1,
+    "exposureCap": 10000,
+    "boardOrder": 0
+  },
+  {
+    "title": "Scarlet Devil remake Steam rating two weeks after launch",
+    "description": "The review summary shown on the Steam store page for Touhou Koumakyou: New Classic on 24 September 2026, two weeks after release. Settled from Steam's own label, whatever it says that day.",
+    "category": "Touhou",
+    "image": "https://kanicasino.com/images/cards/sakuya.webp",
+    "outcomes": [
+      "Overwhelmingly Positive",
+      "Very Positive",
+      "Positive",
+      "Mixed or worse"
+    ],
+    "endsAt": "2026-09-23T23:59:00.000Z",
+    "impactBps": 1,
+    "exposureCap": 10000,
+    "boardOrder": 0
+  },
+  {
+    "title": "Does ZUN announce Touhou 21 before 2027?",
+    "description": "Resolves Yes if ZUN announces the 21st mainline Touhou game on or before 31 December 2026. Touhou 20, Fossilized Wonders, shipped at Comiket 106 in August 2025. A remake, a spin-off or a print work does not count, only the next numbered entry. Settled from ZUN's own announcement.",
+    "category": "Touhou",
+    "image": "https://kanicasino.com/images/cards/marisa.webp",
+    "outcomes": [
+      "Yes",
+      "No"
+    ],
+    "endsAt": "2026-12-31T23:59:00.000Z",
+    "impactBps": 1,
+    "exposureCap": 10000,
+    "boardOrder": 0
+  },
+  {
+    "title": "Does NEXON bring back the Blue Archive Spark before 2027?",
+    "description": "The 5.5 anniversary update on 29 July 2026 replaced the 200-point Spark with Recruitment Charge and a 50/50. Resolves Yes if the 200-point exchange, or an equivalent that lets you claim a rate-up student outright, is back in the game on or before 31 December 2026. Settled from official patch notes.",
+    "category": "Blue Archive",
+    "image": "https://kanicases.s3.us-east-1.amazonaws.com/cases/bluearchive/cover-millennium.webp",
+    "outcomes": [
+      "Yes",
+      "No"
+    ],
+    "endsAt": "2026-12-31T23:59:00.000Z",
+    "impactBps": 1,
+    "exposureCap": 10000,
+    "boardOrder": 0
+  },
+  {
+    "title": "Yukino to leave NPC jail by the end of 2026?",
+    "description": "Resolves Yes if Shichido Yukino becomes a playable character, or is announced as playable, on or before 31 December 2026. Settled from an official NEXON announcement or release.",
+    "category": "Blue Archive",
+    "image": "https://kanicasino.com/images/predictions/yukino.webp",
+    "outcomes": [
+      "Yes",
+      "No"
+    ],
+    "endsAt": "2026-12-31T23:59:00.000Z",
+    "impactBps": 1,
+    "exposureCap": 10000,
+    "boardOrder": 0
+  },
+  {
+    "title": "Who wins the PGL Major Singapore 2026?",
+    "description": "The CS2 Major runs 25 November to 13 December 2026: 32 teams, 1.25 million dollars. Resolves to the team that lifts the trophy. A team that does not qualify simply does not win. Settled from the official bracket.",
+    "category": "Counter-Strike",
+    "image": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bjx-UnoUwniocSwrHEV7KaobPdud6HEWjXGmbYl6LIwHn2ywhgh5GzXzdmsc3yRalAkD5R3FvlK7Ed7JoXDRQ/360fx360f",
+    "outcomes": [
+      "Team Falcons",
+      "Team Vitality",
+      "Team Spirit",
+      "FURIA",
+      "Anyone else"
+    ],
+    "endsAt": "2026-12-12T23:59:00.000Z",
+    "impactBps": 1,
+    "exposureCap": 15000,
+    "boardOrder": -1
+  },
+  {
+    "title": "Does a Brazilian team reach the CS2 Major final?",
+    "description": "Resolves Yes if a team with a Brazilian organisation reaches the grand final of the PGL Major Singapore 2026. FURIA lost the IEM Cologne Major final 0-3 to Team Falcons in June. Settled from the official bracket.",
+    "category": "Counter-Strike",
+    "image": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bjx-UnoUwniocSwrHZk_OejZaF_bvXGWT6Vkughs-A5H321kUQl5myEm9__dHKQaw8gWZtzQ7VYu0a-lYf5d7S1qrUfUsY/360fx360f",
+    "outcomes": [
+      "Yes",
+      "No"
+    ],
+    "endsAt": "2026-12-12T23:59:00.000Z",
+    "impactBps": 1,
+    "exposureCap": 10000,
+    "boardOrder": -1
+  },
+  {
+    "title": "Does Valve ship a new CS2 case-and-key case in 2026?",
+    "description": "The last true case-and-key release was the Fever Case in March 2025. Since then Valve has shipped skins through the Armory and Sealed Terminal packages instead. Resolves Yes if a new weapon case openable with a key is added on or before 31 December 2026. Settled from the CS2 update notes.",
+    "category": "Counter-Strike",
+    "image": "https://community.akamai.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_frnMVu6b-avA-JqSSCjSWwuhz47U9TCzlxh9yt2WGnNqgIi-fbgUkWMNxFPlK7EdIJF6a2Q/360fx360f",
+    "outcomes": [
+      "Yes",
+      "No"
+    ],
+    "endsAt": "2026-12-31T23:59:00.000Z",
+    "impactBps": 1,
+    "exposureCap": 10000,
+    "boardOrder": -1
+  }
+]
