@@ -198,7 +198,7 @@ const BattleRoomView: React.FC<BattleRoomViewProps> = ({
                 <div className="flex items-center gap-2 min-w-0">
                   <Avatar
                     image={col.player.profilePicture}
-                    id={col.player.userId || col.player.username}
+                    id={col.player.userId || ""}
                     size="small"
                     level={0}
                   />

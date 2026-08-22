@@ -71,7 +71,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState }) => {
 
                             <a href={`/profile/${playerId}`} target="_blank" rel="noreferrer" className="text-white transition-all">
                                 <div className="flex items-center gap-2">
-                                    <Avatar image={player.profilePicture} id={playerId} size="small" level={player.level} />
+                                    <Avatar image={player.profilePicture} id={playerId} size="small" level={player.level} noLink />
                                     <span className="font-bold text-sm">{player.username}</span>
                                 </div>
                             </a>
