@@ -198,7 +198,7 @@ export const useMarketServices = () => {
 
   const submit = async () => {
     if (!isLogged) return toogleUserFlow(true);
-    if (!selected || shares <= 0 || submitting) return;
+    if (!selected || shares <= 0 || submitting || quoting) return;
 
     setSubmitting(true);
     try {
@@ -218,6 +218,14 @@ export const useMarketServices = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  // what the field is allowed to reach. a buy is bounded by the market, a sell by the wallet
+  // of shares the player actually has.
+  const held = selected ? heldOf(selected) : 0;
+  const clamp = (count: number) => {
+    const whole = Math.max(0, Math.floor(count));
+    return action === "sell" ? Math.min(whole, held) : whole;
   };
 
   const binary = market ? isBinary(market) : false;
@@ -244,26 +252,29 @@ export const useMarketServices = () => {
     isLogged,
     walletBalance: userData?.walletBalance ?? 0,
     selected,
-    select: (key: string) => setSelected(key),
+    select: (key: string) => {
+      setSelected(key);
+      if (action === "sell") setSharesInput(String(Math.min(shares, heldOf(key))));
+    },
     action,
     setAction: (next: TradeAction) => {
       setAction(next);
       // switching to sell with more shares typed than are held only ever quotes an error
-      if (next === "sell" && selected) {
-        const held = heldOf(selected);
-        if (held > 0 && shares > held) setSharesInput(String(held));
-      }
+      if (next === "sell" && shares > held) setSharesInput(String(held));
     },
     sharesInput,
-    setSharesInput,
+    // selling is capped at what is held, so the field cannot be typed into a quote that only
+    // ever comes back as an error
+    setSharesInput: (value: string) => setSharesInput(String(clamp(Number(value) || 0))),
     shares,
+    maxShares: action === "sell" ? held : null,
     quote,
     quoting,
     quoteError,
     submitting,
     submit,
-    setMaxShares: () => selected && setSharesInput(String(heldOf(selected))),
-    bumpShares: (by: number) => setSharesInput(String(Math.max(1, shares + by))),
+    setSharesTo: (count: number) => setSharesInput(String(clamp(count))),
+    bumpShares: (by: number) => setSharesInput(String(clamp(shares + by))),
     heldOf,
     avgOf,
     colorOf,

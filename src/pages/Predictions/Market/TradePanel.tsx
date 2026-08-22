@@ -20,13 +20,20 @@ type Props = Pick<
   | "quoteError"
   | "submitting"
   | "submit"
-  | "setMaxShares"
+  | "maxShares"
+  | "setSharesTo"
   | "bumpShares"
   | "heldOf"
   | "colorOf"
 >;
 
 const QUICK = [10, 50, 100];
+
+// the quote is a round trip, so the numbers it fills in are blank for a moment. a bar that
+// keeps the row's height is the difference between "loading" and "zero".
+const Pending = ({ w }: { w: string }) => (
+  <span className={`inline-block h-3 ${w} rounded bg-surface-raised animate-pulse align-middle`} />
+);
 
 const TradePanel: React.FC<Props> = ({
   market,
@@ -39,12 +46,13 @@ const TradePanel: React.FC<Props> = ({
   sharesInput,
   setSharesInput,
   shares,
+  maxShares,
   quote,
   quoting,
   quoteError,
   submitting,
   submit,
-  setMaxShares,
+  setSharesTo,
   bumpShares,
   heldOf,
   colorOf,
@@ -60,7 +68,9 @@ const TradePanel: React.FC<Props> = ({
   const closed = market.status !== "open";
   const cannotAfford = action === "buy" && !!quote && quote.amount > walletBalance;
   const overSells = action === "sell" && shares > held;
-  const blocked = closed || shares <= 0 || cannotAfford || overSells || submitting;
+  // a quote in flight means the panel is showing a number that is about to change, so the
+  // button is not offered until it settles
+  const blocked = closed || shares <= 0 || cannotAfford || overSells || submitting || quoting;
 
   return (
     <div className="bg-surface border border-line rounded-lg p-4 flex flex-col gap-4">
@@ -117,38 +127,51 @@ const TradePanel: React.FC<Props> = ({
             value={sharesInput}
             onChange={(e) => setSharesInput(e.target.value.replace(/[^0-9]/g, ""))}
             inputMode="numeric"
+            max={maxShares ?? undefined}
             className="bg-surface-nav border border-line rounded px-3 py-2 text-ink outline-none focus:border-accent w-full tabular-nums"
           />
           <button
-            onClick={() => bumpShares(-shares + Math.max(1, Math.floor(shares / 2)))}
+            onClick={() => setSharesTo(Math.max(1, Math.floor(shares / 2)))}
             className="px-3 bg-surface-raised hover:bg-surface-hover rounded text-ink-soft text-sm"
           >
             ½
           </button>
           <button
             onClick={() => bumpShares(shares)}
-            className="px-3 bg-surface-raised hover:bg-surface-hover rounded text-ink-soft text-sm"
+            disabled={maxShares !== null && shares >= maxShares}
+            className="px-3 bg-surface-raised hover:bg-surface-hover disabled:opacity-40 disabled:hover:bg-surface-raised rounded text-ink-soft text-sm"
           >
             2x
           </button>
         </div>
         <div className="flex gap-1 flex-wrap">
-          {QUICK.map((value) => (
-            <button
-              key={value}
-              onClick={() => setSharesInput(String(value))}
-              className="text-xs px-2.5 py-1 bg-surface-nav hover:bg-surface-raised rounded text-ink-muted"
-            >
-              {value}
-            </button>
-          ))}
-          {action === "sell" && held > 0 && (
-            <button
-              onClick={setMaxShares}
-              className="text-xs px-2.5 py-1 bg-surface-nav hover:bg-surface-raised rounded text-ink-muted"
-            >
-              {i18n.t("predictions.max")}
-            </button>
+          {action === "sell" ? (
+            <>
+              <button
+                onClick={() => setSharesTo(Math.max(1, Math.floor(held / 2)))}
+                disabled={held <= 0}
+                className="text-xs px-2.5 py-1 bg-surface-nav hover:bg-surface-raised disabled:opacity-40 rounded text-ink-muted"
+              >
+                {i18n.t("predictions.half")}
+              </button>
+              <button
+                onClick={() => setSharesTo(held)}
+                disabled={held <= 0}
+                className="text-xs px-2.5 py-1 bg-surface-nav hover:bg-surface-raised disabled:opacity-40 rounded text-ink-muted"
+              >
+                {i18n.t("predictions.sellAll", { count: held })}
+              </button>
+            </>
+          ) : (
+            QUICK.map((value) => (
+              <button
+                key={value}
+                onClick={() => setSharesTo(value)}
+                className="text-xs px-2.5 py-1 bg-surface-nav hover:bg-surface-raised rounded text-ink-muted"
+              >
+                {value}
+              </button>
+            ))
           )}
         </div>
       </div>
@@ -158,20 +181,20 @@ const TradePanel: React.FC<Props> = ({
           <span className="text-ink-muted">
             {action === "buy" ? i18n.t("predictions.youPay") : i18n.t("predictions.youReceive")}
           </span>
-          <span className={`font-semibold tabular-nums ${quoting ? "text-ink-muted" : "text-ink"}`}>
-            {quote ? <Monetary value={quote.amount} /> : "-"}
+          <span className="font-semibold tabular-nums text-ink">
+            {quoting ? <Pending w="w-16" /> : quote ? <Monetary value={quote.amount} /> : "-"}
           </span>
         </div>
         <div className="flex items-center justify-between text-xs">
           <span className="text-ink-muted">{i18n.t("predictions.averagePrice")}</span>
           <span className="text-ink-soft tabular-nums">
-            {quote ? `${(quote.avgPriceBps / 100).toFixed(1)}%` : "-"}
+            {quoting ? <Pending w="w-10" /> : quote ? `${(quote.avgPriceBps / 100).toFixed(1)}%` : "-"}
           </span>
         </div>
         <div className="flex items-center justify-between text-xs">
           <span className="text-ink-muted">{i18n.t("predictions.priceAfter")}</span>
           <span className="text-ink-soft tabular-nums">
-            {quote ? `${toPercent(quote.startBps)}% → ${toPercent(quote.endBps)}%` : "-"}
+            {quoting ? <Pending w="w-20" /> : quote ? `${toPercent(quote.startBps)}% → ${toPercent(quote.endBps)}%` : "-"}
           </span>
         </div>
         {action === "buy" && quote && (
@@ -207,6 +230,8 @@ const TradePanel: React.FC<Props> = ({
           ? i18n.t("predictions.notEnoughKp")
           : submitting
           ? i18n.t("predictions.working")
+          : quoting
+          ? i18n.t("predictions.pricing")
           : i18n.t(`predictions.${action}`)}
       </button>
 
