@@ -24,12 +24,14 @@ export interface MarketViewProps {
   sharesInput: string;
   setSharesInput: (value: string) => void;
   shares: number;
+  // the ceiling the field will accept: what is held when selling, unbounded when buying
+  maxShares: number | null;
   quote: Quote | null;
   quoting: boolean;
   quoteError: string | null;
   submitting: boolean;
   submit: () => void;
-  setMaxShares: () => void;
+  setSharesTo: (count: number) => void;
   bumpShares: (by: number) => void;
   heldOf: (key: string) => number;
   avgOf: (key: string) => number;
