@@ -67,6 +67,10 @@
     "/privacy-policy": {
       "title": "Privacy Policy | KaniCasino",
       "description": "How KaniCasino handles your data."
+    },
+    "/predictions": {
+      "title": "Predictions | Player Prediction Markets | KaniCasino",
+      "description": "Buy shares in what you think happens next. Anime, gaming and site markets priced by the players, settled in fake coins."
     }
   },
   "dynamic": [
@@ -89,6 +93,11 @@
       "pattern": "^/battles/",
       "title": "Case Battle | KaniCasino",
       "description": "A live case battle on KaniCasino."
+    },
+    {
+      "pattern": "^/predictions/",
+      "title": "Prediction market | KaniCasino",
+      "description": "Live odds, price history and the trades behind them on this KaniCasino prediction market."
     }
   ]
 }

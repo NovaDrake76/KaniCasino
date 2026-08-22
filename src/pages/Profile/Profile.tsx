@@ -14,6 +14,7 @@ import CollectionsPanel from "../Collections/CollectionsPanel";
 import MissionsPanel from "../Missions/MissionsPanel";
 import AffiliatesPanel from "../Affiliates/AffiliatesPanel";
 import { resolveTab, Tab } from "./tabs";
+import PredictionsPanel from "./PredictionsPanel";
 import ItemCopiesModal from "./ItemCopiesModal";
 import EmailSettings from "./EmailSettings";
 import { User } from '../../components/Types'
@@ -161,6 +162,7 @@ const Profile = () => {
       ? [
           { key: "missions" as const, label: i18n.t("profile.missions") },
           { key: "affiliates" as const, label: i18n.t("profile.affiliates") },
+          { key: "predictions" as const, label: i18n.t("predictions.myPositions") },
           { key: "history" as const, label: i18n.t("profile.balanceHistory") },
           { key: "settings" as const, label: i18n.t("settings.title") },
         ]
@@ -241,6 +243,8 @@ const Profile = () => {
             <MissionsPanel userId={id as string} isOwner={isSameUser} />
           ) : activeTab === "affiliates" ? (
             <AffiliatesPanel isOwner={isSameUser} />
+          ) : activeTab === "predictions" ? (
+            <PredictionsPanel />
           ) : activeTab === "settings" ? (
             <EmailSettings />
           ) : activeTab === "collections" ? (

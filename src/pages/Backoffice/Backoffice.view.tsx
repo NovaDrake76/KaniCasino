@@ -16,6 +16,7 @@ import {
 } from "../../services/admin/AdminServices";
 import { Window } from "./Backoffice.services";
 import AdminChart from "./AdminChart";
+import PredictionsAdmin from "./PredictionsAdmin";
 import { CHART_AMBER, CHART_INDIGO, fillDays } from "./adminSeries";
 
 interface Props {
@@ -417,6 +418,10 @@ const BackofficeView: React.FC<Props> = ({
                 mode="lines"
               />
             </div>
+
+            <Panel title="Prediction markets">
+              <PredictionsAdmin />
+            </Panel>
 
             <Panel title={`Games (${windowText}, most profitable first)`}>
               <div className="overflow-x-auto">

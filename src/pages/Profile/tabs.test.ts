@@ -15,6 +15,7 @@ describe("resolveTab", () => {
   it("gives the owner their own tabs", () => {
     expect(resolveTab("missions", true)).toBe("missions");
     expect(resolveTab("history", true)).toBe("history");
+    expect(resolveTab("predictions", true)).toBe("predictions");
   });
 
   // isOwner is false both for a stranger and while /users/me is still in flight,
@@ -22,6 +23,7 @@ describe("resolveTab", () => {
   it("hides owner-only tabs from everyone else", () => {
     expect(resolveTab("missions", false)).toBe("inventory");
     expect(resolveTab("history", false)).toBe("inventory");
+    expect(resolveTab("predictions", false)).toBe("inventory");
   });
 
   it("falls back to inventory on a junk tab", () => {
