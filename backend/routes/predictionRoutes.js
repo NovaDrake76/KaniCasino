@@ -4,7 +4,6 @@ const Prediction = require("../models/Prediction");
 const PredictionPosition = require("../models/PredictionPosition");
 const PredictionTrade = require("../models/PredictionTrade");
 const PredictionPricepoint = require("../models/PredictionPricepoint");
-const User = require("../models/User");
 const { trade, quote, publicView } = require("../utils/predictions");
 
 const PAGE_SIZE = 24;
@@ -29,6 +28,22 @@ async function positionsFor(userId, predictionIds) {
   }
   return byMarket;
 }
+
+// one fill, shaped the way the live feed already reads them
+const tradeCard = (row, user, prediction) => {
+  const outcome = prediction.outcomes.find((o) => o.key === row.outcomeKey);
+  return {
+    _id: row._id,
+    user: { _id: user._id, username: user.username, profilePicture: user.profilePicture, level: user.level },
+    action: row.action,
+    shares: row.shares,
+    amount: row.amount,
+    avgPriceBps: row.avgPriceBps,
+    outcomeKey: row.outcomeKey,
+    outcomeLabel: outcome ? outcome.label : row.outcomeKey,
+    createdAt: row.createdAt,
+  };
+};
 
 module.exports = (io) => {
   const router = express.Router();
@@ -235,15 +250,30 @@ module.exports = (io) => {
       if (result.error) return res.status(400).json({ message: result.error });
 
       const held = await PredictionPosition.find({ userId: req.user._id, predictionId: prediction._id }).lean();
-      const user = await User.findById(req.user._id).select("walletBalance").lean();
       const view = publicView(result.prediction, held);
 
-      // everyone watching this market sees the price move, not just whoever moved it
-      if (io) io.emit("predictionUpdated", { slug: prediction.slug, outcomes: view.outcomes.map(({ key, priceBps, volume }) => ({ key, priceBps, volume })) });
+      if (io) {
+        // the trader's own tab: the navbar balance is state in App.tsx, and this is the only
+        // thing that moves it. every other game does the same.
+        io.to(String(req.user._id)).emit("userDataUpdated", {
+          walletBalance: result.user.walletBalance,
+          xp: result.user.xp,
+          level: result.user.level,
+        });
+        // and everyone watching this market, whoever they are: the prices, the running
+        // volume and the fill itself, so a page nobody is touching still keeps up
+        io.emit("predictionUpdated", {
+          slug: prediction.slug,
+          volume: result.prediction.volume,
+          traders: result.prediction.traders,
+          outcomes: view.outcomes.map(({ key, priceBps, volume }) => ({ key, priceBps, volume })),
+          trade: tradeCard(result.trade, req.user, result.prediction),
+        });
+      }
 
       res.json({
         prediction: view,
-        walletBalance: user ? user.walletBalance : undefined,
+        walletBalance: result.user.walletBalance,
         spent: result.spent,
         received: result.received,
       });

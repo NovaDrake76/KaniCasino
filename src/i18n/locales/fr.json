@@ -696,6 +696,7 @@
     "backToMarkets": "Retour aux marchés",
     "bought": "{{count}} parts achetées pour {{amount}} K₽",
     "buy": "Acheter",
+    "chance": "{{percent}}% de chances",
     "couldNotQuote": "Impossible de coter cet échange",
     "daysAgo": "il y a {{count}}j",
     "ended": "Terminé",

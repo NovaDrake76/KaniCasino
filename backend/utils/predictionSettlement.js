@@ -68,8 +68,8 @@ async function payPosition(position, amount, prediction, kind) {
     { $set: { settled: true, settledAt: new Date(), payout: amount } },
     { new: false }
   );
-  if (!claimed) return 0;
-  if (amount <= 0) return 0;
+  if (!claimed) return null;
+  if (amount <= 0) return null;
 
   const meta = {
     predictionId: String(prediction._id),
@@ -89,7 +89,7 @@ async function payPosition(position, amount, prediction, kind) {
     await PredictionPosition.updateOne({ _id: position._id }, { $set: { settled: false, payout: 0 } });
     throw new Error("prediction payout could not be credited");
   }
-  return amount;
+  return { amount, user: credited };
 }
 
 // what a position is owed. a resolution pays the winning outcome a KP a share and everyone
@@ -120,10 +120,12 @@ async function runSettlement(prediction, kind, winningKey, io) {
       for (const position of batch) {
         const amount = owedFor(position, kind, winningKey);
         const paid = await payPosition(position, amount, prediction, kind);
-        if (paid > 0) {
+        if (paid) {
           paidPositions += 1;
-          totalPaid += paid;
-          winners.set(String(position.userId), (winners.get(String(position.userId)) || 0) + paid);
+          totalPaid += paid.amount;
+          const key = String(position.userId);
+          const running = winners.get(key);
+          winners.set(key, { amount: (running ? running.amount : 0) + paid.amount, user: paid.user });
         }
       }
       // the lease is held for as long as the loop is making progress
@@ -147,20 +149,26 @@ async function runSettlement(prediction, kind, winningKey, io) {
 async function tellWinners(prediction, kind, winners, io) {
   if (winners.size === 0) return;
   const title = kind === "void" ? "Market cancelled" : "Market resolved";
-  const rows = [...winners.entries()].map(([userId, amount]) => ({
+  const rows = [...winners.entries()].map(([userId, won]) => ({
     receiverId: userId,
     type: "alert",
     title,
     content:
       kind === "void"
-        ? `${prediction.title} was cancelled and your ${amount} KP was returned.`
-        : `You won ${amount} KP on ${prediction.title}.`,
+        ? `${prediction.title} was cancelled and your ${won.amount} KP was returned.`
+        : `You won ${won.amount} KP on ${prediction.title}.`,
+    user: won.user,
   }));
-  await Notification.insertMany(rows).catch(() => {});
+  await Notification.insertMany(rows.map(({ user, ...row }) => row)).catch(() => {});
   if (!io) return;
   for (const row of rows) {
     io.to(String(row.receiverId)).emit("newNotification", { message: row.content });
-    io.to(String(row.receiverId)).emit("userDataUpdated");
+    // the navbar balance only moves on a payload; an empty emit reads as undefined there
+    io.to(String(row.receiverId)).emit("userDataUpdated", {
+      walletBalance: row.user.walletBalance,
+      xp: row.user.xp,
+      level: row.user.level,
+    });
   }
 }
 

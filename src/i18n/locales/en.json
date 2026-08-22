@@ -696,6 +696,7 @@
     "backToMarkets": "Back to markets",
     "bought": "Bought {{count}} shares for {{amount}} K₽",
     "buy": "Buy",
+    "chance": "{{percent}}% chance",
     "couldNotQuote": "Could not price that trade",
     "daysAgo": "{{count}}d ago",
     "ended": "Ended",

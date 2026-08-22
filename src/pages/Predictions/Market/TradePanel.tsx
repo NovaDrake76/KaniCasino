@@ -9,6 +9,7 @@ type Props = Pick<
   | "isLogged"
   | "walletBalance"
   | "selected"
+  | "select"
   | "action"
   | "setAction"
   | "sharesInput"
@@ -32,6 +33,7 @@ const TradePanel: React.FC<Props> = ({
   isLogged,
   walletBalance,
   selected,
+  select,
   action,
   setAction,
   sharesInput,
@@ -53,6 +55,8 @@ const TradePanel: React.FC<Props> = ({
   if (!outcome) return null;
 
   const held = heldOf(selected);
+  // a yes-or-no market has no outcome list above it, so the two prices are the picker
+  const binary = market.outcomes.length === 2;
   const closed = market.status !== "open";
   const cannotAfford = action === "buy" && !!quote && quote.amount > walletBalance;
   const overSells = action === "sell" && shares > held;
@@ -60,11 +64,30 @@ const TradePanel: React.FC<Props> = ({
 
   return (
     <div className="bg-surface border border-line rounded-lg p-4 flex flex-col gap-4">
-      <div className="flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: colorOf(selected) }} />
-        <span className="text-ink font-semibold truncate">{outcome.label}</span>
-        <span className="text-ink-muted text-sm ml-auto tabular-nums">{toPercent(outcome.priceBps)}%</span>
-      </div>
+      {binary ? (
+        <div className="grid grid-cols-2 gap-2">
+          {market.outcomes.map((option) => (
+            <button
+              key={option.key}
+              onClick={() => select(option.key)}
+              className={`flex flex-col items-center gap-0.5 py-2.5 rounded transition-colors ${
+                selected === option.key
+                  ? "bg-accent text-ink"
+                  : "bg-surface-nav text-ink-soft hover:bg-surface-raised"
+              }`}
+            >
+              <span className="text-sm font-semibold">{option.label}</span>
+              <span className="text-xs tabular-nums opacity-80">{toPercent(option.priceBps)}%</span>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: colorOf(selected) }} />
+          <span className="text-ink font-semibold truncate">{outcome.label}</span>
+          <span className="text-ink-muted text-sm ml-auto tabular-nums">{toPercent(outcome.priceBps)}%</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-1 bg-surface-nav rounded p-1">
         {(["buy", "sell"] as const).map((value) => (

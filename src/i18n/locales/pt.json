@@ -696,6 +696,7 @@
     "backToMarkets": "Voltar aos mercados",
     "bought": "Comprou {{count}} cotas por {{amount}} K₽",
     "buy": "Comprar",
+    "chance": "{{percent}}% de chance",
     "couldNotQuote": "Não foi possível cotar essa negociação",
     "daysAgo": "há {{count}}d",
     "ended": "Encerrado",

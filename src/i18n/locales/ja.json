@@ -696,6 +696,7 @@
     "backToMarkets": "マーケット一覧へ",
     "bought": "{{count}} シェアを {{amount}} K₽ で購入",
     "buy": "買う",
+    "chance": "確率 {{percent}}%",
     "couldNotQuote": "この取引の価格を計算できません",
     "daysAgo": "{{count}} 日前",
     "ended": "終了",

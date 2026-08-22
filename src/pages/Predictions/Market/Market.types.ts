@@ -1,4 +1,5 @@
 import { Market, MarketTrade, PriceSeries, Quote } from "../../../services/predictions/PredictionService";
+import { Range } from "../../../components/timeRange";
 
 export type TradeAction = "buy" | "sell";
 
@@ -8,6 +9,11 @@ export interface MarketViewProps {
   notFound: boolean;
   series: PriceSeries[];
   loadingSeries: boolean;
+  range: Range;
+  setRange: (range: Range) => void;
+  // a yes-or-no market has one number worth showing, and it goes next to the title
+  binary: boolean;
+  chancePct: number | null;
   trades: MarketTrade[];
   isLogged: boolean;
   walletBalance: number;

@@ -1,5 +1,6 @@
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
 
+const express = require("express");
 const request = require("supertest");
 const { setupDb, clearDb, teardownDb } = require("./db");
 const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
@@ -182,5 +183,65 @@ describe("quoting and trading over http", () => {
     const market = await makeMarket();
     const res = await request(app).post(`/predictions/${market.slug}/trade`).send({ outcome: "o1", action: "buy", shares: 1 });
     expect(res.status).toBe(401);
+  });
+});
+
+// a socket stub that keeps what it was told, so the live behaviour can be asserted rather
+// than assumed: the navbar balance and every other viewer's prices both ride on these
+function capturingApp() {
+  const sent = { rooms: [], broadcast: [] };
+  const io = {
+    emit: (event, payload) => sent.broadcast.push({ event, payload }),
+    to: (room) => ({ emit: (event, payload) => sent.rooms.push({ room, event, payload }) }),
+  };
+  const app = express();
+  app.use(express.json());
+  app.use("/predictions", require("../../routes/predictionRoutes")(io));
+  return { app, sent };
+}
+
+describe("what a fill tells everyone else", () => {
+  it("pushes the new balance to the trader, because the navbar reads it from there", async () => {
+    const user = await makeUser();
+    const market = await makeMarket();
+    const { app: live, sent } = capturingApp();
+
+    const res = await auth(request(live).post(`/predictions/${market.slug}/trade`), user)
+      .send({ outcome: "o1", action: "buy", shares: 100 });
+    expect(res.status).toBe(200);
+
+    const balance = sent.rooms.find((m) => m.event === "userDataUpdated");
+    expect(balance.room).toBe(String(user._id));
+    expect(balance.payload.walletBalance).toBe(50000 - res.body.spent);
+    expect(balance.payload.level).toBeDefined();
+  });
+
+  it("broadcasts the prices, the running volume and the fill itself", async () => {
+    const user = await makeUser();
+    const market = await makeMarket();
+    const { app: live, sent } = capturingApp();
+
+    await auth(request(live).post(`/predictions/${market.slug}/trade`), user)
+      .send({ outcome: "o1", action: "buy", shares: 100 });
+
+    const update = sent.broadcast.find((m) => m.event === "predictionUpdated");
+    expect(update.payload.slug).toBe(market.slug);
+    expect(update.payload.outcomes).toHaveLength(2);
+    expect(update.payload.outcomes[0].priceBps).toBe(6200);
+    expect(update.payload.volume).toBe(57);
+    expect(update.payload.trade.user.username).toBe(user.username);
+    expect(update.payload.trade.outcomeLabel).toBe("Yes");
+    expect(update.payload.trade.shares).toBe(100);
+  });
+
+  it("says nothing to anybody when the trade is refused", async () => {
+    const user = await makeUser({ walletBalance: 1 });
+    const market = await makeMarket();
+    const { app: live, sent } = capturingApp();
+
+    await auth(request(live).post(`/predictions/${market.slug}/trade`), user)
+      .send({ outcome: "o1", action: "buy", shares: 5000 });
+    expect(sent.broadcast).toHaveLength(0);
+    expect(sent.rooms).toHaveLength(0);
   });
 });

@@ -696,6 +696,7 @@
     "backToMarkets": "Về danh sách thị trường",
     "bought": "Mua {{count}} phần với {{amount}} K₽",
     "buy": "Mua",
+    "chance": "{{percent}}% khả năng",
     "couldNotQuote": "Không tính được giá cho giao dịch này",
     "daysAgo": "{{count}} ngày trước",
     "ended": "Đã kết thúc",

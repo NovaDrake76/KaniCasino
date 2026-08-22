@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UserContext from "../../../UserContext";
@@ -12,10 +12,14 @@ import {
   placeTrade,
   Market,
   MarketTrade,
+  MarketUpdate,
   PriceSeries,
   Quote,
   messageOf,
+  isBinary,
+  yesOutcome,
 } from "../../../services/predictions/PredictionService";
+import { Range, withinRange } from "../../../components/timeRange";
 import { TradeAction } from "./Market.types";
 import i18n from "../../../i18n";
 
@@ -31,6 +35,7 @@ export const useMarketServices = () => {
   const [series, setSeries] = useState<PriceSeries[]>([]);
   const [loadingSeries, setLoadingSeries] = useState(true);
   const [trades, setTrades] = useState<MarketTrade[]>([]);
+  const [range, setRange] = useState<Range>("ALL");
 
   const [selected, setSelected] = useState<string | null>(null);
   const [action, setAction] = useState<TradeAction>("buy");
@@ -53,6 +58,7 @@ export const useMarketServices = () => {
     getMarket(slug)
       .then((data) => {
         if (!active) return;
+        data.outcomes.forEach((o) => { drawn.current[o.key] = o.priceBps; });
         setMarket(data);
         setSelected((prev) => prev || (data.outcomes[0] ? data.outcomes[0].key : null));
       })
@@ -78,49 +84,72 @@ export const useMarketServices = () => {
     };
   }, [slug]);
 
+  // the last prices this page drew, kept in a ref rather than read back out of state: the
+  // comparison has to happen before the update is applied, and a setState inside another
+  // setState's updater is a side effect in the wrong place
+  const drawn = useRef<Record<string, number>>({});
+
+  const flash = useCallback((next: { key: string; priceBps: number }[]) => {
+    const moves: Record<string, "up" | "down"> = {};
+    for (const outcome of next) {
+      const was = drawn.current[outcome.key];
+      if (was !== undefined && was !== outcome.priceBps) {
+        moves[outcome.key] = outcome.priceBps > was ? "up" : "down";
+      }
+      drawn.current[outcome.key] = outcome.priceBps;
+    }
+    if (Object.keys(moves).length === 0) return;
+    setMoved(moves);
+    setTimeout(() => setMoved({}), 1200);
+  }, []);
+
+  // one place that folds a live update in, so a fill of your own and somebody else's
+  // arriving over the socket leave the page in the same state
+  const applyUpdate = useCallback((payload: MarketUpdate) => {
+    flash(payload.outcomes);
+    setMarket((prev) =>
+      prev
+        ? {
+            ...prev,
+            volume: payload.volume,
+            traders: payload.traders,
+            outcomes: prev.outcomes.map((outcome) => {
+              const update = payload.outcomes.find((o) => o.key === outcome.key);
+              return update ? { ...outcome, priceBps: update.priceBps, volume: update.volume } : outcome;
+            }),
+          }
+        : prev
+    );
+
+    const at = payload.trade ? payload.trade.createdAt : new Date().toISOString();
+    setSeries((prev) =>
+      prev.map((line) => {
+        const moved = payload.outcomes.find((o) => o.key === line.key);
+        return moved ? { ...line, points: [...line.points, { at, priceBps: moved.priceBps }] } : line;
+      })
+    );
+
+    // the broadcast reaches the trader too, so the same fill must not land twice
+    if (payload.trade) {
+      setTrades((prev) =>
+        prev.some((t) => t._id === payload.trade._id) ? prev : [payload.trade, ...prev].slice(0, 30)
+      );
+    }
+  }, [flash]);
+
   // somebody else's trade moves the prices on the page without a refetch, and the chart
   // grows a point so the line keeps up with the number above it
   useEffect(() => {
     const socket = SocketConnection.getInstance();
-    const onUpdate = (payload: { slug: string; outcomes: { key: string; priceBps: number; volume: number }[] }) => {
+    const onUpdate = (payload: MarketUpdate) => {
       if (payload.slug !== slug) return;
-      setMarket((prev) => {
-        if (!prev) return prev;
-        const next = {
-          ...prev,
-          outcomes: prev.outcomes.map((outcome) => {
-            const update = payload.outcomes.find((o) => o.key === outcome.key);
-            return update ? { ...outcome, priceBps: update.priceBps, volume: update.volume } : outcome;
-          }),
-        };
-        flash(prev, next);
-        return next;
-      });
-      const at = new Date().toISOString();
-      setSeries((prev) =>
-        prev.map((line) => {
-          const moved = payload.outcomes.find((o) => o.key === line.key);
-          return moved ? { ...line, points: [...line.points, { at, priceBps: moved.priceBps }] } : line;
-        })
-      );
+      applyUpdate(payload);
     };
     socket.on("predictionUpdated", onUpdate);
     return () => {
       socket.off("predictionUpdated", onUpdate);
     };
-  }, [slug]);
-
-  const flash = (before: Market | null, after: Market) => {
-    if (!before) return;
-    const next: Record<string, "up" | "down"> = {};
-    for (const outcome of after.outcomes) {
-      const was = before.outcomes.find((o) => o.key === outcome.key);
-      if (was && was.priceBps !== outcome.priceBps) next[outcome.key] = outcome.priceBps > was.priceBps ? "up" : "down";
-    }
-    if (Object.keys(next).length === 0) return;
-    setMoved(next);
-    setTimeout(() => setMoved({}), 1200);
-  };
+  }, [slug, applyUpdate]);
 
   const heldOf = (key: string) => {
     const outcome = market ? market.outcomes.find((o) => o.key === key) : null;
@@ -173,20 +202,17 @@ export const useMarketServices = () => {
 
     setSubmitting(true);
     try {
+      // the shares held are the caller's own and only come back on the response; the prices
+      // and the feed arrive for everybody over the socket, this tab included
       const result = await placeTrade(slug, selected, action, shares);
-      setMarket((prev) => {
-        flash(prev, result.prediction);
-        return result.prediction;
-      });
-      if (result.walletBalance !== undefined && userData) userData.walletBalance = result.walletBalance;
+      flash(result.prediction.outcomes);
+      setMarket(result.prediction);
       toast.success(
         action === "buy"
           ? i18n.t("predictions.bought", { count: shares, amount: result.spent })
           : i18n.t("predictions.sold", { count: shares, amount: result.received }),
         { theme: "dark" }
       );
-      getMarketTrades(slug).then(setTrades).catch(() => undefined);
-      getMarketHistory(slug).then(setSeries).catch(() => undefined);
     } catch (error) {
       toast.error(messageOf(error, i18n.t("predictions.tradeFailed")), { theme: "dark" });
     } finally {
@@ -194,12 +220,26 @@ export const useMarketServices = () => {
     }
   };
 
+  const binary = market ? isBinary(market) : false;
+  const yes = market && binary ? yesOutcome(market) : null;
+
+  // a yes-or-no market draws one line. the No line is the same information upside down, and
+  // two mirrored lines read as a chart with something going on in it when nothing is.
+  const chartSeries = useMemo(() => {
+    const shown = yes ? series.filter((line) => line.key === yes.key) : series;
+    return shown.map((line) => ({ ...line, points: withinRange(line.points, range) }));
+  }, [series, yes, range]);
+
   return {
     market,
     loading,
     notFound,
-    series,
+    series: chartSeries,
     loadingSeries,
+    range,
+    setRange,
+    binary,
+    chancePct: yes ? Math.round(yes.priceBps / 100) : null,
     trades,
     isLogged,
     walletBalance: userData?.walletBalance ?? 0,

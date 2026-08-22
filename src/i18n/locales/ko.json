@@ -696,6 +696,7 @@
     "backToMarkets": "마켓 목록으로",
     "bought": "{{count}} 지분을 {{amount}} K₽에 매수",
     "buy": "매수",
+    "chance": "확률 {{percent}}%",
     "couldNotQuote": "이 거래의 가격을 계산할 수 없습니다",
     "daysAgo": "{{count}}일 전",
     "ended": "종료",

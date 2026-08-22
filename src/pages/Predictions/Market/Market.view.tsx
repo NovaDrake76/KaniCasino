@@ -3,6 +3,7 @@ import Skeleton from "react-loading-skeleton";
 import Monetary from "../../../components/Monetary";
 import OutcomeChart from "../../../components/OutcomeChart";
 import { StatusChip } from "../MarketStatus";
+import ChartRange from "../../../components/ChartRange";
 import { endsInLabel } from "../marketTime";
 import TradePanel from "./TradePanel";
 import TradeFeed from "./TradeFeed";
@@ -11,7 +12,10 @@ import { toPercent } from "../../../services/predictions/PredictionService";
 import i18n from "../../../i18n";
 
 const MarketView: React.FC<MarketViewProps> = (props) => {
-  const { market, loading, notFound, series, loadingSeries, trades, selected, select, colorOf, heldOf, avgOf, movedOf } = props;
+  const {
+    market, loading, notFound, series, loadingSeries, trades, selected, select,
+    colorOf, heldOf, avgOf, movedOf, range, setRange, binary, chancePct,
+  } = props;
 
   if (notFound) {
     return (
@@ -53,13 +57,12 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
             {ends && <span className="text-[11px] text-ink-muted">{ends}</span>}
           </div>
           <h1 className="text-ink text-2xl font-semibold leading-tight">{market.title}</h1>
-          {market.description && <p className="text-ink-soft text-sm">{market.description}</p>}
-          <div className="flex gap-4 text-xs text-ink-muted">
-            <span>
-              <Monetary value={market.volume} /> {i18n.t("predictions.traded")}
+          {chancePct !== null && (
+            <span className="text-accent-light text-2xl font-semibold">
+              {i18n.t("predictions.chance", { percent: chancePct })}
             </span>
-            <span>{i18n.t("predictions.tradersCount", { count: market.traders })}</span>
-          </div>
+          )}
+          {market.description && <p className="text-ink-soft text-sm">{market.description}</p>}
         </div>
       </div>
 
@@ -81,8 +84,21 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5 items-start">
         <div className="flex flex-col gap-5 min-w-0 lg:col-start-1 lg:row-start-1">
-          <OutcomeChart series={series} loading={loadingSeries} />
+          <div className="flex flex-col gap-2">
+            <OutcomeChart series={series} loading={loadingSeries} />
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="flex gap-4 text-xs text-ink-muted">
+                <span>
+                  <Monetary value={market.volume} /> {i18n.t("predictions.traded")}
+                </span>
+                <span>{i18n.t("predictions.tradersCount", { count: market.traders })}</span>
+                {market.endsAt && <span>{new Date(market.endsAt).toLocaleDateString()}</span>}
+              </div>
+              <ChartRange value={range} onChange={setRange} />
+            </div>
+          </div>
 
+          {!binary && (
           <div className="bg-surface border border-line rounded-lg divide-y divide-line">
             {market.outcomes.map((outcome) => {
               const held = heldOf(outcome.key);
@@ -128,6 +144,7 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
               );
             })}
           </div>
+          )}
         </div>
 
         <div className="lg:col-start-2 lg:row-start-1 lg:sticky lg:top-4">

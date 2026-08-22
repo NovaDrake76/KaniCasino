@@ -696,6 +696,7 @@
     "backToMarkets": "Zurück zu den Märkten",
     "bought": "{{count}} Anteile für {{amount}} K₽ gekauft",
     "buy": "Kaufen",
+    "chance": "{{percent}}% Chance",
     "couldNotQuote": "Dieser Trade konnte nicht bepreist werden",
     "daysAgo": "vor {{count}}T",
     "ended": "Beendet",

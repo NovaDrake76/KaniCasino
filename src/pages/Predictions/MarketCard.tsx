@@ -1,6 +1,6 @@
 import Monetary from "../../components/Monetary";
 import { OUTCOME_COLORS } from "../../components/outcomeColors";
-import { Market, toPercent } from "../../services/predictions/PredictionService";
+import { Market, toPercent, isBinary, yesOutcome } from "../../services/predictions/PredictionService";
 import { StatusChip, EndsIn } from "./MarketStatus";
 import i18n from "../../i18n";
 
@@ -16,6 +16,8 @@ const MarketCard: React.FC<Props> = ({ market, onClick }) => {
   const ranked = market.outcomes.map((o, i) => ({ ...o, color: OUTCOME_COLORS[i % OUTCOME_COLORS.length] }));
   const shown = [...ranked].sort((a, b) => b.priceBps - a.priceBps).slice(0, SHOWN);
   const hidden = market.outcomes.length - shown.length;
+  // a yes-or-no card says the one number, the way the market itself is phrased
+  const yes = isBinary(market) ? yesOutcome(market) : null;
 
   return (
     <button
@@ -35,6 +37,19 @@ const MarketCard: React.FC<Props> = ({ market, onClick }) => {
         </div>
       </div>
 
+      {yes ? (
+        <div className="flex items-center gap-3">
+          <div className="h-1.5 rounded-full bg-surface-nav overflow-hidden flex-1">
+            <div
+              className="h-full rounded-full bg-accent transition-all"
+              style={{ width: `${toPercent(yes.priceBps)}%` }}
+            />
+          </div>
+          <span className="text-ink text-xl font-semibold tabular-nums">
+            {i18n.t("predictions.chance", { percent: toPercent(yes.priceBps) })}
+          </span>
+        </div>
+      ) : (
       <div className="flex flex-col gap-2">
         {shown.map((outcome) => (
           <div key={outcome.key} className="flex flex-col gap-1">
@@ -54,6 +69,7 @@ const MarketCard: React.FC<Props> = ({ market, onClick }) => {
           <span className="text-[11px] text-ink-faint">{i18n.t("predictions.moreOutcomes", { count: hidden })}</span>
         )}
       </div>
+      )}
 
       <div className="flex items-center justify-between text-[11px] text-ink-muted mt-auto pt-1">
         <span>

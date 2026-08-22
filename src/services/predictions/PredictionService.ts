@@ -43,6 +43,26 @@ export interface Market {
   outcomes: Outcome[];
 }
 
+// a market with exactly two outcomes is a yes-or-no question, and a yes-or-no question has
+// one number: the No line is 1 minus the Yes line and says nothing the Yes line did not.
+export const isBinary = (market: Market) => market.outcomes.length === 2;
+
+// which of the two is the "yes". a market written as Yes/No says so; anything else binary
+// takes the first outcome, which is the one the author listed first on purpose.
+export const yesOutcome = (market: Market): Outcome =>
+  market.outcomes.find((o) => o.label.trim().toLowerCase() === "yes") || market.outcomes[0];
+
+export const otherOutcome = (market: Market, key: string): Outcome | undefined =>
+  market.outcomes.find((o) => o.key !== key);
+
+export interface MarketUpdate {
+  slug: string;
+  volume: number;
+  traders: number;
+  outcomes: { key: string; priceBps: number; volume: number }[];
+  trade: MarketTrade;
+}
+
 export interface MarketPage {
   predictions: Market[];
   totalPages: number;

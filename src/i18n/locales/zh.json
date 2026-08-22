@@ -696,6 +696,7 @@
     "backToMarkets": "返回市场列表",
     "bought": "以 {{amount}} K₽ 买入 {{count}} 份",
     "buy": "买入",
+    "chance": "{{percent}}% 可能",
     "couldNotQuote": "无法为这笔交易报价",
     "daysAgo": "{{count}} 天前",
     "ended": "已结束",

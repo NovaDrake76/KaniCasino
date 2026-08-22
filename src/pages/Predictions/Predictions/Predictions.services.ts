@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { listMarkets, Market } from "../../../services/predictions/PredictionService";
+import { listMarkets, Market, MarketUpdate } from "../../../services/predictions/PredictionService";
 import SocketConnection from "../../../services/socket";
 import { StatusFilter } from "./Predictions.types";
 
@@ -58,15 +58,17 @@ export const usePredictionsServices = () => {
   // a price that moved somewhere else on the site should move here too, without a refetch
   useEffect(() => {
     const socket = SocketConnection.getInstance();
-    const onUpdate = ({ slug, outcomes }: { slug: string; outcomes: { key: string; priceBps: number; volume: number }[] }) => {
+    const onUpdate = (payload: MarketUpdate) => {
       setMarkets((prev) =>
         prev.map((market) =>
-          market.slug !== slug
+          market.slug !== payload.slug
             ? market
             : {
                 ...market,
+                volume: payload.volume,
+                traders: payload.traders,
                 outcomes: market.outcomes.map((outcome) => {
-                  const moved = outcomes.find((o) => o.key === outcome.key);
+                  const moved = payload.outcomes.find((o) => o.key === outcome.key);
                   return moved ? { ...outcome, priceBps: moved.priceBps, volume: moved.volume } : outcome;
                 }),
               }

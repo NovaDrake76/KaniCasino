@@ -696,6 +696,7 @@
     "backToMarkets": "Kembali ke pasar",
     "bought": "Beli {{count}} bagian seharga {{amount}} K₽",
     "buy": "Beli",
+    "chance": "peluang {{percent}}%",
     "couldNotQuote": "Tidak bisa menghitung harga transaksi itu",
     "daysAgo": "{{count}}h lalu",
     "ended": "Berakhir",

@@ -696,6 +696,7 @@
     "backToMarkets": "Volver a los mercados",
     "bought": "Compraste {{count}} participaciones por {{amount}} K₽",
     "buy": "Comprar",
+    "chance": "{{percent}}% de probabilidad",
     "couldNotQuote": "No se pudo cotizar esa operación",
     "daysAgo": "hace {{count}}d",
     "ended": "Finalizado",
