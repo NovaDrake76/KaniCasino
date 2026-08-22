@@ -51,6 +51,16 @@ const json = (body: unknown) => (route: Route) =>
 
 async function mockApi(page: Page, detail = market) {
   await page.addInitScript(() => localStorage.setItem("kani.onboardingSeen", "1"));
+
+  // registered first so every mock below wins over it. anything left unmocked is aborted
+  // rather than allowed out: a dev backend listening on the api port would answer a test
+  // token with a 401, and a 401 clears the session and puts the sign-in modal over the page.
+  await page.route("**/*", (route) => {
+    const url = route.request().url();
+    const ours = url.includes("localhost:4173") || url.startsWith("data:") || url.startsWith("blob:");
+    return ours ? route.fallback() : route.abort();
+  });
+
   const board = { predictions: [market, threeWay, settled], totalPages: 1, currentPage: 1, categories: ["Waifu"] };
   const series = detail.outcomes.map((o) => ({
     key: o.key,
@@ -130,6 +140,59 @@ test("a resolved market says so and names the outcome", async ({ page }) => {
   await page.goto("/predictions/who-won");
   await expect(page.getByText("Resolved: Yes")).toBeVisible();
   await expect(page.getByText("Counted on monday")).toBeVisible();
+});
+
+// the panel is only interactive for somebody logged in, and the quote is a round trip, so
+// these mock the session and hold the quote open on purpose
+async function asTrader(page: Page, held = 40, quoteDelayMs = 400) {
+  await page.addInitScript(() => {
+    localStorage.setItem("accessToken", "test-token");
+    localStorage.setItem("kani.onboardingSeen", "1");
+  });
+  await page.route(/\/users\/me$/, json({ _id: "u1", id: "u1", username: "trader", walletBalance: 5000, level: 9, profilePicture: "" }));
+  const mine = {
+    ...market,
+    outcomes: market.outcomes.map((o, i) => (i === 0 ? { ...o, shares: held, avgPriceBps: 5000, spent: 20 } : o)),
+  };
+  await page.route(/\/predictions\/[^/?]+(\?.*)?$/, json(mine));
+  await page.route(/\/predictions\/[^/]+\/quote/, async (route) => {
+    await new Promise((done) => setTimeout(done, quoteDelayMs));
+    const body = route.request().postDataJSON();
+    await route.fulfill({
+      json: { shares: body.shares, amount: body.shares, avgPriceBps: 5000, startBps: 6200, endBps: 6300, prices: [6300, 4100], held },
+    });
+  });
+}
+
+test("the trade button waits for the quote instead of showing a stale number", async ({ page }) => {
+  await mockApi(page);
+  await asTrader(page, 40, 900);
+  await page.goto("/predictions/kanna-sweeps");
+  await expect(page.getByRole("button", { name: "Buy", exact: true }).last()).toBeVisible();
+
+  await page.locator("input[inputmode=numeric]").fill("25");
+  // while it is in flight the action is not offered, so nobody trades against a number
+  // that is about to change
+  await expect(page.getByRole("button", { name: /Pricing/ })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Buy", exact: true }).last()).toBeEnabled({ timeout: 8000 });
+});
+
+test("selling offers half and all, and will not take more than is held", async ({ page }) => {
+  await mockApi(page);
+  await asTrader(page, 40);
+  await page.goto("/predictions/kanna-sweeps");
+  await page.getByRole("button", { name: "Sell", exact: true }).first().click();
+
+  const field = page.locator("input[inputmode=numeric]");
+  await page.getByRole("button", { name: "Half" }).click();
+  await expect(field).toHaveValue("20");
+
+  await page.getByRole("button", { name: /^All/ }).click();
+  await expect(field).toHaveValue("40");
+
+  // typing past the holding is clamped rather than quoted and refused
+  await field.fill("999");
+  await expect(field).toHaveValue("40");
 });
 
 test("the market page fits a phone without scrolling sideways", async ({ page }) => {
