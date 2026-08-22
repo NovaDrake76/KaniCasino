@@ -3,6 +3,10 @@ const Item = require("../models/Item");
 const { creditUser, TX } = require("./economy");
 const fandom = require("./fandom");
 const { sellValue } = require("./itemValue");
+const { entriesFor } = require("./inventoryCounts");
+
+// a copy moving elsewhere between the read and the write is rare and self-clearing
+const ATTEMPTS = 3;
 
 // shared, race-safe core behind both the inventory-sell endpoint and the
 // collections quicksell. it pulls the given inventory entries (by uniqueId) in a
@@ -21,16 +25,28 @@ async function sellUniqueIds(userId, ids, extraMeta = {}) {
     return { sold: 0, value: 0, walletBalance: null, removed: [] };
   }
 
-  // atomic pull; the pre-image (no {new:true}) is exactly what this write removed
-  const before = await User.findOneAndUpdate(
-    { _id: userId },
-    { $pull: { inventory: { uniqueId: { $in: idList } } } }
-  );
-  if (!before) return null;
-
-  const removed = before.inventory.filter((i) => i && idList.includes(i.uniqueId));
-  if (!removed.length) {
-    return { sold: 0, value: 0, walletBalance: before.walletBalance, removed: [] };
+  // the copies are read scoped and then pulled all-or-nothing, so one going elsewhere in
+  // between makes the write miss entirely rather than half-succeed and over-credit
+  let removed = [];
+  let before = null;
+  for (let attempt = 0; attempt < ATTEMPTS && !before; attempt++) {
+    removed = await entriesFor(userId, { uniqueIds: idList });
+    if (!removed.length) {
+      const owner = await User.findById(userId).select("walletBalance");
+      if (!owner) return null;
+      return { sold: 0, value: 0, walletBalance: owner.walletBalance, removed: [] };
+    }
+    const present = removed.map((entry) => entry.uniqueId);
+    before = await User.findOneAndUpdate(
+      { _id: userId, "inventory.uniqueId": { $all: present } },
+      { $pull: { inventory: { uniqueId: { $in: present } } } },
+      { projection: { walletBalance: 1 } }
+    );
+  }
+  if (!before) {
+    const owner = await User.findById(userId).select("walletBalance");
+    if (!owner) return null;
+    return { sold: 0, value: 0, walletBalance: owner.walletBalance, removed: [] };
   }
 
   // authoritative prices from the live catalog, never from a client-sent snapshot

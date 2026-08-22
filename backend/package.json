@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --runInBand",
     "test:unit": "jest --runInBand __tests__/unit",
-    "test:integration": "jest --runInBand __tests__/integration"
+    "test:integration": "jest --runInBand __tests__/integration",
+    "check:reads": "node scripts/checkUserReads.js"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@babel/parser": "^7.29.8",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^10.4.3",
     "socket.io-client": "^4.8.3",

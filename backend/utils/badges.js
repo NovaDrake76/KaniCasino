@@ -141,6 +141,7 @@ async function sweepCollections(io) {
 
   // an inventory shorter than the smallest collection cannot complete anything, which
   // skips most accounts before their items are ever read
+  // inventory-read: the sweep asks whether a whole collection is held, one account at a time
   const cursor = User.find({ $expr: { $gte: [{ $size: { $ifNull: ["$inventory", []] } }, smallest] } })
     .select("inventory badges")
     .lean()

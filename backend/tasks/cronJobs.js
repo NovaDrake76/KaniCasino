@@ -13,7 +13,9 @@ module.exports = {
         cron.schedule('0 20 * * 3', async () => {
             try {
                 //get the top 3 users and set the next bonus to 10000, 5000, 2500
-                const topUsers = await User.find({}).sort({ weeklyWinnings: -1 }).limit(3);
+                const topUsers = await User.find({}, { username: 1, weeklyWinnings: 1, walletBalance: 1 })
+                    .sort({ weeklyWinnings: -1 })
+                    .limit(3);
                 const bonus = [10000, 5000, 2500];
                 for (let i = 0; i < topUsers.length; i++) {
                     const user = topUsers[i];

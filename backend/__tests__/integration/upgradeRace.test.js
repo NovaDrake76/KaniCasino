@@ -41,12 +41,12 @@ test("an item sold mid-upgrade does not take the other items with it", async () 
   const { user, target } = await scenario();
 
   // the race, forced: the upgrade reads three items, and "c" is sold from under it
-  // before it consumes anything
-  const realFindById = User.findById.bind(User);
-  jest.spyOn(User, "findById").mockImplementationOnce(async (id) => {
-    const doc = await realFindById(id);
+  // before it consumes anything. the read is the aggregation that picks the staked copies.
+  const realAggregate = User.aggregate.bind(User);
+  jest.spyOn(User, "aggregate").mockImplementationOnce(async (pipeline) => {
+    const rows = await realAggregate(pipeline);
     await User.updateOne({ _id: user._id }, { $pull: { inventory: { uniqueId: "c" } } });
-    return doc;
+    return rows;
   });
 
   const res = await upgradeItems(user._id.toString(), ["a", "b", "c"], target._id.toString());
