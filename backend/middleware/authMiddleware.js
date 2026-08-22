@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const User = require("../models/User");
+const { WITHOUT_INVENTORY } = require("../utils/economy");
 
 
 const isAuthenticated = async (req, res, next) => {
@@ -20,7 +21,9 @@ const isAuthenticated = async (req, res, next) => {
   // Verify the token
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select("-password");
+    // no route reads an inventory off req.user, and it reaches 21k entries: carrying it
+    // here cost the deepest account 20 seconds on every authenticated request
+    const user = await User.findById(decoded.userId).select({ password: 0, ...WITHOUT_INVENTORY });
 
     // a valid token for an account that no longer exists is not a session
     if (!user) {
