@@ -2,6 +2,15 @@
 // a pure function: this is the part that decides whether a hundred-ball run finishes.
 export type AutoStep = "fire" | "wait" | "done" | "broke";
 
+// what a finished drop request means for the run. a refusal the server calls retryable is
+// the board being busy, not the player being out of money, so it costs a tick and no ball.
+export type DropOutcome = "ok" | "retry" | "stop";
+
+// 503 is the server saying it lost a race with another drop; 429 is its own rate limit.
+// both clear on their own, so neither should end a hundred-ball run.
+export const outcomeFor = (status?: number): DropOutcome =>
+  status === 503 || status === 429 ? "retry" : "stop";
+
 export interface AutoState {
   left: number;
   inFlight: number;
@@ -11,7 +20,9 @@ export interface AutoState {
 }
 
 export const autoStep = ({ left, inFlight, available, bet, maxInFlight }: AutoState): AutoStep => {
-  if (left <= 0) return "done";
+  // a ball still in the air may yet come back needing another try, so the run is only
+  // finished once the board is clear as well as the count
+  if (left <= 0) return inFlight > 0 ? "wait" : "done";
   // the board is full: skip this tick without spending a ball, so the run paces itself
   // against how fast balls actually land rather than against a fixed timer
   if (inFlight >= maxInFlight) return "wait";

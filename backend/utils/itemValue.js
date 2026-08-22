@@ -63,7 +63,10 @@ async function recomputeCaseValues(caseId) {
   const ops = Object.entries(values).map(([id, v]) => ({
     updateOne: { filter: { _id: id }, update: { $set: { baseValue: v } } },
   }));
-  if (ops.length) await Item.bulkWrite(ops);
+  if (ops.length) {
+    await Item.bulkWrite(ops);
+    require("./itemCatalog").invalidate(); // bulkWrite fires no model hook
+  }
 
   const { total, rangeTable, configHash, rarityTableVersion } = buildRangeTable(caseDoc);
   if (configHash && configHash !== caseDoc.configHash) {

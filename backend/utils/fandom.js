@@ -4,6 +4,7 @@ const Item = require("../models/Item");
 const FanBoard = require("../models/FanBoard");
 const CollectorBoard = require("../models/CollectorBoard");
 const { visible } = require("./visibility");
+const itemCatalog = require("./itemCatalog");
 
 // how many chasers a board keeps. deep enough that anyone in touching distance sees
 // themselves, short enough that a board document stays small.
@@ -15,8 +16,8 @@ const COLLECTORS_KEPT = 100;
 // the same character can appear in more than one case, as separate item rows sharing a
 // name. the name is the character, so every id behind it counts toward the same board.
 async function charactersByName(names) {
-  const filter = names && names.length ? { name: { $in: names } } : {};
-  const items = await Item.find(filter).select("name image rarity case").lean();
+  const wanted = names && names.length ? new Set(names) : null;
+  const items = (await itemCatalog.all()).filter((item) => !wanted || wanted.has(item.name));
   const byName = new Map();
   for (const item of items) {
     let entry = byName.get(item.name);
@@ -51,23 +52,12 @@ function namesById(byName) {
 }
 
 // the whole catalog keyed by item id, for a caller holding a raw inventory and nothing else
-async function namesByItemId() {
-  const items = await Item.find({}).select("name").lean();
-  return new Map(items.map((item) => [String(item._id), item.name]));
-}
+const namesByItemId = () => itemCatalog.namesById();
 
 // a player's standing is counted only for the character they pinned. holding thousands of
 // everything else is worth nothing here, which is what keeps one rich account from owning
 // every board. items listed on the market are pulled out of the inventory, so they stop
-// counting while they are for sale.
-function countPinned(user, character) {
-  if (!character) return 0;
-  let held = 0;
-  for (const entry of user.inventory || []) {
-    if (isCopyOf(entry, character)) held += 1;
-  }
-  return held;
-}
+// counting while they are for sale. both counting paths below hold to that.
 
 // how close the chase is: the leader's margin over the runner-up. a board with no leader
 // or nobody behind them is not a contest at all.
@@ -92,58 +82,83 @@ function byCollection(a, b) {
   return String(a.userId).localeCompare(String(b.userId));
 }
 
+// every account's holdings, counted inside mongo. this used to stream each inventory back
+// to the app to count it here: 31 MB every ten minutes over a link that carries about
+// 100 KB/s, which left it busy more than half the time for one cron job. only the totals
+// come back now, and only for accounts that hold something.
+//
+// the join is what turns entries into characters, so an entry whose catalog row has since
+// been deleted drops out. that is the same thing the boards already say: a character
+// nobody can hold has no board.
+async function countHoldings() {
+  const carry = { pinned: { $first: "$pinned" } };
+  return User.aggregate([
+    { $match: visible() },
+    { $project: { pinned: "$fixedItem.name", inventory: { $ifNull: ["$inventory", []] } } },
+    { $unwind: "$inventory" },
+    // collapse to one row per copy stack first, so the join runs per item held rather
+    // than per copy: a deep inventory is thousands of entries and a handful of items
+    { $group: { _id: { user: "$_id", item: "$inventory._id" }, n: { $sum: 1 }, ...carry } },
+    { $lookup: { from: "items", localField: "_id.item", foreignField: "_id", as: "catalog" } },
+    { $unwind: "$catalog" },
+    // the same character can come from more than one case, so the name is the group
+    { $group: { _id: { user: "$_id.user", name: "$catalog.name" }, n: { $sum: "$n" }, ...carry } },
+    {
+      $group: {
+        _id: "$_id.user",
+        distinct: { $sum: 1 },
+        total: { $sum: "$n" },
+        count: { $sum: { $cond: [{ $eq: ["$_id.name", "$pinned"] }, "$n", 0] } },
+      },
+    },
+  ]);
+}
+
 // one pass over every account: the pinned boards and the collection board come out of the
-// same stream, because loading every inventory twice is the expensive part.
+// same counts, because counting every inventory twice is the expensive part.
 async function sweep() {
   const byName = await charactersByName();
   const known = new Set(byName.keys());
-  const nameById = namesById(byName);
   const pinned = new Map();
   const collectors = [];
 
-  const cursor = User.find(visible())
-    .select("username profilePicture level fixedItem fixedAt inventory")
-    .lean()
-    .cursor();
+  // the roster is read without inventories, so someone who pinned a character and holds
+  // none of it still gets their row on the board
+  const [people, holdings] = await Promise.all([
+    User.find(visible()).select("username profilePicture level fixedItem fixedAt").lean(),
+    countHoldings(),
+  ]);
+  const held = new Map(holdings.map((row) => [String(row._id), row]));
 
-  for await (const user of cursor) {
-    const seen = new Set();
-    let total = 0;
-    for (const entry of user.inventory || []) {
-      if (!entry) continue;
-      const name = nameById.get(String(entry._id)) || (known.has(entry.name) ? entry.name : null);
-      if (!name) continue;
-      seen.add(name);
-      total += 1;
-    }
-    if (seen.size) {
+  for (const person of people) {
+    const mine = held.get(String(person._id));
+    if (mine && mine.distinct) {
       collectors.push({
-        userId: user._id,
-        username: user.username,
-        profilePicture: user.profilePicture,
-        level: user.level,
-        distinct: seen.size,
-        total,
+        userId: person._id,
+        username: person.username,
+        profilePicture: person.profilePicture,
+        level: person.level,
+        distinct: mine.distinct,
+        total: mine.total,
       });
     }
 
-    const name = user.fixedItem && user.fixedItem.name;
+    const name = person.fixedItem && person.fixedItem.name;
     if (!name) continue;
-    const character = byName.get(name);
     // a pinned item whose row has since been removed names a character nobody can hold
     // any more, so it gets no board rather than an empty one
-    if (!character) continue;
+    if (!byName.get(name)) continue;
 
     pinned.set(name, pinned.get(name) || []);
     pinned.get(name).push({
-      userId: user._id,
-      username: user.username,
-      profilePicture: user.profilePicture,
-      level: user.level,
-      count: countPinned(user, character),
+      userId: person._id,
+      username: person.username,
+      profilePicture: person.profilePicture,
+      level: person.level,
+      count: mine ? mine.count : 0,
       // accounts that pinned before this shipped have no fixedAt, so they fall back to
       // when the account itself was made
-      since: user.fixedAt || user._id.getTimestamp(),
+      since: person.fixedAt || person._id.getTimestamp(),
     });
   }
 
@@ -399,7 +414,6 @@ module.exports = {
   charactersByName,
   namesByItemId,
   isCopyOf,
-  countPinned,
   byStanding,
   byCollection,
   RANKS_KEPT,

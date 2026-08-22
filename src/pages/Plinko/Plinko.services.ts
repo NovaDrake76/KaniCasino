@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 import { dropPlinko } from "../../services/games/GamesServices";
 import { DROP_DURATION_S, MAX_BET, PlinkoRisk } from "./plinkoBoard";
-import { autoStep } from "./autoRun";
+import { DropOutcome, autoStep, outcomeFor } from "./autoRun";
 import { PlinkoBall, PlinkoDropResult } from "./Plinko.types";
 import i18n from "../../i18n";
 
@@ -47,14 +47,14 @@ export const usePlinkoServices = () => {
     pendingStake.current = Math.max(0, pendingStake.current - stake);
   };
 
-  const fireDrop = async (): Promise<boolean> => {
+  const fireDrop = async (): Promise<DropOutcome> => {
     if (userData == null) {
       toogleUserFlow(true);
-      return false;
+      return "stop";
     }
     if (available() < betValue) {
       toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
-      return false;
+      return "stop";
     }
     const stake = betValue;
     pendingStake.current += stake;
@@ -67,11 +67,16 @@ export const usePlinkoServices = () => {
       // balance on its own schedule, and a dropped frame must not strand a stake and
       // lock a player out of money they still have
       window.setTimeout(() => releaseStake(stake), DROP_DURATION_S * 1000);
-      return true;
+      return "ok";
     } catch (error: any) {
       releaseStake(stake);
-      toast.error(error?.response?.data?.message || "Could not drop the ball", { theme: "dark" });
-      return false;
+      const outcome = outcomeFor(error?.response?.status);
+      // a retryable refusal is the server being busy, so it is not worth a toast every
+      // time; the run simply tries that ball again
+      if (outcome === "stop") {
+        toast.error(error?.response?.data?.message || "Could not drop the ball", { theme: "dark" });
+      }
+      return outcome;
     } finally {
       setPendingDrops((n) => n - 1);
     }
@@ -119,9 +124,16 @@ export const usePlinkoServices = () => {
       if (step === "wait") return;
       autoLeftRef.current -= 1;
       setAutoLeft(autoLeftRef.current);
-      const ok = await fireDropRef.current();
-      if (!ok) stopAuto();
-      else if (autoLeftRef.current <= 0) stopAuto();
+      const outcome = await fireDropRef.current();
+      if (outcome === "retry") {
+        // hand the ball back: the server refused for something that clears on its own,
+        // so the run still finishes every ball it was asked for
+        autoLeftRef.current += 1;
+        setAutoLeft(autoLeftRef.current);
+        return;
+      }
+      if (outcome === "stop") return stopAuto();
+      if (autoLeftRef.current <= 0) stopAuto();
     };
     tick();
     autoTimer.current = setInterval(tick, AUTO_DROP_INTERVAL_MS);
@@ -135,6 +147,7 @@ export const usePlinkoServices = () => {
     if (!canDrop) return;
     fireDrop();
   };
+
 
   // guarded by key so a duplicate animation-complete cannot double-record a ball
   const settleBall = useCallback((ball: PlinkoBall) => {

@@ -1,5 +1,6 @@
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const mongoose = require("mongoose");
+const itemCatalog = require("../../utils/itemCatalog");
 
 let mongod;
 
@@ -13,6 +14,8 @@ async function clearDb() {
   for (const key of Object.keys(collections)) {
     await collections[key].deleteMany({});
   }
+  // these wipes go through the raw driver, so no model hook fires to clear the catalog
+  itemCatalog.invalidate();
 }
 
 async function teardownDb() {

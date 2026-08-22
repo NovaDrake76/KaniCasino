@@ -1,3 +1,4 @@
+const User = require("../models/User");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
@@ -39,7 +40,13 @@ class PlinkoGameController {
             meta: { betAmount, risk },
         });
         if (!player) {
-            throw httpError(400, "Insufficient balance");
+            // a null charge is both "no money" and "the write lost a race with another
+            // drop"; only one of those is the player's fault, and an auto run that stops
+            // on the wrong one is exactly what got reported
+            const funded = await User.exists({ _id: userId, walletBalance: { $gte: betAmount } });
+            throw funded
+                ? httpError(503, "That drop could not be placed, try again")
+                : httpError(400, "Insufficient balance");
         }
 
         // derive the peg path from the seed (one draw per row) and price the landing bin
