@@ -369,3 +369,15 @@ describe("buy orders", () => {
     expect(res.body.orders[1]).toEqual({ price: 50, quantity: 1 });
   });
 });
+
+test("the browse grid leaves out the description it never renders", async () => {
+  const item = await Item.create({ name: `d-${uniqueSuffix()}`, image: "x", rarity: "3", baseValue: 100, description: "a long line of flavour text nobody sees here" });
+
+  const res = await request(app).get("/marketplace").set(...auth(await makeUser()));
+
+  expect(res.status).toBe(200);
+  const row = res.body.items.find((i) => String(i._id) === String(item._id));
+  expect(row).toBeTruthy();
+  expect(row.name).toBe(item.name);
+  expect(row).not.toHaveProperty("description");
+});
