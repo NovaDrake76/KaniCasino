@@ -5,16 +5,19 @@ const Case = require("../models/Case");
 const Transaction = require("../models/Transaction");
 const { accountBalance, ledgerSupply, TX, STAKE_TYPES } = require("./economy");
 const { HOUSE, MINT, ESCROW, GENESIS } = require("./accounts");
+const PM = require("./predictionMath");
 
 const PAGE_SIZE = 20;
 
 // KP-paying game wins and stake returns, for daily series and big-win surfacing
-const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN];
-const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND];
+const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.PREDICTION_PAYOUT];
+const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND, TX.PREDICTION_REFUND];
 // KP printed to players outside the games
 const FAUCET_TYPES = [TX.SIGNUP, TX.BONUS, TX.MISSION_REWARD, TX.REFERRAL_BONUS, TX.REFERRAL_MILESTONE, TX.AD_REWARD];
 // designed edges per game, so the realized return can be judged against intent
-const THEO_RTP = { crash: 0.9603, coinflip: 0.97, slots: 0.9645, plinko: 0.9655, blackjack: 0.9943, dice: 0.99, mines: 0.99, hilo: 0.99, cases: 0.9, battles: 0.9 };
+// predictions is the one line whose theoretical return falls out of its configuration
+// rather than a designed constant: a book that sums to 1 + vig returns 1 / (1 + vig)
+const THEO_RTP = { crash: 0.9603, coinflip: 0.97, slots: 0.9645, plinko: 0.9655, blackjack: 0.9943, dice: 0.99, mines: 0.99, hilo: 0.99, cases: 0.9, battles: 0.9, predictions: PM.ONE / (PM.ONE + PM.DEFAULT_VIG_BPS) };
 
 // window start, or null for all-time
 const sinceFor = (days) => {
@@ -54,6 +57,7 @@ const GAME_LINES = [
   { game: "hilo", bets: [TX.HILO_BET], outs: [TX.HILO_WIN] },
   { game: "cases", bets: [TX.CASE_OPEN], outs: [] },
   { game: "battles", bets: [TX.BATTLE_ENTRY], outs: [TX.BATTLE_REFUND] },
+  { game: "predictions", bets: [TX.PREDICTION_BUY], outs: [TX.PREDICTION_SELL, TX.PREDICTION_PAYOUT, TX.PREDICTION_REFUND] },
 ];
 
 // blackjack charges BLACKJACK_BET again on double/split/insurance, so a raw debit

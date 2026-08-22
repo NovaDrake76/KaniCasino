@@ -293,4 +293,161 @@ router.put(
   }
 );
 
+// ---- prediction markets ----
+
+const Prediction = require("../models/Prediction");
+const PredictionPosition = require("../models/PredictionPosition");
+const settlement = require("../utils/predictionSettlement");
+const { DEFAULT_VIG_BPS, DEFAULT_IMPACT_BPS } = require("../utils/predictionMath");
+
+const slugify = (title) =>
+  String(title)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+
+// a market the admin writes is still text a player reads, so it goes through the filter
+function cleanText(...parts) {
+  const hit = parts.filter(Boolean).map((t) => nameFilter.findSlur(String(t))).find(Boolean);
+  return hit || null;
+}
+
+router.get("/predictions", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const rows = await Prediction.find(req.query.status ? { status: req.query.status } : {})
+      .sort({ status: 1, createdAt: -1 })
+      .limit(200)
+      .lean();
+    const exposure = rows.map((r) => ({
+      ...r,
+      // the worst case, which is the number worth looking at on this screen
+      worstCase: Math.max(0, ...r.outcomes.map((o) => o.shares)),
+    }));
+    res.json({ predictions: exposure });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/predictions", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const { title, description, image, category, endsAt, outcomes, vigBps, impactBps, exposureCap } = req.body;
+    if (!title || !Array.isArray(outcomes) || outcomes.length < 2) {
+      return res.status(400).json({ message: "A market needs a title and at least two outcomes" });
+    }
+    if (outcomes.length > 8) return res.status(400).json({ message: "A market takes at most eight outcomes" });
+
+    const labels = outcomes.map((o) => (typeof o === "string" ? o : o.label)).filter(Boolean);
+    if (labels.length !== outcomes.length) return res.status(400).json({ message: "Every outcome needs a label" });
+
+    const dirty = cleanText(title, description, ...labels);
+    if (dirty) return res.status(400).json({ message: "That wording is not allowed" });
+
+    const vig = Number.isFinite(Number(vigBps)) ? Math.max(0, Math.min(3000, Number(vigBps))) : DEFAULT_VIG_BPS;
+    const base = slugify(title) || "market";
+    let slug = base;
+    for (let n = 2; await Prediction.exists({ slug }); n++) slug = `${base}-${n}`;
+
+    const prediction = await Prediction.create({
+      slug,
+      title,
+      description: description || "",
+      image,
+      category: category || "General",
+      endsAt: endsAt ? new Date(endsAt) : undefined,
+      outcomes: Prediction.openBook(outcomes, vig),
+      vigBps: vig,
+      impactBps: Number(impactBps) > 0 ? Number(impactBps) : DEFAULT_IMPACT_BPS,
+      exposureCap: Number(exposureCap) > 0 ? Number(exposureCap) : undefined,
+      createdBy: req.user._id,
+    });
+    res.status(201).json(prediction);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// only the wording, the clock and the cap. prices and outcomes belong to the traders now.
+// impact is the exception: it is the shape of the curve everyone has already traded against,
+// so it can only be changed while nobody has, which is the window where a first market's
+// number turns out to be wrong.
+router.put("/predictions/:id", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const { title, description, image, category, endsAt, exposureCap, impactBps } = req.body;
+    const dirty = cleanText(title, description);
+    if (dirty) return res.status(400).json({ message: "That wording is not allowed" });
+
+    const set = {};
+    if (title) set.title = title;
+    if (description !== undefined) set.description = description;
+    if (image !== undefined) set.image = image;
+    if (category) set.category = category;
+    if (endsAt !== undefined) set.endsAt = endsAt ? new Date(endsAt) : null;
+    if (Number(exposureCap) > 0) set.exposureCap = Number(exposureCap);
+
+    const current = await Prediction.findById(req.params.id);
+    if (!current) return res.status(404).json({ message: "That market does not exist" });
+    if (Number(impactBps) > 0 && Number(impactBps) !== current.impactBps) {
+      if (current.volume > 0) {
+        return res.status(400).json({ message: "This market has been traded, its price impact is fixed now" });
+      }
+      set.impactBps = Number(impactBps);
+    }
+
+    const prediction = await Prediction.findByIdAndUpdate(req.params.id, { $set: set }, { new: true });
+    res.json(prediction);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/predictions/:id/close", isAuthenticated, isAdmin, async (req, res) => {
+  const result = await settlement.closeMarket(req.params.id);
+  if (result.error) return res.status(400).json({ message: result.error });
+  res.json(result.prediction);
+});
+
+router.post("/predictions/:id/reopen", isAuthenticated, isAdmin, async (req, res) => {
+  const result = await settlement.reopenMarket(req.params.id);
+  if (result.error) return res.status(400).json({ message: result.error });
+  res.json(result.prediction);
+});
+
 module.exports = router;
+
+// resolving pays people, and paying people has to reach their sockets. index.js hands the
+// io instance over once at boot; the rest of this router never needed it.
+let settlementAttached = false;
+module.exports.attachPredictionSettlement = (io) => {
+  if (settlementAttached) return;
+  settlementAttached = true;
+
+  router.post("/predictions/:id/resolve", isAuthenticated, isAdmin, async (req, res) => {
+    const result = await settlement.resolveMarket({
+      predictionId: req.params.id,
+      outcomeKey: req.body.outcome,
+      adminId: req.user._id,
+      note: req.body.note,
+      io,
+    });
+    if (result.error) return res.status(400).json({ message: result.error });
+    res.json(result);
+  });
+
+  router.post("/predictions/:id/void", isAuthenticated, isAdmin, async (req, res) => {
+    const result = await settlement.voidMarket({
+      predictionId: req.params.id,
+      adminId: req.user._id,
+      note: req.body.note,
+      io,
+    });
+    if (result.error) return res.status(400).json({ message: result.error });
+    res.json(result);
+  });
+};

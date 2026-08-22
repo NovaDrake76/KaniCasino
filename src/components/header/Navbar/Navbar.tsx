@@ -6,7 +6,7 @@ import { clearTokens } from "../../../services/auth/authUtils";
 import { me } from "../../../services/auth/auth";
 import "react-loading-skeleton/dist/skeleton.css";
 import { MdOutlineSell, MdOutlineAdminPanelSettings } from "react-icons/md";
-import { BsHeartFill, BsListCheck } from "react-icons/bs";
+import { BsHeartFill, BsListCheck, BsGraphUpArrow } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { FaBars, FaGift } from 'react-icons/fa';
 import RightContent from "./RightContent";
@@ -76,6 +76,11 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       name: i18n.t("nav.market"),
       path: "/marketplace",
       icon: <MdOutlineSell className="text-2xl" />,
+    },
+    {
+      name: i18n.t("predictions.title"),
+      path: "/predictions",
+      icon: <BsGraphUpArrow className="text-2xl" />,
     },
     {
       name: i18n.t("nav.topFan"),

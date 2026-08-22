@@ -130,3 +130,50 @@ export const getAdminBigWins = async (days: number | null): Promise<AdminBigWin[
 
 export const getAdminPlayerDetail = async (id: string, days: number | null): Promise<AdminPlayerDetail> =>
   (await api.get(`/admin/stats/users/${id}`, { params: withDays(days) })).data;
+
+export interface AdminMarket {
+  _id: string;
+  slug: string;
+  title: string;
+  description: string;
+  image?: string;
+  category: string;
+  status: "open" | "closed" | "resolved" | "void";
+  endsAt?: string;
+  volume: number;
+  traders: number;
+  vigBps: number;
+  exposureCap: number;
+  resolvedOutcome?: string;
+  resolutionNote?: string;
+  // the most the house would owe if the worst outcome came true
+  worstCase: number;
+  outcomes: { key: string; label: string; image?: string; priceBps: number; shares: number; volume: number }[];
+}
+
+export interface NewMarket {
+  title: string;
+  description?: string;
+  image?: string;
+  category?: string;
+  endsAt?: string | null;
+  outcomes: string[];
+  impactBps?: number;
+  exposureCap?: number;
+}
+
+export const getAdminMarkets = async (status?: string): Promise<AdminMarket[]> =>
+  (await api.get("/admin/predictions", { params: status ? { status } : {} })).data.predictions;
+
+export const createAdminMarket = async (body: NewMarket): Promise<AdminMarket> =>
+  (await api.post("/admin/predictions", body)).data;
+
+export const closeAdminMarket = async (id: string) => (await api.post(`/admin/predictions/${id}/close`)).data;
+
+export const reopenAdminMarket = async (id: string) => (await api.post(`/admin/predictions/${id}/reopen`)).data;
+
+export const resolveAdminMarket = async (id: string, outcome: string, note: string) =>
+  (await api.post(`/admin/predictions/${id}/resolve`, { outcome, note })).data;
+
+export const voidAdminMarket = async (id: string, note: string) =>
+  (await api.post(`/admin/predictions/${id}/void`, { note })).data;

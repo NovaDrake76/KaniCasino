@@ -16,6 +16,7 @@ import {
 } from "../../services/admin/AdminServices";
 import { Window } from "./Backoffice.services";
 import AdminChart from "./AdminChart";
+import PredictionsAdmin from "./PredictionsAdmin";
 import { CHART_AMBER, CHART_INDIGO, fillDays } from "./adminSeries";
 
 interface Props {
@@ -53,6 +54,7 @@ const GAME_LABELS: Record<string, string> = {
   hilo: "HiLo",
   cases: "Case openings",
   battles: "Case battles",
+  predictions: "Predictions",
 };
 
 const WIN_LABELS: Record<string, string> = {
@@ -416,6 +418,10 @@ const BackofficeView: React.FC<Props> = ({
                 mode="lines"
               />
             </div>
+
+            <Panel title="Prediction markets">
+              <PredictionsAdmin />
+            </Panel>
 
             <Panel title={`Games (${windowText}, most profitable first)`}>
               <div className="overflow-x-auto">

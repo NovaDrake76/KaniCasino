@@ -47,6 +47,27 @@ const isAuthenticated = async (req, res, next) => {
   }
 };
 
+// a page that reads fine logged out but reads better logged in: attach the user when there
+// is a usable token and carry on either way, so a stale token degrades to a guest view
+// rather than a 401 on a public page.
+const maybeAuthenticated = async (req, res, next) => {
+  const authHeader = req.header("Authorization");
+  if (!authHeader) return next();
+  const parts = authHeader.split(" ");
+  if (parts.length !== 2 || parts[0] !== "Bearer") return next();
+
+  try {
+    const decoded = jwt.verify(parts[1], process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select("-password");
+    if (user && !user.disabled && (decoded.tokenVersion || 0) === (user.tokenVersion || 0)) {
+      req.user = user;
+    }
+  } catch (error) {
+    // a guest with a bad token is still a guest
+  }
+  next();
+};
+
 const isAdmin = (req, res, next) => {
 
   if (req.user && req.user.isAdmin) {
@@ -58,5 +79,6 @@ const isAdmin = (req, res, next) => {
 
 module.exports = {
   isAuthenticated,
+  maybeAuthenticated,
   isAdmin,
 };

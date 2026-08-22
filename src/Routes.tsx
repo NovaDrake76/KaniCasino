@@ -23,6 +23,8 @@ import Fandom from "./pages/Fandom/Fandom";
 import FandomBoard from "./pages/Fandom/FandomBoard";
 import ReferralRedirect from "./pages/Affiliates/ReferralRedirect";
 import Backoffice from "./pages/Backoffice/Backoffice";
+import Predictions from "./pages/Predictions/Predictions";
+import PredictionMarket from "./pages/Predictions/Market";
 
 const defaultRoutes = (
   <>
@@ -42,6 +44,8 @@ const defaultRoutes = (
     <Route path="/hilo" element={<Hilo />} />
     <Route path="/battles" element={<Battles />} />
     <Route path="/battles/:id" element={<BattleRoom />} />
+    <Route path="/predictions" element={<Predictions />} />
+    <Route path="/predictions/:slug" element={<PredictionMarket />} />
     <Route path="/fandom" element={<Fandom />} />
     <Route path="/fandom/:name" element={<FandomBoard />} />
     <Route path="/provably-fair" element={<ProvablyFair />} />
