@@ -267,8 +267,11 @@ module.exports = (io) => {
 
       let rows = items.map((item) => {
         const md = byItem.get(item._id.toString());
+        // the grid never renders a description and it is the biggest field on an item, so
+        // it is most of this payload for nothing. the collections page is where one shows.
+        const { description, ...card } = item;
         return {
-          ...item,
+          ...card,
           sellValue: sellValue(item.baseValue),
           cheapestPrice: md ? md.cheapestPrice : null,
           totalListings: md ? md.totalListings : 0,
