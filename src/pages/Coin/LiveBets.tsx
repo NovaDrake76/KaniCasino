@@ -71,7 +71,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
                                 onMouseEnter={() => handleMouseEnter(playerId)}
                                 onMouseLeave={handleMouseLeave}>
                                 <div className="flex items-center gap-2">
-                                    <Avatar image={player.profilePicture} id={playerId} size="small" level={player.level} />
+                                    <Avatar image={player.profilePicture} id={playerId} size="small" level={player.level} noLink />
                                     <span className="font-bold text-sm">{player.username}</span>
                                 </div>
                             </a>
