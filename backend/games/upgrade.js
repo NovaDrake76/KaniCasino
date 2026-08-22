@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Item = require("../models/Item");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
+const fandom = require("../utils/fandom");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
 
 const UPGRADE_ALGO_VERSION = 3; // bump if calculateSuccessRate ever changes
@@ -138,6 +139,10 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
         }
       );
     }
+
+    // both ends of an upgrade can be a pinned character: the copies it ate and the
+    // one it produced
+    await fandom.touch(userId, [...selectedItems.map((invItem) => invItem._id), targetItem._id]);
 
     const rec = await rolls.recordRoll({
       game: "upgrade",

@@ -14,8 +14,9 @@ const COLLECTORS_KEPT = 100;
 
 // the same character can appear in more than one case, as separate item rows sharing a
 // name. the name is the character, so every id behind it counts toward the same board.
-async function charactersByName() {
-  const items = await Item.find({}).select("name image rarity case").lean();
+async function charactersByName(names) {
+  const filter = names && names.length ? { name: { $in: names } } : {};
+  const items = await Item.find(filter).select("name image rarity case").lean();
   const byName = new Map();
   for (const item of items) {
     let entry = byName.get(item.name);
@@ -32,6 +33,29 @@ async function charactersByName() {
   return byName;
 }
 
+// an inventory entry identifies its copy by catalog id; only rows written before name,
+// image and case moved to the catalog still carry a name of their own, so both count.
+const isCopyOf = (entry, character) =>
+  !!entry &&
+  !!character &&
+  (entry.name === character.name || (!!entry._id && character.ids.has(String(entry._id))));
+
+// every catalog id mapped to the character behind it, for the passes that have nothing
+// but an inventory entry to go on
+function namesById(byName) {
+  const map = new Map();
+  for (const character of byName.values()) {
+    for (const id of character.ids) map.set(id, character.name);
+  }
+  return map;
+}
+
+// the whole catalog keyed by item id, for a caller holding a raw inventory and nothing else
+async function namesByItemId() {
+  const items = await Item.find({}).select("name").lean();
+  return new Map(items.map((item) => [String(item._id), item.name]));
+}
+
 // a player's standing is counted only for the character they pinned. holding thousands of
 // everything else is worth nothing here, which is what keeps one rich account from owning
 // every board. items listed on the market are pulled out of the inventory, so they stop
@@ -40,8 +64,7 @@ function countPinned(user, character) {
   if (!character) return 0;
   let held = 0;
   for (const entry of user.inventory || []) {
-    if (!entry) continue;
-    if (entry.name === character.name || (entry._id && character.ids.has(String(entry._id)))) held += 1;
+    if (isCopyOf(entry, character)) held += 1;
   }
   return held;
 }
@@ -74,6 +97,7 @@ function byCollection(a, b) {
 async function sweep() {
   const byName = await charactersByName();
   const known = new Set(byName.keys());
+  const nameById = namesById(byName);
   const pinned = new Map();
   const collectors = [];
 
@@ -86,8 +110,10 @@ async function sweep() {
     const seen = new Set();
     let total = 0;
     for (const entry of user.inventory || []) {
-      if (!entry || !entry.name || !known.has(entry.name)) continue;
-      seen.add(entry.name);
+      if (!entry) continue;
+      const name = nameById.get(String(entry._id)) || (known.has(entry.name) ? entry.name : null);
+      if (!name) continue;
+      seen.add(name);
       total += 1;
     }
     if (seen.size) {
@@ -232,32 +258,59 @@ async function rebuild() {
   return { boards: boards.length, players: standings.size, collectors: collectors.length };
 }
 
+// one board's rows, counted inside mongo. a fan's inventory runs to thousands of entries
+// and this reruns on every drop of a pinned character, so only the total comes back.
+async function countRows(character) {
+  const ids = [...character.ids].map((id) => new mongoose.Types.ObjectId(id));
+  const docs = await User.aggregate([
+    { $match: visible({ "fixedItem.name": character.name }) },
+    {
+      $project: {
+        username: 1,
+        profilePicture: 1,
+        level: 1,
+        fixedAt: 1,
+        count: {
+          $size: {
+            $filter: {
+              input: { $ifNull: ["$inventory", []] },
+              as: "entry",
+              cond: {
+                $or: [
+                  { $eq: ["$$entry.name", character.name] },
+                  { $in: [{ $ifNull: ["$$entry._id", null] }, ids] },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+  ]);
+  return docs.map((doc) => ({
+    userId: doc._id,
+    username: doc.username,
+    profilePicture: doc.profilePicture,
+    level: doc.level,
+    count: doc.count,
+    since: doc.fixedAt || doc._id.getTimestamp(),
+  }));
+}
+
 // pinning is the moment a player cares most about where they stand, so the boards they
 // just joined or left are redone straight away instead of waiting for the next sweep.
 async function refreshCharacters(names) {
   const wanted = [...new Set((names || []).filter(Boolean))];
   if (!wanted.length) return { boards: 0 };
 
-  const byName = await charactersByName();
+  const byName = await charactersByName(wanted);
   const at = new Date();
   const boards = [];
 
   for (const name of wanted) {
     const character = byName.get(name);
     if (!character) continue;
-    const users = await User.find(visible({ "fixedItem.name": name }))
-      .select("username profilePicture level fixedAt inventory")
-      .lean();
-    const rows = users
-      .map((user) => ({
-        userId: user._id,
-        username: user.username,
-        profilePicture: user.profilePicture,
-        level: user.level,
-        count: countPinned(user, character),
-        since: user.fixedAt || user._id.getTimestamp(),
-      }))
-      .sort(byStanding);
+    const rows = (await countRows(character)).sort(byStanding);
     boards.push({
       name,
       image: character.image,
@@ -312,12 +365,40 @@ async function refreshCharacters(names) {
   return { boards: boards.length };
 }
 
+// an inventory change only moves a board when the item was that player's own pinned
+// character. most players pin nothing, so that is the cheap half and it goes first.
+async function touchInventory(userIds, itemIds) {
+  const ids = [...new Set((Array.isArray(userIds) ? userIds : [userIds]).filter(Boolean).map(String))];
+  const items = [...new Set((Array.isArray(itemIds) ? itemIds : [itemIds]).filter(Boolean).map(String))];
+  if (!ids.length || !items.length) return { boards: 0 };
+
+  const users = await User.find({ _id: { $in: ids.map((id) => new mongoose.Types.ObjectId(id)) } })
+    .select("fixedItem.name")
+    .lean();
+  const pinned = new Set(users.map((user) => user.fixedItem && user.fixedItem.name).filter(Boolean));
+  if (!pinned.size) return { boards: 0 };
+
+  const rows = await Item.find({ _id: { $in: items.map((id) => new mongoose.Types.ObjectId(id)) } })
+    .select("name")
+    .lean();
+  return refreshCharacters([...new Set(rows.map((row) => row.name).filter((name) => pinned.has(name)))]);
+}
+
+// a board recount must never be what fails the sale, upgrade or opening that moved
+// the item: the next sweep would put it right anyway
+const touch = (userIds, itemIds) =>
+  touchInventory(userIds, itemIds).catch((err) => console.error("fandom touch:", err.message));
+
 module.exports = {
   rebuild,
   refreshCharacters,
+  touchInventory,
+  touch,
   sweep,
   standingsFrom,
   charactersByName,
+  namesByItemId,
+  isCopyOf,
   countPinned,
   byStanding,
   byCollection,

@@ -12,6 +12,7 @@ const BuyOrder = require("../models/BuyOrder");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
 const { sellValue, marketFee, sellerNet, MARKET_FEE_RATE } = require("../utils/itemValue");
 const market = require("../utils/market");
+const fandom = require("../utils/fandom");
 const { isRealMoneyMode } = require("../utils/mode");
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -205,6 +206,9 @@ module.exports = (io) => {
       if (!results.length) {
         return res.status(404).json({ message: "Item not found in inventory" });
       }
+
+      // a copy on the market has left the inventory, so it stops counting on the board
+      await fandom.touch(user._id, itemDocument._id);
 
       // one copy keeps the original response shape, so existing callers are untouched
       const soldNow = results.filter((r) => r.sold);
@@ -599,6 +603,7 @@ module.exports = (io) => {
         { _id: req.user._id },
         { $push: { inventory: market.inventoryEntryFrom(item) } }
       );
+      await fandom.touch(req.user._id, item.item);
 
       res.json({ message: "Item removed" });
     } catch (err) {

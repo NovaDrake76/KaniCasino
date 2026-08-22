@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Item = require("../models/Item");
 const { creditUser, TX } = require("./economy");
+const fandom = require("./fandom");
 const { sellValue } = require("./itemValue");
 
 // shared, race-safe core behind both the inventory-sell endpoint and the
@@ -53,6 +54,9 @@ async function sellUniqueIds(userId, ids, extraMeta = {}) {
     console.error("sellUniqueIds: credit skipped, user vanished mid-sell", String(userId));
   }
   const walletBalance = updated ? updated.walletBalance : before.walletBalance;
+
+  // selling down a pinned character loses the board too, and the profile shows both
+  await fandom.touch(userId, itemIds);
 
   return { sold: removed.length, value, walletBalance, removed };
 }

@@ -83,9 +83,10 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
           return reply({ error: "You already have a bet this round" });
         }
 
-        // atomically take the stake from the real balance (crash grants no xp).
-        // roundId on the ledger row is what lets a restart work out who to give back.
-        const roundId = String(round._id);
+        // atomically take the stake (crash grants no xp). the round is captured before the
+        // await so the ledger row a restart reads names the same round the bet is on.
+        const activeRound = round;
+        const roundId = String(activeRound._id);
         pendingBets.add(userId);
         let updatedUser;
         try {
@@ -101,10 +102,27 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
           return reply({ error: "Insufficient funds" });
         }
 
+        // a whole round turned over while the charge was in flight: the stake belongs to
+        // a round that is gone, so give it back rather than seat it in the live one free
+        if (round !== activeRound) {
+          const refunded = await creditUser(userId, amount, 0, {
+            type: TX.CRASH_REFUND,
+            meta: { bet: amount, roundId, reason: "round closed mid-bet" },
+          });
+          if (refunded) {
+            io.to(userId.toString()).emit("userDataUpdated", {
+              walletBalance: refunded.walletBalance,
+              xp: refunded.xp,
+              level: refunded.level,
+            });
+          }
+          return reply({ error: "Betting is closed for this round" });
+        }
+
         // the round may have started while the charge was in flight; the stake is
         // already gone, so record it and let the reveal or the boot sweep settle it
         await Round.updateOne(
-          { _id: round._id },
+          { _id: activeRound._id },
           {
             $push: {
               bets: { userId, username: updatedUser.username, amount, payout: 0 },
