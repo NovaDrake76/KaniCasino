@@ -23,8 +23,7 @@ function invalidate() {
 
 // one loader shared by concurrent callers: a cold cache under load must not send the same
 // half-megabyte query several times over
-async function all() {
-  if (cached && Date.now() - loadedAt < TTL_MS) return cached;
+function load() {
   if (!inflight) {
     inflight = Item.find({})
       .lean()
@@ -41,6 +40,26 @@ async function all() {
       });
   }
   return inflight;
+}
+
+// how long a failed background refresh waits before it is worth trying again
+const RETRY_MS = 5000;
+let refreshedAt = 0;
+
+// the ttl is a backstop, not correctness: a real write clears the cache outright, and only
+// a write this process did not make can leave it stale. so an expired copy is served while
+// the refresh runs behind it. blocking on it instead made one request every five minutes
+// wait out the whole catalog read, which on this link is five seconds.
+async function all() {
+  if (cached) {
+    const now = Date.now();
+    if (now - loadedAt >= TTL_MS && now - refreshedAt >= RETRY_MS) {
+      refreshedAt = now;
+      load().catch(() => {}); // stale is still better than making the caller wait
+    }
+    return cached;
+  }
+  return load();
 }
 
 // the filters the market grid uses, matched in memory. name is a case-insensitive

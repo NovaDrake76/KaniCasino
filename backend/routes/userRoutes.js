@@ -13,7 +13,7 @@ const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
 const { loginLimiter, registerLimiter, registerDailyLimiter } = require("../middleware/rateLimit");
 const { sellValue } = require("../utils/itemValue");
-const { creditUser, recordTransaction, runAtomic, TX } = require("../utils/economy");
+const { creditUser, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = require("../utils/economy");
 const { findReferrer, payReferralBonuses } = require("../utils/referrals");
 const { sellUniqueIds } = require("../utils/inventorySell");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
@@ -696,7 +696,7 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
           $inc: { walletBalance: currentBonus },
           $set: { nextBonus, bonusAmount: nextBonusAmount },
         },
-        { new: true, session }
+        { new: true, projection: WITHOUT_INVENTORY, session }
       );
       if (!u) return null;
       await recordTransaction(

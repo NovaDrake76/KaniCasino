@@ -194,6 +194,10 @@ async function ledgerSupply() {
   return -(await accountBalance(MINT));
 }
 
+// what a wallet write hands back. never the inventory: a deep one is two megabytes, and
+// returning it made a single bet a twenty-second write on a 100 KB/s link.
+const WITHOUT_INVENTORY = { inventory: 0 };
+
 // debit `cost` if the balance covers it, with its ledger row in the same transaction:
 // a failed row rolls the charge back and returns null, like insufficient funds
 async function chargeUser(userId, cost, { awardXp = true, type, meta, counterparty, session } = {}) {
@@ -205,7 +209,7 @@ async function chargeUser(userId, cost, { awardXp = true, type, meta, counterpar
     const user = await User.findOneAndUpdate(
       { _id: userId, walletBalance: { $gte: cost } },
       { $inc: inc },
-      { new: true, session: s }
+      { new: true, projection: WITHOUT_INVENTORY, session: s }
     );
     if (!user) return null;
 
@@ -246,7 +250,7 @@ async function creditUser(userId, amount, winnings = 0, { type, meta, counterpar
     const user = await User.findByIdAndUpdate(
       userId,
       { $inc: { walletBalance: amount, weeklyWinnings: winnings } },
-      { new: true, session: s }
+      { new: true, projection: WITHOUT_INVENTORY, session: s }
     );
     if (!user) return null;
 
@@ -275,7 +279,7 @@ async function awardXp(userId, xpAmount) {
   const user = await User.findByIdAndUpdate(
     userId,
     { $inc: { xp: xpAmount } },
-    { new: true }
+    { new: true, projection: WITHOUT_INVENTORY }
   );
   if (!user) return null;
 
@@ -298,6 +302,7 @@ module.exports = {
   accountBalance,
   ledgerSupply,
   runAtomic,
+  WITHOUT_INVENTORY,
   isTransient,
   describeMoneyError,
   probeTransactions,

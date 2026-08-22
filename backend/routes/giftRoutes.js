@@ -8,6 +8,7 @@ const gift = require("../utils/dailyGift");
 const { roll, TOTAL } = require("../utils/provablyFair");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
+const { WITHOUT_INVENTORY } = require("../utils/economy");
 
 const living = (user, now = new Date()) =>
   (user.freeOpens || []).filter((g) => g.remaining > 0 && new Date(g.expiresAt) > now);
@@ -200,7 +201,7 @@ router.post("/spin", isAuthenticated, async (req, res) => {
         giftStreak: streak,
       },
     };
-    const options = { new: true };
+    const options = { new: true, projection: WITHOUT_INVENTORY };
     if (existing) {
       update.$inc = { "freeOpens.$[g].remaining": opens };
       update.$set["freeOpens.$[g].expiresAt"] = expiresAt;

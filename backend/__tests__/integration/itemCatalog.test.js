@@ -60,6 +60,38 @@ describe("the cached item catalog", () => {
     expect((await itemCatalog.namesById()).get(String(item._id))).toBe("Renamed");
   });
 
+  it("serves the expired copy straight away and refreshes behind it", async () => {
+    await makeItem("Yuuma");
+    await itemCatalog.all();
+
+    // a write from outside this process: the model hook never fires, so only the ttl
+    // can notice it
+    await Item.collection.insertOne({ name: "Momiji", image: "m.png", rarity: "3", baseValue: 1 });
+
+    const realNow = Date.now();
+    const clock = jest.spyOn(Date, "now").mockReturnValue(realNow + itemCatalog.TTL_MS + 1);
+
+    // the expired read comes back with what it already had rather than waiting
+    expect((await itemCatalog.all()).map((i) => i.name)).toEqual(["Yuuma"]);
+
+    clock.mockRestore();
+
+    // and the refresh it kicked off behind that read lands on its own
+    for (let i = 0; i < 50 && (await itemCatalog.all()).length < 2; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+    expect((await itemCatalog.all()).map((i) => i.name).sort()).toEqual(["Momiji", "Yuuma"]);
+  });
+
+  it("blocks on a write it made itself, because stale is wrong after that", async () => {
+    await makeItem("Yuuma");
+    await itemCatalog.all();
+
+    await makeItem("Momiji");
+
+    expect((await itemCatalog.all()).map((i) => i.name).sort()).toEqual(["Momiji", "Yuuma"]);
+  });
+
   it("sends one query when several callers ask a cold cache at once", async () => {
     await makeItem("Yuuma");
     itemCatalog.invalidate();
