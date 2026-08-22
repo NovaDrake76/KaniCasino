@@ -125,7 +125,7 @@ const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel =
                     highlightColor="#161427"
                     baseColor="#1c1a31"
                 />
-            ) : noLink ? (
+            ) : noLink || !id ? (
                 content
             ) : (
                 <Link to={`/profile/${id}`}>

@@ -202,9 +202,10 @@ const BattlesView: React.FC<BattlesViewProps> = ({
                   <Avatar
                     key={p.slot}
                     image={p.profilePicture}
-                    id={p.userId || p.username}
+                    id={p.userId || ""}
                     size="small"
                     level={0}
+                    noLink
                   />
                 ))}
               </div>
