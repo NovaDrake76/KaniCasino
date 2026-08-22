@@ -7,7 +7,7 @@ const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
 
 const User = require("../../models/User");
 const Item = require("../../models/Item");
-const { isAuthenticated } = require("../../middleware/authMiddleware");
+const { isAuthenticated, maybeAuthenticated } = require("../../middleware/authMiddleware");
 
 let app;
 
@@ -111,5 +111,43 @@ describe("routes that do need an inventory", () => {
     expect(res.body.username).toBe(user.username);
     const stored = await User.findById(user._id).select("inventory").lean();
     expect(stored.inventory).toHaveLength(4);
+  });
+});
+
+// the market pages read fine logged out, so this one runs on a public path and was the
+// half of the middleware the first pass missed
+describe("what maybeAuthenticated loads", () => {
+  it("leaves the inventory behind too", async () => {
+    const user = await makeUser({ inventory: stack(30), walletBalance: 77 });
+    const req = { header: () => `Bearer ${tokenFor(user)}` };
+    await maybeAuthenticated(req, {}, () => {});
+
+    expect(req.user.inventory).toBeUndefined();
+    expect(req.user.walletBalance).toBe(77);
+    expect(req.user.username).toBe(user.username);
+  });
+
+  it("still lets a guest and a bad token straight through", async () => {
+    const guest = { header: () => undefined };
+    let passed = 0;
+    await maybeAuthenticated(guest, {}, () => { passed += 1; });
+    expect(guest.user).toBeUndefined();
+
+    const bogus = { header: () => "Bearer not-a-token" };
+    await maybeAuthenticated(bogus, {}, () => { passed += 1; });
+    expect(bogus.user).toBeUndefined();
+    expect(passed).toBe(2);
+  });
+
+  it("does not attach a revoked or disabled account", async () => {
+    const revoked = await makeUser({ inventory: stack(3), tokenVersion: 5 });
+    const req = { header: () => `Bearer ${tokenFor(revoked)}` };
+    await maybeAuthenticated(req, {}, () => {});
+    expect(req.user).toBeUndefined();
+
+    const off = await makeUser({ inventory: stack(3), disabled: true });
+    const req2 = { header: () => `Bearer ${tokenFor(off)}` };
+    await maybeAuthenticated(req2, {}, () => {});
+    expect(req2.user).toBeUndefined();
   });
 });
