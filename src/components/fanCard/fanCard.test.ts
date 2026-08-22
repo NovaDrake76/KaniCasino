@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { ALL_STYLES, PINNED, resolveStyle, stylesFor } from "./cardStyles";
-import { cardFromBoard, cardFromStanding, yearOf } from "./cardData";
+import { canShareCard, cardFromBoard, cardFromStanding, yearOf } from "./cardData";
 import { fileNameFor } from "./ShareCard/ShareCard.services";
 import { FanBoard, FanRank } from "../../services/fandom/FandomService";
 
@@ -83,6 +83,14 @@ describe("building the card", () => {
 
   it("has no card for a player who pinned nothing", () => {
     expect(cardFromStanding(null, "Konmaru", 48)).toBeNull();
+  });
+
+  it("only lets the board leader share", () => {
+    const lead = { name: "Keine", image: "k.png", rarity: "1", count: 490, rank: 1, fans: 5 };
+    expect(canShareCard(lead)).toBe(true);
+    expect(canShareCard({ ...lead, rank: 2, count: 4 })).toBe(false);
+    expect(canShareCard(null)).toBe(false);
+    expect(canShareCard(undefined)).toBe(false);
   });
 });
 

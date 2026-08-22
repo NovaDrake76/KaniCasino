@@ -23,6 +23,9 @@ export const cardFromBoard = (board: FanBoard, desc = ""): FanCardData | null =>
       }
     : null;
 
+// the cards come with the crown: a runner-up has nothing to share
+export const canShareCard = (fanRank?: FanRank | null) => fanRank?.rank === 1;
+
 // the profile works off the standing the sweep left on the player, which is why that
 // carries the runner-up count and the pin date
 export const cardFromStanding = (

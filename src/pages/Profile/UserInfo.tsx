@@ -10,7 +10,7 @@ import Avatar from "../../components/Avatar";
 import { User } from '../../components/Types'
 // the card renderer and its display faces are dead weight until someone opens the sheet
 const ShareCard = lazy(() => import("../../components/fanCard/ShareCard"));
-import { cardFromStanding } from "../../components/fanCard/cardData";
+import { canShareCard, cardFromStanding } from "../../components/fanCard/cardData";
 import i18n from "../../i18n";
 
 interface UserProps {
@@ -38,7 +38,7 @@ const UserInfo: React.FC<UserProps> = ({
   const [pickingAvatar, setPickingAvatar] = useState(false);
   const [sharing, setSharing] = useState(false);
   const card = useMemo(
-    () => cardFromStanding(fanRank, username, level, fixedItem?.description || ""),
+    () => (canShareCard(fanRank) ? cardFromStanding(fanRank, username, level, fixedItem?.description || "") : null),
     [fanRank, username, level, fixedItem]
   );
 
