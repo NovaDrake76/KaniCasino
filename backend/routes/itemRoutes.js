@@ -5,10 +5,11 @@ const Case = require("../models/Case");
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const { recomputeCaseValues } = require("../utils/itemValue");
 const { publicCache, TTL } = require("../utils/httpCache");
+const itemCatalog = require("../utils/itemCatalog");
 
 router.get("/", async (req, res) => {
   try {
-    const items = await Item.find();
+    const items = await itemCatalog.all();
     publicCache(res, TTL.itemList);
     res.json(items);
   } catch (err) {

@@ -87,20 +87,56 @@ async function probeTransactions() {
   }
 }
 
+// labels mongo puts on an error to say what is safe to do about it. a transaction that
+// aborted on a write conflict committed nothing, so running the whole thing again is safe.
+// an unknown commit result is deliberately NOT retried: that one may already have landed.
+const LABELS = ["TransientTransactionError", "UnknownTransactionCommitResult", "RetryableWriteError"];
+const labelsOf = (err) =>
+  err && typeof err.hasErrorLabel === "function" ? LABELS.filter((l) => err.hasErrorLabel(l)) : [];
+const isTransient = (err) => labelsOf(err).includes("TransientTransactionError");
+
+// one line instead of a thirty-line driver stack. the code and the labels are what say
+// whether this was ordinary contention or something new.
+function describeMoneyError(err) {
+  if (!err) return "unknown";
+  const labels = labelsOf(err);
+  return [err.codeName || err.name, err.code ? `code=${err.code}` : null, labels.length ? `labels=${labels.join(",")}` : null, String(err.message || "").slice(0, 140)]
+    .filter(Boolean)
+    .join(" ");
+}
+
+const RETRY_ATTEMPTS = 4;
+// jittered, so a burst of bets that collided once does not line up and collide again
+const backoff = (attempt) =>
+  new Promise((resolve) => setTimeout(resolve, 10 * 2 ** attempt + Math.floor(Math.random() * 25)));
+
 // run a money operation atomically when transactions are available, else best-effort
 // without a session. prod always has them, so prod gets the guarantee.
+//
+// withTransaction retries a conflict on its own, but production has shown it giving up
+// anyway under bursts of bets on one wallet, and what the caller gets back then is a null
+// it cannot tell apart from an empty balance. a fresh session per attempt is the belt to
+// that braces: nothing committed, so the retry cannot double anything.
 async function runAtomic(fn) {
   if (!txSupported) return fn(null);
-  const session = await mongoose.startSession();
-  try {
-    let result;
-    await session.withTransaction(async () => {
-      result = await fn(session);
-    });
-    return result;
-  } finally {
-    await session.endSession();
+  let lastError;
+  for (let attempt = 0; attempt < RETRY_ATTEMPTS; attempt++) {
+    const session = await mongoose.startSession();
+    try {
+      let result;
+      await session.withTransaction(async () => {
+        result = await fn(session);
+      });
+      return result;
+    } catch (err) {
+      lastError = err;
+      if (!isTransient(err)) throw err;
+    } finally {
+      await session.endSession();
+    }
+    if (attempt < RETRY_ATTEMPTS - 1) await backoff(attempt);
   }
+  throw lastError;
 }
 
 // append a balance-history entry. inside a transaction a failed row must abort the
@@ -198,7 +234,7 @@ async function chargeUser(userId, cost, { awardXp = true, type, meta, counterpar
     }
     return user;
   } catch (err) {
-    console.error("chargeUser rolled back:", err);
+    console.error(`chargeUser rolled back [${type || "charge"}]:`, describeMoneyError(err));
     return null;
   }
 }
@@ -226,7 +262,7 @@ async function creditUser(userId, amount, winnings = 0, { type, meta, counterpar
   try {
     return await runAtomic(body);
   } catch (err) {
-    console.error("creditUser rolled back:", err);
+    console.error(`creditUser rolled back [${type || "credit"}]:`, describeMoneyError(err));
     return null;
   }
 }
@@ -262,6 +298,8 @@ module.exports = {
   accountBalance,
   ledgerSupply,
   runAtomic,
+  isTransient,
+  describeMoneyError,
   probeTransactions,
   setTransactionsSupported,
   transactionsSupported,

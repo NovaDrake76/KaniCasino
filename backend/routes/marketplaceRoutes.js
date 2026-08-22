@@ -13,6 +13,7 @@ const { chargeUser, creditUser, TX } = require("../utils/economy");
 const { sellValue, marketFee, sellerNet, MARKET_FEE_RATE } = require("../utils/itemValue");
 const market = require("../utils/market");
 const fandom = require("../utils/fandom");
+const itemCatalog = require("../utils/itemCatalog");
 const { isRealMoneyMode } = require("../utils/mode");
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -245,15 +246,14 @@ module.exports = (io) => {
       const skip = (page - 1) * limit;
       const { name, rarity, sortBy, order, listedOnly } = req.query;
 
-      const itemFilter = {};
-      if (name) itemFilter.name = { $regex: new RegExp(escapeRegex(String(name)), "i") };
-      if (rarity) itemFilter.rarity = rarity;
+      const items = await itemCatalog.find({ name, rarity });
 
-      const items = await Item.find(itemFilter).exec();
-      const itemIds = items.map((item) => item._id);
-
+      // only narrow the listings by item when the catalog itself was narrowed: with no
+      // filter the $in is a thousand ids that match everything anyway, and it costs more
+      // than the scan it replaces
+      const match = name || rarity ? [{ $match: { item: { $in: items.map((item) => item._id) } } }] : [];
       const marketplaceData = await Marketplace.aggregate([
-        { $match: { item: { $in: itemIds } } },
+        ...match,
         {
           $group: {
             _id: "$item",
@@ -268,7 +268,7 @@ module.exports = (io) => {
       let rows = items.map((item) => {
         const md = byItem.get(item._id.toString());
         return {
-          ...item.toObject(),
+          ...item,
           sellValue: sellValue(item.baseValue),
           cheapestPrice: md ? md.cheapestPrice : null,
           totalListings: md ? md.totalListings : 0,

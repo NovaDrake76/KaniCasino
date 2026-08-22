@@ -4,6 +4,7 @@ const Item = require("../models/Item");
 const FanBoard = require("../models/FanBoard");
 const CollectorBoard = require("../models/CollectorBoard");
 const { visible } = require("./visibility");
+const itemCatalog = require("./itemCatalog");
 
 // how many chasers a board keeps. deep enough that anyone in touching distance sees
 // themselves, short enough that a board document stays small.
@@ -15,8 +16,8 @@ const COLLECTORS_KEPT = 100;
 // the same character can appear in more than one case, as separate item rows sharing a
 // name. the name is the character, so every id behind it counts toward the same board.
 async function charactersByName(names) {
-  const filter = names && names.length ? { name: { $in: names } } : {};
-  const items = await Item.find(filter).select("name image rarity case").lean();
+  const wanted = names && names.length ? new Set(names) : null;
+  const items = (await itemCatalog.all()).filter((item) => !wanted || wanted.has(item.name));
   const byName = new Map();
   for (const item of items) {
     let entry = byName.get(item.name);
@@ -51,10 +52,7 @@ function namesById(byName) {
 }
 
 // the whole catalog keyed by item id, for a caller holding a raw inventory and nothing else
-async function namesByItemId() {
-  const items = await Item.find({}).select("name").lean();
-  return new Map(items.map((item) => [String(item._id), item.name]));
-}
+const namesByItemId = () => itemCatalog.namesById();
 
 // a player's standing is counted only for the character they pinned. holding thousands of
 // everything else is worth nothing here, which is what keeps one rich account from owning
