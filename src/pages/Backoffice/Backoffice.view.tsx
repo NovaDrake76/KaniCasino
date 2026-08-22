@@ -53,6 +53,7 @@ const GAME_LABELS: Record<string, string> = {
   hilo: "HiLo",
   cases: "Case openings",
   battles: "Case battles",
+  predictions: "Predictions",
 };
 
 const WIN_LABELS: Record<string, string> = {

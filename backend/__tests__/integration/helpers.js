@@ -16,6 +16,7 @@ const giftRoutes = require("../../routes/giftRoutes");
 const caseRoutes = require("../../routes/caseRoutes");
 const itemRoutes = require("../../routes/itemRoutes");
 const fandomRoutes = require("../../routes/fandomRoutes");
+const predictionRoutes = require("../../routes/predictionRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -30,6 +31,7 @@ function makeApp() {
   app.use("/fair", fairRoutes);
   app.use("/collections", collectionsRoutes);
   app.use("/missions", missionsRoutes(io));
+  adminRoutes.attachPredictionSettlement(io);
   app.use("/admin", adminRoutes);
   app.use("/referrals", referralRoutes(io));
   app.use("/rewards", rewardRoutes(io));
@@ -38,6 +40,7 @@ function makeApp() {
   app.use("/cases", caseRoutes);
   app.use("/items", itemRoutes);
   app.use("/fandom", fandomRoutes);
+  app.use("/predictions", predictionRoutes(io));
   return app;
 }
 

@@ -33,6 +33,12 @@ const TX = {
   MINES_WIN: "mines_win",
   HILO_BET: "hilo_bet",
   HILO_WIN: "hilo_win",
+  // the house is the counterparty for every prediction trade, so all four settle against
+  // it and the overround is where the edge comes from
+  PREDICTION_BUY: "prediction_buy",
+  PREDICTION_SELL: "prediction_sell",
+  PREDICTION_PAYOUT: "prediction_payout",
+  PREDICTION_REFUND: "prediction_refund", // a market voided rather than resolved
   MARKET_BUY: "market_buy",
   MARKET_SALE: "market_sale",
   MARKET_FEE: "market_fee", // the house cut on a settled trade, credited to HOUSE
@@ -50,7 +56,7 @@ const TX = {
 };
 
 // every KP put at risk on a game; missions and referral commission both count these
-const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.PLINKO_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN];
+const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.PLINKO_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN, TX.PREDICTION_BUY];
 
 function calculateXPForLevel(level) {
   return Math.floor(BASE_XP * Math.pow(GROWTH_RATE, level - 1));

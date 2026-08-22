@@ -46,6 +46,12 @@ const COUNTERPARTY_FOR_TYPE = {
   hilo_bet: HOUSE,
   hilo_win: HOUSE,
   item_sell: HOUSE,
+  // the house is the counterparty for every prediction trade, which is what the overround
+  // pays for: there is no other player on the other side of the fill
+  prediction_buy: HOUSE,
+  prediction_sell: HOUSE,
+  prediction_payout: HOUSE,
+  prediction_refund: HOUSE,
   market_order: ESCROW,
   market_order_refund: ESCROW,
   opening_balance: GENESIS,

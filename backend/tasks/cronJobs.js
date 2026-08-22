@@ -4,6 +4,7 @@ const Notification = require("../models/Notification");
 const { pruneEmptyRounds } = require("../utils/roundPrune");
 const fandom = require("../utils/fandom");
 const badges = require("../utils/badges");
+const predictions = require("../utils/predictionSettlement");
 
 module.exports = {
     startCronJobs: function (io) {
@@ -58,6 +59,17 @@ module.exports = {
                 if (collections) console.log(`Collection badges awarded: ${collections}.`);
             } catch (error) {
                 console.error('Error rebuilding fan boards:', error);
+            }
+        })
+
+        // a market with a deadline stops taking trades on its own, so a forgotten one
+        // does not keep pricing a question that has already been answered
+        cron.schedule('* * * * *', async () => {
+            try {
+                const closed = await predictions.closeExpired();
+                if (closed) console.log(`Closed ${closed} markets whose clock ran out.`);
+            } catch (error) {
+                console.error('Error closing expired markets:', error);
             }
         })
 
