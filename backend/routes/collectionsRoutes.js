@@ -5,6 +5,7 @@ const router = express.Router();
 const Case = require("../models/Case");
 const Item = require("../models/Item");
 const User = require("../models/User");
+const { countsFor, holdingsFor, extrasFor } = require("../utils/inventoryCounts");
 const { sellValue } = require("../utils/itemValue");
 const { sellUniqueIds } = require("../utils/inventorySell");
 const { isAuthenticated } = require("../middleware/authMiddleware");
@@ -30,18 +31,9 @@ function uniqueItems(caseDoc) {
 }
 
 // count owned copies and gather the uniqueIds per catalog item _id
-function indexInventory(inventory) {
-  const countById = new Map();
-  const uniqueIdsById = new Map();
-  for (const e of inventory || []) {
-    if (!e || !e._id) continue;
-    const id = String(e._id);
-    countById.set(id, (countById.get(id) || 0) + 1);
-    if (!uniqueIdsById.has(id)) uniqueIdsById.set(id, []);
-    uniqueIdsById.get(id).push(e.uniqueId);
-  }
-  return { countById, uniqueIdsById };
-}
+// no screen picks hundreds of copies one at a time, so the rest is pure payload
+const STACK_IDS = 500;
+
 
 // the canonical quicksell plan for a case: for every item in Case.items the viewer
 // owns more than one of (and that has a positive sell value), sell all but one. the
@@ -141,12 +133,12 @@ router.get("/summary", async (req, res) => {
     if (!isValidId(userId)) {
       return res.status(400).json({ message: "Invalid user id" });
     }
-    const user = await User.findById(userId, { inventory: 1 });
+    const user = await User.findById(userId).select("_id");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const { countById } = indexInventory(user.inventory);
+    const countById = await countsFor(userId);
     const cases = await Case.find({}, { title: 1, image: 1, price: 1, items: 1, category: 1 })
       .populate("items", "rarity baseValue");
 
@@ -297,14 +289,14 @@ router.get("/:caseId", async (req, res) => {
     if (!caseDoc) {
       return res.status(404).json({ message: "Collection not found" });
     }
-    const user = await User.findById(userId, { inventory: 1 });
+    const user = await User.findById(userId).select("_id");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const { countById, uniqueIdsById } = indexInventory(user.inventory);
     const items = uniqueItems(caseDoc);
     const caseItemIds = new Set(items.map((it) => String(it._id)));
+    const { countById, uniqueIdsById } = await holdingsFor(userId, [...caseItemIds], STACK_IDS);
     const stats = caseStats(caseDoc, countById);
 
     let rows = items.map((it) => {
@@ -363,16 +355,10 @@ router.get("/:caseId", async (req, res) => {
     const extraCounts = new Map();
     const extraUniqueIds = new Map();
     if (page === 1) {
-      for (const e of user.inventory || []) {
-        if (!e || !e._id) continue;
-        const id = String(e._id);
-        if (String(e.case) !== String(caseId) || caseItemIds.has(id)) continue;
-        extraCounts.set(id, (extraCounts.get(id) || 0) + 1);
-        if (!extraSnap.has(id)) {
-          extraSnap.set(id, { name: e.name, image: e.image, rarity: e.rarity });
-        }
-        if (!extraUniqueIds.has(id)) extraUniqueIds.set(id, []);
-        extraUniqueIds.get(id).push(e.uniqueId);
+      for (const extra of await extrasFor(userId, caseId, [...caseItemIds], STACK_IDS)) {
+        extraCounts.set(extra._id, extra.count);
+        extraSnap.set(extra._id, extra.snapshot);
+        extraUniqueIds.set(extra._id, extra.uniqueIds);
       }
     }
 

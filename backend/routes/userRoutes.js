@@ -682,7 +682,7 @@ router.put(
     try {
       const { description } = req.body;
 
-      const user = await User.findById(req.user._id);
+      const user = await User.findById(req.user._id).select("fixedItem");
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -794,7 +794,8 @@ router.get("/inventory/:userId", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const user = await User.findById(userId);
+    // the visibility check needs a flag, not 12k inventory entries
+    const user = await User.findById(userId).select("disabled");
     if (!isVisible(user)) {
       return res.status(404).json({ message: "User not found" });
     }
