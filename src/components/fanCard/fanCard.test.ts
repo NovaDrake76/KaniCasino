@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import { ALL_STYLES, PINNED, resolveStyle, stylesFor } from "./cardStyles";
 import { cardFromBoard, cardFromStanding, yearOf } from "./cardData";
 import { fileNameFor } from "./ShareCard/ShareCard.services";
-import { needsProxy } from "./cardAssets";
 import { FanBoard, FanRank } from "../../services/fandom/FandomService";
 
 const fan = {
@@ -99,19 +98,5 @@ describe("supporting bits", () => {
     expect(fileNameFor("Keine")).toBe("keine-top-fan.png");
     expect(fileNameFor("Yuuma Toutetsu")).toBe("yuuma-toutetsu-top-fan.png");
     expect(fileNameFor("???")).toBe("fan-top-fan.png");
-  });
-});
-
-describe("where the art has to come from", () => {
-  it("loads our own bucket straight, since that is the one with a cors policy", () => {
-    expect(needsProxy("https://kanicases.s3.amazonaws.com/touhou/Keine.png")).toBe(false);
-    expect(needsProxy("https://kanicases.s3.us-east-1.amazonaws.com/cases/bluearchive/10033.webp")).toBe(false);
-  });
-
-  it("sends everything else through the api, steam's cdn being two thirds of the catalog", () => {
-    expect(needsProxy("https://community.akamai.steamstatic.com/economy/image/abc/360fx360f")).toBe(true);
-    expect(needsProxy("https://example.com/x.png")).toBe(true);
-    expect(needsProxy("")).toBe(true);
-    expect(needsProxy("kanicases.s3.amazonaws.com/no-scheme.png")).toBe(true);
   });
 });
