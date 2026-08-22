@@ -61,7 +61,8 @@ const maybeAuthenticated = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(parts[1], process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select("-password");
+    // same reason as above: the prediction pages run this on every view
+    const user = await User.findById(decoded.userId).select({ password: 0, ...WITHOUT_INVENTORY });
     if (user && !user.disabled && (decoded.tokenVersion || 0) === (user.tokenVersion || 0)) {
       req.user = user;
     }
