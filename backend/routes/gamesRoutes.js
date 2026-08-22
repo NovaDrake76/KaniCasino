@@ -14,7 +14,7 @@ const BlackjackGameController = require("../games/blackjack");
 const DiceGameController = require("../games/dice");
 const MinesGameController = require("../games/mines");
 const HiloGameController = require("../games/hilo");
-const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
+const { calculateLevelFromXp, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = require("../utils/economy");
 const referrals = require("../utils/referrals");
 const fandom = require("../utils/fandom");
 const { addUniqueInfoToItem, toInventoryEntry } = require("../utils/caseOpening");
@@ -114,7 +114,9 @@ module.exports = (io) => {
           $inc: { walletBalance: -cost, xp: cost * 5 },
           $push: { inventory: { $each: winningItems.map(toInventoryEntry) } },
         };
-        const options = { new: true, session };
+        // the push has just made this inventory bigger; handing it back would cost more
+        // than the opening did
+        const options = { new: true, projection: WITHOUT_INVENTORY, session };
 
         // spend the openings in the same update that hands over the items, and require
         // the count to still cover it, so two concurrent opens cannot overdraw one grant

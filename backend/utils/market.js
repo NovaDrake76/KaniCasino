@@ -3,7 +3,7 @@ const Marketplace = require("../models/Marketplace");
 const MarketSale = require("../models/MarketSale");
 const BuyOrder = require("../models/BuyOrder");
 const Notification = require("../models/Notification");
-const { creditUser, recordTransaction, runAtomic, TX } = require("./economy");
+const { creditUser, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = require("./economy");
 const { marketFee, sellerNet } = require("./itemValue");
 const { HOUSE, ESCROW } = require("./accounts");
 const fandom = require("./fandom");
@@ -116,7 +116,7 @@ async function purchaseListing({ listingId, buyerId, io }) {
     const u = await User.findOneAndUpdate(
       { _id: buyerId, walletBalance: { $gte: claimed.price } },
       { $inc: { walletBalance: -claimed.price }, $push: { inventory: inventoryEntryFrom(claimed) } },
-      { new: true, session }
+      { new: true, projection: WITHOUT_INVENTORY, session }
     );
     if (!u) return null;
     // player-to-player, so the buyer and seller legs carry no counterparty; they and the
@@ -163,7 +163,7 @@ async function purchaseListing({ listingId, buyerId, io }) {
       const r = await User.findOneAndUpdate(
         { _id: buyerId },
         { $inc: { walletBalance: claimed.price }, $pull: { inventory: { uniqueId: claimed.uniqueId } } },
-        { new: true, session }
+        { new: true, projection: WITHOUT_INVENTORY, session }
       );
       await recordTransaction(
         {
