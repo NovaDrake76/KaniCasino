@@ -9,6 +9,8 @@ const Item = require("../../models/Item");
 const FanBoard = require("../../models/FanBoard");
 const CollectorBoard = require("../../models/CollectorBoard");
 const fandom = require("../../utils/fandom");
+const Case = require("../../models/Case");
+const { recomputeCaseValues } = require("../../utils/itemValue");
 
 let app;
 
@@ -23,7 +25,14 @@ async function makeItem(name, rarity = "3") {
   return Item.create({ name, image: `${name}.png`, rarity, baseValue: 100 });
 }
 
+// what a copy actually looks like on the user document: name, image and case live on the
+// catalog and are joined on read, so the entry only identifies the copy
 function copies(item, count) {
+  return Array.from({ length: count }, () => ({ _id: item._id, rarity: item.rarity }));
+}
+
+// rows written before that change still carry their own name, and must still count
+function legacyCopies(item, count) {
   return Array.from({ length: count }, () => ({
     _id: item._id,
     name: item.name,
@@ -32,13 +41,13 @@ function copies(item, count) {
   }));
 }
 
-async function makeUser({ pinned, inventory = [], fixedAt } = {}) {
+async function makeUser({ pinned, inventory = [], fixedAt, walletBalance = 0 } = {}) {
   const s = uniqueSuffix();
   return User.create({
     username: `user-${s}`,
     email: `user-${s}@example.com`,
     password: "x",
-    walletBalance: 0,
+    walletBalance,
     inventory,
     fixedAt,
     fixedItem: pinned
@@ -157,6 +166,22 @@ describe("fan boards", () => {
     expect((await FanBoard.findOne({ name: "Yuuma" }).lean()).fanCount).toBe(0);
   });
 
+  it("counts a copy whether or not it carries its own name", async () => {
+    const yuuma = await makeItem("Yuuma");
+    const momiji = await makeItem("Momiji");
+    const me = await makeUser({
+      pinned: yuuma,
+      inventory: [...copies(yuuma, 4), ...legacyCopies(yuuma, 2), ...legacyCopies(momiji, 1)],
+    });
+
+    await fandom.rebuild();
+
+    expect((await FanBoard.findOne({ name: "Yuuma" }).lean()).topCount).toBe(6);
+    const mine = await User.findById(me._id).lean();
+    expect(mine.fanRank.count).toBe(6);
+    expect(mine.collectionRank).toMatchObject({ distinct: 2, total: 7 });
+  });
+
   it("ranks the collection board by distinct characters", async () => {
     const a = await makeItem("Yuuma");
     const b = await makeItem("Momiji");
@@ -261,5 +286,25 @@ describe("fandom routes", () => {
     const board = await FanBoard.findOne({ name: "Momiji" }).lean();
     expect(board.topCount).toBe(6);
     expect((await User.findById(me._id).lean()).fanRank.name).toBe("Momiji");
+  });
+});
+
+describe("a drop of the pinned character", () => {
+  it("recounts the board before the next sweep", async () => {
+    const yuuma = await makeItem("Yuuma", "1");
+    const box = await Case.create({ title: `c-${uniqueSuffix()}`, image: "x", price: 10, items: [yuuma._id] });
+    await recomputeCaseValues(box._id);
+    const me = await makeUser({ pinned: yuuma, walletBalance: 1000 });
+    await fandom.rebuild();
+    expect((await User.findById(me._id).lean()).fanRank.count).toBe(0);
+
+    const res = await request(app)
+      .post(`/games/openCase/${box._id}`)
+      .set("Authorization", `Bearer ${tokenFor(me)}`)
+      .send({ quantity: 5 });
+    expect(res.status).toBe(200);
+
+    expect((await User.findById(me._id).lean()).fanRank.count).toBe(5);
+    expect((await FanBoard.findOne({ name: "Yuuma" }).lean()).topCount).toBe(5);
   });
 });

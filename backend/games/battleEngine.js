@@ -5,6 +5,7 @@ const Transaction = require("../models/Transaction");
 const { addUniqueInfoToItem } = require("../utils/caseOpening");
 const { chargeUser, creditUser, awardXp, TX } = require("../utils/economy");
 const { modeConfig, evaluateWinner, splitItemsEvenly } = require("../utils/battle");
+const fandom = require("../utils/fandom");
 const {
   generateServerSeed,
   hashServerSeed,
@@ -234,6 +235,7 @@ async function finishBattle(battle, io = noopIo) {
     }));
     if (invItems.length) {
       await User.updateOne({ _id: w.userId }, { $push: { inventory: { $each: invItems } } });
+      await fandom.touch(w.userId, invItems.map((it) => it._id));
     }
   }
 

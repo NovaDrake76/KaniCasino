@@ -16,6 +16,7 @@ const MinesGameController = require("../games/mines");
 const HiloGameController = require("../games/hilo");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const referrals = require("../utils/referrals");
+const fandom = require("../utils/fandom");
 const { addUniqueInfoToItem, toInventoryEntry } = require("../utils/caseOpening");
 const { buildRangeTable } = require("../utils/caseRanges");
 const { roll, pickFromRanges, TOTAL } = require("../utils/provablyFair");
@@ -192,6 +193,10 @@ module.exports = (io) => {
         user: winnerUser,
         caseImage: caseData.image,
       });
+
+      // the fan boards are a ten-minute snapshot, so a player who just pulled the
+      // character they pinned would read the old count next to their new inventory
+      await fandom.touch(user._id, winningItems.map((item) => item._id));
 
       res.json({
         items: winningItems.map((i, idx) => ({

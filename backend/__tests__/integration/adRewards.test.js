@@ -82,11 +82,18 @@ describe("rewarded ads", () => {
   });
 
   test("claiming faster than a video could play is refused", async () => {
-    const u = await makeUser();
-    const s = await start(u);
-    const res = await claim(u, s.body.token); // immediate
-    expect(res.status).toBe(400);
-    expect((await User.findById(u._id)).walletBalance).toBe(0);
+    // the gap between start and claim is real wall clock, so a 50ms window is one a
+    // loaded runner can wait out by accident. widen it for this case only.
+    process.env.AD_REWARD_MIN_WATCH_MS = "60000";
+    try {
+      const u = await makeUser();
+      const s = await start(u);
+      const res = await claim(u, s.body.token); // immediate
+      expect(res.status).toBe(400);
+      expect((await User.findById(u._id)).walletBalance).toBe(0);
+    } finally {
+      process.env.AD_REWARD_MIN_WATCH_MS = "50";
+    }
   });
 
   test("a token pays exactly once and only for its owner", async () => {
