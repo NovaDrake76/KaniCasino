@@ -5,6 +5,7 @@ import { getBoard, getMyStanding, FanBoard, MyStanding } from "../../../services
 import { fixItem } from "../../../services/users/UserServices";
 import { toast } from "react-toastify";
 import { rarityColor, rarityName } from "../../../utils/rarity";
+import { cardFromBoard } from "../../../components/fanCard/cardData";
 import { ChaseRow } from "./FandomBoard.types";
 import i18n from "../../../i18n";
 
@@ -16,6 +17,7 @@ export const useFandomBoardServices = () => {
   const [loading, setLoading] = useState(true);
   const [missing, setMissing] = useState(false);
   const [pinning, setPinning] = useState(false);
+  const [sharing, setSharing] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -85,6 +87,10 @@ export const useFandomBoardServices = () => {
 
   const holder = board && board.topCount > 0 ? board.top : null;
   const iHold = !!(holder && myId && String(holder.userId) === myId);
+  const card = useMemo(
+    () => (board && iHold ? cardFromBoard(board, userData?.fixedItem?.description || "") : null),
+    [board, iHold, userData]
+  );
 
   return {
     name,
@@ -105,5 +111,9 @@ export const useFandomBoardServices = () => {
     pinning,
     pin,
     myId,
+    card,
+    sharing,
+    openShare: () => setSharing(true),
+    closeShare: () => setSharing(false),
   };
 };

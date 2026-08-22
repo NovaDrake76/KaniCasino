@@ -6,11 +6,12 @@ import i18n from "../../i18n";
 interface FanStandingProps {
   fanRank?: FanRank | null;
   collectionRank?: { distinct: number; total: number; rank: number } | null;
+  onShare?: () => void;
 }
 
 // the standing under the pinned character: what board they are on, where they sit, and
 // how much of the roster they have collected overall
-const FanStanding: React.FC<FanStandingProps> = ({ fanRank, collectionRank }) => {
+const FanStanding: React.FC<FanStandingProps> = ({ fanRank, collectionRank, onShare }) => {
   if (!fanRank && !collectionRank) return null;
 
   return (
@@ -44,6 +45,15 @@ const FanStanding: React.FC<FanStandingProps> = ({ fanRank, collectionRank }) =>
             </span>
           </span>
         </Link>
+      )}
+
+      {fanRank && onShare && (
+        <button
+          onClick={onShare}
+          className="notched-sm bg-[#4F46E5] py-2 text-[11px] font-bold tracking-wide text-white transition-all hover:opacity-90"
+        >
+          {i18n.t("fanCard.shareCta")}
+        </button>
       )}
 
       {collectionRank && (

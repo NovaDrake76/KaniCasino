@@ -3,6 +3,10 @@ import Skeleton from "react-loading-skeleton";
 import Avatar from "../../../components/Avatar";
 import { FandomBoardViewProps } from "./FandomBoard.types";
 import { BsHeartFill, BsInfoCircle } from "react-icons/bs";
+import { lazy, Suspense } from "react";
+
+// the card renderer and its display faces are dead weight until someone opens the sheet
+const ShareCard = lazy(() => import("../../../components/fanCard/ShareCard"));
 import i18n from "../../../i18n";
 
 const CROWN = (
@@ -30,6 +34,10 @@ const FandomBoardView: React.FC<FandomBoardViewProps> = ({
   pinning,
   pin,
   myId,
+  card,
+  sharing,
+  openShare,
+  closeShare,
 }) => {
   if (loading) {
     return (
@@ -124,15 +132,31 @@ const FandomBoardView: React.FC<FandomBoardViewProps> = ({
                     name,
                   })}
             </p>
-            <Link
-              to={board.caseId ? `/case/${board.caseId}` : "/"}
-              className="notched-sm bg-[#4F46E5] px-5 py-2.5 text-xs font-bold text-white"
-            >
-              {i18n.t("fandom.openCasesWith", { name })}
-            </Link>
+            <span className="flex flex-wrap items-center gap-2">
+              {iHold && card && (
+                <button
+                  onClick={openShare}
+                  className="notched-sm border border-[#4F46E5] px-5 py-2.5 text-xs font-bold text-[#B7B0D6] transition-all hover:text-white"
+                >
+                  {i18n.t("fanCard.shareCta")}
+                </button>
+              )}
+              <Link
+                to={board.caseId ? `/case/${board.caseId}` : "/"}
+                className="notched-sm bg-[#4F46E5] px-5 py-2.5 text-xs font-bold text-white"
+              >
+                {i18n.t("fandom.openCasesWith", { name })}
+              </Link>
+            </span>
           </div>
         </div>
       </div>
+
+      {sharing && card && (
+        <Suspense fallback={null}>
+          <ShareCard data={card} leadsABoard={iHold} onClose={closeShare} />
+        </Suspense>
+      )}
 
       <div className="notched mt-6 bg-[#212031] px-6 py-5">
         <p className="mb-4 text-[10px] font-extrabold tracking-widest text-[#84819A]">

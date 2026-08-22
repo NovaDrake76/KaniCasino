@@ -9,6 +9,48 @@
    is preloaded in index.html and lands with the page instead.
    one variable file per subset covers every weight from 400 to 800. latin-ext only
    downloads when a page actually uses those characters. */
+/* the fan card display faces. nothing on the site sets them in css, so the browser only
+   fetches one when a card sheet asks for it by name. */
+@font-face {
+  font-family: "Black Ops One";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/blackopsone-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Special Elite";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/specialelite-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Alfa Slab One";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/alfaslabone-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Anton";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/anton-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Orbitron";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("/fonts/orbitron-latin.woff2") format("woff2");
+}
+
 @font-face {
   font-family: "Montserrat";
   font-style: normal;

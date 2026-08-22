@@ -1,5 +1,5 @@
 import { Tooltip } from "react-tooltip";
-import { useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
 import Countdown from "../../components/Countdown";
 import FixedItem from "./FixedItem";
 import FanStanding from "./FanStanding";
@@ -8,6 +8,9 @@ import BadgeShelf from "./BadgeShelf";
 import AvatarPicker from "./AvatarPicker";
 import Avatar from "../../components/Avatar";
 import { User } from '../../components/Types'
+// the card renderer and its display faces are dead weight until someone opens the sheet
+const ShareCard = lazy(() => import("../../components/fanCard/ShareCard"));
+import { cardFromStanding } from "../../components/fanCard/cardData";
 import i18n from "../../i18n";
 
 interface UserProps {
@@ -33,6 +36,11 @@ const UserInfo: React.FC<UserProps> = ({
 }) => {
 
   const [pickingAvatar, setPickingAvatar] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const card = useMemo(
+    () => cardFromStanding(fanRank, username, level, fixedItem?.description || ""),
+    [fanRank, username, level, fixedItem]
+  );
 
   const calculateRequiredXP = (level: number) => {
     const baseXP = 1000;
@@ -118,8 +126,17 @@ const UserInfo: React.FC<UserProps> = ({
       </div>
       <div className="mt-4 md:mt-0">
         {fixedItem && <FixedItem fixedItem={fixedItem} isSameUser={isSameUser} setRefresh={setRefresh} />}
-        <FanStanding fanRank={fanRank} collectionRank={collectionRank} />
+        <FanStanding
+          fanRank={fanRank}
+          collectionRank={collectionRank}
+          onShare={isSameUser && card ? () => setSharing(true) : undefined}
+        />
       </div>
+      {sharing && card && (
+        <Suspense fallback={null}>
+          <ShareCard data={card} leadsABoard={fanRank?.rank === 1} onClose={() => setSharing(false)} />
+        </Suspense>
+      )}
     </div>
   );
 };

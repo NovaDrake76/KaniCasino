@@ -147,3 +147,9 @@ export async function getTransactions(page = 1, filters?: { type?: string; direc
     const response = await api.get(url);
     return response.data;
 }
+
+// the look the shared fan card uses. the server decides whether the style is open.
+export async function putCardStyle(style: string) {
+  const res = await api.put("/users/card-style", { style });
+  return res.data as { cardStyle: string };
+}

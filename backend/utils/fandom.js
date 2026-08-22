@@ -187,6 +187,7 @@ async function sweep() {
 function standingsFrom(boards) {
   const standings = new Map();
   for (const board of boards) {
+    const runnerUp = board.rows.length > 1 ? board.rows[1].count : 0;
     board.rows.forEach((row, index) => {
       standings.set(String(row.userId), {
         name: board.name,
@@ -195,6 +196,8 @@ function standingsFrom(boards) {
         count: row.count,
         rank: index + 1,
         fans: board.fanCount,
+        second: runnerUp,
+        since: row.since,
       });
     });
   }
