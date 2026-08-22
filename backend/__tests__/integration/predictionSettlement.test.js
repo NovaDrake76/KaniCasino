@@ -328,6 +328,39 @@ describe("the admin surface", () => {
     expect((await Prediction.findById(market._id)).resolutionNote).toBe("she won");
   });
 
+  it("lets the price impact be corrected until somebody trades, and not after", async () => {
+    const who = await admin();
+    const created = await auth(request(app).post("/admin/predictions"), who).send({
+      title: "Impact can be fixed",
+      outcomes: ["Yes", "No"],
+      impactBps: 10,
+    });
+    const id = created.body._id;
+
+    const fixed = await auth(request(app).put(`/admin/predictions/${id}`), who).send({ impactBps: 2 });
+    expect(fixed.status).toBe(200);
+    expect(fixed.body.impactBps).toBe(2);
+
+    const player = await makeUser();
+    await trade({ userId: player._id, predictionId: id, outcomeKey: "o1", action: "buy", shares: 10 });
+
+    const late = await auth(request(app).put(`/admin/predictions/${id}`), who).send({ impactBps: 5 });
+    expect(late.status).toBe(400);
+    expect((await Prediction.findById(id)).impactBps).toBe(2);
+  });
+
+  it("still takes a wording change after a market has been traded", async () => {
+    const who = await admin();
+    const player = await makeUser();
+    const market = await makeMarket();
+    await trade({ userId: player._id, predictionId: market._id, outcomeKey: "o1", action: "buy", shares: 10 });
+
+    const res = await auth(request(app).put(`/admin/predictions/${market._id}`), who)
+      .send({ description: "clarified the rule" });
+    expect(res.status).toBe(200);
+    expect(res.body.description).toBe("clarified the rule");
+  });
+
   it("shows what the house is on the hook for", async () => {
     const player = await makeUser();
     const market = await makeMarket();

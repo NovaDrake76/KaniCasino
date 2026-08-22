@@ -158,6 +158,7 @@ export interface NewMarket {
   category?: string;
   endsAt?: string | null;
   outcomes: string[];
+  impactBps?: number;
   exposureCap?: number;
 }
 

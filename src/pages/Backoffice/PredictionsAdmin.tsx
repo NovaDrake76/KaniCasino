@@ -16,7 +16,19 @@ const say = (error: unknown, fallback: string) => {
   toast.error((body && body.message) || fallback, { theme: "dark" });
 };
 
-const emptyDraft = { title: "", description: "", image: "", category: "General", endsAt: "", outcomes: "Yes\nNo" };
+// impact is how far one share moves the price, in basis points. the default of 10 means a
+// hundred shares moves it ten points, which is fine for a market nobody is watching and far
+// too easy to shove once one is. a market you expect volume on wants a smaller number.
+const emptyDraft = {
+  title: "",
+  description: "",
+  image: "",
+  category: "General",
+  endsAt: "",
+  outcomes: "Yes\nNo",
+  impactBps: "10",
+  exposureCap: "100000",
+};
 
 const NewMarketForm: React.FC<{ onCreated: () => void }> = ({ onCreated }) => {
   const [draft, setDraft] = useState(emptyDraft);
@@ -43,6 +55,8 @@ const NewMarketForm: React.FC<{ onCreated: () => void }> = ({ onCreated }) => {
         category: draft.category.trim() || "General",
         endsAt: draft.endsAt || null,
         outcomes,
+        impactBps: Number(draft.impactBps) || undefined,
+        exposureCap: Number(draft.exposureCap) || undefined,
       });
       setDraft(emptyDraft);
       onCreated();
@@ -59,11 +73,32 @@ const NewMarketForm: React.FC<{ onCreated: () => void }> = ({ onCreated }) => {
       <input placeholder="Title" {...field("title")} />
       <input placeholder="Description" {...field("description")} />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        <input placeholder="Image url" {...field("image")} />
+        <div className="flex items-center gap-2">
+          <input placeholder="Image url" {...field("image")} />
+          {draft.image.trim() && (
+            <img
+              src={draft.image.trim()}
+              alt=""
+              onError={(e) => { e.currentTarget.style.opacity = "0.15"; }}
+              onLoad={(e) => { e.currentTarget.style.opacity = "1"; }}
+              className="w-9 h-9 rounded object-cover bg-surface-nav flex-shrink-0"
+            />
+          )}
+        </div>
         <input placeholder="Category" {...field("category")} />
         <input type="datetime-local" {...field("endsAt")} />
       </div>
       <textarea rows={3} placeholder="One outcome per line" {...field("outcomes")} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <label className="flex flex-col gap-1 text-xs text-ink-muted">
+          Price impact per share (bps)
+          <input inputMode="numeric" {...field("impactBps")} />
+        </label>
+        <label className="flex flex-col gap-1 text-xs text-ink-muted">
+          Most the house will owe (K₽)
+          <input inputMode="numeric" {...field("exposureCap")} />
+        </label>
+      </div>
       <button
         onClick={create}
         disabled={saving}

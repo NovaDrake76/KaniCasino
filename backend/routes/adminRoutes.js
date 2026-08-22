@@ -372,10 +372,13 @@ router.post("/predictions", isAuthenticated, isAdmin, async (req, res) => {
   }
 });
 
-// only the wording and the clock. prices and outcomes belong to the traders now.
+// only the wording, the clock and the cap. prices and outcomes belong to the traders now.
+// impact is the exception: it is the shape of the curve everyone has already traded against,
+// so it can only be changed while nobody has, which is the window where a first market's
+// number turns out to be wrong.
 router.put("/predictions/:id", isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const { title, description, image, category, endsAt, exposureCap } = req.body;
+    const { title, description, image, category, endsAt, exposureCap, impactBps } = req.body;
     const dirty = cleanText(title, description);
     if (dirty) return res.status(400).json({ message: "That wording is not allowed" });
 
@@ -387,8 +390,16 @@ router.put("/predictions/:id", isAuthenticated, isAdmin, async (req, res) => {
     if (endsAt !== undefined) set.endsAt = endsAt ? new Date(endsAt) : null;
     if (Number(exposureCap) > 0) set.exposureCap = Number(exposureCap);
 
+    const current = await Prediction.findById(req.params.id);
+    if (!current) return res.status(404).json({ message: "That market does not exist" });
+    if (Number(impactBps) > 0 && Number(impactBps) !== current.impactBps) {
+      if (current.volume > 0) {
+        return res.status(400).json({ message: "This market has been traded, its price impact is fixed now" });
+      }
+      set.impactBps = Number(impactBps);
+    }
+
     const prediction = await Prediction.findByIdAndUpdate(req.params.id, { $set: set }, { new: true });
-    if (!prediction) return res.status(404).json({ message: "That market does not exist" });
     res.json(prediction);
   } catch (err) {
     console.error(err);
