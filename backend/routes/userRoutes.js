@@ -11,7 +11,7 @@ const badges = require("../utils/badges");
 const Notification = require("../models/Notification");
 const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
-const { loginLimiter, registerLimiter } = require("../middleware/rateLimit");
+const { loginLimiter, registerLimiter, registerDailyLimiter } = require("../middleware/rateLimit");
 const { sellValue } = require("../utils/itemValue");
 const { creditUser, recordTransaction, runAtomic, TX } = require("../utils/economy");
 const { findReferrer, payReferralBonuses } = require("../utils/referrals");
@@ -23,11 +23,13 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const { resolvePassword } = require("../utils/password");
 const nameFilter = require("../utils/nameFilter");
 const { visible, isVisible } = require("../utils/visibility");
+const realtime = require("../utils/realtime");
 
 // Register user
 router.post(
   "/register",
   registerLimiter,
+  registerDailyLimiter,
   [
     check("email", "Please include a valid email").isEmail(),
     check(
@@ -89,6 +91,8 @@ router.post(
 
       // Save user to the database
       await user.save();
+      // the register limiters count accounts created, not requests attempted
+      res.locals.createdAccount = true;
 
       await recordTransaction({
         userId: user._id,
@@ -179,7 +183,7 @@ router.post(
 );
 
 // Google login
-router.post('/googlelogin', async (req, res) => {
+router.post('/googlelogin', registerLimiter, registerDailyLimiter, async (req, res) => {
   const { token, referralCode, marketingOptIn } = req.body;
   try {
     const ticket = await client.verifyIdToken({
@@ -214,6 +218,8 @@ router.post('/googlelogin', async (req, res) => {
       });
       if (referrer) user.referredBy = referrer._id;
       await user.save();
+      // a returning player signing in is not a signup and must not spend the budget
+      res.locals.createdAccount = true;
 
       await recordTransaction({
         userId: user._id,
@@ -718,6 +724,9 @@ router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
 router.post('/logout-all', authMiddleware.isAuthenticated, async (req, res) => {
   try {
     await User.updateOne({ _id: req.user._id }, { $inc: { tokenVersion: 1 } });
+    // the bump only stops the next handshake; a socket already connected keeps the
+    // identity it claimed, so the live ones have to be hung up here
+    realtime.disconnectUser(req.user._id);
     res.json({ message: "Signed out of all devices." });
   } catch (err) {
     console.error(err);

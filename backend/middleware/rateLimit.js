@@ -23,11 +23,34 @@ const loginLimiter = rateLimit({
   message: { message: "Too many login attempts. Try again in a few minutes." },
 });
 
-// caps account farming (each new account is handed a starting balance and a bonus)
+// only a request that actually created an account spends the budget. a typo'd email, a
+// taken username or a returning player signing back in with google must not burn it:
+// carriers and campuses put thousands of real people behind one address.
+const createdAnAccount = (req, res) => res.locals.createdAccount === true;
+
+// caps account farming. a new account is handed a starting balance, and a referral code
+// on top of it pays the referrer too, which makes registration the cheapest faucet here.
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 10,
+  max: 3,
   keyGenerator: clientIp,
+  skipFailedRequests: true,
+  requestWasSuccessful: createdAnAccount,
+  skip: skipInTests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { message: "Too many accounts created from this address. Try again later." },
+});
+
+// the hourly cap on its own still allows 72 accounts a day from one address, which is the
+// exact shape of the farm it exists to stop
+const registerDailyLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 8,
+  keyGenerator: clientIp,
+  skipFailedRequests: true,
+  requestWasSuccessful: createdAnAccount,
   skip: skipInTests,
   standardHeaders: true,
   legacyHeaders: false,
@@ -85,4 +108,13 @@ const hiloActionLimiter = rateLimit({
   message: { message: "Too many actions, slow down a little." },
 });
 
-module.exports = { loginLimiter, registerLimiter, plinkoDropLimiter, diceRollLimiter, minesActionLimiter, hiloActionLimiter };
+module.exports = {
+  loginLimiter,
+  registerLimiter,
+  registerDailyLimiter,
+  createdAnAccount,
+  plinkoDropLimiter,
+  diceRollLimiter,
+  minesActionLimiter,
+  hiloActionLimiter,
+};
