@@ -8,7 +8,7 @@ const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
 const User = require("../../models/User");
 const Item = require("../../models/Item");
 const Case = require("../../models/Case");
-const { countsFor, holdingsFor, extrasFor } = require("../../utils/inventoryCounts");
+const { countsFor, holdingsFor, extrasFor, copiesFor } = require("../../utils/inventoryCounts");
 
 let app;
 
@@ -107,5 +107,33 @@ describe("the inventory page", () => {
 
     await User.updateOne({ _id: user._id }, { $set: { disabled: true } });
     expect((await request(app).get(`/users/inventory/${user._id}`)).status).toBe(404);
+  });
+});
+
+describe("picking the copies a listing is about", () => {
+  it("finds one copy by its uniqueId", async () => {
+    const user = await makeUser(copies(alpha, 4));
+    const found = await copiesFor(user._id, { uniqueId: `${alpha}-2`, limit: 1 });
+
+    expect(found).toHaveLength(1);
+    expect(found[0].uniqueId).toBe(`${alpha}-2`);
+    expect(String(found[0]._id)).toBe(String(alpha));
+  });
+
+  it("takes the newest copies of an item, up to the number asked for", async () => {
+    const older = copies(alpha, 2).map((e, i) => ({ ...e, uniqueId: `old-${i}`, createdAt: new Date(2020, 0, 1) }));
+    const newer = copies(alpha, 3).map((e, i) => ({ ...e, uniqueId: `new-${i}`, createdAt: new Date(2026, 0, 1) }));
+    const user = await makeUser([...older, ...newer]);
+
+    const found = await copiesFor(user._id, { itemId: alpha, limit: 3 });
+    expect(found).toHaveLength(3);
+    expect(found.every((e) => e.uniqueId.startsWith("new-"))).toBe(true);
+  });
+
+  it("comes back empty for a copy that is not there, and asks for nothing without a target", async () => {
+    const user = await makeUser(copies(alpha, 2));
+    expect(await copiesFor(user._id, { uniqueId: "nope", limit: 1 })).toHaveLength(0);
+    expect(await copiesFor(user._id, { itemId: beta, limit: 5 })).toHaveLength(0);
+    expect(await copiesFor(user._id, {})).toHaveLength(0);
   });
 });

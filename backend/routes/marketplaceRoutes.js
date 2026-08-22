@@ -5,6 +5,7 @@ const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
 
 const User = require("../models/User");
+const { copiesFor } = require("../utils/inventoryCounts");
 const Item = require("../models/Item");
 const Marketplace = require("../models/Marketplace");
 const MarketSale = require("../models/MarketSale");
@@ -118,7 +119,7 @@ module.exports = (io) => {
         return res.status(400).json({ message: "Invalid price" });
       }
 
-      const user = await User.findById(req.user._id);
+      const user = await User.findById(req.user._id).select("level");
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -132,14 +133,13 @@ module.exports = (io) => {
       // the single-copy path and never a shortcut around it.
       let copies;
       if (uniqueId) {
-        const found = user.inventory.find((item) => item.uniqueId === uniqueId);
-        copies = found ? [found] : [];
+        copies = await copiesFor(user._id, { uniqueId, limit: 1 });
       } else if (req.body.itemId && isValidId(req.body.itemId)) {
         const asked = Math.floor(Number(req.body.quantity));
-        const owned = user.inventory
-          .filter((e) => e && String(e._id) === String(req.body.itemId))
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        copies = owned.slice(0, Number.isFinite(asked) && asked > 0 ? asked : 1);
+        copies = await copiesFor(user._id, {
+          itemId: req.body.itemId,
+          limit: Number.isFinite(asked) && asked > 0 ? asked : 1,
+        });
       } else {
         copies = [];
       }
