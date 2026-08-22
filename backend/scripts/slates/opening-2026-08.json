@@ -10,7 +10,8 @@
     ],
     "endsAt": "2026-09-09T23:59:00.000Z",
     "impactBps": 1,
-    "exposureCap": 10000
+    "exposureCap": 10000,
+    "boardOrder": 0
   },
   {
     "title": "Scarlet Devil remake Steam rating two weeks after launch",
@@ -25,7 +26,8 @@
     ],
     "endsAt": "2026-09-23T23:59:00.000Z",
     "impactBps": 1,
-    "exposureCap": 10000
+    "exposureCap": 10000,
+    "boardOrder": 0
   },
   {
     "title": "Does ZUN announce Touhou 21 before 2027?",
@@ -38,7 +40,8 @@
     ],
     "endsAt": "2026-12-31T23:59:00.000Z",
     "impactBps": 1,
-    "exposureCap": 10000
+    "exposureCap": 10000,
+    "boardOrder": 0
   },
   {
     "title": "Does NEXON bring back the Blue Archive Spark before 2027?",
@@ -51,7 +54,8 @@
     ],
     "endsAt": "2026-12-31T23:59:00.000Z",
     "impactBps": 1,
-    "exposureCap": 10000
+    "exposureCap": 10000,
+    "boardOrder": 0
   },
   {
     "title": "Yukino to leave NPC jail by the end of 2026?",
@@ -64,7 +68,8 @@
     ],
     "endsAt": "2026-12-31T23:59:00.000Z",
     "impactBps": 1,
-    "exposureCap": 10000
+    "exposureCap": 10000,
+    "boardOrder": 0
   },
   {
     "title": "Who wins the PGL Major Singapore 2026?",
@@ -80,7 +85,8 @@
     ],
     "endsAt": "2026-12-12T23:59:00.000Z",
     "impactBps": 1,
-    "exposureCap": 15000
+    "exposureCap": 15000,
+    "boardOrder": -1
   },
   {
     "title": "Does a Brazilian team reach the CS2 Major final?",
@@ -93,7 +99,8 @@
     ],
     "endsAt": "2026-12-12T23:59:00.000Z",
     "impactBps": 1,
-    "exposureCap": 10000
+    "exposureCap": 10000,
+    "boardOrder": -1
   },
   {
     "title": "Does Valve ship a new CS2 case-and-key case in 2026?",
@@ -106,35 +113,7 @@
     ],
     "endsAt": "2026-12-31T23:59:00.000Z",
     "impactBps": 1,
-    "exposureCap": 10000
-  },
-  {
-    "title": "Which case is opened most on KaniCasino in September?",
-    "description": "The case with the most openings between 1 and 30 September 2026. Settled from our own numbers, the same ones behind the most opened list on the home page.",
-    "category": "KaniCasino",
-    "image": "https://kanicases.s3.us-east-1.amazonaws.com/cases/bluearchive/cover-kivotos.webp",
-    "outcomes": [
-      "Kivotos Case",
-      "Lunatic Case",
-      "Trinity Case",
-      "Nuclear Case",
-      "Anything else"
-    ],
-    "endsAt": "2026-09-30T23:59:00.000Z",
-    "impactBps": 1,
-    "exposureCap": 5000
-  },
-  {
-    "title": "Does anyone hit 100x on Crash in September?",
-    "description": "Resolves Yes if any player cashes out at 100x or higher on Crash between 1 and 30 September 2026. Settled from our own round history.",
-    "category": "KaniCasino",
-    "image": "https://kanicasino.com/images/logo.webp",
-    "outcomes": [
-      "Yes",
-      "No"
-    ],
-    "endsAt": "2026-09-30T23:59:00.000Z",
-    "impactBps": 1,
-    "exposureCap": 5000
+    "exposureCap": 10000,
+    "boardOrder": -1
   }
 ]

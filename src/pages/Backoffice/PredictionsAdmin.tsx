@@ -9,6 +9,7 @@ import {
   reopenAdminMarket,
   resolveAdminMarket,
   voidAdminMarket,
+  updateAdminMarket,
 } from "../../services/admin/AdminServices";
 
 const say = (error: unknown, fallback: string) => {
@@ -28,6 +29,7 @@ const emptyDraft = {
   outcomes: "Yes\nNo",
   impactBps: "10",
   exposureCap: "100000",
+  boardOrder: "0",
 };
 
 const NewMarketForm: React.FC<{ onCreated: () => void }> = ({ onCreated }) => {
@@ -57,6 +59,7 @@ const NewMarketForm: React.FC<{ onCreated: () => void }> = ({ onCreated }) => {
         outcomes,
         impactBps: Number(draft.impactBps) || undefined,
         exposureCap: Number(draft.exposureCap) || undefined,
+        boardOrder: Number(draft.boardOrder) || 0,
       });
       setDraft(emptyDraft);
       onCreated();
@@ -81,7 +84,7 @@ const NewMarketForm: React.FC<{ onCreated: () => void }> = ({ onCreated }) => {
               alt=""
               onError={(e) => { e.currentTarget.style.opacity = "0.15"; }}
               onLoad={(e) => { e.currentTarget.style.opacity = "1"; }}
-              className="w-9 h-9 rounded object-cover bg-surface-nav flex-shrink-0"
+              className="w-9 h-9 rounded object-cover object-top bg-surface-nav flex-shrink-0"
             />
           )}
         </div>
@@ -89,7 +92,7 @@ const NewMarketForm: React.FC<{ onCreated: () => void }> = ({ onCreated }) => {
         <input type="datetime-local" {...field("endsAt")} />
       </div>
       <textarea rows={3} placeholder="One outcome per line" {...field("outcomes")} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <label className="flex flex-col gap-1 text-xs text-ink-muted">
           Price impact per share (bps)
           <input inputMode="numeric" {...field("impactBps")} />
@@ -97,6 +100,10 @@ const NewMarketForm: React.FC<{ onCreated: () => void }> = ({ onCreated }) => {
         <label className="flex flex-col gap-1 text-xs text-ink-muted">
           Most the house will owe (K₽)
           <input inputMode="numeric" {...field("exposureCap")} />
+        </label>
+        <label className="flex flex-col gap-1 text-xs text-ink-muted">
+          Board order (higher floats)
+          <input {...field("boardOrder")} />
         </label>
       </div>
       <button
@@ -138,6 +145,19 @@ const MarketRow: React.FC<{ market: AdminMarket; onChanged: () => void }> = ({ m
         <span className="text-xs text-ink-muted ml-auto">
           <Monetary value={market.volume} /> volume · worst case <Monetary value={market.worstCase} /> / {market.exposureCap}
         </span>
+      </div>
+
+      <div className="flex items-center gap-2 text-xs text-ink-muted">
+        <span>Board order</span>
+        <input
+          defaultValue={String(market.boardOrder ?? 0)}
+          onBlur={(e) => {
+            const next = Number(e.target.value);
+            if (!Number.isFinite(next) || next === (market.boardOrder ?? 0)) return;
+            run(() => updateAdminMarket(market._id, { boardOrder: next }), "Could not reorder that market");
+          }}
+          className="bg-surface-nav border border-line rounded px-2 py-1 w-16 text-ink outline-none"
+        />
       </div>
 
       <div className="flex gap-2 flex-wrap text-xs text-ink-muted">

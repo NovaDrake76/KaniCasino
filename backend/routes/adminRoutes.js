@@ -335,7 +335,7 @@ router.get("/predictions", isAuthenticated, isAdmin, async (req, res) => {
 
 router.post("/predictions", isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const { title, description, image, category, endsAt, outcomes, vigBps, impactBps, exposureCap } = req.body;
+    const { title, description, image, category, endsAt, outcomes, vigBps, impactBps, exposureCap, boardOrder } = req.body;
     if (!title || !Array.isArray(outcomes) || outcomes.length < 2) {
       return res.status(400).json({ message: "A market needs a title and at least two outcomes" });
     }
@@ -363,6 +363,7 @@ router.post("/predictions", isAuthenticated, isAdmin, async (req, res) => {
       vigBps: vig,
       impactBps: Number(impactBps) > 0 ? Number(impactBps) : DEFAULT_IMPACT_BPS,
       exposureCap: Number(exposureCap) > 0 ? Number(exposureCap) : undefined,
+      boardOrder: Number.isFinite(Number(boardOrder)) ? Number(boardOrder) : 0,
       createdBy: req.user._id,
     });
     res.status(201).json(prediction);
@@ -378,7 +379,7 @@ router.post("/predictions", isAuthenticated, isAdmin, async (req, res) => {
 // number turns out to be wrong.
 router.put("/predictions/:id", isAuthenticated, isAdmin, async (req, res) => {
   try {
-    const { title, description, image, category, endsAt, exposureCap, impactBps } = req.body;
+    const { title, description, image, category, endsAt, exposureCap, impactBps, boardOrder } = req.body;
     const dirty = cleanText(title, description);
     if (dirty) return res.status(400).json({ message: "That wording is not allowed" });
 
@@ -389,6 +390,7 @@ router.put("/predictions/:id", isAuthenticated, isAdmin, async (req, res) => {
     if (category) set.category = category;
     if (endsAt !== undefined) set.endsAt = endsAt ? new Date(endsAt) : null;
     if (Number(exposureCap) > 0) set.exposureCap = Number(exposureCap);
+    if (boardOrder !== undefined && Number.isFinite(Number(boardOrder))) set.boardOrder = Number(boardOrder);
 
     const current = await Prediction.findById(req.params.id);
     if (!current) return res.status(404).json({ message: "That market does not exist" });

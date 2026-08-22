@@ -69,6 +69,7 @@ async function main() {
       vigBps,
       impactBps,
       exposureCap: spec.exposureCap || 10000,
+      boardOrder: Number.isFinite(spec.boardOrder) ? spec.boardOrder : 0,
       outcomes: spec.outcomes.map((label, i) => ({
         key: `o${i + 1}`,
         label,
@@ -82,7 +83,7 @@ async function main() {
       console.log(`  would open  ${slug}`);
       console.log(`      ${spec.title}`);
       console.log(`      ${spec.outcomes.join(" / ")}  @ ${prices.map((p) => (p / 100).toFixed(0) + "%").join(" / ")}`);
-      console.log(`      ends ${doc.endsAt.toISOString()}  impact ${impactBps}bps  cap ${doc.exposureCap} K`);
+      console.log(`      ends ${doc.endsAt.toISOString()}  impact ${impactBps}bps  cap ${doc.exposureCap} K  order ${doc.boardOrder}`);
       console.log(`      image ${spec.image || "(none)"}`);
       opened += 1;
       continue;

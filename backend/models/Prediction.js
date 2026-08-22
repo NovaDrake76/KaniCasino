@@ -49,6 +49,10 @@ const PredictionSchema = new mongoose.Schema(
 
     volume: { type: Number, default: 0 },
     traders: { type: Number, default: 0 },
+    // where this sits on the board. higher floats, and the default of zero means "wherever
+    // the usual ordering puts it", so only the markets somebody has an opinion about carry
+    // a number.
+    boardOrder: { type: Number, default: 0 },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
     // compare and set token. every price move filters on it and bumps it, so two traders

@@ -52,7 +52,7 @@ const PredictionsPanel: React.FC = () => {
             className="flex items-center gap-3 bg-surface hover:bg-surface-raised border border-line rounded-lg px-4 py-3 transition-colors"
           >
             {position.market.image && (
-              <img src={position.market.image} alt="" className="w-10 h-10 rounded object-cover bg-surface-nav flex-shrink-0" />
+              <img src={position.market.image} alt="" className="w-10 h-10 rounded object-cover object-top bg-surface-nav flex-shrink-0" />
             )}
             <div className="flex flex-col min-w-0 gap-0.5">
               <span className="text-ink text-sm truncate">{position.market.title}</span>

@@ -57,12 +57,29 @@ module.exports = (io) => {
       if (req.query.category && req.query.category !== "All") filter.category = req.query.category;
       if (req.query.q) filter.title = { $regex: String(req.query.q).slice(0, 60), $options: "i" };
 
+      // status has to be ranked rather than sorted: alphabetically "closed" comes before
+      // "open", which would float a market nobody can trade above the ones they can
       const [rows, total, categories] = await Promise.all([
-        Prediction.find(filter)
-          .sort({ status: 1, volume: -1, createdAt: -1 })
-          .skip((page - 1) * PAGE_SIZE)
-          .limit(PAGE_SIZE)
-          .lean(),
+        Prediction.aggregate([
+          { $match: filter },
+          {
+            $addFields: {
+              statusRank: {
+                $switch: {
+                  branches: [
+                    { case: { $eq: ["$status", "open"] }, then: 0 },
+                    { case: { $eq: ["$status", "closed"] }, then: 1 },
+                    { case: { $eq: ["$status", "resolved"] }, then: 2 },
+                  ],
+                  default: 3,
+                },
+              },
+            },
+          },
+          { $sort: { statusRank: 1, boardOrder: -1, volume: -1, createdAt: -1 } },
+          { $skip: (page - 1) * PAGE_SIZE },
+          { $limit: PAGE_SIZE },
+        ]),
         Prediction.countDocuments(filter),
         Prediction.distinct("category"),
       ]);
