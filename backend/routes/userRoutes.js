@@ -8,6 +8,7 @@ const User = require("../models/User");
 const Item = require("../models/Item");
 const fandom = require("../utils/fandom");
 const badges = require("../utils/badges");
+const cardStyles = require("../utils/cardStyles");
 const Notification = require("../models/Notification");
 const Transaction = require("../models/Transaction");
 const authMiddleware = require("../middleware/authMiddleware");
@@ -290,7 +291,8 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
       walletBalance,
       nextBonus,
       isAdmin,
-      fanRank
+      fanRank,
+      fixedItem
     } = req.user;
 
     // verify in Notification model if there are unread notifications for the user
@@ -300,10 +302,12 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
     // isAdmin is the caller's own flag; the public /:id profile keeps hiding it
     res.json({
       id, username, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications,
-      isAdmin: !!isAdmin, fanRank,
+      isAdmin: !!isAdmin, fanRank, fixedItem,
       badges: badges.heldBadges(req.user),
       selectedBadge: req.user.selectedBadge || null,
       badge: badges.wornBadge(req.user),
+      cardStyle: cardStyles.wornStyle(req.user),
+      cardStyles: cardStyles.heldStyles(req.user),
     });
   } catch (err) {
     console.error(err.message);
@@ -560,6 +564,26 @@ router.put("/badge", authMiddleware.isAuthenticated, async (req, res) => {
     user.selectedBadge = badge;
     await user.save();
     res.json({ selectedBadge: badge, badge: badges.wornBadge(user) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// pick the look the shared fan card uses. the poster styles need a board lead; the
+// pinned panel is always open.
+router.put("/card-style", authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const { style } = req.body;
+    const user = await User.findById(req.user._id).select("fanRank cardStyle");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!cardStyles.heldStyles(user).includes(style)) {
+      return res.status(400).json({ message: "That card style is not open to you" });
+    }
+    user.cardStyle = style;
+    await user.save();
+    res.json({ cardStyle: style });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

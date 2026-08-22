@@ -61,6 +61,10 @@ const UserSchema = new mongoose.Schema({
     count: Number,
     rank: Number,
     fans: Number,
+    // the runner-up's count and when this player pinned, so a profile can show the gap
+    // and the standing without going back to the board
+    second: Number,
+    since: Date,
   },
   collectionRank: {
     distinct: Number,
@@ -84,6 +88,9 @@ const UserSchema = new mongoose.Schema({
   ],
   // the one badge the player wears around the site. nothing shows until they pick one.
   selectedBadge: String,
+  // which look the shared fan card uses. validated on read, because the poster styles
+  // are only open while the player still leads a board.
+  cardStyle: String,
   friends: [
     {
       type: mongoose.Schema.Types.ObjectId,

@@ -7,6 +7,9 @@ export interface FanRank {
   count: number;
   rank: number;
   fans: number;
+  // the runner-up's count and when this player pinned, both filled by the sweep
+  second?: number;
+  since?: string;
 }
 
 export interface Fan {
