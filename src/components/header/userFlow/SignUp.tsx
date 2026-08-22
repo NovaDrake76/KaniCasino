@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import { register, googleLogin } from "../../../services/auth/auth";
+import { register, googleLogin, authError } from "../../../services/auth/auth";
 import MainButton from "../../MainButton";
 import { saveTokens } from "../../../services/auth/authUtils";
 import UserContext from "../../../UserContext";
@@ -59,7 +59,7 @@ const SignUpPage: React.FC = () => {
       }
     } catch (error) {
       console.log(error);
-      setError(i18n.t("nav.invalidFormatPleaseTry"));
+      setError(authError(error, i18n.t("nav.invalidFormatPleaseTry")));
     }
   };
 

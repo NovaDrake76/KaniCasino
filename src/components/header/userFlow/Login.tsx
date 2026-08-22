@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { login, googleLogin } from "../../../services/auth/auth";
+import { login, googleLogin, authError } from "../../../services/auth/auth";
 import { saveTokens } from "../../../services/auth/authUtils";
 import { getPendingReferralCode, clearPendingReferralCode } from "../../../services/referrals/ReferralServices";
 import MainButton from "../../MainButton";
@@ -50,6 +50,7 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error('Error during Google login', error);
+      setErrorMessage(authError(error, i18n.t("nav.invalidEmailOrPassword")));
     }
   };
 

@@ -1,5 +1,12 @@
 import api from '../api';
 
+// the server's own reason when it sent one: a rate-limited signup and a disabled account
+// both say something more useful than "please try again"
+export function authError(error: unknown, fallback: string) {
+    const data = (error as { response?: { data?: { message?: string } } })?.response?.data;
+    return data?.message || fallback;
+}
+
 export async function login(email: string, password: string) {
     const response = await api.post('/users/login', { email, password });
     return response.data;
