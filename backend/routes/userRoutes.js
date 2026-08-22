@@ -484,25 +484,21 @@ router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
   try {
     const { item } = req.body;
 
-    // inventory-read: the pin verifies the copy against the array it lives in
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id).select("fixedItem fixedAt fanRank");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if item is in user's inventory
-    const inventoryItemIndex = user.inventory.find((inventoryItem) => {
-      return inventoryItem._id.toString() === item.toString();
-    });
-
-
-    if (inventoryItemIndex === null || inventoryItemIndex === undefined) {
+    // asked of mongo rather than by reading every entry back to look at one of them
+    const held =
+      ObjectId.isValid(item) &&
+      (await User.exists({ _id: req.user._id, "inventory._id": new ObjectId(item) }));
+    if (!held) {
       return res.status(404).json({ message: "Item not found in inventory" });
     }
 
-
-    const catalogItem = await Item.findById(inventoryItemIndex._id, { name: 1, image: 1, rarity: 1 }).lean();
+    const catalogItem = await Item.findById(item, { name: 1, image: 1, rarity: 1 }).lean();
     if (!catalogItem) {
       return res.status(404).json({ message: "Item not found" });
     }

@@ -108,4 +108,26 @@ async function sizeFor(userId) {
   return row ? row.n : 0;
 }
 
-module.exports = { countsFor, holdingsFor, extrasFor, copiesFor, sizeFor };
+
+// the entries themselves, narrowed to the copies or the items a caller names. the write
+// paths do need real entries; they just never needed all 12,000 of them.
+async function entriesFor(userId, { uniqueIds, itemIds } = {}) {
+  const stages = [
+    { $match: { _id: toId(userId) } },
+    { $project: { inventory: { $ifNull: ["$inventory", []] } } },
+    { $unwind: "$inventory" },
+  ];
+  if (uniqueIds) {
+    if (!uniqueIds.length) return [];
+    stages.push({ $match: { "inventory.uniqueId": { $in: uniqueIds.map(String) } } });
+  } else if (itemIds) {
+    if (!itemIds.length) return [];
+    stages.push({ $match: { "inventory._id": { $in: itemIds.map(toId) } } });
+  } else {
+    return [];
+  }
+  stages.push({ $replaceRoot: { newRoot: "$inventory" } });
+  return User.aggregate(stages);
+}
+
+module.exports = { countsFor, holdingsFor, extrasFor, copiesFor, sizeFor, entriesFor };

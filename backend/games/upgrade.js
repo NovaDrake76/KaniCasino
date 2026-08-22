@@ -3,6 +3,7 @@ const Item = require("../models/Item");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const fandom = require("../utils/fandom");
+const { entriesFor } = require("../utils/inventoryCounts");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
 
 const UPGRADE_ALGO_VERSION = 3; // bump if calculateSuccessRate ever changes
@@ -42,17 +43,12 @@ const verifyLesserRarity = (selectedItems, targetItem) => {
 
 const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
   try {
-    // Fetch the user
-    // inventory-read: the copies being upgraded are the subject of the call
-    const user = await User.findById(userId);
-    if (!user) {
+    if (!(await User.exists({ _id: userId }))) {
       return { status: 404, message: "User not found" };
     }
 
-    // Fetch the selected items and target item
-    const selectedItems = user.inventory.filter((invItem) =>
-      selectedItemIds.includes(invItem.uniqueId)
-    );
+    // only the copies being staked, picked in mongo
+    const selectedItems = await entriesFor(userId, { uniqueIds: selectedItemIds || [] });
     const targetItem = await Item.findById(targetItemId);
 
     // Validation checks
@@ -106,10 +102,11 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
     // upgrade removes nothing at all. it used to $pull first and count afterwards,
     // which meant losing that race destroyed whichever items it did still find.
     const consumeIds = selectedItems.map((invItem) => invItem.uniqueId);
-    // inventory-read: the pre-image is what proves which copies were taken
+    // the filter is what makes this all-or-nothing; the document itself goes unread
     const before = await User.findOneAndUpdate(
       { _id: userId, "inventory.uniqueId": { $all: consumeIds } },
-      { $pull: { inventory: { uniqueId: { $in: consumeIds } } } }
+      { $pull: { inventory: { uniqueId: { $in: consumeIds } } } },
+      { projection: { _id: 1 } }
     );
     if (!before) {
       return { status: 400, message: "Items no longer available" };

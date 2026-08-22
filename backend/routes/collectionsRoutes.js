@@ -5,7 +5,7 @@ const router = express.Router();
 const Case = require("../models/Case");
 const Item = require("../models/Item");
 const User = require("../models/User");
-const { countsFor, holdingsFor, extrasFor } = require("../utils/inventoryCounts");
+const { countsFor, holdingsFor, extrasFor, entriesFor } = require("../utils/inventoryCounts");
 const itemCatalog = require("../utils/itemCatalog");
 const { sellValue } = require("../utils/itemValue");
 const { sellUniqueIds } = require("../utils/inventorySell");
@@ -203,13 +203,12 @@ router.post("/quicksell/preview", isAuthenticated, async (req, res) => {
     if (!caseDoc) {
       return res.status(404).json({ message: "Case not found" });
     }
-    // inventory-read: quicksell plans over the actual copies it is about to sell
-    const user = await User.findById(req.user._id, { inventory: 1 });
-    if (!user) {
+    if (!(await User.exists({ _id: req.user._id }))) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const plan = computeQuicksellPlan(user.inventory, caseDoc);
+    const held = await entriesFor(req.user._id, { itemIds: uniqueItems(caseDoc).map((it) => it._id) });
+    const plan = computeQuicksellPlan(held, caseDoc);
     res.json({ caseId: String(caseDoc._id), ...plan });
   } catch (err) {
     console.error(err);
@@ -238,13 +237,12 @@ router.post("/quicksell/commit", isAuthenticated, async (req, res) => {
     if (!caseDoc) {
       return res.status(404).json({ message: "Case not found" });
     }
-    // inventory-read: quicksell sells the actual copies, so it plans over them
-    const user = await User.findById(req.user._id, { inventory: 1 });
-    if (!user) {
+    if (!(await User.exists({ _id: req.user._id }))) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const current = computeQuicksellPlan(user.inventory, caseDoc);
+    const held = await entriesFor(req.user._id, { itemIds: uniqueItems(caseDoc).map((it) => it._id) });
+    const current = computeQuicksellPlan(held, caseDoc);
     const confirmed = [...new Set(plan.map(String))].sort();
     const canonical = current.plan; // already de-duped + sorted
 
