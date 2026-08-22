@@ -20,38 +20,21 @@ export function loadCardFonts() {
   return fonts;
 }
 
-// only our own bucket carries a cors policy. two thirds of the catalog sits on steam's
-// cdn, which does not, so that art has to arrive through the api instead.
-const OWN_BUCKET = /^kanicases\.s3[.-]/;
-
-const hostOf = (src: string) => {
-  try {
-    return new URL(src, window.location.href).host;
-  } catch {
-    return "";
-  }
-};
-
-export const needsProxy = (src: string) => !OWN_BUCKET.test(hostOf(src));
-
-function loadImage(src: string, cors: boolean) {
+function loadImage(src: string) {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new Image();
-    if (cors) img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
     img.onerror = () => reject(new Error("Could not load the character art"));
     img.src = src;
   });
 }
 
-// crossOrigin is what keeps the canvas exportable, and a blob from our own api is
-// same-origin, so neither route taints it.
+// every card image comes through our own origin as a blob, so the canvas is never
+// tainted and no cors header on anyone else's host has to be right for this to work.
 export async function loadCardArt(src: string) {
-  if (!needsProxy(src)) return loadImage(src, true);
-
   const objectUrl = URL.createObjectURL(await getArt(src));
   try {
-    const img = await loadImage(objectUrl, false);
+    const img = await loadImage(objectUrl);
     await img.decode().catch(() => undefined);
     return img;
   } finally {
