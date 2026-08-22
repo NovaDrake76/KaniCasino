@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Transaction = require("../models/Transaction");
 const Battle = require("../models/Battle");
 const User = require("../models/User");
+const { countsFor } = require("./inventoryCounts");
 const Case = require("../models/Case");
 const MissionState = require("../models/MissionState");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
@@ -19,9 +20,8 @@ const ACTIVE = CATALOG.filter((m) => m.active !== false);
 // populate + drop null (deleted) refs so "complete" matches exactly what the
 // collections tab shows: a dangling item id is not a slot the album counts either.
 async function collectionsProgress(userId) {
-  const user = await User.findById(userId, { inventory: 1 });
-  if (!user) return { done: 0, total: 0 };
-  const owned = new Set((user.inventory || []).map((e) => String(e._id)));
+  const owned = new Set((await countsFor(userId)).keys());
+  if (!owned.size) return { done: 0, total: 0 };
   const cases = await Case.find({}, { items: 1 }).populate("items", "_id");
   let done = 0;
   let total = 0;

@@ -25,7 +25,7 @@ async function casesByCategory() {
 // the categories a player can choose between, each with the table it would spin and a
 // cover to show. the table is public on purpose: the odds are the pitch.
 async function state(userId) {
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).select("giftStreak giftNextAt freeOpens level");
   if (!user) return null;
 
   const now = new Date();
@@ -157,7 +157,7 @@ router.get("/grants", isAuthenticated, async (req, res) => {
 router.post("/spin", isAuthenticated, async (req, res) => {
   try {
     const category = String(req.body?.category || "");
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id).select("giftStreak giftNextAt giftLastAt level freeOpens");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const now = new Date();

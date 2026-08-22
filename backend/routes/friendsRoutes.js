@@ -93,7 +93,7 @@ module.exports = (io) => {
         return res.status(400).json({ message: "You can't add yourself" });
       }
 
-      const target = await User.findById(targetId);
+      const target = await User.findById(targetId).select("friends friendRequests disabled");
       if (!target) {
         return res.status(404).json({ message: "User not found" });
       }
