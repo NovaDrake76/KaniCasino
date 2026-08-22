@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import i18n from "../i18n";
 import { OUTCOME_COLORS } from "./outcomeColors";
 
@@ -14,7 +14,9 @@ interface Props {
   loading?: boolean;
 }
 
-const W = 720;
+// the viewBox is measured rather than fixed, so a label stays the size it says it is: a
+// 720 wide box squeezed into a 360 wide phone halves every font in it
+const FALLBACK_W = 720;
 const PAD = { top: 12, right: 10, bottom: 22, left: 34 };
 
 const fmtTime = (iso: string) =>
@@ -24,7 +26,17 @@ const fmtTime = (iso: string) =>
 // because a probability that only ever moves between 48 and 52 should look like it did.
 const OutcomeChart: React.FC<Props> = ({ series, height = 240, loading }) => {
   const [hover, setHover] = useState<number | null>(null);
+  const box = useRef<HTMLDivElement>(null);
+  const [W, setW] = useState(FALLBACK_W);
   const H = height;
+
+  useEffect(() => {
+    const el = box.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(([entry]) => setW(Math.max(280, Math.round(entry.contentRect.width))));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const geom = useMemo(() => {
     const times = series.flatMap((s) => s.points.map((p) => new Date(p.at).getTime()));
@@ -38,7 +50,7 @@ const OutcomeChart: React.FC<Props> = ({ series, height = 240, loading }) => {
       PAD.left + (span <= 0 ? innerW / 2 : ((new Date(iso).getTime() - t0) / span) * innerW);
     const y = (bps: number) => PAD.top + innerH - (bps / 10000) * innerH;
     return { x, y, innerW, innerH, t0, t1, span };
-  }, [series, H]);
+  }, [series, H, W]);
 
   // the hover rail reads off the longest series, and every other line is sampled at the
   // same instant, so the readout is one moment in time rather than one point per line
@@ -59,12 +71,13 @@ const OutcomeChart: React.FC<Props> = ({ series, height = 240, loading }) => {
   };
 
   if (loading) {
-    return <div className="w-full rounded-lg bg-surface-nav border border-line animate-pulse" style={{ height: H }} />;
+    return <div ref={box} className="w-full rounded-lg bg-surface-nav border border-line animate-pulse" style={{ height: H }} />;
   }
 
   if (!geom || series.length === 0) {
     return (
       <div
+        ref={box}
         className="w-full rounded-lg bg-surface-nav border border-line flex items-center justify-center text-sm text-ink-muted"
         style={{ height: H }}
       >
@@ -77,7 +90,7 @@ const OutcomeChart: React.FC<Props> = ({ series, height = 240, loading }) => {
   const hoveredAt = hover !== null ? rail[hover] : null;
 
   return (
-    <div className="w-full rounded-lg bg-surface-nav border border-line p-2 relative">
+    <div ref={box} className="w-full rounded-lg bg-surface-nav border border-line p-2 relative">
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: H }} role="img" aria-label={i18n.t("predictions.priceHistory")}>
         {[0, 2500, 5000, 7500, 10000].map((bps) => (
           <g key={bps}>

@@ -11,7 +11,7 @@ import { toPercent } from "../../../services/predictions/PredictionService";
 import i18n from "../../../i18n";
 
 const MarketView: React.FC<MarketViewProps> = (props) => {
-  const { market, loading, notFound, series, loadingSeries, trades, selected, select, colorOf, heldOf, avgOf } = props;
+  const { market, loading, notFound, series, loadingSeries, trades, selected, select, colorOf, heldOf, avgOf, movedOf } = props;
 
   if (notFound) {
     return (
@@ -80,7 +80,7 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5 items-start">
-        <div className="flex flex-col gap-5 min-w-0">
+        <div className="flex flex-col gap-5 min-w-0 lg:col-start-1 lg:row-start-1">
           <OutcomeChart series={series} loading={loadingSeries} />
 
           <div className="bg-surface border border-line rounded-lg divide-y divide-line">
@@ -88,12 +88,13 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
               const held = heldOf(outcome.key);
               const isSelected = selected === outcome.key;
               const won = market.resolvedOutcome === outcome.key;
+              const move = movedOf(outcome.key);
               return (
                 <button
                   key={outcome.key}
                   onClick={() => select(outcome.key)}
                   className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
-                    isSelected ? "bg-surface-raised" : "hover:bg-surface-raised/50"
+                    isSelected ? "bg-surface-raised" : "bg-surface hover:bg-surface-raised/50"
                   }`}
                 >
                   <span
@@ -116,7 +117,11 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
                       {i18n.t("predictions.won")}
                     </span>
                   )}
-                  <span className={`text-ink font-semibold tabular-nums ${won ? "" : "ml-auto"}`}>
+                  <span
+                    className={`font-semibold tabular-nums transition-colors duration-500 ${won ? "" : "ml-auto"} ${
+                      move === "up" ? "text-emerald-400" : move === "down" ? "text-red-400" : "text-ink"
+                    }`}
+                  >
                     {toPercent(outcome.priceBps)}%
                   </span>
                 </button>
@@ -125,8 +130,11 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-5">
+        <div className="lg:col-start-2 lg:row-start-1 lg:sticky lg:top-4">
           <TradePanel {...props} />
+        </div>
+
+        <div className="lg:col-start-1 lg:row-start-2 min-w-0">
           <TradeFeed trades={trades} colorOf={colorOf} />
         </div>
       </div>

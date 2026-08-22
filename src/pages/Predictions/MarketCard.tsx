@@ -23,10 +23,8 @@ const MarketCard: React.FC<Props> = ({ market, onClick }) => {
       className="text-left flex flex-col gap-3 bg-surface hover:bg-surface-raised transition-colors rounded-lg p-4 border border-line w-full"
     >
       <div className="flex items-start gap-3">
-        {market.image ? (
+        {market.image && (
           <img src={market.image} alt="" className="w-12 h-12 rounded object-cover bg-surface-nav flex-shrink-0" />
-        ) : (
-          <div className="w-12 h-12 rounded bg-surface-nav flex-shrink-0" />
         )}
         <div className="flex flex-col gap-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">

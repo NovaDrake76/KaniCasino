@@ -28,4 +28,5 @@ export interface MarketViewProps {
   heldOf: (key: string) => number;
   avgOf: (key: string) => number;
   colorOf: (key: string) => string;
+  movedOf: (key: string) => "up" | "down" | null;
 }

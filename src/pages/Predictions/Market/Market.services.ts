@@ -39,6 +39,9 @@ export const useMarketServices = () => {
   const [quoting, setQuoting] = useState(false);
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  // which outcomes just moved, and which way, so a price changing under a reader is
+  // something they see rather than something they have to have been watching for
+  const [moved, setMoved] = useState<Record<string, "up" | "down">>({});
 
   const shares = Math.max(0, Math.floor(Number(sharesInput) || 0));
   const isLogged = userData != null;
@@ -81,17 +84,18 @@ export const useMarketServices = () => {
     const socket = SocketConnection.getInstance();
     const onUpdate = (payload: { slug: string; outcomes: { key: string; priceBps: number; volume: number }[] }) => {
       if (payload.slug !== slug) return;
-      setMarket((prev) =>
-        prev
-          ? {
-              ...prev,
-              outcomes: prev.outcomes.map((outcome) => {
-                const moved = payload.outcomes.find((o) => o.key === outcome.key);
-                return moved ? { ...outcome, priceBps: moved.priceBps, volume: moved.volume } : outcome;
-              }),
-            }
-          : prev
-      );
+      setMarket((prev) => {
+        if (!prev) return prev;
+        const next = {
+          ...prev,
+          outcomes: prev.outcomes.map((outcome) => {
+            const update = payload.outcomes.find((o) => o.key === outcome.key);
+            return update ? { ...outcome, priceBps: update.priceBps, volume: update.volume } : outcome;
+          }),
+        };
+        flash(prev, next);
+        return next;
+      });
       const at = new Date().toISOString();
       setSeries((prev) =>
         prev.map((line) => {
@@ -105,6 +109,18 @@ export const useMarketServices = () => {
       socket.off("predictionUpdated", onUpdate);
     };
   }, [slug]);
+
+  const flash = (before: Market | null, after: Market) => {
+    if (!before) return;
+    const next: Record<string, "up" | "down"> = {};
+    for (const outcome of after.outcomes) {
+      const was = before.outcomes.find((o) => o.key === outcome.key);
+      if (was && was.priceBps !== outcome.priceBps) next[outcome.key] = outcome.priceBps > was.priceBps ? "up" : "down";
+    }
+    if (Object.keys(next).length === 0) return;
+    setMoved(next);
+    setTimeout(() => setMoved({}), 1200);
+  };
 
   const heldOf = (key: string) => {
     const outcome = market ? market.outcomes.find((o) => o.key === key) : null;
@@ -158,7 +174,10 @@ export const useMarketServices = () => {
     setSubmitting(true);
     try {
       const result = await placeTrade(slug, selected, action, shares);
-      setMarket(result.prediction);
+      setMarket((prev) => {
+        flash(prev, result.prediction);
+        return result.prediction;
+      });
       if (result.walletBalance !== undefined && userData) userData.walletBalance = result.walletBalance;
       toast.success(
         action === "buy"
@@ -208,5 +227,6 @@ export const useMarketServices = () => {
     heldOf,
     avgOf,
     colorOf,
+    movedOf: (key: string) => moved[key] || null,
   };
 };

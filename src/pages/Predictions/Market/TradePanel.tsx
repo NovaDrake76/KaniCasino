@@ -76,7 +76,7 @@ const TradePanel: React.FC<Props> = ({
                 ? value === "buy"
                   ? "bg-emerald-600 text-ink"
                   : "bg-red-600 text-ink"
-                : "text-ink-muted hover:text-ink"
+                : "bg-transparent text-ink-muted hover:text-ink"
             }`}
           >
             {i18n.t(`predictions.${value}`)}
