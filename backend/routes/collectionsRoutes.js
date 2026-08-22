@@ -6,6 +6,7 @@ const Case = require("../models/Case");
 const Item = require("../models/Item");
 const User = require("../models/User");
 const { countsFor, holdingsFor, extrasFor } = require("../utils/inventoryCounts");
+const itemCatalog = require("../utils/itemCatalog");
 const { sellValue } = require("../utils/itemValue");
 const { sellUniqueIds } = require("../utils/inventorySell");
 const { isAuthenticated } = require("../middleware/authMiddleware");
@@ -99,6 +100,16 @@ function computeQuicksellPlan(inventory, caseDoc) {
   };
 }
 
+// the catalog is already held in process, so resolving a case's item refs against it
+// beats populating 1,228 of them per request
+async function withItems(cases) {
+  const byId = new Map((await itemCatalog.all()).map((item) => [String(item._id), item]));
+  return cases.map((one) => ({
+    ...one,
+    items: (one.items || []).map((id) => byId.get(String(id))).filter(Boolean),
+  }));
+}
+
 function caseStats(caseDoc, countById) {
   const items = uniqueItems(caseDoc);
   const slotsTotal = items.length;
@@ -139,8 +150,9 @@ router.get("/summary", async (req, res) => {
     }
 
     const countById = await countsFor(userId);
-    const cases = await Case.find({}, { title: 1, image: 1, price: 1, items: 1, category: 1 })
-      .populate("items", "rarity baseValue");
+    const cases = await withItems(
+      await Case.find({}, { title: 1, image: 1, price: 1, items: 1, category: 1 }).lean()
+    );
 
     const collections = cases.map((c) => ({
       caseId: c._id,
