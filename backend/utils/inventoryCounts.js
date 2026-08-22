@@ -78,4 +78,24 @@ async function extrasFor(userId, caseId, excludeIds, cap) {
   }));
 }
 
-module.exports = { countsFor, holdingsFor, extrasFor };
+
+// the copies a listing is about, picked inside mongo. finding them in node meant reading
+// the whole array to take one entry out of it.
+async function copiesFor(userId, { uniqueId, itemId, limit }) {
+  const stages = [
+    { $match: { _id: toId(userId) } },
+    { $project: { inventory: { $ifNull: ["$inventory", []] } } },
+    { $unwind: "$inventory" },
+  ];
+  if (uniqueId) stages.push({ $match: { "inventory.uniqueId": String(uniqueId) } });
+  else if (itemId) stages.push({ $match: { "inventory._id": toId(itemId) } });
+  else return [];
+
+  // newest first, the order the route picked by hand
+  stages.push({ $sort: { "inventory.createdAt": -1 } });
+  stages.push({ $limit: Math.max(1, Math.min(Number(limit) || 1, 200)) });
+  stages.push({ $replaceRoot: { newRoot: "$inventory" } });
+  return User.aggregate(stages);
+}
+
+module.exports = { countsFor, holdingsFor, extrasFor, copiesFor };
