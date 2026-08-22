@@ -758,6 +758,9 @@
     "working": "In corso...",
     "youHold": "Ne hai {{count}}",
     "youPay": "Paghi",
+    "loss": "Perdita",
+    "profit": "Profitto",
+    "youPaid": "Hai pagato",
     "youReceive": "Ricevi"
   },
   "profile": {

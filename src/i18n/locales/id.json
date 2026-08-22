@@ -758,6 +758,9 @@
     "working": "Memproses...",
     "youHold": "Kamu punya {{count}}",
     "youPay": "Kamu bayar",
+    "loss": "Rugi",
+    "profit": "Untung",
+    "youPaid": "Kamu bayar",
     "youReceive": "Kamu terima"
   },
   "profile": {

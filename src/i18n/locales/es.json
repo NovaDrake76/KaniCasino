@@ -758,6 +758,9 @@
     "working": "Procesando...",
     "youHold": "Tienes {{count}}",
     "youPay": "Pagas",
+    "loss": "Pérdida",
+    "profit": "Ganancia",
+    "youPaid": "Pagaste",
     "youReceive": "Recibes"
   },
   "profile": {

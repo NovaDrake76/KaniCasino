@@ -758,6 +758,9 @@
     "working": "처리 중...",
     "youHold": "보유 {{count}}",
     "youPay": "지불액",
+    "loss": "손실",
+    "profit": "수익",
+    "youPaid": "지불한 금액",
     "youReceive": "수령액"
   },
   "profile": {

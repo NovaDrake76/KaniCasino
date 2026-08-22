@@ -758,6 +758,9 @@
     "working": "処理中...",
     "youHold": "保有 {{count}}",
     "youPay": "支払額",
+    "loss": "損失",
+    "profit": "利益",
+    "youPaid": "支払額",
     "youReceive": "受取額"
   },
   "profile": {

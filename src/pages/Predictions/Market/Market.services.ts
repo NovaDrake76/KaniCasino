@@ -161,6 +161,11 @@ export const useMarketServices = () => {
     return outcome ? outcome.avgPriceBps : 0;
   };
 
+  const spentOf = (key: string) => {
+    const outcome = market ? market.outcomes.find((o) => o.key === key) : null;
+    return outcome ? outcome.spent : 0;
+  };
+
   const colorOf = useMemo(() => {
     const byKey = new Map((market ? market.outcomes : []).map((o, i) => [o.key, OUTCOME_COLORS[i % OUTCOME_COLORS.length]]));
     return (key: string) => byKey.get(key) || OUTCOME_COLORS[0];
@@ -277,6 +282,7 @@ export const useMarketServices = () => {
     bumpShares: (by: number) => setSharesInput(String(clamp(shares + by))),
     heldOf,
     avgOf,
+    spentOf,
     colorOf,
     movedOf: (key: string) => moved[key] || null,
   };
