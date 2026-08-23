@@ -878,6 +878,7 @@
     "selectedItem": "item-selecionado",
     "signInToPlay": "Entre para jogar",
     "upgradeFailed": "Melhoria falhou",
-    "upgradeSuccess": "Melhoria bem-sucedida"
+    "upgradeSuccess": "Melhoria bem-sucedida",
+    "wonByUpgrading": "Ganho no upgrade"
   }
 }

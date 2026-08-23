@@ -878,6 +878,7 @@
     "selectedItem": "selected-item",
     "signInToPlay": "Đăng nhập để chơi",
     "upgradeFailed": "Nâng cấp thất bại",
-    "upgradeSuccess": "Nâng cấp thành công"
+    "upgradeSuccess": "Nâng cấp thành công",
+    "wonByUpgrading": "Thắng từ nâng cấp"
   }
 }

@@ -878,6 +878,7 @@
     "selectedItem": "selected-item",
     "signInToPlay": "ログインして遊ぶ",
     "upgradeFailed": "アップグレード失敗",
-    "upgradeSuccess": "アップグレード成功"
+    "upgradeSuccess": "アップグレード成功",
+    "wonByUpgrading": "アップグレードで獲得"
   }
 }

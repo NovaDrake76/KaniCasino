@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { GiUpgrade } from "react-icons/gi";
 import Rarities from "../Rarities";
 import { Link } from "react-router-dom";
 import { BasicItem } from "../Types";
 import Badge from "../Badge";
 import { Badge as BadgeData } from "../../services/badges/BadgeService";
+import i18n from "../../i18n";
 
 interface CaseOpenedNotificationProps {
   user: {
@@ -14,11 +16,13 @@ interface CaseOpenedNotificationProps {
   };
   item: BasicItem;
   caseImage: string;
+  // undefined for an opening, which is what every drop in the feed used to be
+  source?: string;
 }
 
 
 const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
-  user, item, caseImage
+  user, item, caseImage, source
 }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
@@ -47,6 +51,14 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
         transform: `${isHovering ? "rotateY(180deg)" : "rotateY(0deg)"}`,
       }}>
         <div className={`flex flex-col transition-all w-full items-center space-x-2 relative ${isHovering ? "opacity-0" : "opacity-100"}`}>
+          {source === "upgrade" && (
+            <span
+              className="absolute left-1 top-1 z-20 text-[#ECA823]"
+              title={i18n.t("upgrade.wonByUpgrading")}
+            >
+              <GiUpgrade className="text-sm" />
+            </span>
+          )}
           <img
             src={item.image}
             alt={item.name}

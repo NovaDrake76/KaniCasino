@@ -878,6 +878,7 @@
     "selectedItem": "selected-item",
     "signInToPlay": "Sign in to play",
     "upgradeFailed": "Upgrade Failed",
-    "upgradeSuccess": "Upgrade Success"
+    "upgradeSuccess": "Upgrade Success",
+    "wonByUpgrading": "Won by upgrading"
   }
 }

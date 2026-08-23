@@ -878,6 +878,7 @@
     "selectedItem": "selected-item",
     "signInToPlay": "登录后游玩",
     "upgradeFailed": "升级失败",
-    "upgradeSuccess": "升级成功"
+    "upgradeSuccess": "升级成功",
+    "wonByUpgrading": "通过升级获得"
   }
 }

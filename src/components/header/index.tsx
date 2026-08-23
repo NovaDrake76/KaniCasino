@@ -16,6 +16,7 @@ import { Badge } from "../../services/badges/BadgeService";
 interface CaseOpeningItem {
   id: string;
   caseImage: string;
+  source?: string;
   timestamp: number;
   user: {
     id: string;
@@ -37,6 +38,9 @@ interface ItemsQueue {
   id: string;
   items: BasicItem[];
   caseImages: string[];
+  // where the drop came from. absent means a case was opened, which is every drop the
+  // feed carried before the upgrade game started reporting its wins.
+  source?: string;
   user: {
     id: string;
     name: string;
@@ -91,6 +95,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
           id: opening.id,
           items: opening.winningItems,
           caseImages: [opening.caseImage],
+          source: opening.source,
           user: opening.user,
         };
       });
@@ -148,6 +153,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
                     key={opening.id}
                     item={opening.items[0]}
                     caseImage={opening.caseImages[0]}
+                    source={opening.source}
                     user={opening.user}
                   />
                 ))}
