@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "Todas as raridades",
+    "andMoreFromThisOpening": "e mais {{count}} da mesma abertura",
     "ascending": "Crescente",
     "avatar": "avatar",
     "balance": "Saldo",

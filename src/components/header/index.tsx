@@ -12,6 +12,7 @@ import Sidebar from "./Sidebar";
 import { BasicItem } from "../Types";
 import i18n from "../../i18n";
 import { Badge } from "../../services/badges/BadgeService";
+import { bestDrop } from "./liveDrop";
 
 interface CaseOpeningItem {
   id: string;
@@ -148,15 +149,20 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
 
             <div className="flex h-28 bg-[#141225] ">
               <div className="flex overflow-hidden justify-start transition-all">
-                {ItemsQueue.map((opening) => (
-                  <CaseOpenedNotification
-                    key={opening.id}
-                    item={opening.items[0]}
-                    caseImage={opening.caseImages[0]}
-                    source={opening.source}
-                    user={opening.user}
-                  />
-                ))}
+                {ItemsQueue.map((opening) => {
+                  const best = bestDrop(opening.items);
+                  if (!best) return null;
+                  return (
+                    <CaseOpenedNotification
+                      key={opening.id}
+                      item={best}
+                      others={opening.items.length - 1}
+                      caseImage={opening.caseImages[0]}
+                      source={opening.source}
+                      user={opening.user}
+                    />
+                  );
+                })}
 
               </div>
             </div>

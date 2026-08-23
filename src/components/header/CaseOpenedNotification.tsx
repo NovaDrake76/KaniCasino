@@ -18,11 +18,13 @@ interface CaseOpenedNotificationProps {
   caseImage: string;
   // undefined for an opening, which is what every drop in the feed used to be
   source?: string;
+  // how many more came out of the same opening, and are not drawn
+  others?: number;
 }
 
 
 const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
-  user, item, caseImage, source
+  user, item, caseImage, source, others = 0
 }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
@@ -57,6 +59,14 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
               title={i18n.t("upgrade.wonByUpgrading")}
             >
               <GiUpgrade className="text-sm" />
+            </span>
+          )}
+          {others > 0 && (
+            <span
+              className="absolute right-1 top-1 z-20 rounded bg-[#1e1b38] px-1 text-[10px] font-bold text-[#c9c6de]"
+              title={i18n.t("common.andMoreFromThisOpening", { count: others })}
+            >
+              +{others}
             </span>
           )}
           <img

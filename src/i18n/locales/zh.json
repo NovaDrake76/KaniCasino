@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "全部稀有度",
+    "andMoreFromThisOpening": "以及同一次开箱的另外 {{count}} 件",
     "ascending": "升序",
     "avatar": "头像",
     "balance": "余额",

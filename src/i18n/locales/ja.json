@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "すべてのレアリティ",
+    "andMoreFromThisOpening": "同じ開封からさらに{{count}}個",
     "ascending": "昇順",
     "avatar": "アバター",
     "balance": "残高",

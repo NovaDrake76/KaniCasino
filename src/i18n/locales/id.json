@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "Semua Kelangkaan",
+    "andMoreFromThisOpening": "dan {{count}} lagi dari pembukaan yang sama",
     "ascending": "Naik",
     "avatar": "avatar",
     "balance": "Uang",

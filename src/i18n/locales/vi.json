@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "Mọi độ hiếm",
+    "andMoreFromThisOpening": "và {{count}} vật phẩm khác từ cùng lần mở",
     "ascending": "Tăng dần",
     "avatar": "ảnh đại diện",
     "balance": "Số dư",
