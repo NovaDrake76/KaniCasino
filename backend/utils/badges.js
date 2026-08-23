@@ -2,6 +2,7 @@ const User = require("../models/User");
 const MissionState = require("../models/MissionState");
 const Notification = require("../models/Notification");
 const Case = require("../models/Case");
+const itemCatalog = require("./itemCatalog");
 const { CATALOG } = require("./missionsCatalog");
 
 const TOP_FAN = "topFan";
@@ -118,8 +119,16 @@ async function sweepConnected(io) {
 
 // every case category and the item ids that make it whole. a category is complete only
 // when the player owns one of every distinct item across all of its cases.
+//
+// Case.items is raw admin input and can still name an item that has since been deleted.
+// those never drop and nobody can hold one, so counting them asks for a set that cannot
+// be completed: the touhou badge wanted 137 of the 134 that exist. only live items count.
 async function collectionSets() {
-  const cases = await Case.find({}, { category: 1, items: 1 }).lean();
+  const [cases, catalog] = await Promise.all([
+    Case.find({}, { category: 1, items: 1 }).lean(),
+    itemCatalog.all(),
+  ]);
+  const live = new Set(catalog.map((item) => String(item._id)));
   const byCategory = new Map();
   for (const one of cases) {
     const label = (one.category || "").trim();
@@ -127,7 +136,9 @@ async function collectionSets() {
     const slug = slugify(label);
     if (!slug) continue;
     if (!byCategory.has(slug)) byCategory.set(slug, { slug, label, ids: new Set() });
-    for (const id of one.items || []) byCategory.get(slug).ids.add(String(id));
+    for (const id of one.items || []) {
+      if (live.has(String(id))) byCategory.get(slug).ids.add(String(id));
+    }
   }
   return [...byCategory.values()].filter((c) => c.ids.size > 0);
 }

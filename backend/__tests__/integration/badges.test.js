@@ -10,6 +10,7 @@ const Notification = require("../../models/Notification");
 const Item = require("../../models/Item");
 const Case = require("../../models/Case");
 const badges = require("../../utils/badges");
+const itemCatalog = require("../../utils/itemCatalog");
 
 let app;
 
@@ -211,6 +212,22 @@ describe("collection badges", () => {
     expect(sets).toHaveLength(1);
     expect(sets[0]).toMatchObject({ slug: "blue-archive", label: "Blue Archive" });
     expect(sets[0].ids.size).toBe(4);
+  });
+
+  it("does not ask for an item that no longer exists", async () => {
+    const items = await makeCategory("Touhou", ["a", "b", "c", "d"]);
+    // the admin deleted an item but the case still lists its id: it can never drop and
+    // nobody can hold one, so a badge counting it would be impossible to earn
+    await Item.deleteOne({ _id: items[3]._id });
+    itemCatalog.invalidate();
+
+    const [set] = await badges.collectionSets();
+    expect(set.ids.size).toBe(3);
+    expect([...set.ids]).not.toContain(String(items[3]._id));
+
+    // and owning the three that are left is now the whole collection
+    await makeUser({ inventory: own(items.slice(0, 3)) });
+    expect(await badges.sweepCollections()).toBe(1);
   });
 
   it("awards only a whole collection, and keeps it afterwards", async () => {
