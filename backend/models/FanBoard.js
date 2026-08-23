@@ -36,8 +36,6 @@ const FanBoardSchema = new mongoose.Schema({
 });
 
 // the browse page sorts by these
-FanBoardSchema.index({ fanCount: -1 });
 FanBoardSchema.index({ topCount: -1 });
-FanBoardSchema.index({ gap: 1 });
 
 module.exports = mongoose.model("FanBoard", FanBoardSchema);
