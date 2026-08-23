@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "Alle Seltenheiten",
+    "andMoreFromThisOpening": "und {{count}} weitere aus derselben Öffnung",
     "ascending": "Aufsteigend",
     "avatar": "Avatar",
     "balance": "Guthaben",
@@ -878,6 +879,7 @@
     "selectedItem": "ausgewaehlter-gegenstand",
     "signInToPlay": "Zum Spielen anmelden",
     "upgradeFailed": "Verbesserung fehlgeschlagen",
-    "upgradeSuccess": "Verbesserung gelungen"
+    "upgradeSuccess": "Verbesserung gelungen",
+    "wonByUpgrading": "Durch Upgrade gewonnen"
   }
 }

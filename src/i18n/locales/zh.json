@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "全部稀有度",
+    "andMoreFromThisOpening": "以及同一次开箱的另外 {{count}} 件",
     "ascending": "升序",
     "avatar": "头像",
     "balance": "余额",
@@ -878,6 +879,7 @@
     "selectedItem": "selected-item",
     "signInToPlay": "登录后游玩",
     "upgradeFailed": "升级失败",
-    "upgradeSuccess": "升级成功"
+    "upgradeSuccess": "升级成功",
+    "wonByUpgrading": "通过升级获得"
   }
 }

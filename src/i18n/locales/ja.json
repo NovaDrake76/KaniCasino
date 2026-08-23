@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "すべてのレアリティ",
+    "andMoreFromThisOpening": "同じ開封からさらに{{count}}個",
     "ascending": "昇順",
     "avatar": "アバター",
     "balance": "残高",
@@ -878,6 +879,7 @@
     "selectedItem": "selected-item",
     "signInToPlay": "ログインして遊ぶ",
     "upgradeFailed": "アップグレード失敗",
-    "upgradeSuccess": "アップグレード成功"
+    "upgradeSuccess": "アップグレード成功",
+    "wonByUpgrading": "アップグレードで獲得"
   }
 }

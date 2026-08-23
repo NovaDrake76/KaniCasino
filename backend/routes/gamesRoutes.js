@@ -224,10 +224,28 @@ module.exports = (io) => {
   // Upgrade items
   router.post("/upgrade", isAuthenticated, async (req, res) => {
     const { selectedItemIds, targetItemId } = req.body;
-    const user = req.user._id;
+    const user = req.user;
 
+    const result = await upgradeItems(user._id, selectedItemIds, targetItemId);
 
-    const result = await upgradeItems(user, selectedItemIds, targetItemId);
+    // a won upgrade puts an item in someone's inventory exactly like an opening does, so
+    // it belongs in the same feed. `source` is what keeps it honest: the card shows the
+    // parent case, and without it the drop would read as having come out of one.
+    if (result.success && result.item) {
+      const parent = await Case.findById(result.item.case, { image: 1 }).lean();
+      io.emit("caseOpened", {
+        winningItems: [result.item],
+        user: {
+          name: user.username,
+          id: user._id,
+          profilePicture: user.profilePicture,
+          badge: badges.wornBadge(user),
+        },
+        caseImage: parent ? parent.image : null,
+        source: "upgrade",
+      });
+    }
+
     res.status(result.status).json(result);
   });
 

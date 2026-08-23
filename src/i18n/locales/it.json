@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "Tutte le rarità",
+    "andMoreFromThisOpening": "e altri {{count}} dalla stessa apertura",
     "ascending": "Crescente",
     "avatar": "avatar",
     "balance": "Saldo",
@@ -878,6 +879,7 @@
     "selectedItem": "oggetto-selezionato",
     "signInToPlay": "Accedi per giocare",
     "upgradeFailed": "Miglioramento fallito",
-    "upgradeSuccess": "Miglioramento riuscito"
+    "upgradeSuccess": "Miglioramento riuscito",
+    "wonByUpgrading": "Ottenuto con un upgrade"
   }
 }

@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "Toutes les raretés",
+    "andMoreFromThisOpening": "et {{count}} autres de la même ouverture",
     "ascending": "Croissant",
     "avatar": "avatar",
     "balance": "Solde",
@@ -878,6 +879,7 @@
     "selectedItem": "objet-selectionne",
     "signInToPlay": "Connectez-vous pour jouer",
     "upgradeFailed": "Amélioration échouée",
-    "upgradeSuccess": "Amélioration réussie"
+    "upgradeSuccess": "Amélioration réussie",
+    "wonByUpgrading": "Obtenu par amélioration"
   }
 }

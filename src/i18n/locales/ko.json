@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "모든 등급",
+    "andMoreFromThisOpening": "같은 개봉에서 {{count}}개 더",
     "ascending": "오름차순",
     "avatar": "아바타",
     "balance": "잔액",
@@ -878,6 +879,7 @@
     "selectedItem": "selected-item",
     "signInToPlay": "로그인하고 플레이",
     "upgradeFailed": "업그레이드 실패",
-    "upgradeSuccess": "업그레이드 성공"
+    "upgradeSuccess": "업그레이드 성공",
+    "wonByUpgrading": "업그레이드로 획득"
   }
 }

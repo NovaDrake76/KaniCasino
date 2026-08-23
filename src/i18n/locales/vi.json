@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "Mọi độ hiếm",
+    "andMoreFromThisOpening": "và {{count}} vật phẩm khác từ cùng lần mở",
     "ascending": "Tăng dần",
     "avatar": "ảnh đại diện",
     "balance": "Số dư",
@@ -878,6 +879,7 @@
     "selectedItem": "selected-item",
     "signInToPlay": "Đăng nhập để chơi",
     "upgradeFailed": "Nâng cấp thất bại",
-    "upgradeSuccess": "Nâng cấp thành công"
+    "upgradeSuccess": "Nâng cấp thành công",
+    "wonByUpgrading": "Thắng từ nâng cấp"
   }
 }

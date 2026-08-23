@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { GiUpgrade } from "react-icons/gi";
 import Rarities from "../Rarities";
 import { Link } from "react-router-dom";
 import { BasicItem } from "../Types";
 import Badge from "../Badge";
 import { Badge as BadgeData } from "../../services/badges/BadgeService";
+import i18n from "../../i18n";
 
 interface CaseOpenedNotificationProps {
   user: {
@@ -14,11 +16,15 @@ interface CaseOpenedNotificationProps {
   };
   item: BasicItem;
   caseImage: string;
+  // undefined for an opening, which is what every drop in the feed used to be
+  source?: string;
+  // how many more came out of the same opening, and are not drawn
+  others?: number;
 }
 
 
 const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
-  user, item, caseImage
+  user, item, caseImage, source, others = 0
 }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
@@ -47,6 +53,22 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
         transform: `${isHovering ? "rotateY(180deg)" : "rotateY(0deg)"}`,
       }}>
         <div className={`flex flex-col transition-all w-full items-center space-x-2 relative ${isHovering ? "opacity-0" : "opacity-100"}`}>
+          {source === "upgrade" && (
+            <span
+              className="absolute left-1 top-1 z-20 text-[#ECA823]"
+              title={i18n.t("upgrade.wonByUpgrading")}
+            >
+              <GiUpgrade className="text-sm" />
+            </span>
+          )}
+          {others > 0 && (
+            <span
+              className="absolute right-1 top-1 z-20 rounded bg-[#1e1b38] px-1 text-[10px] font-bold text-[#c9c6de]"
+              title={i18n.t("common.andMoreFromThisOpening", { count: others })}
+            >
+              +{others}
+            </span>
+          )}
           <img
             src={item.image}
             alt={item.name}

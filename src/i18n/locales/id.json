@@ -238,6 +238,7 @@
   },
   "common": {
     "allRarities": "Semua Kelangkaan",
+    "andMoreFromThisOpening": "dan {{count}} lagi dari pembukaan yang sama",
     "ascending": "Naik",
     "avatar": "avatar",
     "balance": "Uang",
@@ -878,6 +879,7 @@
     "selectedItem": "Item-terpilih",
     "signInToPlay": "Masuk untuk main",
     "upgradeFailed": "Upgrade gagal",
-    "upgradeSuccess": "Upgrade berhasil"
+    "upgradeSuccess": "Upgrade berhasil",
+    "wonByUpgrading": "Didapat dari upgrade"
   }
 }
