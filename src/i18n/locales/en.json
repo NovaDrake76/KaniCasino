@@ -323,7 +323,7 @@
     "outcome": "Outcome",
     "previousSeedRevealedVerify": "Previous seed revealed, verify it:",
     "roll": "Roll",
-    "rollNotFound": "Roll not found",
+    "rollNotFound": "Roll not found. Rolls are kept for 30 days.",
     "rotateRevealServerSeed": "Rotate & reveal server seed",
     "serverSeed": "Server seed",
     "serverSeedHash": "Server seed hash",

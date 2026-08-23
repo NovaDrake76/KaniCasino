@@ -323,7 +323,7 @@
     "outcome": "Resultado",
     "previousSeedRevealedVerify": "Semilla anterior revelada, verifícala:",
     "roll": "Tirada",
-    "rollNotFound": "Tirada no encontrada",
+    "rollNotFound": "Tirada no encontrada. Las tiradas se guardan durante 30 días.",
     "rotateRevealServerSeed": "Rotar y revelar la semilla del servidor",
     "serverSeed": "Semilla del servidor",
     "serverSeedHash": "Hash de la semilla del servidor",

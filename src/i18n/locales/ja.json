@@ -323,7 +323,7 @@
     "outcome": "結果",
     "previousSeedRevealedVerify": "前のシードを公開しました。検証してください：",
     "roll": "ロール",
-    "rollNotFound": "ロールが見つかりません",
+    "rollNotFound": "ロールが見つかりません。ロールは30日間保存されます。",
     "rotateRevealServerSeed": "サーバーシードをローテーションして公開",
     "serverSeed": "サーバーシード",
     "serverSeedHash": "サーバーシードのハッシュ",
