@@ -55,7 +55,4 @@ const RoundSchema = new mongoose.Schema(
 RoundSchema.index({ status: 1 });
 // round history, newest first
 RoundSchema.index({ game: 1, createdAt: -1 });
-// "what did this player bet on, and when"
-RoundSchema.index({ "bets.userId": 1, createdAt: -1 });
-
 module.exports = mongoose.model("Round", RoundSchema);

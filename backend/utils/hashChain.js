@@ -15,10 +15,18 @@ function generateChain(length) {
   return { seeds, terminalHash };
 }
 
+// every seed is the hash of the next, so the whole sequence regenerates from the last
+// one. a retired chain keeps only that root instead of all ten thousand strings.
+function seedAt(rootSeed, length, index) {
+  let seed = rootSeed;
+  for (let i = length - 1; i > index; i--) seed = sha256(seed);
+  return seed;
+}
+
 // a revealed seed is valid if hashing it gives the previous reveal (or the terminal
 // for the first round). this is the whole verification a player runs.
 function linksTo(seed, priorHashOrTerminal) {
   return sha256(seed) === priorHashOrTerminal;
 }
 
-module.exports = { sha256, generateChain, linksTo };
+module.exports = { sha256, generateChain, linksTo, seedAt };

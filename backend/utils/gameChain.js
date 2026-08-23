@@ -22,8 +22,17 @@ async function consumeNextSeed(game) {
       const doc = await GameSeedChain.findById(claimed._id, { seeds: { $slice: [index, 1] } });
       return { chainId: claimed._id, terminalHash: claimed.terminalHash, index, seed: doc.seeds[0] };
     }
-    // none active, or the active one is spent: retire it and publish a fresh commitment
-    await GameSeedChain.updateMany({ game, active: true }, { $set: { active: false } });
+    // none active, or the active one is spent: retire it and publish a fresh commitment.
+    // the spent seeds go with it, kept only as the root they all derive from
+    await GameSeedChain.updateMany({ game, active: true }, [
+      {
+        $set: {
+          active: false,
+          rootSeed: { $ifNull: [{ $last: "$seeds" }, "$rootSeed"] },
+          seeds: [],
+        },
+      },
+    ]);
     await createChain(game);
   }
   throw new Error(`could not consume a ${game} seed`);

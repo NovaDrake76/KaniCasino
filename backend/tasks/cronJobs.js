@@ -75,7 +75,7 @@ module.exports = {
             }
         })
 
-        cron.schedule('30 4 * * *', async () => {
+        cron.schedule('30 * * * *', async () => {
             try {
                 const removed = await pruneEmptyRounds();
                 console.log(`Pruned ${removed} rounds nobody bet on.`);

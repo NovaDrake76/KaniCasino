@@ -6,7 +6,10 @@ const GameSeedChainSchema = new mongoose.Schema(
   {
     game: { type: String, enum: ["crash", "coinflip"], required: true },
     terminalHash: { type: String, required: true },
-    seeds: { type: [String], required: true }, // secret until each is consumed
+    seeds: { type: [String], required: true }, // secret until each is consumed, emptied on retire
+    // the last seed of a retired chain. every other one is a hash of the next, so this
+    // regenerates the whole sequence and the spent strings do not have to be kept.
+    rootSeed: String,
     cursor: { type: Number, default: 0 }, // index of the next seed to consume
     active: { type: Boolean, default: true },
   },

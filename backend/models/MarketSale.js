@@ -20,6 +20,5 @@ const MarketSaleSchema = new mongoose.Schema({
 
 // the only hot query is "this item's sales, newest first, within a window"
 MarketSaleSchema.index({ item: 1, soldAt: -1 });
-MarketSaleSchema.index({ soldAt: -1 });
 
 module.exports = mongoose.model("MarketSale", MarketSaleSchema);

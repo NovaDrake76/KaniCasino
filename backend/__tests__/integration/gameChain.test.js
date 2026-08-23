@@ -3,7 +3,8 @@ process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
 const { setupDb, clearDb, teardownDb } = require("./db");
 const GameSeedChain = require("../../models/GameSeedChain");
 const { consumeNextSeed } = require("../../utils/gameChain");
-const { sha256, linksTo } = require("../../utils/hashChain");
+const { CHAIN_LENGTH } = require("../../utils/gameChain");
+const { sha256, linksTo, seedAt } = require("../../utils/hashChain");
 
 beforeAll(setupDb);
 afterEach(clearDb);
@@ -51,4 +52,21 @@ test("an exhausted chain rotates to a fresh commitment", async () => {
   expect(rotated.terminalHash).not.toBe(oldTerminal);
   expect(rotated.index).toBe(0);
   expect(await GameSeedChain.countDocuments({ game: "crash", active: true })).toBe(1);
+});
+
+test("a retired chain keeps only the root every spent seed derives from", async () => {
+  const first = await consumeNextSeed("crash");
+  const chain = await GameSeedChain.findOne({ game: "crash" });
+  await GameSeedChain.updateOne({ _id: chain._id }, { $set: { cursor: chain.seeds.length } });
+  await consumeNextSeed("crash"); // forces the rotation that retires it
+
+  const retired = await GameSeedChain.findById(chain._id);
+  expect(retired.active).toBe(false);
+  expect(retired.seeds).toHaveLength(0);
+  expect(retired.rootSeed).toHaveLength(64);
+
+  // nothing was lost: the seed already handed out regenerates from the root, and the
+  // terminal it was committed against still checks out
+  expect(seedAt(retired.rootSeed, CHAIN_LENGTH, 0)).toBe(first.seed);
+  expect(linksTo(seedAt(retired.rootSeed, CHAIN_LENGTH, 0), retired.terminalHash)).toBe(true);
 });
