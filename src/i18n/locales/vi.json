@@ -323,7 +323,7 @@
     "outcome": "Kết quả",
     "previousSeedRevealedVerify": "Seed trước đã được công khai, hãy kiểm chứng:",
     "roll": "Roll",
-    "rollNotFound": "Không tìm thấy roll",
+    "rollNotFound": "Không tìm thấy roll. Roll được lưu trong 30 ngày.",
     "rotateRevealServerSeed": "Đổi và công khai seed máy chủ",
     "serverSeed": "Seed máy chủ",
     "serverSeedHash": "Hash seed máy chủ",

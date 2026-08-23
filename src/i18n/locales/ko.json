@@ -323,7 +323,7 @@
     "outcome": "결과",
     "previousSeedRevealedVerify": "이전 시드를 공개했습니다. 확인해 보세요:",
     "roll": "롤",
-    "rollNotFound": "롤을 찾을 수 없습니다",
+    "rollNotFound": "롤을 찾을 수 없습니다. 롤은 30일간 보관됩니다.",
     "rotateRevealServerSeed": "서버 시드 교체 및 공개",
     "serverSeed": "서버 시드",
     "serverSeedHash": "서버 시드 해시",
