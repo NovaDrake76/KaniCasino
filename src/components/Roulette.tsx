@@ -13,9 +13,13 @@ interface Roulette {
   overlay?: (item: BasicItem) => React.ReactNode;
 }
 
+// the strip is clipped to this, and the window shows the middle of it
+const CLIP = 1100;
+const GAP = 8; // gap-2 between slots
+
 const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, direction = "horizontal", overlay }) => {
   const [rouletteItems, setRouletteItems] = useState<BasicItem[]>([]);
-  const [translateValue, setTranslateValue] = useState<string>("-6180px");
+  const [translateValue, setTranslateValue] = useState<string | null>(null);
   const rouletteRef = useRef<HTMLDivElement | null>(null);
 
 
@@ -61,16 +65,26 @@ const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, dire
     createRouletteItems();
   }, [items]);
 
+  // how far to travel is a function of how big a slot is, and a slot is smaller on a
+  // phone. hard-coding the distance sent the strip clean past its own end there and the
+  // reel span blank, so it is measured off the rendered slot instead.
   useEffect(() => {
-    if (spin) {
-      // Generate a random translateX value between -6090px and -6240px
-      const randomTranslateX = (direction == "vertical" ? -6042 : -6090 - Math.floor(Math.random() * 151));
-      setTranslateValue(`${randomTranslateX}px`);
-    }
-  }, [spin]);
+    if (!spin || !rouletteItems.length) return;
+    const slot = rouletteRef.current?.firstElementChild as HTMLElement | null;
+    if (!slot) return;
+
+    const size = direction == "vertical" ? slot.offsetHeight : slot.offsetWidth;
+    if (!size) return;
+    const winning = direction == "vertical" ? 48 : 36;
+    // put the middle of the winning slot on the middle of the window
+    const centre = winning * (size + GAP) + size / 2 - CLIP / 2;
+    // the horizontal reel stops a little off centre so it never looks mechanical
+    const jitter = direction == "vertical" ? 0 : Math.floor(Math.random() * 151) - 75;
+    setTranslateValue(`${-Math.round(centre + jitter)}px`);
+  }, [spin, rouletteItems, direction]);
 
   useEffect(() => {
-    if (rouletteRef.current && spin) {
+    if (rouletteRef.current && spin && translateValue) {
       rouletteRef.current.style.animation =
         `spin 7.1s cubic-bezier(0.1, 0, 0.2, 1)`;
     } else if (rouletteRef.current) {
@@ -84,7 +98,7 @@ const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, dire
         {rouletteItems.map((item: BasicItem, index: number) => (
           <div
             key={index}
-            className={`flex-shrink-0 relative ${direction == "vertical" ? "h-32 aspect-square" : "w-[176px] h-[176px]"}`}
+            className={`flex-shrink-0 relative ${direction == "vertical" ? "h-16 md:h-32 aspect-square" : "w-[176px] h-[176px]"}`}
             style={{
               borderBottom: Rarities.find((rarity) => rarity.id == item.rarity)?.color + " solid 4px",
             }}
@@ -103,13 +117,15 @@ const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, dire
               transform: ${direction == "vertical" ? "translateY(0%);" : "translateX(0%);"};
             }
             to {
-              transform: ${direction == "vertical" ? `translateY(${translateValue});` : `translateX(${translateValue});`};
+              transform: ${direction == "vertical" ? `translateY(${translateValue || "0px"});` : `translateX(${translateValue || "0px"});`};
             }
           }
         `}</style>
       </div>
-      <div className={`absolute  ${direction == "vertical" ? "top-0 inset-x-0" : "left-0 inset-y-0 bg-gradient-to-r"} w-24 h-full  from-[#151225] via-transparent`} />
-      <div className={`absolute  ${direction == "vertical" ? "bottom-0 inset-x-0 " : "right-0 inset-y-0 bg-gradient-to-l"} w-24 h-full  from-[#151225] via-transparent`} />
+      {/* the fade was sized for a horizontal reel either way, so on a vertical one it hung
+          96px off the side of a 64px slot and had no gradient direction to fade along */}
+      <div className={`absolute ${direction == "vertical" ? "top-0 inset-x-0 w-full h-12 bg-gradient-to-b" : "left-0 inset-y-0 w-24 h-full bg-gradient-to-r"} from-[#151225] via-transparent`} />
+      <div className={`absolute ${direction == "vertical" ? "bottom-0 inset-x-0 w-full h-12 bg-gradient-to-t" : "right-0 inset-y-0 w-24 h-full bg-gradient-to-l"} from-[#151225] via-transparent`} />
     </div>
   );
 };
