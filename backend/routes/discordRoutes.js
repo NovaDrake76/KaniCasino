@@ -274,7 +274,15 @@ async function oauthCallback(req, res) {
     try {
       claim = jwt.verify(String(state), process.env.JWT_SECRET);
     } catch {
-      return done(null, "expired");
+      // the signature is still checked, so this cannot be pointed anywhere by a stranger.
+      // it only recovers whose settings page to land on: the answer is still no.
+      let expired = null;
+      try {
+        expired = jwt.verify(String(state), process.env.JWT_SECRET, { ignoreExpiration: true });
+      } catch {
+        expired = null;
+      }
+      return done(expired && expired.use === "discord-oauth" ? expired.userId : null, "expired");
     }
     if (claim.use !== "discord-oauth") return done(null, "failed");
     userId = claim.userId;

@@ -426,3 +426,30 @@ describe("linking from the site", () => {
     expect((await callback({})).headers.location).toContain("discord=failed");
   });
 });
+
+// the settings tab only renders for the account that owns it, so an outcome sent to
+// /profile/me collapses to the inventory and the player is told nothing at all
+describe("where a failed link sends the player", () => {
+  const jwt = require("jsonwebtoken");
+
+  it("lands an expired link on the settings page of whoever started it", async () => {
+    const user = await makeUser();
+    const stale = jwt.sign(
+      { userId: String(user._id), use: "discord-oauth" },
+      process.env.JWT_SECRET,
+      { expiresIn: -60 }
+    );
+
+    const res = await request(app).get("/discord/oauth/callback").query({ code: "c", state: stale });
+    expect(res.headers.location).toContain(`/profile/${user._id}?tab=settings&discord=expired`);
+  });
+
+  it("will not be pointed at a stranger's page by an unsigned state", async () => {
+    const forged = jwt.sign({ userId: "aaaaaaaaaaaaaaaaaaaaaaaa", use: "discord-oauth" }, "not-the-secret", {
+      expiresIn: -60,
+    });
+    const res = await request(app).get("/discord/oauth/callback").query({ code: "c", state: forged });
+    expect(res.headers.location).toContain("/profile/me?tab=settings&discord=expired");
+    expect(res.headers.location).not.toContain("aaaaaaaaaaaaaaaaaaaaaaaa");
+  });
+});
