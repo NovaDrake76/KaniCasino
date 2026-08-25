@@ -301,14 +301,27 @@
     "winChance": "Tỉ lệ thắng"
   },
   "discord": {
+    "errAlready": "Tài khoản này đã được liên kết.",
+    "errExpired": "Quá lâu rồi. Hãy bắt đầu lại.",
+    "errFailed": "Liên kết không thành công. Thử lại nhé.",
+    "errTaken": "Tài khoản Discord đó thuộc về người chơi khác.",
+    "errYoung": "Tài khoản Discord đó quá mới để liên kết.",
     "failed": "Liên kết đó không hoạt động",
     "keepPlaying": "Mở một hòm đi, tiện thể",
+    "linkButton": "Liên kết Discord",
+    "linkHint": "Liên kết tài khoản để dùng bot: khoe bộ sưu tập và giành bảng xếp hạng của máy chủ bạn.",
     "linked": "Đã liên kết Discord",
+    "linkedAs": "Đã liên kết với {{name}}",
     "linkedBody": "{{name}} đã được liên kết với tài khoản của bạn. Quay lại Discord và thử /showcase.",
+    "linkedToast": "Đã liên kết Discord",
     "linking": "Đang liên kết tài khoản của bạn",
     "needLogin": "Đăng nhập để hoàn tất liên kết",
     "needLoginBody": "Đăng nhập hoặc tạo tài khoản, và người dùng Discord của bạn sẽ được liên kết ngay.",
-    "tryAgain": "Chạy lại /link trong Discord để lấy mã mới."
+    "notLinked": "Chưa liên kết tài khoản Discord",
+    "settingsTitle": "Discord",
+    "tryAgain": "Chạy lại /link trong Discord để lấy mã mới.",
+    "unlinkButton": "Hủy liên kết",
+    "unlinked": "Đã hủy liên kết Discord"
   },
   "fair": {
     "autoVerifySupportedFor": "Hỗ trợ kiểm chứng tự động cho roll của hòm, plinko, blackjack, xúc xắc, dò mìn và hilo",

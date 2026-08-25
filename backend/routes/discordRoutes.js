@@ -1,5 +1,6 @@
 const express = require("express");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 const User = require("../models/User");
@@ -220,6 +221,104 @@ router.get("/link/me", isAuthenticated, async (req, res) => {
   }
 });
 
+// linking the other way round: from the site, with no bot involved. discord is the only
+// thing that can say which account a browser belongs to, so it has to be asked directly.
+const DISCORD_API = "https://discord.com/api/v10";
+const OAUTH_TTL = "10m";
+
+const siteUrl = () => (process.env.SITE_URL || "https://kanicasino.com").replace(/\/$/, "");
+const redirectUri = () =>
+  process.env.DISCORD_REDIRECT_URI || `${(process.env.API_URL || "").replace(/\/$/, "")}/discord/oauth/callback`;
+
+router.get("/oauth/start", isAuthenticated, async (req, res) => {
+  try {
+    if (!process.env.DISCORD_CLIENT_ID || !process.env.DISCORD_CLIENT_SECRET) {
+      return res.status(503).json({ message: "Discord linking is not configured" });
+    }
+    const mine = await User.findById(req.user._id, { discordId: 1 }).lean();
+    if (!mine) return res.status(404).json({ message: "User not found" });
+    if (mine.discordId) return res.status(409).json({ message: "This account is already linked to a Discord user." });
+
+    // the state is signed rather than stored: it says which session opened the flow, it
+    // expires on its own, and a callback replayed by anyone else carries no session at all
+    const state = jwt.sign({ userId: String(req.user._id), use: "discord-oauth" }, process.env.JWT_SECRET, {
+      expiresIn: OAUTH_TTL,
+    });
+    const url = new URL("https://discord.com/oauth2/authorize");
+    url.searchParams.set("client_id", process.env.DISCORD_CLIENT_ID);
+    url.searchParams.set("redirect_uri", redirectUri());
+    url.searchParams.set("response_type", "code");
+    // identify is the whole ask: an id and a name, no email, no servers, no messages
+    url.searchParams.set("scope", "identify");
+    url.searchParams.set("state", state);
+    res.json({ url: url.toString() });
+  } catch (err) {
+    console.error("discord oauth start:", err.message);
+    res.status(500).json({ message: "Could not start linking" });
+  }
+});
+
+// discord sends the player's browser here, so it carries no api key and no bearer token.
+// mounted ahead of the api-key gate in index.js, and everything it trusts comes out of the
+// signed state or from discord itself.
+async function oauthCallback(req, res) {
+  const done = (userId, status) =>
+    res.redirect(`${siteUrl()}/profile/${userId || "me"}?tab=settings&discord=${status}`);
+
+  let userId = null;
+  try {
+    const { code, state } = req.query;
+    if (!code || !state) return done(null, "failed");
+
+    let claim;
+    try {
+      claim = jwt.verify(String(state), process.env.JWT_SECRET);
+    } catch {
+      return done(null, "expired");
+    }
+    if (claim.use !== "discord-oauth") return done(null, "failed");
+    userId = claim.userId;
+
+    const token = await fetch(`${DISCORD_API}/oauth2/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: process.env.DISCORD_CLIENT_ID,
+        client_secret: process.env.DISCORD_CLIENT_SECRET,
+        grant_type: "authorization_code",
+        code: String(code),
+        redirect_uri: redirectUri(),
+      }),
+      signal: AbortSignal.timeout(8000),
+    }).then((r) => (r.ok ? r.json() : null));
+    if (!token || !token.access_token) return done(userId, "failed");
+
+    const me = await fetch(`${DISCORD_API}/users/@me`, {
+      headers: { Authorization: `Bearer ${token.access_token}` },
+      signal: AbortSignal.timeout(8000),
+    }).then((r) => (r.ok ? r.json() : null));
+    if (!me || !me.id) return done(userId, "failed");
+
+    const born = snowflakeDate(me.id);
+    if (!born || Date.now() - born.getTime() < MIN_ACCOUNT_AGE_MS) return done(userId, "young");
+
+    const taken = await User.findOne({ discordId: me.id }, { _id: 1 }).lean();
+    if (taken) return done(userId, String(taken._id) === String(userId) ? "already" : "taken");
+
+    const written = await User.updateOne(
+      { _id: userId, discordId: { $exists: false } },
+      { $set: { discordId: me.id, discordName: me.username || null, discordLinkedAt: new Date() } }
+    );
+    if (!written.modifiedCount) return done(userId, "already");
+    return done(userId, "linked");
+  } catch (err) {
+    // the unique index is still the last word if two browsers race the same discord account
+    if (err && err.code === 11000) return done(userId, "taken");
+    console.error("discord oauth callback:", err.message);
+    return done(userId, "failed");
+  }
+}
+
 router.get("/showcase/:discordId", botOnly, async (req, res) => {
   try {
     const user = await User.findOne(visible({ discordId: String(req.params.discordId) }), CARD_FIELDS).lean();
@@ -305,5 +404,8 @@ router.get("/leaderboard", botOnly, async (req, res) => {
     res.status(500).json({ message: "Could not load the leaderboard" });
   }
 });
+
+// attached rather than routed: index.js mounts it ahead of the api-key gate
+router.oauthCallback = oauthCallback;
 
 module.exports = router;

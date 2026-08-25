@@ -42,6 +42,8 @@ function makeApp() {
   app.use("/items", itemRoutes);
   app.use("/fandom", fandomRoutes);
   app.use("/predictions", predictionRoutes(io));
+  // discord redirects a browser here, so it is mounted outside the router in index.js too
+  app.get("/discord/oauth/callback", discordRoutes.oauthCallback);
   app.use("/discord", discordRoutes);
   return app;
 }

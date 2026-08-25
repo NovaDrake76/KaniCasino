@@ -302,3 +302,127 @@ describe("discord bot routes", () => {
     });
   });
 });
+
+// linking from the site instead of from the bot. discord is the only thing that can say
+// which discord account a browser belongs to, so the player is sent there and back.
+describe("linking from the site", () => {
+  const jwt = require("jsonwebtoken");
+  const CLIENT = "1541676225133809714";
+  let realFetch;
+
+  beforeAll(() => {
+    process.env.DISCORD_CLIENT_ID = CLIENT;
+    process.env.DISCORD_CLIENT_SECRET = "test-client-secret";
+    process.env.DISCORD_REDIRECT_URI = "https://api.example.test/discord/oauth/callback";
+    realFetch = global.fetch;
+  });
+  afterEach(() => {
+    global.fetch = realFetch;
+  });
+
+  // discord answers twice: once to trade the code for a token, once for the account
+  const discordAnswers = (account) => {
+    global.fetch = jest.fn(async (url) =>
+      String(url).endsWith("/oauth2/token")
+        ? { ok: true, json: async () => ({ access_token: "token" }) }
+        : { ok: true, json: async () => account }
+    );
+  };
+
+  const start = (user) => auth(request(app).get("/discord/oauth/start"), user);
+  const callback = (query) => request(app).get("/discord/oauth/callback").query(query);
+
+  it("hands back a discord url carrying a state only this session could have made", async () => {
+    const user = await makeUser();
+    const res = await start(user);
+    expect(res.status).toBe(200);
+
+    const url = new URL(res.body.url);
+    expect(url.origin + url.pathname).toBe("https://discord.com/oauth2/authorize");
+    expect(url.searchParams.get("client_id")).toBe(CLIENT);
+    expect(url.searchParams.get("scope")).toBe("identify");
+    expect(url.searchParams.get("response_type")).toBe("code");
+
+    const claim = jwt.verify(url.searchParams.get("state"), process.env.JWT_SECRET);
+    expect(claim.userId).toBe(String(user._id));
+  });
+
+  it("needs a session of its own", async () => {
+    expect((await request(app).get("/discord/oauth/start")).status).toBe(401);
+  });
+
+  it("will not start for an account that is already linked", async () => {
+    const user = await makeUser();
+    await linkUser(user, oldEnough());
+    expect((await start(user)).status).toBe(409);
+  });
+
+  it("links the account the state names, and sends them back to their settings", async () => {
+    const user = await makeUser();
+    const discordId = oldEnough();
+    const state = (await start(user)).body.url;
+    discordAnswers({ id: discordId, username: "someone" });
+
+    const res = await callback({ code: "auth-code", state: new URL(state).searchParams.get("state") });
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toContain(`/profile/${user._id}?tab=settings&discord=linked`);
+
+    const stored = await User.findById(user._id).select("discordId discordName").lean();
+    expect(stored.discordId).toBe(discordId);
+    expect(stored.discordName).toBe("someone");
+  });
+
+  it("refuses a state it did not sign", async () => {
+    const forged = jwt.sign({ userId: "000000000000000000000000", use: "discord-oauth" }, "not-the-secret");
+    const res = await callback({ code: "auth-code", state: forged });
+    expect(res.headers.location).toContain("discord=expired");
+  });
+
+  // a login token is signed with the same secret, so the purpose has to be checked too
+  it("refuses a token minted for something other than this flow", async () => {
+    const user = await makeUser();
+    const res = await callback({ code: "auth-code", state: tokenFor(user) });
+    expect(res.headers.location).toContain("discord=failed");
+    const stored = await User.findById(user._id).select("discordId").lean();
+    expect(stored.discordId).toBeUndefined();
+  });
+
+  it("turns away a discord account that belongs to someone else", async () => {
+    const holder = await makeUser();
+    const discordId = oldEnough();
+    await linkUser(holder, discordId);
+
+    const other = await makeUser();
+    const state = new URL((await start(other)).body.url).searchParams.get("state");
+    discordAnswers({ id: discordId, username: "someone" });
+
+    const res = await callback({ code: "auth-code", state });
+    expect(res.headers.location).toContain("discord=taken");
+    const stored = await User.findById(other._id).select("discordId").lean();
+    expect(stored.discordId).toBeUndefined();
+  });
+
+  it("applies the same age rule the bot does", async () => {
+    const user = await makeUser();
+    const state = new URL((await start(user)).body.url).searchParams.get("state");
+    discordAnswers({ id: snowflakeFor(daysAgo(2)), username: "fresh" });
+
+    const res = await callback({ code: "auth-code", state });
+    expect(res.headers.location).toContain("discord=young");
+    const stored = await User.findById(user._id).select("discordId").lean();
+    expect(stored.discordId).toBeUndefined();
+  });
+
+  it("survives discord refusing the code", async () => {
+    const user = await makeUser();
+    const state = new URL((await start(user)).body.url).searchParams.get("state");
+    global.fetch = jest.fn(async () => ({ ok: false, json: async () => ({}) }));
+
+    const res = await callback({ code: "stale", state });
+    expect(res.headers.location).toContain("discord=failed");
+  });
+
+  it("goes nowhere without a code", async () => {
+    expect((await callback({})).headers.location).toContain("discord=failed");
+  });
+});

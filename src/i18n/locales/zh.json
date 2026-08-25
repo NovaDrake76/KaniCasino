@@ -301,14 +301,27 @@
     "winChance": "获胜概率"
   },
   "discord": {
+    "errAlready": "该账号已经关联过了。",
+    "errExpired": "耗时过长，请重新开始。",
+    "errFailed": "关联失败，请重试。",
+    "errTaken": "那个 Discord 账号属于其他玩家。",
+    "errYoung": "那个 Discord 账号太新，无法关联。",
     "failed": "该链接无法使用",
     "keepPlaying": "来都来了，开个箱吧",
+    "linkButton": "关联 Discord",
+    "linkHint": "关联账号即可使用机器人：晒出你的收藏，拿下你所在服务器的榜单。",
     "linked": "Discord 已关联",
+    "linkedAs": "已关联为 {{name}}",
     "linkedBody": "{{name}} 已关联到你的账号。回到 Discord 试试 /showcase。",
+    "linkedToast": "Discord 已关联",
     "linking": "正在关联你的账号",
     "needLogin": "登录后完成关联",
     "needLoginBody": "登录或注册账号，你的 Discord 用户就会立即关联。",
-    "tryAgain": "在 Discord 中重新运行 /link 获取新的验证码。"
+    "notLinked": "未关联 Discord 账号",
+    "settingsTitle": "Discord",
+    "tryAgain": "在 Discord 中重新运行 /link 获取新的验证码。",
+    "unlinkButton": "解除关联",
+    "unlinked": "已解除 Discord 关联"
   },
   "fair": {
     "autoVerifySupportedFor": "开箱、Plinko、21点、骰子、扫雷和 HiLo 的 roll 支持自动验证",

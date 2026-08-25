@@ -16,6 +16,13 @@ export const getDiscordLink = async (): Promise<DiscordLinkState> => {
     return data;
 };
 
+// discord is the only thing that can say which account a browser belongs to, so linking
+// from the site means sending the player there and back
+export const startDiscordOAuth = async (): Promise<string> => {
+    const { data } = await api.get("/discord/oauth/start");
+    return data.url;
+};
+
 export const unlinkDiscord = async (): Promise<void> => {
     await api.delete("/discord/link");
 };

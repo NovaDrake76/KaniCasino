@@ -301,14 +301,27 @@
     "winChance": "Kesempatan menang"
   },
   "discord": {
+    "errAlready": "Akun ini sudah tertaut.",
+    "errExpired": "Terlalu lama. Mulai lagi.",
+    "errFailed": "Penautan gagal. Coba lagi.",
+    "errTaken": "Akun Discord itu milik pemain lain.",
+    "errYoung": "Akun Discord itu terlalu baru untuk ditautkan.",
     "failed": "Tautan itu tidak berhasil",
     "keepPlaying": "Buka satu case selagi di sini",
+    "linkButton": "Tautkan Discord",
+    "linkHint": "Tautkan akunmu untuk memakai bot: pamerkan koleksimu dan rebut papan peringkat servermu.",
     "linked": "Discord tertaut",
+    "linkedAs": "Tertaut sebagai {{name}}",
     "linkedBody": "{{name}} sekarang tertaut ke akunmu. Kembali ke Discord dan coba /showcase.",
+    "linkedToast": "Discord tertaut",
     "linking": "Menautkan akunmu",
     "needLogin": "Masuk untuk menyelesaikan penautan",
     "needLoginBody": "Masuk atau buat akun, dan pengguna Discord-mu langsung tertaut.",
-    "tryAgain": "Jalankan /link lagi di Discord untuk kode baru."
+    "notLinked": "Belum ada akun Discord yang tertaut",
+    "settingsTitle": "Discord",
+    "tryAgain": "Jalankan /link lagi di Discord untuk kode baru.",
+    "unlinkButton": "Lepas tautan",
+    "unlinked": "Tautan Discord dilepas"
   },
   "fair": {
     "autoVerifySupportedFor": "Verifikasi otomatis didukung untuk permainan case, plinko, blackjack, dadu, mines, dan hilo rolls.",

@@ -301,14 +301,27 @@
     "winChance": "Probabilità di vincita"
   },
   "discord": {
+    "errAlready": "Questo account è già collegato.",
+    "errExpired": "Ci è voluto troppo. Ricomincia.",
+    "errFailed": "Il collegamento non ha funzionato. Riprova.",
+    "errTaken": "Quell'account Discord appartiene a un altro giocatore.",
+    "errYoung": "Quell'account Discord è troppo recente per collegarlo.",
     "failed": "Quel link non ha funzionato",
     "keepPlaying": "Apri una cassa già che ci sei",
+    "linkButton": "Collega Discord",
+    "linkHint": "Collega il tuo account per usare il bot: mostra la tua collezione e conquista le classifiche del tuo server.",
     "linked": "Discord collegato",
+    "linkedAs": "Collegato come {{name}}",
     "linkedBody": "{{name}} ora è collegato al tuo account. Torna su Discord e prova /showcase.",
+    "linkedToast": "Discord collegato",
     "linking": "Collegamento del tuo account",
     "needLogin": "Accedi per completare il collegamento",
     "needLoginBody": "Accedi o crea un account e il tuo utente Discord verrà collegato subito.",
-    "tryAgain": "Usa di nuovo /link su Discord per un codice nuovo."
+    "notLinked": "Nessun account Discord collegato",
+    "settingsTitle": "Discord",
+    "tryAgain": "Usa di nuovo /link su Discord per un codice nuovo.",
+    "unlinkButton": "Scollega",
+    "unlinked": "Discord scollegato"
   },
   "fair": {
     "autoVerifySupportedFor": "Verifica automatica disponibile per i roll di cassa, plinko, blackjack, dadi, mine e hilo",

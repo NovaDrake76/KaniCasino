@@ -301,14 +301,27 @@
     "winChance": "승리 확률"
   },
   "discord": {
+    "errAlready": "이미 연결된 계정입니다.",
+    "errExpired": "시간이 너무 지났습니다. 다시 시작하세요.",
+    "errFailed": "연결에 실패했습니다. 다시 시도하세요.",
+    "errTaken": "그 Discord 계정은 다른 플레이어의 것입니다.",
+    "errYoung": "그 Discord 계정은 너무 최근에 만들어져 연결할 수 없습니다.",
     "failed": "이 링크는 작동하지 않았습니다",
     "keepPlaying": "온 김에 케이스 하나 열어보기",
+    "linkButton": "Discord 연결",
+    "linkHint": "계정을 연결하면 봇을 쓸 수 있습니다. 컬렉션을 자랑하고 서버 순위를 차지하세요.",
     "linked": "Discord 연결 완료",
+    "linkedAs": "{{name}}(으)로 연결됨",
     "linkedBody": "{{name}}이(가) 계정에 연결되었습니다. Discord로 돌아가 /showcase를 사용해 보세요.",
+    "linkedToast": "Discord 연결 완료",
     "linking": "계정을 연결하는 중",
     "needLogin": "로그인하고 연결을 마치세요",
     "needLoginBody": "로그인하거나 계정을 만들면 Discord 계정이 바로 연결됩니다.",
-    "tryAgain": "Discord에서 /link를 다시 실행해 새 코드를 받으세요."
+    "notLinked": "연결된 Discord 계정이 없습니다",
+    "settingsTitle": "Discord",
+    "tryAgain": "Discord에서 /link를 다시 실행해 새 코드를 받으세요.",
+    "unlinkButton": "연결 해제",
+    "unlinked": "Discord 연결을 해제했습니다"
   },
   "fair": {
     "autoVerifySupportedFor": "케이스, 플린코, 블랙잭, 주사위, 마인즈, HiLo 롤은 자동 검증을 지원합니다",

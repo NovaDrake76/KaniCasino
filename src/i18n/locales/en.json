@@ -301,14 +301,27 @@
     "winChance": "Win Chance"
   },
   "discord": {
+    "errAlready": "This account is already linked.",
+    "errExpired": "That took too long. Start again.",
+    "errFailed": "Linking did not work. Try again.",
+    "errTaken": "That Discord account belongs to another player.",
+    "errYoung": "That Discord account is too new to link.",
     "failed": "That link did not work",
     "keepPlaying": "Open a case while you are here",
+    "linkButton": "Link Discord",
+    "linkHint": "Link your account to use the bot: show your collection off, and take your server's boards.",
     "linked": "Discord linked",
+    "linkedAs": "Linked as {{name}}",
     "linkedBody": "{{name}} is now attached to your account. Head back to Discord and try /showcase.",
+    "linkedToast": "Discord linked",
     "linking": "Linking your account",
     "needLogin": "Log in to finish linking",
     "needLoginBody": "Sign in or create an account, and your Discord user gets attached straight away.",
-    "tryAgain": "Run /link in Discord again for a fresh code."
+    "notLinked": "No Discord account linked",
+    "settingsTitle": "Discord",
+    "tryAgain": "Run /link in Discord again for a fresh code.",
+    "unlinkButton": "Unlink",
+    "unlinked": "Discord unlinked"
   },
   "fair": {
     "autoVerifySupportedFor": "Auto-verify supported for case, plinko, blackjack, dice, mines and hilo rolls",
