@@ -301,14 +301,27 @@
     "winChance": "Chance de gagner"
   },
   "discord": {
+    "errAlready": "Ce compte est déjà associé.",
+    "errExpired": "Cela a pris trop de temps. Recommence.",
+    "errFailed": "L'association n'a pas fonctionné. Réessaie.",
+    "errTaken": "Ce compte Discord appartient à un autre joueur.",
+    "errYoung": "Ce compte Discord est trop récent pour être associé.",
     "failed": "Ce lien n'a pas fonctionné",
     "keepPlaying": "Ouvre une caisse tant que tu es là",
+    "linkButton": "Associer Discord",
+    "linkHint": "Associe ton compte pour utiliser le bot : montre ta collection et prends les classements de ton serveur.",
     "linked": "Discord associé",
+    "linkedAs": "Associé en tant que {{name}}",
     "linkedBody": "{{name}} est maintenant associé à ton compte. Retourne sur Discord et essaie /showcase.",
+    "linkedToast": "Discord associé",
     "linking": "Association de ton compte",
     "needLogin": "Connecte-toi pour terminer l'association",
     "needLoginBody": "Connecte-toi ou crée un compte, et ton utilisateur Discord sera associé aussitôt.",
-    "tryAgain": "Relance /link sur Discord pour obtenir un nouveau code."
+    "notLinked": "Aucun compte Discord associé",
+    "settingsTitle": "Discord",
+    "tryAgain": "Relance /link sur Discord pour obtenir un nouveau code.",
+    "unlinkButton": "Dissocier",
+    "unlinked": "Discord dissocié"
   },
   "fair": {
     "autoVerifySupportedFor": "Vérification automatique disponible pour les tirages de caisse, plinko, blackjack, dés, mines et hilo",

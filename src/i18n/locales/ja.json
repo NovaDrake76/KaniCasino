@@ -301,14 +301,27 @@
     "winChance": "勝率"
   },
   "discord": {
+    "errAlready": "このアカウントはすでに連携済みです。",
+    "errExpired": "時間がかかりすぎました。もう一度お試しください。",
+    "errFailed": "連携できませんでした。もう一度お試しください。",
+    "errTaken": "その Discord アカウントは他のプレイヤーのものです。",
+    "errYoung": "その Discord アカウントは新しすぎて連携できません。",
     "failed": "このリンクは使えませんでした",
     "keepPlaying": "せっかくなのでケースを開けてみる",
+    "linkButton": "Discord を連携",
+    "linkHint": "アカウントを連携するとボットが使えます。コレクションを自慢して、サーバーのランキングを取りに行きましょう。",
     "linked": "Discord を連携しました",
+    "linkedAs": "{{name}} として連携中",
     "linkedBody": "{{name}} がアカウントに連携されました。Discord に戻って /showcase を試してみてください。",
+    "linkedToast": "Discord を連携しました",
     "linking": "アカウントを連携しています",
     "needLogin": "ログインして連携を完了してください",
     "needLoginBody": "ログインするかアカウントを作成すると、Discord アカウントがすぐに連携されます。",
-    "tryAgain": "Discord でもう一度 /link を実行して、新しいコードを取得してください。"
+    "notLinked": "Discord アカウントは未連携です",
+    "settingsTitle": "Discord",
+    "tryAgain": "Discord でもう一度 /link を実行して、新しいコードを取得してください。",
+    "unlinkButton": "連携を解除",
+    "unlinked": "Discord の連携を解除しました"
   },
   "fair": {
     "autoVerifySupportedFor": "ケース、プリンコ、ブラックジャック、ダイス、マインズ、HiLo のロールは自動検証に対応しています",

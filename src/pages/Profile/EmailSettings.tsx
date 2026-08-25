@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { getEmailPreferences, setMarketingOptIn } from "../../services/email/EmailService";
 import LanguageSelector from "../../components/LanguageSelector";
+import DiscordSettings from "./DiscordSettings";
 import i18n from "../../i18n";
 
 const EmailSettings = () => {
@@ -46,6 +47,8 @@ const EmailSettings = () => {
                 <LanguageSelector />
                 <span className="text-sm text-ink-muted">{i18n.t("settings.languageHint")}</span>
             </div>
+
+            <DiscordSettings />
 
             <span className="text-lg font-bold">{i18n.t("auth.emailShort")}</span>
 

@@ -22,6 +22,10 @@ app.post("/deploy/github", express.raw({ type: "*/*" }), githubDeployHandler);
 // public liveness probe (also bypasses the api-key gate so monitors can hit it)
 app.get("/health", (req, res) => res.json({ status: "ok", uptime: process.uptime() }));
 
+// discord redirects the player's browser back here after they approve the link, so it
+// arrives with no api key and no token. it verifies its own signed state instead.
+app.get("/discord/oauth/callback", require("./routes/discordRoutes").oauthCallback);
+
 const isDevelopment = process.env.NODE_ENV === "development";
 
 // allowed origins are configurable via ALLOWED_ORIGINS (comma-separated); falls

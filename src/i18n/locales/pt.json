@@ -301,14 +301,27 @@
     "winChance": "Chance de ganhar"
   },
   "discord": {
+    "errAlready": "Esta conta já está vinculada.",
+    "errExpired": "Demorou demais. Comece de novo.",
+    "errFailed": "A vinculação não funcionou. Tente de novo.",
+    "errTaken": "Essa conta do Discord pertence a outro jogador.",
+    "errYoung": "Essa conta do Discord é nova demais para vincular.",
     "failed": "Esse link não funcionou",
     "keepPlaying": "Abra uma caixa já que está por aqui",
+    "linkButton": "Vincular Discord",
+    "linkHint": "Vincule sua conta para usar o bot: mostre sua coleção e dispute os rankings do seu servidor.",
     "linked": "Discord vinculado",
+    "linkedAs": "Vinculado como {{name}}",
     "linkedBody": "{{name}} agora está vinculado à sua conta. Volte ao Discord e tente /showcase.",
+    "linkedToast": "Discord vinculado",
     "linking": "Vinculando sua conta",
     "needLogin": "Entre para concluir a vinculação",
     "needLoginBody": "Faça login ou crie uma conta, e seu usuário do Discord será vinculado na hora.",
-    "tryAgain": "Use /link no Discord de novo para obter um código novo."
+    "notLinked": "Nenhuma conta do Discord vinculada",
+    "settingsTitle": "Discord",
+    "tryAgain": "Use /link no Discord de novo para obter um código novo.",
+    "unlinkButton": "Desvincular",
+    "unlinked": "Discord desvinculado"
   },
   "fair": {
     "autoVerifySupportedFor": "Verificação automática disponível para rolls de caixa, plinko, blackjack, dados, minas e hilo",

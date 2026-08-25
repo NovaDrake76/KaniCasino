@@ -301,14 +301,27 @@
     "winChance": "Gewinnchance"
   },
   "discord": {
+    "errAlready": "Dieses Konto ist bereits verknüpft.",
+    "errExpired": "Das hat zu lange gedauert. Fang neu an.",
+    "errFailed": "Die Verknüpfung hat nicht geklappt. Versuch es erneut.",
+    "errTaken": "Dieses Discord-Konto gehört einem anderen Spieler.",
+    "errYoung": "Dieses Discord-Konto ist zu neu zum Verknüpfen.",
     "failed": "Dieser Link hat nicht funktioniert",
     "keepPlaying": "Öffne eine Kiste, wenn du schon hier bist",
+    "linkButton": "Discord verknüpfen",
+    "linkHint": "Verknüpfe dein Konto, um den Bot zu nutzen: zeig deine Sammlung und hol dir die Ranglisten deines Servers.",
     "linked": "Discord verknüpft",
+    "linkedAs": "Verknüpft als {{name}}",
     "linkedBody": "{{name}} ist jetzt mit deinem Konto verknüpft. Geh zurück zu Discord und probier /showcase.",
+    "linkedToast": "Discord verknüpft",
     "linking": "Dein Konto wird verknüpft",
     "needLogin": "Melde dich an, um die Verknüpfung abzuschließen",
     "needLoginBody": "Melde dich an oder erstelle ein Konto, dann wird dein Discord-Benutzer sofort verknüpft.",
-    "tryAgain": "Führe /link in Discord erneut aus, um einen neuen Code zu bekommen."
+    "notLinked": "Kein Discord-Konto verknüpft",
+    "settingsTitle": "Discord",
+    "tryAgain": "Führe /link in Discord erneut aus, um einen neuen Code zu bekommen.",
+    "unlinkButton": "Trennen",
+    "unlinked": "Discord getrennt"
   },
   "fair": {
     "autoVerifySupportedFor": "Automatische Prüfung möglich für Kisten-, Plinko-, Blackjack-, Würfel-, Minen- und Hilo-Rolls",
