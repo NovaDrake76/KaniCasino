@@ -300,6 +300,16 @@
     "rollDice": "주사위 굴리기",
     "winChance": "승리 확률"
   },
+  "discord": {
+    "failed": "이 링크는 작동하지 않았습니다",
+    "keepPlaying": "온 김에 케이스 하나 열어보기",
+    "linked": "Discord 연결 완료",
+    "linkedBody": "{{name}}이(가) 계정에 연결되었습니다. Discord로 돌아가 /showcase를 사용해 보세요.",
+    "linking": "계정을 연결하는 중",
+    "needLogin": "로그인하고 연결을 마치세요",
+    "needLoginBody": "로그인하거나 계정을 만들면 Discord 계정이 바로 연결됩니다.",
+    "tryAgain": "Discord에서 /link를 다시 실행해 새 코드를 받으세요."
+  },
   "fair": {
     "autoVerifySupportedFor": "케이스, 플린코, 블랙잭, 주사위, 마인즈, HiLo 롤은 자동 검증을 지원합니다",
     "busted": "실패",

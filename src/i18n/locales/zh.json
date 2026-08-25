@@ -300,6 +300,16 @@
     "rollDice": "掷骰子",
     "winChance": "获胜概率"
   },
+  "discord": {
+    "failed": "该链接无法使用",
+    "keepPlaying": "来都来了，开个箱吧",
+    "linked": "Discord 已关联",
+    "linkedBody": "{{name}} 已关联到你的账号。回到 Discord 试试 /showcase。",
+    "linking": "正在关联你的账号",
+    "needLogin": "登录后完成关联",
+    "needLoginBody": "登录或注册账号，你的 Discord 用户就会立即关联。",
+    "tryAgain": "在 Discord 中重新运行 /link 获取新的验证码。"
+  },
   "fair": {
     "autoVerifySupportedFor": "开箱、Plinko、21点、骰子、扫雷和 HiLo 的 roll 支持自动验证",
     "busted": "爆掉",

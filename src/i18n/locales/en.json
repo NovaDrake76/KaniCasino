@@ -300,6 +300,16 @@
     "rollDice": "Roll Dice",
     "winChance": "Win Chance"
   },
+  "discord": {
+    "failed": "That link did not work",
+    "keepPlaying": "Open a case while you are here",
+    "linked": "Discord linked",
+    "linkedBody": "{{name}} is now attached to your account. Head back to Discord and try /showcase.",
+    "linking": "Linking your account",
+    "needLogin": "Log in to finish linking",
+    "needLoginBody": "Sign in or create an account, and your Discord user gets attached straight away.",
+    "tryAgain": "Run /link in Discord again for a fresh code."
+  },
   "fair": {
     "autoVerifySupportedFor": "Auto-verify supported for case, plinko, blackjack, dice, mines and hilo rolls",
     "busted": "busted",

@@ -300,6 +300,16 @@
     "rollDice": "Gieo xúc xắc",
     "winChance": "Tỉ lệ thắng"
   },
+  "discord": {
+    "failed": "Liên kết đó không hoạt động",
+    "keepPlaying": "Mở một hòm đi, tiện thể",
+    "linked": "Đã liên kết Discord",
+    "linkedBody": "{{name}} đã được liên kết với tài khoản của bạn. Quay lại Discord và thử /showcase.",
+    "linking": "Đang liên kết tài khoản của bạn",
+    "needLogin": "Đăng nhập để hoàn tất liên kết",
+    "needLoginBody": "Đăng nhập hoặc tạo tài khoản, và người dùng Discord của bạn sẽ được liên kết ngay.",
+    "tryAgain": "Chạy lại /link trong Discord để lấy mã mới."
+  },
   "fair": {
     "autoVerifySupportedFor": "Hỗ trợ kiểm chứng tự động cho roll của hòm, plinko, blackjack, xúc xắc, dò mìn và hilo",
     "busted": "nổ",

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import Modal from "./Modal";
 import MainButton from "./MainButton";
@@ -25,6 +26,7 @@ const steps = () => [
 ];
 
 const OnboardingModal = () => {
+  const { pathname } = useLocation();
   // storage can be blocked; then the tour shows every visit, which is harmless
   const [open, setOpen] = useState<boolean>(() => {
     try {
@@ -43,7 +45,9 @@ const OnboardingModal = () => {
     setOpen(false);
   };
 
-  if (!open) return null;
+  // a visitor arriving from the discord bot is mid-task, and this would cover the panel
+  // they came to use. the tour waits until they reach the site proper.
+  if (!open || pathname.startsWith("/link/")) return null;
 
   return (
     <Modal open={open} setOpen={dismiss} width="520px">

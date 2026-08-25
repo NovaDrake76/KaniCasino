@@ -192,6 +192,15 @@ const UserSchema = new mongoose.Schema({
   emailSuppressedReason: String,
   emailSuppressedAt: Date,
 
+  // the linked discord account. set only by the bot's link flow, which needs a logged-in
+  // session on the site, so a discord id can never claim an account on its own.
+  discordId: String,
+  discordName: String,
+  discordLinkedAt: Date,
+  // the servers this player has actually used the bot in, which is what a per-server board
+  // counts. it holds who plays, not who is a member, so no privileged intent is needed.
+  discordGuilds: [String],
+
   // the daily gift. one spin every 24h; the streak tilts the odds toward the rarer
   // slots and resets the moment a calendar day is missed.
   giftNextAt: Date,
@@ -218,5 +227,7 @@ UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
 UserSchema.index({ referredBy: 1 }, { sparse: true });
 UserSchema.index({ weeklyWinnings: -1 }); // leaderboard, ranking window, weekly cron
 UserSchema.index({ "fixedItem.name": 1 }, { sparse: true }); // fan board recount on pin
+UserSchema.index({ discordId: 1 }, { unique: true, sparse: true }); // bot lookups, one account per discord user
+UserSchema.index({ discordGuilds: 1 }, { sparse: true }); // per-server boards
 
 module.exports = User = mongoose.model("User", UserSchema);

@@ -300,6 +300,16 @@
     "rollDice": "Lempar Dadu",
     "winChance": "Kesempatan menang"
   },
+  "discord": {
+    "failed": "Tautan itu tidak berhasil",
+    "keepPlaying": "Buka satu case selagi di sini",
+    "linked": "Discord tertaut",
+    "linkedBody": "{{name}} sekarang tertaut ke akunmu. Kembali ke Discord dan coba /showcase.",
+    "linking": "Menautkan akunmu",
+    "needLogin": "Masuk untuk menyelesaikan penautan",
+    "needLoginBody": "Masuk atau buat akun, dan pengguna Discord-mu langsung tertaut.",
+    "tryAgain": "Jalankan /link lagi di Discord untuk kode baru."
+  },
   "fair": {
     "autoVerifySupportedFor": "Verifikasi otomatis didukung untuk permainan case, plinko, blackjack, dadu, mines, dan hilo rolls.",
     "busted": "Gagal",

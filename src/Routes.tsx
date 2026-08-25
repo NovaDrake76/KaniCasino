@@ -25,6 +25,7 @@ import ReferralRedirect from "./pages/Affiliates/ReferralRedirect";
 import Backoffice from "./pages/Backoffice/Backoffice";
 import Predictions from "./pages/Predictions/Predictions";
 import PredictionMarket from "./pages/Predictions/Market";
+import LinkDiscord from "./pages/Discord/LinkDiscord";
 
 const defaultRoutes = (
   <>
@@ -54,6 +55,7 @@ const defaultRoutes = (
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
     <Route path="/unsubscribe" element={<Unsubscribe />} />
     <Route path="/gift" element={<Gift />} />
+    <Route path="/link/discord" element={<LinkDiscord />} />
   </>
 );
 
