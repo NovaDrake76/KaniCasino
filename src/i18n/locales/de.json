@@ -300,6 +300,16 @@
     "rollDice": "Würfeln",
     "winChance": "Gewinnchance"
   },
+  "discord": {
+    "failed": "Dieser Link hat nicht funktioniert",
+    "keepPlaying": "Öffne eine Kiste, wenn du schon hier bist",
+    "linked": "Discord verknüpft",
+    "linkedBody": "{{name}} ist jetzt mit deinem Konto verknüpft. Geh zurück zu Discord und probier /showcase.",
+    "linking": "Dein Konto wird verknüpft",
+    "needLogin": "Melde dich an, um die Verknüpfung abzuschließen",
+    "needLoginBody": "Melde dich an oder erstelle ein Konto, dann wird dein Discord-Benutzer sofort verknüpft.",
+    "tryAgain": "Führe /link in Discord erneut aus, um einen neuen Code zu bekommen."
+  },
   "fair": {
     "autoVerifySupportedFor": "Automatische Prüfung möglich für Kisten-, Plinko-, Blackjack-, Würfel-, Minen- und Hilo-Rolls",
     "busted": "geplatzt",

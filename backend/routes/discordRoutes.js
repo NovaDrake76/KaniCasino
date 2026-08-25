@@ -1,0 +1,309 @@
+const express = require("express");
+const crypto = require("crypto");
+const router = express.Router();
+
+const User = require("../models/User");
+const DiscordLink = require("../models/DiscordLink");
+const FanBoard = require("../models/FanBoard");
+const { isAuthenticated } = require("../middleware/authMiddleware");
+const { visible } = require("../utils/visibility");
+const badges = require("../utils/badges");
+
+// how long a link code stays redeemable. long enough to switch to a browser and log in,
+// short enough that a code read off someone else's screen is worthless by the time it lands.
+const LINK_TTL_MS = 15 * 60 * 1000;
+// a discord account younger than this cannot link. the snowflake carries its creation
+// time, so throwaway alts farming the bonus are turned away without a lookup.
+const MIN_ACCOUNT_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+const DISCORD_EPOCH = 1420070400000;
+// how many rows a server board hands back, which is also what caps every query below
+const BOARD_ROWS = 15;
+// a player is only ever counted in this many servers, so the array cannot grow unbounded
+const MAX_GUILDS = 25;
+
+// the only fields the bot is ever given. the inventory is never one of them: it reaches
+// 21k entries, and everything these cards show is already summarised on the document.
+const CARD_FIELDS = {
+  username: 1,
+  level: 1,
+  xp: 1,
+  profilePicture: 1,
+  fixedItem: 1,
+  fanRank: 1,
+  collectionRank: 1,
+  badges: 1,
+  selectedBadge: 1,
+  discordId: 1,
+  discordName: 1,
+};
+
+// no ambiguous glyphs: this gets read off a phone screen and typed back
+const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const makeCode = () =>
+  Array.from(crypto.randomBytes(8), (byte) => ALPHABET[byte % ALPHABET.length]).join("");
+
+const snowflakeDate = (id) => {
+  if (!/^\d{5,25}$/.test(String(id || ""))) return null;
+  return new Date(Number(BigInt(id) >> 22n) + DISCORD_EPOCH);
+};
+
+// the bot is the only caller. the site api key ships inside the frontend bundle, so it
+// cannot be what guards a route that mints link codes for an arbitrary discord id.
+const botOnly = (req, res, next) => {
+  const expected = process.env.DISCORD_BOT_SECRET;
+  if (!expected) return res.status(503).json({ message: "Discord bot is not configured" });
+  const given = req.headers["x-bot-secret"];
+  if (typeof given !== "string" || given.length !== expected.length) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+  if (!crypto.timingSafeEqual(Buffer.from(given), Buffer.from(expected))) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+  next();
+};
+
+const publicCard = (user) => ({
+  userId: user._id,
+  username: user.username,
+  level: user.level || 0,
+  xp: user.xp || 0,
+  profilePicture: user.profilePicture || null,
+  discordName: user.discordName || null,
+  pinned:
+    user.fixedItem && user.fixedItem.name
+      ? {
+          name: user.fixedItem.name,
+          variant: user.fixedItem.variant || null,
+          image: user.fixedItem.image || null,
+          rarity: user.fixedItem.rarity || null,
+        }
+      : null,
+  fanRank:
+    user.fanRank && user.fanRank.name
+      ? {
+          name: user.fanRank.name,
+          count: user.fanRank.count || 0,
+          rank: user.fanRank.rank || null,
+          fans: user.fanRank.fans || 0,
+          second: user.fanRank.second || 0,
+        }
+      : null,
+  collection: user.collectionRank
+    ? {
+        distinct: user.collectionRank.distinct || 0,
+        total: user.collectionRank.total || 0,
+        rank: user.collectionRank.rank || null,
+      }
+    : null,
+  badge: badges.wornBadge(user) || null,
+});
+
+// a linked player running a command here is what puts them on this server's boards. it is
+// who plays rather than who is a member, so the bot never needs the guild member list.
+router.post("/seen", botOnly, async (req, res) => {
+  try {
+    const discordId = String((req.body && req.body.discordId) || "");
+    const guildId = String((req.body && req.body.guildId) || "");
+    if (!discordId || !guildId) return res.status(400).json({ message: "Missing discordId or guildId" });
+
+    await User.updateOne(
+      { discordId, discordGuilds: { $ne: guildId } },
+      // push rather than addToSet because only push can cap the array, and the $ne in the
+      // filter is what makes the two equivalent here
+      { $push: { discordGuilds: { $each: [guildId], $slice: -MAX_GUILDS } } }
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("discord seen:", err.message);
+    res.status(500).json({ message: "Could not record the server" });
+  }
+});
+
+router.post("/link/start", botOnly, async (req, res) => {
+  try {
+    const discordId = String((req.body && req.body.discordId) || "");
+    const discordName = String((req.body && req.body.discordName) || "").slice(0, 64);
+    if (!/^\d{5,25}$/.test(discordId)) return res.status(400).json({ message: "Missing discordId" });
+
+    const born = snowflakeDate(discordId);
+    if (!born || Date.now() - born.getTime() < MIN_ACCOUNT_AGE_MS) {
+      return res.status(403).json({ message: "This Discord account is too new to link" });
+    }
+
+    const existing = await User.findOne({ discordId }, { username: 1 }).lean();
+    if (existing) return res.json({ alreadyLinked: true, username: existing.username });
+
+    const code = makeCode();
+    const expiresAt = new Date(Date.now() + LINK_TTL_MS);
+    await DiscordLink.findOneAndUpdate(
+      { discordId },
+      { $set: { code, discordName, expiresAt, createdAt: new Date() } },
+      { upsert: true }
+    );
+
+    const site = (process.env.SITE_URL || "https://kanicasino.com").replace(/\/$/, "");
+    res.json({ code, url: site + "/link/discord?code=" + code, expiresAt });
+  } catch (err) {
+    console.error("discord link start:", err.message);
+    res.status(500).json({ message: "Could not start the link" });
+  }
+});
+
+// redeemed from the site, by whoever is logged in there. that session is the proof of
+// which account is being linked, which is why the bot cannot do this half on its own.
+router.post("/link/complete", isAuthenticated, async (req, res) => {
+  try {
+    const code = String((req.body && req.body.code) || "").trim().toUpperCase();
+    if (!code) return res.status(400).json({ message: "Missing code" });
+
+    const pending = await DiscordLink.findOne({ code }).lean();
+    if (!pending || pending.expiresAt <= new Date()) {
+      return res.status(404).json({ message: "That code has expired. Run /link again in Discord." });
+    }
+
+    const taken = await User.findOne({ discordId: pending.discordId }, { username: 1 }).lean();
+    if (taken) {
+      await DiscordLink.deleteOne({ code });
+      return res.status(409).json({ message: "That Discord account is already linked to " + taken.username + "." });
+    }
+
+    const mine = await User.findById(req.user._id, { discordId: 1, username: 1 }).lean();
+    if (!mine) return res.status(404).json({ message: "User not found" });
+    if (mine.discordId) {
+      return res.status(409).json({ message: "This account is already linked to a Discord user." });
+    }
+
+    const done = await User.updateOne(
+      { _id: req.user._id, discordId: { $exists: false } },
+      { $set: { discordId: pending.discordId, discordName: pending.discordName, discordLinkedAt: new Date() } }
+    );
+    if (!done.modifiedCount) return res.status(409).json({ message: "This account is already linked." });
+    await DiscordLink.deleteOne({ code });
+
+    res.json({ username: mine.username, discordName: pending.discordName || null });
+  } catch (err) {
+    // the unique index is the real guard against two accounts racing for one discord id
+    if (err && err.code === 11000) {
+      return res.status(409).json({ message: "That Discord account is already linked." });
+    }
+    console.error("discord link complete:", err.message);
+    res.status(500).json({ message: "Could not finish the link" });
+  }
+});
+
+router.delete("/link", isAuthenticated, async (req, res) => {
+  try {
+    await User.updateOne(
+      { _id: req.user._id },
+      { $unset: { discordId: "", discordName: "", discordLinkedAt: "", discordGuilds: "" } }
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("discord unlink:", err.message);
+    res.status(500).json({ message: "Could not unlink" });
+  }
+});
+
+// whether the logged-in player has a discord account attached, for the profile page
+router.get("/link/me", isAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id, { discordName: 1, discordId: 1, discordLinkedAt: 1 }).lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({
+      linked: !!user.discordId,
+      discordName: user.discordName || null,
+      linkedAt: user.discordLinkedAt || null,
+    });
+  } catch (err) {
+    console.error("discord link me:", err.message);
+    res.status(500).json({ message: "Could not read your link" });
+  }
+});
+
+router.get("/showcase/:discordId", botOnly, async (req, res) => {
+  try {
+    const user = await User.findOne(visible({ discordId: String(req.params.discordId) }), CARD_FIELDS).lean();
+    if (!user) return res.status(404).json({ message: "Not linked" });
+    res.json(publicCard(user));
+  } catch (err) {
+    console.error("discord showcase:", err.message);
+    res.status(500).json({ message: "Could not load that player" });
+  }
+});
+
+// one board, narrowed to the players who use the bot in this server. the board document
+// already carries its top rows, so this reads one small document and one id lookup.
+router.get("/topfan/:name", botOnly, async (req, res) => {
+  try {
+    const guildId = String(req.query.guild || "");
+    if (!guildId) return res.status(400).json({ message: "Missing guild" });
+
+    const escaped = String(req.params.name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const board = await FanBoard.findOne(
+      { name: new RegExp("^" + escaped + "$", "i") },
+      { name: 1, image: 1, rarity: 1, ranks: 1, fanCount: 1, topCount: 1 }
+    ).lean();
+    if (!board) return res.status(404).json({ message: "No such character" });
+
+    const rows = board.ranks || [];
+    const card = {
+      name: board.name,
+      image: board.image,
+      rarity: board.rarity,
+      global: board.topCount || 0,
+      fanCount: board.fanCount || 0,
+    };
+    if (!rows.length) return res.json({ ...card, ranks: [] });
+
+    // capped by RANKS_KEPT on the board, so this $in stays bounded whatever the playerbase does
+    const here = await User.find(
+      visible({ _id: { $in: rows.map((row) => row.userId) }, discordGuilds: guildId }),
+      { _id: 1, discordName: 1 }
+    ).lean();
+    const mine = new Map(here.map((row) => [String(row._id), row.discordName || null]));
+
+    res.json({
+      ...card,
+      ranks: rows
+        .filter((row) => mine.has(String(row.userId)))
+        .slice(0, BOARD_ROWS)
+        .map((row) => ({
+          userId: row.userId,
+          username: row.username,
+          level: row.level || 0,
+          count: row.count || 0,
+          discordName: mine.get(String(row.userId)),
+        })),
+    });
+  } catch (err) {
+    console.error("discord topfan:", err.message);
+    res.status(500).json({ message: "Could not load that board" });
+  }
+});
+
+// who in this server is worth beating. sorted on fields the fandom sweep already
+// materialised, so nothing here counts an inventory.
+router.get("/leaderboard", botOnly, async (req, res) => {
+  try {
+    const guildId = String(req.query.guild || "");
+    if (!guildId) return res.status(400).json({ message: "Missing guild" });
+    const sort = String(req.query.sort || "level");
+
+    const order =
+      sort === "collection"
+        ? { "collectionRank.distinct": -1, "collectionRank.total": -1 }
+        : { level: -1, xp: -1 };
+
+    const rows = await User.find(visible({ discordGuilds: guildId }), CARD_FIELDS)
+      .sort(order)
+      .limit(BOARD_ROWS)
+      .lean();
+
+    res.json({ sort, players: rows.map(publicCard) });
+  } catch (err) {
+    console.error("discord leaderboard:", err.message);
+    res.status(500).json({ message: "Could not load the leaderboard" });
+  }
+});
+
+module.exports = router;

@@ -300,6 +300,16 @@
     "rollDice": "Lancia i dadi",
     "winChance": "Probabilità di vincita"
   },
+  "discord": {
+    "failed": "Quel link non ha funzionato",
+    "keepPlaying": "Apri una cassa già che ci sei",
+    "linked": "Discord collegato",
+    "linkedBody": "{{name}} ora è collegato al tuo account. Torna su Discord e prova /showcase.",
+    "linking": "Collegamento del tuo account",
+    "needLogin": "Accedi per completare il collegamento",
+    "needLoginBody": "Accedi o crea un account e il tuo utente Discord verrà collegato subito.",
+    "tryAgain": "Usa di nuovo /link su Discord per un codice nuovo."
+  },
   "fair": {
     "autoVerifySupportedFor": "Verifica automatica disponibile per i roll di cassa, plinko, blackjack, dadi, mine e hilo",
     "busted": "saltato",

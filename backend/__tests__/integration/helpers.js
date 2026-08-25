@@ -17,6 +17,7 @@ const caseRoutes = require("../../routes/caseRoutes");
 const itemRoutes = require("../../routes/itemRoutes");
 const fandomRoutes = require("../../routes/fandomRoutes");
 const predictionRoutes = require("../../routes/predictionRoutes");
+const discordRoutes = require("../../routes/discordRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -41,6 +42,7 @@ function makeApp() {
   app.use("/items", itemRoutes);
   app.use("/fandom", fandomRoutes);
   app.use("/predictions", predictionRoutes(io));
+  app.use("/discord", discordRoutes);
   return app;
 }
 

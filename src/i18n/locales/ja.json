@@ -300,6 +300,16 @@
     "rollDice": "ダイスを振る",
     "winChance": "勝率"
   },
+  "discord": {
+    "failed": "このリンクは使えませんでした",
+    "keepPlaying": "せっかくなのでケースを開けてみる",
+    "linked": "Discord を連携しました",
+    "linkedBody": "{{name}} がアカウントに連携されました。Discord に戻って /showcase を試してみてください。",
+    "linking": "アカウントを連携しています",
+    "needLogin": "ログインして連携を完了してください",
+    "needLoginBody": "ログインするかアカウントを作成すると、Discord アカウントがすぐに連携されます。",
+    "tryAgain": "Discord でもう一度 /link を実行して、新しいコードを取得してください。"
+  },
   "fair": {
     "autoVerifySupportedFor": "ケース、プリンコ、ブラックジャック、ダイス、マインズ、HiLo のロールは自動検証に対応しています",
     "busted": "バースト",

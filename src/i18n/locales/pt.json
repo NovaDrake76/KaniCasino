@@ -300,6 +300,16 @@
     "rollDice": "Rolar dados",
     "winChance": "Chance de ganhar"
   },
+  "discord": {
+    "failed": "Esse link não funcionou",
+    "keepPlaying": "Abra uma caixa já que está por aqui",
+    "linked": "Discord vinculado",
+    "linkedBody": "{{name}} agora está vinculado à sua conta. Volte ao Discord e tente /showcase.",
+    "linking": "Vinculando sua conta",
+    "needLogin": "Entre para concluir a vinculação",
+    "needLoginBody": "Faça login ou crie uma conta, e seu usuário do Discord será vinculado na hora.",
+    "tryAgain": "Use /link no Discord de novo para obter um código novo."
+  },
   "fair": {
     "autoVerifySupportedFor": "Verificação automática disponível para rolls de caixa, plinko, blackjack, dados, minas e hilo",
     "busted": "estourou",
