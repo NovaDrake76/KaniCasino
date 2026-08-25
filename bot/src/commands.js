@@ -22,7 +22,12 @@ setInterval(() => {
   for (const [key, at] of lastUsed) if (at < cutoff) lastUsed.delete(key);
 }, 60000).unref();
 
-const NOT_LINKED = `No KaniCasino account is linked to that Discord user yet. Run \`/link\` to attach one.`;
+// never state that an account is missing without saying how to get one: on its own that
+// reads as a refusal, and somebody has to answer "so how do I link it?" by hand
+const LINK_HINT = "Run `/link` to attach one, it takes about a minute.";
+const NOT_LINKED = `You have not linked a KaniCasino account yet. ${LINK_HINT}`;
+const theyAreNotLinked = (name) =>
+  `**${name}** has not linked a KaniCasino account yet. They can attach one with \`/link\`.`;
 
 const commands = [
   {
@@ -34,7 +39,11 @@ const commands = [
       const link = await api.linkStart(interaction.user.id, interaction.user.username);
       if (link.alreadyLinked) {
         await interaction.editReply({
-          embeds: [noticeEmbed(`You are already linked to **${link.username}**.`)],
+          embeds: [
+            noticeEmbed(
+              `You are already linked to **${link.username}**. Change it from the settings tab on ${SITE}.`
+            ),
+          ],
         });
         return;
       }
@@ -56,7 +65,7 @@ const commands = [
     },
     notFound: (interaction) => {
       const target = interaction.options.getUser("player");
-      return target ? `**${target.username}** has not linked a KaniCasino account.` : NOT_LINKED;
+      return target ? theyAreNotLinked(target.username) : NOT_LINKED;
     },
   },
   {

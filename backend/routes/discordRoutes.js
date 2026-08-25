@@ -128,7 +128,7 @@ router.post("/link/start", botOnly, async (req, res) => {
 
     const born = snowflakeDate(discordId);
     if (!born || Date.now() - born.getTime() < MIN_ACCOUNT_AGE_MS) {
-      return res.status(403).json({ message: "This Discord account is too new to link" });
+      return res.status(403).json({ message: "Discord accounts under 30 days old cannot be linked yet." });
     }
 
     const existing = await User.findOne({ discordId }, { username: 1 }).lean();
@@ -165,27 +165,27 @@ router.post("/link/complete", isAuthenticated, async (req, res) => {
     const taken = await User.findOne({ discordId: pending.discordId }, { username: 1 }).lean();
     if (taken) {
       await DiscordLink.deleteOne({ code });
-      return res.status(409).json({ message: "That Discord account is already linked to " + taken.username + "." });
+      return res.status(409).json({ message: "That Discord account is already linked to " + taken.username + ". Unlink it from that account's settings tab first." });
     }
 
     const mine = await User.findById(req.user._id, { discordId: 1, username: 1 }).lean();
     if (!mine) return res.status(404).json({ message: "User not found" });
     if (mine.discordId) {
-      return res.status(409).json({ message: "This account is already linked to a Discord user." });
+      return res.status(409).json({ message: "This account is already linked to a Discord user. Change it from the settings tab on your profile." });
     }
 
     const done = await User.updateOne(
       { _id: req.user._id, discordId: { $exists: false } },
       { $set: { discordId: pending.discordId, discordName: pending.discordName, discordLinkedAt: new Date() } }
     );
-    if (!done.modifiedCount) return res.status(409).json({ message: "This account is already linked." });
+    if (!done.modifiedCount) return res.status(409).json({ message: "This account is already linked. Change it from the settings tab on your profile." });
     await DiscordLink.deleteOne({ code });
 
     res.json({ username: mine.username, discordName: pending.discordName || null });
   } catch (err) {
     // the unique index is the real guard against two accounts racing for one discord id
     if (err && err.code === 11000) {
-      return res.status(409).json({ message: "That Discord account is already linked." });
+      return res.status(409).json({ message: "That Discord account is already linked. Unlink it from that account first." });
     }
     console.error("discord link complete:", err.message);
     res.status(500).json({ message: "Could not finish the link" });
@@ -237,7 +237,7 @@ router.get("/oauth/start", isAuthenticated, async (req, res) => {
     }
     const mine = await User.findById(req.user._id, { discordId: 1 }).lean();
     if (!mine) return res.status(404).json({ message: "User not found" });
-    if (mine.discordId) return res.status(409).json({ message: "This account is already linked to a Discord user." });
+    if (mine.discordId) return res.status(409).json({ message: "This account is already linked to a Discord user. Change it from the settings tab on your profile." });
 
     // the state is signed rather than stored: it says which session opened the flow, it
     // expires on its own, and a callback replayed by anyone else carries no session at all
@@ -274,7 +274,15 @@ async function oauthCallback(req, res) {
     try {
       claim = jwt.verify(String(state), process.env.JWT_SECRET);
     } catch {
-      return done(null, "expired");
+      // the signature is still checked, so this cannot be pointed anywhere by a stranger.
+      // it only recovers whose settings page to land on: the answer is still no.
+      let expired = null;
+      try {
+        expired = jwt.verify(String(state), process.env.JWT_SECRET, { ignoreExpiration: true });
+      } catch {
+        expired = null;
+      }
+      return done(expired && expired.use === "discord-oauth" ? expired.userId : null, "expired");
     }
     if (claim.use !== "discord-oauth") return done(null, "failed");
     userId = claim.userId;

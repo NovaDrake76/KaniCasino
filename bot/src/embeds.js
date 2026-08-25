@@ -72,7 +72,8 @@ function topFanEmbed(board, guildName) {
 
   if (!board.ranks.length) {
     embed.setDescription(
-      `Nobody here has pinned **${board.name}** yet. The board is open.\n[Take it](${boardUrl(board.name)})`
+      `Nobody here has pinned **${board.name}** yet. The board is open.
+[Take it](${boardUrl(board.name)}), and run \`/link\` first if you have not linked yet.`
     );
     return embed;
   }

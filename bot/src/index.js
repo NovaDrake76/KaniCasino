@@ -33,7 +33,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (!command) return;
 
   if (!interaction.guildId && interaction.commandName !== "link") {
-    return reply(interaction, "This one only works inside a server.");
+    return reply(interaction, "That one only works inside a server. Try it in a channel there.");
   }
 
   const wait = onCooldown(interaction.user.id, interaction.commandName);
