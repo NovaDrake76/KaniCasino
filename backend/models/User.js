@@ -45,7 +45,11 @@ const UserSchema = new mongoose.Schema({
     },
   ],
   fixedItem: {
+    // the character, not the item: pinning an alt outfit makes you a fan of the person, so
+    // this holds the base name and every board lookup keeps working off the same index
     name: String,
+    // which outfit was pinned, when it was not the base one. display only
+    variant: String,
     image: String,
     rarity: String,
     description: String,

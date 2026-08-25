@@ -498,16 +498,21 @@ router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
       return res.status(404).json({ message: "Item not found in inventory" });
     }
 
-    const catalogItem = await Item.findById(item, { name: 1, image: 1, rarity: 1 }).lean();
+    const catalogItem = await Item.findById(item, { name: 1, character: 1, image: 1, rarity: 1 }).lean();
     if (!catalogItem) {
       return res.status(404).json({ message: "Item not found" });
     }
 
+    // pinning an alt outfit still makes you a fan of the character, so the board is theirs
+    // and swapping between two of their outfits is not a change of fandom
+    const character = catalogItem.character || catalogItem.name;
+
     // Update fixed item, keeping the same description
     const previousFandom = user.fixedItem && user.fixedItem.name;
-    const movedFandom = previousFandom !== catalogItem.name;
+    const movedFandom = previousFandom !== character;
     user.fixedItem = {
-      name: catalogItem.name,
+      name: character,
+      variant: catalogItem.character ? catalogItem.name : undefined,
       image: catalogItem.image,
       rarity: catalogItem.rarity,
       description: user.fixedItem.description,
@@ -525,7 +530,7 @@ router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
       // the board the player left and the one they joined are both wrong until recounted,
       // and the client reads them back straight away
       try {
-        await fandom.refreshCharacters([previousFandom, catalogItem.name]);
+        await fandom.refreshCharacters([previousFandom, character]);
       } catch (err) {
         console.error("fandom refresh:", err.message);
       }

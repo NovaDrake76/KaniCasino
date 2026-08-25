@@ -118,19 +118,21 @@ async function sweepConnected(io) {
 }
 
 // every case category and the item ids that make it whole. a category is complete only
-// when the player owns one of every distinct item across all of its cases.
+// when the player owns one of every distinct item across all of its collectible cases;
+// a case marked `collectible: false` is on the shelf but out of the set.
 //
 // Case.items is raw admin input and can still name an item that has since been deleted.
 // those never drop and nobody can hold one, so counting them asks for a set that cannot
 // be completed: the touhou badge wanted 137 of the 134 that exist. only live items count.
 async function collectionSets() {
   const [cases, catalog] = await Promise.all([
-    Case.find({}, { category: 1, items: 1 }).lean(),
+    Case.find({}, { category: 1, items: 1, collectible: 1 }).lean(),
     itemCatalog.all(),
   ]);
   const live = new Set(catalog.map((item) => String(item._id)));
   const byCategory = new Map();
   for (const one of cases) {
+    if (one.collectible === false) continue;
     const label = (one.category || "").trim();
     if (!label) continue;
     const slug = slugify(label);

@@ -76,13 +76,14 @@ async function find({ name, rarity, caseId } = {}) {
   });
 }
 
-// every catalog id mapped to the character behind it, rebuilt only when the cache turns over
+// every catalog id mapped to the character behind it, rebuilt only when the cache turns over.
+// an alt outfit is its own item but the same person, so it maps to the base character.
 let nameById = null;
 let nameByIdFor = -1;
 async function namesById() {
   const items = await all();
   if (!nameById || nameByIdFor !== generation) {
-    nameById = new Map(items.map((item) => [String(item._id), item.name]));
+    nameById = new Map(items.map((item) => [String(item._id), item.character || item.name]));
     nameByIdFor = generation;
   }
   return nameById;

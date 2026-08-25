@@ -206,6 +206,48 @@ describe("collection badges", () => {
   const own = (items) =>
     items.map((it) => ({ _id: it._id, name: it.name, image: it.image, rarity: it.rarity }));
 
+  // a premium case sits on the same shelf but is not part of the roster to complete
+  async function makePremium(category, titles) {
+    const items = [];
+    for (const title of titles) {
+      items.push(await Item.create({ name: title, image: "i.png", rarity: "5", baseValue: 9000 }));
+    }
+    await Case.create({
+      title: `${category} Festival`, image: "c.png", price: 9000, category,
+      collectible: false, items: items.map((i) => i._id),
+    });
+    return items;
+  }
+
+  it("leaves a case marked uncollectible out of its category's set", async () => {
+    await makeCategory("Blue Archive", ["a", "b", "c", "d"]);
+    await makePremium("Blue Archive", ["alt-a", "alt-b"]);
+
+    const [set] = await badges.collectionSets();
+
+    expect(set.ids.size).toBe(4);
+  });
+
+  it("completes a collection without owning anything from the premium case", async () => {
+    const base = await makeCategory("Blue Archive", ["a", "b", "c", "d"]);
+    await makePremium("Blue Archive", ["alt-a", "alt-b"]);
+    const user = await makeUser({ inventory: own(base) });
+
+    expect(await badges.sweepCollections()).toBe(1);
+    const held = (await User.findById(user._id).select("badges").lean()).badges;
+    expect(held.map((b) => b.key)).toContain("collection:blue-archive");
+  });
+
+  it("counts a case that says nothing about being collectible", async () => {
+    await makeCategory("Touhou", ["a", "b"]);
+    await Case.create({ title: "Touhou C", image: "c.png", price: 60, category: "Touhou",
+      items: [(await Item.create({ name: "c", image: "i.png", rarity: "2", baseValue: 10 }))._id] });
+
+    const [set] = await badges.collectionSets();
+
+    expect(set.ids.size).toBe(3);
+  });
+
   it("groups a category across all of its cases", async () => {
     await makeCategory("Blue Archive", ["a", "b", "c", "d"]);
     const sets = await badges.collectionSets();

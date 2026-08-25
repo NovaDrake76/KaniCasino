@@ -14,6 +14,12 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  // the character behind the item, when that is not the item's own name: an alt outfit is
+  // its own item but the same person, so both count toward one fan board. absent means the
+  // name is the character, which is true of everything but the alt sets.
+  character: {
+    type: String,
+  },
   baseValue: {
     type: Number,
     default: 0,

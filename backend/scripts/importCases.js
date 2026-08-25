@@ -6,7 +6,9 @@
 //   idempotent: a case whose title already exists is skipped, so re-running is safe.
 //
 // spec shape: { "Millennium": { price: 45, cover: "<url>", category: "Blue Archive",
-//   items: [ { name, rarity: "1".."5", image: "<url>" }, ... ] }, ... }
+//   items: [ { name, rarity: "1".."5", image: "<url>", character? }, ... ] }, ... }
+//   character names the person behind an alt outfit, so both count on one fan board.
+//   collectible: false keeps a case off its category's collection badge.
 //   the title defaults to "<key> Case"; set def.title to override it.
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -49,10 +51,17 @@ async function main() {
       image: def.cover,
       price: def.price,
       category: def.category || "",
+      collectible: def.collectible !== false,
       items: [],
     });
     const items = await Item.insertMany(
-      def.items.map((i) => ({ name: i.name, image: i.image, rarity: String(i.rarity), case: c._id }))
+      def.items.map((i) => ({
+        name: i.name,
+        character: i.character && i.character !== i.name ? i.character : undefined,
+        image: i.image,
+        rarity: String(i.rarity),
+        case: c._id,
+      }))
     );
     await Case.updateOne({ _id: c._id }, { $set: { items: items.map((i) => i._id) } });
     await recomputeCaseValues(c._id); // baseValues + provably-fair range table
