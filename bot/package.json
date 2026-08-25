@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "start": "node src/index.js",
-    "register": "node src/register.js"
+    "register": "node src/register.js",
+    "test": "node --test src/messages.test.js"
   },
   "dependencies": {
     "discord.js": "^14.16.3",
