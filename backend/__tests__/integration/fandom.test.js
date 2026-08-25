@@ -308,3 +308,115 @@ describe("a drop of the pinned character", () => {
     expect((await FanBoard.findOne({ name: "Yuuma" }).lean()).topCount).toBe(5);
   });
 });
+
+// an alt outfit is a separate catalog row carrying the base character's name, so both
+// versions count as the same person on one board
+describe("alt outfits", () => {
+  const makeAlt = (name, character, rarity = "5") =>
+    Item.create({ name, character, image: `${name}.png`, rarity, baseValue: 100 });
+
+  it("counts a base copy and an alt copy as the same character", async () => {
+    const base = await makeItem("Hoshino", "5");
+    const alt = await makeAlt("Hoshino (Swimsuit)", "Hoshino");
+    await makeUser({ pinned: base, inventory: [...copies(base, 1), ...copies(alt, 1)] });
+
+    await fandom.rebuild();
+
+    const board = await FanBoard.findOne({ name: "Hoshino" }).lean();
+    expect(board.topCount).toBe(2);
+    expect(await FanBoard.findOne({ name: "Hoshino (Swimsuit)" }).lean()).toBeNull();
+  });
+
+  it("gives an alt no board of its own", async () => {
+    await makeItem("Hoshino", "5");
+    await makeAlt("Hoshino (Swimsuit)", "Hoshino");
+
+    const byName = await fandom.charactersByName();
+
+    expect(byName.has("Hoshino")).toBe(true);
+    expect(byName.has("Hoshino (Swimsuit)")).toBe(false);
+    expect(byName.get("Hoshino").ids.size).toBe(2);
+  });
+
+  it("keeps the base look on the board when the alt is a different picture", async () => {
+    const alt = await makeAlt("Hoshino (Swimsuit)", "Hoshino");
+    const base = await makeItem("Hoshino", "5");
+
+    const character = (await fandom.charactersByName(["Hoshino"])).get("Hoshino");
+
+    expect(character.image).toBe(base.image);
+    expect(character.ids.has(String(alt._id))).toBe(true);
+  });
+
+  it("puts someone who pinned the alt on the character's board", async () => {
+    const base = await makeItem("Hoshino", "5");
+    const alt = await makeAlt("Hoshino (Swimsuit)", "Hoshino");
+    const owner = await makeUser({ inventory: copies(alt, 3) });
+    const token = tokenFor(owner);
+
+    await request(app)
+      .put("/users/fixedItem")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ item: String(alt._id) })
+      .expect(200);
+
+    const after = await User.findById(owner._id).select("fixedItem").lean();
+    expect(after.fixedItem.name).toBe("Hoshino");
+    expect(after.fixedItem.variant).toBe("Hoshino (Swimsuit)");
+    expect(after.fixedItem.image).toBe(alt.image);
+
+    await fandom.rebuild();
+    const board = await FanBoard.findOne({ name: "Hoshino" }).lean();
+    expect(board.topCount).toBe(3);
+    expect(String(board.top.userId)).toBe(String(owner._id));
+    expect(base).toBeTruthy();
+  });
+
+  it("does not reset the tie-break clock when swapping between two outfits", async () => {
+    const base = await makeItem("Hoshino", "5");
+    const alt = await makeAlt("Hoshino (Swimsuit)", "Hoshino");
+    const owner = await makeUser({ pinned: base, inventory: copies(alt, 1) });
+    await User.updateOne({ _id: owner._id }, { $set: { fixedAt: new Date("2020-01-01") } });
+    const token = tokenFor(owner);
+
+    await request(app)
+      .put("/users/fixedItem")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ item: String(alt._id) })
+      .expect(200);
+
+    const after = await User.findById(owner._id).select("fixedAt").lean();
+    expect(after.fixedAt.toISOString()).toBe(new Date("2020-01-01").toISOString());
+  });
+
+  it("clears the outfit when the pin moves back to the base look", async () => {
+    const base = await makeItem("Hoshino", "5");
+    const alt = await makeAlt("Hoshino (Swimsuit)", "Hoshino");
+    const owner = await makeUser({ inventory: [...copies(alt, 1), ...copies(base, 1)] });
+    const token = tokenFor(owner);
+    const pin = (id) =>
+      request(app)
+        .put("/users/fixedItem")
+        .set("Authorization", `Bearer ${token}`)
+        .send({ item: String(id) })
+        .expect(200);
+
+    await pin(alt._id);
+    expect((await User.findById(owner._id).lean()).fixedItem.variant).toBe("Hoshino (Swimsuit)");
+
+    await pin(base._id);
+    const after = await User.findById(owner._id).lean();
+    expect(after.fixedItem.variant).toBeUndefined();
+    expect(after.fixedItem.image).toBe(base.image);
+  });
+
+  it("leaves an ordinary item counting under its own name", async () => {
+    const plain = await makeItem("Cirno", "4");
+    await makeUser({ pinned: plain, inventory: copies(plain, 2) });
+
+    await fandom.rebuild();
+
+    const board = await FanBoard.findOne({ name: "Cirno" }).lean();
+    expect(board.topCount).toBe(2);
+  });
+});

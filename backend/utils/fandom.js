@@ -13,23 +13,30 @@ const RANKS_KEPT = 50;
 const NO_CONTEST = 999999;
 const COLLECTORS_KEPT = 100;
 
-// the same character can appear in more than one case, as separate item rows sharing a
-// name. the name is the character, so every id behind it counts toward the same board.
+// an item's character is its own name unless it is an alt outfit, which carries the base
+// name so both count as one person
+const characterOf = (item) => item.character || item.name;
+
+// the same character can appear in more than one case, and in more than one outfit, as
+// separate item rows. the character is the board, so every id behind it counts toward it.
 async function charactersByName(names) {
   const wanted = names && names.length ? new Set(names) : null;
-  const items = (await itemCatalog.all()).filter((item) => !wanted || wanted.has(item.name));
+  const items = (await itemCatalog.all()).filter((item) => !wanted || wanted.has(characterOf(item)));
   const byName = new Map();
   for (const item of items) {
-    let entry = byName.get(item.name);
+    const name = characterOf(item);
+    let entry = byName.get(name);
     if (!entry) {
-      entry = { name: item.name, ids: new Set(), image: item.image, rarity: item.rarity, caseId: item.case };
-      byName.set(item.name, entry);
+      entry = { name, ids: new Set(), image: null, rarity: null, caseId: null };
+      byName.set(name, entry);
     }
     entry.ids.add(String(item._id));
-    if (!entry.image) entry.image = item.image;
-    if (!entry.rarity) entry.rarity = item.rarity;
+    // the board wears the base look, so an alt never takes the portrait off the character
+    // it belongs to, whichever order the catalog came back in
+    if (!entry.image || !item.character) entry.image = item.image || entry.image;
+    if (!entry.rarity || !item.character) entry.rarity = item.rarity || entry.rarity;
     // the first case the character drops from is where the page sends anyone chasing them
-    if (!entry.caseId) entry.caseId = item.case;
+    if (!entry.caseId || !item.character) entry.caseId = item.case || entry.caseId;
   }
   return byName;
 }
@@ -101,8 +108,9 @@ async function countHoldings() {
     { $group: { _id: { user: "$_id", item: "$inventory._id" }, n: { $sum: 1 }, ...carry } },
     { $lookup: { from: "items", localField: "_id.item", foreignField: "_id", as: "catalog" } },
     { $unwind: "$catalog" },
-    // the same character can come from more than one case, so the name is the group
-    { $group: { _id: { user: "$_id.user", name: "$catalog.name" }, n: { $sum: "$n" }, ...carry } },
+    // one character can come from more than one case and wear more than one outfit, so the
+    // character is the group. no extra read: the join already had the catalog row
+    { $group: { _id: { user: "$_id.user", name: { $ifNull: ["$catalog.character", "$catalog.name"] } }, n: { $sum: "$n" }, ...carry } },
     {
       $group: {
         _id: "$_id.user",
@@ -397,9 +405,9 @@ async function touchInventory(userIds, itemIds) {
   if (!pinned.size) return { boards: 0 };
 
   const rows = await Item.find({ _id: { $in: items.map((id) => new mongoose.Types.ObjectId(id)) } })
-    .select("name")
+    .select("name character")
     .lean();
-  return refreshCharacters([...new Set(rows.map((row) => row.name).filter((name) => pinned.has(name)))]);
+  return refreshCharacters([...new Set(rows.map(characterOf).filter((name) => pinned.has(name)))]);
 }
 
 // a board recount must never be what fails the sale, upgrade or opening that moved

@@ -15,6 +15,14 @@ const CaseSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  // whether the case counts toward its category's collection badge. premium cases are
+  // alt outfits and joke items rather than new faces, so they are the shelf's top end
+  // without being part of the roster you are asked to complete. the case keeps its own
+  // sticker album either way. set explicitly, never derived from price: price moves.
+  collectible: {
+    type: Boolean,
+    default: true,
+  },
 
   items: [
     {
