@@ -13,9 +13,15 @@ const RANKS_KEPT = 50;
 const NO_CONTEST = 999999;
 const COLLECTORS_KEPT = 100;
 
-// an item's character is its own name unless it is an alt outfit, which carries the base
-// name so both count as one person
+// an item's character is its own name unless it carries one of its own: an alt outfit
+// names the person wearing it, and a character who shares a first name with someone from
+// another series names themselves apart, so two franchises never land on one board
 const characterOf = (item) => item.character || item.name;
+
+// which of a character's items is the look the board wears. an alt always carries its
+// outfit in brackets, so the one without is the character as they normally appear. this
+// cannot key off `character` any more: a disambiguated base carries one too.
+const isBaseLook = (item) => !/\s\(/.test(item.name);
 
 // the same character can appear in more than one case, and in more than one outfit, as
 // separate item rows. the character is the board, so every id behind it counts toward it.
@@ -33,10 +39,11 @@ async function charactersByName(names) {
     entry.ids.add(String(item._id));
     // the board wears the base look, so an alt never takes the portrait off the character
     // it belongs to, whichever order the catalog came back in
-    if (!entry.image || !item.character) entry.image = item.image || entry.image;
-    if (!entry.rarity || !item.character) entry.rarity = item.rarity || entry.rarity;
+    const base = isBaseLook(item);
+    if (!entry.image || base) entry.image = item.image || entry.image;
+    if (!entry.rarity || base) entry.rarity = item.rarity || entry.rarity;
     // the first case the character drops from is where the page sends anyone chasing them
-    if (!entry.caseId || !item.character) entry.caseId = item.case || entry.caseId;
+    if (!entry.caseId || base) entry.caseId = item.case || entry.caseId;
   }
   return byName;
 }
@@ -423,6 +430,8 @@ module.exports = {
   sweep,
   standingsFrom,
   charactersByName,
+  characterOf,
+  isBaseLook,
   namesByItemId,
   isCopyOf,
   byStanding,
