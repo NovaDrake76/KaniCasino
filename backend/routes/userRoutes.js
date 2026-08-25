@@ -512,7 +512,7 @@ router.put("/fixedItem", authMiddleware.isAuthenticated, async (req, res) => {
     const movedFandom = previousFandom !== character;
     user.fixedItem = {
       name: character,
-      variant: catalogItem.character ? catalogItem.name : undefined,
+      variant: fandom.isBaseLook(catalogItem) ? undefined : catalogItem.name,
       image: catalogItem.image,
       rarity: catalogItem.rarity,
       description: user.fixedItem.description,

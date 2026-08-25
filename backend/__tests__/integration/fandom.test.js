@@ -420,3 +420,77 @@ describe("alt outfits", () => {
     expect(board.topCount).toBe(2);
   });
 });
+
+// two series can use one first name: Touhou and Blue Archive both have a Yukari, a Junko
+// and a Yuuka. sharing a board counted their copies together and hung the wrong portrait
+// on somebody's badge, so the newer side carries a name of its own.
+describe("a name two collections share", () => {
+  const makeAlt = (name, character, rarity = "5") =>
+    Item.create({ name, character, image: `${name}.png`, rarity, baseValue: 100 });
+
+  it("keeps the two on separate boards", async () => {
+    const touhou = await makeItem("Yukari", "4");
+    const archive = await makeAlt("Yukari", "Yukari (Blue Archive)", "2");
+    await makeUser({ pinned: touhou, inventory: [...copies(touhou, 3), ...copies(archive, 5)] });
+
+    await fandom.rebuild();
+
+    // the five from the other series must not count toward the board they did not join
+    const mine = await FanBoard.findOne({ name: "Yukari" }).lean();
+    expect(mine.topCount).toBe(3);
+    const theirs = await FanBoard.findOne({ name: "Yukari (Blue Archive)" }).lean();
+    expect(theirs.fanCount).toBe(0);
+  });
+
+  it("hangs each board's own portrait", async () => {
+    const touhou = await makeItem("Yukari", "4");
+    const archive = await makeAlt("Yukari", "Yukari (Blue Archive)", "2");
+
+    const byName = await fandom.charactersByName();
+
+    expect(byName.get("Yukari").image).toBe(touhou.image);
+    expect(byName.get("Yukari (Blue Archive)").image).toBe(archive.image);
+  });
+
+  // every item in the moved group carries a character now, so the base look can no longer
+  // be told by that field alone
+  it("still prefers the base look over an alt on the moved side", async () => {
+    const alt = await makeAlt("Yukari (Swimsuit)", "Yukari (Blue Archive)", "1");
+    const base = await makeAlt("Yukari", "Yukari (Blue Archive)", "2");
+
+    const character = (await fandom.charactersByName(["Yukari (Blue Archive)"])).get("Yukari (Blue Archive)");
+
+    expect(character.image).toBe(base.image);
+    expect(character.rarity).toBe("2");
+    expect(character.ids.has(String(alt._id))).toBe(true);
+  });
+
+  it("counts a base and its alt together on the moved side", async () => {
+    const base = await makeAlt("Yukari", "Yukari (Blue Archive)", "2");
+    const alt = await makeAlt("Yukari (Swimsuit)", "Yukari (Blue Archive)", "1");
+    await makeUser({
+      pinned: { name: "Yukari (Blue Archive)", image: base.image, rarity: base.rarity },
+      inventory: [...copies(base, 2), ...copies(alt, 4)],
+    });
+
+    await fandom.rebuild();
+
+    const board = await FanBoard.findOne({ name: "Yukari (Blue Archive)" }).lean();
+    expect(board.topCount).toBe(6);
+  });
+
+  it("pins the moved base without calling it an outfit", async () => {
+    const base = await makeAlt("Yukari", "Yukari (Blue Archive)", "2");
+    const owner = await makeUser({ inventory: copies(base, 1) });
+
+    await request(app)
+      .put("/users/fixedItem")
+      .set("Authorization", `Bearer ${tokenFor(owner)}`)
+      .send({ item: String(base._id) })
+      .expect(200);
+
+    const after = await User.findById(owner._id).select("fixedItem").lean();
+    expect(after.fixedItem.name).toBe("Yukari (Blue Archive)");
+    expect(after.fixedItem.variant).toBeUndefined();
+  });
+});
