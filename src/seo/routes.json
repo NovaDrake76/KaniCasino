@@ -68,6 +68,10 @@
       "title": "Privacy Policy | KaniCasino",
       "description": "How KaniCasino handles your data."
     },
+    "/terms": {
+      "title": "Terms of Service | KaniCasino",
+      "description": "The rules for using KaniCasino and its Discord bot. Fictional currency, no real money, no prizes."
+    },
     "/predictions": {
       "title": "Predictions | Player Prediction Markets | KaniCasino",
       "description": "Buy shares in what you think happens next. Anime, gaming and site markets priced by the players, settled in fake coins."

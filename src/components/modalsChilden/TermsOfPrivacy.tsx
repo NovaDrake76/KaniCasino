@@ -16,12 +16,12 @@ const TermsOfPrivacy = () => {
     return (
         <div className="flex flex-col text-sm">
             <span className="font-bold text-lg mb-1">Privacy Policy</span>
-            <span className="mb-1 italic">Last updated: 26 July 2026</span>
+            <span className="mb-1 italic">Last updated: 25 August 2026</span>
             <span className="mb-4 text-ink-muted">
                 KaniCasino ("we") is an independent project run from Brazil, and is the controller
                 of the personal data described below. This policy explains what we
-                collect when you use <span className="text-blue-500">kanicasino.com</span>, why, and
-                the rights you have over it. It is written to meet the Brazilian General Data
+                collect when you use <span className="text-blue-500">kanicasino.com</span> and our
+                Discord bot, why, and the rights you have over it. It is written to meet the Brazilian General Data
                 Protection Law (LGPD, Law 13.709/2018). For anything in this policy, including the
                 rights in section 8, write to{" "}
                 <span className="text-blue-500">novadrake77@gmail.com</span> and a person will
@@ -54,7 +54,17 @@ const TermsOfPrivacy = () => {
                     site and prevent abuse. Analytics and advertising providers set cookies and
                     similar identifiers in your browser (see section 5).
                 </Row>
-                <Row label="2.4 Communications">
+                <Row label="2.4 Discord, if you link it">
+                    Linking is optional and nothing below is collected unless you do it. We store
+                    your Discord user ID, your Discord username, and when you linked. We also store
+                    the IDs of the Discord servers you have used a bot command in, so a server can
+                    have its own leaderboard: that is the server's ID only, never its members, its
+                    channels or its messages. The bot requests only the "identify" scope and the
+                    Guilds gateway intent, so it cannot read messages. The ID of a command you send
+                    is kept for one hour to stop the same command being counted twice, then deleted
+                    automatically. Unlinking from your profile settings removes all of it.
+                </Row>
+                <Row label="2.5 Communications">
                     Messages you send us, and whether our emails to you were delivered, bounced or
                     reported as spam.
                 </Row>
@@ -103,7 +113,13 @@ const TermsOfPrivacy = () => {
                     <li>Cloudflare (content delivery and protection)</li>
                     <li>Google Analytics (usage measurement) and Google AdSense (advertising)</li>
                     <li>Google Sign-In, if you choose to use it</li>
-                    <li>Discord, whose public server widget on our home page receives your IP address so it can load</li>
+                    <li>
+                        Discord. Their public server widget on our home page receives your IP
+                        address so it can load. If you use our Discord bot, your commands and the
+                        replies to them pass through Discord under their own privacy policy, and
+                        anything the bot posts in a channel is visible to whoever can see that
+                        channel.
+                    </li>
                 </ul>
                 <span>
                     We do not sell your personal data and we do not share it for anyone else's
@@ -128,6 +144,10 @@ const TermsOfPrivacy = () => {
                     Kept while the account exists so balances and provably-fair verification stay
                     meaningful. Some game round records are deleted automatically after a short
                     period.
+                </Row>
+                <Row label="Discord link data">
+                    While the link exists. Unlinking deletes your Discord ID, username and the list
+                    of servers immediately. Command IDs expire on their own within an hour.
                 </Row>
                 <Row label="Suppressed email addresses">
                     If your address hard-bounces or you report our mail as spam, we keep a record of
