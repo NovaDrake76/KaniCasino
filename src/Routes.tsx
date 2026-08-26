@@ -13,6 +13,7 @@ import Dice from "./pages/Dice";
 import Mines from "./pages/Mines";
 import Hilo from "./pages/Hilo";
 import PrivacyPolicy from "./pages/About/PrivacyPolicy"
+import Terms from "./pages/About/Terms"
 import Unsubscribe from "./pages/About/Unsubscribe"
 import Gift from "./pages/Gift"
 import ItemPage from "./pages/Market/ItemPage";
@@ -53,6 +54,7 @@ const defaultRoutes = (
     <Route path="/r/:code" element={<ReferralRedirect />} />
     <Route path="/backoffice" element={<Backoffice />} />
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+    <Route path="/terms" element={<Terms />} />
     <Route path="/unsubscribe" element={<Unsubscribe />} />
     <Route path="/gift" element={<Gift />} />
     <Route path="/link/discord" element={<LinkDiscord />} />
