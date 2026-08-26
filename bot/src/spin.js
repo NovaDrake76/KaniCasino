@@ -14,8 +14,16 @@ const SITE = (process.env.SITE_URL || "https://kanicasino.com").replace(/\/$/, "
 // the five the site paints items with, so a colour means the same thing in both places
 const RARITY_COLOR = { "1": 0x4b69ff, "2": 0x8847ff, "3": 0xd32ce6, "4": 0xeb4b4b, "5": 0xffff6e };
 const RARITY_NAME = { "1": "Common", "2": "Rare", "3": "Epic", "4": "Ultra Rare", "5": "Unique" };
-// while it is still spinning nothing has been decided, so it wears no rarity
+// while it is still spinning nothing has been decided, so the frame wears no rarity
 const SPINNING = 0x4a4a5a;
+
+// discord renders a small ansi palette inside a code block, and it is the only way to get
+// colour into the reel. as near the site's five as eight colours allow, so a gold name
+// walking toward the marker reads the way a gold reads on the site. a client that does not
+// render ansi shows the plain name, which is what it showed before.
+const ANSI = { "1": "34", "2": "35", "3": "1;35", "4": "31", "5": "1;33" };
+const ESC = String.fromCharCode(27);
+const paint = (text, rarity) => `${ESC}[${ANSI[String(rarity)] || "37"}m${text}${ESC}[0m`;
 
 const colorOf = (rarity) => RARITY_COLOR[String(rarity)] || SPINNING;
 const nameOf = (rarity) => RARITY_NAME[String(rarity)] || "";
@@ -25,48 +33,66 @@ const num = (value) => Math.round(Number(value) || 0).toLocaleString("en-US");
 // how many names are visible at once, and which of them sits under the marker
 const WINDOW = 5;
 const MIDDLE = 2;
-
-// a row of names that shifts one place per frame while the marker stays put, which is
-// what reads as movement in a message that can only be redrawn a few times
-function reelRow(names, offset, landed) {
-  const pool = names && names.length ? names : ["?"];
-  const shown = [];
-  for (let i = 0; i < WINDOW; i += 1) {
-    const name = pool[(offset + i) % pool.length];
-    shown.push(name.length > 12 ? `${name.slice(0, 11)}…` : name);
-  }
-  if (landed) shown[MIDDLE] = landed.length > 12 ? `${landed.slice(0, 11)}…` : landed;
-  return "```\n" + shown.map((name, i) => (i === MIDDLE ? `▐ ${name} ▌` : ` ${name} `)).join("│") + "\n```";
-}
-
-// how many times the reel is redrawn before it stops, and how long each is held. every
-// redraw is a call to discord and none to the site: the outcome was decided before the
-// first frame, exactly as the reel on the site is animated to an answer it already has.
+// how many times the reel is redrawn, and how long each is held. every redraw is a call to
+// discord and none to the site: the outcome was decided before the first frame, exactly as
+// the reel on the site animates toward an answer it already has.
 const FRAMES = 3;
 const FRAME_MS = 550;
 
-// a strip built fresh for each spin, so two openings of one case do not scroll the same
-// five names past in the same order, and so the item actually won is on it
-function buildStrip(names, winner) {
-  const pool = (names || []).filter(Boolean);
-  const strip = [...pool];
-  for (let i = strip.length - 1; i > 0; i -= 1) {
+// the offset is the frame number, so the cell that ends up under the marker on the last
+// frame is this one, and seating the prize there is what makes the reel continuous: it
+// sits at the far right on the first frame, walks one place in on the second, and arrives
+// on the third.
+//
+// the first version drew each frame as its own window into a shuffled list, so the names
+// to the right of the marker were not what came next. a player reads those as what is
+// about to land, and it was not, which is exactly why it read as fake.
+const LANDING = FRAMES - 1 + MIDDLE;
+
+const clip = (name) => (name.length > 12 ? `${name.slice(0, 11)}…` : name);
+// the reel used to be plain names; entries carry a rarity now, and both still work
+const entryOf = (value) =>
+  typeof value === "string" ? { name: value, rarity: null } : { name: value.name, rarity: value.rarity };
+
+function shuffled(list) {
+  const copy = [...list];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
-    [strip[i], strip[j]] = [strip[j], strip[i]];
+    [copy[i], copy[j]] = [copy[j], copy[i]];
   }
-  // a reel the prize is not on is the thing that reads as fake
-  if (winner && !strip.includes(winner)) strip.push(winner);
-  while (strip.length < WINDOW + 2) strip.push(...(strip.length ? strip : ["?"]));
+  return copy;
+}
+
+// one continuous strip per opening, long enough for every frame's window, shuffled so two
+// openings of a case do not scroll the same order, with the prize seated where it lands
+function buildStrip(pool, winner) {
+  const won = entryOf(winner || { name: "?", rarity: null });
+  const items = (pool || []).map(entryOf).filter((entry) => entry && entry.name);
+  const needed = FRAMES - 1 + WINDOW;
+
+  const strip = [];
+  while (strip.length < needed) strip.push(...shuffled(items.length ? items : [won]));
+  strip.length = needed;
+  strip[LANDING] = won;
   return strip;
 }
 
-// the last frame is the landing: the item actually won sits under the marker wearing its
-// own colour, so the reel arrives somewhere instead of being replaced mid-spin
-function spinningFrame(caseTitle, names, offset, landed, rarity) {
+function reelRow(strip, offset) {
+  const pool = strip && strip.length ? strip.map(entryOf) : [{ name: "?", rarity: null }];
+  const cells = [];
+  for (let i = 0; i < WINDOW; i += 1) {
+    const entry = pool[(offset + i) % pool.length];
+    const painted = paint(clip(entry.name), entry.rarity);
+    cells.push(i === MIDDLE ? `▐ ${painted} ▌` : ` ${painted} `);
+  }
+  return "```ansi\n" + cells.join("│") + "\n```";
+}
+
+function spinningFrame(caseTitle, strip, offset, landed, rarity) {
   return new ContainerBuilder()
     .setAccentColor(landed ? colorOf(rarity) : SPINNING)
     .addTextDisplayComponents(new TextDisplayBuilder().setContent(`Opening **${caseTitle}**`))
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent(reelRow(names, offset, landed)));
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent(reelRow(strip, offset)));
 }
 
 const buttons = (...rows) => new ActionRowBuilder().addComponents(...rows.filter(Boolean));
@@ -130,4 +156,18 @@ function demoFrame({ item, caseTitle }) {
   return container;
 }
 
-module.exports = { reelRow, buildStrip, spinningFrame, revealFrame, demoFrame, FRAMES, FRAME_MS, colorOf, nameOf, SITE };
+module.exports = {
+  reelRow,
+  buildStrip,
+  spinningFrame,
+  revealFrame,
+  demoFrame,
+  FRAMES,
+  FRAME_MS,
+  LANDING,
+  WINDOW,
+  MIDDLE,
+  colorOf,
+  nameOf,
+  SITE,
+};

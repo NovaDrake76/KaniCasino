@@ -427,7 +427,7 @@ router.get("/preview/:caseId", botOnly, async (req, res) => {
         rarity: item.rarity,
         value: sellValue(item.baseValue),
       },
-      reel: one.items.slice(0, 12).map((it) => it.name),
+      reel: one.items.slice(0, 16).map((it) => ({ name: it.name, rarity: it.rarity })),
     });
   } catch (err) {
     console.error("discord preview:", err.message);
@@ -493,8 +493,9 @@ router.post("/open", botOnly, async (req, res) => {
       walletBalance: result.walletBalance,
       level: result.level,
       fanRank,
-      // what the bot spins past on the way to the answer
-      reel: (result.caseData.items || []).slice(0, 12).map((item) => item.name),
+      // what the bot spins past on the way to the answer. the rarity rides along so the
+      // reel can be coloured: seeing a gold name walk toward the marker is the whole thrill
+      reel: (result.caseData.items || []).slice(0, 16).map((item) => ({ name: item.name, rarity: item.rarity })),
       items: result.items.map((item) => ({
         name: item.name,
         image: item.image,

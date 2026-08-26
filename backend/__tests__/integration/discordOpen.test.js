@@ -228,6 +228,7 @@ describe("the spin for someone with no account", () => {
     expect(res.body.item.name).toEqual(expect.any(String));
     expect(res.body.item.value).toEqual(expect.any(Number));
     expect(res.body.reel.length).toBeGreaterThan(0);
+    expect(res.body.reel[0]).toMatchObject({ name: expect.any(String), rarity: expect.any(String) });
     // no nonce spent, no audit row, nothing to reconcile later
     expect(await Roll.countDocuments()).toBe(before);
   });
