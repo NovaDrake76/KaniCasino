@@ -57,7 +57,7 @@ async function pressed(interaction) {
       flags: MessageFlags.Ephemeral,
     });
   }
-  await runOpen(interaction, caseId, 1);
+  await runOpen(interaction, caseId);
 }
 
 client.on(Events.InteractionCreate, async (interaction) => {

@@ -19,7 +19,8 @@ const SPINNING = 0x4a4a5a;
 
 const colorOf = (rarity) => RARITY_COLOR[String(rarity)] || SPINNING;
 const nameOf = (rarity) => RARITY_NAME[String(rarity)] || "";
-const num = (value) => Number(value || 0).toLocaleString("en-US");
+// values can carry fractions, and "K₽ 77,671.455" reads as a typo rather than a number
+const num = (value) => Math.round(Number(value) || 0).toLocaleString("en-US");
 
 // how many names are visible at once, and which of them sits under the marker
 const WINDOW = 5;
@@ -44,11 +45,28 @@ function reelRow(names, offset, landed) {
 const FRAMES = 3;
 const FRAME_MS = 550;
 
-function spinningFrame(caseTitle, names, offset) {
+// a strip built fresh for each spin, so two openings of one case do not scroll the same
+// five names past in the same order, and so the item actually won is on it
+function buildStrip(names, winner) {
+  const pool = (names || []).filter(Boolean);
+  const strip = [...pool];
+  for (let i = strip.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [strip[i], strip[j]] = [strip[j], strip[i]];
+  }
+  // a reel the prize is not on is the thing that reads as fake
+  if (winner && !strip.includes(winner)) strip.push(winner);
+  while (strip.length < WINDOW + 2) strip.push(...(strip.length ? strip : ["?"]));
+  return strip;
+}
+
+// the last frame is the landing: the item actually won sits under the marker wearing its
+// own colour, so the reel arrives somewhere instead of being replaced mid-spin
+function spinningFrame(caseTitle, names, offset, landed, rarity) {
   return new ContainerBuilder()
-    .setAccentColor(SPINNING)
+    .setAccentColor(landed ? colorOf(rarity) : SPINNING)
     .addTextDisplayComponents(new TextDisplayBuilder().setContent(`Opening **${caseTitle}**`))
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent(reelRow(names, offset)));
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent(reelRow(names, offset, landed)));
 }
 
 const buttons = (...rows) => new ActionRowBuilder().addComponents(...rows.filter(Boolean));
@@ -72,14 +90,13 @@ function addHeading(container, item, caseTitle) {
   return container;
 }
 
-function revealFrame({ item, caseTitle, caseId, ownerId, balance, fanRank, others }) {
+function revealFrame({ item, caseTitle, caseId, ownerId, fanRank }) {
   const container = new ContainerBuilder().setAccentColor(colorOf(item.rarity));
 
   addHeading(container, item, caseTitle);
   container.addSeparatorComponents(new SeparatorBuilder());
 
-  const lines = [`Worth **K₽ ${num(item.value)}** · you have **K₽ ${num(balance)}** left`];
-  if (others > 0) lines.push(`and ${others} more from this opening`);
+  const lines = [`Worth **K₽ ${num(item.value)}**`];
   if (fanRank) {
     lines.push(
       fanRank.rank === 1
@@ -113,4 +130,4 @@ function demoFrame({ item, caseTitle }) {
   return container;
 }
 
-module.exports = { reelRow, spinningFrame, revealFrame, demoFrame, FRAMES, FRAME_MS, colorOf, nameOf, SITE };
+module.exports = { reelRow, buildStrip, spinningFrame, revealFrame, demoFrame, FRAMES, FRAME_MS, colorOf, nameOf, SITE };
