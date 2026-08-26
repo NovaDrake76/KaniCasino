@@ -21,7 +21,14 @@ const SPINNING = 0x4a4a5a;
 // colour into the reel. as near the site's five as eight colours allow, so a gold name
 // walking toward the marker reads the way a gold reads on the site. a client that does not
 // render ansi shows the plain name, which is what it showed before.
-const ANSI = { "1": "34", "2": "35", "3": "1;35", "4": "31", "5": "1;33" };
+// bold everywhere it is not already, because bold is the form discord has been seen to
+// render. a common came out plain white: it asked for bare "34" and got nothing, while
+// "31", "1;33" and "1;35" all painted correctly on the same line. the reels of these cases
+// hold nothing under rarity 3, so bare "34" and "35" had never actually been drawn before.
+//
+// cyan for rare rather than the site's purple: ansi has no purple, and pink is spent on
+// epic, so telling one from the other matters more here than matching the hex.
+const ANSI = { "1": "1;34", "2": "1;36", "3": "1;35", "4": "31", "5": "1;33" };
 const ESC = String.fromCharCode(27);
 const paint = (text, rarity) => `${ESC}[${ANSI[String(rarity)] || "37"}m${text}${ESC}[0m`;
 

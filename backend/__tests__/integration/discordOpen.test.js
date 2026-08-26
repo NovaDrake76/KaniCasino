@@ -91,6 +91,9 @@ describe("opening a case from discord", () => {
     expect(res.body.walletBalance).toBe(4400);
     expect(res.body.items).toHaveLength(2);
     expect(res.body.items[0].rollId).toEqual(expect.any(String));
+    // the bot paints the prize by this, and a missing one renders as plain white
+    expect(res.body.items[0].rarity).toMatch(/^[1-5]$/);
+    expect(res.body.reel[0]).toMatchObject({ name: expect.any(String), rarity: expect.stringMatching(/^[1-5]$/) });
 
     const after = await User.findById(user._id).lean();
     expect(after.walletBalance).toBe(4400);
