@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, MessageFlags, ContainerBuilder, TextDisplayBuilder } = require("discord.js");
 const api = require("./api");
 const { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, SITE } = require("./embeds");
-const { spinningFrame, revealFrame, demoFrame, FRAMES, FRAME_MS } = require("./spin");
+const { buildStrip, spinningFrame, revealFrame, demoFrame, FRAMES, FRAME_MS } = require("./spin");
 
 // rejected in the bot's own memory, before any http call. spamming a command costs a map
 // lookup here rather than a query on a link that carries about 100 KB/s.
@@ -41,7 +41,7 @@ const OPENING = () =>
 
 // shared by the command and by the "open another" button, which is the quickest way to
 // open the same case again and the reason the command only has to be typed once
-async function runOpen(interaction, caseId, quantity) {
+async function runOpen(interaction, caseId) {
   if (!interaction.replied && !interaction.deferred) {
     await interaction.reply({ components: [OPENING()], ...V2 });
   }
@@ -49,7 +49,7 @@ async function runOpen(interaction, caseId, quantity) {
   let opened = null;
   let demo = null;
   try {
-    opened = await api.openCase(interaction.user.id, interaction.id, caseId, quantity);
+    opened = await api.openCase(interaction.user.id, interaction.id, caseId, 1);
   } catch (err) {
     // no account is not a refusal here: it is the whole pitch. spin it anyway, keep
     // nothing, and say so. any other 404 is a real one and belongs to the caller.
@@ -58,10 +58,17 @@ async function runOpen(interaction, caseId, quantity) {
   }
 
   const caseTitle = opened ? opened.case.title : demo.case.title;
-  const names = (opened ? opened.reel : demo.reel) || [];
+  const won = opened ? opened.items[0] : demo.item;
+  const strip = buildStrip(opened ? opened.reel : demo.reel, won.name);
 
+  // the last frame is the landing, so the reel arrives on the item actually won rather
+  // than being swapped out mid-spin for a card that came from nowhere
   for (let frame = 0; frame < FRAMES; frame += 1) {
-    await interaction.editReply({ components: [spinningFrame(caseTitle, names, frame)], ...V2 });
+    const landing = frame === FRAMES - 1;
+    await interaction.editReply({
+      components: [spinningFrame(caseTitle, strip, frame, landing ? won.name : null, won.rarity)],
+      ...V2,
+    });
     await sleep(FRAME_MS);
   }
 
@@ -70,18 +77,14 @@ async function runOpen(interaction, caseId, quantity) {
     return;
   }
 
-  // one card, carrying the rarest of the pull, the way the site's own feed does it
-  const best = opened.items.reduce((a, b) => (Number(b.rarity) > Number(a.rarity) ? b : a));
   await interaction.editReply({
     components: [
       revealFrame({
-        item: best,
+        item: won,
         caseTitle,
         caseId: opened.case.id,
         ownerId: interaction.user.id,
-        balance: opened.walletBalance,
         fanRank: opened.fanRank,
-        others: opened.items.length - 1,
       }),
     ],
     ...V2,
@@ -122,9 +125,6 @@ const commands = [
           .setDescription("Which case. Start typing, or pick the one you opened last.")
           .setRequired(true)
           .setAutocomplete(true)
-      )
-      .addIntegerOption((option) =>
-        option.setName("quantity").setDescription("How many, up to 5").setMinValue(1).setMaxValue(5)
       ),
     // 64 cases is well past discord's 25 choice cap, so the list is filtered server side.
     // an empty box leads with whatever this player opened last.
@@ -132,11 +132,19 @@ const commands = [
       const typed = interaction.options.getFocused();
       const { cases } = await api.cases(typed, interaction.user.id);
       await interaction.respond(
-        cases.map((one) => ({ name: `${one.title}  ·  K₽ ${one.price.toLocaleString("en-US")}`.slice(0, 100), value: String(one.id) }))
+        cases.map((one) => ({
+          // the series is on the label because the titles do not carry it, so a row reads
+          // as "Lunatic Case · Touhou" rather than leaving the player to know which is which
+          name: [one.title, one.category, `K₽ ${one.price.toLocaleString("en-US")}`]
+            .filter(Boolean)
+            .join("  ·  ")
+            .slice(0, 100),
+          value: String(one.id),
+        }))
       );
     },
     async run(interaction) {
-      await runOpen(interaction, interaction.options.getString("case"), interaction.options.getInteger("quantity") || 1);
+      await runOpen(interaction, interaction.options.getString("case"));
     },
   },
   {

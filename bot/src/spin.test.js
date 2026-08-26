@@ -5,7 +5,7 @@ process.env.SITE_URL = process.env.SITE_URL || "https://kanicasino.com";
 
 const test = require("node:test");
 const assert = require("node:assert");
-const { reelRow, spinningFrame, revealFrame, demoFrame, FRAMES } = require("./spin");
+const { reelRow, buildStrip, spinningFrame, revealFrame, demoFrame, FRAMES } = require("./spin");
 
 const NAMES = ["Reimu", "Marisa", "Sanae", "Cirno", "Yukari"];
 const ITEM = { name: "Yukari", rarity: "5", image: "https://example.test/y.png", value: 41200 };
@@ -16,6 +16,41 @@ test("the reel moves between frames, so it reads as spinning", () => {
   const frames = Array.from({ length: FRAMES }, (_, i) => reelRow(NAMES, i));
   assert.strictEqual(new Set(frames).size, FRAMES, "every frame must differ from the last");
   for (const frame of frames) assert.match(frame, /▐ .+ ▌/, "the marker sits in every frame");
+});
+
+// the first version scrolled the case's first twelve items in catalogue order and never
+// put the prize on the reel at all, which is exactly what made it read as fake
+test("the item actually won is on the strip, however far down the case it sits", () => {
+  const strip = buildStrip(["Kisaki", "Shiroko", "Nozomi"], "Hatsune Miku");
+  assert.ok(strip.includes("Hatsune Miku"));
+});
+
+test("the last frame lands on it, under the marker", () => {
+  const won = "Hatsune Miku";
+  const strip = buildStrip(["Kisaki", "Shiroko", "Nozomi", "Kanna", "Saori"], won);
+  const landing = reelRow(strip, FRAMES - 1, won);
+  assert.match(landing, /▐ Hatsune Miku ▌/);
+});
+
+test("the landing wears the prize's colour, and the frames before it do not", () => {
+  const strip = buildStrip(NAMES, "Yukari");
+  const spinning = spinningFrame("c", strip, 0, null, "5").toJSON();
+  const landed = spinningFrame("c", strip, 2, "Yukari", "5").toJSON();
+  assert.strictEqual(spinning.accent_color, 0x4a4a5a);
+  assert.strictEqual(landed.accent_color, 0xffff6e);
+});
+
+// two openings of one case scrolling the same five names in the same order is what makes
+// a reel look like a fixed picture rather than a draw
+test("two spins of one case do not scroll the same order", () => {
+  const many = new Set(Array.from({ length: 8 }, () => buildStrip(NAMES, "Yukari").join(",")));
+  assert.ok(many.size > 1, "the strip is shuffled per spin");
+});
+
+test("a case with barely any items still fills the window", () => {
+  const strip = buildStrip(["Only"], "Only");
+  assert.ok(strip.length >= 5);
+  assert.match(reelRow(strip, 0), /▐/);
 });
 
 test("a long name is cut rather than wrapping the row", () => {
@@ -35,27 +70,37 @@ test("a spinning frame wears no rarity, because nothing has been decided", () =>
   assert.strictEqual(landed.accent_color, 0xffff6e, "a unique lands gold, the same gold the site paints");
 });
 
-test("the reveal names the item, its rarity and what it left behind", () => {
-  const json = revealFrame({
-    item: ITEM,
-    caseTitle: "Touhou Case",
-    caseId: "c1",
-    ownerId: "u1",
-    balance: 958800,
-    others: 0,
-  }).toJSON();
+test("the reveal names the item, its rarity and what it is worth", () => {
+  const json = revealFrame({ item: ITEM, caseTitle: "Touhou Case", caseId: "c1", ownerId: "u1" }).toJSON();
   const body = text(json) + JSON.stringify(json.components.filter((c) => c.type === 9));
   assert.match(body, /Yukari/);
   assert.match(body, /Unique/);
   assert.match(body, /41,200/);
-  assert.match(body, /958,800/);
 });
 
-test("it mentions the rest of a multi opening rather than dropping them", () => {
-  const one = text(revealFrame({ item: ITEM, caseTitle: "c", caseId: "c1", ownerId: "u1", balance: 1, others: 0 }).toJSON());
-  const many = text(revealFrame({ item: ITEM, caseTitle: "c", caseId: "c1", ownerId: "u1", balance: 1, others: 4 }).toJSON());
-  assert.doesNotMatch(one, /more from this opening/);
-  assert.match(many, /4 more from this opening/);
+// this lands in a public channel, and what somebody has in their wallet is nobody else's
+// business there
+test("the reveal never shows a balance", () => {
+  const json = revealFrame({
+    item: ITEM,
+    caseTitle: "c",
+    caseId: "c1",
+    ownerId: "u1",
+    balance: 77671,
+    fanRank: { name: "Yukari", count: 140, rank: 1, fans: 14 },
+  }).toJSON();
+  const whole = JSON.stringify(json);
+  assert.doesNotMatch(whole, /77,671/);
+  assert.doesNotMatch(whole, /left/);
+});
+
+// a fractional balance rendered as "77,671.455", which reads as a typo rather than money
+test("a value with a fraction is rounded rather than shown raw", () => {
+  const json = revealFrame({
+    item: { ...ITEM, value: 9.455 }, caseTitle: "c", caseId: "c1", ownerId: "u1",
+  }).toJSON();
+  assert.match(text(json), /K₽ 9\b/);
+  assert.doesNotMatch(text(json), /9\.455/);
 });
 
 test("holding a board says so, and says it differently when the lead is somebody else's", () => {

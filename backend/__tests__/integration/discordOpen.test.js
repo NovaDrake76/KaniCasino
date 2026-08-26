@@ -266,6 +266,26 @@ describe("what autocomplete offers", () => {
     expect(res.body.cases[0].title).toContain("Lunatic");
   });
 
+  // not one case is called "Touhou": they are Lunatic, Nuclear and The Special Package.
+  // a player asks for the series, so the series has to be searchable.
+  it("finds a series by name even though no case is called after it", async () => {
+    const s = uniqueSuffix();
+    const mine = await Case.create({
+      title: `Lunatic ${s}`,
+      image: "case.png",
+      price: 60,
+      category: `Touhou-${s}`,
+      items: (await Item.create([{ name: `i-${s}`, image: "i.png", rarity: "1", baseValue: 10 }])).map((i) => i._id),
+    });
+    await recomputeCaseValues(mine._id);
+
+    const res = await bot(request(app).get(`/discord/cases?q=Touhou-${s}`));
+    expect(res.status).toBe(200);
+    expect(res.body.cases.map((one) => String(one.id))).toContain(String(mine._id));
+    // and the row carries the series, since the title does not
+    expect(res.body.cases.find((one) => String(one.id) === String(mine._id)).category).toBe(`Touhou-${s}`);
+  });
+
   // the box is free text, so a bracket is something a player typed, not a pattern
   it("treats a typed bracket as text", async () => {
     const s = uniqueSuffix();
