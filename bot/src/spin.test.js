@@ -13,7 +13,7 @@ const {
 const ESC = String.fromCharCode(27);
 const ANSI = new RegExp(ESC + "\\[[0-9;]*m", "g");
 const plain = (row) => row.replace(ANSI, "").replace(/```ansi\n?|```/g, "").trim();
-const cells = (row) => plain(row).split("│").map((cell) => cell.replace(/[▐▌]/g, "").trim());
+const cells = (row) => plain(row).split("\n").map((line) => line.replace(/▸/g, "").trim());
 
 const POOL = [
   { name: "Yukari", rarity: "4" }, { name: "Remilia", rarity: "3" }, { name: "Yuyuko", rarity: "3" },
@@ -80,10 +80,29 @@ test("each name is painted by its own rarity", () => {
   assert.notStrictEqual(unique, common);
 });
 
+// the reel was one line of five names, which needed ten escape sequences in ninety
+// characters, and discord's highlighter silently dropped two: the payload asked for red
+// and pink, the client painted grey. the codes were identical to ones it had rendered
+// correctly two cells earlier. one span per line is the shape that survives it.
+test("no line asks discord for more than one colour", () => {
+  const row = reelRow(buildStrip(POOL, WON), 0);
+  for (const line of row.split("\n")) {
+    const spans = (line.match(new RegExp(ESC + "\\[[0-9;]*m", "g")) || []).length;
+    assert.ok(spans <= 2, `a line carried ${spans} escape sequences: ${JSON.stringify(line)}`);
+  }
+});
+
+test("every name still gets its own line, and its own colour", () => {
+  const row = reelRow(buildStrip(POOL, WON), 0);
+  const body = row.split("\n").filter((line) => !line.startsWith("```"));
+  assert.strictEqual(body.length, WINDOW, "one line per visible name");
+  for (const line of body) assert.match(line, new RegExp(ESC + "\\["), "each line is coloured");
+});
+
 test("a reel of plain names still renders, since that is what it used to be", () => {
   const row0 = reelRow(["Reimu", "Marisa", "Sanae"], 0);
   assert.match(plain(row0), /Reimu|Marisa|Sanae/);
-  assert.match(plain(row0), /▐ .+ ▌/);
+  assert.match(plain(row0), /▸ /);
 });
 
 test("a long name is cut rather than wrapping the row", () => {
@@ -92,8 +111,8 @@ test("a long name is cut rather than wrapping the row", () => {
 });
 
 test("it still draws a row for a case whose names never arrived", () => {
-  assert.match(plain(reelRow([], 0)), /▐/);
-  assert.match(plain(reelRow(undefined, 3)), /▐/);
+  assert.match(plain(reelRow([], 0)), /▸/);
+  assert.match(plain(reelRow(undefined, 3)), /▸/);
   assert.ok(buildStrip([], null).length >= WINDOW);
 });
 

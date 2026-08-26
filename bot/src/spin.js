@@ -49,7 +49,7 @@ const FRAME_MS = 550;
 // about to land, and it was not, which is exactly why it read as fake.
 const LANDING = FRAMES - 1 + MIDDLE;
 
-const clip = (name) => (name.length > 12 ? `${name.slice(0, 11)}…` : name);
+const clip = (name) => (name.length > 28 ? `${name.slice(0, 27)}…` : name);
 // the reel used to be plain names; entries carry a rarity now, and both still work
 const entryOf = (value) =>
   typeof value === "string" ? { name: value, rarity: null } : { name: value.name, rarity: value.rarity };
@@ -77,15 +77,25 @@ function buildStrip(pool, winner) {
   return strip;
 }
 
+// one colour span per line, and no more.
+//
+// the first version drew the five names across a single line, which needed ten escape
+// sequences in ninety characters, and discord's highlighter silently dropped two of them:
+// the payload asked for red and pink, the client painted grey. the codes were identical to
+// the ones it rendered correctly two cells earlier, so it is a limit in their parser and
+// nothing that can be fixed from this side, only avoided.
+//
+// stacked, each line carries exactly one set and one reset. it also stops truncating names
+// at twelve characters, and the prize now climbs toward the marker rather than sliding.
 function reelRow(strip, offset) {
   const pool = strip && strip.length ? strip.map(entryOf) : [{ name: "?", rarity: null }];
-  const cells = [];
+  const lines = [];
   for (let i = 0; i < WINDOW; i += 1) {
     const entry = pool[(offset + i) % pool.length];
-    const painted = paint(clip(entry.name), entry.rarity);
-    cells.push(i === MIDDLE ? `▐ ${painted} ▌` : ` ${painted} `);
+    const marker = i === MIDDLE ? "▸ " : "  ";
+    lines.push(paint(`${marker}${clip(entry.name)}`, entry.rarity));
   }
-  return "```ansi\n" + cells.join("│") + "\n```";
+  return ["```ansi", ...lines, "```"].join("\n");
 }
 
 function spinningFrame(caseTitle, strip, offset, landed, rarity) {
