@@ -2,6 +2,7 @@ import { OTHER_CATEGORY, categoryOf, compareCategories } from "../../utils/caseC
 
 export interface CaseGroup {
     category: string;
+    id: string;
     cases: any[];
 }
 
@@ -9,6 +10,11 @@ export { OTHER_CATEGORY };
 
 // objectids embed creation time, so string order is creation order
 const newest = (list: any[]) => list.reduce((a, b) => (a._id < b._id ? b : a))._id;
+
+// the anchor the category bar scrolls to. category names are free text, so the slug is
+// deduplicated below rather than trusted to be unique ("Re:Zero" and "Re Zero" collide)
+export const sectionSlug = (category: string) =>
+    `cases-${categoryOf(category).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "group"}`;
 
 // cheapest first inside a group, so a shelf reads from what a new player can afford up to
 // the premium end; groups are still ordered by their newest case, and no category ->
@@ -33,5 +39,12 @@ export function groupCasesByCategory(cases: any[]): CaseGroup[] {
 
     groups.sort((a, b) => compareCategories(a.category, b.category, () => (a.newest < b.newest ? 1 : -1)));
 
-    return groups.map(({ category, cases }) => ({ category, cases }));
+    const taken = new Set<string>();
+    return groups.map(({ category, cases }) => {
+        const slug = sectionSlug(category);
+        let id = slug;
+        for (let n = 2; taken.has(id); n += 1) id = `${slug}-${n}`;
+        taken.add(id);
+        return { category, id, cases };
+    });
 }

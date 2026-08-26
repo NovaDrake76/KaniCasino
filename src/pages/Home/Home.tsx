@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Banner from "./Banner";
 import CaseListing from "./CaseListing";
+import CategoryBar from "./CategoryBar";
 import GameListing from "./GamesListing";
 import Leaderboard from "./Leaderboard";
 import DiscordWidget from "./DiscordWidget";
@@ -16,6 +17,9 @@ import { BannerProps } from "./Types";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import i18n from "../../i18n";
+
+// its own namespace, so a category literally called "Most Opened" cannot take the anchor
+const TOP_CASES_ID = "top-cases";
 
 const Home = () => {
   const [cases, setCases] = useState<any>();
@@ -43,6 +47,16 @@ const Home = () => {
       .catch(() => setMostOpened([]))
       .finally(() => setMostOpenedLoading(false));
   }, []);
+
+  const groups = useMemo(() => (loading ? [] : groupCasesByCategory(cases)), [cases, loading]);
+
+  const sections = useMemo(
+    () => [
+      ...(mostOpened.length > 0 ? [{ id: TOP_CASES_ID, label: i18n.t("home.mostOpened") }] : []),
+      ...groups.map((group) => ({ id: group.id, label: group.category })),
+    ],
+    [groups, mostOpened.length]
+  );
 
   const BannerContent: BannerProps[] = [
     {
@@ -165,6 +179,8 @@ const Home = () => {
             <Banner key={index} left={_item.left} right={_item.right} />
           ))}
         </Carousel>
+        <CategoryBar sections={sections} loading={loading || mostOpenedLoading} />
+
         {/* the skeleton reserves the row while loading so the sections below do not jump */}
         {mostOpenedLoading ? (
           <CaseListing name={i18n.t("home.mostOpenedCases")} loading cases={[]} />
@@ -174,6 +190,7 @@ const Home = () => {
               name={i18n.t("home.mostOpenedCases")}
               description={i18n.t("home.whatEveryoneIsOpening")}
               cases={mostOpened}
+              sectionId={TOP_CASES_ID}
               eager
             />
           )
@@ -188,11 +205,12 @@ const Home = () => {
         {loading ? (
           <CaseListing name="Cases" loading cases={[]} />
         ) : (
-          groupCasesByCategory(cases).map((group) => (
+          groups.map((group) => (
             <CaseListing
               key={group.category}
               name={`${group.category} Cases`}
               cases={group.cases}
+              sectionId={group.id}
               collapsible
             />
           ))

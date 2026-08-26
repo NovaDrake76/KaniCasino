@@ -106,6 +106,58 @@ test("the most opened section is absent when nothing has been opened", async ({ 
   await expect(page.getByText("Most Opened Cases")).toHaveCount(0);
 });
 
+test("the category bar lists a chip per shelf and jumps to it", async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 500 });
+  await page.goto("/");
+
+  const bar = page.getByRole("navigation", { name: "Case categories" });
+  await expect(bar.getByRole("button", { name: "Event" })).toBeVisible();
+
+  const heading = page.getByText("Other Cases");
+  const before = await heading.boundingBox();
+  await bar.getByRole("button", { name: "Other" }).click();
+
+  await expect
+    .poll(async () => (await heading.boundingBox())?.y ?? Infinity)
+    .toBeLessThan((before as { y: number }).y - 100);
+});
+
+// the sticky header regression again: a bar pinned to the top must not sit over the
+// shelf it just scrolled to
+test("a case stays clickable after the bar has scrolled to its shelf", async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 500 });
+  await page.goto("/");
+
+  await page.getByRole("navigation", { name: "Case categories" }).getByRole("button", { name: "Other" }).click();
+  await page.getByText("Pro Case").click();
+
+  await expect(page).toHaveURL(/\/case\/case2/);
+});
+
+test("the category bar carries the most opened shelf only when it exists", async ({ page }) => {
+  await page.goto("/");
+  const bar = page.getByRole("navigation", { name: "Case categories" });
+  await expect(bar.getByRole("button", { name: "Event" })).toBeVisible();
+  await expect(bar.getByRole("button", { name: "Most Opened" })).toHaveCount(0);
+
+  await page.route("**/cases/most-opened**", (route) =>
+    route.fulfill({ json: [{ _id: "case9", title: "Hot Case", image: IMG, price: 250, opens: 42 }] })
+  );
+  await page.goto("/");
+  await expect(bar.getByRole("button", { name: "Most Opened" })).toBeVisible();
+});
+
+test("the home page fits a phone with the category bar on it", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await page.goto("/");
+  await expect(page.getByRole("navigation", { name: "Case categories" })).toBeVisible();
+
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+  );
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
 test("a navbar link is clickable and navigates", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Market" }).first().click();

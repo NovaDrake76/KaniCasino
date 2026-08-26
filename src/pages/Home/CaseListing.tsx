@@ -10,6 +10,8 @@ interface CaseListingProps {
   cases: any;
   loading?: boolean;
   collapsible?: boolean;
+  // the anchor the category bar scrolls to
+  sectionId?: string;
   // only the first section sits near the fold; the rest lazy-load their art
   eager?: boolean;
 }
@@ -32,7 +34,7 @@ const CaseSkeleton = () => (
 
 const collapseKey = (name: string) => `caseSection:${name}`;
 
-const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loading, collapsible, eager }) => {
+const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loading, collapsible, sectionId, eager }) => {
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     try {
       return localStorage.getItem(collapseKey(name)) === "hidden";
@@ -52,7 +54,7 @@ const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loa
   };
 
   return (
-    <section className="w-full flex flex-col py-6 items-center" key={name}>
+    <section id={sectionId} className="w-full flex flex-col py-6 items-center scroll-mt-16" key={name}>
       <div className="flex flex-col w-full max-w-[1600px] px-4">
         <div className="flex items-center justify-between gap-4 pb-3 border-b border-line">
           <div className="flex items-center gap-3">
