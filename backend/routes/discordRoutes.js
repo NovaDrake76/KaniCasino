@@ -6,9 +6,16 @@ const router = express.Router();
 const User = require("../models/User");
 const DiscordLink = require("../models/DiscordLink");
 const FanBoard = require("../models/FanBoard");
+const Case = require("../models/Case");
+const Roll = require("../models/Roll");
+const DiscordOpen = require("../models/DiscordOpen");
 const { isAuthenticated } = require("../middleware/authMiddleware");
 const { visible } = require("../utils/visibility");
 const badges = require("../utils/badges");
+const { openCase, MAX_PER_OPEN } = require("../games/openCase");
+const { pickFromRanges, TOTAL } = require("../utils/provablyFair");
+const { buildRangeTable } = require("../utils/caseRanges");
+const { sellValue } = require("../utils/itemValue");
 
 // how long a link code stays redeemable. long enough to switch to a browser and log in,
 // short enough that a code read off someone else's screen is worthless by the time it lands.
@@ -37,6 +44,9 @@ const CARD_FIELDS = {
   discordId: 1,
   discordName: 1,
 };
+
+// a player types this into autocomplete, so it is data, never pattern
+const escapeRegex = (text) => String(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // no ambiguous glyphs: this gets read off a phone screen and typed back
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -327,6 +337,161 @@ async function oauthCallback(req, res) {
   }
 }
 
+// the dearest cases stay on the site. a chat window is a fine place to pull a character
+// out of a 12k case and a poor one to spend a million, and the reveal that makes an
+// expensive opening worth watching does not survive the trip into an embed.
+const MAX_CASE_PRICE = Number(process.env.DISCORD_MAX_CASE_PRICE || 20000);
+// how many the autocomplete can show
+const CASE_CHOICES = 25;
+
+const publicCase = (one) => ({
+  id: one._id,
+  title: one.title,
+  price: one.price || 0,
+  image: one.image || null,
+  category: one.category || "",
+});
+
+// what the bot offers in autocomplete. with an empty box it leads with the cases this
+// player last opened, which is what makes opening the same one again quick to type.
+router.get("/cases", botOnly, async (req, res) => {
+  try {
+    const search = String(req.query.q || "").trim();
+    const filter = { price: { $lte: MAX_CASE_PRICE } };
+    if (search) {
+      filter.title = { $regex: escapeRegex(search), $options: "i" };
+    }
+
+    const found = await Case.find(filter, { title: 1, price: 1, image: 1, category: 1 })
+      .sort({ price: 1 })
+      .limit(CASE_CHOICES * 2)
+      .lean();
+
+    let ordered = found;
+    const discordId = String(req.query.discordId || "");
+    if (!search && discordId) {
+      const user = await User.findOne({ discordId }, { _id: 1 }).lean();
+      if (user) {
+        // rolls carry the case and are already indexed on user and time, and they expire
+        // themselves, so "recently opened" costs one bounded lookup and no new storage
+        const recent = await Roll.find({ userId: user._id, game: "case" }, { caseId: 1 })
+          .sort({ createdAt: -1 })
+          .limit(40)
+          .lean();
+        const rank = new Map();
+        for (const roll of recent) {
+          const key = String(roll.caseId);
+          if (!rank.has(key)) rank.set(key, rank.size);
+        }
+        ordered = [...found].sort(
+          (a, b) => (rank.has(String(a._id)) ? rank.get(String(a._id)) : 999) -
+                    (rank.has(String(b._id)) ? rank.get(String(b._id)) : 999)
+        );
+      }
+    }
+
+    res.json({ cases: ordered.slice(0, CASE_CHOICES).map(publicCase), maxPrice: MAX_CASE_PRICE });
+  } catch (err) {
+    console.error("discord cases:", err.message);
+    res.status(500).json({ message: "Could not load the cases" });
+  }
+});
+
+// a spin for somebody with no account. it draws on the case's real committed odds so the
+// answer is honest, consumes no nonce, stores nothing and hands nothing over. the point
+// is to show what the game is, and the bot must say plainly that the item was not kept.
+router.get("/preview/:caseId", botOnly, async (req, res) => {
+  try {
+    const one = await Case.findById(req.params.caseId).populate("items");
+    if (!one) return res.status(404).json({ message: "Case not found" });
+    if ((one.price || 0) > MAX_CASE_PRICE) return res.status(403).json({ message: "That case is site only" });
+
+    let rangeTable = one.rangeTable;
+    if (!rangeTable || !rangeTable.length) rangeTable = buildRangeTable(one).rangeTable;
+
+    // not provably fair, and it does not need to be: nothing is won, so there is nothing
+    // to prove. the odds are the case's own, which is the part that has to be true.
+    const drawn = pickFromRanges(crypto.randomInt(1, TOTAL + 1), rangeTable);
+    const item = one.items.find((it) => String(it._id) === String(drawn.itemId));
+    if (!item) return res.status(500).json({ message: "Case has no items" });
+
+    res.json({
+      kept: false,
+      case: publicCase(one),
+      item: {
+        name: item.name,
+        image: item.image,
+        rarity: item.rarity,
+        value: sellValue(item.baseValue),
+      },
+      reel: one.items.slice(0, 12).map((it) => it.name),
+    });
+  } catch (err) {
+    console.error("discord preview:", err.message);
+    res.status(500).json({ message: "Could not spin that case" });
+  }
+});
+
+// the real thing, for a linked account, through the same path the site uses
+router.post("/open", botOnly, async (req, res) => {
+  try {
+    const discordId = String((req.body && req.body.discordId) || "");
+    const interactionId = String((req.body && req.body.interactionId) || "");
+    const caseId = String((req.body && req.body.caseId) || "");
+    // `|| 1` would turn a zero into a one, which is the one bad quantity that looks fine
+    const asked = req.body ? req.body.quantity : undefined;
+    const quantity = asked === undefined || asked === null ? 1 : Number(asked);
+    if (!discordId || !interactionId || !caseId) {
+      return res.status(400).json({ message: "Missing discordId, interactionId or caseId" });
+    }
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_PER_OPEN) {
+      return res.status(400).json({ message: `Open between 1 and ${MAX_PER_OPEN} at a time` });
+    }
+
+    const user = await User.findOne(visible({ discordId }), { password: 0, inventory: 0 });
+    if (!user) return res.status(404).json({ message: "Not linked" });
+
+    const one = await Case.findById(caseId, { price: 1, title: 1 }).lean();
+    if (!one) return res.status(404).json({ message: "Case not found" });
+    if ((one.price || 0) > MAX_CASE_PRICE) {
+      return res.status(403).json({ message: "That case can only be opened on the site" });
+    }
+
+    // claim the interaction before charging. the unique index is what makes this a claim
+    // rather than a check, so a replayed interaction loses the race instead of charging.
+    try {
+      await DiscordOpen.create({ interactionId, userId: user._id });
+    } catch (err) {
+      if (err && err.code === 11000) return res.status(409).json({ message: "Already opened", duplicate: true });
+      throw err;
+    }
+
+    const result = await openCase({ user, caseId, quantity, source: "discord" });
+    if (!result.ok) {
+      // it never happened, so the interaction is free to be tried again
+      await DiscordOpen.deleteOne({ interactionId }).catch(() => {});
+      return res.status(result.status).json({ message: result.message });
+    }
+
+    res.json({
+      case: { id: one._id, title: one.title, price: one.price || 0 },
+      cost: result.cost,
+      walletBalance: result.walletBalance,
+      level: result.level,
+      items: result.items.map((item) => ({
+        name: item.name,
+        image: item.image,
+        rarity: item.rarity,
+        value: item.sellValue,
+        rollId: item.rollId,
+      })),
+    });
+  } catch (err) {
+    console.error("discord open:", err.message);
+    res.status(500).json({ message: "Could not open that case" });
+  }
+});
+
 router.get("/showcase/:discordId", botOnly, async (req, res) => {
   try {
     const user = await User.findOne(visible({ discordId: String(req.params.discordId) }), CARD_FIELDS).lean();
@@ -345,7 +510,7 @@ router.get("/topfan/:name", botOnly, async (req, res) => {
     const guildId = String(req.query.guild || "");
     if (!guildId) return res.status(400).json({ message: "Missing guild" });
 
-    const escaped = String(req.params.name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const escaped = escapeRegex(req.params.name);
     const board = await FanBoard.findOne(
       { name: new RegExp("^" + escaped + "$", "i") },
       { name: 1, image: 1, rarity: 1, ranks: 1, fanCount: 1, topCount: 1 }
