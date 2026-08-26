@@ -70,6 +70,21 @@ test("two spins of one case do not scroll the same order", () => {
   assert.ok(many.size > 1, "the strip is shuffled per spin");
 });
 
+// a common landed plain white: it asked for bare "34", which discord drew as nothing,
+// while "31", "1;33" and "1;35" painted correctly on the same line. every rarity has to
+// use a form that has been seen to render, and every one has to differ from the others.
+test("every rarity asks for a code discord has been seen to render", () => {
+  const seen = ["31", "1;31", "1;33", "1;34", "1;35", "1;36"];
+  const codes = new Set();
+  for (const rarity of ["1", "2", "3", "4", "5"]) {
+    const line = reelRow([{ name: "X", rarity }], 0).split("\n")[1];
+    const code = (line.match(new RegExp(ESC + "\\[([0-9;]+)m")) || [])[1];
+    assert.ok(seen.includes(code), `rarity ${rarity} asks for ${code}, which has never been seen to render`);
+    codes.add(code);
+  }
+  assert.strictEqual(codes.size, 5, "two rarities would look the same");
+});
+
 test("each name is painted by its own rarity", () => {
   const row0 = reelRow(buildStrip(POOL, WON), 0);
   assert.ok(row0.includes(ESC + "["), "colour is in the payload");
