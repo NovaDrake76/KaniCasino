@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GiUpgrade } from "react-icons/gi";
+import { FaDiscord } from "react-icons/fa";
 import Rarities from "../Rarities";
 import { Link } from "react-router-dom";
 import { BasicItem } from "../Types";
@@ -59,6 +60,14 @@ const CaseOpenedNotification: React.FC<CaseOpenedNotificationProps> = ({
               title={i18n.t("upgrade.wonByUpgrading")}
             >
               <GiUpgrade className="text-sm" />
+            </span>
+          )}
+          {source === "discord" && (
+            <span
+              className="absolute left-1 top-1 z-20 text-[#5865F2]"
+              title={i18n.t("discord.openedOnDiscord")}
+            >
+              <FaDiscord className="text-sm" />
             </span>
           )}
           {others > 0 && (

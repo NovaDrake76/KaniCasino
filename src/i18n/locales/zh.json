@@ -318,6 +318,7 @@
     "needLogin": "登录后完成关联",
     "needLoginBody": "登录或注册账号，你的 Discord 用户就会立即关联。",
     "notLinked": "未关联 Discord 账号",
+    "openedOnDiscord": "在 Discord 开启",
     "settingsTitle": "Discord",
     "tryAgain": "在 Discord 中重新运行 /link 获取新的验证码。",
     "unlinkButton": "解除关联",

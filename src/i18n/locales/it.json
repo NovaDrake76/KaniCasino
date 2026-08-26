@@ -318,6 +318,7 @@
     "needLogin": "Accedi per completare il collegamento",
     "needLoginBody": "Accedi o crea un account e il tuo utente Discord verrà collegato subito.",
     "notLinked": "Nessun account Discord collegato",
+    "openedOnDiscord": "Aperta su Discord",
     "settingsTitle": "Discord",
     "tryAgain": "Usa di nuovo /link su Discord per un codice nuovo.",
     "unlinkButton": "Scollega",

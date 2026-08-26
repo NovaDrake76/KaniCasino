@@ -318,6 +318,7 @@
     "needLogin": "Entre para concluir a vinculação",
     "needLoginBody": "Faça login ou crie uma conta, e seu usuário do Discord será vinculado na hora.",
     "notLinked": "Nenhuma conta do Discord vinculada",
+    "openedOnDiscord": "Aberta no Discord",
     "settingsTitle": "Discord",
     "tryAgain": "Use /link no Discord de novo para obter um código novo.",
     "unlinkButton": "Desvincular",

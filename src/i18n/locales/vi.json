@@ -318,6 +318,7 @@
     "needLogin": "Đăng nhập để hoàn tất liên kết",
     "needLoginBody": "Đăng nhập hoặc tạo tài khoản, và người dùng Discord của bạn sẽ được liên kết ngay.",
     "notLinked": "Chưa liên kết tài khoản Discord",
+    "openedOnDiscord": "Mở trên Discord",
     "settingsTitle": "Discord",
     "tryAgain": "Chạy lại /link trong Discord để lấy mã mới.",
     "unlinkButton": "Hủy liên kết",

@@ -12,9 +12,11 @@ const headers = () => ({
 const TIMEOUT_MS = 8000;
 
 class ApiError extends Error {
-  constructor(status, message) {
+  constructor(status, message, data) {
     super(message);
     this.status = status;
+    // the whole body, so a caller can branch on a flag rather than on the wording
+    this.data = data || {};
   }
 }
 
@@ -30,7 +32,7 @@ async function call(method, path, body) {
     });
     const text = await res.text();
     const data = text ? JSON.parse(text) : {};
-    if (!res.ok) throw new ApiError(res.status, data.message || "Request failed");
+    if (!res.ok) throw new ApiError(res.status, data.message || "Request failed", data);
     return data;
   } catch (err) {
     if (err.name === "AbortError") throw new ApiError(504, "The site did not answer in time");
@@ -54,4 +56,16 @@ module.exports = {
   // fired and forgotten: being on a server board is not worth failing a command over
   seen: (discordId, guildId) =>
     post("/discord/seen", { discordId, guildId }).catch(() => {}),
+
+  cases: (query, discordId) => {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (discordId) params.set("discordId", discordId);
+    const suffix = params.toString();
+    return get("/discord/cases" + (suffix ? `?${suffix}` : ""));
+  },
+  preview: (caseId) => get(`/discord/preview/${encodeURIComponent(caseId)}`),
+  // the interaction id is what stops one command charging twice if the gateway replays it
+  openCase: (discordId, interactionId, caseId, quantity) =>
+    post("/discord/open", { discordId, interactionId, caseId, quantity }),
 };

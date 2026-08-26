@@ -166,10 +166,25 @@ describe("opening a case from discord", () => {
     expect((await open({ discordId, interactionId: id, caseId: one._id, quantity: 1 })).status).toBe(200);
   });
 
-  it("turns away a discord user with no account", async () => {
+  // the bot spins a demo for somebody with no account and must not do that for a case
+  // that does not exist, so the two 404s have to be told apart by something other than
+  // their wording
+  it("turns away a discord user with no account, and says that is why", async () => {
     const one = await makeCase(100);
     const res = await open({ discordId: oldEnough(), interactionId: interaction(), caseId: one._id, quantity: 1 });
     expect(res.status).toBe(404);
+    expect(res.body.notLinked).toBe(true);
+  });
+
+  it("does not call a missing case a missing account", async () => {
+    const user = await makeUser();
+    const discordId = oldEnough();
+    await linkUser(user, discordId);
+    const gone = new (require("mongoose").Types.ObjectId)();
+
+    const res = await open({ discordId, interactionId: interaction(), caseId: gone, quantity: 1 });
+    expect(res.status).toBe(404);
+    expect(res.body.notLinked).toBeUndefined();
   });
 
   it("keeps the dearest cases on the site", async () => {

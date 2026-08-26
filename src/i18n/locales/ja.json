@@ -318,6 +318,7 @@
     "needLogin": "ログインして連携を完了してください",
     "needLoginBody": "ログインするかアカウントを作成すると、Discord アカウントがすぐに連携されます。",
     "notLinked": "Discord アカウントは未連携です",
+    "openedOnDiscord": "Discord で開封",
     "settingsTitle": "Discord",
     "tryAgain": "Discord でもう一度 /link を実行して、新しいコードを取得してください。",
     "unlinkButton": "連携を解除",

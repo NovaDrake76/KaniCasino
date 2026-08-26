@@ -318,6 +318,7 @@
     "needLogin": "Log in to finish linking",
     "needLoginBody": "Sign in or create an account, and your Discord user gets attached straight away.",
     "notLinked": "No Discord account linked",
+    "openedOnDiscord": "Opened on Discord",
     "settingsTitle": "Discord",
     "tryAgain": "Run /link in Discord again for a fresh code.",
     "unlinkButton": "Unlink",
