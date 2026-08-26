@@ -358,8 +358,11 @@ router.get("/cases", botOnly, async (req, res) => {
   try {
     const search = String(req.query.q || "").trim();
     const filter = { price: { $lte: MAX_CASE_PRICE } };
+    // the category is how players ask for these: not one case is called "Touhou", they are
+    // Lunatic and Nuclear and The Special Package, and typing the series has to find them
     if (search) {
-      filter.title = { $regex: escapeRegex(search), $options: "i" };
+      const like = { $regex: escapeRegex(search), $options: "i" };
+      filter.$or = [{ title: like }, { category: like }];
     }
 
     const found = await Case.find(filter, { title: 1, price: 1, image: 1, category: 1 })

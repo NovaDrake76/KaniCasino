@@ -132,7 +132,15 @@ const commands = [
       const typed = interaction.options.getFocused();
       const { cases } = await api.cases(typed, interaction.user.id);
       await interaction.respond(
-        cases.map((one) => ({ name: `${one.title}  ·  K₽ ${one.price.toLocaleString("en-US")}`.slice(0, 100), value: String(one.id) }))
+        cases.map((one) => ({
+          // the series is on the label because the titles do not carry it, so a row reads
+          // as "Lunatic Case · Touhou" rather than leaving the player to know which is which
+          name: [one.title, one.category, `K₽ ${one.price.toLocaleString("en-US")}`]
+            .filter(Boolean)
+            .join("  ·  ")
+            .slice(0, 100),
+          value: String(one.id),
+        }))
       );
     },
     async run(interaction) {
