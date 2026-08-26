@@ -52,8 +52,8 @@ async function runOpen(interaction, caseId, quantity) {
     opened = await api.openCase(interaction.user.id, interaction.id, caseId, quantity);
   } catch (err) {
     // no account is not a refusal here: it is the whole pitch. spin it anyway, keep
-    // nothing, and say so.
-    if (err.status === 404) demo = await api.preview(caseId);
+    // nothing, and say so. any other 404 is a real one and belongs to the caller.
+    if (err.status === 404 && err.data.notLinked) demo = await api.preview(caseId);
     else throw err;
   }
 

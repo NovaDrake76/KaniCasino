@@ -12,9 +12,11 @@ const headers = () => ({
 const TIMEOUT_MS = 8000;
 
 class ApiError extends Error {
-  constructor(status, message) {
+  constructor(status, message, data) {
     super(message);
     this.status = status;
+    // the whole body, so a caller can branch on a flag rather than on the wording
+    this.data = data || {};
   }
 }
 
@@ -30,7 +32,7 @@ async function call(method, path, body) {
     });
     const text = await res.text();
     const data = text ? JSON.parse(text) : {};
-    if (!res.ok) throw new ApiError(res.status, data.message || "Request failed");
+    if (!res.ok) throw new ApiError(res.status, data.message || "Request failed", data);
     return data;
   } catch (err) {
     if (err.name === "AbortError") throw new ApiError(504, "The site did not answer in time");

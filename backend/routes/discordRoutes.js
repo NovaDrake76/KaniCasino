@@ -449,7 +449,9 @@ router.post("/open", botOnly, async (req, res) => {
     }
 
     const user = await User.findOne(visible({ discordId }), { password: 0, inventory: 0 });
-    if (!user) return res.status(404).json({ message: "Not linked" });
+    // flagged rather than left to the wording: the bot spins a demo for somebody with no
+    // account, and must not do that for a case that simply does not exist
+    if (!user) return res.status(404).json({ message: "Not linked", notLinked: true });
 
     const one = await Case.findById(caseId, { price: 1, title: 1 }).lean();
     if (!one) return res.status(404).json({ message: "Case not found" });
