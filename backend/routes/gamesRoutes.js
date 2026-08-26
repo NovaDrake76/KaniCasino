@@ -4,222 +4,39 @@ const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
 const { plinkoDropLimiter, diceRollLimiter, minesActionLimiter, hiloActionLimiter } = require("../middleware/rateLimit");
 
-const User = require("../models/User");
 const Case = require("../models/Case");
 const Round = require("../models/Round");
 const upgradeItems = require("../games/upgrade");
+const { openCase } = require("../games/openCase");
 const SlotGameController = require("../games/slot");
 const PlinkoGameController = require("../games/plinko");
 const BlackjackGameController = require("../games/blackjack");
 const DiceGameController = require("../games/dice");
 const MinesGameController = require("../games/mines");
 const HiloGameController = require("../games/hilo");
-const { calculateLevelFromXp, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = require("../utils/economy");
-const referrals = require("../utils/referrals");
-const fandom = require("../utils/fandom");
-const { addUniqueInfoToItem, toInventoryEntry } = require("../utils/caseOpening");
-const { buildRangeTable } = require("../utils/caseRanges");
-const { roll, pickFromRanges, TOTAL } = require("../utils/provablyFair");
-const seeds = require("../utils/seeds");
-const rolls = require("../utils/rolls");
-const { sellValue, recomputeCaseValues } = require("../utils/itemValue");
 
 // Exports
 module.exports = (io) => {
   // Routes
+  // the opening itself lives in games/openCase.js, because the discord bot has to run the
+  // same one: a second path through the money would drift from this one the first time
+  // either changed.
   router.post("/openCase/:id", isAuthenticated, async (req, res) => {
     try {
-      const { id } = req.params;
-      const user = req.user;
-      const quantityToOpen = req.body.quantity;
-      const winningItems = [];
-
-      let caseData = await Case.findById(id).populate("items");
-
-      if (!caseData || !user) {
-        if (!caseData) {
-          return res.status(404).json({ message: "Case not found" });
-        } else {
-          return res.status(404).json({ message: "User not found" });
-        }
-      }
-
-      if (!Number.isInteger(quantityToOpen)) {
-        return res.status(400).json({ message: "Quantity to open must be an integer" });
-      }
-
-      if (quantityToOpen > 5) {
-        return res.status(400).json({ message: "You can only open up to 5 cases at a time" });
-      }
-
-      if (quantityToOpen < 1) {
-        return res.status(400).json({ message: "You need to open at least 1 case" });
-      }
-
-      // a daily-gift grant pays for openings of one specific case and nothing else, so a
-      // cheap win cannot be spent on the dearest case in the same category
-      const grantId = req.body.grantId;
-      let grant = null;
-      if (grantId) {
-        grant = (user.freeOpens || []).find((g) => g.grantId === grantId);
-        if (!grant) return res.status(404).json({ message: "Gift not found" });
-        if (String(grant.caseId) !== String(caseData._id)) {
-          return res.status(400).json({ message: "That gift is for a different case" });
-        }
-        if (new Date(grant.expiresAt) <= new Date()) {
-          return res.status(400).json({ message: "That gift has expired" });
-        }
-        if (grant.remaining < quantityToOpen) {
-          return res.status(400).json({ message: "That gift has fewer openings left" });
-        }
-      }
-
-      const cost = grant ? 0 : caseData.price * quantityToOpen;
-
-      // reserve the nonces atomically up front (never rolled back), then derive each
-      // item from the case's committed range table (provably fair, one draw per open)
-      const reserved = await seeds.reserveNonces(user._id, quantityToOpen);
-
-      // self-heal: materialize + commit this case's config on first open if it has
-      // none yet, so the roll stays verifiable even if the backfill hasn't run
-      if (!caseData.rangeTable || !caseData.rangeTable.length) {
-        await recomputeCaseValues(caseData._id);
-        caseData = await Case.findById(id).populate("items");
-      }
-      let rangeTable = caseData.rangeTable;
-      let configHash = caseData.configHash;
-      const configVersion = caseData.configVersion || 0;
-      if (!rangeTable || !rangeTable.length) {
-        const built = buildRangeTable(caseData); // safety net (e.g. a case with no items)
-        rangeTable = built.rangeTable;
-        configHash = built.configHash;
-      }
-
-      const draws = [];
-      for (let i = 0; i < quantityToOpen; i++) {
-        const nonce = reserved.startNonce + i;
-        const rollValue = roll(reserved.serverSeed, reserved.clientSeed, nonce); // 1..TOTAL
-        const picked = pickFromRanges(rollValue, rangeTable);
-        const sourceItem = caseData.items.find((it) => String(it._id) === String(picked.itemId));
-        const itemWithUniqueId = addUniqueInfoToItem(sourceItem);
-        winningItems.push(itemWithUniqueId);
-        draws.push({ nonce, roll: rollValue, itemId: picked.itemId, uniqueId: itemWithUniqueId.uniqueId });
-      }
-
-      // charge the cost, add the items and write the ledger row together: a failed row
-      // rolls the charge back, so the player is never charged without a record
-      const updatedUser = await runAtomic(async (session) => {
-        const filter = { _id: user._id, walletBalance: { $gte: cost } };
-        const update = {
-          $inc: { walletBalance: -cost, xp: cost * 5 },
-          $push: { inventory: { $each: winningItems.map(toInventoryEntry) } },
-        };
-        // the push has just made this inventory bigger; handing it back would cost more
-        // than the opening did
-        const options = { new: true, projection: WITHOUT_INVENTORY, session };
-
-        // spend the openings in the same update that hands over the items, and require
-        // the count to still cover it, so two concurrent opens cannot overdraw one grant
-        if (grant) {
-          filter.freeOpens = {
-            $elemMatch: { grantId: grant.grantId, remaining: { $gte: quantityToOpen } },
-          };
-          update.$inc["freeOpens.$[g].remaining"] = -quantityToOpen;
-          options.arrayFilters = [
-            { "g.grantId": grant.grantId, "g.remaining": { $gte: quantityToOpen } },
-          ];
-        }
-
-        const u = await User.findOneAndUpdate(filter, update, options);
-        if (!u) return null;
-        // a gift open moves no coins, so it gets no ledger row: the ledger records
-        // balance changes and a zero one would only be noise
-        if (cost > 0) {
-          await recordTransaction(
-            {
-              userId: user._id,
-              type: TX.CASE_OPEN,
-              direction: "debit",
-              amount: cost,
-              balanceAfter: u.walletBalance,
-              meta: { caseId: caseData._id, caseTitle: caseData.title, quantity: quantityToOpen },
-            },
-            session
-          );
-        }
-        return u;
+      const result = await openCase({
+        user: req.user,
+        caseId: req.params.id,
+        quantity: req.body.quantity,
+        grantId: req.body.grantId,
       });
-
-      if (!updatedUser) {
-        return res.status(400).json({ message: "Insufficient balance" });
-      }
-
-      // record one provably-fair audit roll per open (after the charge commits)
-      const rollIds = [];
-      for (const d of draws) {
-        const rec = await rolls.recordRoll({
-          game: "case",
-          userId: user._id,
-          seedId: reserved.seedId,
-          clientSeed: reserved.clientSeed,
-          serverSeedHash: reserved.serverSeedHash,
-          nonce: d.nonce,
-          roll: d.roll,
-          total: TOTAL,
-          caseId: caseData._id,
-          caseConfigVersion: configVersion,
-          caseConfigHash: configHash,
-          itemId: d.itemId,
-          uniqueId: d.uniqueId,
-        });
-        rollIds.push(rec.rollId);
-      }
-
-      const newLevel = calculateLevelFromXp(updatedUser.xp);
-      if (newLevel !== updatedUser.level) {
-        updatedUser.level = newLevel;
-        await User.updateOne({ _id: user._id }, { $set: { level: newLevel } });
-        referrals.maybePayReferralMilestone(user._id, newLevel).catch(() => {});
-      }
-
-      const winnerUser = {
-        name: user.username,
-        id: user._id,
-        profilePicture: user.profilePicture,
-        badge: badges.wornBadge(user)
-      }
-
-      // Emit the caseOpened event
-      io.emit("caseOpened", {
-        winningItems: winningItems,
-        user: winnerUser,
-        caseImage: caseData.image,
-      });
-
-      // the fan boards are a ten-minute snapshot, so a player who just pulled the
-      // character they pinned would read the old count next to their new inventory
-      await fandom.touch(user._id, winningItems.map((item) => item._id));
-
-      res.json({
-        items: winningItems.map((i, idx) => ({
-          ...i,
-          sellValue: sellValue(i.baseValue),
-          rollId: rollIds[idx],
-        })),
-      });
-
-      const userDataPayload = {
-        walletBalance: updatedUser.walletBalance,
-        xp: updatedUser.xp,
-        level: updatedUser.level,
-      }
-      io.to(user._id.toString()).emit('userDataUpdated', userDataPayload);
-
+      if (!result.ok) return res.status(result.status).json({ message: result.message });
+      res.json({ items: result.items });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
 
   // Upgrade items
   router.post("/upgrade", isAuthenticated, async (req, res) => {
