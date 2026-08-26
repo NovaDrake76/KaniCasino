@@ -318,6 +318,7 @@
     "needLogin": "로그인하고 연결을 마치세요",
     "needLoginBody": "로그인하거나 계정을 만들면 Discord 계정이 바로 연결됩니다.",
     "notLinked": "연결된 Discord 계정이 없습니다",
+    "openedOnDiscord": "Discord에서 개봉",
     "settingsTitle": "Discord",
     "tryAgain": "Discord에서 /link를 다시 실행해 새 코드를 받으세요.",
     "unlinkButton": "연결 해제",

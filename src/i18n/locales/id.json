@@ -318,6 +318,7 @@
     "needLogin": "Masuk untuk menyelesaikan penautan",
     "needLoginBody": "Masuk atau buat akun, dan pengguna Discord-mu langsung tertaut.",
     "notLinked": "Belum ada akun Discord yang tertaut",
+    "openedOnDiscord": "Dibuka di Discord",
     "settingsTitle": "Discord",
     "tryAgain": "Jalankan /link lagi di Discord untuk kode baru.",
     "unlinkButton": "Lepas tautan",

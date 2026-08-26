@@ -318,6 +318,7 @@
     "needLogin": "Melde dich an, um die Verknüpfung abzuschließen",
     "needLoginBody": "Melde dich an oder erstelle ein Konto, dann wird dein Discord-Benutzer sofort verknüpft.",
     "notLinked": "Kein Discord-Konto verknüpft",
+    "openedOnDiscord": "Auf Discord geöffnet",
     "settingsTitle": "Discord",
     "tryAgain": "Führe /link in Discord erneut aus, um einen neuen Code zu bekommen.",
     "unlinkButton": "Trennen",

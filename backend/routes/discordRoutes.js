@@ -473,11 +473,23 @@ router.post("/open", botOnly, async (req, res) => {
       return res.status(result.status).json({ message: result.message });
     }
 
+    // the standing is what makes somebody else in the channel want to compete, and the
+    // sweep has just been told about this drop, so it costs one small projection
+    const standing = await User.findById(user._id, { fanRank: 1 }).lean();
+    const pulled = new Set(result.items.map((item) => item.name));
+    const fanRank =
+      standing && standing.fanRank && standing.fanRank.name && pulled.has(standing.fanRank.name)
+        ? { name: standing.fanRank.name, count: standing.fanRank.count, rank: standing.fanRank.rank, fans: standing.fanRank.fans }
+        : null;
+
     res.json({
       case: { id: one._id, title: one.title, price: one.price || 0 },
       cost: result.cost,
       walletBalance: result.walletBalance,
       level: result.level,
+      fanRank,
+      // what the bot spins past on the way to the answer
+      reel: (result.caseData.items || []).slice(0, 12).map((item) => item.name),
       items: result.items.map((item) => ({
         name: item.name,
         image: item.image,

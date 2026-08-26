@@ -3,7 +3,7 @@ require("dotenv").config();
 const { Client, Events, GatewayIntentBits, MessageFlags } = require("discord.js");
 const api = require("./api");
 const { noticeEmbed } = require("./embeds");
-const { commands, onCooldown } = require("./commands");
+const { commands, onCooldown, runOpen } = require("./commands");
 
 const REQUIRED = ["DISCORD_BOT_TOKEN", "DISCORD_BOT_SECRET", "API_KEY"];
 const missing = REQUIRED.filter((key) => !process.env[key]);
@@ -27,7 +27,48 @@ const reply = async (interaction, text) => {
   }
 };
 
+// the box has three seconds to fill, and an empty list is a better answer than a spinner
+// that never resolves, so a failure here is swallowed rather than logged loudly
+async function suggest(interaction) {
+  const command = byName.get(interaction.commandName);
+  if (!command || !command.autocomplete) return;
+  try {
+    await command.autocomplete(interaction);
+  } catch (err) {
+    await interaction.respond([]).catch(() => {});
+  }
+}
+
+// "open another" on somebody else's reveal would charge the clicker for a case they did
+// not choose, so the owner rides in the custom id and only they can press it
+async function pressed(interaction) {
+  const [action, caseId, ownerId] = interaction.customId.split(":");
+  if (action !== "open") return;
+  if (interaction.user.id !== ownerId) {
+    return interaction.reply({
+      embeds: [noticeEmbed("That one is not yours. Run `/open` and it will be.")],
+      flags: MessageFlags.Ephemeral,
+    });
+  }
+  const wait = onCooldown(interaction.user.id, "open");
+  if (wait) {
+    return interaction.reply({
+      embeds: [noticeEmbed(`Give it ${wait}s.`)],
+      flags: MessageFlags.Ephemeral,
+    });
+  }
+  await runOpen(interaction, caseId, 1);
+}
+
 client.on(Events.InteractionCreate, async (interaction) => {
+  try {
+    if (interaction.isAutocomplete()) return await suggest(interaction);
+    if (interaction.isButton()) return await pressed(interaction);
+  } catch (err) {
+    console.error("bot interaction:", err.message);
+    return reply(interaction, "The site did not answer. Try again in a moment.");
+  }
+
   if (!interaction.isChatInputCommand()) return;
   const command = byName.get(interaction.commandName);
   if (!command) return;

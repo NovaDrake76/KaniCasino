@@ -54,4 +54,16 @@ module.exports = {
   // fired and forgotten: being on a server board is not worth failing a command over
   seen: (discordId, guildId) =>
     post("/discord/seen", { discordId, guildId }).catch(() => {}),
+
+  cases: (query, discordId) => {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (discordId) params.set("discordId", discordId);
+    const suffix = params.toString();
+    return get("/discord/cases" + (suffix ? `?${suffix}` : ""));
+  },
+  preview: (caseId) => get(`/discord/preview/${encodeURIComponent(caseId)}`),
+  // the interaction id is what stops one command charging twice if the gateway replays it
+  openCase: (discordId, interactionId, caseId, quantity) =>
+    post("/discord/open", { discordId, interactionId, caseId, quantity }),
 };
