@@ -107,7 +107,7 @@ const caseMeta = (c) => {
 const writeSitemap = (caseRoutes) => {
   const entry = (loc, priority) =>
     `  <url>\n    <loc>${esc(loc)}</loc>\n    <priority>${priority}</priority>\n  </url>`;
-  const priorities = { "/": "1.0", "/provably-fair": "0.6", "/privacy-policy": "0.3" };
+  const priorities = { "/": "1.0", "/provably-fair": "0.6", "/privacy-policy": "0.3", "/terms": "0.3" };
   const urls = Object.keys(routes.static).map((r) =>
     entry(routes.site + r, priorities[r] || "0.8")
   );
