@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { getUser, getInventory } from "../../services/users/UserServices";
 import { FiFilter } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
@@ -56,6 +56,15 @@ const Profile = () => {
     order: 'asc',
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
+  // the url param may be a slug, so anything that speaks to the api by id waits for the
+  // resolved one off the loaded profile
+  const resolvedId = (user as any)?._id as string | undefined;
+  const canonical = (user as any)?.slug as string | undefined;
+  const profileId = resolvedId ?? id;
+  // an id link still resolves, but the address bar becomes the slug once the profile is
+  // known, so whatever a player copies from here carries their name
+  const sameProfile = Boolean(user) && (id === canonical || id === resolvedId);
 
   useEffect(() => {
     if (invItems?.length > 0) {
@@ -85,7 +94,7 @@ const Profile = () => {
     setLoadingInventory(true);
     try {
       const response = await getInventory(
-        id as string,
+        resolvedId as string,
         page,
         { ...filters, grouped: true }
       );
@@ -110,8 +119,8 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    setIsSameUser(userData?.id == id);
-  }, [id, userData]);
+    setIsSameUser(Boolean(userData?.id) && userData.id == profileId);
+  }, [profileId, userData]);
 
   useEffect(() => {
     if (refresh) {
@@ -126,6 +135,14 @@ const Profile = () => {
   }, [userRefresh]);
 
   useEffect(() => {
+    if (!canonical || !id || id === canonical) return;
+    const query = searchParams.toString();
+    navigate(`/profile/${canonical}${query ? `?${query}` : ""}`, { replace: true });
+  }, [canonical, id]);
+
+  useEffect(() => {
+    // the param turning from an id into the slug is the same profile, so nothing reloads
+    if (sameProfile) return;
     setInvItems([]);
     setPage(1);
     getUserInfo();
@@ -150,9 +167,11 @@ const Profile = () => {
     localStorage.setItem(`kani.tabSeen.${userData.id}`, JSON.stringify(next));
   }, [activeTab, isSameUser, userData?.id, seenTabs]);
 
+  // keyed on the resolved id, so the canonical swap never costs a second aggregation
   useEffect(() => {
+    if (!resolvedId) return;
     getInventoryInfo();
-  }, [page, id]);
+  }, [page, resolvedId]);
 
 
   const tabs: { key: Tab; label: string }[] = [
@@ -190,7 +209,7 @@ const Profile = () => {
                 isSameUser={isSameUser}
                 setRefresh={refreshUser}
               />
-              <FriendButton profileId={id as string} isSameUser={isSameUser} />
+              <FriendButton profileId={profileId as string} isSameUser={isSameUser} />
             </div>
           )
         )}
@@ -240,7 +259,7 @@ const Profile = () => {
           {activeTab === "history" ? (
             <BalanceHistory />
           ) : activeTab === "missions" ? (
-            <MissionsPanel userId={id as string} isOwner={isSameUser} />
+            <MissionsPanel userId={profileId as string} isOwner={isSameUser} />
           ) : activeTab === "affiliates" ? (
             <AffiliatesPanel isOwner={isSameUser} />
           ) : activeTab === "predictions" ? (
@@ -248,7 +267,7 @@ const Profile = () => {
           ) : activeTab === "settings" ? (
             <EmailSettings />
           ) : activeTab === "collections" ? (
-            <CollectionsPanel userId={id as string} isOwner={isSameUser} />
+            <CollectionsPanel userId={profileId as string} isOwner={isSameUser} />
           ) : (
           <>
           <div className="flex flex-col w-full items-end mr-[70px] gap-4 -mt-10">
@@ -303,7 +322,7 @@ const Profile = () => {
 
       {openItem && (
         <ItemCopiesModal
-          userId={id as string}
+          userId={profileId as string}
           item={openItem}
           isOwner={isSameUser}
           open={!!openItem}

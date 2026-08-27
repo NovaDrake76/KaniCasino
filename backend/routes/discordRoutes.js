@@ -33,6 +33,7 @@ const MAX_GUILDS = 25;
 // 21k entries, and everything these cards show is already summarised on the document.
 const CARD_FIELDS = {
   username: 1,
+  slug: 1,
   level: 1,
   xp: 1,
   profilePicture: 1,
@@ -75,6 +76,7 @@ const botOnly = (req, res, next) => {
 
 const publicCard = (user) => ({
   userId: user._id,
+  slug: user.slug || null,
   username: user.username,
   level: user.level || 0,
   xp: user.xp || 0,

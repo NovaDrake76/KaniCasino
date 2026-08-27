@@ -10,6 +10,11 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  // the profile url. minted from the username at signup and never rewritten, so a link
+  // keeps working. absent when the name has no latin letters in it, and the id is used then.
+  slug: {
+    type: String,
+  },
   email: {
     type: String,
     required: true,
@@ -223,6 +228,7 @@ const UserSchema = new mongoose.Schema({
 
 });
 
+UserSchema.index({ slug: 1 }, { unique: true, sparse: true }); // profile url lookup
 UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
 UserSchema.index({ referredBy: 1 }, { sparse: true });
 UserSchema.index({ weeklyWinnings: -1 }); // leaderboard, ranking window, weekly cron

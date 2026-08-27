@@ -343,9 +343,12 @@ describe("case battles", () => {
 });
 
 describe("input guards", () => {
-  test("GET /users/:id with a non-ObjectId returns 404, not a 500", async () => {
+  // the path param is a slug now, so any string is a real lookup. a name nobody holds
+  // reports nothing, exactly as a missing or hidden account already did, and never 500s
+  test("GET /users/:id with a name nobody holds reports nothing, not a 500", async () => {
     const res = await request(app).get("/users/undefined");
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(200);
+    expect(res.body).toBeNull();
   });
 
   test("GET /users/inventory/:userId with a bad id returns 404, not a 500", async () => {
