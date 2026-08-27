@@ -892,7 +892,7 @@
     "clearItemsCount": "Vider les objets ({{count}})",
     "getOneItem": "Obtenir un objet",
     "howItWorks": "Comment ça marche ?",
-    "howItWorksBody": "Améliorez des objets de votre inventaire pour tenter d'en obtenir un plus rare. Plus la rareté de votre objet est proche de celle visée, plus le taux de réussite est élevé.",
+    "howItWorksBody": "Améliorez des objets de votre inventaire pour tenter d'en obtenir un plus rare. Plus vos objets sont proches de la cible, meilleures sont les chances, et un objet ne peut viser que deux raretés au-dessus.",
     "newest": "Les plus récents",
     "noItemsFound": "Aucun objet trouvé",
     "oldest": "Les plus anciens",

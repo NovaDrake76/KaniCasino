@@ -892,7 +892,7 @@
     "clearItemsCount": "Bersihkan item ({{count}})",
     "getOneItem": "Dapet satu item",
     "howItWorks": "Cara mainkan?",
-    "howItWorksBody": "Upgrade item dari gudangmu untuk mendapatkan kesempatan memperoleh item yang lebih langka. Semakin dekat tingkat kelangkaan item Anda saat ini dengan item yang diinginkan, semakin tinggi tingkat keberhasilannya.",
+    "howItWorksBody": "Tingkatkan item dari inventaris untuk peluang mendapat yang lebih langka. Makin dekat item dengan target, makin besar peluangnya, dan sebuah item hanya bisa menargetkan maksimal dua tingkat kelangkaan di atasnya.",
     "newest": "Barusan",
     "noItemsFound": "Ga ketemu",
     "oldest": "Terlama",

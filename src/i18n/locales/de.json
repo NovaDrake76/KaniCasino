@@ -892,7 +892,7 @@
     "clearItemsCount": "Gegenstände leeren ({{count}})",
     "getOneItem": "Einen Gegenstand holen",
     "howItWorks": "Wie funktioniert das?",
-    "howItWorksBody": "Verbessere Gegenstände aus deinem Inventar für die Chance auf einen selteneren. Je näher die Seltenheit deines Gegenstands an der des Wunschgegenstands liegt, desto höher die Erfolgschance.",
+    "howItWorksBody": "Verbessere Gegenstände aus deinem Inventar für die Chance auf einen selteneren. Je näher deine Gegenstände am Ziel liegen, desto besser die Chancen, und ein Gegenstand kann höchstens zwei Seltenheitsstufen höher zielen.",
     "newest": "Neueste",
     "noItemsFound": "Keine Gegenstände gefunden",
     "oldest": "Älteste",

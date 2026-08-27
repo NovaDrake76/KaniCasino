@@ -892,7 +892,7 @@
     "clearItemsCount": "清空物品（{{count}}）",
     "getOneItem": "获得一件物品",
     "howItWorks": "怎么玩？",
-    "howItWorksBody": "用背包里的物品进行升级，有机会换到更稀有的物品。你当前物品的稀有度越接近目标物品，成功率就越高。",
+    "howItWorksBody": "升级背包里的物品，有机会换到更稀有的。物品与目标越接近，成功率越高，且只能瞄准比自身高两级以内的稀有度。",
     "newest": "最新",
     "noItemsFound": "未找到物品",
     "oldest": "最早",

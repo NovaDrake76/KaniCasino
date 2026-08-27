@@ -1,4 +1,10 @@
-const { calculateSuccessRate, UPGRADE_RTP_BY_RARITY, UPGRADE_CEILING } = require("../../games/upgrade");
+const {
+  calculateSuccessRate,
+  UPGRADE_RTP_BY_RARITY,
+  UPGRADE_CEILING,
+  UPGRADE_MAX_RARITY_GAP,
+  verifyRarityGap,
+} = require("../../games/upgrade");
 const { RARITY_MULTIPLIER } = require("../../utils/itemValue");
 
 // within a case an item's value is A * RARITY_MULTIPLIER[rarity], so a rarity is worth its
@@ -116,5 +122,48 @@ describe("what a legendary costs to upgrade into", () => {
     expect(UPGRADE_RTP_BY_RARITY["2"]).toBe(0.9);
     expect(UPGRADE_RTP_BY_RARITY["3"]).toBe(0.85);
     expect(UPGRADE_RTP_BY_RARITY["4"]).toBe(0.75);
+  });
+});
+
+// A pile of commons used to be a legitimate run at a legendary, and forty blues bought the
+// 12% ceiling outright. That made the rarest items a grind rather than a milestone, so an
+// item may now only be staked at something within two rarities of itself.
+describe("how far above its own rarity an item may be staked", () => {
+  const at = (source, target) => verifyRarityGap([{ rarity: String(source) }], { rarity: String(target) });
+
+  it("stops commons and blues being aimed at a legendary", () => {
+    expect(at(1, 5)).toEqual({ ok: false, reason: "gap" });
+    expect(at(2, 5)).toEqual({ ok: false, reason: "gap" });
+  });
+
+  it("lets a legendary be fed the two tiers below it, which have to be earned first", () => {
+    expect(at(3, 5)).toEqual({ ok: true });
+    expect(at(4, 5)).toEqual({ ok: true });
+    expect(at(5, 5)).toEqual({ ok: true });
+  });
+
+  it("still refuses to upgrade downwards, and says which mistake it was", () => {
+    expect(at(5, 3)).toEqual({ ok: false, reason: "lesser" });
+    expect(at(4, 1)).toEqual({ ok: false, reason: "lesser" });
+  });
+
+  it("holds for every pair, not just the ones around legendary", () => {
+    for (const source of RARITIES) {
+      for (const target of RARITIES) {
+        const expected =
+          source > target ? "lesser" : target - source > UPGRADE_MAX_RARITY_GAP ? "gap" : null;
+        expect(at(source, target).reason || null).toBe(expected);
+      }
+    }
+  });
+
+  // one bad item in a pile of good ones has to fail the whole stake
+  it("judges the worst item in the stake, not the best", () => {
+    const stack = [{ rarity: "3" }, { rarity: "4" }, { rarity: "1" }];
+    expect(verifyRarityGap(stack, { rarity: "5" })).toEqual({ ok: false, reason: "gap" });
+  });
+
+  it("is two", () => {
+    expect(UPGRADE_MAX_RARITY_GAP).toBe(2);
   });
 });
