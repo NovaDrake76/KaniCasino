@@ -803,6 +803,10 @@ router.get("/inventory/:userId", async (req, res) => {
 
     // guard optional filters so malformed input can't throw
     const caseFilter = caseId && ObjectId.isValid(caseId) ? new ObjectId(caseId) : null;
+    // the upgrade screen asks for the set of rarities a stake may legally come from, so a
+    // comma list is accepted alongside the single value every other screen sends
+    const rarityList = String(rarity || "").split(",").map((r) => r.trim()).filter(Boolean);
+    const rarityMatch = rarityList.length ? { "inventory.rarity": { $in: rarityList } } : null;
     const nameRegex = name
       ? new RegExp(String(name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
       : null;
@@ -828,8 +832,8 @@ router.get("/inventory/:userId", async (req, res) => {
     if (idFilter) {
       countPipeline.push({ $match: { "inventory._id": { $in: idFilter } } });
     }
-    if (rarity) {
-      countPipeline.push({ $match: { "inventory.rarity": rarity } });
+    if (rarityMatch) {
+      countPipeline.push({ $match: rarityMatch });
     }
 
     // grouped mode stacks duplicates into one row, so a page is a page of distinct
@@ -857,8 +861,8 @@ router.get("/inventory/:userId", async (req, res) => {
     if (idFilter) {
       pipeline.push({ $match: { "inventory._id": { $in: idFilter } } });
     }
-    if (rarity) {
-      pipeline.push({ $match: { "inventory.rarity": rarity } });
+    if (rarityMatch) {
+      pipeline.push({ $match: rarityMatch });
     }
 
     // only known sort keys: an arbitrary one would be interpolated into the sort

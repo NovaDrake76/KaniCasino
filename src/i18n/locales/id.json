@@ -896,6 +896,8 @@
     "newest": "Barusan",
     "noItemsFound": "Ga ketemu",
     "oldest": "Terlama",
+    "onlyWhatFits": "Hanya item yang bisa kamu pakai untuk upgrade ini.",
+    "onlyWhatYouReach": "Hanya item yang bisa dicapai oleh pilihanmu.",
     "rarity": "Kelangkaan",
     "rarityHighToLow": "Langka ke B aja",
     "rarityLowToHigh": "B aja ke Langka",

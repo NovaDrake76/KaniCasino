@@ -896,6 +896,8 @@
     "newest": "Mais novos",
     "noItemsFound": "Nenhum item encontrado",
     "oldest": "Mais antigos",
+    "onlyWhatFits": "Apenas itens que você pode usar neste upgrade.",
+    "onlyWhatYouReach": "Apenas itens que a sua seleção consegue alcançar.",
     "rarity": "Raridade",
     "rarityHighToLow": "Raridade: da maior para a menor",
     "rarityLowToHigh": "Raridade: da menor para a maior",

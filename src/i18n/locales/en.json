@@ -896,6 +896,8 @@
     "newest": "Newest",
     "noItemsFound": "No items found",
     "oldest": "Oldest",
+    "onlyWhatFits": "Only items you can put into this upgrade.",
+    "onlyWhatYouReach": "Only items your selection can reach.",
     "rarity": "Rarity",
     "rarityHighToLow": "Rarity: high to low",
     "rarityLowToHigh": "Rarity: low to high",
