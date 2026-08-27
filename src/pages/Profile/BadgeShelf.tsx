@@ -23,6 +23,9 @@ const BadgeShelf: React.FC<BadgeShelfProps> = ({ badges, selectedBadge, isSameUs
   const [showAll, setShowAll] = useState(false);
 
   const held = badges || [];
+  // what the hint is about: earning a badge changes it and arms the hint again, nothing
+  // else does. sorted so the order the api happens to return them in cannot re-fire it.
+  const heldToken = held.map((badge) => badge.key).sort().join(",");
 
   const choose = async (key: BadgeKey) => {
     if (!isSameUser || saving) return;
@@ -79,13 +82,14 @@ const BadgeShelf: React.FC<BadgeShelfProps> = ({ badges, selectedBadge, isSameUs
             (worn ? (
               <p className="text-[11px] text-[#625F7E]">{i18n.t("badge.clearHint")}</p>
             ) : (
-              // holding a badge and wearing none is the whole trigger: putting one on is
-              // what clears it, so nothing has to record that the player was told
+              // once, on the first look at your own profile after earning one. a player
+              // who has already put one on is not shown it at all, because they know.
               <Hint
                 id="wear-badge"
                 userId={userData?.id}
                 text={i18n.t("badge.chooseHint")}
-                show
+                show={held.length > 0}
+                token={heldToken}
               />
             ))}
         </>
