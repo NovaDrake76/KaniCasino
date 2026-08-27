@@ -57,10 +57,16 @@ module.exports = {
   seen: (discordId, guildId) =>
     post("/discord/seen", { discordId, guildId }).catch(() => {}),
 
-  cases: (query, discordId) => {
+  categories: () => get("/discord/categories"),
+
+  // `category` switches the backend to a stable page of one shelf; without it this is the
+  // autocomplete list, which is ordered per player and must not be paged
+  cases: (query, discordId, page) => {
     const params = new URLSearchParams();
     if (query) params.set("q", query);
     if (discordId) params.set("discordId", discordId);
+    if (page && page.category) params.set("category", page.category);
+    if (page && page.offset) params.set("offset", String(page.offset));
     const suffix = params.toString();
     return get("/discord/cases" + (suffix ? `?${suffix}` : ""));
   },

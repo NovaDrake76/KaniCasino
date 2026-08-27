@@ -352,12 +352,70 @@ const publicCase = (one) => ({
   category: one.category || "",
 });
 
+// a case with no category is its own shelf, and an empty string cannot be a select value
+const NO_CATEGORY = "~none";
+const categoryFilter = (name) =>
+  name === NO_CATEGORY ? { $in: ["", null] } : name;
+
+// the shelves the menu opens with. one grouped pass over a collection of tens of documents,
+// behind the same price cap the case list uses, so the menu never offers what /open refuses.
+router.get("/categories", botOnly, async (req, res) => {
+  try {
+    const rows = await Case.aggregate([
+      { $match: { price: { $lte: MAX_CASE_PRICE } } },
+      {
+        $group: {
+          _id: { $ifNull: ["$category", ""] },
+          count: { $sum: 1 },
+          from: { $min: "$price" },
+        },
+      },
+      { $sort: { count: -1, _id: 1 } },
+    ]);
+    res.json({
+      categories: rows.map((row) => ({
+        name: row._id || NO_CATEGORY,
+        count: row.count,
+        from: row.from || 0,
+      })),
+    });
+  } catch (err) {
+    console.error("discord categories:", err.message);
+    res.status(500).json({ message: "Could not load the categories" });
+  }
+});
+
 // what the bot offers in autocomplete. with an empty box it leads with the cases this
 // player last opened, which is what makes opening the same one again quick to type.
+// `category` instead switches it to a stable page of one shelf, for the menu.
 router.get("/cases", botOnly, async (req, res) => {
   try {
     const search = String(req.query.q || "").trim();
+    const category = String(req.query.category || "").trim();
+    const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
     const filter = { price: { $lte: MAX_CASE_PRICE } };
+
+    // a page has to be the same slice every time it is asked for, so this path is counted
+    // and skipped in mongo and never gets the per-player reshuffle below: a list that
+    // reorders between pages shows the same case twice and hides another entirely
+    if (category) {
+      filter.category = categoryFilter(category);
+      const [page, total] = await Promise.all([
+        Case.find(filter, { title: 1, price: 1, image: 1, category: 1 })
+          .sort({ price: 1, _id: 1 })
+          .skip(offset)
+          .limit(CASE_CHOICES)
+          .lean(),
+        Case.countDocuments(filter),
+      ]);
+      return res.json({
+        cases: page.map(publicCase),
+        total,
+        offset,
+        maxPrice: MAX_CASE_PRICE,
+      });
+    }
+
     // the category is how players ask for these: not one case is called "Touhou", they are
     // Lunatic and Nuclear and The Special Package, and typing the series has to find them
     if (search) {
