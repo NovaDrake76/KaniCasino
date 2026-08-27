@@ -66,4 +66,20 @@ describe("groupCasesByCategory", () => {
   it("handles an empty list", () => {
     expect(groupCasesByCategory([])).toEqual([]);
   });
+
+  it("gives every group a slug the category bar can scroll to", () => {
+    const groups = groupCasesByCategory([c("1", "Blue Archive"), c("2", "Touhou"), c("3")]);
+    expect(groups.map((g) => g.id)).toEqual(["cases-touhou", "cases-blue-archive", "cases-other"]);
+  });
+
+  it("keeps ids unique when two category names slug the same way", () => {
+    const groups = groupCasesByCategory([c("1", "Re:Zero"), c("2", "Re Zero")]);
+    expect(new Set(groups.map((g) => g.id)).size).toBe(2);
+    expect(groups.map((g) => g.id)).toContain("cases-re-zero");
+  });
+
+  it("still produces an anchor for a category with nothing sluggable in it", () => {
+    const groups = groupCasesByCategory([c("1", "★")]);
+    expect(groups[0].id).toBe("cases-group");
+  });
 });
