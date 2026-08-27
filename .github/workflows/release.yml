@@ -6,6 +6,9 @@ name: Release
 #
 #   npm version minor -m "release: %s"   # bumps package.json and makes the v tag
 #   git push --follow-tags
+#
+# notes can also be written by hand: publish the release first, then push the tag, and
+# this step stands aside rather than failing on a release that already exists.
 on:
   push:
     tags:
@@ -26,6 +29,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # hand-written notes beat --generate-notes, so a release that is already there
+          # is left alone: the tag push must not fail just because it got there first
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "release $GITHUB_REF_NAME already exists, leaving it alone"
+            exit 0
+          fi
           gh release create "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
             --generate-notes \
