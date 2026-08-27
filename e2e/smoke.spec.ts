@@ -158,11 +158,14 @@ test("the home page fits a phone with the category bar on it", async ({ page }) 
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-// the category bar is sticky and the login panel sits in a stacking context the header pins
-// at z-20, so the modal's own z-[999] never escapes it. the bar shipped at z-30 and covered
-// the sign-in form, which is invisible in the markup and obvious on screen.
+// Three separate bugs have shipped from picking a z-index inline: the category bar over the
+// login form, the leaderboard podium over the category bar, and each fix breaking the next
+// thing. The layer order now lives in tailwind.config.js, and these two tests are what stops
+// it drifting: they assert what is actually on top at a pixel, which is the only thing a
+// player sees and the one thing the markup never says.
+//
 // the poll is not padding: the header wrapper uses transition-all, which animates z-index
-// itself (-10 -> 20 over 300ms), so the modal only wins once that has settled.
+// itself (-10 -> 40 over 300ms), so the modal only wins once that has settled.
 test("the login modal ends up above the category bar, not under it", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
@@ -185,6 +188,41 @@ test("the login modal ends up above the category bar, not under it", async ({ pa
       )
     )
     .toBe(false);
+});
+
+// the leaderboard avatars are drawn round and lifted, and at z-50 they rode over the sticky
+// bar as the page scrolled past them
+test("page content scrolls under the category bar, never over it", async ({ page }) => {
+  await page.route("**/topPlayers**", (route) =>
+    route.fulfill({
+      json: [1, 2, 3].map((i) => ({
+        _id: `p${i}`, username: `player-${i}`, level: 10 * i,
+        profilePicture: IMG, weeklyWinnings: 1000 * i,
+      })),
+    })
+  );
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/");
+
+  const bar = page.getByRole("navigation", { name: "Case categories" });
+  await expect(page.getByText("player-1")).toBeVisible();
+
+  // walk the page past the podium; at every step the bar has to own its own pixels
+  for (const y of [400, 700, 1000, 1300, 1600, 1900]) {
+    await page.evaluate((to) => window.scrollTo(0, to), y);
+    const box = (await bar.boundingBox()) as { x: number; y: number; height: number } | null;
+    if (!box) continue;
+    const owner = await page.evaluate(
+      ([x, py]) => {
+        const el = document.elementFromPoint(x, py);
+        if (!el) return "nothing";
+        const nav = el.closest("nav[aria-label='Case categories']");
+        return nav ? "the bar" : el.tagName + "." + String(el.className).slice(0, 40);
+      },
+      [box.x + 420, box.y + box.height / 2]
+    );
+    expect(owner, `at scrollY ${y} the bar was covered`).toBe("the bar");
+  }
 });
 
 test("a navbar link is clickable and navigates", async ({ page }) => {

@@ -6,6 +6,18 @@ module.exports = {
 
   theme: {
     extend: {
+      // one ordering for everything that can cover something else. the site has had three
+      // separate incidents from picking a number inline: the category bar over the login
+      // form, the leaderboard over the category bar, each fix breaking the next thing.
+      // put a layer here and use its name; never write a bare z-40 into a component.
+      zIndex: {
+        raised: '10',   // page content that lifts: a podium, a hovered card, a marker
+        sticky: '20',   // pinned to the viewport while the page scrolls under it
+        overlay: '40',  // header panels, menus, the login flow
+        modal: '60',
+        tooltip: '70',  // follows the cursor, so it clears everything
+      },
+
       animation: {
         'spin-fast': 'spin-fast 5s linear infinite',
         'spin-slow': 'spin-slow 2s linear infinite',

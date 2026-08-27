@@ -126,7 +126,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
           <div
             className={`absolute flex justify-end mt-16 left-[99%] transition-all duration-300 ${openUserFlow === false
               ? "opacity-0 -z-10 h-0 overflow-hidden -mt-36"
-              : "opacity-100 z-20 "
+              : "opacity-100 z-overlay "
               }`}
           >
             {/* only built once the panel has been opened. it was always mounted and merely
