@@ -158,6 +158,35 @@ test("the home page fits a phone with the category bar on it", async ({ page }) 
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
+// the category bar is sticky and the login panel sits in a stacking context the header pins
+// at z-20, so the modal's own z-[999] never escapes it. the bar shipped at z-30 and covered
+// the sign-in form, which is invisible in the markup and obvious on screen.
+// the poll is not padding: the header wrapper uses transition-all, which animates z-index
+// itself (-10 -> 20 over 300ms), so the modal only wins once that has settled.
+test("the login modal ends up above the category bar, not under it", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/");
+
+  const bar = page.getByRole("navigation", { name: "Case categories" });
+  await expect(bar).toBeVisible();
+
+  await page.getByText("Sign In", { exact: true }).click();
+  await expect(page.getByPlaceholder("Email address")).toBeVisible();
+
+  const box = (await bar.boundingBox()) as { x: number; y: number };
+  await expect
+    .poll(() =>
+      page.evaluate(
+        ([x, y]) => {
+          const el = document.elementFromPoint(x, y);
+          return !!el && el.closest("nav[aria-label='Case categories']") !== null;
+        },
+        [box.x + 200, box.y + 10]
+      )
+    )
+    .toBe(false);
+});
+
 test("a navbar link is clickable and navigates", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Market" }).first().click();
