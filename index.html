@@ -3,33 +3,6 @@
 
 <head>
 
-  <!-- a deploy replaces the hashed bundles, and cloudflare edge-caches this file for five
-       minutes, so for that window a browser can be handed an html shell that asks for
-       bundles the new build has already deleted. render answers a missing /assets/ path
-       with a redirect to "/", the browser refuses html where it wanted javascript, and the
-       page never boots: a white screen that lasts until the edge copy expires. the retry
-       below reloads once past the cache and lands on the shell that matches what is
-       deployed. the flag makes it once per tab, so a failure that is not this cannot loop. -->
-  <script>
-    (function () {
-      var KEY = "shellRetry";
-      window.addEventListener("error", function (event) {
-        var el = event.target;
-        if (!el || (el.tagName !== "SCRIPT" && el.tagName !== "LINK")) return;
-        if (String(el.src || el.href || "").indexOf("/assets/") === -1) return;
-        try {
-          if (sessionStorage.getItem(KEY)) return;
-          sessionStorage.setItem(KEY, "1");
-        } catch (e) {
-          return;
-        }
-        var url = new URL(location.href);
-        url.searchParams.set("r", Date.now());
-        location.replace(url.toString());
-      }, true);
-    })();
-  </script>
-
   <!-- analytics and ads, started once the page has finished loading rather than racing it.
        between them they are ~380 KiB of javascript that nothing on screen needs: in the
        head they competed with the app's own bundle and the case art for a phone's
