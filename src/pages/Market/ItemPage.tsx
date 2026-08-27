@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   getItemListings,
@@ -62,6 +62,7 @@ const Stat: React.FC<{ label: string; value: React.ReactNode; hint?: string; acc
 
 const ItemPage: React.FC = () => {
   const { itemId } = useParams<{ itemId: string }>();
+  const navigate = useNavigate();
   const [items, setItems] = useState<ItemData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
@@ -78,6 +79,9 @@ const ItemPage: React.FC = () => {
   const [range, setRange] = useState<string>("week");
   const [book, setBook] = useState<{ price: number; quantity: number }[]>([]);
   const [myOrders, setMyOrders] = useState<BuyOrder[]>([]);
+  // the url may carry a slug, so the id to compare against comes from the payload
+  const resolvedId = (items as any)?.itemId as string | undefined;
+  const canonical = (items as any)?.slug as string | undefined;
 
   const fetchItemListings = useCallback(async () => {
     setLoading(true);
@@ -112,11 +116,16 @@ const ItemPage: React.FC = () => {
     // my orders only exist when logged in; a failure here is not an error state
     try {
       const mine = await getMyOrders();
-      setMyOrders((mine.orders || []).filter((o) => String(o.item) === String(itemId)));
+      setMyOrders((mine.orders || []).filter((o) => String(o.item) === String(resolvedId ?? itemId)));
     } catch {
       setMyOrders([]);
     }
-  }, [itemId, range]);
+  }, [itemId, range, resolvedId]);
+
+  useEffect(() => {
+    if (!canonical || !itemId || itemId === canonical) return;
+    navigate(`/marketplace/item/${canonical}`, { replace: true });
+  }, [canonical, itemId]);
 
   useEffect(() => {
     if (refresh) {

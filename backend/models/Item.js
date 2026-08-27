@@ -10,6 +10,10 @@ const ItemSchema = new mongoose.Schema({
     maxlength: 200,
   },
   image: String,
+  // the shelf url. minted from the name and never rewritten, so a link keeps working.
+  slug: {
+    type: String,
+  },
   rarity: {
     type: String,
     required: true,
@@ -50,5 +54,7 @@ const WRITE_HOOKS = [
   "deleteMany",
 ];
 for (const hook of WRITE_HOOKS) ItemSchema.post(hook, invalidateCatalog);
+
+ItemSchema.index({ slug: 1 }, { unique: true, sparse: true }); // url lookup
 
 module.exports = mongoose.model("Item", ItemSchema);

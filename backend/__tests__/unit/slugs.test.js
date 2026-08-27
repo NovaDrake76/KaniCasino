@@ -1,4 +1,4 @@
-const { slugify, baseSlugFor, looksLikeId, RESERVED } = require("../../utils/slugs");
+const { slugify, baseSlugFor, qualifiedSlug, looksLikeId, RESERVED } = require("../../utils/slugs");
 
 describe("slugify", () => {
   it("folds case, accents and punctuation into one form", () => {
@@ -60,5 +60,25 @@ describe("reserved words", () => {
     for (const word of ["me", "inventory", "transactions", "badges", "notifications"]) {
       expect(RESERVED.has(word)).toBe(true);
     }
+  });
+});
+
+describe("qualifiedSlug", () => {
+  // two cases hold a character of the same name, and the case is what tells them apart
+  it("names the case when two items share a name", () => {
+    expect(qualifiedSlug("Saki", "Kivotos Case")).toBe("saki-kivotos-case");
+    expect(qualifiedSlug("Hina", "Gehenna Case")).toBe("hina-gehenna-case");
+  });
+
+  // a qualifier cut mid-word names nothing, so the caller falls back to a number
+  it("refuses a qualifier that would not fit", () => {
+    expect(
+      qualifiedSlug("Souvenir AWP | Dragon Lore", "Boston 2018 Cobblestone Souvenir Package")
+    ).toBeNull();
+  });
+
+  it("refuses to qualify when there is nothing to qualify with", () => {
+    expect(qualifiedSlug("Saki", null)).toBeNull();
+    expect(qualifiedSlug("Saki", undefined)).toBeNull();
   });
 });

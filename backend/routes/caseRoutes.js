@@ -7,6 +7,7 @@ const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const { recomputeCaseValues } = require("../utils/itemValue");
 const { TX } = require("../utils/economy");
 const { publicCache, TTL } = require("../utils/httpCache");
+const { looksLikeId, mintSlug } = require("../utils/slugs");
 
 router.get("/", async (req, res) => {
   try {
@@ -30,6 +31,7 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
     price: req.body.price,
     items: req.body.items,
     category: req.body.category,
+    slug: await mintSlug(Case, req.body.title),
   });
 
   try {
@@ -76,7 +78,10 @@ router.get("/most-opened", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const caseData = await Case.findById(req.params.id)
+    // a case is addressed by slug now; every id ever shared still resolves on this route
+    const caseData = await Case.findOne(
+      looksLikeId(req.params.id) ? { _id: req.params.id } : { slug: String(req.params.id) }
+    )
       .select("-rangeTable")
       .populate({
         path: "items",

@@ -39,6 +39,9 @@ const CasePage = () => {
 
   //get id from url
   const id = window.location.pathname.split("/")[2];
+  // the url may carry a slug, so anything that speaks to the api uses the resolved id
+  const caseId = (data as any)?._id ?? id;
+  const canonical = (data as any)?.slug as string | undefined;
 
   const getCaseInfo = async () => {
     getCase(id)
@@ -56,8 +59,8 @@ const CasePage = () => {
   // a daily-gift grant pays for this case, so the page has to know about it before the
   // open button decides whether it is charging anything
   const getGrant = () => {
-    if (!userData?.id) return setGrant(null);
-    getGrants(id)
+    if (!userData?.id || !(data as any)?._id) return setGrant(null);
+    getGrants(caseId)
       .then((gs) => setGrant(gs[0] || null))
       .catch(() => setGrant(null));
   };
@@ -68,14 +71,20 @@ const CasePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(getGrant, [userData?.id, id]);
+  useEffect(getGrant, [userData?.id, (data as any)?._id]);
+
+  // an id link becomes the slug once the case is known, so a shared link carries its name
+  useEffect(() => {
+    if (!canonical || !id || id === canonical) return;
+    navigate(`/case/${canonical}`, { replace: true });
+  }, [canonical, id]);
 
   // prerender bakes the real name into the html; PageMeta's generic /case/ entry would
   // overwrite it on hydration, so put it back once the case itself has loaded
   useEffect(() => {
     if (!data?.title) return;
     const { title, description } = caseMeta(data);
-    applyMeta(title, description, `/case/${data._id || id}`);
+    applyMeta(title, description, `/case/${(data as any).slug || data._id || id}`);
   }, [data, id]);
 
   const resetProps = () => {
@@ -136,7 +145,7 @@ const CasePage = () => {
     setLoadingButton(true);
 
     try {
-      const response = await openBox(id, quantity, freeNow ? grant?.grantId : undefined);
+      const response = await openBox(caseId, quantity, freeNow ? grant?.grantId : undefined);
       setOpenedItems(response.items);
       if (freeNow) getGrant();
     } catch (error: any) {

@@ -16,8 +16,23 @@ const market = require("../utils/market");
 const fandom = require("../utils/fandom");
 const itemCatalog = require("../utils/itemCatalog");
 const { isRealMoneyMode } = require("../utils/mode");
+const { looksLikeId } = require("../utils/slugs");
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// an item is addressed by slug now, but every id ever shared still has to resolve. a slug
+// costs one indexed lookup; an id costs nothing, which is the common case from inside the app.
+const resolveItem = async (param) => {
+  const found = await Item.findOne(
+    looksLikeId(param) ? { _id: param } : { slug: String(param) },
+    { slug: 1 }
+  ).lean();
+  return found ? { id: String(found._id), slug: found.slug || null } : null;
+};
+const resolveItemId = async (param) => {
+  const found = await resolveItem(param);
+  return found ? found.id : null;
+};
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
 // headroom over the priciest item in the game. the katowice 2014 capsules put a rarity-5
@@ -470,8 +485,8 @@ module.exports = (io) => {
   // the price-history series + everything a seller needs to price an item
   router.get("/item/:itemId/history", async (req, res) => {
     try {
-      const { itemId } = req.params;
-      if (!isValidId(itemId)) return res.status(404).json({ message: "Item not found" });
+      const itemId = await resolveItemId(req.params.itemId);
+      if (!itemId) return res.status(404).json({ message: "Item not found" });
 
       // hasOwnProperty, so ?range=toString can't match an inherited prototype key
       const asked = String(req.query.range);
@@ -537,8 +552,8 @@ module.exports = (io) => {
   // the buy-order book for an item, aggregated by price
   router.get("/item/:itemId/orders", async (req, res) => {
     try {
-      const { itemId } = req.params;
-      if (!isValidId(itemId)) return res.status(404).json({ message: "Item not found" });
+      const itemId = await resolveItemId(req.params.itemId);
+      if (!itemId) return res.status(404).json({ message: "Item not found" });
       const rows = await BuyOrder.aggregate([
         {
           $match: {
@@ -561,10 +576,11 @@ module.exports = (io) => {
   // Get listings for a specific item
   router.get("/item/:itemId", async (req, res) => {
     try {
-      const { itemId } = req.params;
-      if (!isValidId(itemId)) {
+      const found = await resolveItem(req.params.itemId);
+      if (!found) {
         return res.status(404).json({ message: "Item not found" });
       }
+      const itemId = found.id;
 
       const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
       const limit = Math.min(Math.max(1, Math.floor(Number(req.query.limit)) || 30), 100);
@@ -579,6 +595,8 @@ module.exports = (io) => {
         .limit(limit);
 
       res.json({
+        itemId,
+        slug: found.slug,
         totalPages: Math.ceil(total / limit),
         currentPage: page,
         items,

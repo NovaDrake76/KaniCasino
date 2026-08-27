@@ -6,6 +6,10 @@ const CaseSchema = new mongoose.Schema({
     required: true,
   },
   image: String,
+  // the shelf url. minted from the title and never rewritten, so a link keeps working.
+  slug: {
+    type: String,
+  },
   price: {
     type: Number,
     required: true,
@@ -47,5 +51,7 @@ const CaseSchema = new mongoose.Schema({
     },
   ],
 });
+
+CaseSchema.index({ slug: 1 }, { unique: true, sparse: true }); // url lookup
 
 module.exports = mongoose.model("Case", CaseSchema);
