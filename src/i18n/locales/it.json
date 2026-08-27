@@ -892,7 +892,7 @@
     "clearItemsCount": "Svuota oggetti ({{count}})",
     "getOneItem": "Ottieni un oggetto",
     "howItWorks": "Come funziona?",
-    "howItWorksBody": "Migliora oggetti del tuo inventario per provare a ottenerne uno più raro. Più la rarità del tuo oggetto è vicina a quella desiderata, più alta è la probabilità di riuscita.",
+    "howItWorksBody": "Migliora oggetti dal tuo inventario per avere una possibilità di uno più raro. Più i tuoi oggetti sono vicini al bersaglio, migliori sono le probabilità, e un oggetto può puntare al massimo due rarità sopra la propria.",
     "newest": "Più recenti",
     "noItemsFound": "Nessun oggetto trovato",
     "oldest": "Più vecchi",

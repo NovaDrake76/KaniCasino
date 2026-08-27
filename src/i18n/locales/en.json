@@ -892,7 +892,7 @@
     "clearItemsCount": "Clear Items ({{count}})",
     "getOneItem": "Get one Item",
     "howItWorks": "How it works?",
-    "howItWorksBody": "Upgrade items from your inventory for a chance to get a more rare one. The closer the rarity of your current item to the desired item, the higher the success rate.",
+    "howItWorksBody": "Upgrade items from your inventory for a chance at a rarer one. The closer your items are to the target, the better the odds, and an item can only be aimed at something within two rarities of itself.",
     "newest": "Newest",
     "noItemsFound": "No items found",
     "oldest": "Oldest",
