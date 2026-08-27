@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "지금 다들 열고 있는 것.",
     "winnings": "획득액"
   },
+  "liveStats": {
+    "empty": "한 판 플레이하면 채워집니다. 이 탭에서만 유지됩니다.",
+    "hide": "숨기기",
+    "losses": "패",
+    "profit": "수익",
+    "reset": "초기화",
+    "title": "실시간 통계",
+    "wagered": "베팅액",
+    "wins": "승"
+  },
   "market": {
     "allRarities": "모든 등급",
     "anythingAlreadyListedAt": "입찰가 이하로 이미 올라와 있는 물량은 즉시 구매됩니다(지출되며 환불되지 않습니다). 체결되지 않은 나머지만 보증금으로 잡혀 있다가 취소 시 환불됩니다.",

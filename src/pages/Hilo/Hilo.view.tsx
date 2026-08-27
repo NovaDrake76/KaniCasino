@@ -8,6 +8,8 @@ import { isRedSuit, rankLabel, suitOf } from "../Blackjack/blackjackCards";
 import { pct } from "./hiloCards";
 import { HiloViewProps } from "./Hilo.types";
 import i18n from "../../i18n";
+import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
+import GameBar from "../../components/game/GameBar";
 
 const CardChip = ({ card, label }: { card: number; label?: string }) => (
   <div className="flex flex-col items-center gap-1 shrink-0">
@@ -43,6 +45,11 @@ const HiloView: React.FC<HiloViewProps> = ({
 
   return (
     <GameLayout
+      bar={
+        <GameBar>
+          <LiveStatsButton />
+        </GameBar>
+      }
       title={i18n.t("hilo.hilo")}
       footer={
         <p className="text-ink-muted text-xs max-w-[640px] text-center">

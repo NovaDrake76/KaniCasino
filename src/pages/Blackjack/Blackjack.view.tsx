@@ -8,6 +8,8 @@ import PlayingCard from "./PlayingCard";
 import { outcomeLabel, totalLabel } from "./blackjackCards";
 import { BlackjackViewProps } from "./Blackjack.types";
 import i18n from "../../i18n";
+import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
+import GameBar from "../../components/game/GameBar";
 
 const OUTCOME_TEXT: Record<string, string> = {
   blackjack: "text-[#FFCC00]",
@@ -175,6 +177,11 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
 
   return (
     <GameLayout
+      bar={
+        <GameBar>
+          <LiveStatsButton />
+        </GameBar>
+      }
       title={i18n.t("blackjack.blackjack")}
       footer={
         <button

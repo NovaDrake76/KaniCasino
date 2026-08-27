@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "Was gerade alle öffnen.",
     "winnings": "Gewinne"
   },
+  "liveStats": {
+    "empty": "Spiele eine Runde und das füllt sich. Gilt nur für diesen Tab.",
+    "hide": "Ausblenden",
+    "losses": "Niederlagen",
+    "profit": "Gewinn",
+    "reset": "Zurücksetzen",
+    "title": "Live-Statistik",
+    "wagered": "Eingesetzt",
+    "wins": "Siege"
+  },
   "market": {
     "allRarities": "Alle Seltenheiten",
     "anythingAlreadyListedAt": "Alles, was schon zu deinem Gebot oder darunter angeboten wird, wird sofort gekauft (ausgegeben, nicht erstattbar). Nur der offene Rest wird als Sicherheit gehalten und bei Stornierung erstattet.",

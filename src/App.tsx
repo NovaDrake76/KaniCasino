@@ -24,6 +24,7 @@ const AppRoutes = lazy(() => import("./Routes"));
 const environment = import.meta.env.VITE_NODE_ENV || "";
 import { User } from './components/Types'
 import i18n from "./i18n";
+import { SessionStatsProvider } from "./stats/SessionStatsContext";
 
 interface userDataSocketProps {
   walletBalance: number;
@@ -217,6 +218,7 @@ function App() {
           toogleUserFlow
         }}
       >
+        <SessionStatsProvider>
         <Suspense fallback={<BootLoader />}>
             <Router>
               <SkeletonTheme highlightColor="#161427" baseColor="#1c1a31">
@@ -247,6 +249,7 @@ function App() {
               </SkeletonTheme>
             </Router>
         </Suspense>
+        </SessionStatsProvider>
 
       </UserContext.Provider>
     </div>

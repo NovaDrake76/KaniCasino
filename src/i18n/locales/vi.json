@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "Mọi người đang mở gì lúc này.",
     "winnings": "Tiền thắng"
   },
+  "liveStats": {
+    "empty": "Chơi một ván và bảng này sẽ hiện. Chỉ lưu trong tab này.",
+    "hide": "Ẩn",
+    "losses": "Thua",
+    "profit": "Lợi nhuận",
+    "reset": "Đặt lại",
+    "title": "Thống kê trực tiếp",
+    "wagered": "Đã cược",
+    "wins": "Thắng"
+  },
   "market": {
     "allRarities": "Mọi độ hiếm",
     "anythingAlreadyListedAt": "Phần nào đang rao bán bằng hoặc thấp hơn giá bạn đặt sẽ được mua ngay (đã chi, không hoàn lại). Chỉ phần chưa khớp mới được giữ làm ký quỹ và hoàn lại nếu bạn huỷ.",

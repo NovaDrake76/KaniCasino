@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "Lo que todo el mundo está abriendo ahora.",
     "winnings": "Ganancias"
   },
+  "liveStats": {
+    "empty": "Juega una ronda y esto se llena. Solo se guarda en esta pestaña.",
+    "hide": "Ocultar",
+    "losses": "Derrotas",
+    "profit": "Beneficio",
+    "reset": "Reiniciar",
+    "title": "Estadísticas en vivo",
+    "wagered": "Apostado",
+    "wins": "Victorias"
+  },
   "market": {
     "allRarities": "Todas las rarezas",
     "anythingAlreadyListedAt": "Todo lo que ya esté a la venta por tu puja o menos se compra al instante (gastado, sin reembolso). Solo el resto sin cubrir queda retenido y se devuelve si cancelas.",

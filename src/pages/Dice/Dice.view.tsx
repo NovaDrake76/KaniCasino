@@ -7,6 +7,8 @@ import Monetary from "../../components/Monetary";
 import { AUTO_COUNTS } from "./Dice.services";
 import { DiceViewProps } from "./Dice.types";
 import i18n from "../../i18n";
+import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
+import GameBar from "../../components/game/GameBar";
 
 const TICKS = [0, 25, 50, 75, 100];
 const GREEN = "#22C55E";
@@ -54,6 +56,11 @@ const DiceView: React.FC<DiceViewProps> = ({
 
   return (
     <GameLayout
+      bar={
+        <GameBar>
+          <LiveStatsButton />
+        </GameBar>
+      }
       title={i18n.t("dice.dice")}
       footer={
         <p className="text-ink-muted text-xs max-w-[640px] text-center">
