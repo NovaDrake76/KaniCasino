@@ -14,20 +14,26 @@ const ShowPrize: React.FC<ShowPrizeProps> = ({ openedItems, showPrize, animation
     // the whole reel and is the thing the player actually came to look at
     const many = openedItems.length > 1;
 
+    // the reel is md:w-[1100px] but it is a flex item between two decorative arrows, so on a
+    // 1366 screen it shrinks to about 980 and five fixed 192px prizes no longer fit. they
+    // share the row instead, capped at the size they used to be, so the fifth stops wrapping
+    // onto a second line and taking a scrollbar with it
+    const slot = many ? "md:min-w-0 md:flex-1 md:max-w-[12rem]" : "";
+
     return (
-        <div className="flex w-full flex-wrap items-center justify-center gap-3 overflow-y-auto px-2 md:gap-8 md:px-0">
+        <div className="flex w-full flex-wrap items-center justify-center gap-3 overflow-y-auto px-2 md:flex-nowrap md:gap-8 md:px-0">
             {
                 openedItems.map((openedItem, index) => {
                     const rarity = Rarities.find((r) => r.id == openedItem.rarity);
 
                     return (
-                        <div key={index} id="prize" className={`animate-fade-in relative flex `}>
-                            <div className="flex flex-col gap-2 items-center">
+                        <div key={index} id="prize" className={`animate-fade-in relative flex ${slot}`}>
+                            <div className={`flex flex-col gap-2 items-center ${many ? "w-full" : ""}`}>
                                 <img
                                     src={openedItem.image}
                                     alt={openedItem.name}
-                                    className={`object-contain rounded md:w-48 md:h-48 ${showPrize ? "opacity-100" : "opacity-0"} 
-                                ${many ? "notched w-20 h-20" : "w-40 h-40"} `}
+                                    className={`object-contain rounded ${showPrize ? "opacity-100" : "opacity-0"} 
+                                ${many ? "notched w-20 h-20 md:h-auto md:w-full md:aspect-square" : "w-40 h-40 md:h-48 md:w-48"} `}
                                     style={{
                                         background: many && rarity?.color || "none"
                                     }}
@@ -37,7 +43,7 @@ const ShowPrize: React.FC<ShowPrizeProps> = ({ openedItems, showPrize, animation
                                 <span
                                     className={
                                         many
-                                            ? "max-w-[5rem] truncate text-xs md:max-w-none md:text-base"
+                                            ? "max-w-[5rem] truncate text-xs md:max-w-full md:text-base"
                                             : "text-base font-semibold md:hidden"
                                     }
                                 >
