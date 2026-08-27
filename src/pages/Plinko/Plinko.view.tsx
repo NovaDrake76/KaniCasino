@@ -31,6 +31,8 @@ import {
 import { AUTO_COUNTS } from "./Plinko.services";
 import { PlinkoBall, PlinkoViewProps } from "./Plinko.types";
 import i18n from "../../i18n";
+import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
+import GameBar from "../../components/game/GameBar";
 
 const PEG_ROWS = pegRows();
 
@@ -125,6 +127,11 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   openRoll,
 }) => (
   <GameLayout
+      bar={
+        <GameBar>
+          <LiveStatsButton />
+        </GameBar>
+      }
     title={i18n.t("nav.plinko")}
     panel={
       <>

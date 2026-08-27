@@ -8,6 +8,8 @@ import { AUTO_COUNTS } from "./Mines.services";
 import { TILES, mineOptions } from "./minesGrid";
 import { MinesViewProps } from "./Mines.types";
 import i18n from "../../i18n";
+import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
+import GameBar from "../../components/game/GameBar";
 
 const Diamond = () => (
   <svg viewBox="0 0 24 24" className="w-3/5 h-3/5 drop-shadow">
@@ -82,6 +84,11 @@ const MinesView: React.FC<MinesViewProps> = ({
 
   return (
     <GameLayout
+      bar={
+        <GameBar>
+          <LiveStatsButton />
+        </GameBar>
+      }
       title={i18n.t("mines.mines")}
       footer={
         <p className="text-ink-muted text-xs max-w-[640px] text-center">

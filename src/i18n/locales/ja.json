@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "いまみんなが開けているもの。",
     "winnings": "獲得額"
   },
+  "liveStats": {
+    "empty": "1回プレイすると表示されます。このタブでのみ保持されます。",
+    "hide": "隠す",
+    "losses": "負け",
+    "profit": "損益",
+    "reset": "リセット",
+    "title": "ライブ統計",
+    "wagered": "賭け金",
+    "wins": "勝ち"
+  },
   "market": {
     "allRarities": "すべてのレアリティ",
     "anythingAlreadyListedAt": "あなたの提示額以下ですでに出品されている分はその場で購入されます（支払い済みで返金されません）。約定しなかった残りだけが担保として預かられ、キャンセル時に返金されます。",

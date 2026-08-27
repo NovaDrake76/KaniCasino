@@ -15,6 +15,7 @@ import {
 } from "./diceControls";
 import { DiceHistoryEntry, DiceRollResult } from "./Dice.types";
 import i18n from "../../i18n";
+import { useSessionStats } from "../../stats/SessionStatsContext";
 
 const DEFAULT_BET = 10;
 const DEFAULT_TARGET = 5050; // over 50.50 -> 2.0000x, the classic starting point
@@ -24,6 +25,7 @@ export const AUTO_COUNTS = [10, 25, 50, 100];
 
 export const useDiceServices = () => {
   const { userData, toogleUserFlow } = useContext(UserContext);
+  const { track } = useSessionStats();
   const navigate = useNavigate();
 
   const [betInput, setBetInput] = useState<string>(String(DEFAULT_BET));
@@ -101,6 +103,7 @@ export const useDiceServices = () => {
     setRolling(true);
     try {
       const result: DiceRollResult = await rollDice(betValue, target, direction);
+      track({ game: "dice", wagered: betValue, payout: result.payout || 0 });
       rollSeq.current += 1;
       setLast(result);
       setHistory((h) =>

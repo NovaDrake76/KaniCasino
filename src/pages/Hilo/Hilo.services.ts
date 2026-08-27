@@ -12,12 +12,14 @@ import {
 import { MAX_BET, MIN_BET } from "./hiloCards";
 import { HiloGameState } from "./Hilo.types";
 import i18n from "../../i18n";
+import { useSessionStats } from "../../stats/SessionStatsContext";
 
 const DEFAULT_BET = 10;
 const HISTORY_SIZE = 10;
 
 export const useHiloServices = () => {
   const { userData, toogleUserFlow } = useContext(UserContext);
+  const { track } = useSessionStats();
   const navigate = useNavigate();
 
   const [betInput, setBetInput] = useState<string>(String(DEFAULT_BET));
@@ -45,6 +47,7 @@ export const useHiloServices = () => {
   }, [userData]);
 
   const recordEnd = (g: HiloGameState) => {
+    track({ game: "hilo", wagered: g.betAmount, payout: g.payout || 0 });
     seq.current += 1;
     setHistory((h) =>
       [{ key: `h${seq.current}`, won: g.status === "cashed", multiplier: g.multiplier, payout: g.payout, rollId: g.rollId }, ...h].slice(0, HISTORY_SIZE)

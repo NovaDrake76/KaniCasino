@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "看看大家现在都在开什么。",
     "winnings": "奖金"
   },
+  "liveStats": {
+    "empty": "玩一局后就会显示。仅在本标签页中保留。",
+    "hide": "隐藏",
+    "losses": "负",
+    "profit": "盈亏",
+    "reset": "重置",
+    "title": "实时统计",
+    "wagered": "投注额",
+    "wins": "胜"
+  },
   "market": {
     "allRarities": "全部稀有度",
     "anythingAlreadyListedAt": "凡是已挂单且价格不高于你出价的部分会立即成交（已花费，不可退还）。只有未成交的剩余部分会作为保证金冻结，取消时全额退还。",

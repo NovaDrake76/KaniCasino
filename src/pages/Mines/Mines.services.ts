@@ -11,6 +11,7 @@ import {
 import { MAX_BET, MIN_BET, MIN_MINES, TILES, gemsFor, payoutFor } from "./minesGrid";
 import { MinesGameState } from "./Mines.types";
 import i18n from "../../i18n";
+import { useSessionStats } from "../../stats/SessionStatsContext";
 
 const DEFAULT_BET = 10;
 const DEFAULT_MINES = 3;
@@ -22,6 +23,7 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export const useMinesServices = () => {
   const { userData, toogleUserFlow } = useContext(UserContext);
+  const { track } = useSessionStats();
   const navigate = useNavigate();
 
   const [betInput, setBetInput] = useState<string>(String(DEFAULT_BET));
@@ -60,6 +62,7 @@ export const useMinesServices = () => {
   }, [userData]);
 
   const recordEnd = (g: MinesGameState) => {
+    track({ game: "mines", wagered: g.betAmount, payout: g.payout || 0 });
     seq.current += 1;
     setHistory((h) =>
       [{ key: `m${seq.current}`, won: g.status === "cashed", multiplier: g.multiplier, payout: g.payout, rollId: g.rollId }, ...h].slice(0, HISTORY_SIZE)

@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "Cosa stanno aprendo tutti in questo momento.",
     "winnings": "Vincite"
   },
+  "liveStats": {
+    "empty": "Gioca un round e si riempie. Conservato solo in questa scheda.",
+    "hide": "Nascondi",
+    "losses": "Sconfitte",
+    "profit": "Profitto",
+    "reset": "Azzera",
+    "title": "Statistiche live",
+    "wagered": "Puntato",
+    "wins": "Vittorie"
+  },
   "market": {
     "allRarities": "Tutte le rarità",
     "anythingAlreadyListedAt": "Tutto ciò che è già in vendita al tuo prezzo o meno viene comprato subito (speso, non rimborsabile). Solo la parte non coperta resta a garanzia e viene rimborsata se annulli.",

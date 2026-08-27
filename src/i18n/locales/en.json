@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "What everyone is opening right now.",
     "winnings": "Winnings"
   },
+  "liveStats": {
+    "empty": "Play a round and it fills in. Kept for this tab only.",
+    "hide": "Hide",
+    "losses": "Losses",
+    "profit": "Profit",
+    "reset": "Reset",
+    "title": "Live stats",
+    "wagered": "Wagered",
+    "wins": "Wins"
+  },
   "market": {
     "allRarities": "All rarities",
     "anythingAlreadyListedAt": "Anything already listed at or below your bid is bought immediately (spent, not refundable). Only the unfilled rest is held as escrow and refunded if you cancel.",

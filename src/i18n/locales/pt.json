@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "O que todo mundo está abrindo agora.",
     "winnings": "Ganhos"
   },
+  "liveStats": {
+    "empty": "Jogue uma rodada e isto se preenche. Guardado só nesta aba.",
+    "hide": "Esconder",
+    "losses": "Derrotas",
+    "profit": "Lucro",
+    "reset": "Zerar",
+    "title": "Estatísticas ao vivo",
+    "wagered": "Apostado",
+    "wins": "Vitórias"
+  },
   "market": {
     "allRarities": "Todas as raridades",
     "anythingAlreadyListedAt": "Tudo o que já estiver anunciado por até o seu lance é comprado na hora (gasto, sem reembolso). Só o restante não preenchido fica como garantia e é devolvido se você cancelar.",

@@ -13,6 +13,7 @@ import {
 } from "../../services/games/GamesServices";
 import { BlackjackHandState, BlackjackHistoryEntry, BlackjackPhase } from "./Blackjack.types";
 import i18n from "../../i18n";
+import { useSessionStats } from "../../stats/SessionStatsContext";
 
 const DEFAULT_BET = 10;
 export const MIN_BET = 1;
@@ -25,6 +26,8 @@ const RESULT_MS = 500;
 
 export const useBlackjackServices = () => {
   const { userData, toogleUserFlow } = useContext(UserContext);
+  const { track } = useSessionStats();
+  const trackedHand = useRef<string | null>(null);
   const navigate = useNavigate();
 
   const [betInput, setBetInput] = useState<string>(String(DEFAULT_BET));
@@ -48,6 +51,15 @@ export const useBlackjackServices = () => {
   };
 
   const pushHistory = (settled: BlackjackHandState) => {
+    // refresh() replays a settled hand on mount and on the 409 resync, so the hand id is
+    // what decides whether this one has already been counted
+    if (trackedHand.current !== settled.handId) {
+      trackedHand.current = settled.handId;
+      // doubling doubles the hand's own bet and a split makes two of them, so the stake
+      // is the sum of the hands plus whatever insurance cost
+      const staked = settled.hands.reduce((sum, h) => sum + (h.bet || 0), 0) + (settled.insuranceBet || 0);
+      track({ game: "blackjack", wagered: staked, payout: settled.totalPayout || 0 });
+    }
     setHistory((h) =>
       [
         {

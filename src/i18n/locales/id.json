@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "Apa yang sedang dibuka oleh semua orang saat ini.",
     "winnings": "Kemenangan"
   },
+  "liveStats": {
+    "empty": "Mainkan satu ronde dan ini akan terisi. Hanya disimpan di tab ini.",
+    "hide": "Sembunyikan",
+    "losses": "Kalah",
+    "profit": "Untung",
+    "reset": "Atur ulang",
+    "title": "Statistik langsung",
+    "wagered": "Dipertaruhkan",
+    "wins": "Menang"
+  },
   "market": {
     "allRarities": "Semua kelangkaan",
     "anythingAlreadyListedAt": "Apa pun yang sudah terdaftar dengan harga yang sama atau lebih rendah dari penawaran Anda akan langsung dibeli (dibelanjakan, tidak dapat dikembalikan). Hanya sisa yang belum terpenuhi yang akan ditahan sebagai dana jaminan dan dikembalikan jika Anda membatalkan pesanan.",

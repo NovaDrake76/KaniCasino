@@ -626,6 +626,16 @@
     "whatEveryoneIsOpening": "Ce que tout le monde ouvre en ce moment.",
     "winnings": "Gains"
   },
+  "liveStats": {
+    "empty": "Jouez une manche et ceci se remplit. Conservé pour cet onglet uniquement.",
+    "hide": "Masquer",
+    "losses": "Défaites",
+    "profit": "Bénéfice",
+    "reset": "Réinitialiser",
+    "title": "Stats en direct",
+    "wagered": "Misé",
+    "wins": "Victoires"
+  },
   "market": {
     "allRarities": "Toutes les raretés",
     "anythingAlreadyListedAt": "Tout ce qui est déjà en vente à votre prix ou en dessous est acheté immédiatement (dépensé, non remboursable). Seul le reste non servi est conservé en garantie et remboursé si vous annulez.",

@@ -9,6 +9,9 @@ import bigwin from "/bigwin.mp3"
 import ValueViewer from './ValueViewer';
 import UserContext from '../../UserContext';
 import i18n from "../../i18n";
+import { useSessionStats } from "../../stats/SessionStatsContext";
+import GameBar from "../../components/game/GameBar";
+import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
 // import { RotatingLines } from "react-loader-spinner";
 
 const renderPlaceholder = () => {
@@ -28,6 +31,7 @@ const Slots = () => {
     const [loadedImages, setLoadedImages] = useState<number>(0);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const { userData, toogleUserFlow } = useContext(UserContext);
+    const { track } = useSessionStats();
 
     const startAudio = () => {
         setTimeout(() => {
@@ -101,6 +105,8 @@ const Slots = () => {
 
             setTimeout(() => {
                 setIsSpinning(false);
+                // only once the reels have stopped, or the panel reads out the spin early
+                track({ game: "slots", wagered: betAmount, payout: response.totalPayout || 0 });
             }, 3000);
         } catch (e: any) {
             console.error(e.response?.data.message || "Error spinning slots");
@@ -191,6 +197,9 @@ const Slots = () => {
                     </div>
                 </div>
 
+                <GameBar>
+                    <LiveStatsButton />
+                </GameBar>
             </div >
         </div>
 
