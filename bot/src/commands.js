@@ -2,6 +2,7 @@ const { SlashCommandBuilder, MessageFlags, ContainerBuilder, TextDisplayBuilder 
 const api = require("./api");
 const { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, SITE } = require("./embeds");
 const { buildStrip, spinningFrame, revealFrame, demoFrame, FRAMES, FRAME_MS } = require("./spin");
+const { categoryFrame, caseFrame, tokenOf } = require("./menu");
 
 // rejected in the bot's own memory, before any http call. spamming a command costs a map
 // lookup here rather than a query on a link that carries about 100 KB/s.
@@ -39,13 +40,63 @@ const OPENING = () =>
     .setAccentColor(0x4a4a5a)
     .addTextDisplayComponents(new TextDisplayBuilder().setContent("Opening…"));
 
-// shared by the command and by the "open another" button, which is the quickest way to
-// open the same case again and the reason the command only has to be typed once
-async function runOpen(interaction, caseId) {
-  if (!interaction.replied && !interaction.deferred) {
+// the two menus, built here because both of them are a read plus a frame and the mention
+// handler, the bare /open and the select all want the same payload
+async function seriesMenu() {
+  const { categories } = await api.categories();
+  return { components: [categoryFrame(categories)], ...V2 };
+}
+
+// the pager carries a digest rather than the name, so a page click resolves it against the
+// shelf list first. that is the same small grouped read the series menu already does.
+async function categoryFor(token) {
+  const { categories } = await api.categories();
+  const found = (categories || []).find((one) => tokenOf(one.name) === token);
+  return found ? found.name : null;
+}
+
+async function casesMenu(category, offset) {
+  const page = await api.cases("", null, { category, offset });
+  return {
+    components: [
+      caseFrame({ category, cases: page.cases || [], total: page.total || 0, offset: page.offset || 0 }),
+    ],
+    ...V2,
+  };
+}
+
+// shared by the command, the menu and the "open another" button, which is the quickest way
+// to open the same case again and the reason the command only has to be typed once.
+// `channel` is for the menu: that interaction is spent closing the select, so the spin is
+// posted as its own message and edited in place rather than being the interaction's reply.
+async function runOpen(interaction, caseId, { channel } = {}) {
+  const post = channel ? await channel.send({ components: [OPENING()], ...V2 }) : null;
+  const draw = post ? (payload) => post.edit(payload) : (payload) => interaction.editReply(payload);
+
+  if (!post && !interaction.replied && !interaction.deferred) {
     await interaction.reply({ components: [OPENING()], ...V2 });
   }
+  // a spin the menu started is its own message, so the handler upstream cannot turn it into
+  // the error the way it does for a reply. without this, "Opening…" sits there for good.
+  if (post) return spin(interaction, caseId, draw).catch(async (err) => {
+    await draw({ components: [failedFrame(err)], ...V2 }).catch(() => {});
+    throw err;
+  });
+  return spin(interaction, caseId, draw);
+}
 
+// what the site said, when it said anything a player can act on; the wording matches the
+// interaction handler so the two routes into a spin fail identically
+function failedFrame(err) {
+  const said = err && (err.status === 403 || err.status === 409) && err.message;
+  return new ContainerBuilder()
+    .setAccentColor(0x4a4a5a)
+    .addTextDisplayComponents(
+      new TextDisplayBuilder().setContent(said || "The site did not answer. Try again in a moment.")
+    );
+}
+
+async function spin(interaction, caseId, draw) {
   let opened = null;
   let demo = null;
   try {
@@ -65,7 +116,7 @@ async function runOpen(interaction, caseId) {
   // than being swapped out mid-spin for a card that came from nowhere
   for (let frame = 0; frame < FRAMES; frame += 1) {
     const landing = frame === FRAMES - 1;
-    await interaction.editReply({
+    await draw({
       components: [spinningFrame(caseTitle, strip, frame, landing ? won.name : null, won.rarity)],
       ...V2,
     });
@@ -73,11 +124,11 @@ async function runOpen(interaction, caseId) {
   }
 
   if (demo) {
-    await interaction.editReply({ components: [demoFrame({ item: demo.item, caseTitle })], ...V2 });
+    await draw({ components: [demoFrame({ item: demo.item, caseTitle })], ...V2 });
     return;
   }
 
-  await interaction.editReply({
+  await draw({
     components: [
       revealFrame({
         item: won,
@@ -122,8 +173,8 @@ const commands = [
       .addStringOption((option) =>
         option
           .setName("case")
-          .setDescription("Which case. Start typing, or pick the one you opened last.")
-          .setRequired(true)
+          .setDescription("Which case. Leave it empty to pick from a menu.")
+          .setRequired(false)
           .setAutocomplete(true)
       ),
     // 64 cases is well past discord's 25 choice cap, so the list is filtered server side.
@@ -144,7 +195,11 @@ const commands = [
       );
     },
     async run(interaction) {
-      await runOpen(interaction, interaction.options.getString("case"));
+      const caseId = interaction.options.getString("case");
+      // no case named is not an error: it is the menu, which is the whole point of not
+      // making a player know a case id before they can open one
+      if (!caseId) return interaction.reply(await seriesMenu());
+      await runOpen(interaction, caseId);
     },
   },
   {
@@ -225,4 +280,4 @@ const commands = [
   },
 ];
 
-module.exports = { commands, onCooldown, runOpen };
+module.exports = { commands, onCooldown, runOpen, seriesMenu, casesMenu, categoryFor, failedFrame };

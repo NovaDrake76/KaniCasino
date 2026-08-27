@@ -6,6 +6,7 @@ const request = require("supertest");
 const { setupDb, clearDb, teardownDb } = require("./db");
 const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
 
+const Case = require("../../models/Case");
 const User = require("../../models/User");
 const DiscordLink = require("../../models/DiscordLink");
 const FanBoard = require("../../models/FanBoard");
@@ -452,4 +453,98 @@ describe("where a failed link sends the player", () => {
     expect(res.headers.location).toContain("/profile/me?tab=settings&discord=expired");
     expect(res.headers.location).not.toContain("aaaaaaaaaaaaaaaaaaaaaaaa");
   });
+
+// The menu asks for shelves, then for a page of one shelf. Both are new surfaces on a route
+// the autocomplete already depended on, so what matters is that the shelf page is a stable
+// slice and that the autocomplete path is untouched by any of it.
+describe("the case menu", () => {
+  const CAP = 20000;
+  const makeCase = (title, price, category) =>
+    Case.create({ title, price, category, image: "https://example.test/c.png", items: [] });
+
+  const categories = () => bot(request(app).get("/discord/categories"));
+  const shelf = (category, offset) =>
+    bot(request(app).get("/discord/cases").query(offset === undefined ? { category } : { category, offset }));
+
+  beforeEach(async () => {
+    for (let i = 0; i < 30; i += 1) await makeCase(`CS ${String(i).padStart(2, "0")}`, 10 + i, "Counter-Strike");
+    await makeCase("Kivotos", 30, "Blue Archive");
+    await makeCase("Millennium", 40, "Blue Archive");
+  });
+
+  it("needs the bot secret like everything else here", async () => {
+    expect((await request(app).get("/discord/categories")).status).toBe(403);
+  });
+
+  it("lists a shelf per category, with its size and its cheapest case", async () => {
+    const res = await categories();
+    expect(res.status).toBe(200);
+    const byName = Object.fromEntries(res.body.categories.map((one) => [one.name, one]));
+    expect(byName["Counter-Strike"]).toMatchObject({ count: 30, from: 10 });
+    expect(byName["Blue Archive"]).toMatchObject({ count: 2, from: 30 });
+  });
+
+  // the menu must never offer what /open would then refuse to open
+  it("leaves a case dearer than the cap off the shelf entirely", async () => {
+    await makeCase("Katowice Legends", CAP + 1, "Souvenir");
+    const names = (await categories()).body.categories.map((one) => one.name);
+    expect(names).not.toContain("Souvenir");
+    expect((await shelf("Counter-Strike")).body.total).toBe(30);
+  });
+
+  it("gives a case with no category a shelf that has a usable name", async () => {
+    await makeCase("Loose", 25, "");
+    const found = (await categories()).body.categories.find((one) => one.name === "~none");
+    expect(found).toMatchObject({ count: 1 });
+    expect((await shelf("~none")).body.cases.map((one) => one.title)).toEqual(["Loose"]);
+  });
+
+  it("returns one shelf, cheapest first, capped at what a select can hold", async () => {
+    const res = await shelf("Counter-Strike");
+    expect(res.body.cases).toHaveLength(25);
+    expect(res.body.total).toBe(30);
+    expect(res.body.cases.every((one) => one.category === "Counter-Strike")).toBe(true);
+    const prices = res.body.cases.map((one) => one.price);
+    expect([...prices]).toEqual([...prices].sort((a, b) => a - b));
+  });
+
+  // a page that reshuffles between clicks shows one case twice and hides another, which is
+  // the whole reason this path does not get the autocomplete's per-player reordering
+  it("pages without repeating or dropping a case", async () => {
+    const first = await shelf("Counter-Strike", 0);
+    const second = await shelf("Counter-Strike", 25);
+    expect(second.body.cases).toHaveLength(5);
+    expect(second.body.offset).toBe(25);
+    const ids = [...first.body.cases, ...second.body.cases].map((one) => one.id);
+    expect(new Set(ids).size).toBe(30);
+  });
+
+  it("hands back an empty page rather than failing past the end", async () => {
+    const res = await shelf("Counter-Strike", 500);
+    expect(res.status).toBe(200);
+    expect(res.body.cases).toEqual([]);
+    expect(res.body.total).toBe(30);
+  });
+
+  it("treats a shelf that does not exist as empty, not as an error", async () => {
+    const res = await shelf("Nothing Here");
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ cases: [], total: 0 });
+  });
+
+  // the autocomplete asked for this route first and must keep the behaviour it had
+  it("still answers the autocomplete with no category, unpaged", async () => {
+    const res = bot(request(app).get("/discord/cases"));
+    const body = (await res).body;
+    expect(body.cases.length).toBe(25);
+    expect(body.total).toBeUndefined();
+    expect(body.maxPrice).toBe(CAP);
+  });
+
+  it("still searches by title and by series when asked to", async () => {
+    const res = await bot(request(app).get("/discord/cases").query({ q: "Blue Archive" }));
+    expect(res.body.cases.map((one) => one.title).sort()).toEqual(["Kivotos", "Millennium"]);
+  });
+});
+
 });

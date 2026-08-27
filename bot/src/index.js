@@ -3,7 +3,8 @@ require("dotenv").config();
 const { Client, Events, GatewayIntentBits, MessageFlags } = require("discord.js");
 const api = require("./api");
 const { noticeEmbed } = require("./embeds");
-const { commands, onCooldown, runOpen } = require("./commands");
+const { commands, onCooldown, runOpen, seriesMenu, casesMenu, categoryFor } = require("./commands");
+const { isMenu, parseMenu, chosenFrame } = require("./menu");
 
 const REQUIRED = ["DISCORD_BOT_TOKEN", "DISCORD_BOT_SECRET", "API_KEY"];
 const missing = REQUIRED.filter((key) => !process.env[key]);
@@ -12,9 +13,10 @@ if (missing.length) {
   process.exit(1);
 }
 
-// Guilds is the only intent this needs. slash commands arrive as interactions, so nothing
-// here reads messages or member lists, and no privileged intent has to be requested.
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+// GuildMessages is here for the mention, which is the only way in that does not go through
+// the slash picker. neither intent is privileged: a bare mention is read off the mentions
+// list, and message content stays empty, which is all this needs and nothing more.
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
 const byName = new Map(commands.map((command) => [command.data.name, command]));
 
@@ -37,6 +39,37 @@ async function suggest(interaction) {
   } catch (err) {
     await interaction.respond([]).catch(() => {});
   }
+}
+
+// the menu charges whoever clicked, on the case they just picked themselves, so it needs
+// no owner check: a second player using someone else's open menu spins on their own balance
+async function navigated(interaction) {
+  const { kind, token, offset } = parseMenu(interaction.customId);
+  if (kind === "back") return interaction.update(await seriesMenu());
+  if (kind === "cat") return interaction.update(await casesMenu(interaction.values[0], 0));
+  if (kind === "page") {
+    // the shelf can be renamed or emptied between the render and the click, and paging a
+    // category that no longer exists should land somewhere real rather than on nothing
+    const category = await categoryFor(token);
+    return interaction.update(category ? await casesMenu(category, offset) : await seriesMenu());
+  }
+  if (kind !== "case") return;
+
+  const wait = onCooldown(interaction.user.id, "open");
+  if (wait) {
+    return interaction.reply({
+      embeds: [noticeEmbed(`Give it ${wait}s.`)],
+      flags: MessageFlags.Ephemeral,
+    });
+  }
+  // close the select first: the interaction has three seconds and the spin takes longer,
+  // and a live select under a running spin is a second charge waiting to happen
+  const chosen = interaction.component.options.find((one) => one.value === interaction.values[0]);
+  await interaction.update({
+    components: [chosenFrame(chosen ? chosen.label : "it")],
+    flags: MessageFlags.IsComponentsV2,
+  });
+  await runOpen(interaction, interaction.values[0], { channel: interaction.channel });
 }
 
 // "open another" on somebody else's reveal would charge the clicker for a case they did
@@ -63,6 +96,7 @@ async function pressed(interaction) {
 client.on(Events.InteractionCreate, async (interaction) => {
   try {
     if (interaction.isAutocomplete()) return await suggest(interaction);
+    if (isMenu(interaction.customId)) return await navigated(interaction);
     if (interaction.isButton()) return await pressed(interaction);
   } catch (err) {
     console.error("bot interaction:", err.message);
@@ -90,6 +124,25 @@ client.on(Events.InteractionCreate, async (interaction) => {
     if (err.status === 403 || err.status === 409) return reply(interaction, err.message);
     console.error(`bot ${interaction.commandName}:`, err.message);
     reply(interaction, "The site did not answer. Try again in a moment.");
+  }
+});
+
+// the way in for a player who does not know the commands exist: they type the bot's name,
+// which is the one thing everybody already knows how to do. a bare mention is enough, so
+// the message content stays unread and the privileged intent stays unrequested.
+client.on(Events.MessageCreate, async (message) => {
+  if (message.author.bot || !message.guildId) return;
+  if (!message.mentions.has(client.user, { ignoreEveryone: true, ignoreRoles: true, ignoreRepliedUser: true })) return;
+
+  const wait = onCooldown(message.author.id, "menu");
+  if (wait) return;
+
+  try {
+    await api.seen(message.author.id, message.guildId);
+    await message.reply(await seriesMenu());
+  } catch (err) {
+    console.error("bot mention:", err.message);
+    await message.reply({ embeds: [noticeEmbed("The site did not answer. Try again in a moment.")] }).catch(() => {});
   }
 });
 
