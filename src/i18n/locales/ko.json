@@ -896,6 +896,8 @@
     "newest": "최신순",
     "noItemsFound": "아이템을 찾을 수 없습니다",
     "oldest": "오래된 순",
+    "onlyWhatFits": "이 업그레이드에 넣을 수 있는 아이템만 표시합니다.",
+    "onlyWhatYouReach": "선택한 아이템으로 노릴 수 있는 것만 표시합니다.",
     "rarity": "등급",
     "rarityHighToLow": "등급: 높은 순",
     "rarityLowToHigh": "등급: 낮은 순",

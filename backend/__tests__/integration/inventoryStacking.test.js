@@ -195,3 +195,44 @@ describe("selling a stack", () => {
     expect(after.inventory.every((e) => String(e._id) === String(b._id))).toBe(true);
   });
 });
+
+// the upgrade screen only offers what the rarity gap allows, so it asks for a set at once
+describe("the rarity filter", () => {
+  it("takes a single rarity", async () => {
+    const common = await makeItem({ rarity: "1" });
+    const epic = await makeItem({ rarity: "3" });
+    const user = await makeUserWith([...copies(common, 2), ...copies(epic, 1)]);
+
+    const res = await request(app).get(`/users/inventory/${user._id}?grouped=true&rarity=3`);
+
+    expect(res.body.items.map((i) => String(i._id))).toEqual([String(epic._id)]);
+  });
+
+  it("takes a comma list and counts the pages against it", async () => {
+    const common = await makeItem({ rarity: "1" });
+    const rare = await makeItem({ rarity: "2" });
+    const epic = await makeItem({ rarity: "3" });
+    const unique = await makeItem({ rarity: "5" });
+    const user = await makeUserWith([
+      ...copies(common, 1),
+      ...copies(rare, 1),
+      ...copies(epic, 1),
+      ...copies(unique, 1),
+    ]);
+
+    const res = await request(app).get(`/users/inventory/${user._id}?grouped=true&rarity=2,3`);
+
+    expect(res.body.items.map((i) => i.rarity).sort()).toEqual(["2", "3"]);
+    expect(res.body.totalPages).toBe(1);
+  });
+
+  it("returns nothing when the list matches nothing", async () => {
+    const common = await makeItem({ rarity: "1" });
+    const user = await makeUserWith(copies(common, 3));
+
+    const res = await request(app).get(`/users/inventory/${user._id}?grouped=true&rarity=4,5`);
+
+    expect(res.body.items).toEqual([]);
+    expect(res.body.totalPages).toBe(0);
+  });
+});

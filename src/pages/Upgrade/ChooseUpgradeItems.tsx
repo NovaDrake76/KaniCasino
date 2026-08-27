@@ -5,9 +5,11 @@ import { getCases, getCase } from "../../services/cases/CaseServices";
 import Item from "../../components/Item";  // Import your Item component if you have one
 import Skeleton from "react-loading-skeleton";
 import { AiOutlineClose } from "react-icons/ai";
+import { targetRarities, ALL_RARITIES } from "./upgradeRules";
 import i18n from "../../i18n";
 
 interface ChooseUpgradeItems {
+    selectedItems: any[];
     setSelectedItems: React.Dispatch<React.SetStateAction<any>>;
     selectedCase: any;
     setSelectedCase: React.Dispatch<React.SetStateAction<any>>;
@@ -15,7 +17,7 @@ interface ChooseUpgradeItems {
     setSelectedTarget: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, selectedCase, setSelectedCase, selectedTarget, setSelectedTarget }) => {
+const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ selectedItems, setSelectedItems, selectedCase, setSelectedCase, selectedTarget, setSelectedTarget }) => {
     const [allCases, setAllCases] = useState<any[]>([]);
     const [selectedCaseItems, setSelectedCaseItems] = useState<any[]>([]);
     const [loadingItems, setLoadingItems] = useState<boolean>(true);
@@ -26,6 +28,11 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
         order: 'asc'
     });
     const { userData } = useContext(UserContext);
+
+    // an item the pile cannot reach is not an outcome, so it is not offered
+    const reachableRarities = targetRarities(selectedItems);
+    const restricted = reachableRarities.length < ALL_RARITIES.length;
+    const reachableItems = selectedCaseItems.filter((item: any) => reachableRarities.includes(Number(item.rarity)));
 
     const getAllItemsInfo = async () => {
         setLoadingItems(true);
@@ -72,7 +79,12 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
     return (
         <div className="flex flex-col md:w-1/2 gap-2 ">
             <div className="flex w-full items-center justify-between bg-[#1C1A33] rounded px-6 h-24">
-                <span>{i18n.t("upgrade.getOneItem")}</span>
+                <div className="flex flex-col">
+                    <span>{i18n.t("upgrade.getOneItem")}</span>
+                    {selectedCase !== null && restricted && (
+                        <span className="text-xs text-gray-400">{i18n.t("upgrade.onlyWhatYouReach")}</span>
+                    )}
+                </div>
                 <div className="flex gap-4">
                     {
                         selectedCase !== null && (
@@ -142,8 +154,12 @@ const ChooseUpgradeItems: React.FC<ChooseUpgradeItems> = ({ setSelectedItems, se
                                     </div>
                                 )
                             })
+                        ) : reachableItems.length === 0 ? (
+                            <div className="flex items-center justify-center">
+                                <span className="font-semibold text-gray-400">{i18n.t("upgrade.noItemsFound")}</span>
+                            </div>
                         ) : (
-                            selectedCaseItems.map((item: any, index: number) => {
+                            reachableItems.map((item: any, index: number) => {
                                 return (
                                     <div key={index} className={`cursor-pointer border-2 h-min ${selectedTarget?._id === item._id ? ' border-[#606bc7]' : 'border-transparent'}`} onClick={() => {
                                         if (selectedTarget?._id === item._id) {
