@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 import Badge, { badgeName } from "../../components/Badge";
+import Hint from "../../components/Hint";
 import BadgeCatalog from "./BadgeCatalog";
 import { Badge as BadgeData, BadgeKey, setWornBadge } from "../../services/badges/BadgeService";
 import i18n from "../../i18n";
@@ -74,11 +75,19 @@ const BadgeShelf: React.FC<BadgeShelfProps> = ({ badges, selectedBadge, isSameUs
               </button>
             ))}
           </div>
-          {isSameUser && (
-            <p className="text-[11px] text-[#625F7E]">
-              {worn ? i18n.t("badge.clearHint") : i18n.t("badge.chooseHint")}
-            </p>
-          )}
+          {isSameUser &&
+            (worn ? (
+              <p className="text-[11px] text-[#625F7E]">{i18n.t("badge.clearHint")}</p>
+            ) : (
+              // holding a badge and wearing none is the whole trigger: putting one on is
+              // what clears it, so nothing has to record that the player was told
+              <Hint
+                id="wear-badge"
+                userId={userData?.id}
+                text={i18n.t("badge.chooseHint")}
+                show
+              />
+            ))}
         </>
       )}
 

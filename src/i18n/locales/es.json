@@ -251,6 +251,7 @@
     "complete": "COMPLETA",
     "couldNotSellItem": "No se pudo vender el objeto",
     "descending": "Descendente",
+    "dismissHint": "descartar sugerencia",
     "emptyOnCash": "¿Sin monedas?",
     "everythingHereRunsOn": "Aquí todo funciona con K₽, una moneda ficticia. No es dinero real, así que juega todo lo que quieras.",
     "gotItLetS": "¡Entendido, a jugar!",
