@@ -99,6 +99,34 @@ test("a single prize is drawn big enough to see, with its name", async ({ page }
   await expect(page.getByText("Character With A Long Name 0").first()).toBeVisible();
 });
 
+// Reported from a 1366x768 screen: the fifth prize wrapped onto a second line and the row
+// grew a scrollbar, so only four were visible. The reel is md:w-[1100px] but sits between
+// two decorative arrows as a flex item, so at that width it shrinks to about 980 while the
+// prizes still asked for 5x192 plus gaps. This asserts one row at the sizes real monitors
+// come in rather than at the one the page was drawn on.
+for (const width of [1024, 1280, 1366, 1440, 1920]) {
+  test(`five prizes sit on one row at ${width}`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 768 });
+    await open(page, 5);
+    await expect(page.locator("#prize").first()).toBeVisible({ timeout: 15000 });
+    expect(await page.locator("#prize").count()).toBe(5);
+
+    const tops = await page.locator("#prize").evaluateAll((els) =>
+      els.map((el) => Math.round(el.getBoundingClientRect().top))
+    );
+    expect(new Set(tops).size).toBe(1);
+
+    // and the row is not hiding the overflow behind a scrollbar
+    const row = page.locator("#prize").first().locator("xpath=..");
+    const over = await row.evaluate((el) => ({
+      x: el.scrollWidth - el.clientWidth,
+      y: el.scrollHeight - el.clientHeight,
+    }));
+    expect(over).toEqual({ x: 0, y: 0 });
+    expect(await pastTheEdge(page)).toBeLessThanOrEqual(2);
+  });
+}
+
 // halving the slot for a phone without moving the animation with it sent the strip past
 // its own end: three of the five reels showed nothing for the rest of the spin
 for (const { label, viewport, quantity } of [
