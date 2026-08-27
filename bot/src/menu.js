@@ -46,7 +46,7 @@ function categoryFrame(categories) {
     .setAccentColor(ACCENT)
     .addTextDisplayComponents(new TextDisplayBuilder().setContent("### Open a case"))
     .addTextDisplayComponents(
-      new TextDisplayBuilder().setContent("Pick a series, then pick a case. No command to remember.")
+      new TextDisplayBuilder().setContent("Pick a series, then pick a case.")
     )
     .addSeparatorComponents(new SeparatorBuilder());
 
