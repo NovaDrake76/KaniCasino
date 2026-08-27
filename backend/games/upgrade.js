@@ -9,8 +9,12 @@ const { rollFloat, TOTAL } = require("../utils/provablyFair");
 const UPGRADE_ALGO_VERSION = 3; // bump if calculateSuccessRate ever changes
 
 // return by target rarity: the edge grows with rarity, so upgrading into a rare item is a
-// worse deal per attempt than upgrading into a common one
-const UPGRADE_RTP_BY_RARITY = { "1": 0.9, "2": 0.9, "3": 0.85, "4": 0.75, "5": 0.6 };
+// worse deal per attempt than upgrading into a common one.
+// legendary sits at 0.3 because at 0.6 upgrading was the cheap route to one: a player who
+// fed a thousand opens back in ended with about 14 legendaries against the 2.6 the cases
+// gave them, so 82% of them were made here rather than dropped. halving it makes a
+// legendary cost 7,697 KP of items instead of 3,848, against 23,100 to open for one.
+const UPGRADE_RTP_BY_RARITY = { "1": 0.9, "2": 0.9, "3": 0.85, "4": 0.75, "5": 0.3 };
 
 // max success chance by target rarity: piling in cheap items cannot make a rare upgrade a
 // sure thing, so stacking a heap of low items into an ultra is still a gamble. no case odds.
