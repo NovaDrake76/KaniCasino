@@ -16,14 +16,15 @@ const colorOf = (rarity) => RARITY[String(rarity)] || NEUTRAL;
 const num = (value) => Number(value || 0).toLocaleString("en-US");
 const medal = (index) => ["1.", "2.", "3."][index] || `${index + 1}.`;
 
-const profileUrl = (userId) => `${SITE}/profile/${userId}`;
+// the slug when the account has one, the id otherwise: both resolve, one reads better
+const profileUrl = (card) => `${SITE}/profile/${card.slug || card.userId}`;
 const boardUrl = (name) => `${SITE}/fandom/${encodeURIComponent(name)}`;
 
 function showcaseEmbed(card) {
   const embed = new EmbedBuilder()
     .setColor(colorOf(card.pinned && card.pinned.rarity))
     .setTitle(card.username)
-    .setURL(profileUrl(card.userId))
+    .setURL(profileUrl(card))
     .setFooter({ text: "kanicasino.com" });
 
   if (card.profilePicture) embed.setThumbnail(card.profilePicture);

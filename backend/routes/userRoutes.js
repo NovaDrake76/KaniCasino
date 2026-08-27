@@ -24,6 +24,7 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const { resolvePassword } = require("../utils/password");
 const nameFilter = require("../utils/nameFilter");
+const { slugify, mintSlug, looksLikeId } = require("../utils/slugs");
 const { visible, isVisible } = require("../utils/visibility");
 const realtime = require("../utils/realtime");
 
@@ -56,7 +57,13 @@ router.post(
       if (userMail) {
         return res.status(400).json({ message: "Email already registered" });
       }
-      let userName = await User.exists({ username });
+      // the slug check is what makes this case-insensitive: "Shiki" and "shiki" reduce to the
+      // same url, so the second one is refused rather than being handed "shiki-2" forever.
+      // both lookups are indexed; a case-insensitive regex would scan every inventory on file.
+      const nameSlug = slugify(username);
+      let userName = await User.exists(
+        nameSlug ? { $or: [{ username }, { slug: nameSlug }] } : { username }
+      );
       if (userName) {
         return res.status(400).json({ message: "Username already registered" });
       }
@@ -79,6 +86,7 @@ router.post(
       user = new User({
         email,
         username,
+        slug: await mintSlug(User, username),
         profilePicture: placeholder,
         basePicture: placeholder,
         isAdmin: false,
@@ -198,11 +206,16 @@ router.post('/googlelogin', registerLimiter, registerDailyLimiter, async (req, r
     let user = await User.findOne({ email: googlePayload.email }).select("googleId disabled tokenVersion");
     if (!user) {
       let username = nameFilter.safeUsername(googlePayload.name, googlePayload.sub);
-      let existingUser = await User.exists({ username });
+      // a google name that only differs by case is still a conflict, since both want one url
+      const nameTaken = (name) => {
+        const taken = slugify(name);
+        return User.exists(taken ? { $or: [{ username: name }, { slug: taken }] } : { username: name });
+      };
+      let existingUser = await nameTaken(username);
       while (existingUser) {
         // Handle username conflict
         username = googlePayload.name + Math.floor(Math.random() * 1000);
-        existingUser = await User.exists({ username });
+        existingUser = await nameTaken(username);
       }
       // a referral only counts at account creation, never on a later login
       const referrer = referralCode ? await findReferrer(referralCode) : null;
@@ -213,6 +226,7 @@ router.post('/googlelogin', registerLimiter, registerDailyLimiter, async (req, r
         googleId: googlePayload.sub,
         email: googlePayload.email,
         username: username,
+        slug: await mintSlug(User, username),
         profilePicture: googlePayload.picture,
         basePicture: googlePayload.picture,
         marketingOptIn: consented,
@@ -286,6 +300,7 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
     const {
       _id: id,
       username,
+      slug,
       profilePicture,
       xp,
       level,
@@ -302,7 +317,7 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
 
     // isAdmin is the caller's own flag; the public /:id profile keeps hiding it
     res.json({
-      id, username, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications,
+      id, username, slug: slug || null, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications,
       isAdmin: !!isAdmin, fanRank, fixedItem,
       badges: badges.heldBadges(req.user),
       selectedBadge: req.user.selectedBadge || null,
@@ -758,14 +773,16 @@ router.post('/logout-all', authMiddleware.isAuthenticated, async (req, res) => {
 });
 
 
-// Get user by id (public profile: only non-sensitive fields)
+// a profile is addressed by slug now, but every id ever shared still has to resolve, so
+// both are accepted on the same route. the id test is strict 24-hex: ObjectId.isValid()
+// also passes any 12-character string, which is 172 of the usernames on file.
+const userFilter = (param) => (looksLikeId(param) ? { _id: param } : { slug: param });
+
+// Get user by id or slug (public profile: only non-sensitive fields)
 router.get("/:id", async (req, res) => {
   try {
-    if (!ObjectId.isValid(req.params.id)) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    const user = await User.findById(req.params.id)
-      .select("username profilePicture xp level fixedItem fanRank collectionRank nextBonus weeklyWinnings selectedBadge badges disabled")
+    const user = await User.findOne(userFilter(req.params.id))
+      .select("username slug profilePicture xp level fixedItem fanRank collectionRank nextBonus weeklyWinnings selectedBadge badges disabled")
       .lean();
     if (!isVisible(user)) return res.json(null);
     res.json({ ...user, badges: badges.heldBadges(user), badge: badges.wornBadge(user) });
@@ -789,12 +806,8 @@ router.get("/inventory/:userId", async (req, res) => {
     const { name, rarity, sortBy, caseId } = req.query;
     const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
 
-    if (!ObjectId.isValid(userId)) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
     // the visibility check needs a flag, not 12k inventory entries
-    const user = await User.findById(userId).select("disabled");
+    const user = await User.findOne(userFilter(userId)).select("disabled");
     if (!isVisible(user)) {
       return res.status(404).json({ message: "User not found" });
     }
