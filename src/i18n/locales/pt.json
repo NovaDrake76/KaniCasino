@@ -892,7 +892,7 @@
     "clearItemsCount": "Limpar itens ({{count}})",
     "getOneItem": "Obter um item",
     "howItWorks": "Como funciona?",
-    "howItWorksBody": "Melhore itens do seu inventário para tentar conseguir um mais raro. Quanto mais perto a raridade do seu item estiver da do item desejado, maior a chance de sucesso.",
+    "howItWorksBody": "Melhore itens do seu inventário por uma chance de um mais raro. Quanto mais perto o item estiver do alvo, melhores as chances, e um item só pode mirar em algo até duas raridades acima.",
     "newest": "Mais novos",
     "noItemsFound": "Nenhum item encontrado",
     "oldest": "Mais antigos",

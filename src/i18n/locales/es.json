@@ -892,7 +892,7 @@
     "clearItemsCount": "Limpiar objetos ({{count}})",
     "getOneItem": "Conseguir un objeto",
     "howItWorks": "¿Cómo funciona?",
-    "howItWorksBody": "Mejora objetos de tu inventario para intentar conseguir uno más raro. Cuanto más cerca esté la rareza de tu objeto de la del objeto deseado, mayor será la probabilidad de éxito.",
+    "howItWorksBody": "Mejora objetos de tu inventario para optar a uno más raro. Cuanto más cerca esté tu objeto del objetivo, mejores las probabilidades, y un objeto solo puede apuntar a algo dentro de dos rarezas.",
     "newest": "Más nuevos",
     "noItemsFound": "No se encontraron objetos",
     "oldest": "Más antiguos",

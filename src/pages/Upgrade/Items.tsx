@@ -23,8 +23,10 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
 
     // mirrors backend/games/upgrade.js exactly, so the rate on screen is the rate the
     // server rolls: p = RTP(targetRarity) * staked / target, capped by the rarity ceiling.
-    const UPGRADE_RTP_BY_RARITY: { [k: string]: number } = { "1": 0.9, "2": 0.9, "3": 0.85, "4": 0.75, "5": 0.6 };
+    // upgradeConstants.test.ts reads both files and fails if these two ever disagree.
+    const UPGRADE_RTP_BY_RARITY: { [k: string]: number } = { "1": 0.9, "2": 0.9, "3": 0.85, "4": 0.75, "5": 0.3 };
     const UPGRADE_CEILING: { [k: string]: number } = { "1": 0.9, "2": 0.7, "3": 0.45, "4": 0.25, "5": 0.12 };
+    const UPGRADE_MAX_RARITY_GAP = 2;
 
     const calculateSuccessRate = (items: any, target: any) => {
         const stakedValue = items.reduce(
@@ -33,6 +35,13 @@ const Items: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selectedT
         );
         const targetValue = target?.baseValue || 0;
         if (stakedValue <= 0 || targetValue <= 0) return 0;
+        // the server refuses this combination, so quoting a rate for it would be a lie
+        const tooFar = items.some(
+            (selected: any) =>
+                Number(target?.rarity) - Number(selected.item?.rarity) > UPGRADE_MAX_RARITY_GAP ||
+                Number(selected.item?.rarity) > Number(target?.rarity)
+        );
+        if (tooFar) return 0;
         const rtp = UPGRADE_RTP_BY_RARITY[String(target?.rarity)] || 0.9;
         const ceiling = UPGRADE_CEILING[String(target?.rarity)] || 0.9;
         return Math.min((rtp * stakedValue) / targetValue, ceiling);

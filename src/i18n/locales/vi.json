@@ -892,7 +892,7 @@
     "clearItemsCount": "Xoá vật phẩm ({{count}})",
     "getOneItem": "Nhận một vật phẩm",
     "howItWorks": "Hoạt động thế nào?",
-    "howItWorksBody": "Nâng cấp vật phẩm trong kho để có cơ hội đổi lấy món hiếm hơn. Độ hiếm của vật phẩm hiện tại càng gần món bạn muốn thì tỉ lệ thành công càng cao.",
+    "howItWorksBody": "Nâng cấp vật phẩm trong kho để có cơ hội nhận vật phẩm hiếm hơn. Vật phẩm càng gần mục tiêu thì tỉ lệ càng cao, và chỉ có thể nhắm tối đa hai bậc hiếm phía trên.",
     "newest": "Mới nhất",
     "noItemsFound": "Không tìm thấy vật phẩm",
     "oldest": "Cũ nhất",

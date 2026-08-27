@@ -9,8 +9,18 @@ const { rollFloat, TOTAL } = require("../utils/provablyFair");
 const UPGRADE_ALGO_VERSION = 3; // bump if calculateSuccessRate ever changes
 
 // return by target rarity: the edge grows with rarity, so upgrading into a rare item is a
-// worse deal per attempt than upgrading into a common one
-const UPGRADE_RTP_BY_RARITY = { "1": 0.9, "2": 0.9, "3": 0.85, "4": 0.75, "5": 0.6 };
+// worse deal per attempt than upgrading into a common one.
+// legendary sits at 0.3 because at 0.6 upgrading was the cheap route to one: a player who
+// fed a thousand opens back in ended with about 14 legendaries against the 2.6 the cases
+// gave them, so 82% of them were made here rather than dropped. halving it makes a
+// legendary cost 7,697 KP of items instead of 3,848, against 23,100 to open for one.
+const UPGRADE_RTP_BY_RARITY = { "1": 0.9, "2": 0.9, "3": 0.85, "4": 0.75, "5": 0.3 };
+
+// how far above its own rarity an item may be staked. with no limit a pile of commons was a
+// legitimate run at a legendary, and forty blues bought the 12% ceiling outright: cheap to
+// assemble, so the rarest items stopped being a milestone and became a grind. two tiers
+// means a legendary can only be fed rares and epics, which have to be earned first.
+const UPGRADE_MAX_RARITY_GAP = 2;
 
 // max success chance by target rarity: piling in cheap items cannot make a rare upgrade a
 // sure thing, so stacking a heap of low items into an ultra is still a gamble. no case odds.
@@ -32,13 +42,16 @@ const allItemsFromSameCase = (items) => {
   return items.every((item) => item.case && item.case.toString() === caseId.toString());
 };
 
-const verifyLesserRarity = (selectedItems, targetItem) => {
+// "lesser" and "gap" are separate because they are different mistakes and the player is
+// told which one they made
+const verifyRarityGap = (selectedItems, targetItem) => {
+  const target = Number(targetItem.rarity);
   for (const item of selectedItems) {
-    if (Number(item.rarity) > Number(targetItem.rarity)) {
-      return false;
-    }
+    const source = Number(item.rarity);
+    if (source > target) return { ok: false, reason: "lesser" };
+    if (target - source > UPGRADE_MAX_RARITY_GAP) return { ok: false, reason: "gap" };
   }
-  return true;
+  return { ok: true };
 }
 
 const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
@@ -80,8 +93,15 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       return { status: 400, message: "All items must be from the same case" };
     }
 
-    if (!verifyLesserRarity(selectedItems, targetItem)) {
-      return { status: 400, message: "You can't upgrade to a lesser rarity" };
+    const gap = verifyRarityGap(selectedItems, targetItem);
+    if (!gap.ok) {
+      return {
+        status: 400,
+        message:
+          gap.reason === "lesser"
+            ? "You can't upgrade to a lesser rarity"
+            : `You can only upgrade up to ${UPGRADE_MAX_RARITY_GAP} rarities above what you put in`,
+      };
     }
 
     const stakedValue = selectedItems.reduce((sum, invItem) => {
@@ -183,3 +203,5 @@ module.exports = upgradeItems;
 module.exports.calculateSuccessRate = calculateSuccessRate;
 module.exports.UPGRADE_RTP_BY_RARITY = UPGRADE_RTP_BY_RARITY;
 module.exports.UPGRADE_CEILING = UPGRADE_CEILING;
+module.exports.UPGRADE_MAX_RARITY_GAP = UPGRADE_MAX_RARITY_GAP;
+module.exports.verifyRarityGap = verifyRarityGap;
