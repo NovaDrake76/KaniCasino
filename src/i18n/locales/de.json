@@ -896,6 +896,8 @@
     "newest": "Neueste",
     "noItemsFound": "Keine Gegenstände gefunden",
     "oldest": "Älteste",
+    "onlyWhatFits": "Nur Gegenstände, die du für dieses Upgrade einsetzen kannst.",
+    "onlyWhatYouReach": "Nur Gegenstände, die deine Auswahl erreichen kann.",
     "rarity": "Seltenheit",
     "rarityHighToLow": "Seltenheit: hoch nach niedrig",
     "rarityLowToHigh": "Seltenheit: niedrig nach hoch",

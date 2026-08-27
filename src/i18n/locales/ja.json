@@ -896,6 +896,8 @@
     "newest": "新しい順",
     "noItemsFound": "アイテムが見つかりません",
     "oldest": "古い順",
+    "onlyWhatFits": "このアップグレードに使えるアイテムのみ表示しています。",
+    "onlyWhatYouReach": "選んだアイテムで狙えるものだけを表示しています。",
     "rarity": "レアリティ",
     "rarityHighToLow": "レアリティ：高い順",
     "rarityLowToHigh": "レアリティ：低い順",

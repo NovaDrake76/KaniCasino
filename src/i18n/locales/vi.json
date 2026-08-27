@@ -896,6 +896,8 @@
     "newest": "Mới nhất",
     "noItemsFound": "Không tìm thấy vật phẩm",
     "oldest": "Cũ nhất",
+    "onlyWhatFits": "Chỉ những vật phẩm bạn có thể dùng cho lần nâng cấp này.",
+    "onlyWhatYouReach": "Chỉ những vật phẩm lựa chọn của bạn có thể đạt tới.",
     "rarity": "Độ hiếm",
     "rarityHighToLow": "Độ hiếm: cao xuống thấp",
     "rarityLowToHigh": "Độ hiếm: thấp lên cao",

@@ -16,7 +16,7 @@ const table = (source: string, name: string) => {
 };
 
 const backend = read("..", "..", "..", "backend", "games", "upgrade.js");
-const frontend = read("Items.tsx");
+const frontend = read("upgradeRules.ts");
 
 describe("the upgrade constants on both sides", () => {
   it("quote the same return per rarity", () => {

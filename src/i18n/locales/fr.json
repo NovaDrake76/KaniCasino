@@ -896,6 +896,8 @@
     "newest": "Les plus récents",
     "noItemsFound": "Aucun objet trouvé",
     "oldest": "Les plus anciens",
+    "onlyWhatFits": "Uniquement les objets utilisables pour cette amélioration.",
+    "onlyWhatYouReach": "Uniquement les objets que votre sélection peut atteindre.",
     "rarity": "Rareté",
     "rarityHighToLow": "Rareté : de la plus haute à la plus basse",
     "rarityLowToHigh": "Rareté : de la plus basse à la plus haute",

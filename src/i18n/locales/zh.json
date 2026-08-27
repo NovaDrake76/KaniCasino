@@ -896,6 +896,8 @@
     "newest": "最新",
     "noItemsFound": "未找到物品",
     "oldest": "最早",
+    "onlyWhatFits": "仅显示可以用于本次升级的物品。",
+    "onlyWhatYouReach": "仅显示当前选择能够升到的物品。",
     "rarity": "稀有度",
     "rarityHighToLow": "稀有度：从高到低",
     "rarityLowToHigh": "稀有度：从低到高",
