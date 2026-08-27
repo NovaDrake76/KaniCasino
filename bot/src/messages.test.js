@@ -12,7 +12,7 @@ const assert = require("node:assert");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const SOURCES = ["commands.js", "embeds.js", "index.js"];
+const SOURCES = ["commands.js", "embeds.js", "index.js", "menu.js"];
 
 // only the lines that state an account is missing. "Link your account" and "No account
 // yet? Sign up first" are the instruction itself, and must not be caught by their own rule.
