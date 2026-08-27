@@ -8,6 +8,7 @@ const { publicCache, TTL } = require("../utils/httpCache");
 const itemCatalog = require("../utils/itemCatalog");
 const artProxy = require("../utils/artProxy");
 const { artLimiter } = require("../middleware/rateLimit");
+const { mintSlug } = require("../utils/slugs");
 
 router.get("/", async (req, res) => {
   try {
@@ -48,11 +49,14 @@ router.get("/art", isAuthenticated, artLimiter, async (req, res) => {
 });
 
 router.post("/", isAuthenticated, isAdmin, async (req, res) => {
+  // two cases can hold a character of the same name, and the case is what tells them apart
+  const parentCase = req.body.case ? await Case.findById(req.body.case, { title: 1 }).lean() : null;
   const newItem = new Item({
     name: req.body.name,
     image: req.body.image,
     rarity: req.body.rarity,
     case: req.body.case,
+    slug: await mintSlug(Item, req.body.name, { qualifier: parentCase && parentCase.title }),
   });
 
   try {

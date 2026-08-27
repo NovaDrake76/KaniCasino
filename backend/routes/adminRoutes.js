@@ -9,6 +9,7 @@ const Item = require("../models/Item");
 const { recomputeCaseValues } = require("../utils/itemValue");
 const { recordTransaction, runAtomic, TX } = require("../utils/economy");
 const adminStats = require("../utils/adminStats");
+const { slugify, mintSlug } = require("../utils/slugs");
 
 // the backoffice dashboard: everything is derived from the ledger, ?days= windows it
 router.get("/stats/overview", isAuthenticated, isAdmin, async (req, res) => {
@@ -90,7 +91,7 @@ router.get("/users", isAuthenticated, isAdmin, async (req, res) => {
 //create case
 router.post("/cases", isAuthenticated, isAdmin, async (req, res) => {
   const { title, image, price, items, category } = req.body;
-  const newCase = new Case({ title, image, price, items, category });
+  const newCase = new Case({ title, image, price, items, category, slug: await mintSlug(Case, title) });
 
   try {
     const savedCase = await newCase.save();
@@ -140,7 +141,7 @@ router.delete("/cases/:id", isAuthenticated, isAdmin, async (req, res) => {
 //new item
 router.post("/items", isAuthenticated, isAdmin, async (req, res) => {
   const { name, description, rarity, image } = req.body;
-  const newItem = new Item({ name, description, rarity, image });
+  const newItem = new Item({ name, description, rarity, image, slug: await mintSlug(Item, name) });
 
   try {
     const savedItem = await newItem.save();
@@ -301,15 +302,6 @@ const Prediction = require("../models/Prediction");
 const PredictionPosition = require("../models/PredictionPosition");
 const settlement = require("../utils/predictionSettlement");
 const { DEFAULT_VIG_BPS, DEFAULT_IMPACT_BPS } = require("../utils/predictionMath");
-
-const slugify = (title) =>
-  String(title)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60);
 
 // a market the admin writes is still text a player reads, so it goes through the filter
 function cleanText(...parts) {
