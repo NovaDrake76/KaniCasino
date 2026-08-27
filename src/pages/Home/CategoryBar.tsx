@@ -16,9 +16,9 @@ interface CategoryBarProps {
 // the shelf being read, not the tallest one that happens to be on screen
 const BAND = "-72px 0px -70% 0px";
 
-// z-10, not higher: the login modal is `absolute z-20` in the header (header/index.tsx:127),
-// and that wrapper is a stacking context, so the modal's own z-[999] never escapes it. the
-// bar only has to clear page content, which carries no z-index at all.
+// the bar has to clear page content and stay under anything the header opens. both sides of
+// that are real bugs already shipped, so the ordering lives in tailwind.config.js and this
+// says which layer it is rather than which number.
 
 // index.css still carries the vite starter's global button rules (background, padding, a
 // blue hover border and a focus ring that fires on click), so a bare chip opts out of all
@@ -80,7 +80,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ sections, loading }) => {
   return (
     <nav
       aria-label={i18n.t("home.caseCategories")}
-      className="sticky top-0 z-10 w-full border-b border-line bg-surface-nav"
+      className="sticky top-0 z-sticky w-full border-b border-line bg-surface-nav"
     >
       <div className="w-full max-w-[1600px] mx-auto px-4">
         <div ref={stripRef} className="flex gap-6 md:gap-8 overflow-x-auto">

@@ -27,7 +27,7 @@ const Leaderboard = ({ aside }: { aside?: React.ReactNode }) => {
 
 
     return (
-        <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none  z-50 ">
+        <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none">
             <Title title={i18n.t("home.leaderboard")} />
 
             <div className="grid w-full max-w-[1620px] gap-8 px-4 lg:grid-cols-[340px_minmax(0,1fr)_340px]">
