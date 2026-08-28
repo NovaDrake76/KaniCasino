@@ -2,7 +2,16 @@ const express = require("express");
 const badges = require("../utils/badges");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
-const { plinkoDropLimiter, diceRollLimiter, minesActionLimiter, hiloActionLimiter } = require("../middleware/rateLimit");
+const {
+  plinkoDropLimiter,
+  diceRollLimiter,
+  minesActionLimiter,
+  hiloActionLimiter,
+  caseOpenLimiter,
+  upgradeLimiter,
+  slotSpinLimiter,
+  blackjackActionLimiter,
+} = require("../middleware/rateLimit");
 
 const Case = require("../models/Case");
 const Round = require("../models/Round");
@@ -21,7 +30,7 @@ module.exports = (io) => {
   // the opening itself lives in games/openCase.js, because the discord bot has to run the
   // same one: a second path through the money would drift from this one the first time
   // either changed.
-  router.post("/openCase/:id", isAuthenticated, async (req, res) => {
+  router.post("/openCase/:id", isAuthenticated, caseOpenLimiter, async (req, res) => {
     try {
       const result = await openCase({
         user: req.user,
@@ -39,7 +48,7 @@ module.exports = (io) => {
 
 
   // Upgrade items
-  router.post("/upgrade", isAuthenticated, async (req, res) => {
+  router.post("/upgrade", isAuthenticated, upgradeLimiter, async (req, res) => {
     const { selectedItemIds, targetItemId } = req.body;
     const user = req.user;
 
@@ -67,7 +76,7 @@ module.exports = (io) => {
   });
 
   // Spin the slot machine
-  router.post('/slots', isAuthenticated, async (req, res) => {
+  router.post('/slots', isAuthenticated, slotSpinLimiter, async (req, res) => {
     const user = req.user;
 
     try {
@@ -125,22 +134,22 @@ module.exports = (io) => {
       res.status(500).json({ message: "Internal server error" });
     }
   };
-  router.post("/blackjack/deal", isAuthenticated, blackjackAction(
+  router.post("/blackjack/deal", isAuthenticated, blackjackActionLimiter, blackjackAction(
     (req) => BlackjackGameController.deal(req.user._id, req.body.betAmount, io)
   ));
-  router.post("/blackjack/hit", isAuthenticated, blackjackAction(
+  router.post("/blackjack/hit", isAuthenticated, blackjackActionLimiter, blackjackAction(
     (req) => BlackjackGameController.hit(req.user._id, io)
   ));
-  router.post("/blackjack/stand", isAuthenticated, blackjackAction(
+  router.post("/blackjack/stand", isAuthenticated, blackjackActionLimiter, blackjackAction(
     (req) => BlackjackGameController.stand(req.user._id, io)
   ));
-  router.post("/blackjack/double", isAuthenticated, blackjackAction(
+  router.post("/blackjack/double", isAuthenticated, blackjackActionLimiter, blackjackAction(
     (req) => BlackjackGameController.double(req.user._id, io)
   ));
-  router.post("/blackjack/split", isAuthenticated, blackjackAction(
+  router.post("/blackjack/split", isAuthenticated, blackjackActionLimiter, blackjackAction(
     (req) => BlackjackGameController.split(req.user._id, io)
   ));
-  router.post("/blackjack/insurance", isAuthenticated, blackjackAction(
+  router.post("/blackjack/insurance", isAuthenticated, blackjackActionLimiter, blackjackAction(
     (req) => BlackjackGameController.insurance(req.user._id, req.body.accept, io)
   ));
   router.get("/blackjack/active", isAuthenticated, blackjackAction(
