@@ -25,6 +25,7 @@ const environment = import.meta.env.VITE_NODE_ENV || "";
 import { User } from './components/Types'
 import i18n from "./i18n";
 import { SessionStatsProvider } from "./stats/SessionStatsContext";
+import { initAdPlacement } from "./services/rewards/AdRewardServices";
 
 interface userDataSocketProps {
   walletBalance: number;
@@ -89,6 +90,12 @@ function App() {
       socket.off("userDataUpdated");
     };
   }
+
+  // configure the ad placement api on boot, so the first rewarded break is preloaded
+  // long before anybody presses the button
+  useEffect(() => {
+    initAdPlacement();
+  }, []);
 
   useEffect(() => {
     socket.on("onlineUsers", (count) => {

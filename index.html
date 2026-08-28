@@ -34,6 +34,12 @@
           // without this hint the placement api never defines window.adBreak
           if (src.indexOf('adsbygoogle') !== -1) {
             s.setAttribute('data-ad-frequency-hint', '30s');
+            // ?adtest=1 serves google's test ads, which always fill. it is the only way to
+            // tell a broken integration apart from an empty ad request, and it is opt-in
+            // by query string so no real visitor ever sees one.
+            if (location.search.indexOf('adtest=1') !== -1) {
+              s.setAttribute('data-adbreak-test', 'on');
+            }
           }
           document.head.appendChild(s);
         });

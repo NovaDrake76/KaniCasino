@@ -66,20 +66,35 @@ const waitForAdBreak = (): Promise<boolean> =>
     }, 200);
   });
 
+let configured = false;
+
+// the placement api preloads the first break the moment it is configured, so this has to
+// run at startup: calling it immediately before adBreak leaves nothing preloaded and the
+// break comes back empty. safe to call more than once, it only acts the first time.
+export const initAdPlacement = async () => {
+  if (configured) return;
+  if (!(await waitForAdBreak())) return;
+  configured = true;
+  window.adConfig?.({ preloadAdBreaks: "on", sound: "on" });
+};
+
 export const showRewardedAd = async (handlers: {
   onGranted: () => void;
   onDismissed: () => void;
-  onUnavailable: () => void;
+  // breakStatus is the placement api's own reason: noAdPreloaded, frequencyCapped,
+  // notReady, timeout, error, ignored, other. without it a no-fill and a broken
+  // integration look identical from here, which is exactly the hole this filled.
+  onUnavailable: (reason?: string) => void;
 }) => {
   const ready = await waitForAdBreak();
   if (!ready) {
     // adsbygoogle is the display-slot queue: it swallows a reward request without calling back
-    handlers.onUnavailable();
+    handlers.onUnavailable("scriptMissing");
     return;
   }
 
-  // the placement api wants its config before the first break is requested
-  window.adConfig?.({ preloadAdBreaks: "on", sound: "on" });
+  // normally already done at startup; this only matters if the script arrived late
+  await initAdPlacement();
 
   let shown = false;
   let settled = false;
@@ -87,6 +102,11 @@ export const showRewardedAd = async (handlers: {
     if (settled) return;
     settled = true;
     fn();
+  };
+  const unavailable = (reason?: string) => {
+    if (settled) return;
+    settled = true;
+    handlers.onUnavailable(reason);
   };
 
   window.adBreak?.({
@@ -98,9 +118,9 @@ export const showRewardedAd = async (handlers: {
     },
     adViewed: once(handlers.onGranted),
     adDismissed: once(handlers.onDismissed),
-    adBreakDone: () => {
+    adBreakDone: (info: { breakStatus?: string } = {}) => {
       // no fill: beforeReward never ran, so nothing was ever shown
-      if (!shown) once(handlers.onUnavailable)();
+      if (!shown) unavailable(info.breakStatus || "unknown");
     },
   });
 };

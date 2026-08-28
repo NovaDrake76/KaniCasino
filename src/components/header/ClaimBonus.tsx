@@ -118,7 +118,12 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
         await showRewardedAd({
           onGranted: () => finishAd(started.token),
           onDismissed: () => giveBack(i18n.t("nav.adClosedEarlyNo")),
-          onUnavailable: () => giveBack(i18n.t("nav.noAdAvailableRight")),
+          onUnavailable: (reason?: string) => {
+            // the player sees the same sentence either way; the reason is for us, and
+            // without it a no-fill is indistinguishable from a broken integration
+            console.warn("rewarded ad unavailable:", reason || "unknown");
+            giveBack(i18n.t("nav.noAdAvailableRight"));
+          },
         });
       } else {
         startMock(started.token, started.minWatchMs);
