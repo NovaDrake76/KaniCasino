@@ -121,6 +121,42 @@ const artLimiter = rateLimit({
   message: { message: "Too many images requested, slow down." },
 });
 
+// the limiters below all have the same shape, so they are built rather than copied. every
+// one is keyed per user and runs after isAuthenticated, and every ceiling is set far above
+// what a person can click: automation is allowed here, so these exist to bound what any one
+// account can ask of the database, not to decide who is playing by hand.
+const perUser = (max, message, windowMs = 10 * 1000) =>
+  rateLimit({
+    windowMs,
+    max,
+    keyGenerator: (req) => String(req.user._id),
+    skip: skipInTests,
+    standardHeaders: true,
+    legacyHeaders: false,
+    validate: { xForwardedForHeader: false },
+    message: { message },
+  });
+
+// opening a case is the heaviest write here: a roll, an inventory entry per item, a ledger
+// row and a broadcast to every connected client. a multi-open is still one request.
+const caseOpenLimiter = perUser(30, "Too many openings, slow down a little.");
+
+// an upgrade reads the staked copies and the catalog, then rewrites the inventory
+const upgradeLimiter = perUser(30, "Too many upgrades, slow down a little.");
+
+// one request per spin, same cost profile as a dice roll
+const slotSpinLimiter = perUser(40, "Too many spins, slow down a little.");
+
+// one request per action and a hand takes several, so it needs the headroom mines has
+const blackjackActionLimiter = perUser(80, "Too many actions, slow down a little.");
+
+// buying moves money and an inventory entry, and it is the one place where being fast is
+// a real advantage over other players rather than only over the house edge
+const marketBuyLimiter = perUser(30, "Too many purchases, slow down a little.");
+
+// listing and buy orders both write a row that other players then read
+const marketWriteLimiter = perUser(30, "Too many marketplace writes, slow down a little.");
+
 module.exports = {
   artLimiter,
   loginLimiter,
@@ -131,4 +167,10 @@ module.exports = {
   diceRollLimiter,
   minesActionLimiter,
   hiloActionLimiter,
+  caseOpenLimiter,
+  upgradeLimiter,
+  slotSpinLimiter,
+  blackjackActionLimiter,
+  marketBuyLimiter,
+  marketWriteLimiter,
 };

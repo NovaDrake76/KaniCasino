@@ -17,6 +17,7 @@ const fandom = require("../utils/fandom");
 const itemCatalog = require("../utils/itemCatalog");
 const { isRealMoneyMode } = require("../utils/mode");
 const { looksLikeId } = require("../utils/slugs");
+const { marketBuyLimiter, marketWriteLimiter } = require("../middleware/rateLimit");
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -126,7 +127,7 @@ module.exports = (io) => {
 
   // Create new listing. if a resting buy order already bids at or above the asking
   // price, the item sells instantly at that (better) bid.
-  router.post("/", isAuthenticated, async (req, res) => {
+  router.post("/", isAuthenticated, marketWriteLimiter, async (req, res) => {
     try {
       const { item: uniqueId } = req.body;
       const price = cleanPrice(req.body.price);
@@ -342,7 +343,7 @@ module.exports = (io) => {
 
   // place a buy order: fill instantly from the cheapest listings at or below the bid,
   // then escrow the remainder so a later match can never fail for lack of funds.
-  router.post("/orders", isAuthenticated, async (req, res) => {
+  router.post("/orders", isAuthenticated, marketWriteLimiter, async (req, res) => {
     try {
       const { itemId } = req.body;
       const price = cleanPrice(req.body.price);
@@ -634,7 +635,7 @@ module.exports = (io) => {
   });
 
   // Buy a listing outright (id here is the listing's _id)
-  router.post("/buy/:id", isAuthenticated, async (req, res) => {
+  router.post("/buy/:id", isAuthenticated, marketBuyLimiter, async (req, res) => {
     try {
       if (!isValidId(req.params.id)) {
         return res.status(404).json({ message: "Item not found" });
