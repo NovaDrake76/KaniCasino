@@ -205,8 +205,7 @@ async function revoke(userId, key) {
 module.exports = {
   TOP_FAN,
   CONTRIBUTOR,
-  CONNECTED,
-  KEYS,
+  CONNECTED,  KEYS,
   GRANTABLE,
   COLLECTION,
   isCollection,
@@ -218,7 +217,6 @@ module.exports = {
   heldBadges,
   wornBadge,
   awardConnected,
-  sweepConnected,
-  grant,
+  sweepConnected,  grant,
   revoke,
 };

@@ -5,7 +5,21 @@ import { test, expect } from "@playwright/test";
 test.beforeEach(async ({ page }) => {
   await page.route("**/cases**", (route) => route.fulfill({ json: [] }));
   await page.route("**/cases/most-opened**", (route) => route.fulfill({ json: [] }));
-  await page.route("**/topPlayers**", (route) => route.fulfill({ json: [] }));
+  await page.route("**/leaderboard**", (route) =>
+    route.fulfill({
+      json: {
+        boardId: "b1",
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 3600000).toISOString(),
+        serverTime: new Date().toISOString(),
+        paidPlaces: 10,
+        pool: 21700,
+        prizes: [10000, 5000, 2500, 1200, 900, 700, 500, 400, 300, 200],
+        standings: [],
+        me: null,
+      },
+    })
+  );
   await page.route("**/ranking**", (route) =>
     route.fulfill({ json: { ranking: 0, users: [] } })
   );

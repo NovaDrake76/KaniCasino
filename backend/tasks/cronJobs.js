@@ -1,51 +1,32 @@
 const cron = require('node-cron');
 const User = require('../models/User');
-const Notification = require("../models/Notification");
 const { pruneEmptyRounds } = require("../utils/roundPrune");
 const fandom = require("../utils/fandom");
 const badges = require("../utils/badges");
 const predictions = require("../utils/predictionSettlement");
+const leaderboard = require("../utils/leaderboard");
 
 module.exports = {
     startCronJobs: function (io) {
 
-        // Schedule a task to run every wesnesday at 8 pm -3 UTC
-        cron.schedule('0 20 * * 3', async () => {
+        // the weekly prize moved to the daily leaderboard in utils/leaderboard.js. weeklyWinnings is
+        // kept because the backoffice reports on it, so it still has to be cleared.
+        cron.schedule("0 20 * * 3", async () => {
             try {
-                //get the top 3 users and set the next bonus to 10000, 5000, 2500
-                const topUsers = await User.find({}, { username: 1, weeklyWinnings: 1, walletBalance: 1 })
-                    .sort({ weeklyWinnings: -1 })
-                    .limit(3);
-                const bonus = [10000, 5000, 2500];
-                for (let i = 0; i < topUsers.length; i++) {
-                    const user = topUsers[i];
-                    user.bonusAmount = bonus[i];
-                    await user.save();
-
-                    // Create a new notification
-                    const newNotification = new Notification({
-                        senderId: user._id,
-                        receiverId: user._id,
-                        type: 'message',
-                        title: `Award - ${i + 1} place`,
-                        content: `You have been awarded K₽${bonus[i]} for being in the top 3 on the leaderboard!`,
-                    });
-
-                    // Save the notification to the database
-                    await newNotification.save();
-
-                    // Emit an event to the user
-                    io.to(user._id.toString()).emit("newNotification", {
-                        message: `You have been awarded K₽${bonus[i]} for being in the top 3 on the leaderboard!`
-                    });
-                }
-
-                // Reset weekly winnings for all users
                 await User.updateMany({}, { weeklyWinnings: 0 });
-
-                console.log('Weekly winnings reset successfully.');
+                console.log("Weekly winnings reset successfully.");
             } catch (error) {
-                console.error('Error resetting weekly winnings:', error);
+                console.error("Error resetting weekly winnings:", error);
+            }
+        })
+
+        // the daily board closes on its own clock, so this only has to notice that the
+        // clock ran out. settling is idempotent and leased, so a minute tick is safe.
+        cron.schedule("* * * * *", async () => {
+            try {
+                await leaderboard.sweepBoards(io);
+            } catch (error) {
+                console.error("Error sweeping leaderboards:", error);
             }
         })
 
