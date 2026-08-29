@@ -82,6 +82,7 @@ const { sweepBlackjackHands } = require("./games/blackjack");
 const { sweepMinesGames } = require("./games/mines");
 const { sweepHiloGames } = require("./games/hilo");
 const { sweepSettlements } = require("./utils/predictionSettlement");
+const { sweepBoards } = require("./utils/leaderboard");
 const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
@@ -100,6 +101,7 @@ const emailRoutes = require("./routes/emailRoutes");
 const fandomRoutes = require("./routes/fandomRoutes");
 const predictionRoutes = require("./routes/predictionRoutes")(io);
 const discordRoutes = require("./routes/discordRoutes");
+const leaderboardRoutes = require("./routes/leaderboardRoutes");
 
 // Connect to MongoDB
 mongoose
@@ -174,6 +176,7 @@ app.use("/gift", giftRoutes);
 app.use("/fandom", fandomRoutes);
 app.use("/predictions", predictionRoutes);
 app.use("/discord", discordRoutes);
+app.use("/leaderboard", leaderboardRoutes);
 
 // settle whatever the last shutdown interrupted before dealing anyone in again: a live
 // crash or coin flip round holds real stakes, and until this runs they are unaccounted.
@@ -189,6 +192,7 @@ const sweepRounds = ({ boot = false } = {}) => {
   sweepMinesGames(io).catch((e) => console.log(e));
   sweepHiloGames(io).catch((e) => console.log(e));
   sweepSettlements(io).catch((e) => console.log(e));
+  sweepBoards(io).catch((e) => console.log(e));
 };
 sweepRounds({ boot: true });
 setInterval(() => sweepRounds({ boot: false }), 5 * 60 * 1000);

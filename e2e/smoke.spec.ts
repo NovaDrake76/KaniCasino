@@ -18,7 +18,21 @@ test.beforeEach(async ({ page }) => {
   // registered after the catch-all so it wins: playwright matches newest route first.
   // empty by default, so the same case title never renders in two sections at once
   await page.route("**/cases/most-opened**", (route) => route.fulfill({ json: [] }));
-  await page.route("**/topPlayers**", (route) => route.fulfill({ json: [] }));
+  await page.route("**/leaderboard**", (route) =>
+    route.fulfill({
+      json: {
+        boardId: "b1",
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 3600000).toISOString(),
+        serverTime: new Date().toISOString(),
+        paidPlaces: 10,
+        pool: 21700,
+        prizes: [10000, 5000, 2500, 1200, 900, 700, 500, 400, 300, 200],
+        standings: [],
+        me: null,
+      },
+    })
+  );
   await page.route("**/ranking**", (route) =>
     route.fulfill({ json: { ranking: 0, users: [] } })
   );
@@ -87,7 +101,7 @@ test("the most opened section renders above the games and category listings", as
   const ys = [
     await topOf("Most Opened Cases"),
     await topOf("Our Games"),
-    await topOf(/^LEADERBOARD$/),
+    await topOf(/^DAILY LEADERBOARD$/),
     await topOf("Event Cases"),
   ];
   expect(ys.every((y) => y !== null)).toBe(true);
@@ -193,12 +207,22 @@ test("the login modal ends up above the category bar, not under it", async ({ pa
 // the leaderboard avatars are drawn round and lifted, and at z-50 they rode over the sticky
 // bar as the page scrolled past them
 test("page content scrolls under the category bar, never over it", async ({ page }) => {
-  await page.route("**/topPlayers**", (route) =>
+  await page.route("**/leaderboard**", (route) =>
     route.fulfill({
-      json: [1, 2, 3].map((i) => ({
-        _id: `p${i}`, username: `player-${i}`, level: 10 * i,
-        profilePicture: IMG, weeklyWinnings: 1000 * i,
-      })),
+      json: {
+        boardId: "b1",
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 3600000).toISOString(),
+        serverTime: new Date().toISOString(),
+        paidPlaces: 10,
+        pool: 21700,
+        prizes: [10000, 5000, 2500, 1200, 900, 700, 500, 400, 300, 200],
+        standings: [1, 2, 3].map((i) => ({
+          _id: `p${i}`, rank: i, points: 5000 - 1000 * i, bets: i, prize: 10000 / i,
+          username: `player-${i}`, level: 10 * i, profilePicture: IMG, badge: null,
+        })),
+        me: null,
+      },
     })
   );
   await page.setViewportSize({ width: 1280, height: 720 });

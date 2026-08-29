@@ -21,6 +21,7 @@ const COUNTERPARTY_FOR_TYPE = {
   ad_reward: MINT, // KP printed against outside ad revenue
 
   referral_commission: HOUSE, // the house shares its edge with the affiliate
+  leaderboard_prize: HOUSE, // rakeback: the daily board pays out of the edge it measures
   admin_adjust: MINT,
   case_open: HOUSE,
   slot_bet: HOUSE,
