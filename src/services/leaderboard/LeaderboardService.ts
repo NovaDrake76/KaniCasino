@@ -21,6 +21,7 @@ export interface BoardStanding {
 }
 
 export interface BoardMe {
+  _id: string;
   points: number;
   bets: number;
   rank: number | null;

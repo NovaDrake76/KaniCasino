@@ -44,8 +44,8 @@ const Clock = ({ countdown, pool, paidPlaces }: { countdown: Countdown; pool: nu
     </div>
 );
 
-const Row = ({ user }: { user: BoardStanding }) => (
-    <tr>
+const Row = ({ user, mine, mobileOnly }: { user: BoardStanding; mine?: boolean; mobileOnly?: boolean }) => (
+    <tr className={`${mine ? "bg-surface-nav" : ""} ${mobileOnly ? "md:hidden" : ""}`}>
         <td className="px-6 py-4 whitespace-nowrap">#{user.rank}</td>
         <td className="flex p-4 items-center gap-2">
             <Player user={user as never} size="small" />
@@ -160,10 +160,12 @@ const LeaderboardView = ({
     loading,
     podium,
     rest,
+    podiumRest,
     countdown,
     pool,
     paidPlaces,
     me,
+    meOnBoard,
     lastResult,
     dismissResult,
     points,
@@ -232,8 +234,15 @@ const LeaderboardView = ({
                             </tr>
                         )}
 
-                        {!loading && rest.map((user) => <Row key={user._id} user={user} />)}
-                        {!loading && me && <YourRow me={me} paidPlaces={paidPlaces} />}
+                        {!loading && podiumRest.map((user) => (
+                            <Row key={user._id} user={user} mine={me?._id === user._id} mobileOnly />
+                        ))}
+                        {!loading && rest.map((user) => (
+                            <Row key={user._id} user={user} mine={me?._id === user._id} />
+                        ))}
+                        {/* only when they are not already a row above, or the board shows
+                            the same player twice */}
+                        {!loading && me && !meOnBoard && <YourRow me={me} paidPlaces={paidPlaces} />}
                         {!loading && !podium.length && (
                             <tr>
                                 <td colSpan={4} className="px-6 py-12 text-center text-sm text-ink-soft">

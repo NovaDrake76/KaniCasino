@@ -59,6 +59,8 @@ router.get("/", maybeAuthenticated, async (req, res) => {
       const mine = await leaderboard.standingFor(req.user._id, current.startsAt, current.endsAt);
       const lastPaid = rows.length >= leaderboard.PAID_PLACES ? rows[rows.length - 1].points : 0;
       payload.me = {
+        // the id lets the board mark the caller's own row rather than repeat it underneath
+        _id: String(req.user._id),
         ...mine,
         // what it would take to reach the last paid place, which is the only number a
         // player outside the top ten actually wants
