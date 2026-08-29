@@ -43,7 +43,7 @@ const Upgrade: React.FC = () => {
 
                 <TopContent selectedItems={selectedItems} setSelectedItems={setSelectedItems} selectedTarget={selectedTarget}
                     setSelectedTarget={setSelectedTarget} successRate={successRate} finished={finished} setFinished={setFinished}
-                    toggleReload={toggleReload} setToggleReload={setToggleReload} setSelectedCase={setSelectedCase}
+                    toggleReload={toggleReload} setToggleReload={setToggleReload}
                     spinning={spinning} setSpinning={setSpinning} />
                 <div className="flex justify-center">
                     <Title title={i18n.t("help.upgradeItems")} />
