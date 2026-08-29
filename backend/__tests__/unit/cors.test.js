@@ -1,4 +1,4 @@
-const { parseOrigins, originAllowed } = require("../../utils/cors");
+const { parseOrigins, originAllowed, PREFLIGHT_MAX_AGE } = require("../../utils/cors");
 
 describe("allowed origins", () => {
   it("splits, trims and drops blanks", () => {
@@ -31,5 +31,20 @@ describe("who gets through the cors gate", () => {
 
   it("lets everything through in development", () => {
     expect(originAllowed("https://evil.example", { isDevelopment: true, allowedOrigins: [] })).toBe(true);
+  });
+});
+
+// a preflight the browser cannot cache is a second round trip on every authenticated
+// request, and nothing else in the suite would notice it going missing
+describe("preflight caching", () => {
+  it("keeps a max-age the browser will actually honour", () => {
+    expect(PREFLIGHT_MAX_AGE).toBeGreaterThan(0);
+    // chrome caps it here and silently clamps anything larger
+    expect(PREFLIGHT_MAX_AGE).toBeLessThanOrEqual(7200);
+  });
+
+  it("is wired into the server's cors options", () => {
+    const source = require("node:fs").readFileSync(require("node:path").join(__dirname, "../../index.js"), "utf8");
+    expect(source).toMatch(/maxAge:\s*PREFLIGHT_MAX_AGE/);
   });
 });

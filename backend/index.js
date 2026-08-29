@@ -30,7 +30,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 // allowed origins are configurable via ALLOWED_ORIGINS (comma-separated); falls
 // back to the production domain so behaviour is unchanged when it isn't set
-const { parseOrigins, originAllowed } = require("./utils/cors");
+const { parseOrigins, originAllowed, PREFLIGHT_MAX_AGE } = require("./utils/cors");
 const allowedOrigins = parseOrigins(process.env.ALLOWED_ORIGINS);
 
 const isOriginAllowed = (origin) => originAllowed(origin, { isDevelopment, allowedOrigins });
@@ -47,6 +47,7 @@ const corsOptions = {
   origin: corsOrigin,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   credentials: true,
+  maxAge: PREFLIGHT_MAX_AGE,
 };
 
 app.use((req, res, next) => {
