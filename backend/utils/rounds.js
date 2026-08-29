@@ -44,6 +44,16 @@ async function settledUserIds(roundId, types) {
   return new Set(rows.map((t) => String(t.userId)));
 }
 
+// every stake this round took, from the ledger for the same reason: the charge lands
+// before the bet reaches the round doc, so a restart in between leaves a stake that is
+// real and paid for but invisible in round.bets. meta.side carries the coin flip pick.
+async function stakesIn(roundId, types) {
+  return Transaction.find({
+    type: types.bet,
+    "meta.roundId": String(roundId),
+  }).select("userId amount meta.side");
+}
+
 // give back every stake this round took and never settled. a player who cashed out of
 // crash already has their money and is left alone; a player who never got the chance is
 // made whole, because a round that did not finish cannot be said to have lost.
@@ -62,10 +72,7 @@ async function voidRound(round, io = noopIo) {
   if (!claimed) return null; // already given back, or another runner holds the lease
 
   const settled = await settledUserIds(claimed._id, types);
-  const staked = await Transaction.find({
-    type: types.bet,
-    "meta.roundId": String(claimed._id),
-  }).select("userId amount");
+  const staked = await stakesIn(claimed._id, types);
 
   for (const stake of staked) {
     const userId = String(stake.userId);
@@ -98,16 +105,20 @@ async function settleInterruptedCoinFlip(round, io = noopIo, payoutFor) {
 
   const winningSide = claimed.outcome && claimed.outcome.winningSide;
   const settled = await settledUserIds(claimed._id, types);
+  // the ledger, not claimed.bets: a stake charged in the moment before the round doc was
+  // written belongs to a player who backed a side and paid for it, and reading the doc
+  // dropped them from the payout without a trace
+  const staked = await stakesIn(claimed._id, types);
 
-  for (const bet of claimed.bets) {
-    if (bet.side !== winningSide) continue;
-    const userId = String(bet.userId);
+  for (const stake of staked) {
+    if (!stake.meta || stake.meta.side !== winningSide) continue;
+    const userId = String(stake.userId);
     if (settled.has(userId)) continue;
     settled.add(userId);
-    const payout = payoutFor(bet.amount);
-    const user = await creditUser(bet.userId, payout, payout - bet.amount, {
+    const payout = payoutFor(stake.amount);
+    const user = await creditUser(stake.userId, payout, payout - stake.amount, {
       type: types.paid,
-      meta: { roundId: String(claimed._id), betAmount: bet.amount, payout, side: winningSide },
+      meta: { roundId: String(claimed._id), betAmount: stake.amount, payout, side: winningSide },
     });
     emitUserData(io, userId, user);
   }

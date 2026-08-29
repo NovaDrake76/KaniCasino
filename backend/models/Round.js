@@ -9,6 +9,7 @@ const roundBetSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     side: String, // coin flip: "heads" / "tails"
     multiplier: Number, // crash: what they cashed out at
+    autoCashoutAt: Number, // crash: the target they set, the one action a restart could have resolved
     payout: { type: Number, default: 0 },
     settledAt: Date,
   },

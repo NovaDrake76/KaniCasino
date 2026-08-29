@@ -194,13 +194,40 @@ sweepRounds({ boot: true });
 setInterval(() => sweepRounds({ boot: false }), 5 * 60 * 1000);
 
 // Start the games
-coinFlip(io);
-crash(io);
+const stopCoinFlip = coinFlip(io);
+const stopCrash = crash(io);
 caseBattle(io);
 
 // Start the cron jobs
 cronJobs.startCronJobs(io);
 adminRoutes.attachPredictionSettlement(io);
+
+// every deploy used to kill a live round and leave the stakes to the next boot's sweep.
+// settling here instead is the same code on a round that is one, not a backlog, and the
+// players are still connected, so the refund actually reaches them. pm2 sends SIGINT and
+// waits kill_timeout before SIGKILL, so this is best-effort by design: whatever it does
+// not finish is still marked unfinished, and the boot sweep picks it up as before.
+let shuttingDown = false;
+const shutdown = async (signal) => {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`${signal}: closing betting and settling the live rounds`);
+  try {
+    await Promise.all([stopCrash(), stopCoinFlip()]);
+    await recoverStuckRounds(io, coinFlip.winPayout, { boot: true });
+  } catch (e) {
+    console.log("shutdown settle did not finish, the boot sweep will:", e);
+  }
+  server.close();
+  try {
+    await mongoose.connection.close();
+  } catch (e) {
+    // nothing left to do about it, we are on the way out
+  }
+  process.exit(0);
+};
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
 
 const port = process.env.PORT || 5000;
 

@@ -20,11 +20,12 @@ const makeUser = (walletBalance) => {
 
 const balanceOf = async (user) => (await User.findById(user._id)).walletBalance;
 
-// the ledger row chargeUser writes when a stake is taken
-const stakeRow = (user, round, amount, type) =>
+// the ledger row chargeUser writes when a stake is taken. coin flip carries the pick in
+// meta.side, exactly as games/coinFlip.js writes it, because that is what recovery reads
+const stakeRow = (user, round, amount, type, side) =>
   Transaction.create({
     userId: user._id, type, direction: "debit", amount, balanceAfter: 0,
-    meta: { roundId: String(round._id) },
+    meta: { roundId: String(round._id), ...(side ? { side } : {}) },
   });
 
 const paidRow = (user, round, amount, type) =>
@@ -98,8 +99,8 @@ describe("rounds a restart left in flight", () => {
         { userId: loser._id, amount: 100, side: "tails" },
       ],
     });
-    await stakeRow(winner, round, 100, TX.COINFLIP_BET);
-    await stakeRow(loser, round, 100, TX.COINFLIP_BET);
+    await stakeRow(winner, round, 100, TX.COINFLIP_BET, "heads");
+    await stakeRow(loser, round, 100, TX.COINFLIP_BET, "tails");
 
     expect(await recover()).toEqual({ voided: 0, settled: 1 });
 
@@ -115,11 +116,25 @@ describe("rounds a restart left in flight", () => {
       game: "coinflip", status: "running", outcome: { result: 0, winningSide: "heads" },
       bets: [{ userId: winner._id, amount: 100, side: "heads" }],
     });
-    await stakeRow(winner, round, 100, TX.COINFLIP_BET);
+    await stakeRow(winner, round, 100, TX.COINFLIP_BET, "heads");
     await paidRow(winner, round, winPayout(100), TX.COINFLIP_WIN);
 
     await recover();
 
+    expect(await balanceOf(winner)).toBe(900 + winPayout(100));
+  });
+
+  test("a winning stake the round doc never recorded is still paid", async () => {
+    // the charge lands, then the process dies before the bet reaches the round doc. reading
+    // claimed.bets dropped this player from the payout and silently kept their stake.
+    const winner = await makeUser(900);
+    const round = await Round.create({
+      game: "coinflip", status: "running", outcome: { result: 0, winningSide: "heads" },
+      bets: [],
+    });
+    await stakeRow(winner, round, 100, TX.COINFLIP_BET, "heads");
+
+    expect(await recover()).toEqual({ voided: 0, settled: 1 });
     expect(await balanceOf(winner)).toBe(900 + winPayout(100));
   });
 

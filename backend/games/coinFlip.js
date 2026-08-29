@@ -36,7 +36,7 @@ const publicCoinState = (state) => ({
 
 // the timings are arguments so a test can run a whole round in milliseconds against a
 // real database. faking the clock instead breaks the mongo driver's own timers.
-const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {}) => {
+const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000, drainMs = 3000 } = {}) => {
   let gameState = freshState();
   // the persisted record of the round being played. bets refuse to open without one:
   // taking a stake we cannot account for later is the thing this exists to stop.
@@ -50,6 +50,8 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {
   let stopped = false;
   let nextRound = null;
   let reveal = null;
+  // the reveal's payout run, so a shutdown can wait for it rather than settle alongside it
+  let settling = null;
 
   io.on("connection", (socket) => {
     socket.on("coinFlip:bet", async (bet, choice, callback) => {
@@ -214,8 +216,7 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {
       ).catch((e) => console.log(e));
     }
 
-    reveal = setTimeout(async () => {
-      if (stopped) return;
+    const settleFlip = async () => {
       io.emit("coinFlip:result", result);
       // the seed is revealed only now, so nobody could have known the flip early
       io.emit("coinFlip:reveal", {
@@ -235,18 +236,29 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000 } = {
       }
 
       openBetting();
+    };
+
+    reveal = setTimeout(() => {
+      if (stopped) return;
+      settling = settleFlip().catch((e) => console.log(e));
     }, revealMs);
   };
 
   openBetting();
 
-  // stops the loop cleanly. the process exiting mid-round is exactly what the round
-  // record exists to survive, but there is no reason to thrash on the way out.
-  return () => {
+  // stops the loop cleanly, then waits for the money already moving. the caller settles the
+  // round afterwards by reading the ledger, so a charge or a payout still in flight has to
+  // have written its row first: otherwise the settle pays a winner the loop just paid.
+  return async () => {
     stopped = true;
     bettingOpen = false;
     if (nextRound) clearTimeout(nextRound);
     if (reveal) clearTimeout(reveal);
+    if (settling) await settling.catch(() => {});
+    const until = Date.now() + drainMs;
+    while (pendingBets.size && Date.now() < until) {
+      await new Promise((r) => setTimeout(r, 25));
+    }
   };
 };
 

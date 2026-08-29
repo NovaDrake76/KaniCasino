@@ -23,6 +23,7 @@ const { crashPointFromSeed } = require("../../utils/crashMath");
 const { coinResultFromSeed } = require("../../utils/coinMath");
 const crashGame = require("../../games/crash");
 const coinFlip = require("../../games/coinFlip");
+const { recoverStuckRounds } = require("../../utils/rounds");
 
 const seedBy = (hash, pred) => {
   for (let i = 0; i < 200000; i++) {
@@ -71,7 +72,7 @@ const start = (game, io, opts) => {
 };
 
 afterEach(async () => {
-  while (running.length) running.pop()();
+  while (running.length) await running.pop()();
   jest.restoreAllMocks();
   await clearDb();
 });
@@ -255,4 +256,57 @@ test("no stake is taken while the round record cannot be written", async () => {
   expect(reply).toEqual({ error: "Betting is closed for this round" });
   expect((await User.findById(user._id)).walletBalance).toBe(5000);
   expect(await Transaction.countDocuments({ userId: user._id })).toBe(0);
+});
+
+describe("a graceful stop settles in process rather than leaving it to the next boot", () => {
+  test("the live crash round is voided and the stake goes back exactly once", async () => {
+    mockCrashSeed = RUNNING_SEED; // a long round, so it is still live when the stop lands
+    const user = await makeUser(5000);
+    const io = makeIo();
+
+    const stop = start(crashGame, io, FAST_CRASH);
+    const socket = makeSocket(String(user._id));
+    io.connection(socket);
+    const opened = await betOnRound("crash", "crash:bet", socket, [100]);
+    expect((await User.findById(user._id)).walletBalance).toBe(4900);
+
+    await stop();
+    await recoverStuckRounds(io, coinFlip.winPayout, { boot: true });
+
+    const done = await Round.findById(opened._id);
+    expect(done.status).toBe("voided");
+    expect(done.settlementDone).toBe(true);
+    expect((await User.findById(user._id)).walletBalance).toBe(5000);
+    expect(
+      await Transaction.countDocuments({ userId: user._id, type: TX.CRASH_REFUND })
+    ).toBe(1);
+  });
+
+  test("a flip that already landed pays its winner once, whoever gets there first", async () => {
+    // the stop can arrive before or after the reveal's own payout loop; either way the
+    // winner is owed one payout, and the drain is what stops the second one
+    mockCoinSeed = HEADS_SEED;
+    const user = await makeUser(5000);
+    const io = makeIo();
+
+    const stop = start(coinFlip, io, FAST_FLIP);
+    const socket = makeSocket(String(user._id));
+    io.connection(socket);
+    const opened = await betOnRound("coinflip", "coinFlip:bet", socket, [100, 0]);
+    await until(async () => {
+      const r = await Round.findById(opened._id);
+      return r && r.status !== "betting" ? r : null;
+    }, "the flip to land");
+
+    await stop();
+    await recoverStuckRounds(io, coinFlip.winPayout, { boot: true });
+
+    const paid = await Transaction.find({
+      userId: user._id,
+      type: TX.COINFLIP_WIN,
+      "meta.roundId": String(opened._id),
+    });
+    expect(paid).toHaveLength(1);
+    expect((await User.findById(user._id)).walletBalance).toBe(5000 - 100 + 194);
+  });
 });
