@@ -11,7 +11,6 @@ import i18n from "../../i18n";
 interface Props {
     selectedItems: any[];
     setSelectedItems: React.Dispatch<React.SetStateAction<any[]>>;
-    setSelectedCase: React.Dispatch<React.SetStateAction<string | null>>;
     selectedTarget: any;
     setSelectedTarget: React.Dispatch<React.SetStateAction<any>>;
     successRate: number;
@@ -23,7 +22,7 @@ interface Props {
     setSpinning: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selectedTarget, setSelectedTarget, successRate, finished, setFinished, setToggleReload, toggleReload, setSelectedCase, spinning, setSpinning }) => {
+const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selectedTarget, setSelectedTarget, successRate, finished, setFinished, setToggleReload, toggleReload, spinning, setSpinning }) => {
     const [loadingUpgrade, setLoadingUpgrade] = useState<boolean>(false);
     const [stopAngle, setStopAngle] = useState(0);
     const [success, setSuccess] = useState(false);
@@ -63,11 +62,9 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
                 setSuccess(response.success)
                 setFinished(true);
                 setStopAngle(0);
-
-                if (response.success) {
-                    setSelectedCase(null);
-                    setSelectedTarget(null);
-                }
+                // the staked copies are gone, so they clear; the target does not. a player
+                // chasing a second copy of the same character would otherwise have to pick
+                // the case and the item again after every single attempt.
             }, 8000);
 
         } catch (err: any) {
