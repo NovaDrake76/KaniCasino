@@ -44,33 +44,59 @@ function App() {
   const [notification, setNotification] = useState<any>();
 
   const socket = SocketConnection.getInstance();
-  const missionCheck = useRef<{ inFlight: boolean; last: number }>({ inFlight: false, last: 0 });
+  const missionCheck = useRef<{ inFlight: boolean; timer: number | null; queuedAt: number }>({
+    inFlight: false,
+    timer: null,
+    queuedAt: 0,
+  });
   const userIdRef = useRef<string | null>(null);
 
   if(environment == "production"){
     disableReactDevTools();
   }
 
-  // ask the server for missions that just became claimable and toast them once.
-  // best-effort: throttled on the frequent light path, never blocks anything.
-  const checkMissions = (light: boolean) => {
-    if (!localStorage.getItem("accessToken")) return;
+  // the light check rides on the balance socket, and an auto run changes the balance every
+  // round: at the old 1.5s throttle that became a poll, one request per round-and-a-half,
+  // each of which groups the player's entire ledger. it now waits for the activity to
+  // stop, so a whole auto run costs one check instead of hundreds.
+  const MISSION_QUIET_MS = 4000;
+  const MISSION_MAX_WAIT_MS = 30000;
+
+  const runMissionCheck = (light: boolean) => {
     const c = missionCheck.current;
     if (c.inFlight) return;
-    if (light && Date.now() - c.last < 1500) return;
     c.inFlight = true;
+    c.queuedAt = 0;
     const missionsPath = userIdRef.current ? `/profile/${userIdRef.current}?tab=missions` : undefined;
     getPendingMissions(light)
-      .then((pending) => {
-        pending.forEach((m) => toastMissionComplete(m, missionsPath));
-        c.last = Date.now();
-      })
+      .then((pending) => pending.forEach((m) => toastMissionComplete(m, missionsPath)))
       .catch(() => {
         // best-effort: never let a mission check surface an error
       })
       .finally(() => {
         c.inFlight = false;
       });
+  };
+
+  // ask the server for missions that just became claimable and toast them once.
+  const checkMissions = (light: boolean) => {
+    if (!localStorage.getItem("accessToken")) return;
+    if (!light) return runMissionCheck(false);
+
+    const c = missionCheck.current;
+    const now = Date.now();
+    if (!c.queuedAt) c.queuedAt = now;
+    // a run that never goes quiet still gets checked, just not on every round
+    if (now - c.queuedAt >= MISSION_MAX_WAIT_MS) {
+      if (c.timer) window.clearTimeout(c.timer);
+      c.timer = null;
+      return runMissionCheck(true);
+    }
+    if (c.timer) window.clearTimeout(c.timer);
+    c.timer = window.setTimeout(() => {
+      c.timer = null;
+      runMissionCheck(true);
+    }, MISSION_QUIET_MS);
   };
 
   const userDataSocket = () => {
@@ -87,6 +113,9 @@ function App() {
 
     return () => {
       socket.off("userDataUpdated");
+      const c = missionCheck.current;
+      if (c.timer) window.clearTimeout(c.timer);
+      c.timer = null;
     };
   }
 

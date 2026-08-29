@@ -14,4 +14,11 @@ function originAllowed(origin, { isDevelopment = false, allowedOrigins = [] } = 
   return isDevelopment || !origin || allowedOrigins.includes(origin);
 }
 
-module.exports = { parseOrigins, originAllowed };
+// every authenticated call carries Authorization and x-api-key, which makes it a
+// preflighted request. without a max-age the browser re-asks before each one, and chrome
+// only caches for five seconds by default: an auto run paid a whole extra round trip per
+// action, which for a player far from the box was most of the wait. 7200 is chrome's
+// ceiling; firefox keeps it for a day.
+const PREFLIGHT_MAX_AGE = 7200;
+
+module.exports = { parseOrigins, originAllowed, PREFLIGHT_MAX_AGE };
