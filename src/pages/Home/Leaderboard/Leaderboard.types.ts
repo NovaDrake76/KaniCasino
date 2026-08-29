@@ -12,6 +12,7 @@ export interface LeaderboardViewProps {
   // the three podium places, already ordered 2nd / 1st / 3rd the way they are drawn
   podium: BoardStanding[];
   rest: BoardStanding[];
+  podiumRest: BoardStanding[];
   countdown: Countdown;
   pool: number;
   paidPlaces: number;

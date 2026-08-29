@@ -108,6 +108,9 @@ export const useLeaderboardServices = () => {
     board,
     podium: podiumOrder(standings),
     rest: standings.slice(3),
+    // the podium only stands first place on mobile, so second and third join the table
+    // there rather than disappearing off the board entirely
+    podiumRest: standings.slice(1, 3),
     countdown,
     pool: board ? board.pool : 0,
     me,
