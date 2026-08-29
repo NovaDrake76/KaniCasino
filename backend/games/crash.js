@@ -26,7 +26,7 @@ const publicState = (state) => ({
 
 // the timings are arguments so a test can run a whole round in milliseconds against a
 // real database. faking the clock instead breaks the mongo driver's own timers.
-const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) => {
+const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000, drainMs = 3000 } = {}) => {
   let gameState = freshState();
   // the persisted record of the round being played. bets refuse to open without one:
   // taking a stake we cannot account for later is the thing this exists to stop.
@@ -42,6 +42,8 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
   let stopped = false;
   let nextRound = null;
   let ticker = null;
+  // the tick that is paying auto-cashouts right now, so a shutdown can wait for it
+  let settling = null;
 
   io.on("connection", (socket) => {
     // sync a joiner to the round in progress: without this a missed crash:start leaves
@@ -125,7 +127,7 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
           { _id: activeRound._id },
           {
             $push: {
-              bets: { userId, username: updatedUser.username, amount, payout: 0 },
+              bets: { userId, username: updatedUser.username, amount, payout: 0, autoCashoutAt },
             },
           }
         );
@@ -300,8 +302,9 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
       if (stopped) return clearInterval(multiplierInterval);
       if (ticking) return;
       ticking = true;
+      settling = tick();
       try {
-        await tick();
+        await settling;
       } finally {
         ticking = false;
       }
@@ -356,13 +359,19 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000 } = {}) 
 
   openBetting();
 
-  // stops the loop cleanly. the process exiting mid-round is exactly what the round
-  // record exists to survive, but there is no reason to thrash on the way out.
-  return () => {
+  // stops the loop cleanly, then waits for the money already moving. the caller voids the
+  // round afterwards by reading the ledger, so a charge or a cashout still in flight has
+  // to have written its row first: otherwise the void refunds a stake that just got paid.
+  return async () => {
     stopped = true;
     bettingOpen = false;
     if (nextRound) clearTimeout(nextRound);
     if (ticker) clearInterval(ticker);
+    if (settling) await settling.catch(() => {});
+    const until = Date.now() + drainMs;
+    while ((pendingBets.size || pendingCashouts.size) && Date.now() < until) {
+      await new Promise((r) => setTimeout(r, 25));
+    }
   };
 };
 
