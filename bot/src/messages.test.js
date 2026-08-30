@@ -52,3 +52,70 @@ test("the showcase answers name the person who has to act", () => {
   assert.match(aboutYou, /^You have not/, "the caller is the one who has to act");
   assert.match(aboutYou, /\/link/);
 });
+
+// A player called the demo spin's bare "Create an account" button suspicious: nothing on
+// the message said where the account would be, or who was asking. Every message the bot
+// sends signs itself with the domain now, and the link buttons name it too.
+test("every message the bot sends carries the site it came from", () => {
+  process.env.SITE_URL = process.env.SITE_URL || "https://kanicasino.com";
+  const embeds = require("./embeds");
+  const spin = require("./spin");
+  const menu = require("./menu");
+  const host = embeds.HOST;
+
+  const item = { name: "Sakuya", rarity: "5", value: 900, image: "https://x/y.png" };
+  const card = { username: "someone", level: 3, userId: "u1" };
+
+  const built = {
+    "embeds.noticeEmbed": embeds.noticeEmbed("anything at all"),
+    "embeds.showcaseEmbed": embeds.showcaseEmbed(card),
+    "embeds.topFanEmbed": embeds.topFanEmbed({ name: "Sakuya", ranks: [] }, "a server"),
+    "embeds.leaderboardEmbed": embeds.leaderboardEmbed({ players: [] }, "a server"),
+    "embeds.linkEmbed": embeds.linkEmbed({ url: "https://x/link" }),
+    "spin.spinningFrame": spin.spinningFrame("Nuclear", [{ name: "a", rarity: "1" }], 0, false, null),
+    "spin.revealFrame": spin.revealFrame({ item, caseTitle: "Nuclear", caseId: "c1", ownerId: "u1" }),
+    "spin.demoFrame": spin.demoFrame({ item, caseTitle: "Nuclear" }),
+    "menu.categoryFrame": menu.categoryFrame([{ name: "Touhou", count: 2, from: 60 }]),
+    "menu.categoryFrame (empty)": menu.categoryFrame([]),
+    "menu.caseFrame": menu.caseFrame({
+      category: "Touhou",
+      cases: [{ id: "c1", title: "Nuclear", price: 60 }],
+      total: 1,
+      offset: 0,
+    }),
+    "menu.chosenFrame": menu.chosenFrame("Nuclear"),
+  };
+
+  const unsigned = Object.entries(built)
+    .filter(([, message]) => !JSON.stringify(message.toJSON()).includes(host))
+    .map(([name]) => name);
+
+  assert.deepStrictEqual(unsigned, [], "these go out with nothing saying where they came from");
+});
+
+test("the demo spin says where the account would be, on the button as well", () => {
+  process.env.SITE_URL = process.env.SITE_URL || "https://kanicasino.com";
+  const { demoFrame, HOST } = require("./spin");
+  const json = JSON.stringify(
+    demoFrame({ item: { name: "Sakuya", rarity: "5", value: 900 }, caseTitle: "Nuclear" }).toJSON()
+  );
+
+  assert.ok(json.includes(`Create a free account on **${HOST}**`), "the copy names the site");
+  // the label itself, because a link button showing only "Create an account" is the part
+  // that reads as a scam
+  assert.ok(json.includes(`"label":"Create an account on ${HOST}"`), "so does the button");
+});
+
+test("help lists the command the bot exists for", () => {
+  process.env.SITE_URL = process.env.SITE_URL || "https://kanicasino.com";
+  const { commands } = require("./commands");
+  const names = commands.map((command) => command.data.name);
+
+  // /open was missing from help, which is how a player came to ask for a series-then-case
+  // picker that /open has had all along
+  const source = fs.readFileSync(path.join(__dirname, "commands.js"), "utf8");
+  const help = source.slice(source.indexOf('setName("help")'));
+  for (const name of names.filter((n) => n !== "help")) {
+    assert.ok(help.includes(`\`/${name}\``), `/${name} is not in the help list`);
+  }
+});

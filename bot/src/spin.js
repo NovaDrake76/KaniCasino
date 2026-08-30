@@ -106,13 +106,20 @@ function reelRow(strip, offset) {
 }
 
 function spinningFrame(caseTitle, strip, offset, landed, rarity) {
-  return new ContainerBuilder()
+  const container = new ContainerBuilder()
     .setAccentColor(landed ? colorOf(rarity) : SPINNING)
     .addTextDisplayComponents(new TextDisplayBuilder().setContent(`Opening **${caseTitle}**`))
     .addTextDisplayComponents(new TextDisplayBuilder().setContent(reelRow(strip, offset)));
+  return sign(container);
 }
 
 const buttons = (...rows) => new ActionRowBuilder().addComponents(...rows.filter(Boolean));
+
+// a container has no footer of its own, so the signature is a small trailing line. `-# `
+// is discord's subtext, which renders it the way an embed footer reads.
+const HOST = SITE.replace(/^https?:\/\//, "");
+const sign = (container) =>
+  container.addTextDisplayComponents(new TextDisplayBuilder().setContent(`-# ${HOST}`));
 
 // a section is only valid with an accessory, so an item carrying no art gets a plain
 // heading. building it the other way throws, and discord does not say so until a player
@@ -152,10 +159,13 @@ function revealFrame({ item, caseTitle, caseId, ownerId, fanRank }) {
   container.addActionRowComponents(
     buttons(
       new ButtonBuilder().setCustomId(`open:${caseId}:${ownerId}`).setLabel("Open another").setStyle(ButtonStyle.Primary),
-      new ButtonBuilder().setLabel("Open it on the site").setStyle(ButtonStyle.Link).setURL(`${SITE}/case/${caseId}`)
+      new ButtonBuilder()
+        .setLabel(`Open it on ${HOST}`)
+        .setStyle(ButtonStyle.Link)
+        .setURL(`${SITE}/case/${caseId}`)
     )
   );
-  return container;
+  return sign(container);
 }
 
 // the same reveal for somebody with no account, saying plainly that it was not kept
@@ -165,12 +175,19 @@ function demoFrame({ item, caseTitle }) {
   addHeading(container, item, caseTitle);
   container.addSeparatorComponents(new SeparatorBuilder());
   container.addTextDisplayComponents(
-    new TextDisplayBuilder().setContent("This was a demo spin. Create an account to keep the next rolls.")
+    new TextDisplayBuilder().setContent(
+      `This was a demo spin. Create a free account on **${HOST}** to keep the next rolls.`
+    )
   );
   container.addActionRowComponents(
-    buttons(new ButtonBuilder().setLabel("Create an account").setStyle(ButtonStyle.Link).setURL(SITE))
+    buttons(
+      new ButtonBuilder()
+        .setLabel(`Create an account on ${HOST}`)
+        .setStyle(ButtonStyle.Link)
+        .setURL(SITE)
+    )
   );
-  return container;
+  return sign(container);
 }
 
 module.exports = {
@@ -186,5 +203,7 @@ module.exports = {
   MIDDLE,
   colorOf,
   nameOf,
+  sign,
   SITE,
+  HOST,
 };

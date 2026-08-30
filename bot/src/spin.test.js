@@ -191,7 +191,10 @@ test("the open again button carries the case and its owner", () => {
 
 test("the demo says plainly that nothing was kept, and offers the way to change that", () => {
   const json = demoFrame({ item: ITEM, caseTitle: "Touhou Case" }).toJSON();
-  assert.match(text(json), /This was a demo spin\. Create an account to keep the next rolls\./);
+  // the domain is in the copy now: a link with no visible destination is what made a
+  // player call this button suspicious
+  assert.match(text(json), /This was a demo spin\. Create a free account on/);
+  assert.match(text(json), /kanicasino\.com/);
   const link = row(json).components[0];
   assert.strictEqual(link.style, 5, "a link button, not one that charges anybody");
   assert.match(link.url, /^https:\/\//);

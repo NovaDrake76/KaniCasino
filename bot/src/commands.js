@@ -266,6 +266,7 @@ const commands = [
             [
               `**KaniCasino** is a fake-coin casino where you open cases, collect characters and fight for their fan boards.`,
               "",
+              "`/open` open a case. Leave the box empty and it asks for a series first, then a case",
               "`/link` attach your account, once",
               "`/showcase` your pinned character and standing",
               "`/topfan` who in this server collects a character hardest",
