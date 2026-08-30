@@ -111,11 +111,22 @@ test("help lists the command the bot exists for", () => {
   const { commands } = require("./commands");
   const names = commands.map((command) => command.data.name);
 
-  // /open was missing from help, which is how a player came to ask for a series-then-case
-  // picker that /open has had all along
+  // /open was missing from help entirely, which is the command the bot exists for
   const source = fs.readFileSync(path.join(__dirname, "commands.js"), "utf8");
   const help = source.slice(source.indexOf('setName("help")'));
   for (const name of names.filter((n) => n !== "help")) {
     assert.ok(help.includes(`\`/${name}\``), `/${name} is not in the help list`);
   }
+});
+
+test("/open asks for a series first, with nothing to pre-empt it", () => {
+  process.env.SITE_URL = process.env.SITE_URL || "https://kanicasino.com";
+  const { commands } = require("./commands");
+  const open = commands.find((command) => command.data.name === "open");
+
+  // an optional autocomplete argument is not optional in practice: discord opens its
+  // dropdown as soon as the field takes focus, so a flat list of every case was the first
+  // thing a player saw and the series menu was only reachable by submitting an empty box
+  assert.deepStrictEqual(open.data.toJSON().options || [], [], "/open takes no options");
+  assert.strictEqual(open.autocomplete, undefined, "and answers no autocomplete");
 });
