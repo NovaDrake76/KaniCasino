@@ -42,9 +42,21 @@ const TOP_SLOT = [
   { multiplier: 25, weight: 0.3, minLevel: 100 },
 ];
 
-const CLAIM_WINDOW_MS = 24 * 60 * 60 * 1000;
+// the gift runs on a fixed daily boundary rather than a rolling 24h cooldown. a rolling
+// one drifts: every spin sets the next window to whenever the last one landed, so a player
+// who spins a little later each day walks their slot around the clock until it lands on a
+// time they are never online, and the streak dies on a day they did turn up.
+const RESET_HOUR_UTC = 6;
 // a grant dies with the day it was won, which is the whole reason to come back tomorrow
 const GRANT_TTL_MS = 24 * 60 * 60 * 1000;
+
+// which site-day an instant falls in. one definition for the cooldown and for the streak,
+// which is what stops the two from disagreeing.
+const dayIndex = (at) =>
+  Math.floor((new Date(at).getTime() - RESET_HOUR_UTC * 3600000) / 86400000);
+
+const nextResetAt = (from = new Date()) =>
+  new Date((dayIndex(from) + 1) * 86400000 + RESET_HOUR_UTC * 3600000);
 
 // a streak shifts weight toward the better slots. it never raises what a slot is worth:
 // a growing ceiling turns the daily into a power-up and the economy wears it.
@@ -200,17 +212,17 @@ function pickSlot(table, rollValue, total, streak = 0, discord = false) {
   return table[table.length - 1];
 }
 
-// consecutive-day counter on UTC calendar days, so it is not clock-drift sensitive
+// consecutive-day counter on the same site-day the cooldown uses, so a spin taken any
+// time within a day counts once and the day after always reads as the next one
 function nextStreak(streak, lastAt, now = new Date()) {
   if (!lastAt) return 1;
-  const day = (d) => Math.floor(new Date(d).getTime() / 86400000);
-  const gap = day(now) - day(lastAt);
+  const gap = dayIndex(now) - dayIndex(lastAt);
   if (gap <= 0) return streak || 1;
   if (gap === 1) return (streak || 0) + 1;
   return 1;
 }
 
-const claimableAt = (last) => (last ? new Date(new Date(last).getTime() + CLAIM_WINDOW_MS) : null);
+const claimableAt = (last) => (last ? nextResetAt(last) : null);
 const isClaimable = (last, now = new Date()) => {
   const at = claimableAt(last);
   return !at || at <= now;
@@ -227,8 +239,10 @@ module.exports = {
   MAX_CASE_PRICE,
   MAX_OPENS,
   SLOTS,
-  CLAIM_WINDOW_MS,
+  RESET_HOUR_UTC,
   GRANT_TTL_MS,
+  dayIndex,
+  nextResetAt,
   STREAK_STEP,
   MAX_STREAK_TILT,
   DISCORD_TILT,

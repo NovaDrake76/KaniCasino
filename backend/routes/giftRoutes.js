@@ -127,12 +127,18 @@ router.get("/", isAuthenticated, async (req, res) => {
 // only whether a spin is waiting. the navbar asks on every page, and it has no business
 // building every category's prize table to light up a badge
 router.get("/status", isAuthenticated, async (req, res) => {
-  const user = await User.findById(req.user._id).select("giftNextAt");
+  const user = await User.findById(req.user._id).select("giftNextAt giftLastAt giftStreak");
   if (!user) return res.status(404).json({ message: "User not found" });
   const now = new Date();
+  // the streak this spin would put them on, not the one they are on: the prompt has to say
+  // what is at stake if they take it, and what they lose by leaving it
+  const streak = gift.nextStreak(user.giftStreak, user.giftLastAt, now);
   res.json({
     canSpin: !user.giftNextAt || new Date(user.giftNextAt) <= now,
     nextAt: user.giftNextAt || null,
+    streak: user.giftStreak || 0,
+    nextStreak: streak,
+    keepsStreak: streak > 1,
   });
 });
 
@@ -202,7 +208,7 @@ router.post("/spin", isAuthenticated, async (req, res) => {
     const existing = living(user, now).find((g) => String(g.caseId) === String(won.caseId));
     const update = {
       $set: {
-        giftNextAt: new Date(now.getTime() + gift.CLAIM_WINDOW_MS),
+        giftNextAt: gift.nextResetAt(now),
         giftLastAt: now,
         giftStreak: streak,
       },
