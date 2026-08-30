@@ -958,5 +958,14 @@
       "blackjack": "Blackjack",
       "predictions": "Dự đoán"
     }
+  },
+  "liveBets": {
+    "title": "CƯỢC TRỰC TIẾP",
+    "game": "Trò chơi",
+    "player": "Người chơi",
+    "bet": "Tiền cược",
+    "multiplier": "Hệ số",
+    "payout": "Tiền thắng",
+    "empty": "Không có lượt cược nào trong vài phút qua."
   }
 }

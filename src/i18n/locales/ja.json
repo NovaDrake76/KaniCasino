@@ -958,5 +958,14 @@
       "blackjack": "ブラックジャック",
       "predictions": "予測"
     }
+  },
+  "liveBets": {
+    "title": "ライブベット",
+    "game": "ゲーム",
+    "player": "プレイヤー",
+    "bet": "ベット額",
+    "multiplier": "倍率",
+    "payout": "払い戻し",
+    "empty": "直近数分のベットはありません。"
   }
 }

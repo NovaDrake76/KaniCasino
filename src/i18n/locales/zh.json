@@ -958,5 +958,14 @@
       "blackjack": "21点",
       "predictions": "预测"
     }
+  },
+  "liveBets": {
+    "title": "实时投注",
+    "game": "游戏",
+    "player": "玩家",
+    "bet": "投注额",
+    "multiplier": "倍率",
+    "payout": "派彩",
+    "empty": "最近几分钟没有投注。"
   }
 }

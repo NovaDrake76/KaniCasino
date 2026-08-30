@@ -958,5 +958,14 @@
       "blackjack": "Blackjack",
       "predictions": "Predictions"
     }
+  },
+  "liveBets": {
+    "title": "LIVE BETS",
+    "game": "Game",
+    "player": "Player",
+    "bet": "Bet",
+    "multiplier": "Multiplier",
+    "payout": "Payout",
+    "empty": "No bets in the last few minutes."
   }
 }

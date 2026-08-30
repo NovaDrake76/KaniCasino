@@ -3,6 +3,7 @@ const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
 const { DICE_ALGO_VERSION, normalizeTarget, validBet, resolveRoll } = require("../utils/diceMath");
+const liveFeed = require("../utils/liveFeed");
 
 function httpError(status, message) {
   const err = new Error(message);
@@ -47,6 +48,7 @@ class DiceGameController {
       if (credited) balanceAfter = credited.walletBalance;
     }
     const payoutFailed = outcome.payout > 0 && !credited;
+    liveFeed.publish({ game: "dice", user: player, bet: betAmount, payout: outcome.payout });
 
     io.to(userId.toString()).emit("userDataUpdated", {
       walletBalance: balanceAfter,

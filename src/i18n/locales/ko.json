@@ -958,5 +958,14 @@
       "blackjack": "블랙잭",
       "predictions": "예측"
     }
+  },
+  "liveBets": {
+    "title": "실시간 베팅",
+    "game": "게임",
+    "player": "플레이어",
+    "bet": "베팅액",
+    "multiplier": "배수",
+    "payout": "지급액",
+    "empty": "최근 몇 분간 베팅이 없습니다."
   }
 }

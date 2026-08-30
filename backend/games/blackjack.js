@@ -6,6 +6,7 @@ const { chargeUser, creditUser, TX } = require("../utils/economy");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
+const liveFeed = require("../utils/liveFeed");
 const {
   BLACKJACK_ALGO_VERSION,
   MIN_BET,
@@ -169,7 +170,9 @@ async function paySettlement(hand, io, { emitDelayMs = 0 } = {}) {
     const natural = hand.hands.some((h) => h.outcome === "blackjack");
     const credited = await creditUser(hand.userId, hand.totalPayout, winnings, {
       type,
-      meta: { handId: hand.handId, payout: hand.totalPayout, natural },
+      // betAmount so the row stands on its own: every other game's win row carries it,
+      // and the live feed's boot seed rebuilds a bet from the ledger alone
+      meta: { handId: hand.handId, betAmount: hand.betAmount, payout: hand.totalPayout, natural },
     });
     if (!credited) return false;
     const updatedUserData = {
@@ -185,6 +188,13 @@ async function paySettlement(hand, io, { emitDelayMs = 0 } = {}) {
       emit();
     }
   }
+  // outside the payout branch: a busted hand pays nothing and is still a bet the room saw
+  liveFeed.publish({
+    game: "blackjack",
+    userId: hand.userId,
+    bet: hand.betAmount,
+    payout: hand.totalPayout,
+  });
   await BlackjackHand.updateOne({ _id: hand._id }, { $set: { settlementDone: true } });
   return true;
 }

@@ -958,5 +958,14 @@
       "blackjack": "Blackjack",
       "predictions": "Prediksi"
     }
+  },
+  "liveBets": {
+    "title": "TARUHAN LANGSUNG",
+    "game": "Permainan",
+    "player": "Pemain",
+    "bet": "Taruhan",
+    "multiplier": "Pengali",
+    "payout": "Pembayaran",
+    "empty": "Tidak ada taruhan dalam beberapa menit terakhir."
   }
 }

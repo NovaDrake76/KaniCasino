@@ -3,6 +3,7 @@ const { chargeUser, creditUser, TX } = require("../utils/economy");
 const { multiplierAt, crashPointFromSeed, normalizeAutoCashout } = require("../utils/crashMath");
 const { consumeNextSeed } = require("../utils/gameChain");
 const { sha256 } = require("../utils/hashChain");
+const liveFeed = require("../utils/liveFeed");
 
 const freshState = () => ({
   gameBets: {},
@@ -232,6 +233,8 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000, drainMs
     });
 
     io.emit("crash:gameState", publicState(gameState));
+
+    liveFeed.publish({ game: "crash", user: updatedUser, bet: betAmount, payout });
 
     notify({ userId, payout, multiplier });
     return true;

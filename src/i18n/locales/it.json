@@ -958,5 +958,14 @@
       "blackjack": "Blackjack",
       "predictions": "Previsioni"
     }
+  },
+  "liveBets": {
+    "title": "SCOMMESSE LIVE",
+    "game": "Gioco",
+    "player": "Giocatore",
+    "bet": "Puntata",
+    "multiplier": "Moltiplicatore",
+    "payout": "Vincita",
+    "empty": "Nessuna puntata negli ultimi minuti."
   }
 }

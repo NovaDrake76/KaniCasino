@@ -3,6 +3,7 @@ const { chargeUser, creditUser, TX } = require("../utils/economy");
 const { coinResultFromSeed } = require("../utils/coinMath");
 const { consumeNextSeed } = require("../utils/gameChain");
 const { sha256 } = require("../utils/hashChain");
+const liveFeed = require("../utils/liveFeed");
 
 // a fair coin paying 2x is a 0% house edge: the house cannot win, and the game is a
 // pure variance pump on the KP supply that no amount of play ever drains. paying
@@ -158,6 +159,8 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000, drai
           xp: updatedUser.xp,
           level: updatedUser.level,
         });
+
+        liveFeed.publish({ game: "coinflip", user: updatedUser, bet: betAmount, payout });
       } catch (err) {
         console.log(err);
       }

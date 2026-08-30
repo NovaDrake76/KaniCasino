@@ -958,5 +958,14 @@
       "blackjack": "Blackjack",
       "predictions": "Previsões"
     }
+  },
+  "liveBets": {
+    "title": "APOSTAS AO VIVO",
+    "game": "Jogo",
+    "player": "Jogador",
+    "bet": "Aposta",
+    "multiplier": "Multiplicador",
+    "payout": "Pagamento",
+    "empty": "Nenhuma aposta nos últimos minutos."
   }
 }

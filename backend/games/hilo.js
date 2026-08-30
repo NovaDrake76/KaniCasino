@@ -6,6 +6,7 @@ const { chargeUser, creditUser, TX } = require("../utils/economy");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
+const liveFeed = require("../utils/liveFeed");
 const {
   HILO_ALGO_VERSION,
   MAX_SKIPS,
@@ -98,6 +99,7 @@ async function payCashout(game, io) {
       level: credited.level,
     });
   }
+  if (game.payout > 0) liveFeed.publish({ game: "hilo", userId: game.userId, bet: game.betAmount, payout: game.payout });
   await HiloGame.updateOne({ _id: game._id }, { $set: { settlementDone: true } });
   return true;
 }
@@ -219,6 +221,7 @@ class HiloGameController {
       { new: true }
     );
     if (!busted) throw httpError(409, "Action already applied, refresh");
+    liveFeed.publish({ game: "hilo", userId: game.userId, bet: busted.betAmount, payout: 0 });
     busted.rollId = await recordGameRoll(busted);
     return publicView(busted);
   }

@@ -12,6 +12,7 @@ import i18n from "../../i18n";
 import { useSessionStats } from "../../stats/SessionStatsContext";
 import GameBar from "../../components/game/GameBar";
 import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
+import LiveBets from "../../components/game/LiveBets";
 // import { RotatingLines } from "react-loader-spinner";
 
 const renderPlaceholder = () => {
@@ -201,6 +202,10 @@ const Slots = () => {
                     <LiveStatsButton />
                 </GameBar>
             </div >
+
+            <div className="w-full flex justify-center px-3 sm:px-4 pb-10">
+                <LiveBets />
+            </div>
         </div>
 
     );
