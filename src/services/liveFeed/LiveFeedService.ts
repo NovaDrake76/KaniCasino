@@ -4,7 +4,8 @@ export interface LiveBet {
   id: string;
   at: number;
   game: string;
-  userId: string;
+  // named _id because the row is passed to Player, which links on _id
+  _id: string;
   username: string;
   profilePicture: string;
   level: number;
