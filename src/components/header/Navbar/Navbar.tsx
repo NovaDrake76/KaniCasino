@@ -13,6 +13,7 @@ import RightContent from "./RightContent";
 import { useTranslation } from "react-i18next";
 import GiftTag from "../GiftTag";
 import GamesMenu from "./GamesMenu";
+import { ChatToggle } from "../../chat/ChatDock";
 import { NavLink } from "../gameLinks";
 import useGiftReady from "../useGiftReady";
 import i18n from "../../../i18n";
@@ -22,9 +23,11 @@ interface Navbar {
   setOpenNotifications: React.Dispatch<React.SetStateAction<boolean>>;
   openSidebar: boolean;
   setOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+  chatOpen: boolean;
+  onToggleChat: () => void;
 }
 
-const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, openSidebar, setOpenSidebar }) => {
+const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, openSidebar, setOpenSidebar, chatOpen, onToggleChat }) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -196,17 +199,20 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
             }
           </div>
 
-          {isLogged === true ? (
-            <RightContent loading={loading} userData={userData}
-              openNotifications={openNotifications} setOpenNotifications={setOpenNotifications}
-              Logout={Logout} />
-          ) : (
-            <div className="flex items-center gap-4">
-              <MainButton
-                text={i18n.t("nav.signIn")}
-                onClick={toggleUserFlow} />
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <ChatToggle onClick={onToggleChat} open={chatOpen} />
+            {isLogged === true ? (
+              <RightContent loading={loading} userData={userData}
+                openNotifications={openNotifications} setOpenNotifications={setOpenNotifications}
+                Logout={Logout} />
+            ) : (
+              <div className="flex items-center gap-4">
+                <MainButton
+                  text={i18n.t("nav.signIn")}
+                  onClick={toggleUserFlow} />
+              </div>
+            )}
+          </div>
 
         </div>
       </nav>

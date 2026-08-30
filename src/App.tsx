@@ -18,6 +18,7 @@ import PageMeta from "./components/PageMeta";
 import BootLoader from "./components/BootLoader";
 import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
+import ChatDock, { useChatDock } from "./components/chat/ChatDock";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -43,6 +44,7 @@ function App() {
   const [openUserFlow, setOpenUserFlow] = useState<boolean>(false);
   const [notification, setNotification] = useState<any>();
 
+  const chat = useChatDock();
   const socket = SocketConnection.getInstance();
   const missionCheck = useRef<{ inFlight: boolean; timer: number | null; queuedAt: number }>({
     inFlight: false,
@@ -267,13 +269,20 @@ function App() {
                   recentCaseOpenings={recentCaseOpenings}
                   notification={notification}
                   setNotification={setNotification}
+                  chatOpen={chat.open}
+                  onToggleChat={chat.toggle}
                 />
                 <OnboardingModal />
-                <div className="flex w-full">
-                  <AppRoutes />
-                </div>
-                <div className="w-full pt-12">
-                  <Footer />
+                <div className="flex w-full items-start">
+                  <ChatDock open={chat.open} wide={chat.wide} onClose={chat.close} />
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <div className="flex w-full">
+                      <AppRoutes />
+                    </div>
+                    <div className="w-full pt-12">
+                      <Footer />
+                    </div>
+                  </div>
                 </div>
               </SkeletonTheme>
             </Router>

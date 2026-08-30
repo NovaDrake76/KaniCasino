@@ -84,6 +84,7 @@ const { sweepHiloGames } = require("./games/hilo");
 const { sweepSettlements } = require("./utils/predictionSettlement");
 const { sweepBoards } = require("./utils/leaderboard");
 const liveFeed = require("./utils/liveFeed");
+const chat = require("./utils/chat");
 const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
@@ -257,6 +258,38 @@ io.on("connection", (socket) => {
   const sendRecent = () => socket.emit("liveBet:recent", liveFeed.recent());
   sendRecent();
   socket.on("liveBet:request", sendRecent);
+
+  // the chat asks for its history rather than being pushed it, for the same reason: the
+  // socket connects at app boot and the panel mounts whenever the player opens it
+  socket.on("chat:request", async () => {
+    try {
+      socket.emit("chat:recent", await chat.recent());
+    } catch (err) {
+      socket.emit("chat:recent", []);
+    }
+  });
+
+  socket.on("chat:send", async (payload, ack) => {
+    const done = typeof ack === "function" ? ack : () => {};
+    try {
+      const text = typeof payload === "string" ? payload : payload && payload.text;
+      const result = await chat.send(socket.userId, text);
+      done(result.error ? { error: result.error, minLevel: result.minLevel } : { ok: true });
+    } catch (err) {
+      console.error("chat send:", err.message);
+      done({ error: "failed" });
+    }
+  });
+
+  socket.on("chat:report", async (payload, ack) => {
+    const done = typeof ack === "function" ? ack : () => {};
+    try {
+      const result = await chat.report(socket.userId, payload && payload.id, payload && payload.reason);
+      done(result.error ? { error: result.error } : { ok: true });
+    } catch (err) {
+      done({ error: "failed" });
+    }
+  });
 
   // join the authenticated user's private room for targeted updates
   if (socket.userId) {
