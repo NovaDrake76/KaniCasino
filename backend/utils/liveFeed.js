@@ -33,6 +33,17 @@ const WIN_META = {
   [TX.BLACKJACK_WIN]: "blackjack",
 };
 
+// a row must not reach the table before the animation that reveals it has finished, or
+// the ticker spoils the player's own bet: their plinko ball is still falling while the
+// payout is already listed. these match each game's own reveal, which the client and the
+// balance emit already wait out.
+const REVEAL_MS = {
+  case: 7500, // the opening roulette, the same wait App.tsx gives the drop ticker
+  plinko: 3200, // the ball drop, the same wait games/plinko.js gives the balance
+  slots: 3000, // the reels
+  blackjack: 1200, // the dealer reveal, SETTLE_EMIT_DELAY_MS
+};
+
 const round2 = (n) => Math.round(n * 100) / 100;
 
 // a payout of zero is a loss, which the table shows as the stake going the other way
@@ -60,9 +71,19 @@ async function resolveUser(user, userId) {
   return User.findById(userId).select(CARD).lean();
 }
 
+const commit = (entry) => {
+  buffer.unshift(entry);
+  buffer.length = Math.min(buffer.length, KEEP);
+  const io = realtime.getIo();
+  if (io) io.emit("liveBet", entry);
+};
+
 // push one settled bet onto the feed and tell everyone watching. never throws and is never
 // awaited: a ticker must not be able to fail a bet that has already been paid.
-async function publish({ game, user, userId, bet, payout }) {
+//
+// `revealMs` overrides the wait, so a test runs in milliseconds rather than sitting out a
+// ball drop, the same reason the crash and coin flip loops take their timings as arguments.
+async function publish({ game, user, userId, bet, payout, revealMs }) {
   try {
     const id = String((user && user._id) || userId || "");
     if (!id || !(bet > 0)) return null;
@@ -77,11 +98,14 @@ async function publish({ game, user, userId, bet, payout }) {
 
     // never spread the doc: a mongoose document spreads its internals, not its fields
     const entry = entryFor({ game, user: doc, userId: id, bet, payout });
-    buffer.unshift(entry);
-    buffer.length = Math.min(buffer.length, KEEP);
 
-    const io = realtime.getIo();
-    if (io) io.emit("liveBet", entry);
+    const wait = revealMs === undefined ? REVEAL_MS[game] || 0 : revealMs;
+    if (!wait) {
+      commit(entry);
+      return entry;
+    }
+    const timer = setTimeout(() => commit(entry), wait);
+    if (timer.unref) timer.unref(); // never hold the event loop open
     return entry;
   } catch (err) {
     console.error("liveFeed.publish failed", err);
@@ -141,4 +165,4 @@ const reset = () => {
   lastSeen.clear();
 };
 
-module.exports = { publish, recent, seed, reset, KEEP, PER_USER_MS, SEED_WINDOW_MS };
+module.exports = { publish, recent, seed, reset, KEEP, PER_USER_MS, SEED_WINDOW_MS, REVEAL_MS };
