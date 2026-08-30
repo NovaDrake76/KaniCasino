@@ -51,7 +51,9 @@ const entryFor = ({ game, user, userId, bet, payout }) => ({
   id: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
   at: Date.now(),
   game,
-  userId: String(userId || user._id),
+  // _id, not userId: this row is handed straight to the Player component, which links
+  // and renders the avatar off _id
+  _id: String(userId || user._id),
   username: user.username,
   profilePicture: user.profilePicture,
   level: user.level,
