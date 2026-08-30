@@ -167,39 +167,13 @@ const commands = [
     },
   },
   {
-    data: new SlashCommandBuilder()
-      .setName("open")
-      .setDescription("Open a case")
-      .addStringOption((option) =>
-        option
-          .setName("case")
-          .setDescription("Which case. Leave it empty to pick from a menu.")
-          .setRequired(false)
-          .setAutocomplete(true)
-      ),
-    // 64 cases is well past discord's 25 choice cap, so the list is filtered server side.
-    // an empty box leads with whatever this player opened last.
-    async autocomplete(interaction) {
-      const typed = interaction.options.getFocused();
-      const { cases } = await api.cases(typed, interaction.user.id);
-      await interaction.respond(
-        cases.map((one) => ({
-          // the series is on the label because the titles do not carry it, so a row reads
-          // as "Lunatic Case · Touhou" rather than leaving the player to know which is which
-          name: [one.title, one.category, `K₽ ${one.price.toLocaleString("en-US")}`]
-            .filter(Boolean)
-            .join("  ·  ")
-            .slice(0, 100),
-          value: String(one.id),
-        }))
-      );
-    },
+    // no option, deliberately. an optional autocomplete argument is not optional in
+    // practice: discord opens its dropdown the moment the field takes focus, so the flat
+    // list of every case was the first thing a player saw and the series menu below was
+    // only reachable by submitting a box you had been invited to fill.
+    data: new SlashCommandBuilder().setName("open").setDescription("Open a case"),
     async run(interaction) {
-      const caseId = interaction.options.getString("case");
-      // no case named is not an error: it is the menu, which is the whole point of not
-      // making a player know a case id before they can open one
-      if (!caseId) return interaction.reply(await seriesMenu());
-      await runOpen(interaction, caseId);
+      await interaction.reply(await seriesMenu());
     },
   },
   {
@@ -266,6 +240,7 @@ const commands = [
             [
               `**KaniCasino** is a fake-coin casino where you open cases, collect characters and fight for their fan boards.`,
               "",
+              "`/open` open a case: pick a series, then a case",
               "`/link` attach your account, once",
               "`/showcase` your pinned character and standing",
               "`/topfan` who in this server collects a character hardest",

@@ -1,6 +1,10 @@
 const { EmbedBuilder } = require("discord.js");
 
 const SITE = (process.env.SITE_URL || "https://kanicasino.com").replace(/\/$/, "");
+// the domain, derived rather than typed, so a staging SITE_URL never signs itself as
+// production. every message the bot sends carries it: a link button with no visible
+// destination is what makes a bot look like a scam.
+const HOST = SITE.replace(/^https?:\/\//, "");
 
 // the same five the site paints items with, so a card in discord reads as the same object
 const RARITY = {
@@ -25,7 +29,7 @@ function showcaseEmbed(card) {
     .setColor(colorOf(card.pinned && card.pinned.rarity))
     .setTitle(card.username)
     .setURL(profileUrl(card))
-    .setFooter({ text: "kanicasino.com" });
+    .setFooter({ text: HOST });
 
   if (card.profilePicture) embed.setThumbnail(card.profilePicture);
 
@@ -67,7 +71,7 @@ function topFanEmbed(board, guildName) {
     .setColor(colorOf(board.rarity))
     .setTitle(`Top ${board.name} fan in ${guildName}`)
     .setURL(boardUrl(board.name))
-    .setFooter({ text: "kanicasino.com" });
+    .setFooter({ text: HOST });
 
   if (board.image) embed.setThumbnail(board.image);
 
@@ -98,7 +102,7 @@ function leaderboardEmbed(payload, guildName) {
     .setColor(NEUTRAL)
     .setTitle(byCollection ? `Biggest collections in ${guildName}` : `Highest levels in ${guildName}`)
     .setURL(SITE)
-    .setFooter({ text: "kanicasino.com" });
+    .setFooter({ text: HOST });
 
   if (!payload.players.length) {
     embed.setDescription("Nobody here has linked an account yet. Run `/link` to be the first.");
@@ -132,9 +136,10 @@ function linkEmbed(link) {
         "No account yet? Sign up on that page first, then the same link finishes the job.",
       ].join("\n")
     )
-    .setFooter({ text: "kanicasino.com" });
+    .setFooter({ text: HOST });
 }
 
-const noticeEmbed = (text) => new EmbedBuilder().setColor(NEUTRAL).setDescription(text);
+const noticeEmbed = (text) =>
+  new EmbedBuilder().setColor(NEUTRAL).setDescription(text).setFooter({ text: HOST });
 
-module.exports = { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, SITE };
+module.exports = { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, SITE, HOST };

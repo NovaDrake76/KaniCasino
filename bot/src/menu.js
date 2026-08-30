@@ -9,7 +9,7 @@ const {
   StringSelectMenuOptionBuilder,
   TextDisplayBuilder,
 } = require("discord.js");
-const { SITE, colorOf } = require("./spin");
+const { SITE, HOST, colorOf, sign } = require("./spin");
 
 // discord's own ceiling on a select, and the same number the backend pages by
 const PER_PAGE = 25;
@@ -51,8 +51,10 @@ function categoryFrame(categories) {
     .addSeparatorComponents(new SeparatorBuilder());
 
   if (!categories.length) {
-    return container.addTextDisplayComponents(
-      new TextDisplayBuilder().setContent("No cases are open in Discord right now.")
+    return sign(
+      container.addTextDisplayComponents(
+        new TextDisplayBuilder().setContent("No cases are open in Discord right now.")
+      )
     );
   }
 
@@ -68,7 +70,7 @@ function categoryFrame(categories) {
       )
     );
 
-  return container.addActionRowComponents(row(select));
+  return sign(container.addActionRowComponents(row(select)));
 }
 
 function caseFrame({ category, cases, total, offset }) {
@@ -124,17 +126,21 @@ function caseFrame({ category, cases, total, offset }) {
         .setStyle(ButtonStyle.Secondary)
     );
   }
-  controls.push(new ButtonBuilder().setLabel("See them on the site").setStyle(ButtonStyle.Link).setURL(SITE));
+  controls.push(
+    new ButtonBuilder().setLabel(`See them on ${HOST}`).setStyle(ButtonStyle.Link).setURL(SITE)
+  );
 
-  return container.addActionRowComponents(new ActionRowBuilder().addComponents(...controls));
+  return sign(container.addActionRowComponents(new ActionRowBuilder().addComponents(...controls)));
 }
 
 // what the menu turns into once a case has been picked: the spin is its own message, so
 // leaving the select live would let a stray second pick charge for a case nobody chose
 function chosenFrame(title) {
-  return new ContainerBuilder()
-    .setAccentColor(colorOf(null))
-    .addTextDisplayComponents(new TextDisplayBuilder().setContent(`Opening **${title}** below.`));
+  return sign(
+    new ContainerBuilder()
+      .setAccentColor(colorOf(null))
+      .addTextDisplayComponents(new TextDisplayBuilder().setContent(`Opening **${title}** below.`))
+  );
 }
 
 module.exports = {
