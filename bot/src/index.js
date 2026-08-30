@@ -5,6 +5,7 @@ const api = require("./api");
 const { noticeEmbed } = require("./embeds");
 const { commands, onCooldown, runOpen, seriesMenu, casesMenu, categoryFor } = require("./commands");
 const { isMenu, parseMenu, chosenFrame } = require("./menu");
+const membership = require("./membership");
 
 const REQUIRED = ["DISCORD_BOT_TOKEN", "DISCORD_BOT_SECRET", "API_KEY"];
 const missing = REQUIRED.filter((key) => !process.env[key]);
@@ -14,9 +15,11 @@ if (missing.length) {
 }
 
 // GuildMessages is here for the mention, which is the only way in that does not go through
-// the slash picker. neither intent is privileged: a bare mention is read off the mentions
-// list, and message content stays empty, which is all this needs and nothing more.
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+// the slash picker. GuildMembers is privileged and is only asked for when a home server is
+// configured, because the daily gift's discord boost has to be held on real membership.
+const intents = [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages];
+if (membership.HOME_GUILD_ID) intents.push(GatewayIntentBits.GuildMembers);
+const client = new Client({ intents });
 
 const byName = new Map(commands.map((command) => [command.data.name, command]));
 
@@ -146,8 +149,13 @@ client.on(Events.MessageCreate, async (message) => {
   }
 });
 
-client.once(Events.ClientReady, (ready) => {
+// the boost has to come off the moment someone leaves, or it is a one-time click again
+client.on(Events.GuildMemberAdd, (member) => membership.pushOne(member.id, member.guild.id, true));
+client.on(Events.GuildMemberRemove, (member) => membership.pushOne(member.id, member.guild.id, false));
+
+client.once(Events.ClientReady, async (ready) => {
   console.log(`bot: online as ${ready.user.tag} in ${ready.guilds.cache.size} servers`);
+  await membership.syncAll(ready);
 });
 
 client.on(Events.Error, (err) => console.error("bot client:", err.message));

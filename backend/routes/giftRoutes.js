@@ -25,12 +25,13 @@ async function casesByCategory() {
 // the categories a player can choose between, each with the table it would spin and a
 // cover to show. the table is public on purpose: the odds are the pitch.
 async function state(userId) {
-  const user = await User.findById(userId).select("giftStreak giftNextAt freeOpens level");
+  const user = await User.findById(userId).select("giftStreak giftNextAt freeOpens level discordId discordInGuild");
   if (!user) return null;
 
   const now = new Date();
   const grouped = await casesByCategory();
   const streak = user.giftStreak || 0;
+  const discord = !!user.discordId && user.discordInGuild === true;
   const byId = new Map(
     Object.values(grouped)
       .flat()
@@ -41,13 +42,13 @@ async function state(userId) {
     .map(([category, cases]) => {
       const table = gift.tableFor(cases);
       if (!table.length) return null;
-      const weights = gift.weightsFor(table, streak);
+      const weights = gift.weightsFor(table, streak, discord);
       const total = weights.reduce((a, b) => a + b, 0);
       return {
         category,
         cover: table[table.length - 1].image,
         eligible: gift.eligible(cases).length,
-        expectedValue: Math.round(gift.expectedValue(table, streak)),
+        expectedValue: Math.round(gift.expectedValue(table, streak, discord)),
         slots: table.map((s, i) => ({
           caseId: s.caseId,
           title: s.title,
@@ -66,32 +67,40 @@ async function state(userId) {
 
   // the streak's whole effect stated as one number: how much likelier it makes the rarest
   // prize, which is exactly the weight multiplier it puts on the top slot of either wheel
-  const rareBoost = (days) => Number((1 + gift.streakTilt(days) * 2).toFixed(2));
+  const rareBoost = (days, linked = discord) => Number((1 + gift.totalTilt(days, linked) * 2).toFixed(2));
   const streakMax = Math.ceil(gift.MAX_STREAK_TILT / gift.STREAK_STEP);
 
   return {
     level: user.level || 0,
     streak,
     streakTilt: gift.streakTilt(streak),
+    discord: {
+      linked: !!user.discordId,
+      inGuild: user.discordInGuild === true,
+      // what the boost is worth where they stand, so the panel never advertises a number
+      // that their level and streak would not actually produce
+      boost: Number((rareBoost(streak, true) - rareBoost(streak, false)).toFixed(2)),
+      topSlotAverage: Number(gift.topSlotAverage(user.level || 0, streak, true).toFixed(2)),
+    },
     // the locked rungs stay visible: they are the reason to keep levelling
     topSlot: wheel.map((t) => ({
       multiplier: t.multiplier,
       minLevel: t.minLevel,
       locked: t.locked,
       chance: (() => {
-        const w = gift.topSlotWeights(wheel, streak);
+        const w = gift.topSlotWeights(wheel, streak, discord);
         const total = w.reduce((a, b) => a + b, 0);
         const i = wheel.indexOf(t);
         return total ? Number(((w[i] / total) * 100).toFixed(2)) : 0;
       })(),
     })),
-    topSlotAverage: Number(gift.topSlotAverage(user.level || 0, streak).toFixed(2)),
+    topSlotAverage: Number(gift.topSlotAverage(user.level || 0, streak, discord).toFixed(2)),
     maxStreakTilt: gift.MAX_STREAK_TILT,
     streakMax,
     rareBoost: rareBoost(streak),
     atBestStreak: {
       rareBoost: rareBoost(streakMax),
-      topSlotAverage: Number(gift.topSlotAverage(user.level || 0, streakMax).toFixed(2)),
+      topSlotAverage: Number(gift.topSlotAverage(user.level || 0, streakMax, discord).toFixed(2)),
     },
     canSpin: !user.giftNextAt || new Date(user.giftNextAt) <= now,
     nextAt: user.giftNextAt || null,
@@ -157,7 +166,7 @@ router.get("/grants", isAuthenticated, async (req, res) => {
 router.post("/spin", isAuthenticated, async (req, res) => {
   try {
     const category = String(req.body?.category || "");
-    const user = await User.findById(req.user._id).select("giftStreak giftNextAt giftLastAt level freeOpens");
+    const user = await User.findById(req.user._id).select("giftStreak giftNextAt giftLastAt level freeOpens discordId discordInGuild");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const now = new Date();
@@ -179,14 +188,11 @@ router.post("/spin", isAuthenticated, async (req, res) => {
     const reelRoll = roll(reserved.serverSeed, reserved.clientSeed, reserved.startNonce);
     const topRoll = roll(reserved.serverSeed, reserved.clientSeed, reserved.startNonce + 1);
 
-    const won = gift.pickSlot(table, reelRoll, TOTAL, streak);
+    const discord = !!user.discordId && user.discordInGuild === true;
+    const won = gift.pickSlot(table, reelRoll, TOTAL, streak, discord);
     const wheel = gift.topSlotFor(user.level || 0);
 
-  // the streak's whole effect stated as one number: how much likelier it makes the rarest
-  // prize, which is exactly the weight multiplier it puts on the top slot of either wheel
-  const rareBoost = (days) => Number((1 + gift.streakTilt(days) * 2).toFixed(2));
-  const streakMax = Math.ceil(gift.MAX_STREAK_TILT / gift.STREAK_STEP);
-    const top = gift.pickTopSlot(wheel, topRoll, TOTAL, streak);
+    const top = gift.pickTopSlot(wheel, topRoll, TOTAL, streak, discord);
     const opens = won.opens * top.multiplier;
 
     const expiresAt = new Date(now.getTime() + gift.GRANT_TTL_MS);

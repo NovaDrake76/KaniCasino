@@ -81,7 +81,7 @@ async function buildContext(userId, { includeCollections = true, state = null } 
     Battle.countDocuments({ winnerUserIds: userId, status: "finished", finishedAt: { $gte: launch } }),
     // the collections scan is the one heavy read; skip it on frequent hot-path calls
     includeCollections ? collectionsProgress(userId) : Promise.resolve({ done: 0, total: 0 }),
-    User.findById(userId, { profilePicture: 1, friends: 1, level: 1, walletBalance: 1 }),
+    User.findById(userId, { profilePicture: 1, friends: 1, level: 1, walletBalance: 1, discordId: 1, discordInGuild: 1 }),
     // reuse an already-loaded state doc when the caller has one, to avoid re-reading it
     state || getState(userId),
   ]);
@@ -118,6 +118,7 @@ async function buildContext(userId, { includeCollections = true, state = null } 
     friendsCount: user && user.friends ? user.friends.length : 0,
     claimed: new Set((st && st.claimed) || []),
     visited: new Set((st && st.visited) || []),
+    inDiscord: !!(user && user.discordId && user.discordInGuild === true),
     announced: new Set((st && st.announced) || []),
   };
 }
@@ -143,7 +144,11 @@ function currentFor(mission, ctx) {
     case "walletBalance": return ctx.walletBalance;
     case "profilePictureSet": return ctx.hasProfilePicture ? 1 : 0;
     case "friendsAdded": return ctx.friendsCount;
-    case "social": return ctx.visited.has(mission.key) ? 1 : 0;
+    // the discord one is the only social mission the server can check, so it does rather
+    // than trusting a click. the rest stay honour-system, there being nothing to ask.
+    case "social":
+      if (mission.social === "discord") return ctx.inDiscord ? 1 : 0;
+      return ctx.visited.has(mission.key) ? 1 : 0;
     default: return 0;
   }
 }

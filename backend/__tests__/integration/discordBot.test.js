@@ -1,6 +1,7 @@
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
 process.env.DISCORD_BOT_SECRET = "bot-secret-for-tests";
 process.env.SITE_URL = "https://kanicasino.com";
+process.env.DISCORD_GUILD_ID = "907336089797267496";
 
 const request = require("supertest");
 const { setupDb, clearDb, teardownDb } = require("./db");
@@ -341,7 +342,8 @@ describe("linking from the site", () => {
     const url = new URL(res.body.url);
     expect(url.origin + url.pathname).toBe("https://discord.com/oauth2/authorize");
     expect(url.searchParams.get("client_id")).toBe(CLIENT);
-    expect(url.searchParams.get("scope")).toBe("identify");
+    // guilds.join rides along so one approval both links and seats them in the server
+    expect(url.searchParams.get("scope")).toBe("identify guilds.join");
     expect(url.searchParams.get("response_type")).toBe("code");
 
     const claim = jwt.verify(url.searchParams.get("state"), process.env.JWT_SECRET);
@@ -547,4 +549,62 @@ describe("the case menu", () => {
   });
 });
 
+});
+
+describe("POST /discord/membership", () => {
+  const bot = (body) => request(app).post("/discord/membership").set("x-bot-secret", SECRET).send(body);
+  const linked = async (discordId, over = {}) =>
+    User.create({
+      username: `m${uniqueSuffix()}`,
+      email: `m${uniqueSuffix()}@k.co`,
+      password: "x",
+      discordId,
+      ...over,
+    });
+
+  it("records a join, so the gift can pay the boost without asking discord", async () => {
+    const u = await linked("100000000000000001");
+
+    const res = await bot({ discordId: "100000000000000001", guildId: GUILD, present: true });
+
+    expect(res.status).toBe(200);
+    expect((await User.findById(u._id)).discordInGuild).toBe(true);
+  });
+
+  it("takes the boost away again when they leave", async () => {
+    const u = await linked("100000000000000002", { discordInGuild: true });
+
+    await bot({ discordId: "100000000000000002", guildId: GUILD, present: false });
+
+    expect((await User.findById(u._id)).discordInGuild).toBe(false);
+  });
+
+  it("ignores a server that is not the home one", async () => {
+    const u = await linked("100000000000000003");
+
+    const res = await bot({ discordId: "100000000000000003", guildId: OTHER_GUILD, present: true });
+
+    expect(res.status).toBe(400);
+    expect((await User.findById(u._id)).discordInGuild).toBeUndefined();
+  });
+
+  it("takes a full member list and treats everyone missing from it as gone", async () => {
+    // the boot sync, which is what heals a join or a leave the bot was down for
+    const stays = await linked("100000000000000004");
+    const left = await linked("100000000000000005", { discordInGuild: true });
+
+    const res = await bot({ guildId: GUILD, members: ["100000000000000004"] });
+
+    expect(res.status).toBe(200);
+    expect((await User.findById(stays._id)).discordInGuild).toBe(true);
+    expect((await User.findById(left._id)).discordInGuild).toBe(false);
+  });
+
+  it("is closed to anything without the bot secret", async () => {
+    const res = await request(app)
+      .post("/discord/membership")
+      .send({ discordId: "100000000000000006", guildId: GUILD, present: true });
+
+    expect(res.status).toBe(403);
+  });
 });

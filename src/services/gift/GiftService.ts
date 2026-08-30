@@ -34,9 +34,18 @@ export interface GiftGrant {
   expiresAt: string;
 }
 
+export interface GiftDiscordBoost {
+  linked: boolean;
+  inGuild: boolean;
+  // what being in the server is worth where this player stands, not a headline number
+  boost: number;
+  topSlotAverage: number;
+}
+
 export interface GiftState {
   level: number;
   streak: number;
+  discord: GiftDiscordBoost;
   streakTilt: number;
   maxStreakTilt: number;
   topSlot: TopSlotRung[];

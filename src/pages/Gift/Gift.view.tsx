@@ -4,6 +4,7 @@ import Title from "../../components/Title";
 import Roulette from "../../components/Roulette";
 import GameButton from "../../components/game/GameButton";
 import { boost, countdown, kp } from "./Gift.services";
+import DiscordBoost from "./DiscordBoost";
 import type { GiftViewProps, TopSlotRung } from "./Gift.types";
 import i18n from "../../i18n";
 
@@ -95,6 +96,15 @@ const Rung = ({ rung, charging, active, landed }: RungProps) => (
   </div>
 );
 
+// the nearest rung they have not earned. a locked tier a player can see beats a hidden
+// advantage, so the panel names the level rather than leaving them to read the row.
+const nextRungBlurb = (rungs: TopSlotRung[], level: number) => {
+  const next = rungs.find((r) => r.locked);
+  return next
+    ? i18n.t("gift.levelUnlocksNext", { level: next.minLevel, multiplier: next.multiplier })
+    : i18n.t("gift.levelAllUnlocked", { level });
+};
+
 const GiftView = ({
   loading,
   state,
@@ -153,10 +163,10 @@ const GiftView = ({
 
       <Title title={i18n.t("nav.dailyGift")} />
 
-      <div className="mb-8 grid w-full grid-cols-1 gap-5 lg:grid-cols-[380px_minmax(0,1fr)]">
+      <div className="mb-5 grid w-full grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         <div className="notched flex flex-col gap-4 bg-surface p-6">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.streak")}</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.streakBoost")}</span>
             <span className="text-[11px] text-ink-faint">
               {atBestStreak ? (
                 <b className="text-accent-gold">{i18n.t("gift.fullStreak")}</b>
@@ -204,28 +214,48 @@ const GiftView = ({
           </div>
         </div>
 
-        <div className="notched flex flex-col gap-3 bg-surface p-6">
+        <div className="notched flex flex-col gap-4 bg-surface p-6">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.topSlot")}</span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.levelBoost")}</span>
             <span className="text-[11px] text-ink-faint">
-              your level <b className="text-ink-soft">{state.level}</b>
+              {i18n.t("gift.yourLevel")} <b className="text-ink-soft">{state.level}</b>
             </span>
           </div>
-          <div className="flex gap-2">
-            {state.topSlot.map((r, i) => (
-              <Rung
-                key={r.multiplier}
-                rung={r}
-                charging={stage === "charging"}
-                active={cursor === i && stage === "spinning"}
-                landed={cursor === i && stage === "won"}
-              />
-            ))}
+          <div className="flex items-end gap-3">
+            <span className="text-4xl font-extrabold leading-none text-accent-amber">
+              {boost(state.topSlotAverage)}
+            </span>
+            <span className="pb-1 text-[11px] uppercase tracking-[0.14em] text-ink-faint">
+              {i18n.t("gift.averageTopSlot")}
+            </span>
           </div>
-          <span className="text-[13px] text-ink-muted">
-            {i18n.t("gift.multipliesWhateverTheReel")}
+          <span className="text-[13px] text-ink-muted">{nextRungBlurb(state.topSlot, state.level)}</span>
+        </div>
+
+        <DiscordBoost discord={state.discord} />
+      </div>
+
+      <div className="notched mb-8 flex w-full flex-col gap-3 bg-surface p-6">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.topSlot")}</span>
+          <span className="text-[11px] text-ink-faint">
+            {i18n.t("gift.yourLevel")} <b className="text-ink-soft">{state.level}</b>
           </span>
         </div>
+        <div className="flex gap-2">
+          {state.topSlot.map((r, i) => (
+            <Rung
+              key={r.multiplier}
+              rung={r}
+              charging={stage === "charging"}
+              active={cursor === i && stage === "spinning"}
+              landed={cursor === i && stage === "won"}
+            />
+          ))}
+        </div>
+        <span className="text-[13px] text-ink-muted">
+          {i18n.t("gift.multipliesWhateverTheReel")}
+        </span>
       </div>
 
       {!state.canSpin && stage === "picking" && (

@@ -51,7 +51,16 @@ const GRANT_TTL_MS = 24 * 60 * 60 * 1000;
 const STREAK_STEP = 0.06;
 const MAX_STREAK_TILT = 0.6;
 
+// the third lever, and the only one that is not earned by playing. it is worth the same
+// on day one as at a full streak, so it reads as a standing perk rather than a head start,
+// and it is held only while the player is actually in the server.
+const DISCORD_TILT = 0.15;
+
 const streakTilt = (streak) => Math.min((streak || 0) * STREAK_STEP, MAX_STREAK_TILT);
+
+// what every weighting below actually leans on. the levers add rather than multiply, so
+// each panel on the page can state its own contribution and they still sum to this.
+const totalTilt = (streak, discord) => streakTilt(streak) + (discord ? DISCORD_TILT : 0);
 
 const eligible = (cases) =>
   cases
@@ -114,15 +123,15 @@ function tableFor(cases) {
 
 // what a spin is worth on average, which is the number that has to stay comparable
 // across categories or the choice is theatre
-function expectedValue(table, streak = 0) {
-  const w = weightsFor(table, streak);
+function expectedValue(table, streak = 0, discord = false) {
+  const w = weightsFor(table, streak, discord);
   const total = w.reduce((a, b) => a + b, 0);
   return total ? table.reduce((sum, s, i) => sum + (w[i] / total) * s.value, 0) : 0;
 }
 
-// the streak leaves the cheap slots alone and lifts the rare ones
-function weightsFor(table, streak = 0) {
-  const tilt = streakTilt(streak);
+// the tilt leaves the cheap slots alone and lifts the rare ones
+function weightsFor(table, streak = 0, discord = false) {
+  const tilt = totalTilt(streak, discord);
   const last = table.length - 1;
   return table.map((s, i) => {
     const rank = last ? i / last : 0; // 0 for the commonest slot, 1 for the rarest
@@ -137,8 +146,8 @@ function topSlotFor(level = 0) {
 }
 
 // the streak lifts every multiplier above 1x, so the odds of landing on nothing fall
-function topSlotWeights(wheel, streak = 0) {
-  const tilt = streakTilt(streak);
+function topSlotWeights(wheel, streak = 0, discord = false) {
+  const tilt = totalTilt(streak, discord);
   const live = wheel.filter((t) => !t.locked);
   const last = live.length - 1;
   return wheel.map((t) => {
@@ -148,8 +157,8 @@ function topSlotWeights(wheel, streak = 0) {
   });
 }
 
-function pickTopSlot(wheel, rollValue, total, streak = 0) {
-  const w = topSlotWeights(wheel, streak);
+function pickTopSlot(wheel, rollValue, total, streak = 0, discord = false) {
+  const w = topSlotWeights(wheel, streak, discord);
   const sum = w.reduce((a, b) => a + b, 0);
   if (!sum) return wheel[0];
   const scaled = ((rollValue - 1) / total) * sum;
@@ -162,9 +171,9 @@ function pickTopSlot(wheel, rollValue, total, streak = 0) {
 }
 
 // what the top slot multiplies the reel by on average, for the copy and the tests
-function topSlotAverage(level = 0, streak = 0) {
+function topSlotAverage(level = 0, streak = 0, discord = false) {
   const wheel = topSlotFor(level);
-  const w = topSlotWeights(wheel, streak);
+  const w = topSlotWeights(wheel, streak, discord);
   const sum = w.reduce((a, b) => a + b, 0);
   return sum ? wheel.reduce((acc, t, i) => acc + (w[i] / sum) * t.multiplier, 0) : 1;
 }
@@ -179,8 +188,8 @@ function ceilingFor(table, level = 0) {
 }
 
 // maps a roll in 1..total onto the weighted table
-function pickSlot(table, rollValue, total, streak = 0) {
-  const w = weightsFor(table, streak);
+function pickSlot(table, rollValue, total, streak = 0, discord = false) {
+  const w = weightsFor(table, streak, discord);
   const sum = w.reduce((a, b) => a + b, 0);
   const scaled = ((rollValue - 1) / total) * sum;
   let acc = 0;
@@ -222,7 +231,9 @@ module.exports = {
   GRANT_TTL_MS,
   STREAK_STEP,
   MAX_STREAK_TILT,
+  DISCORD_TILT,
   streakTilt,
+  totalTilt,
   eligible,
   caseForSlot,
   enforceRising,
