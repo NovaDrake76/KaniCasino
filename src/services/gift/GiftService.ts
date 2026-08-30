@@ -70,6 +70,10 @@ export const GIFT_CLAIMED_EVENT = "kani.giftClaimed";
 export interface GiftStatus {
   canSpin: boolean;
   nextAt: string | null;
+  streak: number;
+  // what taking this spin would put them on, which is what there is to lose by skipping it
+  nextStreak: number;
+  keepsStreak: boolean;
 }
 
 export const getGiftStatus = async (): Promise<GiftStatus> => (await api.get("/gift/status")).data;

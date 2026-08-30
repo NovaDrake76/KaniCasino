@@ -216,7 +216,7 @@ describe("spinning", () => {
     }
   });
 
-  it("starts the streak and sets tomorrow's cooldown", async () => {
+  it("starts the streak and opens the next spin at the coming reset", async () => {
     await seedCategory("Touhou", [60]);
     const u = await makeUser();
 
@@ -224,8 +224,9 @@ describe("spinning", () => {
 
     expect(res.body.streak).toBe(1);
     const after = await User.findById(u._id);
-    const window = new Date(after.giftNextAt).getTime() - Date.now();
-    expect(window).toBeGreaterThan(gift.CLAIM_WINDOW_MS - 60000);
+    // the boundary, not an offset from the spin, so tomorrow's window cannot creep later
+    expect(new Date(after.giftNextAt).toISOString()).toBe(gift.nextResetAt(new Date()).toISOString());
+    expect(new Date(after.giftNextAt).getUTCHours()).toBe(gift.RESET_HOUR_UTC);
   });
 
   it("refuses a second spin the same day", async () => {
@@ -412,7 +413,26 @@ describe("status", () => {
     const res = await auth(request(app).get("/gift/status"), u);
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ canSpin: true, nextAt: null });
+    expect(res.body).toEqual({
+      canSpin: true,
+      nextAt: null,
+      streak: 0,
+      nextStreak: 1,
+      keepsStreak: false,
+    });
+  });
+
+  it("says what the waiting spin would carry the streak to", async () => {
+    // the prompt has to name the stake, so the status has to know it before the spin
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const u = await makeUser({ giftStreak: 3, giftLastAt: yesterday, giftNextAt: yesterday });
+
+    const res = await auth(request(app).get("/gift/status"), u);
+
+    expect(res.body.canSpin).toBe(true);
+    expect(res.body.streak).toBe(3);
+    expect(res.body.nextStreak).toBe(4);
+    expect(res.body.keepsStreak).toBe(true);
   });
 
   it("stops saying so once today's gift is taken", async () => {
