@@ -18,6 +18,7 @@ import PageMeta from "./components/PageMeta";
 import BootLoader from "./components/BootLoader";
 import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
+import GiftPrompt from "./components/header/GiftPrompt";
 import ChatDock, { useChatDock } from "./components/chat/ChatDock";
 
 const Header = lazy(() => import("./components/header/index"));
@@ -284,6 +285,7 @@ function App() {
                     </div>
                   </div>
                 </div>
+                <GiftPrompt />
               </SkeletonTheme>
             </Router>
         </Suspense>
