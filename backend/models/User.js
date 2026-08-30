@@ -232,6 +232,7 @@ UserSchema.index({ slug: 1 }, { unique: true, sparse: true }); // profile url lo
 UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
 UserSchema.index({ referredBy: 1 }, { sparse: true });
 UserSchema.index({ weeklyWinnings: -1 }); // leaderboard, ranking window, weekly cron
+UserSchema.index({ level: -1 }); // the idle seats the daily board fills its empty rows with
 UserSchema.index({ "fixedItem.name": 1 }, { sparse: true }); // fan board recount on pin
 UserSchema.index({ discordId: 1 }, { unique: true, sparse: true }); // bot lookups, one account per discord user
 UserSchema.index({ discordGuilds: 1 }, { sparse: true }); // per-server boards

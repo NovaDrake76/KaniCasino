@@ -270,3 +270,87 @@ describe("the sweep", () => {
     expect(await Leaderboard.countDocuments({})).toBe(1);
   });
 });
+
+describe("the empty seats", () => {
+  test("fills the board out to the paid places with players who have not bet", async () => {
+    const better = await makeUser(1000, { level: 5 });
+    for (let i = 0; i < 4; i++) await makeUser(1000, { level: 40 - i });
+    const { startsAt, endsAt } = leaderboard.windowFor();
+    await wager(better, TX.CASE_OPEN, 1000, midWindow());
+
+    const rows = await leaderboard.padStandings(
+      await leaderboard.standings(startsAt, endsAt, leaderboard.PAID_PLACES),
+      leaderboard.PAID_PLACES
+    );
+
+    // one real standing, then the rest of the field
+    expect(rows).toHaveLength(5);
+    expect(String(rows[0]._id)).toBe(String(better._id));
+    expect(rows[0].placeholder).toBeUndefined();
+    expect(rows.slice(1).every((row) => row.placeholder === true)).toBe(true);
+    expect(rows.slice(1).every((row) => row.points === 0)).toBe(true);
+    // the biggest accounts take the empty seats, so they read as names
+    expect(rows.slice(1).map((row) => row.user.level)).toEqual([40, 39, 38, 37]);
+  });
+
+  test("never seats the same player twice", async () => {
+    const better = await makeUser(1000, { level: 60 });
+    await makeUser(1000, { level: 50 });
+    const { startsAt, endsAt } = leaderboard.windowFor();
+    await wager(better, TX.CASE_OPEN, 1000, midWindow());
+
+    const rows = await leaderboard.padStandings(
+      await leaderboard.standings(startsAt, endsAt, leaderboard.PAID_PLACES),
+      leaderboard.PAID_PLACES
+    );
+
+    const ids = rows.map((row) => String(row._id));
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  test("leaves a disabled account out of the empty seats too", async () => {
+    await makeUser(1000, { level: 90, disabled: true });
+    await makeUser(1000, { level: 10 });
+
+    const { startsAt, endsAt } = leaderboard.windowFor();
+    const rows = await leaderboard.padStandings(
+      await leaderboard.standings(startsAt, endsAt, leaderboard.PAID_PLACES),
+      leaderboard.PAID_PLACES
+    );
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0].user.level).toBe(10);
+  });
+
+  test("a full board is left alone", async () => {
+    const { startsAt, endsAt } = leaderboard.windowFor();
+    for (let i = 0; i < leaderboard.PAID_PLACES; i++) {
+      const u = await makeUser(1000);
+      await wager(u, TX.CASE_OPEN, (leaderboard.PAID_PLACES - i) * 100, midWindow());
+    }
+    await makeUser(1000, { level: 99 });
+
+    const rows = await leaderboard.padStandings(
+      await leaderboard.standings(startsAt, endsAt, leaderboard.PAID_PLACES),
+      leaderboard.PAID_PLACES
+    );
+
+    expect(rows).toHaveLength(leaderboard.PAID_PLACES);
+    expect(rows.some((row) => row.placeholder)).toBe(false);
+  });
+
+  test("a seat on nought is never paid at settlement", async () => {
+    // padding is a display concern: the settle path reads standings, which drops zeroes
+    const { startsAt, endsAt } = leaderboard.windowFor(new Date(Date.now() - 86400000));
+    const board = await Leaderboard.create({ startsAt, endsAt, status: "running" });
+    const better = await makeUser(0);
+    await makeUser(0, { level: 99 });
+    await wager(better, TX.CASE_OPEN, 1000, new Date(startsAt.getTime() + 3600000));
+
+    await leaderboard.settleBoard(board);
+
+    const done = await Leaderboard.findById(board._id);
+    expect(done.standings).toHaveLength(1);
+    expect(await Transaction.countDocuments({ type: TX.LEADERBOARD_PRIZE })).toBe(1);
+  });
+});

@@ -1,12 +1,9 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import UserContext from "../../../UserContext";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getBoard,
   getPoints,
-  getMyLastBoard,
   Board,
   PointsGame,
-  BoardResult,
 } from "../../../services/leaderboard/LeaderboardService";
 import { Countdown } from "./Leaderboard.types";
 
@@ -38,13 +35,12 @@ export const podiumOrder = <T,>(rows: T[]): T[] => {
 };
 
 export const useLeaderboardServices = () => {
-  const { isLogged } = useContext(UserContext);
   const [board, setBoard] = useState<Board | null>(null);
   const [loading, setLoading] = useState(true);
   const [countdown, setCountdown] = useState<Countdown>(ZERO);
   const [points, setPoints] = useState<PointsGame[]>([]);
   const [showPoints, setShowPoints] = useState(false);
-  const [lastResult, setLastResult] = useState<BoardResult | null>(null);
+
   // the device clock can be wrong by minutes; the countdown runs off the server's instead
   const skew = useRef(0);
   const endsAt = useRef(0);
@@ -86,13 +82,6 @@ export const useLeaderboardServices = () => {
     return () => window.clearInterval(timer);
   }, [board, load]);
 
-  useEffect(() => {
-    if (!isLogged) {
-      setLastResult(null);
-      return;
-    }
-    getMyLastBoard().then(setLastResult).catch(() => setLastResult(null));
-  }, [isLogged]);
 
   const openPoints = useCallback(() => {
     setShowPoints(true);
@@ -101,23 +90,24 @@ export const useLeaderboardServices = () => {
   }, [points.length]);
 
   const standings = board ? board.standings : [];
+  // the podium is for players who actually scored. the padded seats fill the table below
+  // it, so a board with one real player shows one plinth rather than three strangers.
+  const earned = standings.filter((row) => !row.placeholder);
   const me = board ? board.me : null;
 
   return {
     loading,
     board,
-    podium: podiumOrder(standings),
-    rest: standings.slice(3),
+    podium: podiumOrder(earned.slice(0, 3)),
+    rest: standings.slice(Math.min(earned.length, 3)),
     // the podium only stands first place on mobile, so second and third join the table
     // there rather than disappearing off the board entirely
-    podiumRest: standings.slice(1, 3),
+    podiumRest: earned.slice(1, 3),
     countdown,
     pool: board ? board.pool : 0,
     me,
     paidPlaces: board ? board.paidPlaces : 0,
     meOnBoard: !!me && !!me.rank && me.rank <= (board ? board.paidPlaces : 0),
-    lastResult,
-    dismissResult: () => setLastResult(null),
     points,
     showPoints,
     openPoints,
