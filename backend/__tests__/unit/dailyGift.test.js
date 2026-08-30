@@ -97,12 +97,48 @@ describe("expected value across categories", () => {
 describe("the streak", () => {
   const table = gift.tableFor(CATALOGUE["Uma Musume"]);
 
+  const d = (s) => new Date(s);
+
   it("counts days and resets when one is missed", () => {
-    const d = (s) => new Date(s);
     expect(gift.nextStreak(0, null, d("2026-07-02T10:00:00Z"))).toBe(1);
     expect(gift.nextStreak(3, d("2026-07-01T10:00:00Z"), d("2026-07-02T10:00:00Z"))).toBe(4);
-    expect(gift.nextStreak(3, d("2026-07-02T01:00:00Z"), d("2026-07-02T23:00:00Z"))).toBe(3);
+    expect(gift.nextStreak(3, d("2026-07-02T08:00:00Z"), d("2026-07-02T23:00:00Z"))).toBe(3);
     expect(gift.nextStreak(9, d("2026-06-29T10:00:00Z"), d("2026-07-02T10:00:00Z"))).toBe(1);
+  });
+
+  it("cuts the day at the reset hour, not at midnight", () => {
+    // 01:00 falls before the 06:00 cut, so it belongs to the day that started the
+    // previous morning and 23:00 the same evening is already the next one
+    expect(gift.dayIndex(d("2026-07-02T01:00:00Z"))).toBe(gift.dayIndex(d("2026-07-01T12:00:00Z")));
+    expect(gift.nextStreak(3, d("2026-07-02T01:00:00Z"), d("2026-07-02T23:00:00Z"))).toBe(4);
+  });
+
+  it("holds the window still instead of walking it later every day", () => {
+    // the rolling cooldown drifted: a spin at 21:00 pushed the next one to 21:00, and any
+    // lateness rode forward, until the slot landed at an hour the player was never online.
+    // a player who spins later and later now keeps the same boundary and the same streak.
+    let last = d("2026-07-01T21:00:00Z");
+    let streak = 1;
+    for (const at of ["2026-07-02T22:30:00Z", "2026-07-03T23:40:00Z", "2026-07-04T23:55:00Z"]) {
+      const now = d(at);
+      expect(gift.claimableAt(last).getTime()).toBeLessThanOrEqual(now.getTime());
+      streak = gift.nextStreak(streak, last, now);
+      last = now;
+    }
+    expect(streak).toBe(4);
+  });
+
+  it("opens the next spin at the coming reset, whenever the last one landed", () => {
+    expect(gift.nextResetAt(d("2026-07-02T05:59:00Z")).toISOString()).toBe("2026-07-02T06:00:00.000Z");
+    expect(gift.nextResetAt(d("2026-07-02T06:00:00Z")).toISOString()).toBe("2026-07-03T06:00:00.000Z");
+    expect(gift.nextResetAt(d("2026-07-02T23:00:00Z")).toISOString()).toBe("2026-07-03T06:00:00.000Z");
+  });
+
+  it("still refuses a second spin inside the same day", () => {
+    const first = d("2026-07-02T07:00:00Z");
+    expect(gift.isClaimable(first, d("2026-07-02T20:00:00Z"))).toBe(false);
+    expect(gift.isClaimable(first, d("2026-07-03T05:59:00Z"))).toBe(false);
+    expect(gift.isClaimable(first, d("2026-07-03T06:00:00Z"))).toBe(true);
   });
 
   it("tilts the odds toward the rare slots without touching what they pay", () => {

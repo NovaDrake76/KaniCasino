@@ -18,6 +18,7 @@ import PageMeta from "./components/PageMeta";
 import BootLoader from "./components/BootLoader";
 import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
+import GiftPrompt from "./components/header/GiftPrompt";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -275,6 +276,7 @@ function App() {
                 <div className="w-full pt-12">
                   <Footer />
                 </div>
+                <GiftPrompt />
               </SkeletonTheme>
             </Router>
         </Suspense>
