@@ -251,8 +251,12 @@ io.on("connection", (socket) => {
   onlineUsers++;
   io.emit("onlineUsers", onlineUsers);
 
-  // the ticker is in memory, so a joiner gets what is there rather than an empty table
-  socket.emit("liveBet:recent", liveFeed.recent());
+  // the ticker is in memory, so a joiner gets what is there rather than an empty table.
+  // it is also on request: the socket connects when the app boots, long before a game
+  // page mounts the table, so the connect-time copy alone always arrived to no listener.
+  const sendRecent = () => socket.emit("liveBet:recent", liveFeed.recent());
+  sendRecent();
+  socket.on("liveBet:request", sendRecent);
 
   // join the authenticated user's private room for targeted updates
   if (socket.userId) {

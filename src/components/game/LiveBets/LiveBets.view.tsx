@@ -29,7 +29,9 @@ const Row = ({ row }: { row: LiveBet }) => {
     return (
         <tr>
             <td className={`${TD} font-semibold`}>{gameName(row.game)}</td>
-            <td className="px-4 py-2">
+            {/* Player centres itself, which floats the avatar into the middle of a wide
+                column and away from the header above it */}
+            <td className="px-4 py-2 [&_a>div]:justify-start">
                 <Player user={row as never} size="small" />
             </td>
             <td className={`${TD} tabular-nums text-ink-soft`}>
