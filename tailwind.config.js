@@ -6,6 +6,13 @@ module.exports = {
 
   theme: {
     extend: {
+      // every other responsive class here is about width, but a game board running off
+      // the bottom of a 1366x768 laptop is a height problem: the board is sized from its
+      // width and never asked how much room it had. `short` is the missing axis.
+      screens: {
+        short: { raw: "(max-height: 800px)" },
+      },
+
       // one ordering for everything that can cover something else. the site has had three
       // separate incidents from picking a number inline: the category bar over the login
       // form, the leaderboard over the category bar, each fix breaking the next thing.

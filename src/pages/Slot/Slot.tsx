@@ -152,7 +152,7 @@ const Slots = () => {
     }
 
     return (
-        <div className='w-full flex justify-center -mt-10'>
+        <div className='w-full flex flex-col items-center -mt-10'>
             {
                 openBigWin && <BigWinAlert value={response?.totalPayout || 0} />
             }

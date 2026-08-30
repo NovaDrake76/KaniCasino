@@ -296,9 +296,9 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
         </>
       }
     >
-      <div className="w-full rounded-lg p-4 sm:p-8 flex flex-col items-center justify-between min-h-[460px] sm:min-h-[540px] [background:radial-gradient(ellipse_at_50%_-20%,#2a2650_0%,#1a1830_55%,#151225_100%)]">
+      <div className="w-full rounded-lg p-4 sm:p-8 short:p-3 flex flex-col items-center justify-between min-h-[460px] sm:min-h-[540px] short:min-h-0 short:max-h-[calc(100svh_-_340px)] [background:radial-gradient(ellipse_at_50%_-20%,#2a2650_0%,#1a1830_55%,#151225_100%)]">
           {/* dealer */}
-          <div className="flex flex-col items-center min-h-[170px] justify-start">
+          <div className="flex flex-col items-center min-h-[170px] short:min-h-[120px] justify-start">
             {hand ? (
               <CardFan
                 key={hand.handId}
@@ -317,7 +317,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
           <Ribbon />
 
           {/* player: one fan per hand, the active split hand highlighted */}
-          <div className="flex flex-col items-center min-h-[190px] justify-start">
+          <div className="flex flex-col items-center min-h-[190px] short:min-h-[130px] justify-start">
             {hand ? (
               <div className="flex gap-8 sm:gap-12 items-start">
                 {hand.hands.map((h, i) => {
