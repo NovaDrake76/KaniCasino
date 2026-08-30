@@ -2,6 +2,7 @@ const { chargeUser, creditUser, TX } = require("../utils/economy");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
+const liveFeed = require("../utils/liveFeed");
 
 const SLOT_ALGO_VERSION = 1; // bump if the symbol pool or paytable changes
 
@@ -44,6 +45,7 @@ class SlotGameController {
         }
 
         const totalPayout = calculateTotalPayout(winResults);
+        liveFeed.publish({ game: "slots", user: player, bet: betAmount, payout: totalPayout });
 
         // pay out winnings atomically
         let balanceAfter = player.walletBalance;

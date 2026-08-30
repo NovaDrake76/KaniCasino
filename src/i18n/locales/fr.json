@@ -958,5 +958,14 @@
       "blackjack": "Blackjack",
       "predictions": "Prédictions"
     }
+  },
+  "liveBets": {
+    "title": "PARIS EN DIRECT",
+    "game": "Jeu",
+    "player": "Joueur",
+    "bet": "Mise",
+    "multiplier": "Multiplicateur",
+    "payout": "Gain",
+    "empty": "Aucune mise ces dernières minutes."
   }
 }

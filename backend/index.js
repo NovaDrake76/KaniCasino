@@ -83,6 +83,7 @@ const { sweepMinesGames } = require("./games/mines");
 const { sweepHiloGames } = require("./games/hilo");
 const { sweepSettlements } = require("./utils/predictionSettlement");
 const { sweepBoards } = require("./utils/leaderboard");
+const liveFeed = require("./utils/liveFeed");
 const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
@@ -194,6 +195,7 @@ const sweepRounds = ({ boot = false } = {}) => {
   sweepSettlements(io).catch((e) => console.log(e));
   sweepBoards(io).catch((e) => console.log(e));
 };
+liveFeed.seed().then((n) => n && console.log(`live feed seeded: ${n} rows`)).catch(() => {});
 sweepRounds({ boot: true });
 setInterval(() => sweepRounds({ boot: false }), 5 * 60 * 1000);
 
@@ -248,6 +250,9 @@ io.use(socketAuth);
 io.on("connection", (socket) => {
   onlineUsers++;
   io.emit("onlineUsers", onlineUsers);
+
+  // the ticker is in memory, so a joiner gets what is there rather than an empty table
+  socket.emit("liveBet:recent", liveFeed.recent());
 
   // join the authenticated user's private room for targeted updates
   if (socket.userId) {

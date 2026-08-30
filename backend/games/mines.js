@@ -6,6 +6,7 @@ const { chargeUser, creditUser, TX } = require("../utils/economy");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
+const liveFeed = require("../utils/liveFeed");
 const {
   MINES_ALGO_VERSION,
   TILES,
@@ -80,6 +81,7 @@ async function payCashout(game, io) {
       xp: credited.xp,
       level: credited.level,
     });
+    liveFeed.publish({ game: "mines", user: credited, bet: game.betAmount, payout: game.payout });
   }
   await MinesGame.updateOne({ _id: game._id }, { $set: { settlementDone: true } });
   return true;
@@ -201,6 +203,7 @@ class MinesGameController {
           { new: true }
         );
         if (!busted) throw httpError(409, "Action already applied, refresh");
+        liveFeed.publish({ game: "mines", userId, bet: busted.betAmount, payout: 0 });
         busted.rollId = await recordGameRoll(busted);
         return publicView(busted);
       }

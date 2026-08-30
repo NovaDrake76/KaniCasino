@@ -4,6 +4,7 @@ const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
 const { PLINKO_ALGO_VERSION, PAYOUTS, derivePath, binFromPath } = require("../utils/plinkoMath");
+const liveFeed = require("../utils/liveFeed");
 
 // per-risk bet ceilings keep the maximum payout at 1,000,000 (cap times top multiplier)
 const MAX_BET = { low: 50000, medium: 10000, high: 1000 };
@@ -66,6 +67,7 @@ class PlinkoGameController {
             if (credited) balanceAfter = credited.walletBalance;
         }
         const payoutFailed = payout > 0 && !credited;
+        liveFeed.publish({ game: "plinko", user: player, bet: betAmount, payout });
 
         const updatedUserData = {
             walletBalance: balanceAfter,

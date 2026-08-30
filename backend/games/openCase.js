@@ -11,6 +11,7 @@ const { roll, pickFromRanges, TOTAL } = require("../utils/provablyFair");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { sellValue, recomputeCaseValues } = require("../utils/itemValue");
+const liveFeed = require("../utils/liveFeed");
 
 const MAX_PER_OPEN = 5;
 
@@ -150,6 +151,14 @@ async function openCase({ user, caseId, quantity, grantId = null, source = null 
     await User.updateOne({ _id: user._id }, { $set: { level: newLevel } });
     referrals.maybePayReferralMilestone(user._id, newLevel).catch(() => {});
   }
+
+  // a free open is a gift, not a bet, so `cost` of 0 drops out of the ticker on its own
+  liveFeed.publish({
+    game: "case",
+    user: updatedUser,
+    bet: cost,
+    payout: winningItems.reduce((sum, item) => sum + (item.baseValue || 0), 0),
+  });
 
   const io = realtime.getIo();
   if (io) {

@@ -1,4 +1,5 @@
 import Title from "../Title";
+import LiveBets from "./LiveBets";
 
 interface GameLayoutProps {
   title?: string;
@@ -30,6 +31,8 @@ const GameLayout: React.FC<GameLayoutProps> = ({ title, panel, children, footer,
     </div>
 
     {footer}
+
+    <LiveBets />
   </div>
 );
 

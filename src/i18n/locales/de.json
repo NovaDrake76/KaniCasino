@@ -958,5 +958,14 @@
       "blackjack": "Blackjack",
       "predictions": "Prognosen"
     }
+  },
+  "liveBets": {
+    "title": "LIVE-WETTEN",
+    "game": "Spiel",
+    "player": "Spieler",
+    "bet": "Einsatz",
+    "multiplier": "Multiplikator",
+    "payout": "Auszahlung",
+    "empty": "Keine Einsätze in den letzten Minuten."
   }
 }

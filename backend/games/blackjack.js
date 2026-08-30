@@ -6,6 +6,7 @@ const { chargeUser, creditUser, TX } = require("../utils/economy");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
+const liveFeed = require("../utils/liveFeed");
 const {
   BLACKJACK_ALGO_VERSION,
   MIN_BET,
@@ -185,6 +186,13 @@ async function paySettlement(hand, io, { emitDelayMs = 0 } = {}) {
       emit();
     }
   }
+  // outside the payout branch: a busted hand pays nothing and is still a bet the room saw
+  liveFeed.publish({
+    game: "blackjack",
+    userId: hand.userId,
+    bet: hand.betAmount,
+    payout: hand.totalPayout,
+  });
   await BlackjackHand.updateOne({ _id: hand._id }, { $set: { settlementDone: true } });
   return true;
 }
