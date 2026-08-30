@@ -152,6 +152,34 @@ describe("the boot seed", () => {
     expect(await liveFeed.seed()).toBe(0);
   });
 
+  // these two use the meta each game really writes, not a shape invented here. checked
+  // against production on 2026-08-30, where blackjack turned out to be the only win row
+  // with no betAmount and would have seeded nothing at all.
+  test("a crash cashout seeds from the credited amount, since its meta carries no payout", async () => {
+    const user = await makeUser();
+    await winRow(user, TX.CRASH_CASHOUT, new Date(), { betAmount: 1000, multiplier: 2.5, roundId: "r1" });
+    // the row's amount is the payout, which is what creditUser was called with
+    await Transaction.updateOne({ userId: user._id }, { $set: { amount: 2500 } });
+
+    expect(await liveFeed.seed()).toBe(1);
+    expect(liveFeed.recent()[0]).toMatchObject({ game: "crash", bet: 1000, payout: 2500, multiplier: 2.5 });
+  });
+
+  test("a blackjack win seeds, now that its row carries the bet", async () => {
+    const user = await makeUser();
+    await winRow(user, TX.BLACKJACK_WIN, new Date(), { handId: "BJ1", betAmount: 1000, payout: 2020, natural: false });
+
+    expect(await liveFeed.seed()).toBe(1);
+    expect(liveFeed.recent()[0]).toMatchObject({ game: "blackjack", bet: 1000, payout: 2020 });
+  });
+
+  test("an older blackjack row with no bet is skipped rather than seeded as zero", async () => {
+    const user = await makeUser();
+    await winRow(user, TX.BLACKJACK_WIN, new Date(), { handId: "BJ0", payout: 2020, natural: false });
+
+    expect(await liveFeed.seed()).toBe(0);
+  });
+
   test("writes nothing while seeding", async () => {
     const user = await makeUser();
     await winRow(user, TX.PLINKO_WIN, new Date(), { betAmount: 50, payout: 75 });
