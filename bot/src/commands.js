@@ -2,7 +2,7 @@ const { SlashCommandBuilder, MessageFlags, ContainerBuilder, TextDisplayBuilder 
 const api = require("./api");
 const { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, SITE } = require("./embeds");
 const { buildStrip, spinningFrame, revealFrame, demoFrame, FRAMES, FRAME_MS } = require("./spin");
-const { categoryFrame, caseFrame, tokenOf } = require("./menu");
+const { categoryFrame, caseFrame, tokenOf, label } = require("./menu");
 
 // rejected in the bot's own memory, before any http call. spamming a command costs a map
 // lookup here rather than a query on a link that carries about 100 KB/s.
@@ -167,13 +167,73 @@ const commands = [
     },
   },
   {
-    // no option, deliberately. an optional autocomplete argument is not optional in
-    // practice: discord opens its dropdown the moment the field takes focus, so the flat
-    // list of every case was the first thing a player saw and the series menu below was
-    // only reachable by submitting a box you had been invited to fill.
-    data: new SlashCommandBuilder().setName("open").setDescription("Open a case"),
+    // two boxes, in this order, because discord focuses the first one: the dropdown that
+    // opens on its own is the series, and the case list below it is narrowed to whatever
+    // series is already in the command. one flat list of every case was the thing that
+    // made picking a case a guess.
+    data: new SlashCommandBuilder()
+      .setName("open")
+      .setDescription("Open a case")
+      .addStringOption((option) =>
+        option
+          .setName("series")
+          .setDescription("Which series")
+          .setRequired(false)
+          .setAutocomplete(true)
+      )
+      .addStringOption((option) =>
+        option
+          .setName("case")
+          .setDescription("Which case, from that series")
+          .setRequired(false)
+          .setAutocomplete(true)
+      ),
+    async autocomplete(interaction) {
+      const focused = interaction.options.getFocused(true);
+
+      if (focused.name === "series") {
+        const { categories } = await api.categories();
+        const typed = String(focused.value || "").toLowerCase();
+        await interaction.respond(
+          (categories || [])
+            .filter((one) => label(one.name).toLowerCase().includes(typed))
+            .slice(0, 25)
+            .map((one) => ({
+              name: `${label(one.name)}  ·  ${one.count} cases  ·  from K₽ ${one.from.toLocaleString("en-US")}`.slice(0, 100),
+              value: String(one.name).slice(0, 100),
+            }))
+        );
+        return;
+      }
+
+      // the series already chosen narrows this list. without one it is every case, which
+      // is the old behaviour and still the right answer for somebody who knows the name.
+      const series = interaction.options.getString("series");
+      const { cases } = await api.cases(
+        focused.value,
+        interaction.user.id,
+        series ? { category: series } : undefined
+      );
+      await interaction.respond(
+        (cases || []).slice(0, 25).map((one) => ({
+          // the series stays on the label when the box is unfiltered, since the titles do
+          // not carry it and two shelves can hold a similar name
+          name: [one.title, series ? null : one.category, `K₽ ${one.price.toLocaleString("en-US")}`]
+            .filter(Boolean)
+            .join("  ·  ")
+            .slice(0, 100),
+          value: String(one.id).slice(0, 100),
+        }))
+      );
+    },
     async run(interaction) {
-      await interaction.reply(await seriesMenu());
+      const caseId = interaction.options.getString("case");
+      if (caseId) return runOpen(interaction, caseId);
+      // a series and no case lands on that shelf; neither lands on the series menu, so
+      // the command works with nothing typed at all
+      const series = interaction.options.getString("series");
+      if (series) return interaction.reply(await casesMenu(series, 0));
+      return interaction.reply(await seriesMenu());
     },
   },
   {
@@ -240,7 +300,7 @@ const commands = [
             [
               `**KaniCasino** is a fake-coin casino where you open cases, collect characters and fight for their fan boards.`,
               "",
-              "`/open` open a case: pick a series, then a case",
+              "`/open` open a case: pick a series, then a case from it",
               "`/link` attach your account, once",
               "`/showcase` your pinned character and standing",
               "`/topfan` who in this server collects a character hardest",

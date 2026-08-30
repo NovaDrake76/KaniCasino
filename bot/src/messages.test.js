@@ -119,14 +119,63 @@ test("help lists the command the bot exists for", () => {
   }
 });
 
-test("/open asks for a series first, with nothing to pre-empt it", () => {
+// discord focuses the first option and opens its dropdown there, so the order of these
+// two boxes is the whole feature: series first, then the cases on that shelf.
+test("/open offers the series box before the case box", () => {
   process.env.SITE_URL = process.env.SITE_URL || "https://kanicasino.com";
   const { commands } = require("./commands");
   const open = commands.find((command) => command.data.name === "open");
+  const options = open.data.toJSON().options || [];
 
-  // an optional autocomplete argument is not optional in practice: discord opens its
-  // dropdown as soon as the field takes focus, so a flat list of every case was the first
-  // thing a player saw and the series menu was only reachable by submitting an empty box
-  assert.deepStrictEqual(open.data.toJSON().options || [], [], "/open takes no options");
-  assert.strictEqual(open.autocomplete, undefined, "and answers no autocomplete");
+  assert.deepStrictEqual(
+    options.map((option) => option.name),
+    ["series", "case"],
+    "series has to come first, or discord opens the flat case list again"
+  );
+  assert.ok(options.every((option) => option.autocomplete), "both boxes suggest");
+  assert.ok(options.every((option) => !option.required), "and neither is mandatory");
+});
+
+test("the case box only offers cases from the series already chosen", async () => {
+  process.env.SITE_URL = process.env.SITE_URL || "https://kanicasino.com";
+  const api = require("./api");
+  const { commands } = require("./commands");
+  const open = commands.find((command) => command.data.name === "open");
+
+  const realCases = api.cases;
+  const realCategories = api.categories;
+  let askedFor = null;
+  api.cases = async (query, discordId, page) => {
+    askedFor = { query, page };
+    return { cases: [{ id: "c1", title: "Nuclear Case", price: 60, category: "Touhou" }] };
+  };
+  api.categories = async () => ({ categories: [{ name: "Touhou", count: 3, from: 60 }] });
+
+  const asked = (focusedName, focusedValue, series) => {
+    const sent = [];
+    return {
+      sent,
+      user: { id: "u1" },
+      options: {
+        getFocused: () => ({ name: focusedName, value: focusedValue }),
+        getString: (name) => (name === "series" ? series : null),
+      },
+      respond: async (choices) => sent.push(choices),
+    };
+  };
+
+  try {
+    const onCase = asked("case", "nuc", "Touhou");
+    await open.autocomplete(onCase);
+    assert.strictEqual(askedFor.page.category, "Touhou", "the shelf narrows the list");
+    assert.strictEqual(askedFor.query, "nuc", "and what was typed still filters it");
+    assert.strictEqual(onCase.sent[0][0].value, "c1");
+
+    const onSeries = asked("series", "tou", null);
+    await open.autocomplete(onSeries);
+    assert.strictEqual(onSeries.sent[0][0].value, "Touhou", "the series box lists shelves");
+  } finally {
+    api.cases = realCases;
+    api.categories = realCategories;
+  }
 });
