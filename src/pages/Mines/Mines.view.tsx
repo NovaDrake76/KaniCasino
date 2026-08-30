@@ -195,7 +195,7 @@ const MinesView: React.FC<MinesViewProps> = ({
             ))}
           </div>
 
-          <div className="grid grid-cols-5 gap-2 sm:gap-3 max-w-[560px] mx-auto w-full">
+          <div className="grid grid-cols-5 gap-2 sm:gap-3 short:gap-1.5 max-w-[560px] short:max-w-[min(560px,calc(100svh_-_340px))] mx-auto w-full">
             {Array.from({ length: TILES }).map((_, tile) => {
               const face = tileFace(tile);
               const clickable = active && !busy && face.kind === "covered" && mode === "manual";

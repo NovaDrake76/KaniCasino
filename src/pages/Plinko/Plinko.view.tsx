@@ -206,7 +206,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
         ))}
       </div>
 
-      <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} className="w-full max-w-[680px]">
+      <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} className="w-full max-w-[680px] short:w-auto short:max-h-[calc(100svh_-_340px)]">
         <PegField />
 
         {Array.from({ length: BINS }, (_, k) => {

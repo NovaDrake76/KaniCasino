@@ -48,6 +48,44 @@ describe("the live bet ticker", () => {
     expect(liveFeed.recent()).toEqual([entry]);
   });
 
+test("a row waits for the animation that reveals it, or the table spoils the bet", async () => {
+    // the plinko ball is still falling when the server settles: listing the payout now
+    // tells the player the result before their own screen does
+    const user = await makeUser();
+    const emitted = captureIo();
+
+    const entry = await liveFeed.publish({ game: "plinko", user, bet: 100, payout: 800 });
+
+    expect(entry).toBeTruthy();
+    expect(emitted).toHaveLength(0);
+    expect(liveFeed.recent()).toHaveLength(0);
+  });
+
+  test("and lands once the reveal is over", async () => {
+    const user = await makeUser();
+    const emitted = captureIo();
+
+    await liveFeed.publish({ game: "plinko", user, bet: 100, payout: 800, revealMs: 40 });
+    expect(liveFeed.recent()).toHaveLength(0);
+
+    await new Promise((r) => setTimeout(r, 90));
+    expect(liveFeed.recent()).toHaveLength(1);
+    expect(emitted).toHaveLength(1);
+  });
+
+  test("an instant game is not held back", async () => {
+    const user = await makeUser();
+    await liveFeed.publish({ game: "dice", user, bet: 100, payout: 0 });
+    expect(liveFeed.recent()).toHaveLength(1);
+  });
+
+  test("every animated game is covered, and nothing else is delayed", async () => {
+    expect(liveFeed.REVEAL_MS).toEqual({ case: 7500, plinko: 3200, slots: 3000, blackjack: 1200 });
+    for (const instant of ["dice", "mines", "hilo", "crash", "coinflip"]) {
+      expect(liveFeed.REVEAL_MS[instant]).toBeUndefined();
+    }
+  });
+
   test("writes nothing to the database", async () => {
     const user = await makeUser();
     const before = await Transaction.countDocuments({});

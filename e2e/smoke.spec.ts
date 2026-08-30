@@ -273,3 +273,22 @@ test("the games menu closes on escape", async ({ page }) => {
   await page.keyboard.press("Escape");
   await expect(page.getByRole("link", { name: "Mines", exact: true })).toHaveCount(0);
 });
+
+// a 1366x768 laptop is the resolution the mines board used to run off the bottom of:
+// every board is sized from its width, and nothing asked how much height was left
+test("a game board fits a short screen without scrolling", async ({ page }) => {
+  // 768 minus the browser's own chrome is roughly what the page actually gets
+  await page.setViewportSize({ width: 1366, height: 678 });
+
+  for (const game of ["mines", "plinko", "blackjack"]) {
+    await page.goto(`/${game}`);
+    const shell = page.locator("div.rounded-lg.border.border-line").first();
+    await expect(shell).toBeVisible();
+
+    const box = await shell.boundingBox();
+    const viewport = page.viewportSize();
+    expect(
+      { game, overflow: Math.max(0, Math.round(box!.y + box!.height - viewport!.height)) }
+    ).toEqual({ game, overflow: 0 });
+  }
+});
