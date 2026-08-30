@@ -62,7 +62,9 @@ const YourRow = ({ me, paidPlaces }: { me: NonNullable<LeaderboardViewProps["me"
         <td className="px-6 py-4 whitespace-nowrap">{me.rank ? `#${me.rank}` : "-"}</td>
         <td className="p-4">
             <span className="font-bold">{i18n.t("leaderboard.you")}</span>
-            {me.toPaidPlace > 0 && (
+            {/* gated on rank: a player who has not bet today is not "1 point from 10th",
+                they are simply not on the board yet */}
+            {me.rank !== null && me.toPaidPlace > 0 && (
                 <span className="block tabular-nums text-xs text-ink-muted">
                     {i18n.t("leaderboard.fromPlace", { points: num(me.toPaidPlace), place: paidPlaces })}
                 </span>
@@ -204,20 +206,25 @@ const LeaderboardView = ({
                     </div>
                 )}
 
-                {!loading && podium.length >= 3 ? (
+                {/* the podium used to hold 330px open whenever it had fewer than three
+                    players, so a board that had just reset was a screen of nothing. it
+                    also drew nobody at one or two players, who then appeared on no
+                    surface at all. */}
+                {loading && <div className="h-[330px]" />}
+                {!loading && podium.length > 0 && (
                     <div className="flex gap-4 md:gap-6 xl:gap-14 my-16">
                         {podium.map((user) => (
                             <TopPlayer key={user._id} user={user} rank={user.rank} />
                         ))}
                     </div>
-                ) : (
-                    <div className="h-[330px]" />
                 )}
             </div>
 
             <div className="w-full min-w-0 overflow-x-auto lg:col-start-2 lg:row-start-2">
                 <table className="min-w-full divide-y divide-gray-500">
-                    <thead className="bg-[#19172d]">
+                    {/* column headings over an empty table say nothing: the message below
+                        is the whole content when the board has just reset */}
+                    <thead className={`bg-[#19172d] ${!loading && !podium.length && !me ? "hidden" : ""}`}>
                         <tr>
                             <th className={TH}>{i18n.t("leaderboard.rank")}</th>
                             <th className={TH}>{i18n.t("leaderboard.player")}</th>

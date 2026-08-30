@@ -45,6 +45,9 @@ const props = (over: Partial<LeaderboardViewProps> = {}): LeaderboardViewProps =
   ...over,
 });
 
+// attribute match, so the arbitrary-value class needs no css escaping
+const SPACER = '[class*="h-[330px]"]';
+
 const draw = (over: Partial<LeaderboardViewProps> = {}) =>
   render(
     <MemoryRouter>
@@ -93,5 +96,39 @@ describe("the daily leaderboard", () => {
       (row) => row.querySelector("td")?.textContent
     );
     expect(ranks).toEqual(["#2", "#3", "#4", "#5"]);
+  });
+
+  it("holds no space open when the board has just reset", () => {
+    // it reserved a 330px placeholder whenever it had fewer than three players, so a
+    // freshly reset board was a screenful of nothing above an empty table
+    const { container } = draw({ podium: [], rest: [], podiumRest: [], me: null });
+
+    expect(container.querySelector(SPACER)).toBeNull();
+    expect(screen.getByText(/no bets yet/i)).toBeTruthy();
+  });
+
+  it("still draws the podium with only one or two players on it", () => {
+    // the old condition was >= 3, so a board with two players drew neither of them
+    const two = [standings[0], standings[1]];
+    const { container } = draw({ podium: [two[1], two[0]], rest: [], podiumRest: [two[1]] });
+
+    expect(container.querySelectorAll("img[src=\"images/podium.svg\"]")).toHaveLength(2);
+    expect(screen.getAllByText("first").length).toBeGreaterThan(0);
+  });
+
+  it("does not tell a player who has not bet how far they are off tenth", () => {
+    draw({
+      podium: [], rest: [], podiumRest: [],
+      me: { _id: "u9", points: 0, bets: 0, rank: null, toPaidPlace: 1, prize: 0 },
+      meOnBoard: false,
+    });
+
+    expect(screen.queryByText(/points from/i)).toBeNull();
+    expect(screen.getByText("You")).toBeTruthy();
+  });
+
+  it("keeps the placeholder while it is still loading, so the page does not jump", () => {
+    const { container } = draw({ loading: true, podium: [], rest: [], podiumRest: [] });
+    expect(container.querySelector(SPACER)).toBeTruthy();
   });
 });
