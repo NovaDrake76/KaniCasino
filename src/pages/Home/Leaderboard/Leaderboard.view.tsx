@@ -45,14 +45,20 @@ const Clock = ({ countdown, pool, paidPlaces }: { countdown: Countdown; pool: nu
 );
 
 const Row = ({ user, mine, mobileOnly }: { user: BoardStanding; mine?: boolean; mobileOnly?: boolean }) => (
-    <tr className={`${mine ? "bg-surface-nav" : ""} ${mobileOnly ? "md:hidden" : ""}`}>
+    <tr className={`${mine ? "bg-surface-nav" : ""} ${mobileOnly ? "md:hidden" : ""} ${user.placeholder ? "opacity-60" : ""}`}>
         <td className="px-6 py-4 whitespace-nowrap">#{user.rank}</td>
         <td className="flex p-4 items-center gap-2">
             <Player user={user as never} size="small" />
         </td>
         <td className="px-6 py-4 whitespace-nowrap tabular-nums">{num(user.points)}</td>
-        <td className="px-6 py-4 whitespace-nowrap font-bold text-accent-gold">
-            <Monetary value={user.prize} />
+        <td className="px-6 py-4 whitespace-nowrap">
+            {user.placeholder ? (
+                <span className="text-ink-muted">-</span>
+            ) : (
+                <span className="font-bold text-accent-gold">
+                    <Monetary value={user.prize} />
+                </span>
+            )}
         </td>
     </tr>
 );
@@ -81,42 +87,6 @@ const YourRow = ({ me, paidPlaces }: { me: NonNullable<LeaderboardViewProps["me"
             )}
         </td>
     </tr>
-);
-
-const ResultBanner = ({
-    result,
-    onDismiss,
-}: {
-    result: NonNullable<LeaderboardViewProps["lastResult"]>;
-    onDismiss: () => void;
-}) => (
-    <div className="w-full max-w-[1620px] px-4 mb-6 flex items-stretch">
-        <div className="w-1 bg-accent-gold" />
-        <div className="flex-grow bg-surface px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-bold tracking-[0.12em] text-accent-gold">
-                    {i18n.t("leaderboard.resultTitle", { rank: result.rank })}
-                </span>
-                <span className="tabular-nums text-xl font-bold">
-                    {i18n.t("leaderboard.resultPoints", { points: num(result.points) })}
-                </span>
-                <span className="text-sm text-ink-soft">{i18n.t("leaderboard.resultPaid")}</span>
-            </div>
-            <div className="flex items-center gap-4">
-                <span className="text-3xl font-extrabold text-accent-gold">
-                    <Monetary value={result.prize} />
-                </span>
-                <button
-                    type="button"
-                    onClick={onDismiss}
-                    aria-label={i18n.t("leaderboard.close")}
-                    className="w-8 h-8 bg-surface-raised hover:bg-surface-hover text-ink-muted flex items-center justify-center"
-                >
-                    x
-                </button>
-            </div>
-        </div>
-    </div>
 );
 
 const PointsPanel = ({ points, onClose }: { points: LeaderboardViewProps["points"]; onClose: () => void }) => (
@@ -168,8 +138,6 @@ const LeaderboardView = ({
     paidPlaces,
     me,
     meOnBoard,
-    lastResult,
-    dismissResult,
     points,
     showPoints,
     openPoints,
@@ -177,7 +145,6 @@ const LeaderboardView = ({
     aside,
 }: LeaderboardViewProps) => (
     <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none">
-        {lastResult && <ResultBanner result={lastResult} onDismiss={dismissResult} />}
 
         <div className="w-full max-w-[1620px] px-4 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
             <div className="w-fit">

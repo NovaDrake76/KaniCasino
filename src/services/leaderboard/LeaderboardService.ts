@@ -12,6 +12,8 @@ export interface BoardStanding {
   points: number;
   bets: number;
   prize: number;
+  // a seat nobody has taken yet: on the board, on nought, winning nothing
+  placeholder?: boolean;
   username: string;
   slug?: string;
   profilePicture: string;
@@ -50,14 +52,6 @@ export interface PointsGame {
   multiplier: number;
 }
 
-export interface BoardResult {
-  startsAt: string;
-  endsAt: string;
-  rank: number;
-  points: number;
-  prize: number;
-}
-
 export const getBoard = async (): Promise<Board> => {
   const { data } = await api.get("/leaderboard");
   return data;
@@ -65,10 +59,5 @@ export const getBoard = async (): Promise<Board> => {
 
 export const getPoints = async (): Promise<{ games: PointsGame[] }> => {
   const { data } = await api.get("/leaderboard/points");
-  return data;
-};
-
-export const getMyLastBoard = async (): Promise<BoardResult | null> => {
-  const { data } = await api.get("/leaderboard/me/last");
   return data;
 };

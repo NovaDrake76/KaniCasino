@@ -73,6 +73,32 @@ async function standings(startsAt, endsAt, limit = PAID_PLACES) {
   ]);
 }
 
+const CARD = "username slug profilePicture level fixedItem fanRank selectedBadge badges";
+
+// fill the board out to the paid places with players who have not bet today. a board that
+// has just reset is otherwise a header over nothing, and these seats are real: any of them
+// is one bet from being taken.
+//
+// they carry no prize on purpose. settlement only pays a standing with points above zero,
+// so printing K₽1,200 beside somebody on nought would be telling them they had won it.
+async function padStandings(rows, limit) {
+  const missing = limit - rows.length;
+  if (missing <= 0) return rows;
+
+  const taken = rows.map((row) => row._id);
+  // the biggest accounts first, so the empty seats read as names rather than as filler.
+  // one indexed read of at most nine documents, behind the board's own cache.
+  const idle = await User.find({ _id: { $nin: taken }, ...VISIBLE })
+    .sort({ level: -1, _id: 1 })
+    .limit(missing)
+    .select(CARD)
+    .lean();
+
+  return rows.concat(
+    idle.map((user) => ({ _id: user._id, points: 0, bets: 0, user, placeholder: true }))
+  );
+}
+
 // what one player has scored today, and how far they are off the last paid place. read
 // separately from the board because they are usually not on it.
 async function standingFor(userId, startsAt, endsAt) {
@@ -248,6 +274,7 @@ module.exports = {
   prizeFor,
   windowFor,
   standings,
+  padStandings,
   standingFor,
   ensureToday,
   settleBoard,

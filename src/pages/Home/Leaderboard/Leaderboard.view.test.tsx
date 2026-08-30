@@ -36,8 +36,6 @@ const props = (over: Partial<LeaderboardViewProps> = {}): LeaderboardViewProps =
   paidPlaces: 10,
   me: null,
   meOnBoard: false,
-  lastResult: null,
-  dismissResult: () => undefined,
   points: [],
   showPoints: false,
   openPoints: () => undefined,
@@ -130,5 +128,40 @@ describe("the daily leaderboard", () => {
   it("keeps the placeholder while it is still loading, so the page does not jump", () => {
     const { container } = draw({ loading: true, podium: [], rest: [], podiumRest: [] });
     expect(container.querySelector(SPACER)).toBeTruthy();
+  });
+
+  it("fills the empty rows with players who have not bet, and pays them nothing", () => {
+    // a board that has just reset was a header over nothing. the seats are real players,
+    // but a settlement only pays a standing above zero, so none of them shows a prize.
+    const seat = (rank: number, username: string) => ({
+      ...player(rank, username),
+      points: 0,
+      prize: 0,
+      placeholder: true,
+    });
+    const rows = [standings[0], seat(2, "idle-a"), seat(3, "idle-b"), seat(4, "idle-c")];
+
+    const { container } = draw({
+      podium: [standings[0]],
+      rest: rows.slice(1),
+      podiumRest: [],
+      me: null,
+    });
+
+    const cells = [...container.querySelectorAll("tbody tr")].map((row) =>
+      [...row.querySelectorAll("td")].map((cell) => cell.textContent?.trim())
+    );
+    expect(cells.map((c) => c[0])).toEqual(["#2", "#3", "#4"]);
+    // no prize against a seat nobody has taken
+    expect(cells.every((c) => c[3] === "-")).toBe(true);
+    expect(screen.queryByText(/no bets yet/i)).toBeNull();
+  });
+
+  it("keeps a player who has not bet off the podium", () => {
+    // a seat on nought standing on the first plinth would be claiming K₽10,000
+    const seat = { ...player(2, "idle"), points: 0, prize: 0, placeholder: true };
+    const { container } = draw({ podium: [standings[0]], rest: [seat], podiumRest: [] });
+
+    expect(container.querySelectorAll("img[src=\"images/podium.svg\"]")).toHaveLength(1);
   });
 });

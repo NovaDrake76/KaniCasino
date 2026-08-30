@@ -1,4 +1,4 @@
-import { Board, BoardMe, BoardResult, BoardStanding, PointsGame } from "../../../services/leaderboard/LeaderboardService";
+import { Board, BoardMe, BoardStanding, PointsGame } from "../../../services/leaderboard/LeaderboardService";
 
 export interface Countdown {
   hours: string;
@@ -18,8 +18,7 @@ export interface LeaderboardViewProps {
   paidPlaces: number;
   me: BoardMe | null;
   meOnBoard: boolean;
-  lastResult: BoardResult | null;
-  dismissResult: () => void;
+
   points: PointsGame[];
   showPoints: boolean;
   openPoints: () => void;
