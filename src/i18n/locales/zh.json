@@ -194,20 +194,20 @@
     "topArrow": "上箭头"
   },
   "chat": {
-    "bonusHint": "在上方栏领取",
-    "bonusIn": "下次奖励还有",
-    "bonusReady": "奖励已就绪",
     "empty": "还没有人说话，来开个头吧。",
     "errors": {
-      "empty": "请先输入内容。",
-      "tooLong": "内容太长了。",
-      "noLinks": "聊天中不允许发送链接。",
-      "slowDown": "稍微慢一点。",
-      "level": "提升等级后才能发言。",
-      "banned": "你无法在聊天中发言。",
       "auth": "请登录后聊天。",
+      "banned": "你无法在聊天中发言。",
+      "empty": "请先输入内容。",
+      "failed": "发送失败，请重试。",
+      "language": "请注意用词，不要爆粗口。",
+      "level": "提升等级后才能发言。",
+      "muted": "你已被禁言几分钟。",
+      "noLinks": "聊天中不允许发送链接。",
       "off": "聊天目前已关闭。",
-      "failed": "发送失败，请重试。"
+      "slowDown": "稍微慢一点。",
+      "slur": "这种内容不能发到聊天。",
+      "tooLong": "内容太长了。"
     },
     "hide": "隐藏聊天",
     "loading": "正在加载聊天",
@@ -215,7 +215,17 @@
     "placeholder": "说点什么",
     "report": "举报这条消息",
     "reported": "已举报，谢谢。",
+    "rules": {
+      "begging": "不要索要 KP 或物品。",
+      "promo": "禁止链接、推荐码和任何自我推广。",
+      "respect": "禁止种族歧视、骚扰和辱骂。请举报，不要对骂。",
+      "spam": "禁止刷屏和灌水，会被禁言。",
+      "support": "遇到问题请到 Discord 反馈，我们在那边才能真正帮到你。"
+    },
+    "rulesClose": "关闭规则",
+    "rulesTitle": "聊天规则",
     "send": "发送",
+    "show": "打开聊天",
     "title": "聊天"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "用户协议"
   },
   "gift": {
+    "averageRisingAt": "平均顶栏，等级 {{level}} 解锁 {{multiplier}}x 档",
     "averageTopSlot": "平均顶栏",
+    "betterPrizes": "更高的好奖品概率",
+    "betterPrizesOnceLinked": "绑定后获得更高的好奖品概率",
+    "bonus": "奖励",
+    "chanceOf": "{{chance}}% 概率",
     "chooseACollection": "选择一个系列",
     "couldNotLoadYour": "无法加载你的每日礼物。",
     "couldNotOpenYour": "无法打开你的礼物",
+    "dayOf": "第 {{day}} 天，共 {{of}} 天",
+    "dayShort": "第{{day}}天",
     "discordActive": "已启用",
     "discordBoost": "Discord 加成",
     "discordHeld": "只要你在服务器内就一直保留。",
@@ -529,10 +546,9 @@
     "freeOpenings": "次免费开箱",
     "freeOpeningsWaiting": "待使用的免费开箱",
     "fullStreak": "满连续天数",
-    "levelAllUnlocked": "等级 {{level}} 已解锁全部档位。",
     "levelBoost": "等级加成",
     "levelLocked": "{{level}} 级解锁",
-    "levelUnlocksNext": "等级 {{level}} 解锁 {{multiplier}}x 档位。",
+    "levelN": "等级 {{level}}",
     "logInToOpen": "登录后即可打开每日礼物。",
     "multipliesWhateverTheReel": "把转盘给你的结果乘上倍数。等级越高，可解锁的倍数越大。",
     "nextGiftIn": "下次礼物还有",
@@ -543,16 +559,17 @@
     "promptStart": "转动它，开启连续记录",
     "promptStreak": "转动它，达成连续 {{count}} 天",
     "promptTitle": "每日礼物已就绪",
-    "rarePrizesLikelier": "稀有奖励概率提升",
+    "risingTo": "当前，第 {{day}} 天可达 {{value}}",
     "spin": "抽取",
     "spinTheDailyGift": "抽取每日礼物",
     "streak": "连续天数",
     "streakBoost": "连续加成",
     "theReelGave": "转盘给出",
+    "today": "今天",
     "topSlot": "顶部倍数",
     "topSlot1xNo": "顶部倍数 1x · 无加成",
     "topSlotBadge": "等级 {{level}} · 顶部倍数 {{multiplier}}x",
-    "yourLevel": "你的等级",
+    "unlocksAt": "等级 {{level}} 解锁",
     "yourStreakIsCharging": "你的连续天数正在为顶部倍数蓄力。每多回来一天，好的档位就更宽。"
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "已关闭更新通知",
     "weAreNotSending": "我们没有向你的地址发送邮件，因为之前的邮件被退回或被举报为垃圾邮件。如果你认为这有误，请联系我们。",
     "youWillGetUpdates": "你将收到新箱子和新游戏的更新通知"
+  },
+  "rain": {
+    "aboutTo": "马上就要下红包了",
+    "in": "{{time}} 后发放",
+    "join": "参与",
+    "joined": "已参与",
+    "logIn": "登录",
+    "needLevel": "达到 {{level}} 级即可参与红包。",
+    "title": "红包池",
+    "won": "红包给了你 K₽{{amount}}"
   },
   "rarity": {
     "1": "普通",

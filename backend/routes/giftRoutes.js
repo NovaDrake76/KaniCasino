@@ -25,12 +25,17 @@ async function casesByCategory() {
 // the categories a player can choose between, each with the table it would spin and a
 // cover to show. the table is public on purpose: the odds are the pitch.
 async function state(userId) {
-  const user = await User.findById(userId).select("giftStreak giftNextAt freeOpens level discordId discordInGuild");
+  const user = await User.findById(userId).select("giftStreak giftNextAt giftLastAt freeOpens level discordId discordInGuild");
   if (!user) return null;
 
   const now = new Date();
   const grouped = await casesByCategory();
-  const streak = user.giftStreak || 0;
+  // two different numbers, and the page needs both. `banked` is where the ladder stands,
+  // which a missed day has already reset even though nothing wrote it down. `streak` is
+  // what the next spin will roll on, so every chance quoted below is the chance the spin
+  // will actually use: the two must never disagree.
+  const banked = gift.liveStreak(user.giftStreak, user.giftLastAt, now);
+  const streak = gift.nextStreak(user.giftStreak, user.giftLastAt, now);
   const discord = !!user.discordId && user.discordInGuild === true;
   const byId = new Map(
     Object.values(grouped)
@@ -68,11 +73,11 @@ async function state(userId) {
   // the streak's whole effect stated as one number: how much likelier it makes the rarest
   // prize, which is exactly the weight multiplier it puts on the top slot of either wheel
   const rareBoost = (days, linked = discord) => Number((1 + gift.totalTilt(days, linked) * 2).toFixed(2));
-  const streakMax = Math.ceil(gift.MAX_STREAK_TILT / gift.STREAK_STEP);
+  const streakMax = gift.STREAK_DAYS;
 
   return {
     level: user.level || 0,
-    streak,
+    streak: banked,
     streakTilt: gift.streakTilt(streak),
     discord: {
       linked: !!user.discordId,
@@ -136,7 +141,7 @@ router.get("/status", isAuthenticated, async (req, res) => {
   res.json({
     canSpin: !user.giftNextAt || new Date(user.giftNextAt) <= now,
     nextAt: user.giftNextAt || null,
-    streak: user.giftStreak || 0,
+    streak: gift.liveStreak(user.giftStreak, user.giftLastAt, now),
     nextStreak: streak,
     keepsStreak: streak > 1,
   });

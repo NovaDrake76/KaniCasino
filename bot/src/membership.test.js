@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert");
 
 process.env.DISCORD_GUILD_ID = "907336089797267496";
+process.env.DISCORD_MEMBER_INTENT = "true";
 const api = require("./api");
 const membership = require("./membership");
 
@@ -47,4 +48,19 @@ test("the boot sync sends the whole member list, which is what heals a missed ev
   await membership.syncAll(client);
 
   assert.deepStrictEqual(sent, [[GUILD, ["1", "2"]]]);
+});
+
+test("the privileged intent needs its own flag, not just a guild id", () => {
+  // asking for GuildMembers before the developer portal allows it does not degrade the
+  // bot, it refuses the login: "Used disallowed intents", and the bot is down. setting a
+  // guild id must never be able to do that on its own.
+  delete require.cache[require.resolve("./membership")];
+  process.env.DISCORD_MEMBER_INTENT = "";
+  const withoutFlag = require("./membership");
+  assert.strictEqual(withoutFlag.HOME_GUILD_ID, GUILD);
+  assert.strictEqual(withoutFlag.WANTS_MEMBER_INTENT, false);
+
+  delete require.cache[require.resolve("./membership")];
+  process.env.DISCORD_MEMBER_INTENT = "true";
+  assert.strictEqual(require("./membership").WANTS_MEMBER_INTENT, true);
 });

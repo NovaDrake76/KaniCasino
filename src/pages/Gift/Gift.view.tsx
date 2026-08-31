@@ -3,8 +3,10 @@ import Skeleton from "react-loading-skeleton";
 import Title from "../../components/Title";
 import Roulette from "../../components/Roulette";
 import GameButton from "../../components/game/GameButton";
-import { boost, countdown, kp } from "./Gift.services";
+import { TOP_SLOT_TICKS, countdown, kp, topSlotAt, topSlotStart } from "./Gift.services";
 import DiscordBoost from "./DiscordBoost";
+import StreakLadder from "./StreakLadder";
+import LevelRungs from "./LevelRungs";
 import type { GiftViewProps, TopSlotRung } from "./Gift.types";
 import i18n from "../../i18n";
 
@@ -41,24 +43,36 @@ const usePump = (from: number, to: number, run: boolean) => {
   return shown;
 };
 
-// the top slot is drawn on every spin, so the row runs across its rungs and settles on
-// the one that came up, 1x included
-const useTopSlotCursor = (count: number, spinning: boolean, landedAt: number | null) => {
+// the row is planned backwards from the answer, which the server has already given us by
+// the time the reel starts. it used to run at random and snap to the winner on the last
+// frame, so it could crawl to a halt on 2x and then announce 1x. the whole schedule is
+// fixed up front instead: TICKS steps, decelerating, with the start chosen so the final
+// step falls on the winning rung.
+const stepDelay = (i: number) => 70 + i * 6;
+
+const useTopSlotCursor = (count: number, spinning: boolean, target: number | null) => {
   const [cursor, setCursor] = useState(-1);
+
   useEffect(() => {
-    if (landedAt !== null) return setCursor(landedAt);
-    if (!spinning || count === 0) return setCursor(-1);
+    if (!spinning || count === 0) {
+      if (target !== null) setCursor(target);
+      return;
+    }
+    // with no answer yet there is nothing to land on, so it simply idles at the first rung
+    const from = topSlotStart(target === null ? 0 : target, count);
+
     let step = 0;
     let timer: ReturnType<typeof setTimeout>;
     const tick = () => {
-      setCursor(step % count);
+      setCursor(topSlotAt(from, step, count));
+      if (step >= TOP_SLOT_TICKS) return;
       step += 1;
-      // from a blur to a crawl, so it reads as running down rather than stopping dead
-      timer = setTimeout(tick, 70 + step * 6);
+      timer = setTimeout(tick, stepDelay(step));
     };
     tick();
     return () => clearTimeout(timer);
-  }, [count, spinning, landedAt]);
+  }, [count, spinning, target]);
+
   return cursor;
 };
 
@@ -96,15 +110,6 @@ const Rung = ({ rung, charging, active, landed }: RungProps) => (
   </div>
 );
 
-// the nearest rung they have not earned. a locked tier a player can see beats a hidden
-// advantage, so the panel names the level rather than leaving them to read the row.
-const nextRungBlurb = (rungs: TopSlotRung[], level: number) => {
-  const next = rungs.find((r) => r.locked);
-  return next
-    ? i18n.t("gift.levelUnlocksNext", { level: next.minLevel, multiplier: next.multiplier })
-    : i18n.t("gift.levelAllUnlocked", { level });
-};
-
 const GiftView = ({
   loading,
   state,
@@ -113,6 +118,7 @@ const GiftView = ({
   reel,
   landing,
   spinning,
+  landedTopSlot,
   pending,
   result,
   onPick,
@@ -123,7 +129,8 @@ const GiftView = ({
   useTick();
   const pumped = usePump(result?.won.opens ?? 0, result?.opens ?? 0, !!result);
   const rungs = state?.topSlot || [];
-  const landedAt = result ? rungs.findIndex((r) => r.multiplier === result.topSlot.multiplier) : -1;
+  const won = result ? result.topSlot.multiplier : landedTopSlot;
+  const landedAt = won ? rungs.findIndex((r) => r.multiplier === won) : -1;
   const cursor = useTopSlotCursor(
     rungs.filter((r) => !r.locked).length,
     stage === "spinning",
@@ -138,9 +145,6 @@ const GiftView = ({
     );
   }
   if (!state) return <span className="p-8 text-ink-muted">{i18n.t("gift.couldNotLoadYour")}</span>;
-
-  const pips = Array.from({ length: state.streakMax }, (_, i) => i < state.streak);
-  const atBestStreak = state.streak >= state.streakMax;
 
   return (
     <div className="flex w-full max-w-[1312px] flex-col items-center px-4 pb-16 md:px-8">
@@ -164,82 +168,28 @@ const GiftView = ({
       <Title title={i18n.t("nav.dailyGift")} />
 
       <div className="mb-5 grid w-full grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-        <div className="notched flex flex-col gap-4 bg-surface p-6">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.streakBoost")}</span>
-            <span className="text-[11px] text-ink-faint">
-              {atBestStreak ? (
-                <b className="text-accent-gold">{i18n.t("gift.fullStreak")}</b>
-              ) : (
-                <>
-                  day <b className="text-ink-soft">{state.streak}</b> of {state.streakMax}
-                </>
-              )}
-            </span>
-          </div>
+        <StreakLadder
+          streak={state.streak}
+          streakMax={state.streakMax}
+          rareBoost={state.rareBoost}
+          bestBoost={state.atBestStreak.rareBoost}
+          canSpin={state.canSpin}
+        />
 
-          <div className="flex gap-1.5">
-            {pips.map((lit, i) => (
-              <div key={i} className={`h-1.5 flex-1 ${lit ? "bg-accent-amber" : "bg-line"}`} />
-            ))}
-          </div>
-
-          <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">
-            {i18n.t("gift.rarePrizesLikelier")}
-          </span>
-          <div className={`flex items-end ${atBestStreak ? "justify-center" : "justify-between"}`}>
-            <div className={`flex flex-col gap-1 ${atBestStreak ? "items-center" : ""}`}>
-              <span
-                className={`text-4xl font-extrabold leading-none ${
-                  atBestStreak ? "text-accent-gold" : "text-accent-amber"
-                }`}
-              >
-                {boost(state.rareBoost)}
-              </span>
-              <span className="text-[11px] uppercase tracking-[0.14em] text-ink-faint">{i18n.t("gift.now")}</span>
-            </div>
-            {!atBestStreak && (
-              <>
-                <span className="pb-4 text-xl text-line-strong">&rarr;</span>
-                <div className="flex flex-col items-end gap-1">
-                  <span className="text-4xl font-extrabold leading-none text-accent-gold">
-                    {boost(state.atBestStreak.rareBoost)}
-                  </span>
-                  <span className="text-[11px] uppercase tracking-[0.14em] text-ink-faint">
-                    day {state.streakMax}
-                  </span>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        <div className="notched flex flex-col gap-4 bg-surface p-6">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.levelBoost")}</span>
-            <span className="text-[11px] text-ink-faint">
-              {i18n.t("gift.yourLevel")} <b className="text-ink-soft">{state.level}</b>
-            </span>
-          </div>
-          <div className="flex items-end gap-3">
-            <span className="text-4xl font-extrabold leading-none text-accent-amber">
-              {boost(state.topSlotAverage)}
-            </span>
-            <span className="pb-1 text-[11px] uppercase tracking-[0.14em] text-ink-faint">
-              {i18n.t("gift.averageTopSlot")}
-            </span>
-          </div>
-          <span className="text-[13px] text-ink-muted">{nextRungBlurb(state.topSlot, state.level)}</span>
-        </div>
+        <LevelRungs rungs={state.topSlot} level={state.level} average={state.topSlotAverage} />
 
         <DiscordBoost discord={state.discord} />
       </div>
 
+      {/* the wheel is only worth a screenful while it is running. sitting open above the
+          picker it pushed the cases below the fold, and the level card already says what
+          the rungs are worth. */}
+      {stage !== "picking" && (
       <div className="notched mb-8 flex w-full flex-col gap-3 bg-surface p-6">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.topSlot")}</span>
           <span className="text-[11px] text-ink-faint">
-            {i18n.t("gift.yourLevel")} <b className="text-ink-soft">{state.level}</b>
+            {i18n.t("gift.levelN", { level: state.level })}
           </span>
         </div>
         <div className="flex gap-2">
@@ -257,6 +207,7 @@ const GiftView = ({
           {i18n.t("gift.multipliesWhateverTheReel")}
         </span>
       </div>
+      )}
 
       {!state.canSpin && stage === "picking" && (
         <div className="notched mb-8 flex w-full flex-col items-center gap-2 bg-surface p-8">

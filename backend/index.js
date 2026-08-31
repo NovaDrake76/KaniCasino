@@ -85,6 +85,7 @@ const { sweepSettlements } = require("./utils/predictionSettlement");
 const { sweepBoards } = require("./utils/leaderboard");
 const liveFeed = require("./utils/liveFeed");
 const chat = require("./utils/chat");
+const rain = require("./utils/rain");
 const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
@@ -197,6 +198,9 @@ const sweepRounds = ({ boot = false } = {}) => {
   sweepBoards(io).catch((e) => console.log(e));
 };
 liveFeed.seed().then((n) => n && console.log(`live feed seeded: ${n} rows`)).catch(() => {});
+// the rain settles on a timer rather than a schedule, so a restart mid round pays it the
+// moment it comes back instead of skipping it
+rain.start();
 sweepRounds({ boot: true });
 setInterval(() => sweepRounds({ boot: false }), 5 * 60 * 1000);
 
@@ -277,6 +281,25 @@ io.on("connection", (socket) => {
       done(result.error ? { error: result.error, minLevel: result.minLevel } : { ok: true });
     } catch (err) {
       console.error("chat send:", err.message);
+      done({ error: "failed" });
+    }
+  });
+
+  socket.on("rain:request", async () => {
+    try {
+      socket.emit("rain:state", await rain.state(socket.userId));
+    } catch (err) {
+      // a rain panel that cannot load is not worth failing a socket over
+    }
+  });
+
+  socket.on("rain:join", async (_payload, ack) => {
+    const done = typeof ack === "function" ? ack : () => {};
+    try {
+      const result = await rain.join(socket.userId);
+      done(result);
+    } catch (err) {
+      console.error("rain join:", err.message);
       done({ error: "failed" });
     }
   });

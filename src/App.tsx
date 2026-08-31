@@ -19,11 +19,13 @@ import BootLoader from "./components/BootLoader";
 import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
 import GiftPrompt from "./components/header/GiftPrompt";
-import ChatDock, { useChatDock } from "./components/chat/ChatDock";
+import ChatDock, { ChatToggle, useChatDock } from "./components/chat/ChatDock";
+import { freshDrops } from "./components/header/liveDrop";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
 const environment = import.meta.env.VITE_NODE_ENV || "";
+
 import { User } from './components/Types'
 import i18n from "./i18n";
 import { SessionStatsProvider } from "./stats/SessionStatsContext";
@@ -46,6 +48,16 @@ function App() {
   const [notification, setNotification] = useState<any>();
 
   const chat = useChatDock();
+
+  // a drop stops being live. the strip used to hold its 112px open on every page for the
+  // rest of the session, game pages included, because the queue only ever grew.
+  useEffect(() => {
+    const sweep = setInterval(
+      () => setRecentCaseOpenings((prev: any) => (prev.length ? freshDrops(prev) : prev)),
+      5000
+    );
+    return () => clearInterval(sweep);
+  }, []);
   const socket = SocketConnection.getInstance();
   const missionCheck = useRef<{ inFlight: boolean; timer: number | null; queuedAt: number }>({
     inFlight: false,
@@ -135,7 +147,9 @@ function App() {
       // Wait 7.5 seconds to show the notification
       setTimeout(() => {
         // cap the queue immutably as it grows; the oldest drop falls off the end
-        setRecentCaseOpenings((prevOpenings: any) => [data, ...prevOpenings].slice(0, 20));
+        setRecentCaseOpenings((prevOpenings: any) =>
+          freshDrops([{ ...data, at: Date.now() }, ...prevOpenings]).slice(0, 20)
+        );
       }, 7500);
     });
 
@@ -270,21 +284,30 @@ function App() {
                   recentCaseOpenings={recentCaseOpenings}
                   notification={notification}
                   setNotification={setNotification}
-                  chatOpen={chat.open}
-                  onToggleChat={chat.toggle}
+                  railPad={chat.railWidth}
                 />
                 <OnboardingModal />
-                <div className="flex w-full items-start">
-                  <ChatDock open={chat.open} wide={chat.wide} onClose={chat.close} />
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <div className="flex w-full">
-                      <AppRoutes />
-                    </div>
-                    <div className="w-full pt-12">
-                      <Footer />
-                    </div>
+                {/* the navbar keeps the whole width and the rail hangs under it, so only
+                    what sits below the bar is shifted across */}
+                <div className="flex w-full min-w-0 flex-col">
+                  <div
+                    id={chat.CONTENT_ID}
+                    className="flex w-full transition-[padding] duration-200"
+                    style={{ paddingLeft: chat.shift }}
+                  >
+                    <AppRoutes />
+                  </div>
+                  {/* the footer spans the window whatever the page does, so it always
+                      gives the rail its width rather than measuring for it */}
+                  <div
+                    className="w-full pt-12 transition-[padding] duration-200"
+                    style={{ paddingLeft: chat.railWidth }}
+                  >
+                    <Footer />
                   </div>
                 </div>
+                <ChatDock open={chat.open} wide={chat.wide} onClose={chat.close} />
+                {!chat.open && <ChatToggle onClick={chat.toggle} />}
                 <GiftPrompt />
               </SkeletonTheme>
             </Router>

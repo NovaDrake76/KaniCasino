@@ -29,8 +29,8 @@ interface CaseOpeningItem {
 }
 
 interface Header {
-  chatOpen: boolean;
-  onToggleChat: () => void;
+  // the chat rail hangs under the navbar, so everything below the bar shifts across by it
+  railPad: number;
   onlineUsers: number;
   recentCaseOpenings: CaseOpeningItem[];
   notification: any;
@@ -52,7 +52,7 @@ interface ItemsQueue {
   };
 }
 
-const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notification, setNotification, chatOpen, onToggleChat }) => {
+const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notification, setNotification, railPad }) => {
 
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
   const [openSidebar, setOpenSidebar] = useState<boolean>(false);
@@ -122,7 +122,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
           </div>
         ))}
       </div>
-      <Navbar openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} chatOpen={chatOpen} onToggleChat={onToggleChat} />
+      <Navbar openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
       <div className="flex  items-center justify-center ">
         <div className="flex items-center justify-center relative w-full max-w-[1920px]">
           <div
@@ -173,7 +173,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
       )}
       {
         !isHome && (
-          <div className="p-4">
+          <div className="px-4 pt-3 pb-1 transition-[padding] duration-200" style={{ paddingLeft: railPad + 16 }}>
             <div className="flex items-center gap-2 text-[#84819a] cursor-pointer w-fit" onClick={() => navigate(-1)}>
               <BiArrowBack />
               <span>{i18n.t("header.back")}</span>

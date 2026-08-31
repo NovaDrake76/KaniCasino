@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { bestDrop } from "./liveDrop";
+import { bestDrop, DROP_TTL_MS, freshDrops, isFreshDrop } from "./liveDrop";
 import { BasicItem } from "../Types";
 
 const item = (name: string, rarity: string) => ({ name, rarity, image: `${name}.png` }) as BasicItem;
@@ -24,5 +24,29 @@ describe("picking what a multi-open shows", () => {
   it("handles a single item and an empty batch", () => {
     expect(bestDrop([item("only", "3")])?.name).toBe("only");
     expect(bestDrop([])).toBeUndefined();
+  });
+});
+
+describe("how long a drop stays on the live strip", () => {
+  const at = (msAgo: number) => ({ at: Date.now() - msAgo });
+
+  it("keeps one that has just landed", () => {
+    expect(isFreshDrop(at(0))).toBe(true);
+    expect(isFreshDrop(at(DROP_TTL_MS - 1000))).toBe(true);
+  });
+
+  it("drops one that is no longer live, so the strip gives its space back", () => {
+    // it used to hold its 112px open on every page for the rest of the session, game
+    // boards included, because the queue only ever grew
+    expect(isFreshDrop(at(DROP_TTL_MS + 1000))).toBe(false);
+  });
+
+  it("treats a drop with no timestamp as stale rather than immortal", () => {
+    expect(isFreshDrop({})).toBe(false);
+  });
+
+  it("empties completely once the room goes quiet", () => {
+    expect(freshDrops([at(60000), at(90000)])).toHaveLength(0);
+    expect(freshDrops([at(1000), at(90000)])).toHaveLength(1);
   });
 });

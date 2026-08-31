@@ -194,20 +194,20 @@
     "topArrow": "上向き矢印"
   },
   "chat": {
-    "bonusHint": "上のバーから受け取れます",
-    "bonusIn": "次のボーナスまで",
-    "bonusReady": "ボーナス受け取り可能",
     "empty": "まだ誰も話していません。どうぞ。",
     "errors": {
-      "empty": "まず何か入力してください。",
-      "tooLong": "長すぎます。",
-      "noLinks": "チャットではリンクを使えません。",
-      "slowDown": "少し落ち着いてください。",
-      "level": "レベルを上げると話せます。",
-      "banned": "チャットに投稿できません。",
       "auth": "ログインしてください。",
+      "banned": "チャットに投稿できません。",
+      "empty": "まず何か入力してください。",
+      "failed": "送信できませんでした。もう一度お試しください。",
+      "language": "言葉づかいにご注意ください。",
+      "level": "レベルを上げると話せます。",
+      "muted": "数分間ミュートされています。",
+      "noLinks": "チャットではリンクを使えません。",
       "off": "チャットは現在オフです。",
-      "failed": "送信できませんでした。もう一度お試しください。"
+      "slowDown": "少し落ち着いてください。",
+      "slur": "それはチャットに流せません。",
+      "tooLong": "長すぎます。"
     },
     "hide": "チャットを隠す",
     "loading": "チャットを読み込み中",
@@ -215,7 +215,17 @@
     "placeholder": "何か話しましょう",
     "report": "このメッセージを報告",
     "reported": "報告しました。ありがとうございます。",
+    "rules": {
+      "begging": "KPやアイテムをねだらないでください。",
+      "promo": "リンク、紹介コード、自己宣伝は禁止です。",
+      "respect": "差別、嫌がらせ、暴言は禁止です。返信せず報告してください。",
+      "spam": "スパムや連投は禁止です。ミュートの対象になります。",
+      "support": "不具合はDiscordへどうぞ。そちらならきちんと対応できます。"
+    },
+    "rulesClose": "ルールを閉じる",
+    "rulesTitle": "チャットのルール",
     "send": "送信",
+    "show": "チャットを開く",
     "title": "チャット"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "利用規約"
   },
   "gift": {
+    "averageRisingAt": "平均トップスロット、レベル{{level}}で{{multiplier}}x段",
     "averageTopSlot": "平均トップスロット",
+    "betterPrizes": "良い賞品が出やすくなります",
+    "betterPrizesOnceLinked": "連携すると良い賞品が出やすくなります",
+    "bonus": "ボーナス",
+    "chanceOf": "{{chance}}% の確率",
     "chooseACollection": "コレクションを選ぶ",
     "couldNotLoadYour": "デイリーギフトを読み込めませんでした。",
     "couldNotOpenYour": "ギフトを開けませんでした",
+    "dayOf": "{{of}}日中{{day}}日目",
+    "dayShort": "{{day}}日目",
     "discordActive": "有効",
     "discordBoost": "Discordボーナス",
     "discordHeld": "サーバーにいる間は維持されます。",
@@ -529,10 +546,9 @@
     "freeOpenings": "回の無料開封",
     "freeOpeningsWaiting": "使える無料開封",
     "fullStreak": "連続日数マックス",
-    "levelAllUnlocked": "レベル{{level}}ですべての段が解放済みです。",
     "levelBoost": "レベルボーナス",
     "levelLocked": "レベル {{level}}",
-    "levelUnlocksNext": "レベル{{level}}で{{multiplier}}x段が解放されます。",
+    "levelN": "レベル {{level}}",
     "logInToOpen": "ログインするとデイリーギフトを開けます。",
     "multipliesWhateverTheReel": "リールで出た数に倍率をかけます。レベルが上がるほど大きな倍率が解放されます。",
     "nextGiftIn": "次のギフトまで",
@@ -543,16 +559,17 @@
     "promptStart": "回して連続記録を始めましょう",
     "promptStreak": "回して{{count}}日連続を達成しましょう",
     "promptTitle": "デイリーギフトの準備ができました",
-    "rarePrizesLikelier": "レアな景品が出やすく",
+    "risingTo": "現在、{{day}}日目で{{value}}",
     "spin": "回す",
     "spinTheDailyGift": "デイリーギフトを回す",
     "streak": "連続日数",
     "streakBoost": "連続ボーナス",
     "theReelGave": "リールの結果",
+    "today": "今日",
     "topSlot": "トップスロット",
     "topSlot1xNo": "トップスロット 1x · ボーナスなし",
     "topSlotBadge": "レベル {{level}} · トップスロット {{multiplier}}x",
-    "yourLevel": "あなたのレベル",
+    "unlocksAt": "Lv{{level}}で解放",
     "yourStreakIsCharging": "連続日数がトップスロットを強化しています。戻ってくるたびに良い枠が広がります。"
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "お知らせをオフにしました",
     "weAreNotSending": "以前のメールが届かなかった、または迷惑メールとして報告されたため、あなたの宛先への送信を停止しています。心当たりがなければご連絡ください。",
     "youWillGetUpdates": "新しいケースやゲームのお知らせが届きます"
+  },
+  "rain": {
+    "aboutTo": "まもなくレイン",
+    "in": "あと {{time}}",
+    "join": "参加",
+    "joined": "参加中",
+    "logIn": "ログイン",
+    "needLevel": "レベル{{level}}になるとレインに参加できます。",
+    "title": "レインプール",
+    "won": "レインで K₽{{amount}} を獲得しました"
   },
   "rarity": {
     "1": "コモン",

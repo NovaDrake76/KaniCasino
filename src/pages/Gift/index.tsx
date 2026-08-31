@@ -24,6 +24,7 @@ const Gift = () => {
   const [spinning, setSpinning] = useState(false);
   const [landing, setLanding] = useState<BasicItem | null>(null);
   const [result, setResult] = useState<SpinResult | null>(null);
+  const [landedTopSlot, setLandedTopSlot] = useState<number | null>(null);
 
   // memoised because the reel reshuffles on every new items array, which was re-randomising
   // the faces on each tick; it is rebuilt once when the winning face is known
@@ -46,6 +47,7 @@ const Gift = () => {
     setCategory(found);
     setResult(null);
     setLanding(null);
+    setLandedTopSlot(null);
     setStage("charging");
   };
 
@@ -53,6 +55,7 @@ const Gift = () => {
     setCategory(null);
     setResult(null);
     setLanding(null);
+    setLandedTopSlot(null);
     setStage("picking");
   };
 
@@ -63,6 +66,8 @@ const Gift = () => {
       const res = await spinGift(category.category);
       // the reel only plants the winner when it rebuilds, so it starts after the answer lands
       setLanding(wonItem(category.slots, res.won.caseId, res.won.opens));
+      // the row is driven to the answer rather than snapping onto it when the reel ends
+      setLandedTopSlot(res.topSlot.multiplier);
       setStage("spinning");
       setSpinning(true);
       setTimeout(() => {
@@ -96,6 +101,7 @@ const Gift = () => {
         reel={reel}
         landing={landing}
         spinning={spinning}
+        landedTopSlot={landedTopSlot}
         pending={pending}
         result={result}
         onPick={onPick}

@@ -22,6 +22,7 @@ const COUNTERPARTY_FOR_TYPE = {
 
   referral_commission: HOUSE, // the house shares its edge with the affiliate
   leaderboard_prize: HOUSE, // rakeback: the daily board pays out of the edge it measures
+  rain_payout: HOUSE, // the same rakeback, split between whoever was in the room for it
   admin_adjust: MINT,
   case_open: HOUSE,
   slot_bet: HOUSE,

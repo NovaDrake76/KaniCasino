@@ -35,6 +35,28 @@ describe("sending to the chat", () => {
     expect(await ChatMessage.countDocuments({})).toBe(1);
   });
 
+  it("carries _id, because the row is rendered by a component that links off it", async () => {
+    // without it every name in the chat pointed at /profile/undefined, the same bug the
+    // bet ticker shipped with
+    const u = await makeUser();
+
+    const { message } = await chat.send(u._id, "hello");
+
+    expect(message._id).toBe(String(u._id));
+    expect((await chat.recent())[0]._id).toBe(String(u._id));
+  });
+
+  it("carries the badge the author is wearing", async () => {
+    const u = await makeUser({
+      badges: [{ key: "contributor", awardedAt: new Date() }],
+      selectedBadge: "contributor",
+    });
+
+    const { message } = await chat.send(u._id, "hello");
+
+    expect(message.badge && message.badge.key).toBe("contributor");
+  });
+
   it("writes the author onto the row, so reading history costs no user reads", async () => {
     const u = await makeUser({ level: 42, profilePicture: "pic.png" });
 
@@ -69,6 +91,28 @@ describe("sending to the chat", () => {
 
     expect((await chat.send(u._id, "look at http://spam.com")).error).toBe("noLinks");
     expect((await chat.send(u._id, "sorry, hello")).error).toBeUndefined();
+  });
+
+  it("mutes somebody who keeps trying rather than letting them keep guessing", async () => {
+    // a refusal is free to retry, so a slur turns into a puzzle to solve unless the box
+    // goes quiet after a few goes
+    // a refused message never spends the rate limit, so the attempts need no spacing
+    const u = await makeUser();
+    for (let i = 0; i < chat.STRIKES_BEFORE_MUTE; i++) {
+      expect((await chat.send(u._id, "nigger")).error).toBe("slur");
+    }
+
+    expect((await chat.send(u._id, "hello everyone")).error).toBe("muted");
+    expect(await ChatMessage.countDocuments({})).toBe(0);
+  });
+
+  it("does not mute somebody for a typo", async () => {
+    const u = await makeUser();
+    for (let i = 0; i < chat.STRIKES_BEFORE_MUTE + 2; i++) {
+      await chat.send(u._id, "");
+    }
+
+    expect((await chat.send(u._id, "hello everyone")).error).toBeUndefined();
   });
 
   it("keeps a banned name off every page", async () => {
