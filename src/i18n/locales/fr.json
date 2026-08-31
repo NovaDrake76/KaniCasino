@@ -194,20 +194,20 @@
     "topArrow": "flèche du haut"
   },
   "chat": {
-    "bonusHint": "Reclamez-le dans la barre du haut",
-    "bonusIn": "Prochain bonus dans",
-    "bonusReady": "Bonus pret",
     "empty": "Personne n a encore parle. Lancez-vous.",
     "errors": {
-      "empty": "Ecrivez d abord quelque chose.",
-      "tooLong": "C est trop long.",
-      "noLinks": "Les liens ne sont pas autorises dans le chat.",
-      "slowDown": "Doucement.",
-      "level": "Montez de niveau pour pouvoir parler.",
-      "banned": "Vous ne pouvez pas publier dans le chat.",
       "auth": "Connectez-vous pour discuter.",
+      "banned": "Vous ne pouvez pas publier dans le chat.",
+      "empty": "Ecrivez d abord quelque chose.",
+      "failed": "L envoi a echoue. Reessayez.",
+      "language": "Pas de grossieretes, merci.",
+      "level": "Montez de niveau pour pouvoir parler.",
+      "muted": "Vous etes muet pour quelques minutes.",
+      "noLinks": "Les liens ne sont pas autorises dans le chat.",
       "off": "Le chat est desactive pour le moment.",
-      "failed": "L envoi a echoue. Reessayez."
+      "slowDown": "Doucement.",
+      "slur": "Cela ne passera pas dans le chat.",
+      "tooLong": "C est trop long."
     },
     "hide": "Masquer le chat",
     "loading": "Chargement du chat",
@@ -215,7 +215,17 @@
     "placeholder": "Dites quelque chose",
     "report": "Signaler ce message",
     "reported": "Signale. Merci.",
+    "rules": {
+      "begging": "Ne mendiez ni KP ni objets.",
+      "promo": "Ni liens, ni codes de parrainage, ni promotion personnelle.",
+      "respect": "Ni racisme, ni harcelement, ni insultes. Signalez plutot que de repondre.",
+      "spam": "Ni spam ni flood. Cela vaut un mute.",
+      "support": "Un souci? Demandez sur le Discord, ou nous pouvons vraiment vous aider."
+    },
+    "rulesClose": "Fermer les regles",
+    "rulesTitle": "Regles du chat",
     "send": "Envoyer",
+    "show": "Ouvrir le chat",
     "title": "Chat"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "Conditions d'utilisation"
   },
   "gift": {
+    "averageRisingAt": "top slot moyen, palier {{multiplier}}x au niveau {{level}}",
     "averageTopSlot": "top slot moyen",
+    "betterPrizes": "de chances en plus d avoir mieux",
+    "betterPrizesOnceLinked": "de chances en plus une fois lie",
+    "bonus": "bonus",
+    "chanceOf": "{{chance}}% de chance",
     "chooseACollection": "Choisissez une collection",
     "couldNotLoadYour": "Impossible de charger votre cadeau quotidien.",
     "couldNotOpenYour": "Impossible d'ouvrir votre cadeau",
+    "dayOf": "jour {{day}} sur {{of}}",
+    "dayShort": "jour {{day}}",
     "discordActive": "actif",
     "discordBoost": "Bonus Discord",
     "discordHeld": "Conserve tant que vous etes sur le serveur.",
@@ -529,10 +546,9 @@
     "freeOpenings": "ouvertures gratuites",
     "freeOpeningsWaiting": "Ouvertures gratuites en attente",
     "fullStreak": "série complète",
-    "levelAllUnlocked": "Tous les paliers debloques au niveau {{level}}.",
     "levelBoost": "Bonus de niveau",
     "levelLocked": "Niveau {{level}}",
-    "levelUnlocksNext": "Le niveau {{level}} debloque le palier {{multiplier}}x.",
+    "levelN": "niveau {{level}}",
     "logInToOpen": "Connectez-vous pour ouvrir votre cadeau quotidien.",
     "multipliesWhateverTheReel": "Multiplie ce que le rouleau vous donne. Les niveaux élevés débloquent de plus gros multiplicateurs.",
     "nextGiftIn": "Prochain cadeau dans",
@@ -543,16 +559,17 @@
     "promptStart": "Lancez-le et demarrez une serie",
     "promptStreak": "Lancez-le pour atteindre {{count}} jours d'affilee",
     "promptTitle": "Votre cadeau quotidien est pret",
-    "rarePrizesLikelier": "Lots rares plus probables",
+    "risingTo": "maintenant, {{value}} au jour {{day}}",
     "spin": "Lancer",
     "spinTheDailyGift": "Lancer le cadeau quotidien",
     "streak": "Série",
     "streakBoost": "Bonus de serie",
     "theReelGave": "le rouleau a donné",
+    "today": "aujourd hui",
     "topSlot": "Case supérieure",
     "topSlot1xNo": "CASE SUPÉRIEURE 1x · SANS BONUS",
     "topSlotBadge": "NIVEAU {{level}} · CASE SUPÉRIEURE {{multiplier}}x",
-    "yourLevel": "votre niveau",
+    "unlocksAt": "debloque au niv {{level}}",
     "yourStreakIsCharging": "Votre série charge la case supérieure. Chaque jour de retour élargit les bons échelons."
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "Actualités désactivées",
     "weAreNotSending": "Nous n'envoyons plus à votre adresse car un e-mail précédent a échoué ou a été signalé comme spam. Écrivez-nous si vous pensez que c'est une erreur.",
     "youWillGetUpdates": "Vous recevrez les actualités sur les caisses et les jeux"
+  },
+  "rain": {
+    "aboutTo": "La pluie arrive",
+    "in": "tombe dans {{time}}",
+    "join": "Rejoindre",
+    "joined": "Vous y etes",
+    "logIn": "connectez-vous",
+    "needLevel": "Atteignez le niveau {{level}} pour rejoindre la pluie.",
+    "title": "Pluie",
+    "won": "La pluie vous a donne K₽{{amount}}"
   },
   "rarity": {
     "1": "Commun",

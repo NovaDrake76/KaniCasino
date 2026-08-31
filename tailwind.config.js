@@ -11,6 +11,9 @@ module.exports = {
       // width and never asked how much room it had. `short` is the missing axis.
       screens: {
         short: { raw: "(max-height: 800px)" },
+        // the boards need their space back well before a screen is properly short: at 900px
+        // the page title alone was still pushing the card past the fold
+        stage: { raw: "(max-height: 1000px)" },
       },
 
       // one ordering for everything that can cover something else. the site has had three

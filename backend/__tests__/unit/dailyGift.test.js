@@ -269,7 +269,7 @@ describe("the discord boost", () => {
   });
 
   it("is worth having at a full streak too, so it never becomes a head start", () => {
-    const full = gift.streakMaxDays ? gift.streakMaxDays : Math.ceil(gift.MAX_STREAK_TILT / gift.STREAK_STEP);
+    const full = gift.STREAK_DAYS;
     const off = gift.weightsFor(table, full, false);
     const on = gift.weightsFor(table, full, true);
 
@@ -287,5 +287,53 @@ describe("the discord boost", () => {
     // level 0 sees two rungs whatever discord says, so the ceiling is still the level's
     expect(gift.topSlotFor(0).filter((r) => !r.locked)).toHaveLength(2);
     expect(gift.topSlotAverage(0, 99, true)).toBeLessThanOrEqual(2);
+  });
+});
+
+describe("the streak ladder", () => {
+  it("is a week long and tops out on the last day of it", () => {
+    expect(gift.STREAK_DAYS).toBe(7);
+    expect(gift.streakTilt(gift.STREAK_DAYS)).toBeCloseTo(gift.MAX_STREAK_TILT, 10);
+  });
+
+  it("gains the same amount every day up to the cap, and nothing after", () => {
+    const steps = Array.from({ length: gift.STREAK_DAYS }, (_, i) => gift.streakTilt(i + 1) - gift.streakTilt(i));
+    steps.forEach((step) => expect(step).toBeCloseTo(gift.STREAK_STEP, 10));
+    expect(gift.streakTilt(99)).toBe(gift.MAX_STREAK_TILT);
+  });
+});
+
+describe("the streak a player actually holds", () => {
+  const d = (t) => new Date(t);
+
+  it("is gone the moment a day is missed, whatever the document still says", () => {
+    // giftStreak is only rewritten when a spin lands, so a player who stopped days ago
+    // still carries a full streak on their document. the card must not believe it.
+    expect(gift.liveStreak(7, d("2026-07-01T10:00:00Z"), d("2026-07-05T10:00:00Z"))).toBe(0);
+  });
+
+  it("survives the day after, which is the day they can still save it", () => {
+    expect(gift.liveStreak(7, d("2026-07-01T10:00:00Z"), d("2026-07-02T10:00:00Z"))).toBe(7);
+  });
+
+  it("holds inside the same day, when the spin is already taken", () => {
+    expect(gift.liveStreak(3, d("2026-07-02T08:00:00Z"), d("2026-07-02T20:00:00Z"))).toBe(3);
+  });
+
+  it("is nothing at all before the first spin", () => {
+    expect(gift.liveStreak(0, null, d("2026-07-02T10:00:00Z"))).toBe(0);
+  });
+
+  it("agrees with what the next spin will roll on", () => {
+    // a broken streak reads as 0 banked and 1 pending: the ladder shows nothing earned
+    // and the spin rolls day one. the two used to disagree, so the page advertised
+    // day-seven odds on a roll that took day-one ones.
+    const stale = [7, d("2026-07-01T10:00:00Z"), d("2026-07-05T10:00:00Z")];
+    expect(gift.liveStreak(...stale)).toBe(0);
+    expect(gift.nextStreak(...stale)).toBe(1);
+
+    const kept = [3, d("2026-07-01T10:00:00Z"), d("2026-07-02T10:00:00Z")];
+    expect(gift.liveStreak(...kept)).toBe(3);
+    expect(gift.nextStreak(...kept)).toBe(4);
   });
 });

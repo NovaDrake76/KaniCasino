@@ -53,6 +53,7 @@ const TX = {
   REFERRAL_MILESTONE: "referral_milestone", // one-time payout when a referee reaches level 10
   AD_REWARD: "ad_reward", // KP paid for a completed rewarded ad view
   LEADERBOARD_PRIZE: "leaderboard_prize", // a daily leaderboard placing, paid out of the house edge
+  RAIN_PAYOUT: "rain_payout", // a share of the rain pool, paid out of the house edge like the board
   OPENING: "opening_balance", // the pre-ledger balance, booked once against genesis
 };
 

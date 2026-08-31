@@ -194,20 +194,20 @@
     "topArrow": "mũi tên trên"
   },
   "chat": {
-    "bonusHint": "Nhan o thanh phia tren",
-    "bonusIn": "Thuong ke tiep sau",
-    "bonusReady": "Da co thuong",
     "empty": "Chua ai noi gi. Ban bat dau nhe.",
     "errors": {
-      "empty": "Hay nhap gi do truoc.",
-      "tooLong": "Noi dung qua dai.",
-      "noLinks": "Khong duoc gui lien ket trong chat.",
-      "slowDown": "Cham lai mot chut.",
-      "level": "Len cap de co the tro chuyen.",
-      "banned": "Ban khong the dang trong chat.",
       "auth": "Dang nhap de tro chuyen.",
+      "banned": "Ban khong the dang trong chat.",
+      "empty": "Hay nhap gi do truoc.",
+      "failed": "Gui khong thanh cong. Thu lai nhe.",
+      "language": "Vui long khong noi tuc.",
+      "level": "Len cap de co the tro chuyen.",
+      "muted": "Ban bi cam noi trong vai phut.",
+      "noLinks": "Khong duoc gui lien ket trong chat.",
       "off": "Chat dang tat.",
-      "failed": "Gui khong thanh cong. Thu lai nhe."
+      "slowDown": "Cham lai mot chut.",
+      "slur": "Noi dung do khong the gui len chat.",
+      "tooLong": "Noi dung qua dai."
     },
     "hide": "An khung chat",
     "loading": "Dang tai khung chat",
@@ -215,7 +215,17 @@
     "placeholder": "Noi gi do di",
     "report": "Bao cao tin nhan nay",
     "reported": "Da bao cao. Cam on ban.",
+    "rules": {
+      "begging": "Khong xin KP hay vat pham.",
+      "promo": "Khong dat lien ket, ma gioi thieu hay quang ba cua rieng ban.",
+      "respect": "Khong phan biet chung toc, quay roi hay chui boi. Hay bao cao thay vi dap tra.",
+      "spam": "Khong spam hay tran tin nhan. Se bi cam noi.",
+      "support": "Gap loi? Hay hoi trong Discord, o do chung toi co the ho tro ban tot hon."
+    },
+    "rulesClose": "Dong noi quy",
+    "rulesTitle": "Noi quy phong chat",
     "send": "Gui",
+    "show": "Mo khung chat",
     "title": "Tro chuyen"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "Thoả thuận người dùng"
   },
   "gift": {
+    "averageRisingAt": "top slot trung binh, bac {{multiplier}}x o cap {{level}}",
     "averageTopSlot": "top slot trung binh",
+    "betterPrizes": "co hoi trung phan thuong tot hon",
+    "betterPrizesOnceLinked": "co hoi trung phan thuong tot hon sau khi lien ket",
+    "bonus": "thuong",
+    "chanceOf": "{{chance}}% co hoi",
     "chooseACollection": "Chọn một bộ sưu tập",
     "couldNotLoadYour": "Không tải được quà hằng ngày của bạn.",
     "couldNotOpenYour": "Không mở được quà của bạn",
+    "dayOf": "ngay {{day}} tren {{of}}",
+    "dayShort": "ngay {{day}}",
     "discordActive": "dang bat",
     "discordBoost": "Thuong Discord",
     "discordHeld": "Duy tri khi ban con o trong may chu.",
@@ -529,10 +546,9 @@
     "freeOpenings": "lượt mở miễn phí",
     "freeOpeningsWaiting": "Lượt mở miễn phí đang chờ",
     "fullStreak": "chuỗi tối đa",
-    "levelAllUnlocked": "Da mo khoa moi bac o cap {{level}}.",
     "levelBoost": "Thuong cap do",
     "levelLocked": "Cấp {{level}}",
-    "levelUnlocksNext": "Cap {{level}} mo khoa bac {{multiplier}}x.",
+    "levelN": "cap {{level}}",
     "logInToOpen": "Đăng nhập để mở quà hằng ngày.",
     "multipliesWhateverTheReel": "Nhân lên kết quả mà vòng quay trao cho bạn. Cấp càng cao thì mở khoá hệ số càng lớn.",
     "nextGiftIn": "Quà tiếp theo sau",
@@ -543,16 +559,17 @@
     "promptStart": "Quay va bat dau chuoi ngay",
     "promptStreak": "Quay de dat chuoi {{count}} ngay",
     "promptTitle": "Qua tang hang ngay cua ban da san sang",
-    "rarePrizesLikelier": "Phần thưởng hiếm dễ ra hơn",
+    "risingTo": "hien tai, {{value}} vao ngay {{day}}",
     "spin": "Quay",
     "spinTheDailyGift": "Quay quà hằng ngày",
     "streak": "Chuỗi ngày",
     "streakBoost": "Thuong chuoi ngay",
     "theReelGave": "vòng quay cho",
+    "today": "hom nay",
     "topSlot": "Ô trên cùng",
     "topSlot1xNo": "Ô TRÊN CÙNG 1x · KHÔNG THƯỞNG",
     "topSlotBadge": "CẤP {{level}} · Ô TRÊN CÙNG {{multiplier}}x",
-    "yourLevel": "cap do cua ban",
+    "unlocksAt": "mo o cap {{level}}",
     "yourStreakIsCharging": "Chuỗi ngày của bạn đang nạp cho ô trên cùng. Mỗi ngày quay lại lại nới rộng các nấc tốt."
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "Đã tắt tin cập nhật",
     "weAreNotSending": "Chúng tôi không gửi tới địa chỉ của bạn vì một email trước đó bị trả lại hoặc bị báo là spam. Hãy liên hệ nếu bạn thấy điều này không đúng.",
     "youWillGetUpdates": "Bạn sẽ nhận tin về hòm và trò chơi mới"
+  },
+  "rain": {
+    "aboutTo": "Sap mua roi",
+    "in": "roi sau {{time}}",
+    "join": "Tham gia",
+    "joined": "Ban da tham gia",
+    "logIn": "dang nhap",
+    "needLevel": "Dat cap {{level}} de tham gia con mua.",
+    "title": "Quy mua",
+    "won": "Con mua tang ban K₽{{amount}}"
   },
   "rarity": {
     "1": "Thường",

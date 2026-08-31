@@ -194,20 +194,20 @@
     "topArrow": "Pfeil oben"
   },
   "chat": {
-    "bonusHint": "Oben in der Leiste abholen",
-    "bonusIn": "Naechster Bonus in",
-    "bonusReady": "Bonus bereit",
     "empty": "Noch nichts gesagt. Fang an.",
     "errors": {
-      "empty": "Schreib zuerst etwas.",
-      "tooLong": "Das ist zu lang.",
-      "noLinks": "Links sind im Chat nicht erlaubt.",
-      "slowDown": "Nicht so schnell.",
-      "level": "Steig im Level auf, um zu schreiben.",
-      "banned": "Du kannst nicht im Chat schreiben.",
       "auth": "Melde dich an, um zu chatten.",
+      "banned": "Du kannst nicht im Chat schreiben.",
+      "empty": "Schreib zuerst etwas.",
+      "failed": "Das ging nicht raus. Versuch es nochmal.",
+      "language": "Bitte ohne Schimpfwoerter.",
+      "level": "Steig im Level auf, um zu schreiben.",
+      "muted": "Du bist fuer ein paar Minuten stummgeschaltet.",
+      "noLinks": "Links sind im Chat nicht erlaubt.",
       "off": "Der Chat ist gerade aus.",
-      "failed": "Das ging nicht raus. Versuch es nochmal."
+      "slowDown": "Nicht so schnell.",
+      "slur": "Das kommt nicht in den Chat.",
+      "tooLong": "Das ist zu lang."
     },
     "hide": "Chat ausblenden",
     "loading": "Chat wird geladen",
@@ -215,7 +215,17 @@
     "placeholder": "Sag etwas",
     "report": "Diese Nachricht melden",
     "reported": "Gemeldet. Danke.",
+    "rules": {
+      "begging": "Kein Betteln um KP oder Items.",
+      "promo": "Keine Links, Werbecodes oder Eigenwerbung.",
+      "respect": "Kein Rassismus, keine Belaestigung, keine Beleidigungen. Melden statt antworten.",
+      "spam": "Kein Spam, kein Fluten. Das gibt einen Mute.",
+      "support": "Etwas kaputt? Frag im Discord, dort koennen wir dir wirklich helfen."
+    },
+    "rulesClose": "Regeln schliessen",
+    "rulesTitle": "Chatregeln",
     "send": "Senden",
+    "show": "Chat oeffnen",
     "title": "Chat"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "Nutzungsbedingungen"
   },
   "gift": {
+    "averageRisingAt": "durchschnittlicher Top-Slot, {{multiplier}}x Stufe ab Level {{level}}",
     "averageTopSlot": "durchschnittlicher Top-Slot",
+    "betterPrizes": "mehr Chance auf bessere Preise",
+    "betterPrizesOnceLinked": "mehr Chance auf bessere Preise nach dem Verknuepfen",
+    "bonus": "Bonus",
+    "chanceOf": "{{chance}}% Chance",
     "chooseACollection": "Wähle eine Sammlung",
     "couldNotLoadYour": "Dein Tagesgeschenk konnte nicht geladen werden.",
     "couldNotOpenYour": "Dein Geschenk konnte nicht geöffnet werden",
+    "dayOf": "Tag {{day}} von {{of}}",
+    "dayShort": "Tag {{day}}",
     "discordActive": "aktiv",
     "discordBoost": "Discord-Bonus",
     "discordHeld": "Gilt, solange du auf dem Server bist.",
@@ -529,10 +546,9 @@
     "freeOpenings": "kostenlose Öffnungen",
     "freeOpeningsWaiting": "Kostenlose Öffnungen warten",
     "fullStreak": "volle Serie",
-    "levelAllUnlocked": "Alle Stufen mit Level {{level}} freigeschaltet.",
     "levelBoost": "Level-Bonus",
     "levelLocked": "Level {{level}}",
-    "levelUnlocksNext": "Level {{level}} schaltet die {{multiplier}}x Stufe frei.",
+    "levelN": "Level {{level}}",
     "logInToOpen": "Melde dich an, um dein Tagesgeschenk zu öffnen.",
     "multipliesWhateverTheReel": "Multipliziert, was die Walze dir gibt. Höhere Level schalten größere Multiplikatoren frei.",
     "nextGiftIn": "Nächstes Geschenk in",
@@ -543,16 +559,17 @@
     "promptStart": "Dreh es und starte eine Serie",
     "promptStreak": "Dreh es fuer eine Serie von {{count}} Tagen",
     "promptTitle": "Dein taegliches Geschenk ist bereit",
-    "rarePrizesLikelier": "Seltene Preise wahrscheinlicher",
+    "risingTo": "jetzt, {{value}} an Tag {{day}}",
     "spin": "Drehen",
     "spinTheDailyGift": "Tagesgeschenk drehen",
     "streak": "Serie",
     "streakBoost": "Serien-Bonus",
     "theReelGave": "die Walze gab",
+    "today": "heute",
     "topSlot": "Top-Slot",
     "topSlot1xNo": "TOP-SLOT 1x · KEIN BONUS",
     "topSlotBadge": "LEVEL {{level}} · {{multiplier}}x TOP-SLOT",
-    "yourLevel": "dein Level",
+    "unlocksAt": "ab Lv {{level}}",
     "yourStreakIsCharging": "Deine Serie lädt den Top-Slot auf. Jeder Tag, an dem du zurückkommst, verbreitert die guten Stufen."
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "Neuigkeiten ausgeschaltet",
     "weAreNotSending": "Wir senden nicht an deine Adresse, weil eine frühere E-Mail nicht zugestellt oder als Spam gemeldet wurde. Melde dich, wenn das falsch ist.",
     "youWillGetUpdates": "Du bekommst Neuigkeiten zu Kisten und Spielen"
+  },
+  "rain": {
+    "aboutTo": "Gleich regnet es",
+    "in": "faellt in {{time}}",
+    "join": "Mitmachen",
+    "joined": "Du bist dabei",
+    "logIn": "anmelden",
+    "needLevel": "Erreiche Level {{level}}, um beim Regen mitzumachen.",
+    "title": "Regen",
+    "won": "Der Regen gab dir K₽{{amount}}"
   },
   "rarity": {
     "1": "Gewöhnlich",

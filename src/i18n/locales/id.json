@@ -194,20 +194,20 @@
     "topArrow": "panah atas"
   },
   "chat": {
-    "bonusHint": "Ambil dari bilah di atas",
-    "bonusIn": "Bonus berikutnya dalam",
-    "bonusReady": "Bonus siap",
     "empty": "Belum ada yang bicara. Silakan mulai.",
     "errors": {
-      "empty": "Tulis sesuatu dulu.",
-      "tooLong": "Itu terlalu panjang.",
-      "noLinks": "Tautan tidak diizinkan di obrolan.",
-      "slowDown": "Pelan-pelan dulu.",
-      "level": "Naikkan level agar bisa mengobrol.",
-      "banned": "Kamu tidak bisa mengirim di obrolan.",
       "auth": "Masuk untuk mengobrol.",
+      "banned": "Kamu tidak bisa mengirim di obrolan.",
+      "empty": "Tulis sesuatu dulu.",
+      "failed": "Gagal terkirim. Coba lagi.",
+      "language": "Tolong jaga bahasanya.",
+      "level": "Naikkan level agar bisa mengobrol.",
+      "muted": "Kamu dibisukan selama beberapa menit.",
+      "noLinks": "Tautan tidak diizinkan di obrolan.",
       "off": "Obrolan sedang dimatikan.",
-      "failed": "Gagal terkirim. Coba lagi."
+      "slowDown": "Pelan-pelan dulu.",
+      "slur": "Itu tidak akan masuk ke obrolan.",
+      "tooLong": "Itu terlalu panjang."
     },
     "hide": "Sembunyikan obrolan",
     "loading": "Memuat obrolan",
@@ -215,7 +215,17 @@
     "placeholder": "Katakan sesuatu",
     "report": "Laporkan pesan ini",
     "reported": "Dilaporkan. Terima kasih.",
+    "rules": {
+      "begging": "Jangan meminta KP atau item.",
+      "promo": "Dilarang menaruh tautan, kode referal, atau promosi milikmu.",
+      "respect": "Tidak ada rasisme, pelecehan, atau makian. Laporkan, jangan dibalas.",
+      "spam": "Dilarang spam atau banjir pesan. Bisa kena mute.",
+      "support": "Ada yang rusak? Tanyakan di Discord, di sana kami bisa benar-benar membantu."
+    },
+    "rulesClose": "Tutup aturan",
+    "rulesTitle": "Aturan obrolan",
     "send": "Kirim",
+    "show": "Buka obrolan",
     "title": "Obrolan"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "Perjanjian Pengguna"
   },
   "gift": {
+    "averageRisingAt": "top slot rata-rata, tingkat {{multiplier}}x di level {{level}}",
     "averageTopSlot": "top slot rata-rata",
+    "betterPrizes": "peluang hadiah bagus lebih besar",
+    "betterPrizesOnceLinked": "peluang hadiah bagus lebih besar setelah terhubung",
+    "bonus": "bonus",
+    "chanceOf": "peluang {{chance}}%",
     "chooseACollection": "Pilih koleksi",
     "couldNotLoadYour": "Hadiah harianmu tidak dapat dimuat.",
     "couldNotOpenYour": "Tidak bisa membuka hadiah kamu",
+    "dayOf": "hari {{day}} dari {{of}}",
+    "dayShort": "hari {{day}}",
     "discordActive": "aktif",
     "discordBoost": "Bonus Discord",
     "discordHeld": "Berlaku selama kamu ada di server.",
@@ -529,10 +546,9 @@
     "freeOpenings": "pembukaan gratis",
     "freeOpeningsWaiting": "Pembukaan gratis menanti.",
     "fullStreak": "Streak penuh",
-    "levelAllUnlocked": "Semua tingkat terbuka di level {{level}}.",
     "levelBoost": "Bonus level",
     "levelLocked": "Level {{level}}",
-    "levelUnlocksNext": "Level {{level}} membuka tingkat {{multiplier}}x.",
+    "levelN": "level {{level}}",
     "logInToOpen": "Masuk untuk membuka hadiah harian Anda.",
     "multipliesWhateverTheReel": "Menggandakan apa pun yang diberikan roll. Level yang lebih tinggi membuka kelipatan yang lebih besar.",
     "nextGiftIn": "Hadiah selanjutnya di",
@@ -543,16 +559,17 @@
     "promptStart": "Putar dan mulai rentetan",
     "promptStreak": "Putar untuk mencapai rentetan {{count}} hari",
     "promptTitle": "Hadiah harianmu sudah siap",
-    "rarePrizesLikelier": "Hadiah langka lebih mungkin didapatkan.",
+    "risingTo": "sekarang, {{value}} di hari {{day}}",
     "spin": "Spin",
     "spinTheDailyGift": "Spin hadiah harian",
     "streak": "Streak",
     "streakBoost": "Bonus rentetan",
     "theReelGave": "Reel memberikan",
+    "today": "hari ini",
     "topSlot": "PUNCAK SLOT",
     "topSlot1xNo": "PUNCAK SLOT 1x · TANPA BONUS",
     "topSlotBadge": "LEVEL {{level}} · {{multiplier}}x PUNCAK SLOT",
-    "yourLevel": "level kamu",
+    "unlocksAt": "terbuka di lv {{level}}",
     "yourStreakIsCharging": "Streak Gacormu lagi ngisi PUNCAK SLOT. Tiap hari kamu balik, peluang bagusnya makin lebar."
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "Pembaruan dimatiin",
     "weAreNotSending": "Kami tidak mengirim email ke alamat Anda karena email sebelumnya gagal terkirim atau dilaporkan sebagai spam. Hubungi kami jika Anda merasa hal itu keliru.",
     "youWillGetUpdates": "Anda akan mendapatkan pembaruan tentang gacha dan game baru."
+  },
+  "rain": {
+    "aboutTo": "Sebentar lagi hujan",
+    "in": "turun dalam {{time}}",
+    "join": "Ikut",
+    "joined": "Kamu ikut",
+    "logIn": "masuk",
+    "needLevel": "Capai level {{level}} untuk ikut hujan.",
+    "title": "Kolam hujan",
+    "won": "Hujan memberimu K₽{{amount}}"
   },
   "rarity": {
     "1": "B aja",

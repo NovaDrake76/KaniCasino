@@ -27,8 +27,9 @@ vi.mock("../../services/chat/ChatService", () => ({
   },
 }));
 
-const message = (id: string, text: string): ChatMessage => ({
+const message = (id: string, text: string, over: Partial<ChatMessage> = {}): ChatMessage => ({
   id,
+  _id: `u${id}`,
   userId: `u${id}`,
   username: `player${id}`,
   profilePicture: "",
@@ -36,6 +37,7 @@ const message = (id: string, text: string): ChatMessage => ({
   badge: null,
   text,
   at: Date.UTC(2026, 7, 30, 14, 5),
+  ...over,
 });
 
 const draw = (logged = true) =>
@@ -115,6 +117,84 @@ describe("the site chat panel", () => {
 
     act(() => handlers.removed?.({ id: "1" } as never));
     expect(screen.queryByText("regrettable")).toBeNull();
+  });
+
+  it("links a name at the author, not at undefined", () => {
+    draw();
+    act(() => handlers.history?.([message("1", "first")] as never));
+
+    const link = screen.getByText("player1").closest("a");
+    expect(link?.getAttribute("href")).toBe("/profile/u1");
+  });
+
+  it("stacks the name above the message, both beside the avatar", () => {
+    // it used to lay the name out on the avatar's row and drop the text below both, so a
+    // long line wrapped back under the picture and the column stopped reading as a chat
+    const { container } = draw();
+    act(() => handlers.history?.([message("1", "first")] as never));
+
+    const row = container.querySelector("li")!;
+    const [avatarLink, nameLink] = Array.from(row.querySelectorAll("a"));
+    const body = row.querySelector("p")!;
+
+    // the name and the text share one column, and the avatar is not in it
+    const column = nameLink.parentElement!.parentElement!;
+    expect(column.contains(body)).toBe(true);
+    expect(column.contains(avatarLink)).toBe(false);
+    expect(nameLink.textContent).toBe("player1");
+    expect(body.textContent).toBe("first");
+  });
+
+  it("puts the badge on the name row, not in the message", () => {
+    const { container } = draw();
+    act(() =>
+      handlers.history?.([message("1", "first", { badge: { key: "contributor" } })] as never)
+    );
+
+    const nameLink = Array.from(container.querySelectorAll("a")).find(
+      (a) => a.textContent === "player1"
+    )!;
+    const nameRow = nameLink.parentElement!;
+    const body = container.querySelector("li p")!;
+
+    expect(nameRow.querySelector("svg")).toBeTruthy();
+    expect(body.querySelector("svg")).toBeNull();
+    expect(body.textContent).toBe("first");
+  });
+
+  it("keeps the rules a click away rather than open", () => {
+    // there is no moderator, so the rules are the moderation. they still do not get to
+    // take a third of a 300px column until somebody asks for them.
+    draw();
+    act(() => handlers.history?.([] as never));
+
+    expect(screen.queryByText(/No begging/)).toBeNull();
+    fireEvent.click(screen.getByLabelText("Chat rules"));
+    expect(screen.getByText(/No begging/)).toBeTruthy();
+
+    fireEvent.click(screen.getByLabelText("Close the rules"));
+    expect(screen.queryByText(/No begging/)).toBeNull();
+  });
+
+  it("carries the links people would otherwise ask for in the room", () => {
+    const { container } = draw();
+    const hrefs = Array.from(container.querySelectorAll("a")).map((a) => a.getAttribute("href"));
+
+    expect(hrefs.some((h) => h && h.includes("x.com"))).toBe(true);
+    expect(hrefs.some((h) => h && h.includes("discord"))).toBe(true);
+  });
+
+  it("puts the way out on the bar, beside the arrow that brings it back", () => {
+    const close = vi.fn();
+    render(
+      <UserContext.Provider value={{ userData: { id: "me" } } as never}>
+        <MemoryRouter>
+          <ChatPanel open onClose={close} />
+        </MemoryRouter>
+      </UserContext.Provider>
+    );
+    fireEvent.click(screen.getAllByLabelText("Hide chat")[0]);
+    expect(close).toHaveBeenCalled();
   });
 
   it("offers a way in rather than a dead box when nobody is logged in", () => {

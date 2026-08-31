@@ -79,18 +79,28 @@ describe("what the streak is worth", () => {
 
     const res = await auth(request(app).get("/gift"), u);
 
-    expect(res.body.streakMax).toBe(Math.ceil(gift.MAX_STREAK_TILT / gift.STREAK_STEP));
+    expect(res.body.streakMax).toBe(gift.STREAK_DAYS);
+    expect(res.body.streakMax).toBe(7);
   });
+
+  // a streak on the document always has a spin behind it. a fixture that sets giftStreak
+  // with no giftLastAt is an account production never writes, and it reads as lapsed.
+  const onStreak = (days, over = {}) =>
+    makeUser({
+      giftStreak: days,
+      giftLastAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      giftNextAt: new Date(Date.now() - 60 * 1000),
+      ...over,
+    });
 
   it("quotes a boost that climbs with the streak and tops out at the last day", async () => {
     await seedCategory("Touhou", [60]);
     const fresh = await makeUser({ level: 60 });
-    const halfway = await makeUser({ level: 60, giftStreak: 5 });
+    const halfway = await onStreak(4, { level: 60 });
 
     const a = await auth(request(app).get("/gift"), fresh);
     const b = await auth(request(app).get("/gift"), halfway);
 
-    expect(a.body.rareBoost).toBe(1);
     expect(b.body.rareBoost).toBeGreaterThan(a.body.rareBoost);
     expect(a.body.atBestStreak.rareBoost).toBeGreaterThan(b.body.rareBoost);
     // the advertised best is the same number whatever the streak is today
@@ -99,7 +109,7 @@ describe("what the streak is worth", () => {
 
   it("stops promising more once the streak is already there", async () => {
     await seedCategory("Touhou", [60]);
-    const maxed = await makeUser({ level: 60, giftStreak: 10 });
+    const maxed = await onStreak(gift.STREAK_DAYS, { level: 60 });
 
     const res = await auth(request(app).get("/gift"), maxed);
 
@@ -107,15 +117,18 @@ describe("what the streak is worth", () => {
   });
 
   it("quotes the weight the spin actually puts on the rarest prize", async () => {
+    // the number on the card is priced off the streak the next spin will roll on, not the
+    // one banked, so a player on day 4 with a spin waiting is quoted day 5
     await seedCategory("Touhou", [60]);
-    const u = await makeUser({ level: 60, giftStreak: 4 });
+    const u = await onStreak(4, { level: 60 });
 
     const res = await auth(request(app).get("/gift"), u);
     const table = gift.tableFor(await Case.find({ category: "Touhou" }).lean());
     const plain = gift.weightsFor(table, 0);
-    const streaked = gift.weightsFor(table, 4);
+    const streaked = gift.weightsFor(table, 5);
     const rarest = table.length - 1;
 
+    expect(res.body.streak).toBe(4);
     expect(res.body.rareBoost).toBeCloseTo(streaked[rarest] / plain[rarest], 2);
   });
 });
@@ -403,6 +416,46 @@ describe("spending a grant", () => {
 
     expect(res.status).toBe(200);
     expect((await User.findById(u._id)).walletBalance).toBe(600);
+  });
+});
+
+describe("a streak that has already lapsed", () => {
+  it("is not still advertised as full", async () => {
+    await seedCategory("Touhou", [60]);
+    const stale = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
+    const u = await makeUser({ giftStreak: 7, giftLastAt: stale, giftNextAt: stale });
+
+    const res = await auth(request(app).get("/gift"), u);
+
+    expect(res.body.streak).toBe(0);
+    expect(res.body.streakTilt).toBe(gift.streakTilt(1));
+  });
+
+  it("quotes the odds the spin will actually roll on", async () => {
+    // the page used to price the table off the stored streak while the spin rolled on the
+    // recomputed one, so a lapsed player was shown chances that did not exist
+    await seedCategory("Touhou", [60]);
+    const stale = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
+    const lapsed = await makeUser({ giftStreak: 7, giftLastAt: stale, giftNextAt: stale });
+    const fresh = await makeUser();
+
+    const a = await auth(request(app).get("/gift"), lapsed);
+    const b = await auth(request(app).get("/gift"), fresh);
+
+    expect(a.body.categories[0].slots.map((s) => s.chance)).toEqual(
+      b.body.categories[0].slots.map((s) => s.chance)
+    );
+  });
+
+  it("says so on the light status the prompt reads too", async () => {
+    const stale = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
+    const u = await makeUser({ giftStreak: 7, giftLastAt: stale, giftNextAt: stale });
+
+    const res = await auth(request(app).get("/gift/status"), u);
+
+    expect(res.body.streak).toBe(0);
+    expect(res.body.nextStreak).toBe(1);
+    expect(res.body.keepsStreak).toBe(false);
   });
 });
 

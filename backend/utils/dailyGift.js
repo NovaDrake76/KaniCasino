@@ -60,8 +60,12 @@ const nextResetAt = (from = new Date()) =>
 
 // a streak shifts weight toward the better slots. it never raises what a slot is worth:
 // a growing ceiling turns the daily into a power-up and the economy wears it.
-const STREAK_STEP = 0.06;
+// a week, so the ladder is a shape a player already knows and the payoff is close enough
+// to be worth chasing. the ceiling is unchanged: the same best tilt, reached in seven days
+// rather than ten, and the step falls out of the two rather than being tuned separately.
+const STREAK_DAYS = 7;
 const MAX_STREAK_TILT = 0.6;
+const STREAK_STEP = MAX_STREAK_TILT / STREAK_DAYS;
 
 // the third lever, and the only one that is not earned by playing. it is worth the same
 // on day one as at a full streak, so it reads as a standing perk rather than a head start,
@@ -222,6 +226,14 @@ function nextStreak(streak, lastAt, now = new Date()) {
   return 1;
 }
 
+// the streak as it stands right now, which is not what was stored at the last spin. a
+// missed day kills it and nothing writes that down until the next spin lands, so a player
+// who stopped three days ago still carries giftStreak 7 on their document.
+function liveStreak(streak, lastAt, now = new Date()) {
+  if (!lastAt) return 0;
+  return dayIndex(now) - dayIndex(lastAt) <= 1 ? streak || 0 : 0;
+}
+
 const claimableAt = (last) => (last ? nextResetAt(last) : null);
 const isClaimable = (last, now = new Date()) => {
   const at = claimableAt(last);
@@ -243,6 +255,7 @@ module.exports = {
   GRANT_TTL_MS,
   dayIndex,
   nextResetAt,
+  STREAK_DAYS,
   STREAK_STEP,
   MAX_STREAK_TILT,
   DISCORD_TILT,
@@ -256,6 +269,7 @@ module.exports = {
   weightsFor,
   pickSlot,
   nextStreak,
+  liveStreak,
   claimableAt,
   isClaimable,
 };

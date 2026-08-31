@@ -194,20 +194,20 @@
     "topArrow": "seta superior"
   },
   "chat": {
-    "bonusHint": "Resgate na barra acima",
-    "bonusIn": "Proximo bonus em",
-    "bonusReady": "Bonus pronto",
     "empty": "Ninguem falou ainda. Comece voce.",
     "errors": {
-      "empty": "Escreva algo primeiro.",
-      "tooLong": "Isso esta longo demais.",
-      "noLinks": "Links nao sao permitidos no chat.",
-      "slowDown": "Calma um momento.",
-      "level": "Suba de nivel para poder falar.",
-      "banned": "Voce nao pode postar no chat.",
       "auth": "Entre para usar o chat.",
+      "banned": "Voce nao pode postar no chat.",
+      "empty": "Escreva algo primeiro.",
+      "failed": "Nao foi enviado. Tente de novo.",
+      "language": "Sem palavrao, por favor.",
+      "level": "Suba de nivel para poder falar.",
+      "muted": "Voce esta mutado por alguns minutos.",
+      "noLinks": "Links nao sao permitidos no chat.",
       "off": "O chat esta desligado agora.",
-      "failed": "Nao foi enviado. Tente de novo."
+      "slowDown": "Calma um momento.",
+      "slur": "Isso nao vai para o chat.",
+      "tooLong": "Isso esta longo demais."
     },
     "hide": "Ocultar chat",
     "loading": "Carregando o chat",
@@ -215,7 +215,17 @@
     "placeholder": "Diga alguma coisa",
     "report": "Denunciar esta mensagem",
     "reported": "Denunciado. Obrigado.",
+    "rules": {
+      "begging": "Nao peca KP nem itens.",
+      "promo": "Nada de links, codigos de indicacao ou divulgacao propria.",
+      "respect": "Nada de racismo, assedio ou xingamentos. Denuncie em vez de responder.",
+      "spam": "Nada de spam ou flood. Isso rende mute.",
+      "support": "Algo quebrado? Fale no Discord, onde conseguimos te ajudar de verdade."
+    },
+    "rulesClose": "Fechar as regras",
+    "rulesTitle": "Regras do chat",
     "send": "Enviar",
+    "show": "Abrir o chat",
     "title": "Chat"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "Termos de uso"
   },
   "gift": {
+    "averageRisingAt": "top slot medio, degrau {{multiplier}}x no nivel {{level}}",
     "averageTopSlot": "top slot medio",
+    "betterPrizes": "mais chance de premios melhores",
+    "betterPrizesOnceLinked": "mais chance de premios melhores apos vincular",
+    "bonus": "bonus",
+    "chanceOf": "{{chance}}% de chance",
     "chooseACollection": "Escolha uma coleção",
     "couldNotLoadYour": "Não foi possível carregar seu presente diário.",
     "couldNotOpenYour": "Não foi possível abrir seu presente",
+    "dayOf": "dia {{day}} de {{of}}",
+    "dayShort": "dia {{day}}",
     "discordActive": "ativo",
     "discordBoost": "Bonus do Discord",
     "discordHeld": "Mantido enquanto voce estiver no servidor.",
@@ -529,10 +546,9 @@
     "freeOpenings": "aberturas grátis",
     "freeOpeningsWaiting": "Aberturas grátis esperando",
     "fullStreak": "sequência completa",
-    "levelAllUnlocked": "Todos os degraus desbloqueados no nivel {{level}}.",
     "levelBoost": "Bonus de nivel",
     "levelLocked": "Nível {{level}}",
-    "levelUnlocksNext": "O nivel {{level}} desbloqueia o degrau de {{multiplier}}x.",
+    "levelN": "nivel {{level}}",
     "logInToOpen": "Entre para abrir seu presente diário.",
     "multipliesWhateverTheReel": "Multiplica o que o giro te der. Níveis mais altos liberam multiplicadores maiores.",
     "nextGiftIn": "Próximo presente em",
@@ -543,16 +559,17 @@
     "promptStart": "Gire e comece uma sequencia",
     "promptStreak": "Gire para chegar a {{count}} dias seguidos",
     "promptTitle": "Seu presente diario esta pronto",
-    "rarePrizesLikelier": "Prêmios raros mais prováveis",
+    "risingTo": "agora, {{value}} no dia {{day}}",
     "spin": "Girar",
     "spinTheDailyGift": "Girar o presente diário",
     "streak": "Sequência",
     "streakBoost": "Bonus de sequencia",
     "theReelGave": "o giro deu",
+    "today": "hoje",
     "topSlot": "Slot superior",
     "topSlot1xNo": "SLOT SUPERIOR 1x · SEM BÔNUS",
     "topSlotBadge": "NÍVEL {{level}} · SLOT SUPERIOR {{multiplier}}x",
-    "yourLevel": "seu nivel",
+    "unlocksAt": "libera no nv {{level}}",
     "yourStreakIsCharging": "Sua sequência está carregando o slot superior. Cada dia de volta amplia os degraus bons."
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "Novidades desativadas",
     "weAreNotSending": "Não estamos enviando para o seu endereço porque um e-mail anterior voltou ou foi marcado como spam. Fale com a gente se achar que está errado.",
     "youWillGetUpdates": "Você vai receber novidades sobre caixas e jogos"
+  },
+  "rain": {
+    "aboutTo": "Vai chover agora",
+    "in": "cai em {{time}}",
+    "join": "Entrar",
+    "joined": "Voce esta dentro",
+    "logIn": "entre",
+    "needLevel": "Chegue ao nivel {{level}} para entrar na chuva.",
+    "title": "Chuva",
+    "won": "A chuva te deu K₽{{amount}}"
   },
   "rarity": {
     "1": "Comum",

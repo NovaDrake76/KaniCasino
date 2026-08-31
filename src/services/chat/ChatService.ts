@@ -8,6 +8,8 @@ export interface ChatBadge {
 
 export interface ChatMessage {
   id: string;
+  // the Player component links and renders the avatar off _id, so the row carries it
+  _id: string;
   userId: string;
   username: string;
   slug?: string | null;

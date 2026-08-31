@@ -22,6 +22,9 @@ export interface GiftViewProps {
   reel: BasicItem[];
   landing: BasicItem | null;
   spinning: boolean;
+  // the winning multiplier, known the moment the spin resolves rather than when the reel
+  // finishes, so the top slot row can be driven to it instead of snapping at the end
+  landedTopSlot: number | null;
   pending: boolean;
   result: SpinResult | null;
   onPick: (category: string) => void;

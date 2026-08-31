@@ -194,20 +194,20 @@
     "topArrow": "freccia in alto"
   },
   "chat": {
-    "bonusHint": "Riscuotilo dalla barra sopra",
-    "bonusIn": "Prossimo bonus tra",
-    "bonusReady": "Bonus pronto",
     "empty": "Ancora nessuno ha parlato. Inizia tu.",
     "errors": {
-      "empty": "Scrivi prima qualcosa.",
-      "tooLong": "E troppo lungo.",
-      "noLinks": "I link non sono ammessi in chat.",
-      "slowDown": "Vai piu piano.",
-      "level": "Sali di livello per poter scrivere.",
-      "banned": "Non puoi scrivere in chat.",
       "auth": "Accedi per chattare.",
+      "banned": "Non puoi scrivere in chat.",
+      "empty": "Scrivi prima qualcosa.",
+      "failed": "Non e stato inviato. Riprova.",
+      "language": "Niente parolacce, per favore.",
+      "level": "Sali di livello per poter scrivere.",
+      "muted": "Sei silenziato per qualche minuto.",
+      "noLinks": "I link non sono ammessi in chat.",
       "off": "La chat e spenta al momento.",
-      "failed": "Non e stato inviato. Riprova."
+      "slowDown": "Vai piu piano.",
+      "slur": "Questo non finisce in chat.",
+      "tooLong": "E troppo lungo."
     },
     "hide": "Nascondi chat",
     "loading": "Caricamento della chat",
@@ -215,7 +215,17 @@
     "placeholder": "Di qualcosa",
     "report": "Segnala questo messaggio",
     "reported": "Segnalato. Grazie.",
+    "rules": {
+      "begging": "Non chiedere KP o oggetti in elemosina.",
+      "promo": "Niente link, codici referral o promozione di roba tua.",
+      "respect": "Niente razzismo, molestie o insulti. Segnala invece di rispondere.",
+      "spam": "Niente spam ne flood. Porta a un mute.",
+      "support": "Qualcosa non va? Chiedi sul Discord, dove possiamo davvero aiutarti."
+    },
+    "rulesClose": "Chiudi le regole",
+    "rulesTitle": "Regole della chat",
     "send": "Invia",
+    "show": "Apri la chat",
     "title": "Chat"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "Termini di servizio"
   },
   "gift": {
+    "averageRisingAt": "top slot medio, gradino {{multiplier}}x al livello {{level}}",
     "averageTopSlot": "top slot medio",
+    "betterPrizes": "piu possibilita di premi migliori",
+    "betterPrizesOnceLinked": "piu possibilita di premi migliori una volta collegato",
+    "bonus": "bonus",
+    "chanceOf": "{{chance}}% di possibilita",
     "chooseACollection": "Scegli una collezione",
     "couldNotLoadYour": "Impossibile caricare il tuo regalo giornaliero.",
     "couldNotOpenYour": "Impossibile aprire il tuo regalo",
+    "dayOf": "giorno {{day}} di {{of}}",
+    "dayShort": "giorno {{day}}",
     "discordActive": "attivo",
     "discordBoost": "Bonus Discord",
     "discordHeld": "Mantenuto finche sei nel server.",
@@ -529,10 +546,9 @@
     "freeOpenings": "aperture gratuite",
     "freeOpeningsWaiting": "Aperture gratuite in attesa",
     "fullStreak": "serie completa",
-    "levelAllUnlocked": "Tutti i gradini sbloccati al livello {{level}}.",
     "levelBoost": "Bonus livello",
     "levelLocked": "Livello {{level}}",
-    "levelUnlocksNext": "Il livello {{level}} sblocca il gradino {{multiplier}}x.",
+    "levelN": "livello {{level}}",
     "logInToOpen": "Accedi per aprire il tuo regalo giornaliero.",
     "multipliesWhateverTheReel": "Moltiplica quello che ti dà il rullo. I livelli alti sbloccano moltiplicatori più grandi.",
     "nextGiftIn": "Prossimo regalo tra",
@@ -543,16 +559,17 @@
     "promptStart": "Giralo e inizia una serie",
     "promptStreak": "Giralo per arrivare a {{count}} giorni di fila",
     "promptTitle": "Il tuo regalo giornaliero e pronto",
-    "rarePrizesLikelier": "Premi rari più probabili",
+    "risingTo": "ora, {{value}} al giorno {{day}}",
     "spin": "Gira",
     "spinTheDailyGift": "Gira il regalo giornaliero",
     "streak": "Serie",
     "streakBoost": "Bonus serie",
     "theReelGave": "il rullo ha dato",
+    "today": "oggi",
     "topSlot": "Slot in alto",
     "topSlot1xNo": "SLOT IN ALTO 1x · NESSUN BONUS",
     "topSlotBadge": "LIVELLO {{level}} · SLOT IN ALTO {{multiplier}}x",
-    "yourLevel": "il tuo livello",
+    "unlocksAt": "si sblocca al liv {{level}}",
     "yourStreakIsCharging": "La tua serie sta caricando lo slot in alto. Ogni giorno che torni allarga i gradini buoni."
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "Novità disattivate",
     "weAreNotSending": "Non stiamo scrivendo al tuo indirizzo perché una e-mail precedente è tornata indietro o è stata segnalata come spam. Scrivici se pensi sia un errore.",
     "youWillGetUpdates": "Riceverai novità su casse e giochi"
+  },
+  "rain": {
+    "aboutTo": "Sta per piovere",
+    "in": "cade tra {{time}}",
+    "join": "Entra",
+    "joined": "Sei dentro",
+    "logIn": "accedi",
+    "needLevel": "Raggiungi il livello {{level}} per entrare nella pioggia.",
+    "title": "Pioggia",
+    "won": "La pioggia ti ha dato K₽{{amount}}"
   },
   "rarity": {
     "1": "Comune",

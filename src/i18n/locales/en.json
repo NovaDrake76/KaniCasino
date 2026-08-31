@@ -194,20 +194,20 @@
     "topArrow": "top arrow"
   },
   "chat": {
-    "bonusHint": "Claim it from the bar above",
-    "bonusIn": "Next bonus in",
-    "bonusReady": "Bonus ready",
     "empty": "Nothing said yet. Go on.",
     "errors": {
-      "empty": "Type something first.",
-      "tooLong": "That is too long.",
-      "noLinks": "Links are not allowed in chat.",
-      "slowDown": "Slow down a moment.",
-      "level": "Reach a higher level to chat.",
-      "banned": "You cannot post in chat.",
       "auth": "Log in to chat.",
+      "banned": "You cannot post in chat.",
+      "empty": "Type something first.",
+      "failed": "That did not send. Try again.",
+      "language": "Keep the language clean, please.",
+      "level": "Reach a higher level to chat.",
+      "muted": "You are muted for a few minutes.",
+      "noLinks": "Links are not allowed in chat.",
       "off": "Chat is off right now.",
-      "failed": "That did not send. Try again."
+      "slowDown": "Slow down a moment.",
+      "slur": "That is not going in the chat.",
+      "tooLong": "That is too long."
     },
     "hide": "Hide chat",
     "loading": "Loading chat",
@@ -215,7 +215,17 @@
     "placeholder": "Say something",
     "report": "Report this message",
     "reported": "Reported. Thanks.",
+    "rules": {
+      "begging": "No begging for KP or items.",
+      "promo": "No links, referral codes or promoting anything of your own.",
+      "respect": "No racism, harassment or slurs. Report it rather than answering it.",
+      "spam": "No spam or flooding. It gets you muted.",
+      "support": "Something broken? Ask in the Discord, where we can actually help you."
+    },
+    "rulesClose": "Close the rules",
+    "rulesTitle": "Chat rules",
     "send": "Send",
+    "show": "Open chat",
     "title": "Chat"
   },
   "coin": {
@@ -514,10 +524,17 @@
     "userAgreement": "User Agreement"
   },
   "gift": {
+    "averageRisingAt": "average top slot, {{multiplier}}x rung at level {{level}}",
     "averageTopSlot": "average top slot",
+    "betterPrizes": "more chance of better prizes",
+    "betterPrizesOnceLinked": "more chance of better prizes once linked",
+    "bonus": "bonus",
+    "chanceOf": "{{chance}}% chance",
     "chooseACollection": "Choose a collection",
     "couldNotLoadYour": "Could not load your daily gift.",
     "couldNotOpenYour": "Could not open your gift",
+    "dayOf": "day {{day}} of {{of}}",
+    "dayShort": "day {{day}}",
     "discordActive": "active",
     "discordBoost": "Discord boost",
     "discordHeld": "Held while you are in the server.",
@@ -529,10 +546,9 @@
     "freeOpenings": "free openings",
     "freeOpeningsWaiting": "Free openings waiting",
     "fullStreak": "full streak",
-    "levelAllUnlocked": "Every rung unlocked at level {{level}}.",
     "levelBoost": "Level boost",
     "levelLocked": "Level {{level}}",
-    "levelUnlocksNext": "Level {{level}} unlocks the {{multiplier}}x rung.",
+    "levelN": "level {{level}}",
     "logInToOpen": "Log in to open your daily gift.",
     "multipliesWhateverTheReel": "Multiplies whatever the reel gives you. Higher levels unlock bigger multipliers.",
     "nextGiftIn": "Next gift in",
@@ -543,16 +559,17 @@
     "promptStart": "Spin it and start a streak",
     "promptStreak": "Spin it to reach a {{count}} day streak",
     "promptTitle": "Your daily gift is ready",
-    "rarePrizesLikelier": "Rare prizes likelier",
+    "risingTo": "now, {{value}} on day {{day}}",
     "spin": "Spin",
     "spinTheDailyGift": "Spin the daily gift",
     "streak": "Streak",
     "streakBoost": "Streak boost",
     "theReelGave": "the reel gave",
+    "today": "today",
     "topSlot": "Top slot",
     "topSlot1xNo": "TOP SLOT 1x · NO BONUS",
     "topSlotBadge": "LEVEL {{level}} · {{multiplier}}x TOP SLOT",
-    "yourLevel": "your level",
+    "unlocksAt": "unlocks at lv {{level}}",
     "yourStreakIsCharging": "Your streak is charging the top slot. Every day back widens the good rungs."
   },
   "header": {
@@ -966,6 +983,16 @@
     "updatesTurnedOff": "Updates turned off",
     "weAreNotSending": "We are not sending to your address because a previous email bounced or was reported as spam. Contact us if you think that is wrong.",
     "youWillGetUpdates": "You will get updates about new cases and games"
+  },
+  "rain": {
+    "aboutTo": "It is about to rain",
+    "in": "drops in {{time}}",
+    "join": "Join",
+    "joined": "You are in",
+    "logIn": "log in",
+    "needLevel": "Reach level {{level}} to join the rain.",
+    "title": "Rain pool",
+    "won": "The rain gave you K₽{{amount}}"
   },
   "rarity": {
     "1": "Common",
