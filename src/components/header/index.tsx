@@ -29,6 +29,8 @@ interface CaseOpeningItem {
 }
 
 interface Header {
+  chatOpen: boolean;
+  onToggleChat: () => void;
   onlineUsers: number;
   recentCaseOpenings: CaseOpeningItem[];
   notification: any;
@@ -50,7 +52,7 @@ interface ItemsQueue {
   };
 }
 
-const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notification, setNotification }) => {
+const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notification, setNotification, chatOpen, onToggleChat }) => {
 
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
   const [openSidebar, setOpenSidebar] = useState<boolean>(false);
@@ -120,7 +122,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
           </div>
         ))}
       </div>
-      <Navbar openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
+      <Navbar openNotifications={openNotifications} setOpenNotifications={setOpenNotifications} openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} chatOpen={chatOpen} onToggleChat={onToggleChat} />
       <div className="flex  items-center justify-center ">
         <div className="flex items-center justify-center relative w-full max-w-[1920px]">
           <div
