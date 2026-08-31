@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "It is about to rain",
+    "building": "K₽{{amount}} more before it falls",
     "in": "drops in {{time}}",
     "join": "Join",
     "joined": "You are in",

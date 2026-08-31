@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "곧 레인이 시작됩니다",
+    "building": "K₽{{amount}} 더 모이면 내립니다",
     "in": "{{time}} 후 지급",
     "join": "참여",
     "joined": "참여 중",

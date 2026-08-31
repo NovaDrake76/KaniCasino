@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "Sta per piovere",
+    "building": "mancano K₽{{amount}} prima che cada",
     "in": "cade tra {{time}}",
     "join": "Entra",
     "joined": "Sei dentro",

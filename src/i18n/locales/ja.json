@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "まもなくレイン",
+    "building": "あとK₽{{amount}}で降ります",
     "in": "あと {{time}}",
     "join": "参加",
     "joined": "参加中",

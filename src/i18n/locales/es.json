@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "Esta a punto de llover",
+    "building": "faltan K₽{{amount}} para que caiga",
     "in": "cae en {{time}}",
     "join": "Entrar",
     "joined": "Estas dentro",

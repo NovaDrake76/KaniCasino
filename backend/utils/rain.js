@@ -50,11 +50,16 @@ async function currentRound(now = new Date()) {
   // whatever the shares could not take rides in: nobody joined, the pool was dust, or
   // every share hit the per-player cap
   const carriedIn = last ? Math.max(0, (last.pool || 0) - (last.paidOut || 0)) : 0;
+  // and so do the people. a round that paid nobody must not throw their join away: at this
+  // traffic most windows are under the floor, so a player joined, waited out the clock,
+  // got nothing, and had to join again to keep waiting. they were in the room; they stay
+  // in it until a round actually falls, which is what resets the list.
+  const joiners = last && !last.paidOut ? last.joiners || [] : [];
   return RainRound.create({
     startsAt: now,
     endsAt: new Date(now.getTime() + INTERVAL_MS),
     carriedIn,
-    joiners: [],
+    joiners,
   });
 }
 
@@ -100,6 +105,9 @@ async function state(userId) {
     joined: !!userId && round.joiners.some((id) => String(id) === String(userId)),
     minLevel: MIN_LEVEL,
     maxPerPlayer: MAX_PER_PLAYER,
+    // the floor, so the panel can say a pool is still building rather than showing a
+    // countdown to nothing happening
+    minPool: MIN_POOL,
     intervalMs: INTERVAL_MS,
   };
 }

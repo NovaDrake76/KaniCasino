@@ -265,3 +265,75 @@ describe("what the cap leaves behind", () => {
     expect(next.carriedIn).toBe(result.pool - rain.MAX_PER_PLAYER);
   });
 });
+
+describe("a round that could not pay", () => {
+  const ripen = async () => {
+    const round = await rain.currentRound();
+    const endsAt = new Date(Date.now() - 1000);
+    await RainRound.updateOne(
+      { _id: round._id },
+      { $set: { startsAt: new Date(endsAt.getTime() - rain.INTERVAL_MS), endsAt } }
+    );
+    rain.resetCache();
+    return round;
+  };
+
+  it("keeps the people who were in it, rather than throwing their join away", async () => {
+    // most windows at this traffic are under the floor. a player joined, waited out the
+    // clock, got nothing, and had to join again to keep waiting: the join was discarded.
+    const a = await makeUser();
+    await rain.join(a._id);
+    await ripen();
+
+    const result = await rain.settle();
+    expect(result.paidOut).toBe(0);
+
+    const next = await rain.currentRound();
+    expect(next.joiners.map(String)).toEqual([String(a._id)]);
+    expect((await rain.state(a._id)).joined).toBe(true);
+  });
+
+  it("carries the pool and the people together", async () => {
+    const a = await makeUser();
+    await rain.join(a._id);
+    await ripen();
+    const round = await RainRound.findOne({ settledAt: null }).lean();
+    await Transaction.create({
+      userId: a._id, type: TX.CRASH_BET, direction: "debit",
+      amount: 4000, balanceAfter: 0,
+      createdAt: new Date(round.startsAt.getTime() + 1000),
+    });
+    rain.resetCache();
+
+    await rain.settle();
+
+    const next = await rain.currentRound();
+    expect(next.carriedIn).toBe(Math.floor(4000 * rain.RATE));
+    expect(next.joiners).toHaveLength(1);
+  });
+
+  it("clears the list once a round actually falls", async () => {
+    // otherwise somebody joins once and collects from every rain thereafter
+    const a = await makeUser();
+    await rain.join(a._id);
+    await ripen();
+    const round = await RainRound.findOne({ settledAt: null }).lean();
+    await Transaction.create({
+      userId: a._id, type: TX.CRASH_BET, direction: "debit",
+      amount: 400000, balanceAfter: 0,
+      createdAt: new Date(round.startsAt.getTime() + 1000),
+    });
+    rain.resetCache();
+
+    const result = await rain.settle();
+    expect(result.paidOut).toBeGreaterThan(0);
+
+    const next = await rain.currentRound();
+    expect(next.joiners).toHaveLength(0);
+    expect((await rain.state(a._id)).joined).toBe(false);
+  });
+
+  it("tells the panel the floor, so it can say what it is waiting for", async () => {
+    expect((await rain.state(null)).minPool).toBe(rain.MIN_POOL);
+  });
+});
