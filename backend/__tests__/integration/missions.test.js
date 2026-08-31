@@ -302,18 +302,38 @@ describe("POST /missions/:key/visit (social, honor-system)", () => {
   test("visiting a social link completes it, then it can be claimed", async () => {
     const u = await makeUser({ walletBalance: 500 });
     let res = await getMissions(u);
-    expect(find(res.body, "join-discord").complete).toBe(false);
+    expect(find(res.body, "follow-x").complete).toBe(false);
 
-    const visit = await auth(request(app).post("/missions/join-discord/visit"), u);
+    const visit = await auth(request(app).post("/missions/follow-x/visit"), u);
     expect(visit.status).toBe(200);
 
     res = await getMissions(u);
-    expect(find(res.body, "join-discord").complete).toBe(true);
+    expect(find(res.body, "follow-x").complete).toBe(true);
 
-    const claim = await auth(request(app).post("/missions/join-discord/claim"), u);
+    const claim = await auth(request(app).post("/missions/follow-x/claim"), u);
     expect(claim.body.claimed).toBe(true);
     expect(claim.body.reward).toBe(150);
     expect((await User.findById(u._id)).walletBalance).toBe(650);
+  });
+
+  test("the discord one is checked rather than taken on trust", async () => {
+    // clicking the invite used to be the whole test. the bot now reports real membership,
+    // so a click that never ends in a join no longer pays.
+    const u = await makeUser();
+    await auth(request(app).post("/missions/join-discord/visit"), u);
+    expect(find((await getMissions(u)).body, "join-discord").complete).toBe(false);
+
+    await User.updateOne({ _id: u._id }, { $set: { discordId: "12345678901234567", discordInGuild: true } });
+    expect(find((await getMissions(u)).body, "join-discord").complete).toBe(true);
+  });
+
+  test("leaving the server takes the mission back off complete", async () => {
+    const u = await makeUser();
+    await User.updateOne({ _id: u._id }, { $set: { discordId: "22345678901234567", discordInGuild: true } });
+    expect(find((await getMissions(u)).body, "join-discord").complete).toBe(true);
+
+    await User.updateOne({ _id: u._id }, { $set: { discordInGuild: false } });
+    expect(find((await getMissions(u)).body, "join-discord").complete).toBe(false);
   });
 
   test("visiting a non-social mission is rejected", async () => {

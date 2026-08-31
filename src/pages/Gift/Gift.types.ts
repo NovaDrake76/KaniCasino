@@ -1,6 +1,7 @@
 import type { BasicItem } from "../../components/Types";
 import type {
   GiftCategory,
+  GiftDiscordBoost,
   GiftGrant,
   GiftSlot,
   GiftState,
@@ -8,7 +9,7 @@ import type {
   TopSlotRung,
 } from "../../services/gift/GiftService";
 
-export type { GiftCategory, GiftGrant, GiftSlot, GiftState, SpinResult, TopSlotRung };
+export type { GiftCategory, GiftDiscordBoost, GiftGrant, GiftSlot, GiftState, SpinResult, TopSlotRung };
 
 // picker -> the chosen category with its odds -> the reel -> what it paid
 export type GiftStage = "picking" | "charging" | "spinning" | "won";

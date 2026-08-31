@@ -57,6 +57,12 @@ module.exports = {
   seen: (discordId, guildId) =>
     post("/discord/seen", { discordId, guildId }).catch(() => {}),
 
+  // one write per join or leave, so the site never has to ask discord who is a member
+  membership: (discordId, guildId, present) =>
+    post("/discord/membership", { discordId, guildId, present }),
+  // the whole member list at boot, which heals anything missed while the bot was down
+  syncMembers: (guildId, members) => post("/discord/membership", { guildId, members }),
+
   categories: () => get("/discord/categories"),
 
   // `category` switches the backend to a stable page of one shelf; without it this is the

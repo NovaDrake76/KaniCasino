@@ -255,3 +255,37 @@ describe("the top slot", () => {
     );
   });
 });
+
+describe("the discord boost", () => {
+  const table = gift.tableFor(CATALOGUE["Uma Musume"]);
+  const rareShare = (w) => w[w.length - 1] / w.reduce((a, b) => a + b, 0);
+
+  it("lifts the rare slots the way a streak does, without touching what they pay", () => {
+    const off = gift.weightsFor(table, 0, false);
+    const on = gift.weightsFor(table, 0, true);
+
+    expect(rareShare(on)).toBeGreaterThan(rareShare(off));
+    expect(gift.tableFor(CATALOGUE["Uma Musume"]).map((s) => s.value)).toEqual(table.map((s) => s.value));
+  });
+
+  it("is worth having at a full streak too, so it never becomes a head start", () => {
+    const full = gift.streakMaxDays ? gift.streakMaxDays : Math.ceil(gift.MAX_STREAK_TILT / gift.STREAK_STEP);
+    const off = gift.weightsFor(table, full, false);
+    const on = gift.weightsFor(table, full, true);
+
+    expect(rareShare(on)).toBeGreaterThan(rareShare(off));
+  });
+
+  it("adds to the streak rather than replacing it", () => {
+    expect(gift.totalTilt(0, false)).toBe(0);
+    expect(gift.totalTilt(0, true)).toBe(gift.DISCORD_TILT);
+    expect(gift.totalTilt(5, true)).toBeCloseTo(gift.streakTilt(5) + gift.DISCORD_TILT, 10);
+  });
+
+  it("raises the average top slot without unlocking a rung the level has not earned", () => {
+    expect(gift.topSlotAverage(0, 0, true)).toBeGreaterThan(gift.topSlotAverage(0, 0, false));
+    // level 0 sees two rungs whatever discord says, so the ceiling is still the level's
+    expect(gift.topSlotFor(0).filter((r) => !r.locked)).toHaveLength(2);
+    expect(gift.topSlotAverage(0, 99, true)).toBeLessThanOrEqual(2);
+  });
+});

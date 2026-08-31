@@ -205,9 +205,14 @@ const UserSchema = new mongoose.Schema({
   // the servers this player has actually used the bot in, which is what a per-server board
   // counts. it holds who plays, not who is a member, so no privileged intent is needed.
   discordGuilds: [String],
+  // whether they are in the home server right now, which is what the gift's discord boost
+  // is paid on. written only by the bot, off the member events, so nothing on the money
+  // path ever has to call discord to find out.
+  discordInGuild: Boolean,
+  discordGuildSyncedAt: Date,
 
-  // the daily gift. one spin every 24h; the streak tilts the odds toward the rarer
-  // slots and resets the moment a calendar day is missed.
+  // the daily gift. one spin per site-day; the streak tilts the odds toward the rarer
+  // slots and resets the moment a day is missed.
   giftNextAt: Date,
   giftLastAt: Date,
   giftStreak: {

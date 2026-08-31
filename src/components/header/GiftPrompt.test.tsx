@@ -46,6 +46,27 @@ describe("the floating daily gift prompt", () => {
     expect(await screen.findByText(/start a streak/)).toBeTruthy();
   });
 
+  it("does not show one account's waiting spin to the next", async () => {
+    // the status store is shared by the navbar, the sidebar and the prompt, so it survives
+    // a remount. keyed to nobody it handed the next account the previous one's answer.
+    getGiftStatus.mockResolvedValue(status());
+    const first = draw();
+    expect(await screen.findByText(/daily gift is ready/)).toBeTruthy();
+    first.unmount();
+
+    getGiftStatus.mockReset().mockReturnValue(new Promise(() => undefined));
+    render(
+      <UserContext.Provider value={{ userData: { id: "someone-else" } } as never}>
+        <MemoryRouter initialEntries={["/crash"]}>
+          <GiftPrompt />
+        </MemoryRouter>
+      </UserContext.Provider>
+    );
+
+    // the fetch for the new account has not answered yet, and nothing is claimed for them
+    expect(screen.queryByText(/daily gift is ready/)).toBeNull();
+  });
+
   it("stays away while the gift is still on cooldown", async () => {
     getGiftStatus.mockResolvedValue(status({ canSpin: false }));
     draw();

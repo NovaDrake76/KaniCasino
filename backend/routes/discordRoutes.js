@@ -24,6 +24,8 @@ const LINK_TTL_MS = 15 * 60 * 1000;
 // time, so throwaway alts farming the bonus are turned away without a lookup.
 const MIN_ACCOUNT_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 const DISCORD_EPOCH = 1420070400000;
+// the home server. membership of this one, and only this one, is what the gift boost pays.
+const HOME_GUILD_ID = process.env.DISCORD_GUILD_ID || "";
 // how many rows a server board hands back, which is also what caps every query below
 const BOARD_ROWS = 15;
 // a player is only ever counted in this many servers, so the array cannot grow unbounded
@@ -129,6 +131,45 @@ router.post("/seen", botOnly, async (req, res) => {
   } catch (err) {
     console.error("discord seen:", err.message);
     res.status(500).json({ message: "Could not record the server" });
+  }
+});
+
+// the bot pushes membership here off guildMemberAdd, guildMemberRemove and its boot sync,
+// so the gift reads a boolean it already has rather than asking discord mid-spin. one write
+// per join or leave, and a nightly reconcile, against a base of a few thousand users.
+router.post("/membership", botOnly, async (req, res) => {
+  try {
+    const guildId = String((req.body && req.body.guildId) || "");
+    if (!guildId || (HOME_GUILD_ID && guildId !== HOME_GUILD_ID)) {
+      return res.status(400).json({ message: "Not the home server" });
+    }
+
+    const now = new Date();
+    // a full sync sends the member list and everyone missing from it has left
+    if (Array.isArray(req.body && req.body.members)) {
+      const members = req.body.members.map(String).filter((id) => /^\d{5,25}$/.test(id));
+      const joined = await User.updateMany(
+        { discordId: { $in: members } },
+        { $set: { discordInGuild: true, discordGuildSyncedAt: now } }
+      );
+      const left = await User.updateMany(
+        { discordId: { $exists: true, $nin: members }, discordInGuild: true },
+        { $set: { discordInGuild: false, discordGuildSyncedAt: now } }
+      );
+      return res.json({ ok: true, inGuild: joined.modifiedCount, left: left.modifiedCount });
+    }
+
+    const discordId = String((req.body && req.body.discordId) || "");
+    if (!/^\d{5,25}$/.test(discordId)) return res.status(400).json({ message: "Missing discordId" });
+    const present = req.body.present !== false;
+    const done = await User.updateOne(
+      { discordId },
+      { $set: { discordInGuild: present, discordGuildSyncedAt: now } }
+    );
+    res.json({ ok: true, matched: done.matchedCount });
+  } catch (err) {
+    console.error("discord membership:", err.message);
+    res.status(500).json({ message: "Could not record membership" });
   }
 });
 
@@ -260,8 +301,10 @@ router.get("/oauth/start", isAuthenticated, async (req, res) => {
     url.searchParams.set("client_id", process.env.DISCORD_CLIENT_ID);
     url.searchParams.set("redirect_uri", redirectUri());
     url.searchParams.set("response_type", "code");
-    // identify is the whole ask: an id and a name, no email, no servers, no messages
-    url.searchParams.set("scope", "identify");
+    // guilds.join rides along so the callback can seat them in the server itself: one
+    // approval instead of link here, then find the invite, then join. identify is still
+    // the whole read: an id and a name, no email, no server list, no messages.
+    url.searchParams.set("scope", HOME_GUILD_ID ? "identify guilds.join" : "identify");
     url.searchParams.set("state", state);
     res.json({ url: url.toString() });
   } catch (err) {
@@ -269,6 +312,28 @@ router.get("/oauth/start", isAuthenticated, async (req, res) => {
     res.status(500).json({ message: "Could not start linking" });
   }
 });
+
+// puts the player into the home server with the token they just granted. null means the
+// attempt was never made, so nothing is written and the bot's own events stay the truth.
+async function joinHomeGuild(discordId, accessToken) {
+  if (!HOME_GUILD_ID || !process.env.DISCORD_BOT_TOKEN) return null;
+  try {
+    const r = await fetch(`${DISCORD_API}/guilds/${HOME_GUILD_ID}/members/${discordId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ access_token: accessToken }),
+      signal: AbortSignal.timeout(8000),
+    });
+    // 201 seated them, 204 says they were already in
+    if (r.status === 201 || r.status === 204) return true;
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 // discord sends the player's browser here, so it carries no api key and no bearer token.
 // mounted ahead of the api-key gate in index.js, and everything it trusts comes out of the
@@ -325,12 +390,23 @@ async function oauthCallback(req, res) {
     const taken = await User.findOne({ discordId: me.id }, { _id: 1 }).lean();
     if (taken) return done(userId, String(taken._id) === String(userId) ? "already" : "taken");
 
+    // seat them in the server on the same approval. it is best effort on purpose: a
+    // refused join must not cost them the link they just granted.
+    const seated = await joinHomeGuild(me.id, token.access_token);
+
     const written = await User.updateOne(
       { _id: userId, discordId: { $exists: false } },
-      { $set: { discordId: me.id, discordName: me.username || null, discordLinkedAt: new Date() } }
+      {
+        $set: {
+          discordId: me.id,
+          discordName: me.username || null,
+          discordLinkedAt: new Date(),
+          ...(seated === null ? {} : { discordInGuild: seated, discordGuildSyncedAt: new Date() }),
+        },
+      }
     );
     if (!written.modifiedCount) return done(userId, "already");
-    return done(userId, "linked");
+    return done(userId, seated ? "joined" : "linked");
   } catch (err) {
     // the unique index is still the last word if two browsers race the same discord account
     if (err && err.code === 11000) return done(userId, "taken");
