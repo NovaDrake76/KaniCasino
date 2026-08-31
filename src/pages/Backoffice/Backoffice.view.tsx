@@ -15,6 +15,7 @@ import {
   TimeseriesPoint,
 } from "../../services/admin/AdminServices";
 import { Window } from "./Backoffice.services";
+import { Tab, TABS, TAB_LABELS, WINDOWS } from "./Backoffice.tabs";
 import AdminChart from "./AdminChart";
 import PredictionsAdmin from "./PredictionsAdmin";
 import { CHART_AMBER, CHART_INDIGO, fillDays } from "./adminSeries";
@@ -22,6 +23,8 @@ import { CHART_AMBER, CHART_INDIGO, fillDays } from "./adminSeries";
 interface Props {
   userData: any;
   isAdmin: boolean;
+  tab: Tab;
+  setTab: (t: Tab) => void;
   days: Window;
   setDays: (d: Window) => void;
   overview: AdminOverview | null;
@@ -35,6 +38,7 @@ interface Props {
   search: string;
   changeSearch: (s: string) => void;
   loading: boolean;
+  usersLoading: boolean;
   error: boolean;
   playerId: string | null;
   player: AdminPlayerDetail | null;
@@ -107,11 +111,6 @@ const Panel = ({ title, children }: { title: string; children: React.ReactNode }
   </div>
 );
 
-const WINDOWS: { value: Window; text: string }[] = [
-  { value: null, text: "All time" },
-  { value: 30, text: "30 days" },
-  { value: 7, text: "7 days" },
-];
 
 const BadgeGrant = ({ userId, held }: { userId: string; held: Badge[] }) => {
   const [badges, setBadges] = useState<Badge[]>(held);
@@ -301,9 +300,33 @@ const PlayerDetail = ({
   );
 };
 
+// a tab that has not answered yet shows its own placeholder rather than holding the whole
+// page back: the window toggle and the other tabs stay usable while it loads
+const SectionSkeleton = () => (
+  <Skeleton height={320} borderRadius={12} highlightColor="#161427" baseColor="#1c1a31" />
+);
+
+const TabBar = ({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) => (
+  <div className="flex gap-1 overflow-x-auto border-b border-line">
+    {TABS.map((name) => (
+      <button
+        key={name}
+        onClick={() => setTab(name)}
+        className={`whitespace-nowrap px-4 py-2 text-sm transition-colors border-b-2 -mb-px ${
+          tab === name
+            ? "border-accent text-ink"
+            : "border-transparent text-ink-muted hover:text-ink"
+        }`}
+      >
+        {TAB_LABELS[name]}
+      </button>
+    ))}
+  </div>
+);
+
 const BackofficeView: React.FC<Props> = ({
-  userData, isAdmin, days, setDays, overview, games, cases, series, wins, usersPage,
-  page, setPage, search, changeSearch, loading, error,
+  userData, isAdmin, tab, setTab, days, setDays, overview, games, cases, series, wins, usersPage,
+  page, setPage, search, changeSearch, loading, usersLoading, error,
   playerId, player, playerLoading, openPlayer, closePlayer,
 }) => {
   if (!userData || !isAdmin) {
@@ -318,16 +341,18 @@ const BackofficeView: React.FC<Props> = ({
       </div>
     );
   }
-  if (error || !overview || !games || !cases) {
+  if (error || !overview) {
     return <div className="w-full flex justify-center py-16 text-ink-muted">Could not load the numbers.</div>;
   }
 
   const windowText = days ? `last ${days} days` : "all time";
   const chartText = days ? `last ${days} days` : "last 90 days";
   const filled = fillDays(series || [], days);
-  const totalWagered = games.games.reduce((s, g) => s + g.wagered, 0);
-  const totalNet = games.games.reduce((s, g) => s + g.net, 0);
-  const totalFaucet = games.issuance.reduce((s, l) => s + l.issued, 0);
+  // each tab fetches its own section, so these are only there once the games tab has
+  // answered. the overview cards that use them wait on it rather than the whole page.
+  const totalWagered = games ? games.games.reduce((sum, g) => sum + g.wagered, 0) : 0;
+  const totalNet = games ? games.games.reduce((sum, g) => sum + g.net, 0) : 0;
+  const totalFaucet = games ? games.issuance.reduce((sum, l) => sum + l.issued, 0) : 0;
 
   return (
     <div className="w-full flex justify-center">
@@ -349,10 +374,14 @@ const BackofficeView: React.FC<Props> = ({
           </div>
         </div>
 
+        <TabBar tab={tab} setTab={setTab} />
+
         {playerId ? (
           <PlayerDetail player={player} loading={playerLoading} windowText={windowText} onBack={closePlayer} />
         ) : (
           <>
+            {tab === "overview" && (
+              <>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard title="Users" sub={days ? `+${overview.users.new} new in the window` : undefined}>
                 {overview.users.total.toLocaleString()}
@@ -419,10 +448,10 @@ const BackofficeView: React.FC<Props> = ({
               />
             </div>
 
-            <Panel title="Prediction markets">
-              <PredictionsAdmin />
-            </Panel>
-
+              </>
+            )}
+            {tab === "games" && (games && wins ? (
+              <>
             <Panel title={`Games (${windowText}, most profitable first)`}>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
@@ -529,6 +558,12 @@ const BackofficeView: React.FC<Props> = ({
               </Panel>
             </div>
 
+              </>
+            ) : (
+              <SectionSkeleton />
+            ))}
+            {tab === "cases" && (cases ? (
+              <>
             <Panel title={`Cases (${windowText}, most opened first)`}>
               {cases.length === 0 ? (
                 <p className="text-ink-muted text-sm py-4 text-center">No cases opened in this window.</p>
@@ -565,6 +600,12 @@ const BackofficeView: React.FC<Props> = ({
               )}
             </Panel>
 
+              </>
+            ) : (
+              <SectionSkeleton />
+            ))}
+            {tab === "players" && (
+              <>
             <Panel title="Users">
               <input
                 value={search}
@@ -572,7 +613,7 @@ const BackofficeView: React.FC<Props> = ({
                 placeholder="Search by username"
                 className="w-full md:w-72 bg-surface-nav rounded-md px-3 py-2 text-ink text-sm focus:outline-none mb-3"
               />
-              {!usersPage ? (
+              {!usersPage || usersLoading ? (
                 <Skeleton height={200} borderRadius={8} highlightColor="#161427" baseColor="#1c1a31" />
               ) : (
                 <>
@@ -641,6 +682,16 @@ const BackofficeView: React.FC<Props> = ({
                 </>
               )}
             </Panel>
+              </>
+            )}
+            {tab === "predictions" && (
+              <>
+            <Panel title="Prediction markets">
+              <PredictionsAdmin />
+            </Panel>
+
+              </>
+            )}
           </>
         )}
       </div>
