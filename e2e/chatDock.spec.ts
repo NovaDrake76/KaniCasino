@@ -14,10 +14,18 @@ test.beforeEach(async ({ page }) => {
   await page.setViewportSize(WIDE);
 });
 
+// waiting on the rail rather than on a stopwatch. a fixed sleep passed on a laptop and
+// failed on CI for the two prerendered routes, which hydrate later than the rest.
 const open = async (page: Page, route: string) => {
   await page.goto(route);
-  await page.waitForTimeout(1600);
+  await page.locator("aside").waitFor({ state: "visible", timeout: 15000 });
+  // and one frame for the shift to be measured and applied
+  await page.waitForTimeout(400);
 };
+
+// there are two of these, one in the panel header and one on the bar at the bottom. they
+// do the same thing and share a label on purpose, so the test picks rather than guesses.
+const hideButton = (page: Page) => page.getByRole("button", { name: "Hide chat" }).first();
 
 const railWidth = (page: Page) =>
   page.evaluate(() => {
@@ -91,8 +99,8 @@ test("a centred board keeps its place when its own margin can hold the rail", as
   const opened = await contentLeft();
 
   // toggled rather than reloaded, so the init script cannot put the setting back
-  await page.getByRole("button", { name: "Hide chat" }).click();
-  await page.waitForTimeout(600);
+  await hideButton(page).click();
+  await page.locator("aside").waitFor({ state: "detached", timeout: 10000 });
 
   expect(await railWidth(page)).toBe(0);
   expect(await contentLeft()).toBe(opened);
@@ -125,7 +133,8 @@ test("the page never scrolls sideways with the rail open", async ({ page }) => {
 test("a window too narrow to hold a board and the rail does not dock it", async ({ page }) => {
   // docked at 1366 the crash board overflowed by 37px, undoing the short screen work
   await page.setViewportSize({ width: 1366, height: 768 });
-  await open(page, "/crash");
+  await page.goto("/crash");
+  await page.waitForTimeout(2000);
 
   expect(await railWidth(page)).toBe(0);
   const overflow = await page.evaluate(
@@ -138,9 +147,10 @@ test("the arrow that closes the rail is where the one that reopens it appears", 
   // the toggle used to sit up in the navbar, a screen away from the panel it controls
   await open(page, "/crash");
 
-  const closer = await page.getByRole("button", { name: "Hide chat" }).boundingBox();
-  await page.getByRole("button", { name: "Hide chat" }).click();
-  await page.waitForTimeout(500);
+  // the one on the bottom bar, which is the one the reopen arrow has to line up with
+  const closer = await page.getByRole("button", { name: "Hide chat" }).last().boundingBox();
+  await hideButton(page).click();
+  await page.locator("aside").waitFor({ state: "detached", timeout: 10000 });
 
   expect(await railWidth(page)).toBe(0);
   const opener = await page.getByRole("button", { name: "Open chat" }).boundingBox();
@@ -151,6 +161,6 @@ test("the arrow that closes the rail is where the one that reopens it appears", 
   expect(Math.abs(opener!.y - closer!.y)).toBeLessThan(80);
 
   await page.getByRole("button", { name: "Open chat" }).click();
-  await page.waitForTimeout(600);
+  await page.locator("aside").waitFor({ state: "visible", timeout: 10000 });
   expect(await railWidth(page)).toBe(300);
 });
