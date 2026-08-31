@@ -63,3 +63,19 @@ describe("whether the rail is docked", () => {
     expect(shouldDock(true, "0")).toBe(false);
   });
 });
+
+describe("remembering the choice", () => {
+  it("reads a closed chat back as closed", () => {
+    // closing went through a setter that skipped the write, so a chat closed on purpose
+    // came straight back on the next reload
+    expect(shouldDock(true, "0")).toBe(false);
+  });
+
+  it("reads an opened chat back as open", () => {
+    expect(shouldDock(true, "1")).toBe(true);
+  });
+
+  it("starts closed for somebody who has never touched it", () => {
+    expect(shouldDock(true, null)).toBe(false);
+  });
+});

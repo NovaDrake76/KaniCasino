@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "马上就要下红包了",
+    "building": "还差 K₽{{amount}} 才会落下",
     "in": "{{time}} 后发放",
     "join": "参与",
     "joined": "已参与",

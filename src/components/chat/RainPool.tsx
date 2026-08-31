@@ -33,6 +33,11 @@ export const remainingShare = (endsAt: number, startsAt: number, now: number) =>
 // the last stretch, where the panel stops being furniture and starts being a prompt
 const IMMINENT_MS = 60000;
 
+// a pool under the floor does not fall, it rolls into the next round. saying so is the
+// whole point: without it the panel shows a countdown, a join button and a figure, and
+// then nothing happens and nobody can tell whether it broke.
+export const isBuilding = (pool: number, minPool: number) => pool < minPool;
+
 // the figure walks to its new value instead of jumping: the pool moves whenever anyone on
 // the site bets, and a number that silently changes is a number nobody notices.
 const useCountUp = (value: number) => {
@@ -125,7 +130,9 @@ const RainPool = () => {
 
   if (!state) return null;
 
-  const imminent = share > 0 && window_.current.endsAt - (Date.now() - skew.current) <= IMMINENT_MS;
+  const building = isBuilding(state.pool, state.minPool);
+  const imminent =
+    !building && share > 0 && window_.current.endsAt - (Date.now() - skew.current) <= IMMINENT_MS;
 
   return (
     <div
@@ -165,17 +172,28 @@ const RainPool = () => {
         )}
       </div>
 
-      <div className="mt-2 text-[10px] tabular-nums text-ink-faint">
-        {i18n.t("rain.in", { time: left })}
+      {/* a countdown to a drop that cannot happen is worse than no countdown. while the
+          pool is under the floor the panel says what it is waiting for instead. */}
+      <div className="mt-2 text-[10px] text-ink-faint">
+        {building ? (
+          <span>
+            {i18n.t("rain.building", { amount: (state.minPool - state.pool).toLocaleString("en-US") })}
+          </span>
+        ) : (
+          <span className="tabular-nums">{i18n.t("rain.in", { time: left })}</span>
+        )}
       </div>
 
-      {/* the bar sits on the bottom edge and drains with the clock */}
+      {/* the bar drains with the clock, or fills toward the floor while the pool is still
+          too small to fall: either way it is showing what has to happen next */}
       <div className="absolute bottom-0 left-0 h-[3px] w-full bg-surface">
         <div
           className={`h-full transition-[width] duration-1000 ease-linear ${
-            imminent ? "bg-accent-amber" : "bg-secondary"
+            imminent ? "bg-accent-amber" : building ? "bg-line-strong" : "bg-secondary"
           }`}
-          style={{ width: `${share * 100}%` }}
+          style={{
+            width: `${(building ? Math.min(1, state.pool / state.minPool) : share) * 100}%`,
+          }}
         />
       </div>
     </div>

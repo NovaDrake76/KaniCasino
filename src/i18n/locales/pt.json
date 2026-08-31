@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "Vai chover agora",
+    "building": "faltam K₽{{amount}} para cair",
     "in": "cai em {{time}}",
     "join": "Entrar",
     "joined": "Voce esta dentro",

@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "Sap mua roi",
+    "building": "can them K₽{{amount}} nua moi roi",
     "in": "roi sau {{time}}",
     "join": "Tham gia",
     "joined": "Ban da tham gia",

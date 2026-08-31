@@ -153,17 +153,19 @@ export const useChatDock = () => {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const toggle = () => {
-    setOpen((was) => {
-      const next = !was;
-      try {
-        window.localStorage.setItem(KEY, next ? "1" : "0");
-      } catch {
-        // storage blocked: the toggle still works, it just does not survive a reload
-      }
-      return next;
-    });
+  // one place that writes the preference, so no route into the state can forget to. the
+  // close arrows used to call a setter that skipped this, and a chat closed on purpose
+  // came straight back on the next reload.
+  const remember = (next: boolean) => {
+    try {
+      window.localStorage.setItem(KEY, next ? "1" : "0");
+    } catch {
+      // storage blocked: it still works, it just does not survive a reload
+    }
+    setOpen(next);
   };
+
+  const toggle = () => remember(!open);
 
   return {
     open,
@@ -176,7 +178,7 @@ export const useChatDock = () => {
     // under it otherwise, however much room the centred content happens to have
     railWidth: open && wide ? RAIL_WIDTH : 0,
     toggle,
-    close: () => setOpen(false),
+    close: () => remember(false),
     CONTENT_ID,
   };
 };

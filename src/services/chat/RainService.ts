@@ -18,6 +18,8 @@ export interface RainState {
   joined: boolean;
   minLevel: number;
   maxPerPlayer: number;
+  // under this the pool does not fall, it rolls into the next round
+  minPool: number;
   intervalMs: number;
   error?: string;
 }

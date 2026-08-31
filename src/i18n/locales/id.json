@@ -986,6 +986,7 @@
   },
   "rain": {
     "aboutTo": "Sebentar lagi hujan",
+    "building": "kurang K₽{{amount}} lagi sebelum turun",
     "in": "turun dalam {{time}}",
     "join": "Ikut",
     "joined": "Kamu ikut",

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { remainingShare, splitRemaining } from "./RainPool";
+import { isBuilding, remainingShare, splitRemaining } from "./RainPool";
 
 describe("the bar under the rain pool", () => {
   const start = 1000;
@@ -35,5 +35,23 @@ describe("the countdown", () => {
   it("shows nothing left rather than a negative", () => {
     expect(splitRemaining(-5000)).toBe("00:00");
     expect(splitRemaining(0)).toBe("00:00");
+  });
+});
+
+describe("a pool that is not big enough to fall", () => {
+  it("is building rather than counting down", () => {
+    // the reported bug: a pool of 4 against a floor of 100 showed a countdown, a join
+    // button and a figure, then nothing happened and nothing said why
+    expect(isBuilding(4, 100)).toBe(true);
+    expect(isBuilding(99, 100)).toBe(true);
+  });
+
+  it("is ready the moment it reaches the floor", () => {
+    expect(isBuilding(100, 100)).toBe(false);
+    expect(isBuilding(2500, 100)).toBe(false);
+  });
+
+  it("treats an empty pool as building, not as ready", () => {
+    expect(isBuilding(0, 100)).toBe(true);
   });
 });
