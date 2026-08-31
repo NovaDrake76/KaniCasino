@@ -1,4 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
+import { mockApi } from "./mocks";
 
 // the rail has been wrong three times: it pushed the whole page including the navbar, then
 // it pushed centred boards that already had room beside them, then it left the full width
@@ -7,6 +8,9 @@ import { test, expect, Page } from "@playwright/test";
 const WIDE = { width: 1920, height: 950 };
 
 test.beforeEach(async ({ page }) => {
+  // no backend behind the built bundle: without these the page never settles and the rail
+  // is measured on a half rendered screen, or never mounts at all
+  await mockApi(page);
   await page.addInitScript(() => {
     localStorage.setItem("kani.onboardingSeen", "1");
     localStorage.setItem("kani.chatOpen", "1");
