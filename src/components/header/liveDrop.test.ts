@@ -47,6 +47,18 @@ describe("how long a drop stays on the live strip", () => {
 
   it("empties completely once the room goes quiet", () => {
     expect(freshDrops([at(60000), at(90000)])).toHaveLength(0);
-    expect(freshDrops([at(1000), at(90000)])).toHaveLength(1);
+    expect(freshDrops([])).toHaveLength(0);
+  });
+
+  it("keeps the whole row while the feed is still live", () => {
+    // dropping the old ones one at a time left the strip half filled: a few cards on the
+    // left and a stretch of bare background to the right of them. the row is full width,
+    // so it either fills or it is not there at all.
+    const drops = [at(1000), at(20000), at(90000), at(600000)];
+    expect(freshDrops(drops)).toHaveLength(4);
+  });
+
+  it("goes on the newest, not on each one", () => {
+    expect(freshDrops([at(90000), at(1000)])).toHaveLength(0);
   });
 });
