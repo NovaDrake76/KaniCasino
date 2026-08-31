@@ -15,10 +15,11 @@ if (missing.length) {
 }
 
 // GuildMessages is here for the mention, which is the only way in that does not go through
-// the slash picker. GuildMembers is privileged and is only asked for when a home server is
-// configured, because the daily gift's discord boost has to be held on real membership.
+// the slash picker. GuildMembers is privileged: asking for it before the developer portal
+// allows it does not degrade the bot, it stops it logging in at all, so it waits for its
+// own flag rather than riding along with the guild id.
 const intents = [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages];
-if (membership.HOME_GUILD_ID) intents.push(GatewayIntentBits.GuildMembers);
+if (membership.WANTS_MEMBER_INTENT) intents.push(GatewayIntentBits.GuildMembers);
 const client = new Client({ intents });
 
 const byName = new Map(commands.map((command) => [command.data.name, command]));
