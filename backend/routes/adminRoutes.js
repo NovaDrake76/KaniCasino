@@ -9,6 +9,7 @@ const Item = require("../models/Item");
 const { recomputeCaseValues } = require("../utils/itemValue");
 const { recordTransaction, runAtomic, TX } = require("../utils/economy");
 const adminStats = require("../utils/adminStats");
+const chat = require("../utils/chat");
 const { slugify, mintSlug } = require("../utils/slugs");
 
 // the backoffice dashboard: everything is derived from the ledger, ?days= windows it
@@ -413,6 +414,14 @@ router.post("/predictions/:id/reopen", isAuthenticated, isAdmin, async (req, res
   const result = await settlement.reopenMarket(req.params.id);
   if (result.error) return res.status(400).json({ message: result.error });
   res.json(result.prediction);
+});
+
+// taking a message down, which is the only moderation action there is. it goes for
+// everyone at once: there is nobody to review a hidden queue later.
+router.delete("/chat/:id", isAuthenticated, isAdmin, async (req, res) => {
+  const result = await chat.remove(req.params.id);
+  if (result.error) return res.status(404).json({ message: "That message is already gone" });
+  res.json({ ok: true });
 });
 
 module.exports = router;
