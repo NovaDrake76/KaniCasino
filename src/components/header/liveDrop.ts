@@ -17,5 +17,9 @@ export const DROP_TTL_MS = 45000;
 export const isFreshDrop = (drop: { at?: number }, now = Date.now()) =>
   now - (drop.at || 0) < DROP_TTL_MS;
 
+// the strip is live while its newest drop is, and then it goes entirely. expiring the rows
+// one at a time emptied it from the tail while new ones still arrived at the head, so the
+// feed sat half filled with a stretch of bare background to the right of it. the row it
+// draws is full width, so it either fills or it is not there.
 export const freshDrops = <T extends { at?: number }>(drops: T[], now = Date.now()) =>
-  drops.filter((drop) => isFreshDrop(drop, now));
+  drops.length && isFreshDrop(drops[0], now) ? drops : [];
