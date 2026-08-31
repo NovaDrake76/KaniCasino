@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { RAIL_WIDTH, shiftFor } from "./ChatDock";
+import { RAIL_WIDTH, shiftFor, shouldDock } from "./ChatDock";
 
 describe("whether the rail has to push the page across", () => {
   it("leaves a centred board where it is when its own margin already fits the rail", () => {
@@ -36,5 +36,30 @@ describe("whether the rail has to push the page across", () => {
 
   it("pushes when it cannot measure the page yet, so nothing is ever covered", () => {
     expect(shiftFor(1920, 0)).toBe(RAIL_WIDTH);
+  });
+});
+
+describe("whether the rail is docked", () => {
+  it("needs both the room and the request", () => {
+    expect(shouldDock(true, "1")).toBe(true);
+    expect(shouldDock(false, "1")).toBe(false);
+    expect(shouldDock(true, "0")).toBe(false);
+    expect(shouldDock(true, null)).toBe(false);
+  });
+
+  it("comes back when the window is widened again", () => {
+    // it used to latch: one resize under the width closed it and nothing reopened it, so
+    // dragging a window edge in and out again lost the rail until a reload. every viewport
+    // change a test makes did the same thing, which is how CI found it.
+    const stored = "1";
+    expect(shouldDock(true, stored)).toBe(true);
+    expect(shouldDock(false, stored)).toBe(false);
+    expect(shouldDock(true, stored)).toBe(true);
+  });
+
+  it("stays shut through a resize when it was never asked for", () => {
+    expect(shouldDock(true, "0")).toBe(false);
+    expect(shouldDock(false, "0")).toBe(false);
+    expect(shouldDock(true, "0")).toBe(false);
   });
 });

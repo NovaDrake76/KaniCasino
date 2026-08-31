@@ -64,6 +64,11 @@ const contentWidth = () => {
   return right > left ? right - left : 0;
 };
 
+// whether the rail should be docked at all: wide enough for it, and asked for. it is a
+// function of the two rather than a flag that gets flipped, because a flag can only be
+// wrong in one direction and stay that way.
+export const shouldDock = (wide: boolean, stored: string | null) => wide && stored === "1";
+
 // the rail only pushes the page when the page has no room to give. a board centred in a
 // wide window already leaves more than the rail needs on its left, and moving it across
 // was pure churn. once it does have to push, it pushes the whole width rather than the
@@ -131,15 +136,18 @@ export const useChatDock = () => {
   // read back after mount rather than during render, so the prerendered html and the first
   // client render agree and react does not throw the whole tree away
   useEffect(() => {
-    if (isWide() && readStored() === "1") setOpen(true);
+    setOpen(shouldDock(isWide(), readStored()));
   }, []);
 
   useEffect(() => {
+    // re-derived on every resize rather than latched shut. it used to only ever close: one
+    // resize while the window was briefly under the width, which is every drag of a window
+    // edge and every viewport change a test makes, and the rail never came back without a
+    // reload. a narrow screen still never keeps it docked, because it would eat the board.
     const onResize = () => {
       const next = isWide();
       setWide(next);
-      // a narrow screen never keeps it docked open: it would eat the game board
-      if (!next) setOpen(false);
+      setOpen(shouldDock(next, readStored()));
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
