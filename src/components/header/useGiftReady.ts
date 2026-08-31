@@ -7,6 +7,10 @@ const IDLE: GiftStatus = { canSpin: false, nextAt: null, streak: 0, nextStreak: 
 // the navbar, the sidebar and the floating prompt all want the same answer, so they share
 // one request and one timer rather than each polling the endpoint on their own
 let current: GiftStatus = IDLE;
+// whose answer the store is holding. without it a new mount reads back the previous
+// account's status and shows the prompt for a spin that is not theirs, until the fetch
+// lands. it is also what stops one test leaking its state into the next.
+let owner: string | null = null;
 let timer: ReturnType<typeof setTimeout> | null = null;
 const listeners = new Set<(s: GiftStatus) => void>();
 
@@ -35,12 +39,20 @@ const onClaimed = () => {
 
 export const useGiftStatus = (): GiftStatus => {
   const { userData } = useContext(UserContext);
-  const [status, setStatus] = useState<GiftStatus>(current);
+  // only trust the store when it is this account's answer
+  const [status, setStatus] = useState<GiftStatus>(() =>
+    owner && owner === userData?.id ? current : IDLE
+  );
 
   useEffect(() => {
     if (!userData?.id) {
+      owner = null;
       publish(IDLE);
       return;
+    }
+    if (owner !== userData.id) {
+      owner = userData.id;
+      publish(IDLE);
     }
     listeners.add(setStatus);
     if (listeners.size === 1) window.addEventListener(GIFT_CLAIMED_EVENT, onClaimed);
