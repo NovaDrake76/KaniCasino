@@ -40,3 +40,24 @@ export async function mockApi(page: Page) {
   // discord's own widget endpoint, which is not ours and is not reachable from a runner
   await page.route("https://discord.com/**", (route) => route.abort());
 }
+
+// a signed-in session, for the parts of the ui that only exist for a logged in player.
+// the chat input is one: without this the panel shows the log-in prompt instead.
+export async function mockSession(page: Page) {
+  await page.route("**/users/me**", (route) =>
+    route.fulfill({
+      json: {
+        id: "player1",
+        _id: "player1",
+        username: "tester",
+        level: 30,
+        xp: 100000,
+        walletBalance: 5000,
+        profilePicture: "",
+        isAdmin: false,
+        nextBonus: new Date(Date.now() + 300000).toISOString(),
+      },
+    })
+  );
+  await page.addInitScript(() => localStorage.setItem("accessToken", "e2e-token"));
+}

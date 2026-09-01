@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiChevronRight, FiMessageSquare } from "react-icons/fi";
 import ChatPanel from "./ChatPanel";
 import i18n from "../../i18n";
@@ -68,6 +68,12 @@ const contentWidth = () => {
 // function of the two rather than a flag that gets flipped, because a flag can only be
 // wrong in one direction and stay that way.
 export const shouldDock = (wide: boolean, stored: string | null) => wide && stored === "1";
+
+// closing on a resize is only right when a docked rail would otherwise become a modal, so
+// it is keyed on the crossing rather than on the new width. a phone is under the width the
+// whole time: asking "is it narrow now" closed the panel on every resize the device makes,
+// and opening the keyboard to type is one of them.
+export const closesOnResize = (wasWide: boolean, isWideNow: boolean) => wasWide && !isWideNow;
 
 // the rail only pushes the page when the page has no room to give. a board centred in a
 // wide window already leaves more than the rail needs on its left, and moving it across
@@ -139,15 +145,18 @@ export const useChatDock = () => {
     setOpen(shouldDock(isWide(), readStored()));
   }, []);
 
+  // what the last resize saw, so a narrowing can be told from a screen that was always narrow
+  const wasWide = useRef(isWide());
+
   useEffect(() => {
-    // re-derived on every resize rather than latched shut. it used to only ever close: one
-    // resize while the window was briefly under the width, which is every drag of a window
-    // edge and every viewport change a test makes, and the rail never came back without a
-    // reload. a narrow screen still never keeps it docked, because it would eat the board.
     const onResize = () => {
       const next = isWide();
       setWide(next);
-      setOpen(shouldDock(next, readStored()));
+      // only a window that has just stopped being wide closes: a docked rail must not turn
+      // into a modal covering the page. an overlay opened on a phone stays, because the
+      // soft keyboard and the collapsing url bar both arrive here as a resize.
+      if (closesOnResize(wasWide.current, next)) setOpen(false);
+      wasWide.current = next;
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
