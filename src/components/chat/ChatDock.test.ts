@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { RAIL_WIDTH, shiftFor, shouldDock } from "./ChatDock";
+import { RAIL_WIDTH, closesOnResize, shiftFor, shouldDock } from "./ChatDock";
 
 describe("whether the rail has to push the page across", () => {
   it("leaves a centred board where it is when its own margin already fits the rail", () => {
@@ -77,5 +77,23 @@ describe("remembering the choice", () => {
 
   it("starts closed for somebody who has never touched it", () => {
     expect(shouldDock(true, null)).toBe(false);
+  });
+});
+
+describe("which resizes close the chat", () => {
+  it("closes a rail that has just stopped fitting, so it does not become a modal", () => {
+    expect(closesOnResize(true, false)).toBe(true);
+  });
+
+  it("leaves a phone alone, whatever its viewport does", () => {
+    // the reported bug: the soft keyboard shrinks the viewport, which arrives as a resize.
+    // asking "is it narrow now" is true on a phone the whole time, so tapping the box to
+    // type closed the panel under the player. so did the url bar collapsing on a scroll.
+    expect(closesOnResize(false, false)).toBe(false);
+  });
+
+  it("does not close on the way back to a wide window", () => {
+    expect(closesOnResize(false, true)).toBe(false);
+    expect(closesOnResize(true, true)).toBe(false);
   });
 });

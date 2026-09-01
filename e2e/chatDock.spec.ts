@@ -1,5 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
-import { mockApi } from "./mocks";
+import { mockApi, mockSession } from "./mocks";
 
 // the rail has been wrong three times: it pushed the whole page including the navbar, then
 // it pushed centred boards that already had room beside them, then it left the full width
@@ -167,4 +167,89 @@ test("the arrow that closes the rail is where the one that reopens it appears", 
   await page.getByRole("button", { name: "Open chat" }).click();
   await page.locator("aside").waitFor({ state: "visible", timeout: 10000 });
   expect(await railWidth(page)).toBe(300);
+});
+
+// on a phone the chat is an overlay rather than a rail, and the thing that broke it was the
+// soft keyboard: it shrinks the viewport, which arrives as a resize, and the handler read
+// "is it narrow now" instead of "has it just stopped being wide". a phone is narrow the
+// whole time, so tapping the box to type closed the panel under the player.
+test.describe("the chat on a phone", () => {
+  const PHONE = { width: 390, height: 844 };
+  // what the keyboard leaves of the viewport on an iphone
+  const WITH_KEYBOARD = { width: 390, height: 508 };
+
+  const openChat = async (page: Page) => {
+    await page.goto("/crash");
+    await page.getByRole("button", { name: "Open chat" }).click();
+    await page.locator("aside").waitFor({ state: "visible", timeout: 10000 });
+  };
+
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize(PHONE);
+  });
+
+  test("stays open when the keyboard takes half the screen", async ({ page }) => {
+    await openChat(page);
+
+    await page.setViewportSize(WITH_KEYBOARD);
+    await page.waitForTimeout(500);
+
+    await expect(page.locator("aside")).toBeVisible();
+  });
+
+  test("stays open through tapping the box and typing in it", async ({ page }) => {
+    // the box only exists for a signed in player; without one the panel offers a log in
+    await mockSession(page);
+    await openChat(page);
+    const box = page.getByPlaceholder("Say something");
+
+    await box.click();
+    await page.setViewportSize(WITH_KEYBOARD); // the keyboard the tap brings up
+    await page.waitForTimeout(300);
+    await box.fill("hello everyone");
+    await page.waitForTimeout(300);
+
+    await expect(page.locator("aside")).toBeVisible();
+    await expect(box).toHaveValue("hello everyone");
+  });
+
+  test("survives the url bar collapsing on a scroll", async ({ page }) => {
+    // the other resize a phone makes on its own, and the old handler closed on that too
+    await openChat(page);
+
+    await page.setViewportSize({ width: 390, height: 800 });
+    await page.waitForTimeout(300);
+    await page.setViewportSize(PHONE);
+    await page.waitForTimeout(300);
+
+    await expect(page.locator("aside")).toBeVisible();
+  });
+
+  test("still closes when the player asks it to", async ({ page }) => {
+    await openChat(page);
+
+    await page.getByRole("button", { name: "Hide chat" }).first().click();
+    await page.locator("aside").waitFor({ state: "detached", timeout: 10000 });
+
+    await expect(page.getByRole("button", { name: "Open chat" })).toBeVisible();
+  });
+
+  test("does not open itself on a phone just because a desktop left it open", async ({ page }) => {
+    // the stored preference means a docked rail, and a modal covering the page on load is
+    // not what anyone asked for
+    await page.goto("/crash");
+    await page.waitForTimeout(1200);
+
+    await expect(page.locator("aside")).toHaveCount(0);
+  });
+});
+
+test("a rail that stops fitting closes rather than becoming a modal", async ({ page }) => {
+  await open(page, "/crash");
+  expect(await railWidth(page)).toBe(300);
+
+  await page.setViewportSize({ width: 500, height: 800 });
+  await page.waitForTimeout(600);
+
+  await expect(page.locator("aside")).toHaveCount(0);
 });
