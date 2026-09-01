@@ -9,17 +9,10 @@ export const bestDrop = (items: BasicItem[]): BasicItem | undefined =>
     undefined
   );
 
-// how long a drop stays on the live strip. it used to stay for the rest of the session,
-// so one case opened at any point held the strip's 112px open on every page after it,
-// game boards included. long enough to be seen, short enough to give the space back.
-export const DROP_TTL_MS = 45000;
+// the strip holds the last few openings and nothing else takes them off it. a drop leaves
+// only when newer ones push it past the end, so a quiet minute leaves the bar exactly as it
+// was rather than emptying it. it is a local list: a reload starts it over.
+export const KEEP_DROPS = 20;
 
-export const isFreshDrop = (drop: { at?: number }, now = Date.now()) =>
-  now - (drop.at || 0) < DROP_TTL_MS;
-
-// the strip is live while its newest drop is, and then it goes entirely. expiring the rows
-// one at a time emptied it from the tail while new ones still arrived at the head, so the
-// feed sat half filled with a stretch of bare background to the right of it. the row it
-// draws is full width, so it either fills or it is not there.
-export const freshDrops = <T extends { at?: number }>(drops: T[], now = Date.now()) =>
-  drops.length && isFreshDrop(drops[0], now) ? drops : [];
+export const pushDrop = <T,>(drops: T[], drop: T, keep = KEEP_DROPS) =>
+  [drop, ...drops].slice(0, keep);

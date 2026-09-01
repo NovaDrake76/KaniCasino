@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { bestDrop, DROP_TTL_MS, freshDrops, isFreshDrop } from "./liveDrop";
+import { KEEP_DROPS, bestDrop, pushDrop } from "./liveDrop";
 import { BasicItem } from "../Types";
 
 const item = (name: string, rarity: string) => ({ name, rarity, image: `${name}.png` }) as BasicItem;
@@ -27,38 +27,39 @@ describe("picking what a multi-open shows", () => {
   });
 });
 
-describe("how long a drop stays on the live strip", () => {
-  const at = (msAgo: number) => ({ at: Date.now() - msAgo });
+describe("what takes a drop off the strip", () => {
+  const drops = (n: number) => Array.from({ length: n }, (_, i) => `d${i}`);
 
-  it("keeps one that has just landed", () => {
-    expect(isFreshDrop(at(0))).toBe(true);
-    expect(isFreshDrop(at(DROP_TTL_MS - 1000))).toBe(true);
+  it("keeps what is there when nobody is opening anything", () => {
+    // nothing but a newer drop removes one. the strip used to empty itself after a quiet
+    // spell, so a bar full of items went blank while the player was looking at it.
+    const bar = drops(6);
+    expect(pushDrop(bar, "new")).toEqual(["new", ...bar]);
+    expect(pushDrop(bar, "new")).toHaveLength(7);
   });
 
-  it("drops one that is no longer live, so the strip gives its space back", () => {
-    // it used to hold its 112px open on every page for the rest of the session, game
-    // boards included, because the queue only ever grew
-    expect(isFreshDrop(at(DROP_TTL_MS + 1000))).toBe(false);
+  it("puts the newest at the front", () => {
+    expect(pushDrop(["b", "c"], "a")[0]).toBe("a");
   });
 
-  it("treats a drop with no timestamp as stale rather than immortal", () => {
-    expect(isFreshDrop({})).toBe(false);
+  it("drops the oldest only once the bar is full", () => {
+    const full = drops(KEEP_DROPS);
+    const after = pushDrop(full, "new");
+
+    expect(after).toHaveLength(KEEP_DROPS);
+    expect(after[0]).toBe("new");
+    expect(after).not.toContain(`d${KEEP_DROPS - 1}`);
   });
 
-  it("empties completely once the room goes quiet", () => {
-    expect(freshDrops([at(60000), at(90000)])).toHaveLength(0);
-    expect(freshDrops([])).toHaveLength(0);
+  it("fills from empty as openings arrive, which is how a fresh page starts", () => {
+    let bar: string[] = [];
+    for (const d of ["a", "b", "c"]) bar = pushDrop(bar, d);
+    expect(bar).toEqual(["c", "b", "a"]);
   });
 
-  it("keeps the whole row while the feed is still live", () => {
-    // dropping the old ones one at a time left the strip half filled: a few cards on the
-    // left and a stretch of bare background to the right of them. the row is full width,
-    // so it either fills or it is not there at all.
-    const drops = [at(1000), at(20000), at(90000), at(600000)];
-    expect(freshDrops(drops)).toHaveLength(4);
-  });
-
-  it("goes on the newest, not on each one", () => {
-    expect(freshDrops([at(90000), at(1000)])).toHaveLength(0);
+  it("never grows past the cap however many arrive", () => {
+    let bar: string[] = [];
+    for (let i = 0; i < KEEP_DROPS * 3; i++) bar = pushDrop(bar, `d${i}`);
+    expect(bar).toHaveLength(KEEP_DROPS);
   });
 });

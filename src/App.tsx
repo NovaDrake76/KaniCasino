@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
 import GiftPrompt from "./components/header/GiftPrompt";
 import ChatDock, { ChatToggle, useChatDock } from "./components/chat/ChatDock";
-import { freshDrops } from "./components/header/liveDrop";
+import { pushDrop } from "./components/header/liveDrop";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -48,16 +48,6 @@ function App() {
   const [notification, setNotification] = useState<any>();
 
   const chat = useChatDock();
-
-  // a drop stops being live. the strip used to hold its 112px open on every page for the
-  // rest of the session, game pages included, because the queue only ever grew.
-  useEffect(() => {
-    const sweep = setInterval(
-      () => setRecentCaseOpenings((prev: any) => (prev.length ? freshDrops(prev) : prev)),
-      5000
-    );
-    return () => clearInterval(sweep);
-  }, []);
   const socket = SocketConnection.getInstance();
   const missionCheck = useRef<{ inFlight: boolean; timer: number | null; queuedAt: number }>({
     inFlight: false,
@@ -148,7 +138,7 @@ function App() {
       setTimeout(() => {
         // cap the queue immutably as it grows; the oldest drop falls off the end
         setRecentCaseOpenings((prevOpenings: any) =>
-          freshDrops([{ ...data, at: Date.now() }, ...prevOpenings]).slice(0, 20)
+          pushDrop(prevOpenings, data)
         );
       }, 7500);
     });
