@@ -383,7 +383,7 @@
     "outcome": "Résultat",
     "previousSeedRevealedVerify": "Seed précédente révélée, vérifiez-la :",
     "roll": "Tirage",
-    "rollNotFound": "Tirage introuvable. Les tirages sont conservés 30 jours.",
+    "rollNotFound": "Aucun tirage avec cet identifiant. Les tirages sont conserves trois jours; une graine et un nonce que vous avez gardes se verifient toujours.",
     "rotateRevealServerSeed": "Changer et révéler la seed serveur",
     "serverSeed": "Seed serveur",
     "serverSeedHash": "Hash de la seed serveur",

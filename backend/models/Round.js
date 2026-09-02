@@ -56,4 +56,8 @@ const RoundSchema = new mongoose.Schema(
 RoundSchema.index({ status: 1 });
 // round history, newest first
 RoundSchema.index({ game: 1, createdAt: -1 });
+// the empty-round prune clears the 99.5% nobody bet on after a day. the rest held their
+// seed reveal forever, and one nobody has asked to verify in a week is not worth the
+// storage: the history strip reads the last fifty, and the recovery sweep only unfinished.
+RoundSchema.index({ createdAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 });
 module.exports = mongoose.model("Round", RoundSchema);

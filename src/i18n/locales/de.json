@@ -383,7 +383,7 @@
     "outcome": "Ergebnis",
     "previousSeedRevealedVerify": "Vorherige Seed offengelegt, prüf sie:",
     "roll": "Roll",
-    "rollNotFound": "Roll nicht gefunden. Rolls werden 30 Tage lang aufbewahrt.",
+    "rollNotFound": "Kein Wurf mit dieser ID. Wuerfe werden drei Tage aufbewahrt; ein gespeicherter Seed und Nonce lassen sich weiterhin pruefen.",
     "rotateRevealServerSeed": "Server-Seed wechseln und offenlegen",
     "serverSeed": "Server-Seed",
     "serverSeedHash": "Hash des Server-Seeds",

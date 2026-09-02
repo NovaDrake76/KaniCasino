@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const RETENTION_DAYS = 30;
+const RETENTION_DAYS = 3;
 
 // one audit record per provably-fair draw. holds everything needed to verify the
 // outcome later: the seed reference, client seed, nonce, the raw roll, and for case

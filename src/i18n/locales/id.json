@@ -383,7 +383,7 @@
     "outcome": "Hasil",
     "previousSeedRevealedVerify": "Seed sebelumnya telah terungkap, verifikasi:",
     "roll": "Roll",
-    "rollNotFound": "Roll tidak ditemukan. Roll disimpan selama 30 hari.",
+    "rollNotFound": "Tidak ada roll dengan id itu. Roll disimpan selama tiga hari; seed dan nonce yang kamu simpan masih bisa diverifikasi.",
     "rotateRevealServerSeed": "Putar & ungkapkan seed server",
     "serverSeed": "Server seed",
     "serverSeedHash": "Server seed hash",

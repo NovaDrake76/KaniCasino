@@ -383,7 +383,7 @@
     "outcome": "Resultado",
     "previousSeedRevealedVerify": "Seed anterior revelada, verifique:",
     "roll": "Roll",
-    "rollNotFound": "Roll não encontrado. Os rolls são guardados por 30 dias.",
+    "rollNotFound": "Nenhum roll com esse id. Os rolls ficam guardados por tres dias; uma seed e um nonce que voce salvou ainda verificam.",
     "rotateRevealServerSeed": "Trocar e revelar a seed do servidor",
     "serverSeed": "Seed do servidor",
     "serverSeedHash": "Hash da seed do servidor",
