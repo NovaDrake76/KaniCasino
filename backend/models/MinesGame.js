@@ -42,5 +42,9 @@ minesGameSchema.index(
 );
 minesGameSchema.index({ status: 1, updatedAt: 1 });
 minesGameSchema.index({ userId: 1, createdAt: -1 });
+// a finished game is never read again: the sweeps only look for work still owed, and the
+// roll it produced is what the fair page shows. the free tier's whole budget is 512 MB and
+// these were growing toward it for nothing, so a week after its last touch it expires.
+minesGameSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 });
 
 module.exports = mongoose.model("MinesGame", minesGameSchema);

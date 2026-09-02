@@ -383,7 +383,7 @@
     "outcome": "结果",
     "previousSeedRevealedVerify": "上一个种子已公开，请验证：",
     "roll": "Roll",
-    "rollNotFound": "未找到该 Roll。Roll 仅保留 30 天。",
+    "rollNotFound": "没有这个 ID 的记录。记录只保留三天；你保存过的种子和随机数仍然可以验证。",
     "rotateRevealServerSeed": "轮换并公开服务器种子",
     "serverSeed": "服务器种子",
     "serverSeedHash": "服务器种子哈希",
