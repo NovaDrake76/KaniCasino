@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
-import { login, googleLogin, authError } from "../../../services/auth/auth";
+import { login, googleLogin, authError, GoogleProfileNeeded } from "../../../services/auth/auth";
+import GoogleProfileStep from "./GoogleProfileStep";
 import { saveTokens } from "../../../services/auth/authUtils";
 import { getPendingReferralCode, clearPendingReferralCode } from "../../../services/referrals/ReferralServices";
 import MainButton from "../../MainButton";
@@ -13,6 +14,9 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingButton, setLoadingButton] = useState(false);
+  // signing in with google is also how somebody signs up, so the finishing step has to be
+  // reachable from this side too rather than only from the create-account tab
+  const [needsProfile, setNeedsProfile] = useState<GoogleProfileNeeded | null>(null);
   const { toggleLogin } = useContext(UserContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,8 +45,8 @@ const LoginPage = () => {
   const handleGoogleLoginSuccess = async (credentialResponse: any) => {
     try {
       // a first google sign-in creates the account, so the referral code rides along
-      const response = await googleLogin(credentialResponse.credential, getPendingReferralCode() || undefined)
-      const data = await response;
+      const data = await googleLogin(credentialResponse.credential, getPendingReferralCode() || undefined);
+      if (data.needsProfile) return setNeedsProfile(data);
       if (data.token) {
         saveTokens(data.token, "");
         clearPendingReferralCode();
@@ -54,6 +58,17 @@ const LoginPage = () => {
     }
   };
 
+
+  if (needsProfile) {
+    return (
+      <GoogleProfileStep
+        pending={needsProfile}
+        referralCode={getPendingReferralCode() || undefined}
+        marketingOptIn={false}
+        onCancel={() => setNeedsProfile(null)}
+      />
+    );
+  }
 
   return (
     <div className="flex items-center justify-center transition-all ">

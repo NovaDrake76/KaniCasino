@@ -24,6 +24,7 @@ const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const { resolvePassword } = require("../utils/password");
 const nameFilter = require("../utils/nameFilter");
+const signup = require("../utils/signup");
 const { slugify, mintSlug, looksLikeId } = require("../utils/slugs");
 const { visible, isVisible } = require("../utils/visibility");
 const realtime = require("../utils/realtime");
@@ -68,10 +69,10 @@ router.post(
         return res.status(400).json({ message: "Username already registered" });
       }
 
-      const slur = nameFilter.findSlur(username);
-      if (slur) {
-        console.warn(`register blocked: ${email} tried "${username}" (${slur})`);
-        return res.status(400).json({ message: "Please choose a different username" });
+      const problem = signup.nameProblem(username);
+      if (problem) {
+        if (problem === "notAllowed") console.warn(`register blocked: ${email} tried "${username}"`);
+        return res.status(400).json({ message: "Please choose a different username", field: "username", reason: problem });
       }
 
       // an unknown referral code is ignored rather than blocking the signup
@@ -203,51 +204,33 @@ router.post('/googlelogin', registerLimiter, registerDailyLimiter, async (req, r
     const googlePayload = ticket.getPayload();
 
     // Check if user exists in your DB or create a new one
-    let user = await User.findOne({ email: googlePayload.email }).select("googleId disabled tokenVersion");
+    // sub is google's own id for the person and the ticket cannot be redeemed without it.
+    // failing here beats issuing one that comes back as "expired" at the finishing step.
+    if (!googlePayload || !googlePayload.sub || !googlePayload.email) {
+      return res.status(400).json({ message: "Google did not return an account to sign in with" });
+    }
+
+    const user = await User.findOne({ email: googlePayload.email }).select("googleId disabled tokenVersion");
     if (!user) {
-      let username = nameFilter.safeUsername(googlePayload.name, googlePayload.sub);
-      // a google name that only differs by case is still a conflict, since both want one url
-      const nameTaken = (name) => {
-        const taken = slugify(name);
-        return User.exists(taken ? { $or: [{ username: name }, { slug: taken }] } : { username: name });
-      };
-      let existingUser = await nameTaken(username);
-      while (existingUser) {
-        // Handle username conflict
-        username = googlePayload.name + Math.floor(Math.random() * 1000);
-        existingUser = await nameTaken(username);
-      }
-      // a referral only counts at account creation, never on a later login
-      const referrer = referralCode ? await findReferrer(referralCode) : null;
-      // consent is taken at signup only: a returning player's choice lives in their email
-      // settings, and a later sign-in must never overwrite it
-      const consented = marketingOptIn === true;
-      user = new User({
-        googleId: googlePayload.sub,
-        email: googlePayload.email,
-        username: username,
-        slug: await mintSlug(User, username),
-        profilePicture: googlePayload.picture,
-        basePicture: googlePayload.picture,
-        marketingOptIn: consented,
-        marketingOptInAt: consented ? new Date() : undefined,
+      // a first google sign-in no longer makes the account here. it used to take google's
+      // name and picture without asking, and a player who wanted neither on a public
+      // leaderboard had no way to say so. the ticket carries the identity to the finishing
+      // step, and nothing is created until they have chosen.
+      return res.json({
+        needsProfile: true,
+        ticket: signup.issueTicket({
+          sub: googlePayload.sub,
+          email: googlePayload.email,
+          name: googlePayload.name,
+          picture: googlePayload.picture,
+        }),
+        suggested: {
+          username: await signup.suggestName(googlePayload.name, googlePayload.sub),
+          picture: googlePayload.picture || null,
+        },
       });
-      if (referrer) user.referredBy = referrer._id;
-      await user.save();
-      // a returning player signing in is not a signup and must not spend the budget
-      res.locals.createdAccount = true;
-
-      await recordTransaction({
-        userId: user._id,
-        type: TX.SIGNUP,
-        direction: "credit",
-        amount: user.walletBalance,
-        balanceAfter: user.walletBalance,
-        meta: { source: "google" },
-      });
-
-      if (referrer) await payReferralBonuses(user, referrer);
-    } else if (!user.googleId) {
+    }
+    if (!user.googleId) {
       // the field was never written before, so it backfills as older accounts sign in
       await User.updateOne({ _id: user._id }, { $set: { googleId: googlePayload.sub } });
     }
@@ -269,6 +252,85 @@ router.post('/googlelogin', registerLimiter, registerDailyLimiter, async (req, r
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error in Google Authentication' });
+  }
+});
+
+// the second half of a google signup: the ticket says who google verified, the body says
+// what the player chose to be called and whether they want their google picture on a public
+// leaderboard. the limiters live here because this is the request that creates an account.
+router.post("/google/complete", registerLimiter, registerDailyLimiter, async (req, res) => {
+  const { ticket, username, useGooglePicture, referralCode, marketingOptIn } = req.body;
+  try {
+    const identity = signup.readTicket(ticket);
+    if (!identity) {
+      return res.status(400).json({ message: "That sign-in expired. Please try again.", field: "ticket" });
+    }
+
+    const name = String(username || "").trim();
+    const problem = signup.nameProblem(name);
+    if (problem) {
+      if (problem === "notAllowed") console.warn(`google signup blocked: ${identity.email} tried "${name}"`);
+      return res.status(400).json({ message: "Please choose a different nickname", field: "username", reason: problem });
+    }
+    if (await signup.nameTaken(name)) {
+      return res.status(400).json({ message: "That nickname is taken", field: "username", reason: "taken" });
+    }
+
+    // between the ticket and this request they may have signed up another way, or the
+    // window may have been open long enough for the email to be claimed
+    const already = await User.findOne({ email: identity.email }).select("_id disabled tokenVersion");
+    if (already) {
+      if (already.disabled) return res.status(403).json({ message: "This account has been disabled." });
+      const payload = { userId: already.id, tokenVersion: already.tokenVersion || 0 };
+      return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "30d" }, (err, jwtToken) => {
+        if (err) throw err;
+        res.json({ token: jwtToken });
+      });
+    }
+
+    // the google picture is opt-in. saying no gets the same placeholder a plain signup gets,
+    // and basePicture follows it, or the profile page would offer to "reset" to google's.
+    const picture = useGooglePicture && identity.picture ? identity.picture : getRandomPlaceholderImage();
+    const referrer = referralCode ? await findReferrer(referralCode) : null;
+    const consented = marketingOptIn === true;
+
+    const user = new User({
+      googleId: identity.sub,
+      email: identity.email,
+      username: name,
+      slug: await mintSlug(User, name),
+      profilePicture: picture,
+      basePicture: picture,
+      marketingOptIn: consented,
+      marketingOptInAt: consented ? new Date() : undefined,
+    });
+    if (referrer) user.referredBy = referrer._id;
+    await user.save();
+    res.locals.createdAccount = true;
+
+    await recordTransaction({
+      userId: user._id,
+      type: TX.SIGNUP,
+      direction: "credit",
+      amount: user.walletBalance,
+      balanceAfter: user.walletBalance,
+      meta: { source: "google" },
+    });
+
+    if (referrer) await payReferralBonuses(user, referrer);
+
+    const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "30d" }, (err, jwtToken) => {
+      if (err) throw err;
+      res.json({ token: jwtToken });
+    });
+  } catch (error) {
+    // a race on the unique email or slug index lands here rather than as a 500
+    if (error && error.code === 11000) {
+      return res.status(400).json({ message: "That nickname is taken", field: "username", reason: "taken" });
+    }
+    console.error("google signup complete:", error.message);
+    res.status(500).json({ message: "Could not finish creating your account" });
   }
 });
 
