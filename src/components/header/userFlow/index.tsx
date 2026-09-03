@@ -30,24 +30,16 @@ const UserFlow: React.FC = () => {
     <GoogleOAuthProvider clientId={clientId}>
       <div ref={loginRef} >
         <Modal open={true} setOpen={toogleUserFlow} width={"400px"}>
-          <div className="flex items-center justify-center p-8" >
-            <div
-              className={`flex flex-col justify-center transition-all ${isLogin ? "h-[340px]" : "h-[520px]"
-                }`}
-            >
+          <div className="flex items-center justify-center p-6">
+            <div className="flex w-full flex-col justify-center">
               {isLogin ? <Login /> : <SignUp />}
-              <div
-                className="flex text-black justify-end cursor-pointer mt-1"
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                }}
+              <button
+                type="button"
+                className="mt-3 border-none bg-transparent p-0 text-center text-xs text-secondary-light hover:text-white hover:border-none"
+                onClick={() => setIsLogin(!isLogin)}
               >
-                {isLogin ? (
-                  <div className="text-blue-500 underline">{i18n.t("auth.createAccount")}</div>
-                ) : (
-                  <div className="text-blue-500 underline">{i18n.t("auth.orLogin")}</div>
-                )}
-              </div>
+                {isLogin ? i18n.t("auth.createAccount") : i18n.t("auth.orLogin")}
+              </button>
             </div>
           </div>
         </Modal>

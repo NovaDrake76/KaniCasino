@@ -151,13 +151,18 @@ describe("registering through a referral link", () => {
 describe("google sign-in with a referral code", () => {
   const googleLogin = (referralCode) =>
     request(app).post("/users/googlelogin").send({ token: "fake", referralCode });
+  // the code rides through to the finishing step, which is what creates the account now
+  const finish = (ticket, username, referralCode) =>
+    request(app).post("/users/google/complete").send({ ticket, username, referralCode });
 
   test("a first google sign-in is a registration: both bonuses land", async () => {
     const referrer = await makeUser({ referralCode: "GFRIEND", walletBalance: 0 });
     const s = uniqueSuffix();
-    mockGooglePayload = { email: `g-${s}@x.com`, name: `g-${s}`, picture: "p.png" };
+    mockGooglePayload = { email: `g-${s}@x.com`, name: `g-${s}`, picture: "p.png", sub: `sub-${s}` };
 
-    const res = await googleLogin("GFRIEND");
+    const started = await googleLogin("GFRIEND");
+    expect(started.body.needsProfile).toBe(true);
+    const res = await finish(started.body.ticket, `g-${s}`, "GFRIEND");
     expect(res.status).toBe(200);
     expect(res.body.token).toBeTruthy();
 
@@ -167,13 +172,28 @@ describe("google sign-in with a referral code", () => {
     expect((await User.findById(referrer._id)).walletBalance).toBe(REFERRER_SIGNUP_BONUS);
   });
 
+  test("nothing is paid until the account is actually finished", async () => {
+    // the step can be abandoned, and a bonus for an account that was never created would
+    // be money out of the house for nobody
+    const referrer = await makeUser({ referralCode: "GFRIEND3", walletBalance: 0 });
+    const s = uniqueSuffix();
+    mockGooglePayload = { email: `g-${s}@x.com`, name: `g-${s}`, picture: "p.png", sub: `sub-${s}` };
+
+    await googleLogin("GFRIEND3");
+
+    expect(await User.findOne({ email: mockGooglePayload.email })).toBeNull();
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+    expect(await Transaction.countDocuments({ type: TX.REFERRAL_BONUS })).toBe(0);
+  });
+
   test("an existing account logging in with a code gets and changes nothing", async () => {
     const referrer = await makeUser({ referralCode: "GFRIEND2", walletBalance: 0 });
     const existing = await makeUser({ walletBalance: 777 });
-    mockGooglePayload = { email: existing.email, name: existing.username, picture: "p.png" };
+    mockGooglePayload = { email: existing.email, name: existing.username, picture: "p.png", sub: `sub-${uniqueSuffix()}` };
 
     const res = await googleLogin("GFRIEND2");
     expect(res.status).toBe(200);
+    expect(res.body.token).toBeTruthy();
 
     const after = await User.findById(existing._id);
     expect(after.referredBy).toBeUndefined();

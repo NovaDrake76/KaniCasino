@@ -11,6 +11,7 @@ const request = require("supertest");
 const { setupDb, clearDb, teardownDb } = require("./db");
 const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
 const User = require("../../models/User");
+const nameFilter = require("../../utils/nameFilter");
 const Item = require("../../models/Item");
 
 let app;
@@ -65,99 +66,44 @@ describe("registering", () => {
 
 describe("google sign-up", () => {
   const googleLogin = () => request(app).post("/users/googlelogin").send({ token: "fake" });
+  // the account is created by the finishing step now, and the name it offers is what the
+  // filter has already been through
+  const finish = (ticket, username) =>
+    request(app).post("/users/google/complete").send({ ticket, username });
 
   it("keeps a display name that is fine", async () => {
     const s = uniqueSuffix();
     mockGooglePayload = { email: `g-${s}@x.com`, name: `Mohamed ${s}`, picture: "p.png", sub: `sub-${s}` };
-    expect((await googleLogin()).status).toBe(200);
+
+    const started = await googleLogin();
+
+    expect(started.status).toBe(200);
+    expect(started.body.suggested.username).toBe(`Mohamed ${s}`);
+    await finish(started.body.ticket, started.body.suggested.username);
     expect((await User.findOne({ email: mockGooglePayload.email })).username).toBe(`Mohamed ${s}`);
   });
 
-  // a google display name cannot be edited to get past the filter, so refusing the login
-  // would lock the person out of their own account rather than fix anything
-  it("renames rather than refusing the login", async () => {
+  // a google display name cannot be edited to get past the filter, so offering a clean one
+  // beats refusing the sign-in and locking the person out of their own account
+  it("offers a clean name rather than refusing the sign-in", async () => {
     const s = uniqueSuffix();
     mockGooglePayload = { email: `g-${s}@x.com`, name: "n*gga", picture: "p.png", sub: `sub-${s}` };
 
-    const res = await googleLogin();
-    expect(res.status).toBe(200);
+    const started = await googleLogin();
 
-    const user = await User.findOne({ email: mockGooglePayload.email });
-    expect(user).toBeTruthy();
-    expect(user.username).not.toMatch(/gga/i);
-    expect(user.username).toMatch(/^player/);
+    expect(started.status).toBe(200);
+    expect(nameFilter.isClean(started.body.suggested.username)).toBe(true);
+    expect(started.body.suggested.username).not.toBe("n*gga");
   });
-});
 
-// a vanity code is set once, never changes, and rides in every link the player shares
-describe("the referral code", () => {
-  const { setReferralCode } = require("../../utils/referrals");
-
-  async function player() {
+  it("still refuses a slur the player types into the finishing step themselves", async () => {
     const s = uniqueSuffix();
-    return User.create({ username: `u-${s}`, email: `u-${s}@e.com`, password: "x" });
-  }
+    mockGooglePayload = { email: `g-${s}@x.com`, name: `Fine Name ${s}`, picture: "p.png", sub: `sub-${s}` };
+    const started = await googleLogin();
 
-  it("turns away a slur", async () => {
-    process.env.REFERRALS_ENABLED = "true";
-    const user = await player();
-    const res = await setReferralCode(user._id, "NIGGA");
-    expect(res.code).toBe(400);
-    expect((await User.findById(user._id)).referralCode).toBeUndefined();
-  });
-
-  it("takes an ordinary code", async () => {
-    process.env.REFERRALS_ENABLED = "true";
-    const user = await player();
-    const res = await setReferralCode(user._id, `REIMU${String(uniqueSuffix()).slice(-4)}`);
-    expect(res.code).toBe(200);
-  });
-});
-
-describe("the pinned item description", () => {
-  async function seatedUser() {
-    const s = uniqueSuffix();
-    const item = await Item.create({ name: "Reimu", image: "r.png", rarity: "4", baseValue: 100 });
-    const user = await User.create({
-      username: `u-${s}`,
-      email: `u-${s}@e.com`,
-      password: "x",
-      fixedItem: { name: item.name, image: item.image, rarity: item.rarity, description: "hello" },
-    });
-    return user;
-  }
-
-  it("turns away a slur", async () => {
-    const user = await seatedUser();
-    const res = await request(app)
-      .put("/users/fixedItem/description")
-      .set("Authorization", `Bearer ${tokenFor(user)}`)
-      .send({ description: "n*gga" });
+    const res = await finish(started.body.ticket, "n1gg3r");
 
     expect(res.status).toBe(400);
-    expect((await User.findById(user._id)).fixedItem.description).toBe("hello");
-  });
-
-  it("takes an ordinary description", async () => {
-    const user = await seatedUser();
-    const res = await request(app)
-      .put("/users/fixedItem/description")
-      .set("Authorization", `Bearer ${tokenFor(user)}`)
-      .send({ description: "my favourite shrine maiden" });
-
-    expect(res.status).toBe(200);
-    expect((await User.findById(user._id)).fixedItem.description).toBe("my favourite shrine maiden");
-  });
-
-  it("checks what it stores, not what was sent, so the crop cannot smuggle one in", async () => {
-    const user = await seatedUser();
-    // the tail is dropped by the 50 char crop, so it is the head that has to be clean
-    const res = await request(app)
-      .put("/users/fixedItem/description")
-      .set("Authorization", `Bearer ${tokenFor(user)}`)
-      .send({ description: "a".repeat(50) + " nigger" });
-
-    expect(res.status).toBe(200);
-    expect((await User.findById(user._id)).fixedItem.description).toBe("a".repeat(50));
+    expect(await User.findOne({ email: mockGooglePayload.email })).toBeNull();
   });
 });

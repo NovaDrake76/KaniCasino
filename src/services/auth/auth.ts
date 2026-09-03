@@ -12,9 +12,35 @@ export async function login(email: string, password: string) {
     return response.data;
 }
 
+// google verified somebody who has no account here yet. nothing has been created: the
+// ticket carries their identity to the finishing step, where they choose a name and say
+// whether they want their google picture on a public leaderboard.
+export interface GoogleProfileNeeded {
+    needsProfile: true;
+    ticket: string;
+    suggested: { username: string; picture: string | null };
+}
+
+export type GoogleLoginResult = { token: string; needsProfile?: false } | GoogleProfileNeeded;
+
 // marketingOptIn only lands if this sign-in is what creates the account
-export async function googleLogin(token: string, referralCode?: string, marketingOptIn?: boolean) {
+export async function googleLogin(
+    token: string,
+    referralCode?: string,
+    marketingOptIn?: boolean
+): Promise<GoogleLoginResult> {
     const response = await api.post('/users/googlelogin', { token, referralCode, marketingOptIn });
+    return response.data;
+}
+
+export async function completeGoogleSignup(body: {
+    ticket: string;
+    username: string;
+    useGooglePicture: boolean;
+    referralCode?: string;
+    marketingOptIn?: boolean;
+}): Promise<{ token: string }> {
+    const response = await api.post('/users/google/complete', body);
     return response.data;
 }
 
