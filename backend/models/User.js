@@ -10,10 +10,18 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  // the profile url. minted from the username at signup and never rewritten, so a link
-  // keeps working. absent when the name has no latin letters in it, and the id is used then.
+  // the profile url. reminted when the name changes, with the one it replaces kept in
+  // pastSlugs so a shared link still lands. absent when the name has no latin letters in
+  // it, and the id is used then.
   slug: {
     type: String,
+  },
+  // every name and url this account has worn. held rather than freed: whoever took the old
+  // name back would inherit the chat lines still signed with it.
+  pastNames: [String],
+  pastSlugs: [String],
+  usernameChangedAt: {
+    type: Date,
   },
   email: {
     type: String,
@@ -234,6 +242,8 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.index({ slug: 1 }, { unique: true, sparse: true }); // profile url lookup
+UserSchema.index({ pastNames: 1 }, { sparse: true }); // a freed name stays refused
+UserSchema.index({ pastSlugs: 1 }, { sparse: true }); // links shared before a rename
 UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
 UserSchema.index({ referredBy: 1 }, { sparse: true });
 UserSchema.index({ weeklyWinnings: -1 }); // leaderboard, ranking window, weekly cron

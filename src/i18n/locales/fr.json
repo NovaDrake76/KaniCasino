@@ -48,10 +48,12 @@
       "mismatch": "Les deux mots de passe ne correspondent pas.",
       "notAllowed": "Choisissez un autre pseudo.",
       "required": "Ce champ est requis.",
+      "same": "C'est deja votre pseudo.",
       "shortPassword": "Au moins 6 caracteres.",
       "taken": "Ce pseudo est deja pris.",
       "tooLong": "Au plus 30 caracteres.",
-      "tooShort": "Au moins 2 caracteres."
+      "tooShort": "Au moins 2 caracteres.",
+      "tooSoon": "Vous l'avez change recemment. Reessayez plus tard."
     },
     "finishBlurb": "Google nous a dit qui vous etes. Vous choisissez ce que le site affiche.",
     "finishButton": "Creer mon compte",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "Langue",
     "languageHint": "Le site s'affiche dans cette langue. La première fois, nous la choisissons d'après votre navigateur.",
+    "newNickname": "Nouveau pseudo",
+    "nicknameHint": "De 2 a 30 caracteres. Modifiable une fois tous les 30 jours.",
+    "nicknameLocked": "Vous pourrez le modifier a nouveau le {{date}}.",
+    "nicknameSaved": "Pseudo mis a jour",
     "saveFailed": "Enregistrement impossible, réessayez",
+    "saveNickname": "Enregistrer le pseudo",
     "title": "Paramètres",
     "updates": "Actualités sur les caisses et les jeux"
   },

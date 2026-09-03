@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import i18n from "../../../i18n";
+import i18n from "../i18n";
 
 interface FieldProps {
   id: string;

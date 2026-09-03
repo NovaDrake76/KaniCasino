@@ -48,10 +48,12 @@
       "mismatch": "As duas senhas nao conferem.",
       "notAllowed": "Escolha outro apelido.",
       "required": "Este campo e obrigatorio.",
+      "same": "Esse ja e o seu apelido.",
       "shortPassword": "No minimo 6 caracteres.",
       "taken": "Esse apelido ja esta em uso.",
       "tooLong": "No maximo 30 caracteres.",
-      "tooShort": "No minimo 2 caracteres."
+      "tooShort": "No minimo 2 caracteres.",
+      "tooSoon": "Voce mudou ha pouco tempo. Tente de novo mais tarde."
     },
     "finishBlurb": "O Google disse quem voce e. Voce escolhe o que o site mostra.",
     "finishButton": "Criar minha conta",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "Idioma",
     "languageHint": "O site é exibido neste idioma. Na primeira vez, escolhemos pelo seu navegador.",
+    "newNickname": "Novo apelido",
+    "nicknameHint": "2 a 30 caracteres. Voce pode mudar uma vez a cada 30 dias.",
+    "nicknameLocked": "Voce pode mudar de novo em {{date}}.",
+    "nicknameSaved": "Apelido atualizado",
     "saveFailed": "Não foi possível salvar, tente de novo",
+    "saveNickname": "Salvar apelido",
     "title": "Configurações",
     "updates": "Novidades sobre caixas e jogos"
   },

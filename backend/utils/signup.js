@@ -29,11 +29,27 @@ function nameProblem(raw) {
 }
 
 // "Shiki" and "shiki" reduce to the same url, so the second is refused rather than being
-// handed a suffix forever. both lookups are indexed; a case-insensitive regex would scan
-// every inventory on file.
-async function nameTaken(name) {
+// handed a suffix forever. names and urls an account has worn before count as taken too,
+// or the next holder inherits the chat lines still signed with them.
+async function nameTaken(name, ignoreId) {
   const slug = slugify(name);
-  return User.exists(slug ? { $or: [{ username: name }, { slug }] } : { username: name });
+  const or = [{ username: name }, { pastNames: name }];
+  if (slug) or.push({ slug }, { pastSlugs: slug });
+  const query = { $or: or };
+  if (ignoreId) query._id = { $ne: ignoreId };
+  return User.exists(query);
+}
+
+// one change a month. a name people are still learning is worth more than the freedom to
+// hop between them mid-conversation.
+const RENAME_COOLDOWN_DAYS = 30;
+const RENAME_COOLDOWN_MS = RENAME_COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
+
+// when the next change is allowed, or null when it is allowed now
+function renameAllowedAt(changedAt) {
+  if (!changedAt) return null;
+  const next = new Date(new Date(changedAt).getTime() + RENAME_COOLDOWN_MS);
+  return next > new Date() ? next : null;
 }
 
 // what to put in the box when google is the one signing them up. their google name if it is
@@ -75,8 +91,10 @@ module.exports = {
   MIN_NAME,
   MAX_NAME,
   NAME_SHAPE,
+  RENAME_COOLDOWN_DAYS,
   nameProblem,
   nameTaken,
+  renameAllowedAt,
   suggestName,
   issueTicket,
   readTicket,

@@ -48,10 +48,12 @@
       "mismatch": "Le due password non coincidono.",
       "notAllowed": "Scegli un altro nome.",
       "required": "Questo campo serve.",
+      "same": "Questo e gia il tuo soprannome.",
       "shortPassword": "Almeno 6 caratteri.",
       "taken": "Quel nome e gia preso.",
       "tooLong": "Al massimo 30 caratteri.",
-      "tooShort": "Almeno 2 caratteri."
+      "tooShort": "Almeno 2 caratteri.",
+      "tooSoon": "L'hai cambiato di recente. Riprova piu tardi."
     },
     "finishBlurb": "Google ci ha detto chi sei. Tu scegli cosa mostra il sito.",
     "finishButton": "Crea il mio account",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "Lingua",
     "languageHint": "Il sito è mostrato in questa lingua. La prima volta la scegliamo dal tuo browser.",
+    "newNickname": "Nuovo soprannome",
+    "nicknameHint": "Da 2 a 30 caratteri. Puoi cambiarlo una volta ogni 30 giorni.",
+    "nicknameLocked": "Potrai cambiarlo di nuovo il {{date}}.",
+    "nicknameSaved": "Soprannome aggiornato",
     "saveFailed": "Non è stato possibile salvare, riprova",
+    "saveNickname": "Salva soprannome",
     "title": "Impostazioni",
     "updates": "Novità su casse e giochi"
   },

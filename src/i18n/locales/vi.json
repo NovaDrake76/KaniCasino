@@ -48,10 +48,12 @@
       "mismatch": "Hai mat khau khong khop.",
       "notAllowed": "Vui long chon biet danh khac.",
       "required": "Muc nay la bat buoc.",
+      "same": "Do da la biet danh cua ban.",
       "shortPassword": "It nhat 6 ky tu.",
       "taken": "Biet danh nay da co nguoi dung.",
       "tooLong": "Toi da 30 ky tu.",
-      "tooShort": "It nhat 2 ky tu."
+      "tooShort": "It nhat 2 ky tu.",
+      "tooSoon": "Ban vua doi gan day. Hay thu lai sau."
     },
     "finishBlurb": "Google da xac nhan ban la ai. Ban chon nhung gi hien tren trang.",
     "finishButton": "Tao tai khoan",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "Ngôn ngữ",
     "languageHint": "Trang web hiển thị bằng ngôn ngữ này. Lần đầu, chúng tôi chọn theo trình duyệt của bạn.",
+    "newNickname": "Biet danh moi",
+    "nicknameHint": "Tu 2 den 30 ky tu. Ban co the doi 30 ngay mot lan.",
+    "nicknameLocked": "Ban co the doi lai vao {{date}}.",
+    "nicknameSaved": "Da cap nhat biet danh",
     "saveFailed": "Không lưu được, hãy thử lại",
+    "saveNickname": "Luu biet danh",
     "title": "Cài đặt",
     "updates": "Tin mới về hòm và trò chơi"
   },
