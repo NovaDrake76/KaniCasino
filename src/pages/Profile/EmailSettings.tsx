@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { getEmailPreferences, setMarketingOptIn } from "../../services/email/EmailService";
 import LanguageSelector from "../../components/LanguageSelector";
 import DiscordSettings from "./DiscordSettings";
+import NicknameSettings from "./NicknameSettings";
 import i18n from "../../i18n";
 
 const EmailSettings = () => {
@@ -41,6 +42,8 @@ const EmailSettings = () => {
 
     return (
         <div className="w-full max-w-2xl flex flex-col gap-4">
+            <NicknameSettings />
+
             <span className="text-lg font-bold">{i18n.t("settings.language")}</span>
 
             <div className="flex flex-col gap-2 bg-surface border border-line rounded-lg p-4">

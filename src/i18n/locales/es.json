@@ -48,10 +48,12 @@
       "mismatch": "Las dos contrasenas no coinciden.",
       "notAllowed": "Elige otro apodo.",
       "required": "Este campo es obligatorio.",
+      "same": "Ese ya es tu apodo.",
       "shortPassword": "Minimo 6 caracteres.",
       "taken": "Ese apodo ya esta en uso.",
       "tooLong": "Maximo 30 caracteres.",
-      "tooShort": "Minimo 2 caracteres."
+      "tooShort": "Minimo 2 caracteres.",
+      "tooSoon": "Lo cambiaste hace poco. Intentalo mas tarde."
     },
     "finishBlurb": "Google nos dijo quien eres. Tu eliges lo que el sitio muestra.",
     "finishButton": "Crear mi cuenta",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "Idioma",
     "languageHint": "El sitio se muestra en este idioma. La primera vez lo elegimos según tu navegador.",
+    "newNickname": "Nuevo apodo",
+    "nicknameHint": "De 2 a 30 caracteres. Puedes cambiarlo una vez cada 30 dias.",
+    "nicknameLocked": "Puedes cambiarlo de nuevo el {{date}}.",
+    "nicknameSaved": "Apodo actualizado",
     "saveFailed": "No se pudo guardar, inténtalo de nuevo",
+    "saveNickname": "Guardar apodo",
     "title": "Ajustes",
     "updates": "Novedades sobre cajas y juegos"
   },

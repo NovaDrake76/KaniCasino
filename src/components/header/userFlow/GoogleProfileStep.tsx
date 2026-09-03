@@ -5,7 +5,7 @@ import { saveTokens } from "../../../services/auth/authUtils";
 import { clearPendingReferralCode } from "../../../services/referrals/ReferralServices";
 import { MAX_NAME, nicknameProblem } from "../../../services/auth/authRules";
 import UserContext from "../../../UserContext";
-import Field from "./Field";
+import Field from "../../Field";
 import MainButton from "../../MainButton";
 import i18n from "../../../i18n";
 

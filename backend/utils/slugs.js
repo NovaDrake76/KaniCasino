@@ -48,12 +48,16 @@ const baseSlugFor = (name) => {
 // a qualifier is tried before the number, because "saki-kivotos-case" says which Saki it is
 // and "saki-2" says nothing. returns undefined when the name yields nothing usable, and the
 // caller falls back to the id.
-async function mintSlug(Model, name, { ignoreId, qualifier } = {}) {
+async function mintSlug(Model, name, { ignoreId, qualifier, alsoTaken } = {}) {
   const base = baseSlugFor(name);
   if (!base) return undefined;
+  // alsoTaken names a second field holding urls that are spoken for, so a rename cannot be
+  // handed a url somebody else's old link still points at
   const free = async (slug) => {
     if (!slug || RESERVED.has(slug)) return false;
-    const clash = await Model.exists(ignoreId ? { slug, _id: { $ne: ignoreId } } : { slug });
+    const query = alsoTaken ? { $or: [{ slug }, { [alsoTaken]: slug }] } : { slug };
+    if (ignoreId) query._id = { $ne: ignoreId };
+    const clash = await Model.exists(query);
     return !clash;
   };
   if (await free(base)) return base;

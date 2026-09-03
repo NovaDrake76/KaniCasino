@@ -48,10 +48,12 @@
       "mismatch": "两次输入的密码不一致。",
       "notAllowed": "请换一个昵称。",
       "required": "这一项是必填的。",
+      "same": "这已经是你的昵称了。",
       "shortPassword": "至少 6 个字符。",
       "taken": "这个昵称已被使用。",
       "tooLong": "最多 30 个字符。",
-      "tooShort": "至少 2 个字符。"
+      "tooShort": "至少 2 个字符。",
+      "tooSoon": "你最近刚改过。请稍后再试。"
     },
     "finishBlurb": "谷歌已确认你的身份。网站上显示什么由你决定。",
     "finishButton": "创建我的账号",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "语言",
     "languageHint": "网站将以此语言显示。首次访问时我们会根据你的浏览器自动选择。",
+    "newNickname": "新昵称",
+    "nicknameHint": "2 到 30 个字符。每 30 天可以修改一次。",
+    "nicknameLocked": "你可以在 {{date}} 再次修改。",
+    "nicknameSaved": "昵称已更新",
     "saveFailed": "保存失败，请重试",
+    "saveNickname": "保存昵称",
     "title": "设置",
     "updates": "新箱子与新游戏的更新通知"
   },

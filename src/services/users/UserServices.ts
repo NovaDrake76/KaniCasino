@@ -153,3 +153,10 @@ export async function putCardStyle(style: string) {
   const res = await api.put("/users/card-style", { style });
   return res.data as { cardStyle: string };
 }
+
+// the display name, changed after signup. the server holds the old one and keeps the old
+// profile url pointing here, so a link shared before the change still lands.
+export async function changeUsername(username: string): Promise<{ username: string; slug?: string }> {
+    const response = await api.put('/users/username', { username });
+    return response.data;
+}

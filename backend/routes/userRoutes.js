@@ -25,7 +25,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const { resolvePassword } = require("../utils/password");
 const nameFilter = require("../utils/nameFilter");
 const signup = require("../utils/signup");
-const { slugify, mintSlug, looksLikeId } = require("../utils/slugs");
+const { mintSlug, looksLikeId } = require("../utils/slugs");
 const { visible, isVisible } = require("../utils/visibility");
 const realtime = require("../utils/realtime");
 
@@ -58,21 +58,16 @@ router.post(
       if (userMail) {
         return res.status(400).json({ message: "Email already registered" });
       }
-      // the slug check is what makes this case-insensitive: "Shiki" and "shiki" reduce to the
-      // same url, so the second one is refused rather than being handed "shiki-2" forever.
-      // both lookups are indexed; a case-insensitive regex would scan every inventory on file.
-      const nameSlug = slugify(username);
-      let userName = await User.exists(
-        nameSlug ? { $or: [{ username }, { slug: nameSlug }] } : { username }
-      );
-      if (userName) {
-        return res.status(400).json({ message: "Username already registered" });
-      }
-
+      // shape first: it needs no query, and a malformed name that also collides used to be
+      // reported as taken rather than as the thing that was actually wrong with it
       const problem = signup.nameProblem(username);
       if (problem) {
         if (problem === "notAllowed") console.warn(`register blocked: ${email} tried "${username}"`);
         return res.status(400).json({ message: "Please choose a different username", field: "username", reason: problem });
+      }
+
+      if (await signup.nameTaken(username)) {
+        return res.status(400).json({ message: "Username already registered" });
       }
 
       // an unknown referral code is ignored rather than blocking the signup
@@ -87,7 +82,7 @@ router.post(
       user = new User({
         email,
         username,
-        slug: await mintSlug(User, username),
+        slug: await mintSlug(User, username, { alsoTaken: "pastSlugs" }),
         profilePicture: placeholder,
         basePicture: placeholder,
         isAdmin: false,
@@ -298,7 +293,7 @@ router.post("/google/complete", registerLimiter, registerDailyLimiter, async (re
       googleId: identity.sub,
       email: identity.email,
       username: name,
-      slug: await mintSlug(User, name),
+      slug: await mintSlug(User, name, { alsoTaken: "pastSlugs" }),
       profilePicture: picture,
       basePicture: picture,
       marketingOptIn: consented,
@@ -381,6 +376,8 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
     res.json({
       id, username, slug: slug || null, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications,
       isAdmin: !!isAdmin, fanRank, fixedItem,
+      // null when a rename is allowed now, so settings can say when rather than guess
+      nameChangeAllowedAt: signup.renameAllowedAt(req.user.usernameChangedAt),
       badges: badges.heldBadges(req.user),
       selectedBadge: req.user.selectedBadge || null,
       badge: badges.wornBadge(req.user),
@@ -750,6 +747,60 @@ router.put("/avatar", authMiddleware.isAuthenticated, async (req, res) => {
   }
 });
 
+// changing the display name after signup. the old name and url are kept rather than freed:
+// chat is a capped collection, so lines already signed with the old name cannot be rewritten,
+// and whoever picked it up next would inherit them.
+router.put("/username", authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const name = String(req.body.username || "").trim();
+    const user = await User.findById(req.user._id)
+      .select("username slug usernameChangedAt")
+      .lean();
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (name === user.username) {
+      return res.status(400).json({ message: "That is already your nickname", field: "username", reason: "same" });
+    }
+
+    const problem = signup.nameProblem(name);
+    if (problem) {
+      return res.status(400).json({ message: "Please choose a different nickname", field: "username", reason: problem });
+    }
+
+    const nextChangeAt = signup.renameAllowedAt(user.usernameChangedAt);
+    if (nextChangeAt) {
+      return res.status(429).json({
+        message: "You can change your nickname again later",
+        field: "username",
+        reason: "tooSoon",
+        nextChangeAt,
+      });
+    }
+
+    if (await signup.nameTaken(name, user._id)) {
+      return res.status(409).json({ message: "That nickname is taken", field: "username", reason: "taken" });
+    }
+
+    const slug = await mintSlug(User, name, { ignoreId: user._id, alsoTaken: "pastSlugs" });
+    const update = {
+      $set: { username: name, usernameChangedAt: new Date() },
+      $addToSet: { pastNames: user.username },
+    };
+    if (slug) update.$set.slug = slug;
+    if (user.slug && slug && slug !== user.slug) update.$addToSet.pastSlugs = user.slug;
+
+    await User.updateOne({ _id: user._id }, update);
+    res.json({ username: name, slug: slug || user.slug, pastName: user.username });
+  } catch (err) {
+    // a race on the unique username or slug index lands here rather than as a 500
+    if (err && err.code === 11000) {
+      return res.status(409).json({ message: "That nickname is taken", field: "username", reason: "taken" });
+    }
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 // update fixed item description
 router.put(
   "/fixedItem/description",
@@ -838,7 +889,10 @@ router.post('/logout-all', authMiddleware.isAuthenticated, async (req, res) => {
 // a profile is addressed by slug now, but every id ever shared still has to resolve, so
 // both are accepted on the same route. the id test is strict 24-hex: ObjectId.isValid()
 // also passes any 12-character string, which is 172 of the usernames on file.
-const userFilter = (param) => (looksLikeId(param) ? { _id: param } : { slug: param });
+// a rename mints a new url and keeps the old one, so a link shared before it still lands.
+// at most one account matches: minting refuses a slug any other account holds as a past one.
+const userFilter = (param) =>
+  looksLikeId(param) ? { _id: param } : { $or: [{ slug: param }, { pastSlugs: param }] };
 
 // Get user by id or slug (public profile: only non-sensitive fields)
 router.get("/:id", async (req, res) => {

@@ -48,10 +48,12 @@
       "mismatch": "Die beiden Passwoerter stimmen nicht ueberein.",
       "notAllowed": "Bitte waehle einen anderen Namen.",
       "required": "Dieses Feld wird benoetigt.",
+      "same": "Das ist bereits dein Spitzname.",
       "shortPassword": "Mindestens 6 Zeichen.",
       "taken": "Dieser Name ist schon vergeben.",
       "tooLong": "Hoechstens 30 Zeichen.",
-      "tooShort": "Mindestens 2 Zeichen."
+      "tooShort": "Mindestens 2 Zeichen.",
+      "tooSoon": "Du hast ihn erst kuerzlich geaendert. Versuche es spaeter."
     },
     "finishBlurb": "Google hat uns gesagt, wer du bist. Du entscheidest, was die Seite zeigt.",
     "finishButton": "Konto erstellen",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "Sprache",
     "languageHint": "Die Seite wird in dieser Sprache angezeigt. Beim ersten Mal wählen wir sie anhand deines Browsers.",
+    "newNickname": "Neuer Spitzname",
+    "nicknameHint": "2 bis 30 Zeichen. Alle 30 Tage einmal aenderbar.",
+    "nicknameLocked": "Du kannst ihn am {{date}} wieder aendern.",
+    "nicknameSaved": "Spitzname aktualisiert",
     "saveFailed": "Speichern fehlgeschlagen, versuch es erneut",
+    "saveNickname": "Spitzname speichern",
     "title": "Einstellungen",
     "updates": "Neues zu Kisten und Spielen"
   },

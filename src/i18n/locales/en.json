@@ -48,10 +48,12 @@
       "mismatch": "The two passwords do not match.",
       "notAllowed": "Please choose a different nickname.",
       "required": "This one is needed.",
+      "same": "That is already your nickname.",
       "shortPassword": "At least 6 characters.",
       "taken": "That nickname is taken.",
       "tooLong": "At most 30 characters.",
-      "tooShort": "At least 2 characters."
+      "tooShort": "At least 2 characters.",
+      "tooSoon": "You changed it recently. Try again later."
     },
     "finishBlurb": "Google told us who you are. You choose what the site shows.",
     "finishButton": "Create my account",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "Language",
     "languageHint": "The site is shown in this language. We pick it from your browser the first time.",
+    "newNickname": "New nickname",
+    "nicknameHint": "2 to 30 characters. You can change it once every 30 days.",
+    "nicknameLocked": "You can change it again on {{date}}.",
+    "nicknameSaved": "Nickname updated",
     "saveFailed": "Could not save that, try again",
+    "saveNickname": "Save nickname",
     "title": "Settings",
     "updates": "Updates about new cases and games"
   },

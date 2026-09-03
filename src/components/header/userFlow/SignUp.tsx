@@ -11,7 +11,7 @@ import {
   passwordStrength,
   validateSignUp,
 } from "../../../services/auth/authRules";
-import Field from "./Field";
+import Field from "../../Field";
 import GoogleProfileStep from "./GoogleProfileStep";
 import MainButton from "../../MainButton";
 import i18n from "../../../i18n";

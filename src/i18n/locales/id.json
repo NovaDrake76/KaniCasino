@@ -48,10 +48,12 @@
       "mismatch": "Kedua kata sandi tidak sama.",
       "notAllowed": "Silakan pilih nama lain.",
       "required": "Bagian ini wajib diisi.",
+      "same": "Itu sudah menjadi nama panggilanmu.",
       "shortPassword": "Minimal 6 karakter.",
       "taken": "Nama itu sudah dipakai.",
       "tooLong": "Maksimal 30 karakter.",
-      "tooShort": "Minimal 2 karakter."
+      "tooShort": "Minimal 2 karakter.",
+      "tooSoon": "Kamu baru saja mengubahnya. Coba lagi nanti."
     },
     "finishBlurb": "Google sudah memastikan siapa kamu. Kamu yang menentukan apa yang tampil.",
     "finishButton": "Buat akun saya",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "Bahasa",
     "languageHint": "Situs ini terlihat pada bahasa seperti gini. Kami pilih sesuai browsermu pada pertama kali.",
+    "newNickname": "Nama panggilan baru",
+    "nicknameHint": "2 sampai 30 karakter. Bisa diubah sekali tiap 30 hari.",
+    "nicknameLocked": "Kamu bisa mengubahnya lagi pada {{date}}.",
+    "nicknameSaved": "Nama panggilan diperbarui",
     "saveFailed": "Menyimpan data gagal, coba lagi.",
+    "saveNickname": "Simpan nama panggilan",
     "title": "Pengaturan",
     "updates": "Pembaruan konten seperti kotak dan permainan."
   },

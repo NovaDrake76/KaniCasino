@@ -48,10 +48,12 @@
       "mismatch": "두 비밀번호가 일치하지 않습니다.",
       "notAllowed": "다른 닉네임을 선택해 주세요.",
       "required": "필수 항목입니다.",
+      "same": "이미 사용 중인 닉네임입니다.",
       "shortPassword": "6자 이상 입력하세요.",
       "taken": "이미 사용 중인 닉네임입니다.",
       "tooLong": "30자 이하로 입력하세요.",
-      "tooShort": "2자 이상 입력하세요."
+      "tooShort": "2자 이상 입력하세요.",
+      "tooSoon": "최근에 변경했습니다. 나중에 다시 시도하세요."
     },
     "finishBlurb": "구글이 본인 확인을 해주었습니다. 사이트에 무엇을 보여줄지는 직접 정하세요.",
     "finishButton": "계정 만들기",
@@ -1032,7 +1034,12 @@
   "settings": {
     "language": "언어",
     "languageHint": "사이트가 이 언어로 표시됩니다. 처음에는 브라우저 설정을 따라 선택됩니다.",
+    "newNickname": "새 닉네임",
+    "nicknameHint": "2~30자. 30일에 한 번 변경할 수 있습니다.",
+    "nicknameLocked": "{{date}}부터 다시 변경할 수 있습니다.",
+    "nicknameSaved": "닉네임이 변경되었습니다",
     "saveFailed": "저장하지 못했습니다. 다시 시도해 주세요",
+    "saveNickname": "닉네임 저장",
     "title": "설정",
     "updates": "새 케이스와 게임 소식"
   },
