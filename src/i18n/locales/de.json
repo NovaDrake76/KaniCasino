@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "Fehler bei der Verbindung zum Server",
     "fiveCasesOneWinner": "Fünf Kisten, ein Gewinner.",
     "fourCasesFromKivotos": "Vier Kisten aus Kivotos.",
+    "giveawayJoin": "Discord beitreten",
+    "giveawayNote": "Der Gewinner wird in 24 Stunden gezogen. Du brauchst ein Steam-Konto, um ihn zu erhalten.",
+    "giveawayStep1": "Tritt unserem Discord-Server bei",
+    "giveawayStep2": "Reagiere mit ✅ auf den Verlosungsbeitrag",
+    "giveawayTitle": "Touhou 6 Verlosung",
     "goToPage": "Zur Seite",
     "hitStandAndBeat": "Ziehen, halten und den Dealer schlagen.",
     "joinTheDiscussion": "Misch dich ein!",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "Meistgeöffnet",
     "mostOpenedCases": "Meistgeöffnete Kisten",
+    "name": "Name",
     "openTheCasesCollect": "Öffne die Kisten und sammle die seltensten.",
     "ourDiscord": "Unser Discord",
     "ourGames": "Unsere Spiele",
@@ -709,8 +715,7 @@
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Uma-Musume-Kisten",
     "upgrade": "verbessern",
-    "whatEveryoneIsOpening": "Was gerade alle öffnen.",
-    "name": "Name"
+    "whatEveryoneIsOpening": "Was gerade alle öffnen."
   },
   "leaderboard": {
     "title": "Tagesbestenliste",

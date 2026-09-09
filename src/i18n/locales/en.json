@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "Error while connecting to the server",
     "fiveCasesOneWinner": "Five cases, one winner.",
     "fourCasesFromKivotos": "Four cases from Kivotos.",
+    "giveawayJoin": "Join Discord",
+    "giveawayNote": "The winner is drawn in 24 hours. You need a Steam account to receive it.",
+    "giveawayStep1": "Join our Discord server",
+    "giveawayStep2": "React with ✅ on the giveaway post",
+    "giveawayTitle": "Touhou 6 giveaway",
     "goToPage": "Go to page",
     "hitStandAndBeat": "Hit, stand, and beat the dealer.",
     "joinTheDiscussion": "Join the discussion!",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "Most Opened",
     "mostOpenedCases": "Most Opened Cases",
+    "name": "Name",
     "openTheCasesCollect": "Open the cases, collect the rarest.",
     "ourDiscord": "Our Discord",
     "ourGames": "Our Games",
@@ -709,8 +715,7 @@
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Uma Musume cases",
     "upgrade": "upgrade",
-    "whatEveryoneIsOpening": "What everyone is opening right now.",
-    "name": "Name"
+    "whatEveryoneIsOpening": "What everyone is opening right now."
   },
   "leaderboard": {
     "title": "Daily Leaderboard",

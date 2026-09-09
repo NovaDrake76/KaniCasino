@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "Erreur de connexion au serveur",
     "fiveCasesOneWinner": "Cinq caisses, un gagnant.",
     "fourCasesFromKivotos": "Quatre caisses de Kivotos.",
+    "giveawayJoin": "Rejoindre Discord",
+    "giveawayNote": "Le gagnant est tire dans 24 heures. Un compte Steam est necessaire pour la recevoir.",
+    "giveawayStep1": "Rejoignez notre serveur Discord",
+    "giveawayStep2": "Reagissez avec ✅ sur le message du concours",
+    "giveawayTitle": "Concours Touhou 6",
     "goToPage": "Aller à la page",
     "hitStandAndBeat": "Tirez, restez et battez le croupier.",
     "joinTheDiscussion": "Rejoignez la discussion !",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "Les plus ouvertes",
     "mostOpenedCases": "Caisses les plus ouvertes",
+    "name": "Nom",
     "openTheCasesCollect": "Ouvrez les caisses et collectionnez les plus rares.",
     "ourDiscord": "Notre Discord",
     "ourGames": "Nos jeux",
@@ -709,8 +715,7 @@
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Caisses Uma Musume",
     "upgrade": "améliorer",
-    "whatEveryoneIsOpening": "Ce que tout le monde ouvre en ce moment.",
-    "name": "Nom"
+    "whatEveryoneIsOpening": "Ce que tout le monde ouvre en ce moment."
   },
   "leaderboard": {
     "title": "Classement Quotidien",

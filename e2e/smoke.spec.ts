@@ -107,11 +107,13 @@ test("the most opened section renders above the games and category listings", as
   expect(ys.every((y) => y !== null)).toBe(true);
   expect([...ys]).toEqual([...ys].sort((a, b) => (a as number) - (b as number)));
 
-  // the discord block renders only when VITE_DISCORD_INVITE is set, which ci does not
-  const discord = await topOf("Join our Discord");
+  // the discord block renders only when VITE_DISCORD_INVITE is set, which ci does not.
+  // looked up by its button, since a hero slide can also say "join our discord". it is the
+  // leaderboard's aside, so it sits after the games and before the case shelves.
+  const discord = await topOf("Join the KaniCasino server");
   if (discord !== null) {
     expect(discord).toBeGreaterThan(ys[1] as number);
-    expect(discord).toBeLessThan(ys[2] as number);
+    expect(discord).toBeLessThan(ys[3] as number);
   }
 });
 

@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "Lỗi khi kết nối tới máy chủ",
     "fiveCasesOneWinner": "Năm hòm, một người thắng.",
     "fourCasesFromKivotos": "Bốn hòm từ Kivotos.",
+    "giveawayJoin": "Tham gia Discord",
+    "giveawayNote": "Nguoi thang duoc chon sau 24 gio. Ban can tai khoan Steam de nhan.",
+    "giveawayStep1": "Tham gia may chu Discord cua chung toi",
+    "giveawayStep2": "Tha ✅ vao bai dang cua su kien",
+    "giveawayTitle": "Tang Touhou 6",
     "goToPage": "Đến trang",
     "hitStandAndBeat": "Rút bài, dừng lại và thắng nhà cái.",
     "joinTheDiscussion": "Tham gia trò chuyện nhé!",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "Mở nhiều nhất",
     "mostOpenedCases": "Hòm được mở nhiều nhất",
+    "name": "Tên",
     "openTheCasesCollect": "Mở hòm và sưu tầm những món hiếm nhất.",
     "ourDiscord": "Discord của chúng tôi",
     "ourGames": "Trò chơi của chúng tôi",
@@ -709,8 +715,7 @@
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Hòm Uma Musume",
     "upgrade": "nâng cấp",
-    "whatEveryoneIsOpening": "Mọi người đang mở gì lúc này.",
-    "name": "Tên"
+    "whatEveryoneIsOpening": "Mọi người đang mở gì lúc này."
   },
   "leaderboard": {
     "title": "Bảng Xếp Hạng Hằng Ngày",

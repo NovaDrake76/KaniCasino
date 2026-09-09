@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "Errore di connessione al server",
     "fiveCasesOneWinner": "Cinque casse, un vincitore.",
     "fourCasesFromKivotos": "Quattro casse da Kivotos.",
+    "giveawayJoin": "Entra su Discord",
+    "giveawayNote": "Il vincitore viene estratto tra 24 ore. Serve un account Steam per riceverla.",
+    "giveawayStep1": "Entra nel nostro server Discord",
+    "giveawayStep2": "Reagisci con ✅ al post del giveaway",
+    "giveawayTitle": "Giveaway di Touhou 6",
     "goToPage": "Vai alla pagina",
     "hitStandAndBeat": "Chiedi carta, stai e batti il banco.",
     "joinTheDiscussion": "Unisciti alla discussione!",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "Più aperte",
     "mostOpenedCases": "Casse più aperte",
+    "name": "Nome",
     "openTheCasesCollect": "Apri le casse e colleziona le più rare.",
     "ourDiscord": "Il nostro Discord",
     "ourGames": "I nostri giochi",
@@ -709,8 +715,7 @@
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Casse di Uma Musume",
     "upgrade": "migliora",
-    "whatEveryoneIsOpening": "Cosa stanno aprendo tutti in questo momento.",
-    "name": "Nome"
+    "whatEveryoneIsOpening": "Cosa stanno aprendo tutti in questo momento."
   },
   "leaderboard": {
     "title": "Classifica Giornaliera",

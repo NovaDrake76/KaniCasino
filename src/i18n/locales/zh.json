@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "连接服务器时出错",
     "fiveCasesOneWinner": "五个箱子，一位赢家。",
     "fourCasesFromKivotos": "来自基沃托斯的四个箱子。",
+    "giveawayJoin": "加入 Discord",
+    "giveawayNote": "24 小时后抽出获奖者。领取需要 Steam 账号。",
+    "giveawayStep1": "加入我们的 Discord 服务器",
+    "giveawayStep2": "在活动帖子下用 ✅ 回应",
+    "giveawayTitle": "东方红魔乡 赠送活动",
     "goToPage": "前往页面",
     "hitStandAndBeat": "要牌、停牌，击败庄家。",
     "joinTheDiscussion": "一起来聊聊吧！",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "热门箱子",
     "mostOpenedCases": "开启最多的箱子",
+    "name": "名称",
     "openTheCasesCollect": "打开箱子，收集最稀有的物品。",
     "ourDiscord": "我们的 Discord",
     "ourGames": "我们的游戏",
@@ -709,8 +715,7 @@
     "umaMusume": "赛马娘",
     "umaMusumeCases": "赛马娘箱子",
     "upgrade": "升级",
-    "whatEveryoneIsOpening": "看看大家现在都在开什么。",
-    "name": "名称"
+    "whatEveryoneIsOpening": "看看大家现在都在开什么。"
   },
   "leaderboard": {
     "title": "每日排行榜",

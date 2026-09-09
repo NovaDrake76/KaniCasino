@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "サーバーへの接続でエラーが発生しました",
     "fiveCasesOneWinner": "5つのケース、勝者は1人。",
     "fourCasesFromKivotos": "キヴォトスからの4つのケース。",
+    "giveawayJoin": "Discordに参加",
+    "giveawayNote": "24時間後に抽選します。受け取りにはSteamアカウントが必要です。",
+    "giveawayStep1": "Discordサーバーに参加する",
+    "giveawayStep2": "企画の投稿に ✅ でリアクションする",
+    "giveawayTitle": "東方紅魔郷 プレゼント企画",
     "goToPage": "ページへ",
     "hitStandAndBeat": "ヒットとスタンドでディーラーに勝とう。",
     "joinTheDiscussion": "みんなの話に加わろう！",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "人気ケース",
     "mostOpenedCases": "よく開けられているケース",
+    "name": "名前",
     "openTheCasesCollect": "ケースを開けて、レアなアイテムを集めよう。",
     "ourDiscord": "公式 Discord",
     "ourGames": "ゲーム一覧",
@@ -709,8 +715,7 @@
     "umaMusume": "ウマ娘",
     "umaMusumeCases": "ウマ娘のケース",
     "upgrade": "アップグレード",
-    "whatEveryoneIsOpening": "いまみんなが開けているもの。",
-    "name": "名前"
+    "whatEveryoneIsOpening": "いまみんなが開けているもの。"
   },
   "leaderboard": {
     "title": "デイリーランキング",
