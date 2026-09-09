@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "서버 연결 중 오류가 발생했습니다",
     "fiveCasesOneWinner": "다섯 개의 케이스, 한 명의 승자.",
     "fourCasesFromKivotos": "키보토스에서 온 네 개의 케이스.",
+    "giveawayJoin": "Discord 참여",
+    "giveawayNote": "24시간 후 추첨합니다. 수령하려면 Steam 계정이 필요합니다.",
+    "giveawayStep1": "Discord 서버에 참여하기",
+    "giveawayStep2": "이벤트 게시글에 ✅ 반응 남기기",
+    "giveawayTitle": "동방홍마향 증정 이벤트",
     "goToPage": "페이지로 이동",
     "hitStandAndBeat": "히트와 스탠드로 딜러를 이기세요.",
     "joinTheDiscussion": "대화에 참여하세요!",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "인기 케이스",
     "mostOpenedCases": "가장 많이 열린 케이스",
+    "name": "이름",
     "openTheCasesCollect": "케이스를 열어 가장 희귀한 아이템을 모으세요.",
     "ourDiscord": "공식 디스코드",
     "ourGames": "우리 게임",
@@ -709,8 +715,7 @@
     "umaMusume": "우마무스메",
     "umaMusumeCases": "우마무스메 케이스",
     "upgrade": "업그레이드",
-    "whatEveryoneIsOpening": "지금 다들 열고 있는 것.",
-    "name": "이름"
+    "whatEveryoneIsOpening": "지금 다들 열고 있는 것."
   },
   "leaderboard": {
     "title": "일일 리더보드",

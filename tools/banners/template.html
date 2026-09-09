@@ -83,6 +83,24 @@
     text-shadow: 0 2px 8px rgba(0,0,0,.55);
   }
   .spark { position: absolute; border-radius: 50%; background: var(--accent); z-index: 5; }
+
+  /* a steam capsule propped up like the box you win, with the key tag pinned to its corner */
+  .capsule {
+    position: absolute; z-index: 2; left: 690px; top: 100px;
+    width: 340px; border-radius: 10px; overflow: hidden;
+    border: 5px solid #FFFFFF; background: #FFFFFF;
+    transform: rotate(-5deg);
+    box-shadow: 0 24px 48px rgba(0,0,0,.6), 0 0 60px var(--glow);
+  }
+  .capsule img { display: block; width: 100%; }
+  .tag {
+    position: absolute; z-index: 5; left: 668px; top: 46px;
+    padding: 10px 18px; border-radius: 8px;
+    background: var(--accent); color: #2A1400;
+    font-family: "MontserratBanner", sans-serif; font-weight: 900; font-size: 22px;
+    letter-spacing: 1.5px; transform: rotate(-8deg);
+    box-shadow: 0 10px 24px rgba(0,0,0,.5);
+  }
 </style>
 
 <div class="plate" id="plate">
@@ -154,13 +172,23 @@
     }
   }
 
-  const MOTIFS = { plinko: plinkoMotif, cards: cardsMotif };
+  // the capsule art comes from the config, so the motif reads it off the plate's dataset
+  function capsuleMotif(plate) {
+    const box = add(plate, "capsule", {});
+    const img = document.createElement("img");
+    img.src = plate.dataset.capsule;
+    box.appendChild(img);
+    add(plate, "tag", {}).textContent = "STEAM KEY";
+  }
+
+  const MOTIFS = { plinko: plinkoMotif, cards: cardsMotif, capsule: capsuleMotif };
 
   function render(cfg) {
     const plate = document.getElementById("plate");
     const lockup = document.getElementById("lockup");
     theme(plate, cfg.theme);
     theme(lockup, cfg.theme);
+    if (cfg.capsule) plate.dataset.capsule = cfg.capsule;
 
     const titleEl = document.getElementById("title");
     titleEl.textContent = cfg.title;

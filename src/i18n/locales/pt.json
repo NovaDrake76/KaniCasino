@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "Erro ao conectar ao servidor",
     "fiveCasesOneWinner": "Cinco caixas, um vencedor.",
     "fourCasesFromKivotos": "Quatro caixas de Kivotos.",
+    "giveawayJoin": "Entrar no Discord",
+    "giveawayNote": "O vencedor sai em 24 horas. Voce precisa de uma conta Steam para receber.",
+    "giveawayStep1": "Entre no nosso servidor do Discord",
+    "giveawayStep2": "Reaja com ✅ na mensagem do sorteio",
+    "giveawayTitle": "Sorteio de Touhou 6",
     "goToPage": "Ir para a página",
     "hitStandAndBeat": "Peça, pare e vença o dealer.",
     "joinTheDiscussion": "Participe da conversa!",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "Mais abertas",
     "mostOpenedCases": "Caixas mais abertas",
+    "name": "Nome",
     "openTheCasesCollect": "Abra as caixas e colecione as mais raras.",
     "ourDiscord": "Nosso Discord",
     "ourGames": "Nossos jogos",
@@ -709,8 +715,7 @@
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Caixas de Uma Musume",
     "upgrade": "melhorar",
-    "whatEveryoneIsOpening": "O que todo mundo está abrindo agora.",
-    "name": "Nome"
+    "whatEveryoneIsOpening": "O que todo mundo está abrindo agora."
   },
   "leaderboard": {
     "title": "Ranking Diário",

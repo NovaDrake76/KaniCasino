@@ -693,6 +693,11 @@
     "errorWhileConnectingTo": "Terjadi kesalahan saat menghubungkan ke server.",
     "fiveCasesOneWinner": "Limo Kotak, Siji Pemenang.",
     "fourCasesFromKivotos": "Empat Kotak Aseli Kivotos.",
+    "giveawayJoin": "Gabung Discord",
+    "giveawayNote": "Pemenang diundi dalam 24 jam. Kamu perlu akun Steam untuk menerimanya.",
+    "giveawayStep1": "Gabung server Discord kami",
+    "giveawayStep2": "Beri reaksi ✅ pada postingan giveaway",
+    "giveawayTitle": "Giveaway Touhou 6",
     "goToPage": "Buka halaman",
     "hitStandAndBeat": "Hit, stand, dan kalahkan bandar.",
     "joinTheDiscussion": "Mari bergabung dalam diskusi!",
@@ -700,6 +705,7 @@
     "kanicasino": "kanicasino",
     "mostOpened": "Paling laris",
     "mostOpenedCases": "Yang paling laris",
+    "name": "Nama",
     "openTheCasesCollect": "Buka kotaknya, koleksikan yang paling langka.",
     "ourDiscord": "Discord kami",
     "ourGames": "Game kami",
@@ -709,8 +715,7 @@
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Gacha Uma Musume",
     "upgrade": "upgrade",
-    "whatEveryoneIsOpening": "Apa yang sedang dibuka oleh semua orang saat ini.",
-    "name": "Nama"
+    "whatEveryoneIsOpening": "Apa yang sedang dibuka oleh semua orang saat ini."
   },
   "leaderboard": {
     "title": "Papan Peringkat Harian",

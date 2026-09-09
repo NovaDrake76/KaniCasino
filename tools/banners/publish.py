@@ -1,9 +1,13 @@
 """converts rendered banners to webp and copies them into public/images/banners.
 
-run after render.mjs, from the repo root:  python tools/banners/publish.py
+run after render.mjs, from the repo root:  python tools/banners/publish.py [name]
+a name converts that banner's two files only, so the rest keep their bytes
 """
 import os
+import sys
 from PIL import Image
+
+ONLY = sys.argv[1] if len(sys.argv) > 1 else None
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
@@ -13,7 +17,7 @@ DEST = os.path.join(REPO, "public", "images", "banners")
 os.makedirs(DEST, exist_ok=True)
 
 for f in sorted(os.listdir(SRC)):
-    if not f.endswith(".png"):
+    if not f.endswith(".png") or (ONLY and not f.startswith(ONLY + "-")):
         continue
     im = Image.open(os.path.join(SRC, f))
     out = os.path.join(DEST, f[:-4] + ".webp")
