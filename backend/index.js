@@ -7,6 +7,7 @@ const cronJobs = require("./tasks/cronJobs");
 const checkApiKey = require("./middleware/checkApiKey");
 const tunnel = require("./utils/tunnel");
 const { socketAuth } = require("./middleware/socketAuth");
+const presence = require("./utils/presence");
 const realtime = require("./utils/realtime");
 
 require("dotenv").config();
@@ -246,15 +247,15 @@ server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-let onlineUsers = 0;
-
 // optional auth: a valid token binds socket.userId; anonymous sockets may still
 // watch games but the game handlers ignore any client-supplied identity.
 io.use(socketAuth);
 
 io.on("connection", (socket) => {
-  onlineUsers++;
-  io.emit("onlineUsers", onlineUsers);
+  // people, not sockets: a second tab or a scripted burst of connections is not a crowd
+  const who = presence.keyFor(socket);
+  if (presence.join(who)) io.emit("onlineUsers", presence.count());
+  else socket.emit("onlineUsers", presence.count());
 
   // the ticker is in memory, so a joiner gets what is there rather than an empty table.
   // it is also on request: the socket connects when the app boots, long before a game
@@ -320,7 +321,6 @@ io.on("connection", (socket) => {
   }
 
   socket.on("disconnect", () => {
-    onlineUsers--;
-    io.emit("onlineUsers", onlineUsers);
+    if (presence.leave(who)) io.emit("onlineUsers", presence.count());
   });
 });
