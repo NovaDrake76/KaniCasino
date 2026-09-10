@@ -359,71 +359,113 @@
     "queuedClickToCancel": "Ditunggu (klik buat batalin)"
   },
   "daisu": {
-    "allMissions": "Semua misi",
-    "asks": "Daisu minta",
+    "back": "Kembali ke Daisu",
+    "boostsSoon": "Target harian yang membuat toples terisi lebih cepat. Belum ditulis.",
+    "bubbleGift": "Hadiah",
+    "clickHint": "Klik toples untuk mengambil isinya",
     "close": "Tutup",
     "collect": "Ambil",
-    "couldNotClaim": "Toples tidak bisa diambil",
-    "creditsTitle": "Pilihan Daisu",
+    "couldNotClaim": "Tidak bisa mengambil dari toples",
+    "empty": "Kosong",
     "full": "Penuh",
+    "fullBonus": "Bonus toples penuh +{{bonus}}%",
     "fullIn": "Penuh dalam {{clock}}",
+    "giftOpen": "Buka",
+    "giftReady": "Daisu punya hadiah untukmu",
+    "jar": "Toples",
+    "keeps": "penjaga toples",
     "loading": "...",
-    "noCredit": "Ambil toples dan sepersepuluh tambahan masuk ke {{game}}",
-    "nothingYet": "Belum ada, {{clock}}",
+    "nextPick": "Berikutnya: {{game}}, setelah {{amount}} lagi",
     "ofFull": "dari {{full}}",
     "onlyOn": "hanya di {{game}}",
     "open": "Buka Daisu",
-    "pickToday": "Hari ini: {{game}}, +{{share}}% setiap pengambilan",
+    "pending": "{{amount}} sedang menuju dompetmu",
+    "pickLine": "Tambahan {{share}}% dari setiap pengambilan masuk ke {{game}}",
+    "pickTitle": "Pilihan Daisu",
     "play": "Main",
-    "take": "Ambil",
-    "takeAll": "Ambil semua",
-    "title": "penjaga toples",
+    "roomTitle": "Kamar Daisu",
+    "tabBoosts": "Pendorong toples",
+    "tabMissions": "Misi",
+    "visit": "Kunjungi kamar Daisu",
     "lines": {
       "hello": {
-        "0": "Selamat datang kembali. Toplesnya sedang terisi.",
-        "1": "Kursimu kujaga. Toplesnya juga.",
-        "2": "Lihat siapa yang datang. Beri toplesnya semenit."
+        "0": "Oh, kamu kembali. Jangan senang dulu, toplesnya masih terisi.",
+        "1": "Lama banget. Hampir saja kuhabiskan sendiri.",
+        "2": "Hmph. Ya sudah, masuk. Jangan sentuh apa pun selain toples."
       },
       "full": {
-        "0": "Sudah penuh! Ambil sebelum kuhabiskan.",
-        "1": "Toples penuh. Semuanya milikmu.",
-        "2": "Satu koin pun tidak muat lagi. Ambil."
+        "0": "Sudah penuh. Jadi? Ambil sebelum aku berubah pikiran.",
+        "1": "Toples penuh dan kamu cuma duduk. Ambil, lamban.",
+        "2": "Lihat itu. Penuh. Padahal kamu hampir tidak melakukan apa-apa."
       },
       "filling": {
-        "0": "Masih terisi. Ada {{amount}} kalau tidak sabar.",
-        "1": "Penuh dalam {{clock}}. Atau ambil yang ada sekarang, aku tidak menghakimi.",
-        "2": "Sabar dibayar sedikit lebih. {{amount}} sekarang, atau penuh dalam {{clock}}."
+        "0": "Tidak sabar, ya? Ada {{amount}} di dalam. Lemah.",
+        "1": "{{amount}} sekarang, atau tunggu {{clock}} untuk bonus toples penuh seperti orang dewasa.",
+        "2": "Colek toplesnya kalau perlu. Ada {{amount}}. Jangan nangis nanti."
       },
       "empty": {
-        "0": "Kosong! Tidak ada apa-apa di sini. Beri aku {{clock}}.",
-        "1": "Kamu baru saja mengambil semuanya. Ada lagi dalam {{clock}}.",
-        "2": "Sudah kucek dua kali. Kosong. Coba lagi dalam {{clock}}."
+        "0": "KOSONG. Kamu baru saja mengambilnya. Belajar menghitung.",
+        "1": "Tidak ada apa-apa. Klik buat iseng? ...Lucu.",
+        "2": "Nol. Tunggu sebentar, dasar rakus."
       },
       "claimed": {
-        "0": "Ini dia: {{amount}}.",
-        "1": "KP segar. Jangan dihabiskan di satu tempat. Atau habiskan saja.",
-        "2": "{{amount}}, langsung dari toples. Sekarang pergi menangkan sesuatu."
+        "0": "Nih, {{amount}}. Jangan habis dalam satu putaran. Pasti habis sih.",
+        "1": "{{amount}}. Sama-sama. Bilang terima kasih.",
+        "2": "Ya sudah, {{amount}}. Sekarang pergi menang sesuatu, sekali saja."
       },
       "claimedCredit": {
-        "0": "{{amount}} untukmu, dan {{credit}} tambahan yang hanya berlaku di {{game}}. Ayo.",
-        "1": "Tambah {{credit}} lagi, tapi hanya {{game}} yang menerimanya. Menangkan kembali sebagai KP asli.",
-        "2": "Kuselipkan {{credit}} untuk {{game}}. Pakai di sana dan apa pun yang menang jadi milikmu."
+        "0": "{{amount}} untukmu, plus {{credit}} yang hanya berlaku di {{game}}. Aku yang menentukan di mana kamu main.",
+        "1": "Kuselipkan {{credit}} untuk {{game}}. Menangkan kembali sebagai KP asli, kalau bisa.",
+        "2": "Tambahan {{credit}}, hanya di {{game}}. Jangan membantah."
+      },
+      "pickChanged": {
+        "0": "Satu toples penuh. Game baru: {{game}}. Ayo, aku mengawasi.",
+        "1": "Kamu mengosongkan satu. Tambahanmu sekarang pindah ke {{game}}. Coba ikuti."
       },
       "credit": {
-        "0": "Kamu masih punya {{credit}} untuk {{game}}. Tidak akan bertaruh sendiri.",
-        "1": "{{credit}} untuk {{game}} itu cuma menganggur. Pakailah."
+        "0": "Masih belum pakai {{credit}} di {{game}}? Takut?",
+        "1": "{{credit}} menganggur di {{game}}. Menyedihkan. Pergi."
       },
       "missionReady": {
-        "0": "Kamu berhasil. Ayo ambil hadiahmu.",
-        "1": "Beres. Ada hadiah menunggu di bawah."
+        "0": "Kamu benar-benar menyelesaikan satu. Ambil hadiahmu sebelum aku lupa.",
+        "1": "Hadiahnya siap. Jangan buat aku memegangnya seharian."
       },
       "missionDone": {
-        "0": "Terima kasih! {{amount}} untuk usahamu.",
-        "1": "Sempurna. {{amount}}, seperti janjiku."
+        "0": "Ya sudah, {{amount}}. Seperti janjiku. Jangan terbiasa.",
+        "1": "{{amount}}. Lihat? Aku menepati janji. Tidak seperti orang lain."
       },
       "broke": {
-        "0": "Kehabisan KP? Toples penuh dalam {{clock}}. Tahan sebentar.",
-        "1": "Kantong kosong, toples kosong. Keduanya pulih sendiri. {{clock}}."
+        "0": "Sudah bangkrut? Toples penuh dalam {{clock}}. Duduk. Tunggu.",
+        "1": "Tidak ada KP dan tidak ada toples. Dua-duanya salahmu. {{clock}}."
+      },
+      "poke0": {
+        "0": "Apa?",
+        "1": "Ya? Aku sibuk.",
+        "2": "Butuh sesuatu, atau memang suka mencolekku?",
+        "3": "Toplesnya di sana. Aku bukan toples."
+      },
+      "poke1": {
+        "0": "Berhenti.",
+        "1": "Ada game untuk dimainkan dan kamu malah mencolekku. Lucu.",
+        "2": "Terus saja dan aku mulai menagih.",
+        "3": "Ini seru buatmu? ...Sedikit seru buatku juga."
+      },
+      "poke2": {
+        "0": "Oke, kamu menang. Aku suka kamu. Sedikit. Sekarang berhenti.",
+        "1": "Kamu benar-benar tidak punya kerjaan lain, ya? ...Ya sudah, tinggal saja.",
+        "2": "Colek sekali lagi dan toples berikutnya kusimpan.",
+        "3": "Kamu aneh. Tapi tetap kusimpan."
+      },
+      "gift": {
+        "0": "Aku punya sesuatu untukmu. Jangan dibuat canggung.",
+        "1": "Hadiah. Dariku. Sama-sama, tentu saja."
+      },
+      "room": {
+        "0": "Selamat datang di kamarku. Jangan sentuh apa pun. Kecuali toples.",
+        "1": "Datang berkunjung? Hmph. Duduk, ada yang harus kamu kerjakan."
+      },
+      "boostsEmpty": {
+        "0": "Belum ada apa-apa di sini. Aku sedang memikirkan hal-hal untuk kamu kerjakan."
       }
     }
   },

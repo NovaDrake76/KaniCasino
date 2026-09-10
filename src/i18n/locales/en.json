@@ -359,71 +359,113 @@
     "queuedClickToCancel": "Queued (click to cancel)"
   },
   "daisu": {
-    "allMissions": "All missions",
-    "asks": "Daisu asks",
+    "back": "Back to Daisu",
+    "boostsSoon": "Daily goals that make the pot fill faster. Not written yet.",
+    "bubbleGift": "Gift",
+    "clickHint": "Click the jar to take what is in it",
     "close": "Close",
     "collect": "Collect",
-    "couldNotClaim": "Could not claim the pot",
-    "creditsTitle": "Daisu's pick",
+    "couldNotClaim": "Could not take from the pot",
+    "empty": "Empty",
     "full": "Full",
+    "fullBonus": "Full pot bonus +{{bonus}}%",
     "fullIn": "Full in {{clock}}",
+    "giftOpen": "Open it",
+    "giftReady": "Daisu has a gift for you",
+    "jar": "The jar",
+    "keeps": "keeps the pot",
     "loading": "...",
-    "noCredit": "Claim the pot and a tenth extra goes to {{game}}",
-    "nothingYet": "Nothing yet, {{clock}}",
+    "nextPick": "Next: {{game}}, after {{amount}} more",
     "ofFull": "of {{full}}",
     "onlyOn": "only on {{game}}",
     "open": "Open Daisu",
-    "pickToday": "Today: {{game}}, +{{share}}% on every claim",
+    "pending": "{{amount}} on its way to your wallet",
+    "pickLine": "An extra {{share}}% of every take goes to {{game}}",
+    "pickTitle": "Daisu's pick",
     "play": "Play",
-    "take": "Take",
-    "takeAll": "Take it all",
-    "title": "keeps the pot",
+    "roomTitle": "Daisu's room",
+    "tabBoosts": "Pot boosts",
+    "tabMissions": "Missions",
+    "visit": "Visit Daisu's room",
     "lines": {
       "hello": {
-        "0": "Welcome back. The pot is filling.",
-        "1": "I kept your seat warm. And the pot.",
-        "2": "Look who is here. Give the pot a minute."
+        "0": "Oh, you're back. Don't get excited, the pot is still filling.",
+        "1": "Took you long enough. I was about to spend it myself.",
+        "2": "Hmph. Fine, come in. Don't touch anything except the pot."
       },
       "full": {
-        "0": "It is full! Take it before I spend it.",
-        "1": "Full pot. All yours.",
-        "2": "I could not fit another coin in there. Take it."
+        "0": "It's full. Well? Take it before I change my mind.",
+        "1": "A full pot and you were just sitting there. Take it, slowpoke.",
+        "2": "Look at that. Full. You barely had to do anything."
       },
       "filling": {
-        "0": "Still filling. {{amount}} in there if you cannot wait.",
-        "1": "Full in {{clock}}. Or take what is there now, I will not judge.",
-        "2": "Patience pays a little more. {{amount}} right now, or full in {{clock}}."
+        "0": "Can't wait, huh? There's {{amount}} in there. Weak.",
+        "1": "{{amount}} right now, or wait {{clock}} for the full bonus like a grown-up.",
+        "2": "Poke the jar if you must. {{amount}} in it. Don't cry later."
       },
       "empty": {
-        "0": "Empty! There is nothing in here. Give me {{clock}}.",
-        "1": "You just took it all. Something in {{clock}}.",
-        "2": "I checked twice. Nothing. Try again in {{clock}}."
+        "0": "It's EMPTY. You just took it. Learn to count.",
+        "1": "Nothing in there. Are you clicking for fun? ...Cute.",
+        "2": "Zero. Give it a second, you greedy thing."
       },
       "claimed": {
-        "0": "There you go: {{amount}}.",
-        "1": "Fresh KP. Do not spend it all in one place. Or do.",
-        "2": "{{amount}}, straight from the pot. Now go win something."
+        "0": "There, {{amount}}. Don't lose it all in one spin. You will, though.",
+        "1": "{{amount}}. You're welcome. Say thank you.",
+        "2": "Fine, {{amount}}. Now go win something for once."
       },
       "claimedCredit": {
-        "0": "{{amount}} for you, and {{credit}} extra that only works on {{game}}. Go on.",
-        "1": "Plus {{credit}} on top, but only {{game}} takes it. Win it back as real KP.",
-        "2": "I slipped {{credit}} in for {{game}}. Spend it there and whatever it wins is yours."
+        "0": "{{amount}} for you, plus {{credit}} that only works on {{game}}. I decide where you play.",
+        "1": "I threw in {{credit}} for {{game}}. Win it back as real KP, if you can.",
+        "2": "Extra {{credit}}, {{game}} only. No arguing."
+      },
+      "pickChanged": {
+        "0": "That's a whole pot. New game: {{game}}. Go on, I'm watching.",
+        "1": "You emptied one. I'm moving your extra to {{game}} now. Try to keep up."
       },
       "credit": {
-        "0": "You still have {{credit}} for {{game}}. It is not going to bet itself.",
-        "1": "That {{credit}} for {{game}} is just sitting there. Go use it."
+        "0": "You still haven't used the {{credit}} on {{game}}? Scared?",
+        "1": "{{credit}} sitting on {{game}} doing nothing. Pathetic. Go."
       },
       "missionReady": {
-        "0": "You did it. Come collect your reward.",
-        "1": "Done and dusted. There is a reward waiting below."
+        "0": "You actually finished one. Come get your reward before I forget.",
+        "1": "Reward's ready. Don't make me hold it all day."
       },
       "missionDone": {
-        "0": "Thank you! {{amount}} for your trouble.",
-        "1": "Perfect. {{amount}}, as promised."
+        "0": "Fine, {{amount}}. As promised. Don't get used to it.",
+        "1": "{{amount}}. See? I keep my word. Unlike some people."
       },
       "broke": {
-        "0": "Out of KP? The pot fills in {{clock}}. Hang on.",
-        "1": "Empty pockets, empty pot. Both fix themselves. {{clock}}."
+        "0": "Broke already? The pot is full in {{clock}}. Sit. Wait.",
+        "1": "No KP and no pot. Both your fault. {{clock}}."
+      },
+      "poke0": {
+        "0": "What?",
+        "1": "Yes? I'm busy.",
+        "2": "Did you need something, or do you just like poking me?",
+        "3": "The pot is over there. I'm not the pot."
+      },
+      "poke1": {
+        "0": "Stop that.",
+        "1": "You have games to play and you're poking me. Cute.",
+        "2": "Keep going and I'll start charging you.",
+        "3": "Is this fun for you? ...It's a little fun for me."
+      },
+      "poke2": {
+        "0": "Okay, you win. I like you. A little. Now stop.",
+        "1": "You seriously have nothing better to do, huh? ...Fine, stay.",
+        "2": "Poke me one more time and I'm keeping the next pot.",
+        "3": "You're weird. I'm keeping you anyway."
+      },
+      "gift": {
+        "0": "I got you something. Don't make it weird.",
+        "1": "A gift. From me. You're welcome, obviously."
+      },
+      "room": {
+        "0": "Welcome to my room. Don't touch anything. Except the pot.",
+        "1": "You came to visit? Hmph. Sit down, I have things for you to do."
+      },
+      "boostsEmpty": {
+        "0": "Nothing here yet. I'm thinking of things to make you do."
       }
     }
   },

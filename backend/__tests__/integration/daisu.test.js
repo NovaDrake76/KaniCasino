@@ -8,7 +8,6 @@ const User = require("../../models/User");
 const Transaction = require("../../models/Transaction");
 const pot = require("../../utils/pot");
 const { chargeUser, TX } = require("../../utils/economy");
-const { dayIndex } = require("../../utils/dailyGift");
 
 let app;
 
@@ -88,8 +87,8 @@ describe("who gets in", () => {
 });
 
 describe("reading the pot", () => {
-  it("says how full it is and what a claim would pay right now", async () => {
-    const user = await makeUser({ level: 9, bonusAmount: 380, nextBonus: fillingFor(4) });
+  it("says how full it is, what a take pays now, and where the pick stands", async () => {
+    const user = await makeUser({ level: 9, bonusAmount: 380, nextBonus: fillingFor(4), potPickIndex: 2, potCycleClaimed: 190 });
 
     const res = await status(user);
 
@@ -97,14 +96,17 @@ describe("reading the pot", () => {
     expect(res.body.fill).toBeCloseTo(0.5, 1);
     expect(res.body.full).toBe(380);
     expect(res.body.amount).toBe(pot.payout(380, res.body.fill));
-    expect(res.body.floor).toBe(pot.FLOOR);
-    expect(pot.PICKS).toContain(res.body.pick);
+    expect(res.body.clickRate).toBe(pot.CLICK_RATE);
+    expect(res.body.fullBonus).toBeCloseTo(0.25);
+    expect(res.body.pick).toBe(pot.PICKS[2]);
+    expect(res.body.nextPick).toBe(pot.PICKS[3]);
+    expect(res.body.pickProgress).toBeCloseTo(0.5);
     expect(res.body.credits).toEqual({});
   });
 });
 
-describe("claiming", () => {
-  it("pays the whole pot when it is full, plus a tenth as credit on the pick of the day", async () => {
+describe("taking from the pot", () => {
+  it("pays the whole pot when it is full, plus a tenth as credit on the pick", async () => {
     const user = await makeUser({ level: 0, bonusAmount: 1000, nextBonus: fillingFor(60) });
 
     const res = await claim(user);
@@ -112,14 +114,18 @@ describe("claiming", () => {
     expect(res.status).toBe(200);
     expect(res.body.amount).toBe(1000);
     expect(res.body.credit).toBe(100);
-    expect(res.body.pick).toBe(pot.pickFor(dayIndex(new Date())));
+    expect(res.body.pick).toBe(pot.PICKS[0]);
+    expect(res.body.pickChanged).toBe(true);
     expect(res.body.walletBalance).toBe(1000);
-    expect(res.body.status.credits).toEqual({ [res.body.pick]: 100 });
+    expect(res.body.status.credits).toEqual({ [pot.PICKS[0]]: 100 });
+    expect(res.body.status.pick).toBe(pot.PICKS[1]);
 
     const after = await User.findById(user._id).lean();
     expect(after.walletBalance).toBe(1000);
-    expect(after.gameCredits[res.body.pick]).toBe(100);
+    expect(after.gameCredits[pot.PICKS[0]]).toBe(100);
     expect(after.bonusAmount).toBe(pot.fullAmount(0));
+    expect(after.potPickIndex).toBe(1);
+    expect(after.potCycleClaimed).toBe(0);
     expect(new Date(after.nextBonus).getTime()).toBeGreaterThan(Date.now() + minutes(7));
 
     const rows = await Transaction.find({ userId: user._id }).sort({ amount: -1 }).lean();
@@ -127,32 +133,48 @@ describe("claiming", () => {
       [TX.BONUS, 1000],
       [TX.GAME_CREDIT, 100],
     ]);
-    expect(rows[1].meta.game).toBe(res.body.pick);
+    expect(rows[1].meta.game).toBe(pot.PICKS[0]);
   });
 
-  it("pays a part of it before it is full, and restarts the fill from there", async () => {
-    const user = await makeUser({ bonusAmount: 500, nextBonus: fillingFor(4) });
+  it("pays an early take at the click rate and restarts the fill from there", async () => {
+    const user = await makeUser({ level: 40, bonusAmount: 1000, nextBonus: fillingFor(4) });
 
     const res = await claim(user);
 
     expect(res.status).toBe(200);
-    expect(res.body.amount).toBeLessThan(250);
-    expect(res.body.amount).toBeGreaterThan(200);
+    expect(res.body.amount).toBeGreaterThan(440);
+    expect(res.body.amount).toBeLessThan(460);
+    expect(res.body.credit).toBeCloseTo(res.body.amount / 10, 1);
+    expect(res.body.pickChanged).toBe(false);
     expect(res.body.status.fill).toBe(0);
+    expect(res.body.status.pickProgress).toBeCloseTo(res.body.amount / 1000);
   });
 
-  it("finds nothing in an empty pot and says when there will be", async () => {
-    const user = await makeUser({ bonusAmount: 500, nextBonus: fillingFor(0.2) });
+  it("keeps the tenth on one game until a whole pot has been taken", async () => {
+    const user = await makeUser({ level: 15, bonusAmount: 500, nextBonus: fillingFor(4), potCycleClaimed: 400 });
+
+    const res = await claim(user);
+
+    expect(res.body.pick).toBe(pot.PICKS[0]);
+    expect(res.body.pickChanged).toBe(true);
+    const after = await User.findById(user._id).lean();
+    expect(after.potPickIndex).toBe(1);
+    expect(after.potCycleClaimed).toBeCloseTo(400 + res.body.amount - 500);
+    expect(after.gameCredits[pot.PICKS[0]]).toBeCloseTo(res.body.credit);
+  });
+
+  it("finds nothing in a pot that was just taken and says when there will be", async () => {
+    const user = await makeUser({ bonusAmount: 500, nextBonus: fillingFor(0.01) });
 
     const res = await claim(user);
 
     expect(res.status).toBe(400);
     expect(res.body.reason).toBe("empty");
-    expect(new Date(res.body.floorAt).getTime()).toBeGreaterThan(Date.now());
+    expect(new Date(res.body.readyAt).getTime()).toBeGreaterThan(Date.now());
     expect((await User.findById(user._id).lean()).walletBalance).toBe(0);
   });
 
-  it("pays two clicks that land together once", async () => {
+  it("pays two requests that land together once", async () => {
     const user = await makeUser({ bonusAmount: 500, nextBonus: fillingFor(60) });
 
     const [a, b] = await Promise.all([claim(user), claim(user)]);
@@ -161,7 +183,7 @@ describe("claiming", () => {
     expect((await User.findById(user._id).lean()).walletBalance).toBe(500);
   });
 
-  it("sizes the next pot from the level at the time of the claim", async () => {
+  it("sizes the next pot from the level at the time of the take", async () => {
     const user = await makeUser({ level: 25, bonusAmount: 1000, nextBonus: fillingFor(60) });
 
     await claim(user);
@@ -196,6 +218,16 @@ describe("spending a credit", () => {
     const after = await User.findById(user._id).lean();
     expect(after.walletBalance).toBe(100);
     expect(after.gameCredits.dice).toBe(20);
+  });
+
+  it("spends a credit held to the cent", async () => {
+    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 4.5 } });
+
+    const charged = await chargeUser(user._id, 10, { type: TX.DICE_BET });
+
+    expect(charged.walletBalance).toBeCloseTo(94.5);
+    const after = await User.findById(user._id).lean();
+    expect(after.gameCredits.dice).toBe(0);
   });
 
   it("is no use on any other game", async () => {

@@ -359,71 +359,113 @@
     "queuedClickToCancel": "In der Warteschlange (klicken zum Abbrechen)"
   },
   "daisu": {
-    "allMissions": "Alle Missionen",
-    "asks": "Daisu bittet",
+    "back": "Zurück zu Daisu",
+    "boostsSoon": "Tagesziele, mit denen sich der Topf schneller füllt. Noch nicht geschrieben.",
+    "bubbleGift": "Geschenk",
+    "clickHint": "Klick auf den Topf, um zu nehmen, was drin ist",
     "close": "Schließen",
     "collect": "Abholen",
-    "couldNotClaim": "Der Topf konnte nicht geleert werden",
-    "creditsTitle": "Daisus Wahl",
+    "couldNotClaim": "Aus dem Topf konnte nichts genommen werden",
+    "empty": "Leer",
     "full": "Voll",
+    "fullBonus": "Bonus für vollen Topf +{{bonus}}%",
     "fullIn": "Voll in {{clock}}",
+    "giftOpen": "Öffnen",
+    "giftReady": "Daisu hat ein Geschenk für dich",
+    "jar": "Der Topf",
+    "keeps": "hütet den Topf",
     "loading": "...",
-    "noCredit": "Hol den Topf ab und ein Zehntel extra geht an {{game}}",
-    "nothingYet": "Noch nichts, {{clock}}",
+    "nextPick": "Danach: {{game}}, nach weiteren {{amount}}",
     "ofFull": "von {{full}}",
     "onlyOn": "nur bei {{game}}",
     "open": "Daisu öffnen",
-    "pickToday": "Heute: {{game}}, +{{share}}% bei jeder Abholung",
+    "pending": "{{amount}} unterwegs in dein Wallet",
+    "pickLine": "Extra {{share}}% jeder Entnahme gehen an {{game}}",
+    "pickTitle": "Daisus Wahl",
     "play": "Spielen",
-    "take": "Nehmen",
-    "takeAll": "Alles nehmen",
-    "title": "hütet den Topf",
+    "roomTitle": "Daisus Zimmer",
+    "tabBoosts": "Topf-Boosts",
+    "tabMissions": "Missionen",
+    "visit": "Daisus Zimmer besuchen",
     "lines": {
       "hello": {
-        "0": "Willkommen zurück. Der Topf füllt sich.",
-        "1": "Ich habe deinen Platz warm gehalten. Und den Topf.",
-        "2": "Schau, wer da ist. Gib dem Topf eine Minute."
+        "0": "Oh, du bist zurück. Freu dich nicht zu früh, der Topf füllt sich noch.",
+        "1": "Hat ja lange gedauert. Ich wollte ihn gerade selbst ausgeben.",
+        "2": "Hmph. Na gut, komm rein. Fass nichts an außer dem Topf."
       },
       "full": {
-        "0": "Er ist voll! Nimm ihn, bevor ich ihn ausgebe.",
-        "1": "Voller Topf. Ganz für dich.",
-        "2": "Da passt keine Münze mehr rein. Nimm ihn."
+        "0": "Er ist voll. Und? Nimm ihn, bevor ich es mir anders überlege.",
+        "1": "Ein voller Topf und du sitzt nur rum. Nimm ihn, Schnecke.",
+        "2": "Sieh mal an. Voll. Und du hast kaum was getan."
       },
       "filling": {
-        "0": "Füllt sich noch. {{amount}} sind drin, falls du nicht warten kannst.",
-        "1": "Voll in {{clock}}. Oder nimm, was da ist, ich urteile nicht.",
-        "2": "Geduld zahlt sich ein bisschen mehr aus. {{amount}} jetzt, oder voll in {{clock}}."
+        "0": "Kannst nicht warten, hm? {{amount}} sind drin. Schwach.",
+        "1": "{{amount}} jetzt, oder warte {{clock}} auf den Bonus für den vollen Topf, wie ein Erwachsener.",
+        "2": "Stups den Topf an, wenn du musst. {{amount}} drin. Heul später nicht."
       },
       "empty": {
-        "0": "Leer! Hier ist nichts drin. Gib mir {{clock}}.",
-        "1": "Du hast gerade alles genommen. In {{clock}} gibt es wieder was.",
-        "2": "Ich habe zweimal nachgesehen. Nichts. Versuch es in {{clock}}."
+        "0": "Er ist LEER. Du hast ihn gerade genommen. Lern zählen.",
+        "1": "Nichts drin. Klickst du zum Spaß? ...Süß.",
+        "2": "Null. Gib mir eine Sekunde, du Gieriger."
       },
       "claimed": {
-        "0": "Bitte sehr: {{amount}}.",
-        "1": "Frische KP. Gib nicht alles an einem Ort aus. Oder doch.",
-        "2": "{{amount}}, direkt aus dem Topf. Jetzt geh was gewinnen."
+        "0": "Hier, {{amount}}. Verlier nicht alles in einem Dreh. Wirst du aber.",
+        "1": "{{amount}}. Gern geschehen. Sag danke.",
+        "2": "Na gut, {{amount}}. Jetzt geh und gewinn zur Abwechslung mal was."
       },
       "claimedCredit": {
-        "0": "{{amount}} für dich, und {{credit}} extra, die nur bei {{game}} gehen. Los.",
-        "1": "Plus {{credit}} obendrauf, aber nur {{game}} nimmt sie. Gewinn sie als echte KP zurück.",
-        "2": "Ich habe {{credit}} für {{game}} reingelegt. Setz sie dort ein und was sie gewinnen, gehört dir."
+        "0": "{{amount}} für dich, plus {{credit}}, die nur bei {{game}} gehen. Ich entscheide, wo du spielst.",
+        "1": "Ich habe {{credit}} für {{game}} reingelegt. Gewinn sie als echte KP zurück, wenn du kannst.",
+        "2": "Extra {{credit}}, nur bei {{game}}. Keine Widerrede."
+      },
+      "pickChanged": {
+        "0": "Ein ganzer Topf. Neues Spiel: {{game}}. Los, ich schaue zu.",
+        "1": "Du hast einen geleert. Dein Extra geht jetzt an {{game}}. Versuch mitzukommen."
       },
       "credit": {
-        "0": "Du hast noch {{credit}} für {{game}}. Die setzen sich nicht von selbst.",
-        "1": "Die {{credit}} für {{game}} liegen einfach rum. Geh sie nutzen."
+        "0": "Du hast die {{credit}} bei {{game}} immer noch nicht benutzt? Angst?",
+        "1": "{{credit}} liegen bei {{game}} nutzlos rum. Erbärmlich. Los."
       },
       "missionReady": {
-        "0": "Geschafft. Komm deine Belohnung abholen.",
-        "1": "Erledigt. Unten wartet eine Belohnung."
+        "0": "Du hast tatsächlich eine geschafft. Hol deine Belohnung, bevor ich es vergesse.",
+        "1": "Belohnung ist fertig. Lass mich sie nicht den ganzen Tag halten."
       },
       "missionDone": {
-        "0": "Danke! {{amount}} für die Mühe.",
-        "1": "Perfekt. {{amount}}, wie versprochen."
+        "0": "Na gut, {{amount}}. Wie versprochen. Gewöhn dich nicht dran.",
+        "1": "{{amount}}. Siehst du? Ich halte mein Wort. Anders als manche."
       },
       "broke": {
-        "0": "Keine KP mehr? Der Topf ist in {{clock}} voll. Halt durch.",
-        "1": "Leere Taschen, leerer Topf. Beides regelt sich. {{clock}}."
+        "0": "Schon pleite? Der Topf ist in {{clock}} voll. Sitz. Warte.",
+        "1": "Keine KP und kein Topf. Beides deine Schuld. {{clock}}."
+      },
+      "poke0": {
+        "0": "Was?",
+        "1": "Ja? Ich bin beschäftigt.",
+        "2": "Brauchst du was, oder stupst du mich einfach gern an?",
+        "3": "Der Topf ist da drüben. Ich bin nicht der Topf."
+      },
+      "poke1": {
+        "0": "Lass das.",
+        "1": "Du hast Spiele zum Spielen und stupst mich an. Süß.",
+        "2": "Mach weiter und ich fange an, dir das zu berechnen.",
+        "3": "Macht dir das Spaß? ...Mir ein bisschen."
+      },
+      "poke2": {
+        "0": "Okay, du gewinnst. Ich mag dich. Ein bisschen. Jetzt hör auf.",
+        "1": "Du hast echt nichts Besseres zu tun, hm? ...Na gut, bleib.",
+        "2": "Stups mich noch einmal an und ich behalte den nächsten Topf.",
+        "3": "Du bist komisch. Ich behalte dich trotzdem."
+      },
+      "gift": {
+        "0": "Ich hab dir was besorgt. Mach es nicht komisch.",
+        "1": "Ein Geschenk. Von mir. Gern geschehen, offensichtlich."
+      },
+      "room": {
+        "0": "Willkommen in meinem Zimmer. Fass nichts an. Außer den Topf.",
+        "1": "Du kommst mich besuchen? Hmph. Setz dich, ich habe Aufgaben für dich."
+      },
+      "boostsEmpty": {
+        "0": "Hier ist noch nichts. Ich überlege mir Dinge, die du tun musst."
       }
     }
   },

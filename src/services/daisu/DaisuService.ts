@@ -7,10 +7,13 @@ export interface PotStatus {
   full: number;
   amount: number;
   fullAt: string;
-  floor: number;
   cycleMs: number;
+  clickRate: number;
+  fullBonus: number;
   creditShare: number;
   pick: PickGame;
+  nextPick: PickGame;
+  pickProgress: number;
   credits: Partial<Record<PickGame, number>>;
 }
 
@@ -19,6 +22,7 @@ export interface PotClaim {
   credit: number;
   pick: PickGame;
   fill: number;
+  pickChanged: boolean;
   walletBalance: number;
   nextBonus: string;
   status: PotStatus;

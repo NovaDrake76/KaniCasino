@@ -359,71 +359,113 @@
     "queuedClickToCancel": "Đang xếp hàng (bấm để huỷ)"
   },
   "daisu": {
-    "allMissions": "Tất cả nhiệm vụ",
-    "asks": "Daisu nhờ",
+    "back": "Quay lại Daisu",
+    "boostsSoon": "Mục tiêu hằng ngày giúp hũ đầy nhanh hơn. Chưa viết.",
+    "bubbleGift": "Quà",
+    "clickHint": "Bấm vào hũ để lấy phần bên trong",
     "close": "Đóng",
     "collect": "Nhận",
-    "couldNotClaim": "Không lấy được hũ",
-    "creditsTitle": "Daisu chọn",
+    "couldNotClaim": "Không lấy được từ hũ",
+    "empty": "Trống",
     "full": "Đầy",
+    "fullBonus": "Thưởng hũ đầy +{{bonus}}%",
     "fullIn": "Đầy sau {{clock}}",
+    "giftOpen": "Mở",
+    "giftReady": "Daisu có quà cho bạn",
+    "jar": "Cái hũ",
+    "keeps": "giữ hũ",
     "loading": "...",
-    "noCredit": "Lấy hũ và thêm một phần mười cho {{game}}",
-    "nothingYet": "Chưa có gì, {{clock}}",
+    "nextPick": "Tiếp theo: {{game}}, sau {{amount}} nữa",
     "ofFull": "trên {{full}}",
     "onlyOn": "chỉ dùng ở {{game}}",
     "open": "Mở Daisu",
-    "pickToday": "Hôm nay: {{game}}, +{{share}}% mỗi lần lấy",
+    "pending": "{{amount}} đang về ví của bạn",
+    "pickLine": "Thêm {{share}}% mỗi lần lấy sẽ vào {{game}}",
+    "pickTitle": "Daisu chọn",
     "play": "Chơi",
-    "take": "Lấy",
-    "takeAll": "Lấy hết",
-    "title": "giữ hũ",
+    "roomTitle": "Phòng của Daisu",
+    "tabBoosts": "Tăng tốc hũ",
+    "tabMissions": "Nhiệm vụ",
+    "visit": "Ghé phòng của Daisu",
     "lines": {
       "hello": {
-        "0": "Mừng bạn quay lại. Hũ đang đầy dần.",
-        "1": "Tôi giữ chỗ cho bạn rồi. Cả hũ nữa.",
-        "2": "Xem ai đến này. Cho hũ một phút nhé."
+        "0": "Ồ, quay lại rồi à. Đừng hí hửng, hũ vẫn đang đầy dần thôi.",
+        "1": "Lâu thế. Tôi suýt tự tiêu hết rồi đấy.",
+        "2": "Hừ. Được rồi, vào đi. Đừng đụng gì ngoài cái hũ."
       },
       "full": {
-        "0": "Đầy rồi! Lấy trước khi tôi tiêu mất.",
-        "1": "Hũ đầy. Của bạn hết.",
-        "2": "Không nhét thêm được đồng nào nữa. Lấy đi."
+        "0": "Đầy rồi. Sao? Lấy đi trước khi tôi đổi ý.",
+        "1": "Hũ đầy mà cứ ngồi đó. Lấy đi, đồ chậm chạp.",
+        "2": "Nhìn kìa. Đầy. Mà bạn có làm gì đâu."
       },
       "filling": {
-        "0": "Vẫn đang đầy dần. Có {{amount}} nếu bạn không đợi được.",
-        "1": "Đầy sau {{clock}}. Hoặc lấy phần đang có, tôi không phán xét đâu.",
-        "2": "Kiên nhẫn được thêm một chút. {{amount}} ngay bây giờ, hoặc đầy sau {{clock}}."
+        "0": "Không đợi được hả? Có {{amount}} trong đó. Yếu ghê.",
+        "1": "{{amount}} ngay bây giờ, hoặc đợi {{clock}} để lấy thưởng hũ đầy như người lớn.",
+        "2": "Muốn thì chọc hũ đi. Có {{amount}}. Đừng khóc sau nhé."
       },
       "empty": {
-        "0": "Trống! Không có gì trong này. Cho tôi {{clock}}.",
-        "1": "Bạn vừa lấy hết rồi. Có lại sau {{clock}}.",
-        "2": "Tôi kiểm tra hai lần rồi. Không có gì. Thử lại sau {{clock}}."
+        "0": "TRỐNG rồi. Bạn vừa lấy xong mà. Học đếm đi.",
+        "1": "Không có gì đâu. Bấm cho vui à? ...Dễ thương.",
+        "2": "Số không. Chờ chút đi, đồ tham."
       },
       "claimed": {
-        "0": "Của bạn đây: {{amount}}.",
-        "1": "KP mới tinh. Đừng tiêu hết một chỗ. Hoặc cứ tiêu.",
-        "2": "{{amount}}, lấy thẳng từ hũ. Giờ đi thắng gì đó đi."
+        "0": "Đây, {{amount}}. Đừng thua hết trong một lượt. Dù kiểu gì cũng thua.",
+        "1": "{{amount}}. Không có gì. Nói cảm ơn đi.",
+        "2": "Được rồi, {{amount}}. Giờ đi thắng gì đó cho một lần."
       },
       "claimedCredit": {
-        "0": "{{amount}} cho bạn, và thêm {{credit}} chỉ dùng được ở {{game}}. Đi thôi.",
-        "1": "Thêm {{credit}} nữa, nhưng chỉ {{game}} nhận. Thắng lại thành KP thật nhé.",
-        "2": "Tôi bỏ thêm {{credit}} cho {{game}}. Tiêu ở đó, thắng được bao nhiêu là của bạn."
+        "0": "{{amount}} cho bạn, thêm {{credit}} chỉ dùng được ở {{game}}. Chơi ở đâu là tôi quyết.",
+        "1": "Tôi bỏ thêm {{credit}} cho {{game}}. Thắng lại thành KP thật đi, nếu làm được.",
+        "2": "Thêm {{credit}}, chỉ ở {{game}}. Không cãi."
+      },
+      "pickChanged": {
+        "0": "Nguyên một hũ. Trò mới: {{game}}. Đi đi, tôi đang xem.",
+        "1": "Bạn vét sạch một hũ rồi. Phần thêm giờ chuyển sang {{game}}. Theo kịp nhé."
       },
       "credit": {
-        "0": "Bạn vẫn còn {{credit}} cho {{game}}. Nó không tự cược đâu.",
-        "1": "{{credit}} cho {{game}} vẫn nằm đó. Đi dùng đi."
+        "0": "Vẫn chưa dùng {{credit}} ở {{game}} à? Sợ hả?",
+        "1": "{{credit}} nằm không ở {{game}}. Thảm hại. Đi đi."
       },
       "missionReady": {
-        "0": "Bạn làm được rồi. Đến nhận thưởng nào.",
-        "1": "Xong rồi. Có phần thưởng đang đợi bên dưới."
+        "0": "Bạn làm xong một cái thật à. Đến lấy thưởng trước khi tôi quên.",
+        "1": "Thưởng sẵn rồi. Đừng bắt tôi cầm cả ngày."
       },
       "missionDone": {
-        "0": "Cảm ơn! {{amount}} cho công sức của bạn.",
-        "1": "Tuyệt. {{amount}}, như đã hứa."
+        "0": "Được rồi, {{amount}}. Như đã hứa. Đừng quen.",
+        "1": "{{amount}}. Thấy chưa? Tôi giữ lời. Không như ai đó."
       },
       "broke": {
-        "0": "Hết KP? Hũ đầy sau {{clock}}. Ráng chút nhé.",
-        "1": "Túi trống, hũ trống. Cả hai sẽ tự đầy lại. {{clock}}."
+        "0": "Cháy túi rồi à? Hũ đầy sau {{clock}}. Ngồi xuống. Đợi.",
+        "1": "Không KP, không hũ. Cả hai đều tại bạn. {{clock}}."
+      },
+      "poke0": {
+        "0": "Gì?",
+        "1": "Sao? Tôi đang bận.",
+        "2": "Cần gì không, hay chỉ thích chọc tôi?",
+        "3": "Hũ ở đằng kia. Tôi không phải cái hũ."
+      },
+      "poke1": {
+        "0": "Thôi đi.",
+        "1": "Có trò để chơi mà lại đi chọc tôi. Dễ thương.",
+        "2": "Tiếp nữa là tôi tính phí đấy.",
+        "3": "Vui lắm hả? ...Tôi cũng thấy hơi vui."
+      },
+      "poke2": {
+        "0": "Được rồi, bạn thắng. Tôi thích bạn. Một chút. Giờ thì dừng.",
+        "1": "Bạn thật sự không có gì hay hơn để làm hả? ...Thôi, ở lại đi.",
+        "2": "Chọc thêm một lần nữa là tôi giữ hũ tiếp theo.",
+        "3": "Bạn kỳ ghê. Nhưng tôi vẫn giữ bạn."
+      },
+      "gift": {
+        "0": "Tôi có cái này cho bạn. Đừng làm nó kỳ cục.",
+        "1": "Quà. Từ tôi. Không cần cảm ơn, đương nhiên."
+      },
+      "room": {
+        "0": "Chào mừng đến phòng tôi. Đừng đụng gì. Trừ cái hũ.",
+        "1": "Đến thăm à? Hừ. Ngồi xuống, tôi có việc cho bạn làm."
+      },
+      "boostsEmpty": {
+        "0": "Chưa có gì ở đây. Tôi đang nghĩ việc để bắt bạn làm."
       }
     }
   },

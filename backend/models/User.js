@@ -163,6 +163,16 @@ const UserSchema = new mongoose.Schema({
     type: Object,
     default: {},
   },
+  // which game the pot's tenth is riding on, and how much of a pot has been taken toward
+  // the next one; see utils/pot.js
+  potPickIndex: {
+    type: Number,
+    default: 0,
+  },
+  potCycleClaimed: {
+    type: Number,
+    default: 0,
+  },
   // features a few accounts see before everyone does
   betaFlags: [String],
   weeklyWinnings: {

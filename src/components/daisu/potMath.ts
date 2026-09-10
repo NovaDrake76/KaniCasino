@@ -1,8 +1,8 @@
 import type { PickGame } from "../../services/daisu/DaisuService";
 
-// mirrors backend/utils/pot.js so the pot can tick between requests; the server prices
-// every claim itself, so a drift here can only ever mislabel a button
-const PREMIUM = 0.15;
+// mirrors backend/utils/pot.js so the jar can tick between requests; the server prices
+// every take itself, so a drift here can only ever mislabel a number
+const CLICK_RATE = 0.8;
 
 export const fillAt = (fullAt: string, cycleMs: number, now: number) => {
   const startedAt = new Date(fullAt).getTime() - cycleMs;
@@ -10,7 +10,12 @@ export const fillAt = (fullAt: string, cycleMs: number, now: number) => {
 };
 
 export const payout = (full: number, fill: number) =>
-  Math.floor(full * fill * (1 - PREMIUM + PREMIUM * fill));
+  Math.floor(full * fill * (CLICK_RATE + (1 - CLICK_RATE) * fill));
+
+// what one more click takes: the cumulative curve between the last click and now, so
+// a run of clicks adds up to exactly what the server pays when it settles the run
+export const takeBetween = (full: number, lastFill: number, fill: number) =>
+  Math.max(0, payout(full, fill) - payout(full, lastFill));
 
 // ms until the pot reaches this fill, zero when it already has
 export const msUntil = (fullAt: string, cycleMs: number, fill: number, now: number) =>

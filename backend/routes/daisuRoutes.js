@@ -4,23 +4,26 @@ const User = require("../models/User");
 const authMiddleware = require("../middleware/authMiddleware");
 const beta = require("../utils/beta");
 const pot = require("../utils/pot");
-const { dayIndex } = require("../utils/dailyGift");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("../utils/economy");
 
 const gate = [authMiddleware.isAuthenticated, beta.requireFlag("daisu")];
 
-// everything the dock needs to draw the pot and tick it locally until the next claim
+// everything the dock needs to draw the pot and tick it locally until the next take
 const statusOf = (user, now = new Date()) => {
   const fill = pot.fillAt(user.nextBonus, now);
+  const index = user.potPickIndex || 0;
   return {
     fill,
     full: user.bonusAmount,
     amount: pot.payout(user.bonusAmount, fill),
     fullAt: new Date(user.nextBonus).toISOString(),
-    floor: pot.FLOOR,
     cycleMs: pot.CYCLE_MS,
+    clickRate: pot.CLICK_RATE,
+    fullBonus: pot.FULL_BONUS,
     creditShare: pot.CREDIT_SHARE,
-    pick: pot.pickFor(dayIndex(now)),
+    pick: pot.pickAt(index),
+    nextPick: pot.pickAt(index + 1),
+    pickProgress: user.bonusAmount > 0 ? Math.min(1, (user.potCycleClaimed || 0) / user.bonusAmount) : 0,
     credits: pot.creditsOf(user),
   };
 };
@@ -33,28 +36,37 @@ router.post("/claim", ...gate, async (req, res) => {
   try {
     const now = new Date();
     const fill = pot.fillAt(req.user.nextBonus, now);
-    if (fill < pot.FLOOR) {
+    const amount = pot.payout(req.user.bonusAmount, fill);
+    if (amount < pot.MIN_CLAIM) {
       return res.status(400).json({
         message: "The pot is empty",
         reason: "empty",
         fill,
-        floorAt: pot.floorAt(req.user.nextBonus).toISOString(),
+        readyAt: pot.readyAt(req.user.nextBonus, req.user.bonusAmount).toISOString(),
       });
     }
 
-    const amount = pot.payout(req.user.bonusAmount, fill);
     const credit = pot.creditOf(amount);
-    const pick = pot.pickFor(dayIndex(now));
+    const pick = pot.pickAt(req.user.potPickIndex);
+    const advanced = pot.advancePick(req.user.potPickIndex, req.user.potCycleClaimed, amount, req.user.bonusAmount);
     const nextBonus = new Date(now.getTime() + pot.CYCLE_MS);
 
-    // the stored nextBonus is the version the claim was priced against: a second click
+    // the stored nextBonus is the version the take was priced against: a second request
     // that lands after the first sees a different one and pays nothing
     const updated = await runAtomic(async (session) => {
       const inc = { walletBalance: amount };
       if (credit > 0) inc[`gameCredits.${pick}`] = credit;
       const u = await User.findOneAndUpdate(
         { _id: req.user._id, nextBonus: req.user.nextBonus },
-        { $inc: inc, $set: { nextBonus, bonusAmount: pot.fullAmount(req.user.level) } },
+        {
+          $inc: inc,
+          $set: {
+            nextBonus,
+            bonusAmount: pot.fullAmount(req.user.level),
+            potPickIndex: advanced.index,
+            potCycleClaimed: advanced.cycleClaimed,
+          },
+        },
         { new: true, projection: WITHOUT_INVENTORY, session }
       );
       if (!u) return null;
@@ -72,7 +84,7 @@ router.post("/claim", ...gate, async (req, res) => {
     });
 
     if (!updated) {
-      return res.status(409).json({ message: "That claim already went through", reason: "raced" });
+      return res.status(409).json({ message: "That take already went through", reason: "raced" });
     }
 
     res.json({
@@ -80,6 +92,7 @@ router.post("/claim", ...gate, async (req, res) => {
       credit,
       pick,
       fill,
+      pickChanged: advanced.index !== (req.user.potPickIndex || 0),
       walletBalance: updated.walletBalance,
       nextBonus: updated.nextBonus,
       status: statusOf(updated, now),
