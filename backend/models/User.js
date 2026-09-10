@@ -158,6 +158,23 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 1000, // sets the initial bonus amount to 1000
   },
+  // KP that only spends on the game it is keyed by; what it wins lands in the wallet
+  gameCredits: {
+    type: Object,
+    default: {},
+  },
+  // which game the pot's tenth is riding on, and how much of a pot has been taken toward
+  // the next one; see utils/pot.js
+  potPickIndex: {
+    type: Number,
+    default: 0,
+  },
+  potCycleClaimed: {
+    type: Number,
+    default: 0,
+  },
+  // features a few accounts see before everyone does
+  betaFlags: [String],
   weeklyWinnings: {
     type: Number,
     default: 0,

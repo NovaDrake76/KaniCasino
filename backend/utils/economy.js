@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = require("../models/User");
 const Transaction = require("../models/Transaction");
 const { COUNTERPARTY_FOR_TYPE, MINT } = require("./accounts");
+const { GAME_OF_BET, creditHeld } = require("./pot");
 
 const BASE_XP = 1000; // xp required for the first level
 const GROWTH_RATE = 1.25; // growth rate for each level
@@ -10,6 +11,7 @@ const GROWTH_RATE = 1.25; // growth rate for each level
 const TX = {
   SIGNUP: "signup",
   BONUS: "bonus",
+  GAME_CREDIT: "game_credit", // the extra tenth of a pot claim, spendable on one game only
   CASE_OPEN: "case_open",
   SLOT_BET: "slot_bet",
   SLOT_WIN: "slot_win",
@@ -200,6 +202,41 @@ async function ledgerSupply() {
 // returning it made a single bet a twenty-second write on a 100 KB/s link.
 const WITHOUT_INVENTORY = { inventory: 0 };
 
+async function takeStake(userId, cost, inc, session) {
+  const user = await User.findOneAndUpdate(
+    { _id: userId, walletBalance: { $gte: cost } },
+    { $inc: inc },
+    { new: true, projection: WITHOUT_INVENTORY, session }
+  );
+  return { user, drawn: 0 };
+}
+
+// a stake on a game that takes pot credit: the credit for that game goes first and the
+// wallet covers the rest, in one write. the pipeline is what makes the split atomic; it
+// hands back the pre-image, so the values the caller reads are set here from it.
+async function takeStakeWithCredit(userId, cost, game, awardXp, session) {
+  const path = `gameCredits.${game}`;
+  const credit = { $ifNull: [`$${path}`, 0] };
+  const drawn = { $min: [credit, cost] };
+  const set = {
+    walletBalance: { $subtract: ["$walletBalance", { $subtract: [cost, drawn] }] },
+    [path]: { $subtract: [credit, drawn] },
+  };
+  if (awardXp) set.xp = { $add: [{ $ifNull: ["$xp", 0] }, cost * 5] };
+  const user = await User.findOneAndUpdate(
+    { _id: userId, $expr: { $gte: [{ $add: ["$walletBalance", credit] }, cost] } },
+    [{ $set: set }],
+    { new: false, projection: WITHOUT_INVENTORY, session }
+  );
+  if (!user) return { user: null, drawn: 0 };
+  const held = creditHeld(user, game);
+  const taken = Math.min(held, cost);
+  user.walletBalance -= cost - taken;
+  if (awardXp) user.xp = (user.xp || 0) + cost * 5;
+  user.gameCredits = { ...(user.gameCredits || {}), [game]: held - taken };
+  return { user, drawn: taken };
+}
+
 // debit `cost` if the balance covers it, with its ledger row in the same transaction:
 // a failed row rolls the charge back and returns null, like insufficient funds
 async function chargeUser(userId, cost, { awardXp = true, type, meta, counterparty, session } = {}) {
@@ -208,11 +245,10 @@ async function chargeUser(userId, cost, { awardXp = true, type, meta, counterpar
     : { walletBalance: -cost };
 
   const body = async (s) => {
-    const user = await User.findOneAndUpdate(
-      { _id: userId, walletBalance: { $gte: cost } },
-      { $inc: inc },
-      { new: true, projection: WITHOUT_INVENTORY, session: s }
-    );
+    const game = GAME_OF_BET[type];
+    const { user, drawn } = game
+      ? await takeStakeWithCredit(userId, cost, game, awardXp, s)
+      : await takeStake(userId, cost, inc, s);
     if (!user) return null;
 
     if (awardXp) {
@@ -224,7 +260,15 @@ async function chargeUser(userId, cost, { awardXp = true, type, meta, counterpar
     }
 
     await recordTransaction(
-      { userId, type, direction: "debit", amount: cost, balanceAfter: user.walletBalance, meta, counterparty },
+      {
+        userId,
+        type,
+        direction: "debit",
+        amount: cost,
+        balanceAfter: user.walletBalance,
+        meta: drawn ? { ...(meta || {}), credit: drawn } : meta,
+        counterparty,
+      },
       s
     );
     return user;

@@ -125,6 +125,7 @@
     "coinflip_win": "Vincita a testa o croce",
     "crash_bet": "Puntata al crash",
     "crash_cashout": "Incasso al crash",
+    "game_credit": "Credito di Daisu",
     "item_sell": "Venduto al negozio",
     "market_buy": "Acquisto sul mercato",
     "market_order": "Ordine d'acquisto creato",
@@ -356,6 +357,117 @@
     "placeBet": "Punta",
     "profitOnWin": "Profitto in caso di vincita",
     "queuedClickToCancel": "In coda (clicca per annullare)"
+  },
+  "daisu": {
+    "back": "Torna da Daisu",
+    "boostsSoon": "Obiettivi giornalieri che riempiono il vaso più in fretta. Non ancora scritti.",
+    "bubbleGift": "Regalo",
+    "clickHint": "Clicca sul vaso per prendere quello che c'è dentro",
+    "close": "Chiudi",
+    "collect": "Ritira",
+    "couldNotClaim": "Impossibile prendere dal vaso",
+    "empty": "Vuoto",
+    "full": "Pieno",
+    "fullBonus": "Bonus vaso pieno +{{bonus}}%",
+    "fullIn": "Pieno tra {{clock}}",
+    "giftOpen": "Aprilo",
+    "giftReady": "Daisu ha un regalo per te",
+    "jar": "Il vaso",
+    "keeps": "custodisce il vaso",
+    "loading": "...",
+    "nextPick": "Poi: {{game}}, dopo altri {{amount}}",
+    "ofFull": "di {{full}}",
+    "onlyOn": "solo su {{game}}",
+    "open": "Apri Daisu",
+    "pending": "{{amount}} in arrivo nel tuo portafoglio",
+    "pickLine": "Un {{share}}% in più di ogni prelievo va su {{game}}",
+    "pickTitle": "La scelta di Daisu",
+    "play": "Gioca",
+    "roomTitle": "La stanza di Daisu",
+    "tabBoosts": "Boost del vaso",
+    "tabMissions": "Missioni",
+    "visit": "Visita la stanza di Daisu",
+    "lines": {
+      "hello": {
+        "0": "Oh, sei tornato. Non esaltarti, il vaso si sta ancora riempiendo.",
+        "1": "Ce ne hai messo di tempo. Stavo per spenderlo io.",
+        "2": "Hmph. Va bene, entra. Non toccare niente tranne il vaso."
+      },
+      "full": {
+        "0": "È pieno. Allora? Prendilo prima che cambi idea.",
+        "1": "Un vaso pieno e tu te ne stavi lì. Prendilo, lumaca.",
+        "2": "Guarda un po'. Pieno. E non hai fatto quasi niente."
+      },
+      "filling": {
+        "0": "Non riesci ad aspettare, eh? Ci sono {{amount}}. Debole.",
+        "1": "{{amount}} adesso, oppure aspetti {{clock}} per il bonus del vaso pieno, da persona adulta.",
+        "2": "Tocca il vaso se proprio devi. Ci sono {{amount}}. Poi non piangere."
+      },
+      "empty": {
+        "0": "È VUOTO. L'hai appena preso. Impara a contare.",
+        "1": "Niente lì dentro. Clicchi per divertimento? ...Carino.",
+        "2": "Zero. Dammi un secondo, avido."
+      },
+      "claimed": {
+        "0": "Ecco, {{amount}}. Non perderli tutti in un giro. Lo farai comunque.",
+        "1": "{{amount}}. Prego. Di' grazie.",
+        "2": "Va bene, {{amount}}. Ora vai a vincere qualcosa, per una volta."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} per te, più {{credit}} che valgono solo su {{game}}. Decido io dove giochi.",
+        "1": "Ho messo {{credit}} per {{game}}. Rivincili come KP veri, se ci riesci.",
+        "2": "{{credit}} extra, solo su {{game}}. Niente discussioni."
+      },
+      "pickChanged": {
+        "0": "Un vaso intero. Gioco nuovo: {{game}}. Vai, ti guardo.",
+        "1": "Ne hai svuotato uno. Il tuo extra passa su {{game}} adesso. Cerca di stare al passo."
+      },
+      "credit": {
+        "0": "Non hai ancora usato i {{credit}} su {{game}}? Paura?",
+        "1": "{{credit}} fermi su {{game}} a non fare niente. Patetico. Vai."
+      },
+      "missionReady": {
+        "0": "Ne hai finita una davvero. Vieni a prendere la ricompensa prima che me ne dimentichi.",
+        "1": "Ricompensa pronta. Non farmela tenere tutto il giorno."
+      },
+      "missionDone": {
+        "0": "Va bene, {{amount}}. Come promesso. Non abituarti.",
+        "1": "{{amount}}. Visto? Mantengo la parola. Non come certa gente."
+      },
+      "broke": {
+        "0": "Già al verde? Il vaso è pieno tra {{clock}}. Siediti. Aspetta.",
+        "1": "Niente KP e niente vaso. Colpa tua in entrambi i casi. {{clock}}."
+      },
+      "poke0": {
+        "0": "Cosa?",
+        "1": "Sì? Sono occupata.",
+        "2": "Ti serve qualcosa o ti piace solo punzecchiarmi?",
+        "3": "Il vaso è laggiù. Io non sono il vaso."
+      },
+      "poke1": {
+        "0": "Smettila.",
+        "1": "Hai giochi da giocare e punzecchi me. Carino.",
+        "2": "Continua e inizio a farti pagare.",
+        "3": "Ti diverte? ...Un po' anche me."
+      },
+      "poke2": {
+        "0": "Ok, hai vinto. Mi piaci. Un po'. Ora smettila.",
+        "1": "Non hai davvero niente di meglio da fare, eh? ...Va bene, resta.",
+        "2": "Punzecchiami ancora una volta e mi tengo il prossimo vaso.",
+        "3": "Sei strano. Ti tengo lo stesso."
+      },
+      "gift": {
+        "0": "Ti ho preso una cosa. Non renderla strana.",
+        "1": "Un regalo. Da me. Prego, ovviamente."
+      },
+      "room": {
+        "0": "Benvenuto nella mia stanza. Non toccare niente. Tranne il vaso.",
+        "1": "Sei venuto a trovarmi? Hmph. Siediti, ho cose da farti fare."
+      },
+      "boostsEmpty": {
+        "0": "Qui non c'è ancora niente. Sto pensando a cose da farti fare."
+      }
+    }
   },
   "dice": {
     "dice": "Dadi",

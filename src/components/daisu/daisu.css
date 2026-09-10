@@ -1,0 +1,50 @@
+.daisu-bob {
+  animation: daisu-bob 3.4s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+@keyframes daisu-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.daisu-hop {
+  animation: daisu-hop 0.55s ease;
+  transform-origin: 50% 100%;
+}
+@keyframes daisu-hop {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-12px); }
+}
+
+.daisu-shake {
+  animation: daisu-shake 0.45s ease;
+  transform-origin: 50% 50%;
+}
+@keyframes daisu-shake {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-7deg); }
+  40% { transform: rotate(6deg); }
+  60% { transform: rotate(-4deg); }
+  80% { transform: rotate(2deg); }
+}
+
+.daisu-coins {
+  transition: background 0.5s ease;
+}
+
+.daisu-glow {
+  animation: daisu-glow 1.6s ease-in-out infinite;
+  border-radius: 12%;
+}
+@keyframes daisu-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
+  50% { box-shadow: 0 0 22px 6px rgba(255, 204, 0, 0.35); }
+}
+
+.daisu-fill {
+  transition: width 0.5s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .daisu-bob, .daisu-hop, .daisu-shake, .daisu-glow { animation: none; }
+}

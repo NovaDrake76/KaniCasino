@@ -125,6 +125,7 @@
     "coinflip_win": "Victoria en cara o cruz",
     "crash_bet": "Apuesta en crash",
     "crash_cashout": "Retiro en crash",
+    "game_credit": "Crédito de Daisu",
     "item_sell": "Vendido a la tienda",
     "market_buy": "Compra en el mercado",
     "market_order": "Orden de compra creada",
@@ -356,6 +357,117 @@
     "placeBet": "Apostar",
     "profitOnWin": "Ganancia si ganas",
     "queuedClickToCancel": "En cola (haz clic para cancelar)"
+  },
+  "daisu": {
+    "back": "Volver con Daisu",
+    "boostsSoon": "Metas diarias que llenan el bote más rápido. Aún no escritas.",
+    "bubbleGift": "Regalo",
+    "clickHint": "Haz clic en el bote para tomar lo que hay dentro",
+    "close": "Cerrar",
+    "collect": "Cobrar",
+    "couldNotClaim": "No se pudo tomar del bote",
+    "empty": "Vacío",
+    "full": "Lleno",
+    "fullBonus": "Bono de bote lleno +{{bonus}}%",
+    "fullIn": "Lleno en {{clock}}",
+    "giftOpen": "Abrirlo",
+    "giftReady": "Daisu tiene un regalo para ti",
+    "jar": "El bote",
+    "keeps": "cuida el bote",
+    "loading": "...",
+    "nextPick": "Siguiente: {{game}}, tras {{amount}} más",
+    "ofFull": "de {{full}}",
+    "onlyOn": "solo en {{game}}",
+    "open": "Abrir a Daisu",
+    "pending": "{{amount}} en camino a tu billetera",
+    "pickLine": "Un {{share}}% extra de cada toma va a {{game}}",
+    "pickTitle": "La elección de Daisu",
+    "play": "Jugar",
+    "roomTitle": "El cuarto de Daisu",
+    "tabBoosts": "Turbos del bote",
+    "tabMissions": "Misiones",
+    "visit": "Visitar el cuarto de Daisu",
+    "lines": {
+      "hello": {
+        "0": "Ah, volviste. No te emociones, el bote sigue llenándose.",
+        "1": "Tardaste, eh. Ya iba a gastarlo yo.",
+        "2": "Hmph. Bueno, pasa. No toques nada que no sea el bote."
+      },
+      "full": {
+        "0": "Está lleno. ¿Y? Tómalo antes de que cambie de idea.",
+        "1": "Bote lleno y tú ahí sentado. Tómalo, lento.",
+        "2": "Mira eso. Lleno. Y casi no hiciste nada."
+      },
+      "filling": {
+        "0": "No puedes esperar, ¿eh? Hay {{amount}}. Flojo.",
+        "1": "{{amount}} ahora, o espera {{clock}} y llévate el bono de lleno como adulto.",
+        "2": "Pincha el bote si quieres. Hay {{amount}}. Luego no llores."
+      },
+      "empty": {
+        "0": "Está VACÍO. Acabas de tomarlo. Aprende a contar.",
+        "1": "No hay nada. ¿Haces clic por diversión? ...Qué tierno.",
+        "2": "Cero. Dame un segundo, avaricioso."
+      },
+      "claimed": {
+        "0": "Toma, {{amount}}. No lo pierdas todo en un giro. Aunque lo harás.",
+        "1": "{{amount}}. De nada. Di gracias.",
+        "2": "Bien, {{amount}}. Ahora ve a ganar algo por una vez."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} para ti, más {{credit}} que solo sirve en {{game}}. Yo decido dónde juegas.",
+        "1": "Te puse {{credit}} para {{game}}. Recupéralo en KP de verdad, si puedes.",
+        "2": "{{credit}} extra, solo en {{game}}. Sin discutir."
+      },
+      "pickChanged": {
+        "0": "Un bote entero. Juego nuevo: {{game}}. Anda, te estoy mirando.",
+        "1": "Vaciaste uno. Ahora tu extra va a {{game}}. Intenta seguirme el ritmo."
+      },
+      "credit": {
+        "0": "¿Todavía no usaste los {{credit}} en {{game}}? ¿Miedo?",
+        "1": "{{credit}} en {{game}} sin hacer nada. Patético. Ve."
+      },
+      "missionReady": {
+        "0": "Terminaste una, en serio. Ven por tu recompensa antes de que se me olvide.",
+        "1": "Recompensa lista. No me hagas sostenerla todo el día."
+      },
+      "missionDone": {
+        "0": "Bien, {{amount}}. Como prometí. No te acostumbres.",
+        "1": "{{amount}}. ¿Ves? Cumplo mi palabra. No como algunos."
+      },
+      "broke": {
+        "0": "¿Ya sin nada? El bote se llena en {{clock}}. Siéntate. Espera.",
+        "1": "Sin KP y sin bote. Las dos cosas son culpa tuya. {{clock}}."
+      },
+      "poke0": {
+        "0": "¿Qué?",
+        "1": "¿Sí? Estoy ocupada.",
+        "2": "¿Necesitas algo o solo te gusta pincharme?",
+        "3": "El bote está ahí. Yo no soy el bote."
+      },
+      "poke1": {
+        "0": "Para.",
+        "1": "Tienes juegos y me estás pinchando a mí. Qué tierno.",
+        "2": "Sigue y empiezo a cobrarte.",
+        "3": "¿Te divierte? ...A mí un poco."
+      },
+      "poke2": {
+        "0": "Vale, ganaste. Me caes bien. Un poco. Ahora para.",
+        "1": "De verdad no tienes nada mejor que hacer, ¿eh? ...Bueno, quédate.",
+        "2": "Pínchame una vez más y me quedo con el próximo bote.",
+        "3": "Eres raro. Te quedo igual."
+      },
+      "gift": {
+        "0": "Te traje algo. No lo hagas raro.",
+        "1": "Un regalo. Mío. De nada, obviamente."
+      },
+      "room": {
+        "0": "Bienvenido a mi cuarto. No toques nada. Salvo el bote.",
+        "1": "¿Viniste a visitarme? Hmph. Siéntate, tengo cosas para que hagas."
+      },
+      "boostsEmpty": {
+        "0": "Aquí no hay nada aún. Estoy pensando en cosas para obligarte a hacer."
+      }
+    }
   },
   "dice": {
     "dice": "Dados",

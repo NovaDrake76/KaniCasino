@@ -16,6 +16,7 @@ const COUNTERPARTY_FOR_TYPE = {
   signup: MINT,
   bonus: MINT,
   mission_reward: MINT,
+  game_credit: MINT, // the tenth on top of a pot claim, locked to one game until it is played
   referral_bonus: MINT,
   referral_milestone: MINT,
   ad_reward: MINT, // KP printed against outside ad revenue

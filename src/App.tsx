@@ -19,6 +19,7 @@ import BootLoader from "./components/BootLoader";
 import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
 import GiftPrompt from "./components/header/GiftPrompt";
+import DaisuDock from "./components/daisu";
 import ChatDock, { ChatToggle, useChatDock } from "./components/chat/ChatDock";
 import { pushDrop } from "./components/header/liveDrop";
 
@@ -299,6 +300,7 @@ function App() {
                 <ChatDock open={chat.open} wide={chat.wide} onClose={chat.close} />
                 {!chat.open && <ChatToggle onClick={chat.toggle} />}
                 <GiftPrompt />
+                <DaisuDock />
               </SkeletonTheme>
             </Router>
         </Suspense>
