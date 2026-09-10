@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { BasicItem } from "../../components/Types";
 import QuantityButton from "../../components/QuantityButton";
 import RouletteContainer from "./RoulleteContainer";
+import ComeBackTomorrow from "./ComeBackTomorrow";
 import Monetary from '../../components/Monetary';
 import { FaGift } from "react-icons/fa";
 import { getGrants } from "../../services/gift/GiftService";
@@ -225,6 +226,10 @@ const CasePage = () => {
             </button>
           )}
 
+        </div>
+
+        <div className="flex justify-center px-4">
+          <ComeBackTomorrow show={showPrize && !loadingButton && openedItems.length > 0} />
         </div>
 
         <div className="flex flex-col md:p-8 gap-2 items-center ">
