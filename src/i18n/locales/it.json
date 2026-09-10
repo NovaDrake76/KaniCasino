@@ -125,6 +125,7 @@
     "coinflip_win": "Vincita a testa o croce",
     "crash_bet": "Puntata al crash",
     "crash_cashout": "Incasso al crash",
+    "game_credit": "Credito di Daisu",
     "item_sell": "Venduto al negozio",
     "market_buy": "Acquisto sul mercato",
     "market_order": "Ordine d'acquisto creato",
@@ -356,6 +357,75 @@
     "placeBet": "Punta",
     "profitOnWin": "Profitto in caso di vincita",
     "queuedClickToCancel": "In coda (clicca per annullare)"
+  },
+  "daisu": {
+    "allMissions": "Tutte le missioni",
+    "asks": "Daisu chiede",
+    "close": "Chiudi",
+    "collect": "Ritira",
+    "couldNotClaim": "Impossibile ritirare il vaso",
+    "creditsTitle": "La scelta di Daisu",
+    "full": "Pieno",
+    "fullIn": "Pieno tra {{clock}}",
+    "loading": "...",
+    "noCredit": "Ritira il vaso e un decimo in più va su {{game}}",
+    "nothingYet": "Ancora niente, {{clock}}",
+    "ofFull": "di {{full}}",
+    "onlyOn": "solo su {{game}}",
+    "open": "Apri Daisu",
+    "pickToday": "Oggi: {{game}}, +{{share}}% a ogni ritiro",
+    "play": "Gioca",
+    "take": "Prendi",
+    "takeAll": "Prendi tutto",
+    "title": "custodisce il vaso",
+    "lines": {
+      "hello": {
+        "0": "Bentornato. Il vaso si sta riempiendo.",
+        "1": "Ti ho tenuto il posto. E il vaso.",
+        "2": "Guarda chi c'è. Dai un minuto al vaso."
+      },
+      "full": {
+        "0": "È pieno! Prendilo prima che lo spenda io.",
+        "1": "Vaso pieno. Tutto tuo.",
+        "2": "Non ci sta più nemmeno una moneta. Prendilo."
+      },
+      "filling": {
+        "0": "Si sta ancora riempiendo. Ci sono {{amount}} se non puoi aspettare.",
+        "1": "Pieno tra {{clock}}. O prendi quello che c'è, non giudico.",
+        "2": "La pazienza paga un po' di più. {{amount}} adesso, o pieno tra {{clock}}."
+      },
+      "empty": {
+        "0": "Vuoto! Qui non c'è niente. Dammi {{clock}}.",
+        "1": "Hai appena preso tutto. Qualcosa tra {{clock}}.",
+        "2": "Ho controllato due volte. Niente. Riprova tra {{clock}}."
+      },
+      "claimed": {
+        "0": "Ecco qua: {{amount}}.",
+        "1": "KP freschi. Non spenderli tutti in un posto. O sì.",
+        "2": "{{amount}}, dritti dal vaso. Ora vai a vincere qualcosa."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} per te, e {{credit}} in più che valgono solo su {{game}}. Vai.",
+        "1": "Più {{credit}} sopra, ma solo {{game}} li accetta. Rivincili come KP veri.",
+        "2": "Ho messo {{credit}} per {{game}}. Spendili lì e quello che vincono è tuo."
+      },
+      "credit": {
+        "0": "Hai ancora {{credit}} per {{game}}. Non si puntano da soli.",
+        "1": "Quei {{credit}} per {{game}} sono lì fermi. Vai a usarli."
+      },
+      "missionReady": {
+        "0": "Ce l'hai fatta. Vieni a ritirare la ricompensa.",
+        "1": "Fatto. C'è una ricompensa che aspetta qui sotto."
+      },
+      "missionDone": {
+        "0": "Grazie! {{amount}} per il disturbo.",
+        "1": "Perfetto. {{amount}}, come promesso."
+      },
+      "broke": {
+        "0": "Finiti i KP? Il vaso si riempie tra {{clock}}. Tieni duro.",
+        "1": "Tasche vuote, vaso vuoto. Si sistemano entrambi. {{clock}}."
+      }
+    }
   },
   "dice": {
     "dice": "Dadi",

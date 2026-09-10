@@ -158,6 +158,13 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 1000, // sets the initial bonus amount to 1000
   },
+  // KP that only spends on the game it is keyed by; what it wins lands in the wallet
+  gameCredits: {
+    type: Object,
+    default: {},
+  },
+  // features a few accounts see before everyone does
+  betaFlags: [String],
   weeklyWinnings: {
     type: Number,
     default: 0,

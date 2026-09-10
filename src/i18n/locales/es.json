@@ -125,6 +125,7 @@
     "coinflip_win": "Victoria en cara o cruz",
     "crash_bet": "Apuesta en crash",
     "crash_cashout": "Retiro en crash",
+    "game_credit": "Crédito de Daisu",
     "item_sell": "Vendido a la tienda",
     "market_buy": "Compra en el mercado",
     "market_order": "Orden de compra creada",
@@ -356,6 +357,75 @@
     "placeBet": "Apostar",
     "profitOnWin": "Ganancia si ganas",
     "queuedClickToCancel": "En cola (haz clic para cancelar)"
+  },
+  "daisu": {
+    "allMissions": "Todas las misiones",
+    "asks": "Daisu pide",
+    "close": "Cerrar",
+    "collect": "Cobrar",
+    "couldNotClaim": "No se pudo reclamar el bote",
+    "creditsTitle": "La elección de Daisu",
+    "full": "Lleno",
+    "fullIn": "Lleno en {{clock}}",
+    "loading": "...",
+    "noCredit": "Reclama el bote y un décimo extra va a {{game}}",
+    "nothingYet": "Nada todavía, {{clock}}",
+    "ofFull": "de {{full}}",
+    "onlyOn": "solo en {{game}}",
+    "open": "Abrir a Daisu",
+    "pickToday": "Hoy: {{game}}, +{{share}}% en cada reclamo",
+    "play": "Jugar",
+    "take": "Tomar",
+    "takeAll": "Tomarlo todo",
+    "title": "cuida el bote",
+    "lines": {
+      "hello": {
+        "0": "Bienvenido de vuelta. El bote se está llenando.",
+        "1": "Te guardé el sitio. Y el bote.",
+        "2": "Mira quién llegó. Dale un minuto al bote."
+      },
+      "full": {
+        "0": "¡Está lleno! Tómalo antes de que me lo gaste.",
+        "1": "Bote lleno. Todo tuyo.",
+        "2": "No cabe ni una moneda más. Tómalo."
+      },
+      "filling": {
+        "0": "Sigue llenándose. Hay {{amount}} si no puedes esperar.",
+        "1": "Lleno en {{clock}}. O toma lo que hay ahora, no te juzgo.",
+        "2": "La paciencia paga un poco más. {{amount}} ahora, o lleno en {{clock}}."
+      },
+      "empty": {
+        "0": "¡Vacío! No hay nada aquí. Dame {{clock}}.",
+        "1": "Acabas de llevártelo todo. Habrá algo en {{clock}}.",
+        "2": "Miré dos veces. Nada. Prueba en {{clock}}."
+      },
+      "claimed": {
+        "0": "Aquí tienes: {{amount}}.",
+        "1": "KP fresquitos. No los gastes todos en un sitio. O sí.",
+        "2": "{{amount}}, directo del bote. Ahora ve a ganar algo."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} para ti, y {{credit}} extra que solo sirve en {{game}}. Anda.",
+        "1": "Más {{credit}} encima, pero solo {{game}} lo acepta. Recupéralo como KP de verdad.",
+        "2": "Te puse {{credit}} para {{game}}. Gástalo ahí y lo que gane es tuyo."
+      },
+      "credit": {
+        "0": "Todavía tienes {{credit}} para {{game}}. No va a apostarse solo.",
+        "1": "Ese {{credit}} para {{game}} está ahí parado. Ve a usarlo."
+      },
+      "missionReady": {
+        "0": "Lo lograste. Ven a cobrar tu recompensa.",
+        "1": "Hecho. Hay una recompensa esperando abajo."
+      },
+      "missionDone": {
+        "0": "¡Gracias! {{amount}} por la molestia.",
+        "1": "Perfecto. {{amount}}, como prometí."
+      },
+      "broke": {
+        "0": "¿Sin KP? El bote se llena en {{clock}}. Aguanta.",
+        "1": "Bolsillos vacíos, bote vacío. Los dos se arreglan solos. {{clock}}."
+      }
+    }
   },
   "dice": {
     "dice": "Dados",

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const badges = require("../utils/badges");
+const beta = require("../utils/beta");
 const nameFilter = require("../utils/nameFilter");
 const User = require("../models/User");
 const Case = require("../models/Case");
@@ -218,6 +219,21 @@ router.put("/users/:id/badge", isAuthenticated, isAdmin, async (req, res) => {
 
     const after = await User.findById(user._id).select("fanRank badges selectedBadge").lean();
     res.json({ badges: badges.heldBadges(after) });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
+
+// put an account into a beta or take it out. `on` is a boolean; the flag must be a known one
+router.put("/users/:id/beta", isAuthenticated, isAdmin, async (req, res) => {
+  const { flag, on } = req.body;
+  if (!beta.FLAGS.includes(flag)) return res.status(400).json({ message: "No such beta" });
+  try {
+    const op = on ? { $addToSet: { betaFlags: flag } } : { $pull: { betaFlags: flag } };
+    const user = await User.findOneAndUpdate({ _id: req.params.id }, op, { new: true, projection: { betaFlags: 1 } });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({ betaFlags: user.betaFlags || [] });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");

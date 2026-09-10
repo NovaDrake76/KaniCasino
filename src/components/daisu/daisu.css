@@ -1,0 +1,59 @@
+.daisu-bob {
+  animation: daisu-bob 3.4s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+@keyframes daisu-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.daisu-hop {
+  animation: daisu-hop 0.55s ease;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+@keyframes daisu-hop {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-9px); }
+}
+
+.daisu-lid {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+  animation: daisu-blink 4.8s infinite;
+}
+@keyframes daisu-blink {
+  0%, 92%, 100% { transform: scaleY(0); }
+  94.5%, 96.5% { transform: scaleY(1); }
+}
+
+.daisu-shake {
+  animation: daisu-shake 0.5s ease;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+@keyframes daisu-shake {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-9deg); }
+  40% { transform: rotate(8deg); }
+  60% { transform: rotate(-5deg); }
+  80% { transform: rotate(3deg); }
+}
+
+.daisu-sparkle {
+  animation: daisu-sparkle 1.4s ease-in-out infinite;
+}
+@keyframes daisu-sparkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+
+.daisu-fill {
+  transition: width 0.5s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .daisu-bob, .daisu-hop, .daisu-shake, .daisu-sparkle { animation: none; }
+}

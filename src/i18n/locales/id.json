@@ -125,6 +125,7 @@
     "coinflip_win": "Menang dengan lemparan koin",
     "crash_bet": "Taruhan Crash",
     "crash_cashout": "Crash dicairkan",
+    "game_credit": "Kredit Daisu",
     "item_sell": "Barang laris di toko",
     "market_buy": "Penukaran pada pemasaran",
     "market_order": "Pesanan pembelian telah ditempatkan",
@@ -356,6 +357,75 @@
     "placeBet": "Taruh taruhan",
     "profitOnWin": "Keuntungan pada kemenangan",
     "queuedClickToCancel": "Ditunggu (klik buat batalin)"
+  },
+  "daisu": {
+    "allMissions": "Semua misi",
+    "asks": "Daisu minta",
+    "close": "Tutup",
+    "collect": "Ambil",
+    "couldNotClaim": "Toples tidak bisa diambil",
+    "creditsTitle": "Pilihan Daisu",
+    "full": "Penuh",
+    "fullIn": "Penuh dalam {{clock}}",
+    "loading": "...",
+    "noCredit": "Ambil toples dan sepersepuluh tambahan masuk ke {{game}}",
+    "nothingYet": "Belum ada, {{clock}}",
+    "ofFull": "dari {{full}}",
+    "onlyOn": "hanya di {{game}}",
+    "open": "Buka Daisu",
+    "pickToday": "Hari ini: {{game}}, +{{share}}% setiap pengambilan",
+    "play": "Main",
+    "take": "Ambil",
+    "takeAll": "Ambil semua",
+    "title": "penjaga toples",
+    "lines": {
+      "hello": {
+        "0": "Selamat datang kembali. Toplesnya sedang terisi.",
+        "1": "Kursimu kujaga. Toplesnya juga.",
+        "2": "Lihat siapa yang datang. Beri toplesnya semenit."
+      },
+      "full": {
+        "0": "Sudah penuh! Ambil sebelum kuhabiskan.",
+        "1": "Toples penuh. Semuanya milikmu.",
+        "2": "Satu koin pun tidak muat lagi. Ambil."
+      },
+      "filling": {
+        "0": "Masih terisi. Ada {{amount}} kalau tidak sabar.",
+        "1": "Penuh dalam {{clock}}. Atau ambil yang ada sekarang, aku tidak menghakimi.",
+        "2": "Sabar dibayar sedikit lebih. {{amount}} sekarang, atau penuh dalam {{clock}}."
+      },
+      "empty": {
+        "0": "Kosong! Tidak ada apa-apa di sini. Beri aku {{clock}}.",
+        "1": "Kamu baru saja mengambil semuanya. Ada lagi dalam {{clock}}.",
+        "2": "Sudah kucek dua kali. Kosong. Coba lagi dalam {{clock}}."
+      },
+      "claimed": {
+        "0": "Ini dia: {{amount}}.",
+        "1": "KP segar. Jangan dihabiskan di satu tempat. Atau habiskan saja.",
+        "2": "{{amount}}, langsung dari toples. Sekarang pergi menangkan sesuatu."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} untukmu, dan {{credit}} tambahan yang hanya berlaku di {{game}}. Ayo.",
+        "1": "Tambah {{credit}} lagi, tapi hanya {{game}} yang menerimanya. Menangkan kembali sebagai KP asli.",
+        "2": "Kuselipkan {{credit}} untuk {{game}}. Pakai di sana dan apa pun yang menang jadi milikmu."
+      },
+      "credit": {
+        "0": "Kamu masih punya {{credit}} untuk {{game}}. Tidak akan bertaruh sendiri.",
+        "1": "{{credit}} untuk {{game}} itu cuma menganggur. Pakailah."
+      },
+      "missionReady": {
+        "0": "Kamu berhasil. Ayo ambil hadiahmu.",
+        "1": "Beres. Ada hadiah menunggu di bawah."
+      },
+      "missionDone": {
+        "0": "Terima kasih! {{amount}} untuk usahamu.",
+        "1": "Sempurna. {{amount}}, seperti janjiku."
+      },
+      "broke": {
+        "0": "Kehabisan KP? Toples penuh dalam {{clock}}. Tahan sebentar.",
+        "1": "Kantong kosong, toples kosong. Keduanya pulih sendiri. {{clock}}."
+      }
+    }
   },
   "dice": {
     "dice": "Dadu",

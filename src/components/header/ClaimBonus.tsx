@@ -19,13 +19,15 @@ import i18n from "../../i18n";
 interface IBonus {
   bonusDate: string;
   userData: User;
+  // the pot in the corner is the bonus now; the button only keeps the ad offer
+  potMode?: boolean;
 }
 
 // one button, three states: while the bonus is on cooldown it shows the countdown; when it
 // is due it becomes Claim Bonus; and if the player has a rewarded ad left, the cooldown
 // state instead offers the ad (+KP) alongside the countdown. the ad is always optional: when
 // the countdown reaches zero the bonus takes over and any un-watched ad offer just goes away.
-const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
+const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) => {
   const [bonusAvailable, setBonusAvailable] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
   const [loadingBonus, setLoadingBonus] = useState(false);
@@ -140,11 +142,26 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
   };
 
   // the offer only stands in while the bonus is cooling down and an ad is left today
-  const adOffered = !bonusAvailable && !!adStatus && adStatus.enabled && adStatus.remainingToday > 0;
+  const adOffered = (potMode || !bonusAvailable) && !!adStatus && adStatus.enabled && adStatus.remainingToday > 0;
+
+  if (potMode && !adOffered && !adOpen) return null;
 
   return (
     <>
-      {bonusAvailable ? (
+      {potMode ? (
+        adOffered && (
+          <MainButton
+            onClick={beginAd}
+            disabled={adBusy}
+            text={
+              <span className="flex items-center gap-2 whitespace-nowrap">
+                <BiMoviePlay className="text-lg" />
+                <span className="font-bold">+{adStatus?.amount}</span>
+              </span>
+            }
+          />
+        )
+      ) : bonusAvailable ? (
         <MainButton text={i18n.t("bonus.claim")} onClick={claimUserBonus} pulse disabled={loadingBonus} />
       ) : adOffered ? (
         <MainButton

@@ -125,6 +125,7 @@
     "coinflip_win": "抛硬币赢取",
     "crash_bet": "Crash 投注",
     "crash_cashout": "Crash 提现",
+    "game_credit": "Daisu 的额度",
     "item_sell": "出售给商店",
     "market_buy": "市场购买",
     "market_order": "创建买单",
@@ -356,6 +357,75 @@
     "placeBet": "投注",
     "profitOnWin": "获胜收益",
     "queuedClickToCancel": "排队中（点击取消）"
+  },
+  "daisu": {
+    "allMissions": "全部任务",
+    "asks": "Daisu 的请求",
+    "close": "关闭",
+    "collect": "领取",
+    "couldNotClaim": "无法领取罐子",
+    "creditsTitle": "Daisu 的推荐",
+    "full": "已满",
+    "fullIn": "{{clock}} 后满",
+    "loading": "...",
+    "noCredit": "领取罐子后，额外十分之一会加到 {{game}}",
+    "nothingYet": "还是空的，{{clock}}",
+    "ofFull": "/ {{full}}",
+    "onlyOn": "仅限 {{game}}",
+    "open": "打开 Daisu",
+    "pickToday": "今天：{{game}}，每次领取 +{{share}}%",
+    "play": "去玩",
+    "take": "领取",
+    "takeAll": "全部领取",
+    "title": "看管罐子",
+    "lines": {
+      "hello": {
+        "0": "欢迎回来。罐子正在装满。",
+        "1": "我帮你留了位子。还有罐子。",
+        "2": "看看谁来了。给罐子一分钟。"
+      },
+      "full": {
+        "0": "满了！在我花掉之前快拿走。",
+        "1": "罐子满了。全是你的。",
+        "2": "一枚硬币都塞不下了。拿走吧。"
+      },
+      "filling": {
+        "0": "还在装。等不及的话现在有 {{amount}}。",
+        "1": "{{clock}} 后就满了。或者现在拿走，我不会说什么。",
+        "2": "耐心一点会多一点。现在 {{amount}}，{{clock}} 后满。"
+      },
+      "empty": {
+        "0": "空的！里面什么都没有。给我 {{clock}}。",
+        "1": "你刚刚全拿走了。{{clock}} 后会有一点。",
+        "2": "我看了两遍。没有。{{clock}} 后再试。"
+      },
+      "claimed": {
+        "0": "给你：{{amount}}。",
+        "1": "新鲜的 KP。别一次花光。花光也行。",
+        "2": "{{amount}}，直接从罐子里来的。去赢点什么吧。"
+      },
+      "claimedCredit": {
+        "0": "{{amount}} 给你，另外 {{credit}} 只能在 {{game}} 用。去吧。",
+        "1": "额外加了 {{credit}}，但只有 {{game}} 收。把它赢成真正的 KP。",
+        "2": "我偷偷放了 {{credit}} 给 {{game}}。在那里花掉，赢的都是你的。"
+      },
+      "credit": {
+        "0": "你还有 {{credit}} 给 {{game}} 用。它不会自己下注。",
+        "1": "那 {{credit}} 给 {{game}} 的还放着呢。去用掉。"
+      },
+      "missionReady": {
+        "0": "你做到了。来领奖励吧。",
+        "1": "搞定了。下面有奖励等着你。"
+      },
+      "missionDone": {
+        "0": "谢谢！辛苦费 {{amount}}。",
+        "1": "完美。说好的 {{amount}}。"
+      },
+      "broke": {
+        "0": "没 KP 了？罐子 {{clock}} 后满。等一下。",
+        "1": "口袋空，罐子空。两个都会自己好起来。{{clock}}。"
+      }
+    }
   },
   "dice": {
     "dice": "骰子",

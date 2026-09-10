@@ -125,6 +125,7 @@
     "coinflip_win": "Münzwurf-Gewinn",
     "crash_bet": "Crash-Einsatz",
     "crash_cashout": "Crash-Auszahlung",
+    "game_credit": "Daisus Guthaben",
     "item_sell": "An den Shop verkauft",
     "market_buy": "Marktkauf",
     "market_order": "Kauforder erstellt",
@@ -356,6 +357,75 @@
     "placeBet": "Einsatz setzen",
     "profitOnWin": "Gewinn bei Sieg",
     "queuedClickToCancel": "In der Warteschlange (klicken zum Abbrechen)"
+  },
+  "daisu": {
+    "allMissions": "Alle Missionen",
+    "asks": "Daisu bittet",
+    "close": "Schließen",
+    "collect": "Abholen",
+    "couldNotClaim": "Der Topf konnte nicht geleert werden",
+    "creditsTitle": "Daisus Wahl",
+    "full": "Voll",
+    "fullIn": "Voll in {{clock}}",
+    "loading": "...",
+    "noCredit": "Hol den Topf ab und ein Zehntel extra geht an {{game}}",
+    "nothingYet": "Noch nichts, {{clock}}",
+    "ofFull": "von {{full}}",
+    "onlyOn": "nur bei {{game}}",
+    "open": "Daisu öffnen",
+    "pickToday": "Heute: {{game}}, +{{share}}% bei jeder Abholung",
+    "play": "Spielen",
+    "take": "Nehmen",
+    "takeAll": "Alles nehmen",
+    "title": "hütet den Topf",
+    "lines": {
+      "hello": {
+        "0": "Willkommen zurück. Der Topf füllt sich.",
+        "1": "Ich habe deinen Platz warm gehalten. Und den Topf.",
+        "2": "Schau, wer da ist. Gib dem Topf eine Minute."
+      },
+      "full": {
+        "0": "Er ist voll! Nimm ihn, bevor ich ihn ausgebe.",
+        "1": "Voller Topf. Ganz für dich.",
+        "2": "Da passt keine Münze mehr rein. Nimm ihn."
+      },
+      "filling": {
+        "0": "Füllt sich noch. {{amount}} sind drin, falls du nicht warten kannst.",
+        "1": "Voll in {{clock}}. Oder nimm, was da ist, ich urteile nicht.",
+        "2": "Geduld zahlt sich ein bisschen mehr aus. {{amount}} jetzt, oder voll in {{clock}}."
+      },
+      "empty": {
+        "0": "Leer! Hier ist nichts drin. Gib mir {{clock}}.",
+        "1": "Du hast gerade alles genommen. In {{clock}} gibt es wieder was.",
+        "2": "Ich habe zweimal nachgesehen. Nichts. Versuch es in {{clock}}."
+      },
+      "claimed": {
+        "0": "Bitte sehr: {{amount}}.",
+        "1": "Frische KP. Gib nicht alles an einem Ort aus. Oder doch.",
+        "2": "{{amount}}, direkt aus dem Topf. Jetzt geh was gewinnen."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} für dich, und {{credit}} extra, die nur bei {{game}} gehen. Los.",
+        "1": "Plus {{credit}} obendrauf, aber nur {{game}} nimmt sie. Gewinn sie als echte KP zurück.",
+        "2": "Ich habe {{credit}} für {{game}} reingelegt. Setz sie dort ein und was sie gewinnen, gehört dir."
+      },
+      "credit": {
+        "0": "Du hast noch {{credit}} für {{game}}. Die setzen sich nicht von selbst.",
+        "1": "Die {{credit}} für {{game}} liegen einfach rum. Geh sie nutzen."
+      },
+      "missionReady": {
+        "0": "Geschafft. Komm deine Belohnung abholen.",
+        "1": "Erledigt. Unten wartet eine Belohnung."
+      },
+      "missionDone": {
+        "0": "Danke! {{amount}} für die Mühe.",
+        "1": "Perfekt. {{amount}}, wie versprochen."
+      },
+      "broke": {
+        "0": "Keine KP mehr? Der Topf ist in {{clock}} voll. Halt durch.",
+        "1": "Leere Taschen, leerer Topf. Beides regelt sich. {{clock}}."
+      }
+    }
   },
   "dice": {
     "dice": "Würfel",

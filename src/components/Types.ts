@@ -27,6 +27,8 @@ export interface User {
         total: number;
         rank: number;
     };
+    // betas this account is in, as the server sees them
+    features?: { daisu?: boolean };
 
 }
 

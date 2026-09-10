@@ -125,6 +125,7 @@
     "coinflip_win": "Coin flip win",
     "crash_bet": "Crash bet",
     "crash_cashout": "Crash cashout",
+    "game_credit": "Daisu's credit",
     "item_sell": "Sold to shop",
     "market_buy": "Marketplace purchase",
     "market_order": "Buy order placed",
@@ -356,6 +357,75 @@
     "placeBet": "Place Bet",
     "profitOnWin": "Profit on Win",
     "queuedClickToCancel": "Queued (click to cancel)"
+  },
+  "daisu": {
+    "allMissions": "All missions",
+    "asks": "Daisu asks",
+    "close": "Close",
+    "collect": "Collect",
+    "couldNotClaim": "Could not claim the pot",
+    "creditsTitle": "Daisu's pick",
+    "full": "Full",
+    "fullIn": "Full in {{clock}}",
+    "loading": "...",
+    "noCredit": "Claim the pot and a tenth extra goes to {{game}}",
+    "nothingYet": "Nothing yet, {{clock}}",
+    "ofFull": "of {{full}}",
+    "onlyOn": "only on {{game}}",
+    "open": "Open Daisu",
+    "pickToday": "Today: {{game}}, +{{share}}% on every claim",
+    "play": "Play",
+    "take": "Take",
+    "takeAll": "Take it all",
+    "title": "keeps the pot",
+    "lines": {
+      "hello": {
+        "0": "Welcome back. The pot is filling.",
+        "1": "I kept your seat warm. And the pot.",
+        "2": "Look who is here. Give the pot a minute."
+      },
+      "full": {
+        "0": "It is full! Take it before I spend it.",
+        "1": "Full pot. All yours.",
+        "2": "I could not fit another coin in there. Take it."
+      },
+      "filling": {
+        "0": "Still filling. {{amount}} in there if you cannot wait.",
+        "1": "Full in {{clock}}. Or take what is there now, I will not judge.",
+        "2": "Patience pays a little more. {{amount}} right now, or full in {{clock}}."
+      },
+      "empty": {
+        "0": "Empty! There is nothing in here. Give me {{clock}}.",
+        "1": "You just took it all. Something in {{clock}}.",
+        "2": "I checked twice. Nothing. Try again in {{clock}}."
+      },
+      "claimed": {
+        "0": "There you go: {{amount}}.",
+        "1": "Fresh KP. Do not spend it all in one place. Or do.",
+        "2": "{{amount}}, straight from the pot. Now go win something."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} for you, and {{credit}} extra that only works on {{game}}. Go on.",
+        "1": "Plus {{credit}} on top, but only {{game}} takes it. Win it back as real KP.",
+        "2": "I slipped {{credit}} in for {{game}}. Spend it there and whatever it wins is yours."
+      },
+      "credit": {
+        "0": "You still have {{credit}} for {{game}}. It is not going to bet itself.",
+        "1": "That {{credit}} for {{game}} is just sitting there. Go use it."
+      },
+      "missionReady": {
+        "0": "You did it. Come collect your reward.",
+        "1": "Done and dusted. There is a reward waiting below."
+      },
+      "missionDone": {
+        "0": "Thank you! {{amount}} for your trouble.",
+        "1": "Perfect. {{amount}}, as promised."
+      },
+      "broke": {
+        "0": "Out of KP? The pot fills in {{clock}}. Hang on.",
+        "1": "Empty pockets, empty pot. Both fix themselves. {{clock}}."
+      }
+    }
   },
   "dice": {
     "dice": "Dice",

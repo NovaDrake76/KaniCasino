@@ -125,6 +125,7 @@
     "coinflip_win": "Thắng tung đồng xu",
     "crash_bet": "Cược crash",
     "crash_cashout": "Rút tiền crash",
+    "game_credit": "Tín dụng của Daisu",
     "item_sell": "Bán cho cửa hàng",
     "market_buy": "Mua trên chợ",
     "market_order": "Đã đặt lệnh mua",
@@ -356,6 +357,75 @@
     "placeBet": "Đặt cược",
     "profitOnWin": "Lợi nhuận khi thắng",
     "queuedClickToCancel": "Đang xếp hàng (bấm để huỷ)"
+  },
+  "daisu": {
+    "allMissions": "Tất cả nhiệm vụ",
+    "asks": "Daisu nhờ",
+    "close": "Đóng",
+    "collect": "Nhận",
+    "couldNotClaim": "Không lấy được hũ",
+    "creditsTitle": "Daisu chọn",
+    "full": "Đầy",
+    "fullIn": "Đầy sau {{clock}}",
+    "loading": "...",
+    "noCredit": "Lấy hũ và thêm một phần mười cho {{game}}",
+    "nothingYet": "Chưa có gì, {{clock}}",
+    "ofFull": "trên {{full}}",
+    "onlyOn": "chỉ dùng ở {{game}}",
+    "open": "Mở Daisu",
+    "pickToday": "Hôm nay: {{game}}, +{{share}}% mỗi lần lấy",
+    "play": "Chơi",
+    "take": "Lấy",
+    "takeAll": "Lấy hết",
+    "title": "giữ hũ",
+    "lines": {
+      "hello": {
+        "0": "Mừng bạn quay lại. Hũ đang đầy dần.",
+        "1": "Tôi giữ chỗ cho bạn rồi. Cả hũ nữa.",
+        "2": "Xem ai đến này. Cho hũ một phút nhé."
+      },
+      "full": {
+        "0": "Đầy rồi! Lấy trước khi tôi tiêu mất.",
+        "1": "Hũ đầy. Của bạn hết.",
+        "2": "Không nhét thêm được đồng nào nữa. Lấy đi."
+      },
+      "filling": {
+        "0": "Vẫn đang đầy dần. Có {{amount}} nếu bạn không đợi được.",
+        "1": "Đầy sau {{clock}}. Hoặc lấy phần đang có, tôi không phán xét đâu.",
+        "2": "Kiên nhẫn được thêm một chút. {{amount}} ngay bây giờ, hoặc đầy sau {{clock}}."
+      },
+      "empty": {
+        "0": "Trống! Không có gì trong này. Cho tôi {{clock}}.",
+        "1": "Bạn vừa lấy hết rồi. Có lại sau {{clock}}.",
+        "2": "Tôi kiểm tra hai lần rồi. Không có gì. Thử lại sau {{clock}}."
+      },
+      "claimed": {
+        "0": "Của bạn đây: {{amount}}.",
+        "1": "KP mới tinh. Đừng tiêu hết một chỗ. Hoặc cứ tiêu.",
+        "2": "{{amount}}, lấy thẳng từ hũ. Giờ đi thắng gì đó đi."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} cho bạn, và thêm {{credit}} chỉ dùng được ở {{game}}. Đi thôi.",
+        "1": "Thêm {{credit}} nữa, nhưng chỉ {{game}} nhận. Thắng lại thành KP thật nhé.",
+        "2": "Tôi bỏ thêm {{credit}} cho {{game}}. Tiêu ở đó, thắng được bao nhiêu là của bạn."
+      },
+      "credit": {
+        "0": "Bạn vẫn còn {{credit}} cho {{game}}. Nó không tự cược đâu.",
+        "1": "{{credit}} cho {{game}} vẫn nằm đó. Đi dùng đi."
+      },
+      "missionReady": {
+        "0": "Bạn làm được rồi. Đến nhận thưởng nào.",
+        "1": "Xong rồi. Có phần thưởng đang đợi bên dưới."
+      },
+      "missionDone": {
+        "0": "Cảm ơn! {{amount}} cho công sức của bạn.",
+        "1": "Tuyệt. {{amount}}, như đã hứa."
+      },
+      "broke": {
+        "0": "Hết KP? Hũ đầy sau {{clock}}. Ráng chút nhé.",
+        "1": "Túi trống, hũ trống. Cả hai sẽ tự đầy lại. {{clock}}."
+      }
+    }
   },
   "dice": {
     "dice": "Xúc xắc",

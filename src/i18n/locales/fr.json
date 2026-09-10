@@ -125,6 +125,7 @@
     "coinflip_win": "Gain à pile ou face",
     "crash_bet": "Mise au crash",
     "crash_cashout": "Encaissement au crash",
+    "game_credit": "Crédit de Daisu",
     "item_sell": "Vendu à la boutique",
     "market_buy": "Achat sur le marché",
     "market_order": "Ordre d'achat créé",
@@ -356,6 +357,75 @@
     "placeBet": "Miser",
     "profitOnWin": "Gain en cas de victoire",
     "queuedClickToCancel": "En file (cliquez pour annuler)"
+  },
+  "daisu": {
+    "allMissions": "Toutes les missions",
+    "asks": "Daisu demande",
+    "close": "Fermer",
+    "collect": "Récupérer",
+    "couldNotClaim": "Impossible de récupérer le pot",
+    "creditsTitle": "Le choix de Daisu",
+    "full": "Plein",
+    "fullIn": "Plein dans {{clock}}",
+    "loading": "...",
+    "noCredit": "Récupérez le pot et un dixième en plus va sur {{game}}",
+    "nothingYet": "Rien pour l'instant, {{clock}}",
+    "ofFull": "sur {{full}}",
+    "onlyOn": "seulement sur {{game}}",
+    "open": "Ouvrir Daisu",
+    "pickToday": "Aujourd'hui : {{game}}, +{{share}}% à chaque retrait",
+    "play": "Jouer",
+    "take": "Prendre",
+    "takeAll": "Tout prendre",
+    "title": "garde le pot",
+    "lines": {
+      "hello": {
+        "0": "Content de te revoir. Le pot se remplit.",
+        "1": "Je t'ai gardé ta place. Et le pot.",
+        "2": "Regarde qui est là. Laisse une minute au pot."
+      },
+      "full": {
+        "0": "Il est plein ! Prends-le avant que je le dépense.",
+        "1": "Pot plein. Tout à toi.",
+        "2": "Plus une pièce ne rentre. Prends-le."
+      },
+      "filling": {
+        "0": "Ça se remplit encore. {{amount}} dedans si tu ne peux pas attendre.",
+        "1": "Plein dans {{clock}}. Ou prends ce qu'il y a, je ne juge pas.",
+        "2": "La patience paie un peu plus. {{amount}} maintenant, ou plein dans {{clock}}."
+      },
+      "empty": {
+        "0": "Vide ! Il n'y a rien ici. Laisse-moi {{clock}}.",
+        "1": "Tu viens de tout prendre. Quelque chose dans {{clock}}.",
+        "2": "J'ai vérifié deux fois. Rien. Réessaie dans {{clock}}."
+      },
+      "claimed": {
+        "0": "Et voilà : {{amount}}.",
+        "1": "Des KP tout frais. Ne dépense pas tout au même endroit. Ou si.",
+        "2": "{{amount}}, tout droit du pot. Va gagner quelque chose."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} pour toi, et {{credit}} en plus qui ne marchent que sur {{game}}. Vas-y.",
+        "1": "Plus {{credit}} par-dessus, mais seul {{game}} les prend. Regagne-les en vrais KP.",
+        "2": "J'ai glissé {{credit}} pour {{game}}. Dépense-les là et ce que ça gagne est à toi."
+      },
+      "credit": {
+        "0": "Il te reste {{credit}} pour {{game}}. Ça ne va pas se miser tout seul.",
+        "1": "Ces {{credit}} pour {{game}} attendent. Va les utiliser."
+      },
+      "missionReady": {
+        "0": "Tu l'as fait. Viens chercher ta récompense.",
+        "1": "C'est réglé. Une récompense t'attend en dessous."
+      },
+      "missionDone": {
+        "0": "Merci ! {{amount}} pour la peine.",
+        "1": "Parfait. {{amount}}, comme promis."
+      },
+      "broke": {
+        "0": "Plus de KP ? Le pot se remplit dans {{clock}}. Tiens bon.",
+        "1": "Poches vides, pot vide. Les deux se règlent tout seuls. {{clock}}."
+      }
+    }
   },
   "dice": {
     "dice": "Dés",

@@ -125,6 +125,7 @@
     "coinflip_win": "Vitória no cara ou coroa",
     "crash_bet": "Aposta no crash",
     "crash_cashout": "Saque no crash",
+    "game_credit": "Crédito da Daisu",
     "item_sell": "Vendido para a loja",
     "market_buy": "Compra no mercado",
     "market_order": "Ordem de compra criada",
@@ -356,6 +357,75 @@
     "placeBet": "Apostar",
     "profitOnWin": "Lucro na vitória",
     "queuedClickToCancel": "Na fila (clique para cancelar)"
+  },
+  "daisu": {
+    "allMissions": "Todas as missões",
+    "asks": "A Daisu pede",
+    "close": "Fechar",
+    "collect": "Receber",
+    "couldNotClaim": "Não deu para pegar o pote",
+    "creditsTitle": "Escolha da Daisu",
+    "full": "Cheio",
+    "fullIn": "Cheio em {{clock}}",
+    "loading": "...",
+    "noCredit": "Pegue o pote e um décimo a mais vai para {{game}}",
+    "nothingYet": "Nada ainda, {{clock}}",
+    "ofFull": "de {{full}}",
+    "onlyOn": "só em {{game}}",
+    "open": "Abrir a Daisu",
+    "pickToday": "Hoje: {{game}}, +{{share}}% em cada coleta",
+    "play": "Jogar",
+    "take": "Pegar",
+    "takeAll": "Pegar tudo",
+    "title": "cuida do pote",
+    "lines": {
+      "hello": {
+        "0": "Bem-vindo de volta. O pote está enchendo.",
+        "1": "Guardei seu lugar. E o pote.",
+        "2": "Olha quem chegou. Dá um minuto pro pote."
+      },
+      "full": {
+        "0": "Está cheio! Pega antes que eu gaste.",
+        "1": "Pote cheio. É todo seu.",
+        "2": "Não cabe mais nenhuma moeda aí. Pega."
+      },
+      "filling": {
+        "0": "Ainda enchendo. Tem {{amount}} aí se não der para esperar.",
+        "1": "Cheio em {{clock}}. Ou pega o que tem agora, não vou julgar.",
+        "2": "Paciência paga um pouco mais. {{amount}} agora, ou cheio em {{clock}}."
+      },
+      "empty": {
+        "0": "Vazio! Não tem nada aqui. Me dá {{clock}}.",
+        "1": "Você acabou de pegar tudo. Tem algo em {{clock}}.",
+        "2": "Olhei duas vezes. Nada. Tenta de novo em {{clock}}."
+      },
+      "claimed": {
+        "0": "Aqui está: {{amount}}.",
+        "1": "KP fresquinho. Não gasta tudo num lugar só. Ou gasta.",
+        "2": "{{amount}}, direto do pote. Agora vai ganhar alguma coisa."
+      },
+      "claimedCredit": {
+        "0": "{{amount}} para você, e {{credit}} a mais que só funciona em {{game}}. Vai lá.",
+        "1": "Mais {{credit}} por cima, mas só {{game}} aceita. Ganha de volta como KP de verdade.",
+        "2": "Coloquei {{credit}} para {{game}}. Gasta lá e o que ganhar é seu."
+      },
+      "credit": {
+        "0": "Você ainda tem {{credit}} para {{game}}. Não vai apostar sozinho.",
+        "1": "Aquele {{credit}} para {{game}} está parado ali. Vai usar."
+      },
+      "missionReady": {
+        "0": "Você conseguiu. Vem receber sua recompensa.",
+        "1": "Feito. Tem uma recompensa esperando aqui embaixo."
+      },
+      "missionDone": {
+        "0": "Obrigada! {{amount}} pelo trabalho.",
+        "1": "Perfeito. {{amount}}, como prometido."
+      },
+      "broke": {
+        "0": "Sem KP? O pote enche em {{clock}}. Aguenta aí.",
+        "1": "Bolso vazio, pote vazio. Os dois se resolvem. {{clock}}."
+      }
+    }
   },
   "dice": {
     "dice": "Dados",
