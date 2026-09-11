@@ -16,16 +16,10 @@ import { toast } from "react-toastify";
 import { BannerProps } from "./Types";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { FaDiscord } from "react-icons/fa";
 import i18n from "../../i18n";
 
 // its own namespace, so a category literally called "Most Opened" cannot take the anchor
 const TOP_CASES_ID = "top-cases";
-
-// a 24 hour discord giveaway takes the whole hero while it runs. flipping this off brings
-// the regular slides back; the giveaway slide and its two images go with it.
-const GIVEAWAY_RUNNING = true;
-const DISCORD_URL = (import.meta.env.VITE_DISCORD_INVITE as string) || "https://discord.gg/NMdYb2aBZK";
 
 const Home = () => {
   const [cases, setCases] = useState<any>();
@@ -168,39 +162,12 @@ const Home = () => {
     },
   ];
 
-  const giveaway: BannerProps = {
-    left: {
-      image: "/images/banners/touhou-giveaway-plate.webp",
-      title: i18n.t("home.giveawayTitle"),
-      description: (
-        <span className="flex flex-col gap-1 text-sm">
-          <span>1. {i18n.t("home.giveawayStep1")}</span>
-          <span>2. {i18n.t("home.giveawayStep2")}</span>
-          <span className="text-xs text-ink-muted">{i18n.t("home.giveawayNote")}</span>
-        </span>
-      ),
-      link: DISCORD_URL,
-      cta: (
-        <>
-          <FaDiscord className="text-base" /> {i18n.t("home.giveawayJoin")}
-        </>
-      ),
-    },
-    right: (
-      <div>
-        <img src="/images/banners/touhou-giveaway-lockup.webp" alt={i18n.t("home.giveawayTitle")} />
-      </div>
-    ),
-  };
-
-  const slides = GIVEAWAY_RUNNING ? [giveaway] : BannerContent;
-
   return (
     <div className="w-full flex justify-center">
       <div className=" flex-col w-full max-w-[1920px] ">
         <Carousel
-          autoPlay={slides.length > 1}
-          infiniteLoop={slides.length > 1}
+          autoPlay={true}
+          infiniteLoop={true}
           showThumbs={false}
           showStatus={false}
           showIndicators={false}
@@ -208,7 +175,7 @@ const Home = () => {
           interval={7000}
           stopOnHover={false}
         >
-          {slides.map((_item, index) => (
+          {BannerContent.map((_item, index) => (
             <Banner key={index} left={_item.left} right={_item.right} />
           ))}
         </Carousel>
