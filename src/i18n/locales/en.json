@@ -41,6 +41,7 @@
     "comingSoonTitle": "More games soon",
     "halo": {
       "adoptedNote": "You played this one before signing in, so it keeps your streak but pays no KP.",
+      "attemptsLeft": "Attempts remaining: {{count}}",
       "attr": {
         "academy": "Academy",
         "age": "Age",
@@ -75,7 +76,9 @@
       "hintsTitle": "Arona's hints",
       "howTo": "Pick a student. Each guess shows which details match, and every miss unlocks one of Arona's hints.",
       "loadFailed": "Could not load today's student.",
+      "loading": "Initializing Arona...",
       "lockedAfter": "After {{count}} misses",
+      "lostCheer": "You forgot about me, Sensei?",
       "lostLine": "Ten guesses and she slipped past. A new student arrives tomorrow.",
       "lostTitle": "It was {{name}}",
       "nextStudent": "Next student in",
@@ -92,7 +95,8 @@
       "share": "Copy result",
       "signIn": "Sign in",
       "signInLine": "Sign in before you play to keep a streak and win up to {{amount}} KP a day.",
-      "solvedToday": "{{count}} solved today",
+      "solvedToday": "{{count}} Senseis cleared this student today",
+      "solvedToday_one": "{{count}} Sensei cleared this student today",
       "statsTitle": "Your record",
       "status": {
         "CORRECT": "Match",
@@ -102,11 +106,13 @@
       },
       "streak": "Streak",
       "subtitle": "Guess today's Blue Archive student.",
+      "tagline": "Guess the student of the day!",
       "title": "Daily Halo",
       "unavailable": "Arona could not find this one.",
       "winRate": "Win rate",
+      "wonCheer": "Excellent work, Sensei!",
       "wonLine": "Solved in {{count}} of {{max}} guesses.",
-      "wonTitle": "It's {{name}}!",
+      "wonTitle": "Yes, it's {{name}}!",
       "yesterday": "Yesterday"
     },
     "play": "Play",

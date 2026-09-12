@@ -107,15 +107,16 @@ describe("daily halo", () => {
 
     await waitFor(() => expect(checkGuestGuesses).toHaveBeenLastCalledWith(["Shiroko"]));
     expect(JSON.parse(window.localStorage.getItem("kani.dailyHalo") || "{}")).toEqual({ day: 300, guesses: ["Shiroko"] });
-    expect(await screen.findByText("9 guesses left")).toBeTruthy();
+    expect(await screen.findByText("Attempts remaining: 9")).toBeTruthy();
+    expect(screen.getByText("Arona's hints")).toBeTruthy();
   });
 
-  it("shows the countdown, today's solves and the locked hints", async () => {
+  it("shows the countdown and today's solves, and holds the hints back until the first guess", async () => {
     draw();
 
-    expect(await screen.findByText("4 solved today")).toBeTruthy();
+    expect(await screen.findByText("4 Senseis cleared this student today")).toBeTruthy();
     expect(screen.getByText(/\d{2}:\d{2}:\d{2}/)).toBeTruthy();
-    expect(screen.getAllByText("After 1 misses").length).toBeGreaterThan(0);
+    expect(screen.queryByText("Arona's hints")).toBeNull();
   });
 
   it("asks a guest to sign in to earn KP", async () => {
@@ -163,7 +164,7 @@ describe("daily halo", () => {
 
     draw({ id: "u1", walletBalance: 0 });
 
-    expect(await screen.findByText("It's Hoshino!")).toBeTruthy();
+    expect(await screen.findByText("Yes, it's Hoshino!")).toBeTruthy();
     expect(screen.getByText("Hoshino is in the Kivotos Case").closest("a")?.getAttribute("href")).toBe("/case/abydos");
     expect(screen.getByText("Copy result")).toBeTruthy();
     expect(screen.queryByLabelText("Search a student")).toBeNull();

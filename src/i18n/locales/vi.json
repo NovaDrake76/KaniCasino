@@ -41,6 +41,7 @@
     "comingSoonTitle": "Sắp có thêm trò chơi",
     "halo": {
       "adoptedNote": "Bạn chơi ván này trước khi đăng nhập, nên nó giữ chuỗi nhưng không trả KP.",
+      "attemptsLeft": "Lượt còn lại: {{count}}",
       "attr": {
         "academy": "Học viện",
         "age": "Tuổi",
@@ -75,7 +76,9 @@
       "hintsTitle": "Gợi ý của Arona",
       "howTo": "Chọn một học sinh. Mỗi lần đoán cho biết chi tiết nào khớp, và mỗi lần sai mở một gợi ý của Arona.",
       "loadFailed": "Không tải được học sinh hôm nay.",
+      "loading": "Đang khởi động Arona...",
       "lockedAfter": "Sau {{count}} lần sai",
+      "lostCheer": "Sensei quên mất em rồi sao?",
       "lostLine": "Mười lượt mà vẫn để cô ấy thoát. Ngày mai có học sinh mới.",
       "lostTitle": "Đáp án là {{name}}",
       "nextStudent": "Học sinh tiếp theo sau",
@@ -92,7 +95,8 @@
       "share": "Sao chép kết quả",
       "signIn": "Đăng nhập",
       "signInLine": "Đăng nhập trước khi chơi để giữ chuỗi và thắng tới {{amount}} KP mỗi ngày.",
-      "solvedToday": "{{count}} người giải được hôm nay",
+      "solvedToday": "Hôm nay {{count}} Sensei đã đoán đúng học sinh này",
+      "solvedToday_one": "Hôm nay {{count}} Sensei đã đoán đúng học sinh này",
       "statsTitle": "Thành tích của bạn",
       "status": {
         "CORRECT": "Khớp",
@@ -102,11 +106,13 @@
       },
       "streak": "Chuỗi",
       "subtitle": "Đoán học sinh Blue Archive của hôm nay.",
+      "tagline": "Đoán học sinh của hôm nay!",
       "title": "Daily Halo",
       "unavailable": "Arona không tìm thấy mục này.",
       "winRate": "Tỉ lệ thắng",
+      "wonCheer": "Làm tốt lắm, Sensei!",
       "wonLine": "Giải được sau {{count}} trên {{max}} lượt.",
-      "wonTitle": "Là {{name}}!",
+      "wonTitle": "Đúng rồi, là {{name}}!",
       "yesterday": "Hôm qua"
     },
     "play": "Chơi",

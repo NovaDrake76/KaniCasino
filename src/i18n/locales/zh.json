@@ -41,6 +41,7 @@
     "comingSoonTitle": "更多游戏即将推出",
     "halo": {
       "adoptedNote": "这局是登录前玩的，会计入连续记录，但不发放 KP。",
+      "attemptsLeft": "剩余次数：{{count}}",
       "attr": {
         "academy": "学园",
         "age": "年龄",
@@ -75,7 +76,9 @@
       "hintsTitle": "阿罗娜的提示",
       "howTo": "选一名学生。每次猜测都会显示哪些信息吻合，每猜错一次就解锁一条阿罗娜的提示。",
       "loadFailed": "无法加载今天的学生。",
+      "loading": "正在启动阿罗娜...",
       "lockedAfter": "猜错 {{count}} 次后解锁",
+      "lostCheer": "老师，你把我忘了吗？",
       "lostLine": "十次都没猜中。明天会有新学生。",
       "lostTitle": "答案是{{name}}",
       "nextStudent": "下一名学生",
@@ -92,7 +95,8 @@
       "share": "复制结果",
       "signIn": "登录",
       "signInLine": "开始前登录，就能保留连续记录，每天最多赢得 {{amount}} KP。",
-      "solvedToday": "今天有 {{count}} 人猜中",
+      "solvedToday": "今天有 {{count}} 位老师猜中了这名学生",
+      "solvedToday_one": "今天有 {{count}} 位老师猜中了这名学生",
       "statsTitle": "你的记录",
       "status": {
         "CORRECT": "吻合",
@@ -102,11 +106,13 @@
       },
       "streak": "连续",
       "subtitle": "猜出今天的蔚蓝档案学生。",
+      "tagline": "猜出今天的学生！",
       "title": "Daily Halo",
       "unavailable": "阿罗娜没找到这条。",
       "winRate": "胜率",
+      "wonCheer": "干得漂亮，老师！",
       "wonLine": "{{max}} 次内第 {{count}} 次猜中。",
-      "wonTitle": "是{{name}}！",
+      "wonTitle": "没错，是{{name}}！",
       "yesterday": "昨天"
     },
     "play": "开始",

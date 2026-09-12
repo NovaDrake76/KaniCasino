@@ -41,6 +41,7 @@
     "comingSoonTitle": "Game lain segera hadir",
     "halo": {
       "adoptedNote": "Kamu memainkan ini sebelum masuk, jadi tetap dihitung untuk rentetan tapi tidak membayar KP.",
+      "attemptsLeft": "Sisa percobaan: {{count}}",
       "attr": {
         "academy": "Akademi",
         "age": "Usia",
@@ -75,7 +76,9 @@
       "hintsTitle": "Petunjuk Arona",
       "howTo": "Pilih seorang murid. Setiap tebakan menunjukkan detail yang cocok, dan setiap tebakan salah membuka satu petunjuk dari Arona.",
       "loadFailed": "Murid hari ini tidak bisa dimuat.",
+      "loading": "Menyalakan Arona...",
       "lockedAfter": "Setelah {{count}} kali salah",
+      "lostCheer": "Sensei melupakanku?",
       "lostLine": "Sepuluh tebakan dan dia lolos. Besok ada murid baru.",
       "lostTitle": "Jawabannya {{name}}",
       "nextStudent": "Murid berikutnya dalam",
@@ -92,7 +95,8 @@
       "share": "Salin hasil",
       "signIn": "Masuk",
       "signInLine": "Masuk sebelum bermain untuk menjaga rentetan dan menang hingga {{amount}} KP per hari.",
-      "solvedToday": "{{count}} orang memecahkannya hari ini",
+      "solvedToday": "{{count}} Sensei menebak murid ini hari ini",
+      "solvedToday_one": "{{count}} Sensei menebak murid ini hari ini",
       "statsTitle": "Rekormu",
       "status": {
         "CORRECT": "Cocok",
@@ -102,11 +106,13 @@
       },
       "streak": "Rentetan",
       "subtitle": "Tebak murid Blue Archive hari ini.",
+      "tagline": "Tebak murid hari ini!",
       "title": "Daily Halo",
       "unavailable": "Arona tidak menemukan yang ini.",
       "winRate": "Tingkat menang",
+      "wonCheer": "Kerja bagus, Sensei!",
       "wonLine": "Terpecahkan dalam {{count}} dari {{max}} tebakan.",
-      "wonTitle": "Itu {{name}}!",
+      "wonTitle": "Benar, itu {{name}}!",
       "yesterday": "Kemarin"
     },
     "play": "Main",

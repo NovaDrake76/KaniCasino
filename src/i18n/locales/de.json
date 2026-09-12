@@ -41,6 +41,7 @@
     "comingSoonTitle": "Bald mehr Spiele",
     "halo": {
       "adoptedNote": "Du hast diese Runde vor dem Anmelden gespielt. Sie zählt für deine Serie, zahlt aber keine KP.",
+      "attemptsLeft": "Verbleibende Versuche: {{count}}",
       "attr": {
         "academy": "Akademie",
         "age": "Alter",
@@ -75,7 +76,9 @@
       "hintsTitle": "Aronas Hinweise",
       "howTo": "Wähle eine Schülerin. Jeder Tipp zeigt, welche Details passen, und jeder Fehlversuch schaltet einen Hinweis von Arona frei.",
       "loadFailed": "Die Schülerin des Tages konnte nicht geladen werden.",
+      "loading": "Arona wird gestartet...",
       "lockedAfter": "Nach {{count}} Fehlversuchen",
+      "lostCheer": "Hast du mich vergessen, Sensei?",
       "lostLine": "Zehn Versuche, und sie ist entwischt. Morgen kommt eine neue Schülerin.",
       "lostTitle": "Es war {{name}}",
       "nextStudent": "Nächste Schülerin in",
@@ -92,7 +95,8 @@
       "share": "Ergebnis kopieren",
       "signIn": "Anmelden",
       "signInLine": "Melde dich vor dem Spielen an, um eine Serie zu halten und bis zu {{amount}} KP am Tag zu gewinnen.",
-      "solvedToday": "{{count}} haben es heute gelöst",
+      "solvedToday": "{{count}} Senseis haben diese Schülerin heute erraten",
+      "solvedToday_one": "{{count}} Sensei hat diese Schülerin heute erraten",
       "statsTitle": "Deine Bilanz",
       "status": {
         "CORRECT": "Passt",
@@ -102,11 +106,13 @@
       },
       "streak": "Serie",
       "subtitle": "Errate die Blue-Archive-Schülerin des Tages.",
+      "tagline": "Errate die Schülerin des Tages!",
       "title": "Daily Halo",
       "unavailable": "Arona konnte das nicht finden.",
       "winRate": "Siegquote",
+      "wonCheer": "Ausgezeichnete Arbeit, Sensei!",
       "wonLine": "Gelöst in {{count}} von {{max}} Versuchen.",
-      "wonTitle": "Es ist {{name}}!",
+      "wonTitle": "Ja, es ist {{name}}!",
       "yesterday": "Gestern"
     },
     "play": "Spielen",

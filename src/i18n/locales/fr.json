@@ -41,6 +41,7 @@
     "comingSoonTitle": "D'autres jeux bientôt",
     "halo": {
       "adoptedNote": "Vous avez joué celle-ci avant de vous connecter : elle garde votre série mais ne rapporte pas de KP.",
+      "attemptsLeft": "Essais restants : {{count}}",
       "attr": {
         "academy": "Académie",
         "age": "Âge",
@@ -75,7 +76,9 @@
       "hintsTitle": "Les indices d'Arona",
       "howTo": "Choisissez une élève. Chaque essai montre les détails qui correspondent, et chaque échec débloque un indice d'Arona.",
       "loadFailed": "Impossible de charger l'élève du jour.",
+      "loading": "Initialisation d'Arona...",
       "lockedAfter": "Après {{count}} échecs",
+      "lostCheer": "Tu m'as oubliée, Sensei ?",
       "lostLine": "Dix essais et elle vous a échappé. Une nouvelle élève arrive demain.",
       "lostTitle": "C'était {{name}}",
       "nextStudent": "Prochaine élève dans",
@@ -92,7 +95,8 @@
       "share": "Copier le résultat",
       "signIn": "Se connecter",
       "signInLine": "Connectez-vous avant de jouer pour garder une série et gagner jusqu'à {{amount}} KP par jour.",
-      "solvedToday": "{{count}} l'ont résolue aujourd'hui",
+      "solvedToday": "{{count}} Senseis ont trouvé cette élève aujourd'hui",
+      "solvedToday_one": "{{count}} Sensei a trouvé cette élève aujourd'hui",
       "statsTitle": "Votre bilan",
       "status": {
         "CORRECT": "Correspond",
@@ -102,11 +106,13 @@
       },
       "streak": "Série",
       "subtitle": "Devinez l'élève de Blue Archive du jour.",
+      "tagline": "Devinez l'élève du jour !",
       "title": "Daily Halo",
       "unavailable": "Arona n'a pas trouvé celui-ci.",
       "winRate": "Victoires",
+      "wonCheer": "Excellent travail, Sensei !",
       "wonLine": "Résolu en {{count}} essais sur {{max}}.",
-      "wonTitle": "C'est {{name}} !",
+      "wonTitle": "Oui, c'est {{name}} !",
       "yesterday": "Hier"
     },
     "play": "Jouer",

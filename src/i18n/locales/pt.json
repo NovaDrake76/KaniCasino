@@ -41,6 +41,7 @@
     "comingSoonTitle": "Mais jogos em breve",
     "halo": {
       "adoptedNote": "Você jogou esta antes de entrar, então ela mantém sua sequência mas não paga KP.",
+      "attemptsLeft": "Tentativas restantes: {{count}}",
       "attr": {
         "academy": "Academia",
         "age": "Idade",
@@ -75,7 +76,9 @@
       "hintsTitle": "Dicas da Arona",
       "howTo": "Escolha uma aluna. Cada palpite mostra quais detalhes batem, e cada erro libera uma dica da Arona.",
       "loadFailed": "Não deu para carregar a aluna de hoje.",
+      "loading": "Inicializando a Arona...",
       "lockedAfter": "Após {{count}} erros",
+      "lostCheer": "Você se esqueceu de mim, Sensei?",
       "lostLine": "Dez palpites e ela escapou. Amanhã chega uma nova aluna.",
       "lostTitle": "Era a {{name}}",
       "nextStudent": "Próxima aluna em",
@@ -92,7 +95,8 @@
       "share": "Copiar resultado",
       "signIn": "Entrar",
       "signInLine": "Entre antes de jogar para manter uma sequência e ganhar até {{amount}} KP por dia.",
-      "solvedToday": "{{count}} resolveram hoje",
+      "solvedToday": "{{count}} Senseis acertaram esta aluna hoje",
+      "solvedToday_one": "{{count}} Sensei acertou esta aluna hoje",
       "statsTitle": "Seu histórico",
       "status": {
         "CORRECT": "Bate",
@@ -102,11 +106,13 @@
       },
       "streak": "Sequência",
       "subtitle": "Adivinhe a aluna de Blue Archive de hoje.",
+      "tagline": "Adivinhe a aluna do dia!",
       "title": "Daily Halo",
       "unavailable": "A Arona não encontrou esta.",
       "winRate": "Vitórias",
+      "wonCheer": "Excelente trabalho, Sensei!",
       "wonLine": "Resolvido em {{count}} de {{max}} palpites.",
-      "wonTitle": "É a {{name}}!",
+      "wonTitle": "Sim, é a {{name}}!",
       "yesterday": "Ontem"
     },
     "play": "Jogar",

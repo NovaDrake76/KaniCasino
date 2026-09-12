@@ -41,6 +41,7 @@
     "comingSoonTitle": "Altri giochi in arrivo",
     "halo": {
       "adoptedNote": "Hai giocato questa prima di accedere: conta per la serie ma non paga KP.",
+      "attemptsLeft": "Tentativi rimasti: {{count}}",
       "attr": {
         "academy": "Accademia",
         "age": "Età",
@@ -75,7 +76,9 @@
       "hintsTitle": "Gli indizi di Arona",
       "howTo": "Scegli una studentessa. Ogni tentativo mostra quali dettagli combaciano, e ogni errore sblocca un indizio di Arona.",
       "loadFailed": "Impossibile caricare la studentessa di oggi.",
+      "loading": "Avvio di Arona...",
       "lockedAfter": "Dopo {{count}} errori",
+      "lostCheer": "Ti sei dimenticato di me, Sensei?",
       "lostLine": "Dieci tentativi e ti è sfuggita. Domani arriva una nuova studentessa.",
       "lostTitle": "Era {{name}}",
       "nextStudent": "Prossima studentessa tra",
@@ -92,7 +95,8 @@
       "share": "Copia il risultato",
       "signIn": "Accedi",
       "signInLine": "Accedi prima di giocare per tenere una serie e vincere fino a {{amount}} KP al giorno.",
-      "solvedToday": "{{count}} l'hanno risolto oggi",
+      "solvedToday": "{{count}} Sensei hanno indovinato questa studentessa oggi",
+      "solvedToday_one": "{{count}} Sensei ha indovinato questa studentessa oggi",
       "statsTitle": "Il tuo record",
       "status": {
         "CORRECT": "Combacia",
@@ -102,11 +106,13 @@
       },
       "streak": "Serie",
       "subtitle": "Indovina la studentessa di Blue Archive di oggi.",
+      "tagline": "Indovina la studentessa del giorno!",
       "title": "Daily Halo",
       "unavailable": "Arona non l'ha trovato.",
       "winRate": "Vittorie",
+      "wonCheer": "Ottimo lavoro, Sensei!",
       "wonLine": "Risolto in {{count}} tentativi su {{max}}.",
-      "wonTitle": "È {{name}}!",
+      "wonTitle": "Sì, è {{name}}!",
       "yesterday": "Ieri"
     },
     "play": "Gioca",
