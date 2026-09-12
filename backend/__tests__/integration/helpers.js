@@ -18,6 +18,7 @@ const itemRoutes = require("../../routes/itemRoutes");
 const fandomRoutes = require("../../routes/fandomRoutes");
 const predictionRoutes = require("../../routes/predictionRoutes");
 const discordRoutes = require("../../routes/discordRoutes");
+const arcadeRoutes = require("../../routes/arcadeRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -45,6 +46,7 @@ function makeApp() {
   // discord redirects a browser here, so it is mounted outside the router in index.js too
   app.get("/discord/oauth/callback", discordRoutes.oauthCallback);
   app.use("/discord", discordRoutes);
+  app.use("/arcade", arcadeRoutes);
   return app;
 }
 

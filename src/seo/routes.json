@@ -75,6 +75,15 @@
     "/predictions": {
       "title": "Predictions | Player Prediction Markets | KaniCasino",
       "description": "Buy shares in what you think happens next. Anime, gaming and site markets priced by the players, settled in fake coins."
+    },
+    "/arcade": {
+      "title": "Arcade | KaniCasino",
+      "description": "Free daily puzzles with no bets involved. Guess today's Blue Archive student in Daily Halo."
+    },
+    "/arcade/daily-halo": {
+      "title": "Daily Halo, the Blue Archive guessing game | KaniCasino",
+      "description": "Guess today's Blue Archive student in ten tries. Every miss unlocks a hint: the halo, the weapon, the voice line. A new student every day.",
+      "image": "/images/arcade/daily-halo-og.jpg"
     }
   },
   "dynamic": [
