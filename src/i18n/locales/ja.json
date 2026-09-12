@@ -797,6 +797,7 @@
     "ourDiscord": "公式 Discord",
     "ourGames": "ゲーム一覧",
     "playGame": "{{game}} で遊ぶ",
+    "playNonGambling": "ギャンブルなしのゲームで遊ぶ",
     "plinko": "プリンコ",
     "tryYourLuckNow": "今すぐ運を試そう！",
     "umaMusume": "ウマ娘",
@@ -956,7 +957,6 @@
   "nav": {
     "adClosedEarlyNo": "広告を途中で閉じたため、報酬はありません",
     "allDoneEnjoyYour": "完了です。コインをお楽しみください。",
-    "arcade": "アーケード",
     "backoffice": "管理画面",
     "caseBattles": "ケースバトル",
     "coinFlip": "コインフリップ",

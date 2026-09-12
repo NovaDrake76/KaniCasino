@@ -797,6 +797,7 @@
     "ourDiscord": "Notre Discord",
     "ourGames": "Nos jeux",
     "playGame": "Jouer à {{game}}",
+    "playNonGambling": "Jouez à des jeux sans mise",
     "plinko": "PLINKO",
     "tryYourLuckNow": "Tentez votre chance !",
     "umaMusume": "UMA MUSUME",
@@ -956,7 +957,6 @@
   "nav": {
     "adClosedEarlyNo": "Publicité fermée trop tôt, pas de récompense",
     "allDoneEnjoyYour": "C'est fait, profitez de vos pièces.",
-    "arcade": "Arcade",
     "backoffice": "Backoffice",
     "caseBattles": "Batailles de caisses",
     "coinFlip": "Pile ou face",

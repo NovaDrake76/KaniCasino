@@ -797,6 +797,7 @@
     "ourDiscord": "我们的 Discord",
     "ourGames": "我们的游戏",
     "playGame": "玩 {{game}}",
+    "playNonGambling": "玩非赌博类游戏",
     "plinko": "PLINKO",
     "tryYourLuckNow": "现在就来试试手气！",
     "umaMusume": "赛马娘",
@@ -956,7 +957,6 @@
   "nav": {
     "adClosedEarlyNo": "广告提前关闭，未获得奖励",
     "allDoneEnjoyYour": "搞定，享受你的金币吧。",
-    "arcade": "游戏厅",
     "backoffice": "后台",
     "caseBattles": "开箱对战",
     "coinFlip": "抛硬币",

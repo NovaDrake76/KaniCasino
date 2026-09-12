@@ -797,6 +797,7 @@
     "ourDiscord": "공식 디스코드",
     "ourGames": "우리 게임",
     "playGame": "{{game}} 플레이",
+    "playNonGambling": "도박 없는 게임 플레이",
     "plinko": "플린코",
     "tryYourLuckNow": "지금 운을 시험해 보세요!",
     "umaMusume": "우마무스메",
@@ -956,7 +957,6 @@
   "nav": {
     "adClosedEarlyNo": "광고를 일찍 닫아 보상이 없습니다",
     "allDoneEnjoyYour": "완료되었습니다. 코인을 즐기세요.",
-    "arcade": "아케이드",
     "backoffice": "백오피스",
     "caseBattles": "케이스 배틀",
     "coinFlip": "동전 던지기",

@@ -797,6 +797,7 @@
     "ourDiscord": "Discord của chúng tôi",
     "ourGames": "Trò chơi của chúng tôi",
     "playGame": "Chơi {{game}}",
+    "playNonGambling": "Chơi các trò không cờ bạc",
     "plinko": "PLINKO",
     "tryYourLuckNow": "Thử vận may ngay!",
     "umaMusume": "UMA MUSUME",
@@ -956,7 +957,6 @@
   "nav": {
     "adClosedEarlyNo": "Đóng quảng cáo quá sớm, không có thưởng",
     "allDoneEnjoyYour": "Xong rồi, chúc bạn vui với số xu này.",
-    "arcade": "Arcade",
     "backoffice": "Quản trị",
     "caseBattles": "Đấu hòm",
     "coinFlip": "Tung đồng xu",

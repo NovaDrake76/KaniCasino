@@ -13,7 +13,6 @@ import RightContent from "./RightContent";
 import { useTranslation } from "react-i18next";
 import GiftTag from "../GiftTag";
 import GamesMenu from "./GamesMenu";
-import { GiGamepad } from "react-icons/gi";
 import { NavLink } from "../gameLinks";
 import useGiftReady from "../useGiftReady";
 import i18n from "../../../i18n";
@@ -73,11 +72,6 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
   // the games moved behind GamesMenu: ten of them across the bar stopped fitting in any
   // language. what stays here is everything that is not a game.
   const links: NavLink[] = [
-    {
-      name: i18n.t("nav.arcade"),
-      path: "/arcade",
-      icon: <GiGamepad className="text-2xl" />,
-    },
     {
       name: i18n.t("nav.market"),
       path: "/marketplace",

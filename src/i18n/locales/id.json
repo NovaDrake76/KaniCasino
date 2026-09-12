@@ -797,6 +797,7 @@
     "ourDiscord": "Discord kami",
     "ourGames": "Game kami",
     "playGame": "Mainkan {{game}}",
+    "playNonGambling": "Main game tanpa judi",
     "plinko": "Bola PLINKO",
     "tryYourLuckNow": "Coba hokimu sini!",
     "umaMusume": "UMA MUSUME",
@@ -956,7 +957,6 @@
   "nav": {
     "adClosedEarlyNo": "Iklan ditutup lebih awal, tidak ada hadiah.",
     "allDoneEnjoyYour": "Selesai, selamat menikmati koinmu.",
-    "arcade": "Arcade",
     "backoffice": "BekOffis",
     "caseBattles": "Adu gacor",
     "coinFlip": "Lempar koin",
