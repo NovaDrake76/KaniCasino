@@ -10,6 +10,7 @@ import GiftTag from "./GiftTag";
 import useGiftReady from "./useGiftReady";
 import i18n from "../../i18n";
 import { gameLinks, NavLink } from "./gameLinks";
+import { GiGamepad } from "react-icons/gi";
 
 interface Sidebar {
     closeSidebar: () => void;
@@ -27,6 +28,11 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: i18n.t("nav.home"),
             path: "/",
             icon: <FaHome className="text-2xl" />,
+        },
+        {
+            name: i18n.t("nav.arcade"),
+            path: "/arcade",
+            icon: <GiGamepad className="text-2xl" />,
         },
         {
             name: i18n.t("nav.market"),
