@@ -82,7 +82,8 @@
     },
     "/arcade/daily-halo": {
       "title": "Daily Halo, the Blue Archive guessing game | KaniCasino",
-      "description": "Guess today's Blue Archive student in ten tries. Every miss unlocks a hint: the halo, the weapon, the voice line. A new student every day."
+      "description": "Guess today's Blue Archive student in ten tries. Every miss unlocks a hint: the halo, the weapon, the voice line. A new student every day.",
+      "image": "/images/arcade/daily-halo-og.jpg"
     }
   },
   "dynamic": [
