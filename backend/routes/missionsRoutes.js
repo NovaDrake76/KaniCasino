@@ -1,6 +1,8 @@
 const express = require("express");
 const { isAuthenticated } = require("../middleware/authMiddleware");
 const missions = require("../utils/missions");
+const roadmap = require("../utils/roadmap");
+const beta = require("../utils/beta");
 
 // missions are always the authenticated user's own progress; there is no userId
 // param (a user cannot view someone else's mission state).
@@ -24,7 +26,11 @@ module.exports = (io) => {
   router.get("/pending", isAuthenticated, async (req, res) => {
     try {
       const light = req.query.light === "1" || req.query.light === "true";
-      const pending = await missions.getPendingAnnouncements(req.user._id, { light });
+      let pending = await missions.getPendingAnnouncements(req.user._id, { light });
+      // in daisu's beta these are achievements, and her own missions ride the same check
+      if (beta.has(req.user, "daisu")) {
+        pending = [...pending.map((p) => ({ ...p, achievement: true })), ...(await roadmap.pendingFor(req.user))];
+      }
       res.json({ pending });
     } catch (err) {
       console.error(err);

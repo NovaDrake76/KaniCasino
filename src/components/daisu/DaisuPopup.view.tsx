@@ -7,6 +7,7 @@ import BonusSection from "./BonusSection";
 import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
+import NextUp from "./roadmap/NextUp";
 import type { DaisuViewProps } from "./Daisu.types";
 import i18n from "../../i18n";
 
@@ -15,6 +16,7 @@ const spring = { type: "spring", stiffness: 420, damping: 32 } as const;
 const DaisuPopupView: React.FC<DaisuViewProps> = ({
   closeToBubble,
   openRoom,
+  openRoomHelp,
   fill,
   inJar,
   full,
@@ -32,6 +34,10 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   face,
   shaking,
   bonuses,
+  bonusGame,
+  roadmap,
+  claimingMission,
+  claimMission,
   giftReady,
   missionReady,
 }) => (
@@ -108,6 +114,14 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
           <span className="text-xs font-semibold uppercase tracking-wide">{i18n.t("daisu.giftOpen")}</span>
         </Link>
       )}
+      <NextUp
+        roadmap={roadmap}
+        claimingMission={claimingMission}
+        bonusGame={bonusGame}
+        onClaim={claimMission}
+        onHelp={openRoomHelp}
+        onAll={openRoom}
+      />
     </div>
   </motion.section>
 );

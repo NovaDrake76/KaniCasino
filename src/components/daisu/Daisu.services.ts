@@ -1,16 +1,14 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
 import { claimPot, getPotStatus, PotStatus } from "../../services/daisu/DaisuService";
-import { claimMission, getMissions, Mission, visitMission } from "../../services/missions/MissionService";
-import { getCases } from "../../services/cases/CaseServices";
 import { useGiftStatus } from "../header/useGiftReady";
 import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
 import { greetingFor, lineKey, Mood, pokeMood } from "./daisuLines";
 import { setPotStatus, usePotStatus } from "./potStore";
 import { DAISU_STAGE_EVENT, emitJarTaken } from "./tour/tourEvents";
-import type { BonusView, Face, Line, MissionGroup, Pop, RoomTab, Run, Stage } from "./Daisu.types";
+import { useRoadmap } from "./roadmap/useRoadmap";
+import type { BonusView, Face, Line, Pop, RoomTab, Run, Stage } from "./Daisu.types";
 import i18n from "../../i18n";
 
 const STAGE_KEY = "kani.daisuStage";
@@ -58,23 +56,6 @@ const storeStage = (stage: Stage) => {
   }
 };
 
-// the same grouping the missions tab uses, resolved per render for the language
-const CATEGORY_LABELS: Record<string, string> = {
-  onboarding: "missions.gettingStarted",
-  games: "missions.games",
-  collection: "missions.collection",
-  community: "missions.community",
-  endgame: "missions.allIn",
-};
-const CATEGORY_ORDER = ["onboarding", "games", "collection", "community", "endgame"];
-
-export const groupMissions = (missions: Mission[]): MissionGroup[] =>
-  CATEGORY_ORDER.map((key) => ({
-    key,
-    label: i18n.t(CATEGORY_LABELS[key]),
-    missions: missions.filter((m) => m.category === key),
-  })).filter((g) => g.missions.length > 0);
-
 export const useDaisu = () => {
   const { userData, toogleUserData } = useContext(UserContext);
   const enabled = !!userData?.features?.daisu;
@@ -94,9 +75,6 @@ export const useDaisu = () => {
   const [pops, setPops] = useState<Pop[]>([]);
   const [run, setRun] = useState<Run | null>(null);
   const [settling, setSettling] = useState(false);
-  const [missions, setMissions] = useState<Mission[]>([]);
-  const [caseImage, setCaseImage] = useState<string | undefined>(undefined);
-  const [claimingMission, setClaimingMission] = useState<string | null>(null);
   const [bubbleGift, setBubbleGift] = useState(false);
 
   const faceTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -230,25 +208,16 @@ export const useDaisu = () => {
     return () => clearInterval(t);
   }, [enabled, stage, gift.canSpin]);
 
-  const loadMissions = useCallback(() => {
-    getMissions()
-      .then((d) => setMissions(d.missions))
-      .catch(() => setMissions([]));
-  }, []);
-
-  useEffect(() => {
-    if (!enabled || stage !== "room" || !userId) return;
-    loadMissions();
-    // a real case image for the case missions, the chest icon if it fails
-    getCases()
-      .then((cases) => {
-        const img = Array.isArray(cases) ? cases.find((c) => c && c.image)?.image : undefined;
-        if (img) setCaseImage(img);
-      })
-      .catch(() => {
-        // fall back to the chest icon
-      });
-  }, [enabled, stage, userId, loadMissions]);
+  const missions = useRoadmap({
+    enabled,
+    userId,
+    stage,
+    onClaimed: (reward, walletBalance) => {
+      if (userData && typeof walletBalance === "number") toogleUserData({ ...userData, walletBalance });
+      pull("happy");
+      say("missionDone", { amount: kp(reward) });
+    },
+  });
 
   const cycleMs = status?.cycleMs ?? 8 * 60000;
   const full = status?.full ?? 0;
@@ -295,9 +264,12 @@ export const useDaisu = () => {
   const nextPickName = status ? i18n.t(GAME_NAME_KEYS[status.nextPick]) : "";
   const pickProgress = status?.pickProgress ?? 0;
   const pickRemaining = Math.max(0, Math.ceil(full * (1 - pickProgress)));
+  // the game a bonus mission points at: the one holding a live bonus, else the one the next take feeds
+  const bonusGame = bubbleBonus
+    ? { name: bubbleBonus.name, art: bubbleBonus.art }
+    : { name: pickName, art: status ? GAME_ART[status.pick] : undefined };
 
-  const groups = groupMissions(missions);
-  const missionReady = missions.some((m) => m.claimable && !m.claimed);
+  const missionReady = !!missions.roadmap?.missions.some((m) => m.claimable);
   const attention = isFull || missionReady || gift.canSpin;
 
   // she speaks once per opening, once there is something to speak about
@@ -482,42 +454,18 @@ export const useDaisu = () => {
     pull(mood === "poke2" ? "happy" : mood === "poke1" ? "sad" : "surprised");
   };
 
-  const claimAsk = async (key: string) => {
-    if (claimingMission) return;
-    setClaimingMission(key);
-    try {
-      const res = await claimMission(key);
-      if (res.claimed && userData && typeof res.walletBalance === "number") {
-        toogleUserData({ ...userData, walletBalance: res.walletBalance });
-      }
-      if (res.claimed) {
-        pull("happy");
-        say("missionDone", { amount: kp(res.reward ?? 0) });
-      }
-      loadMissions();
-    } catch (err: unknown) {
-      const e = err as { response?: { data?: { message?: string } } };
-      toast.error(e?.response?.data?.message || i18n.t("missions.couldNotClaimReward"), { theme: "dark" });
-    } finally {
-      setClaimingMission(null);
-    }
-  };
-
-  const visitAsk = async (key: string, url: string) => {
-    window.open(url, "_blank", "noopener,noreferrer");
-    try {
-      await visitMission(key);
-    } catch {
-      // honor-system: marking the visit is best-effort
-    }
-    loadMissions();
-  };
-
   const openPopup = () => setStage("popup");
   const closeToBubble = () => setStage("bubble");
+  // her room always opens on her missions; the boosts are a tab away
   const openRoom = () => {
+    setTab("missions");
     setStage("room");
     say("room");
+  };
+  // help asked for from her card opens in her room, already unfolded
+  const openRoomHelp = (key: string) => {
+    missions.showHelp(key);
+    openRoom();
   };
   const backToPopup = () => setStage("popup");
 
@@ -527,6 +475,7 @@ export const useDaisu = () => {
     openPopup,
     closeToBubble,
     openRoom,
+    openRoomHelp,
     backToPopup,
     tab,
     setTab,
@@ -556,11 +505,8 @@ export const useDaisu = () => {
     nextPickName,
     pickProgress,
     pickRemaining,
-    groups,
-    caseImage,
-    claimAsk,
-    visitAsk,
-    claimingMission,
+    bonusGame,
+    ...missions,
     missionReady,
     attention,
     giftReady: gift.canSpin,

@@ -179,7 +179,7 @@ const Profile = () => {
     { key: "collections", label: i18n.t("profile.collections") },
     ...(isSameUser
       ? [
-          { key: "missions" as const, label: i18n.t("profile.missions") },
+          { key: "missions" as const, label: userData?.features?.daisu ? i18n.t("daisu.achievements.tab") : i18n.t("profile.missions") },
           { key: "affiliates" as const, label: i18n.t("profile.affiliates") },
           { key: "predictions" as const, label: i18n.t("predictions.myPositions") },
           { key: "history" as const, label: i18n.t("profile.balanceHistory") },

@@ -13,12 +13,26 @@ vi.mock("../../services/daisu/DaisuService", () => ({
   claimPot: (...args: unknown[]) => claimPot(...args),
 }));
 
-const getMissions = vi.fn();
-vi.mock("../../services/missions/MissionService", () => ({
-  getMissions: (...args: unknown[]) => getMissions(...args),
-  claimMission: vi.fn(),
-  visitMission: vi.fn(),
+const getRoadmap = vi.fn();
+const claimRoadmapMission = vi.fn();
+vi.mock("../../services/daisu/RoadmapService", () => ({
+  ROADMAP_CHANGED_EVENT: "daisu:missions-changed",
+  getRoadmap: (...args: unknown[]) => getRoadmap(...args),
+  claimRoadmapMission: (...args: unknown[]) => claimRoadmapMission(...args),
 }));
+
+const mission = (over: object) => ({
+  key: "r1-full-pot",
+  goal: "fullPots",
+  target: 1,
+  reward: 250,
+  current: 0,
+  complete: false,
+  claimed: false,
+  claimable: false,
+  ...over,
+});
+const roadmap = (missions: object[]) => ({ chapter: 1, chapters: 5, finished: false, bonus: 1000, missions, next: null });
 
 vi.mock("../../services/cases/CaseServices", () => ({
   getCases: () => Promise.resolve([]),
@@ -90,7 +104,8 @@ describe("daisu in the corner", () => {
     window.localStorage.setItem("kani.daisuStage", "popup");
     giftReady = false;
     toogleUserData.mockReset();
-    getMissions.mockReset().mockResolvedValue({ missions: [], totals: {} });
+    getRoadmap.mockReset().mockResolvedValue(roadmap([]));
+    claimRoadmapMission.mockReset();
     claimPot.mockReset();
     getPotStatus.mockReset().mockResolvedValue(status(0));
   });
@@ -268,19 +283,42 @@ describe("daisu in the corner", () => {
     expect(await screen.findByText(/daisu has a gift for you/i)).toBeTruthy();
   });
 
-  it("opens her room with the missions described, and comes back", async () => {
-    getMissions.mockResolvedValue({
-      missions: [
-        { key: "cases-10", title: "Case cracker", description: "Open 10 cases.", category: "games", reward: 1500, social: null, target: 10, current: 7, complete: false, claimed: false, claimable: false },
-      ],
-      totals: {},
+  it("claims a reward from her card, and the last one of a chapter shows what comes next", async () => {
+    getRoadmap.mockResolvedValue(
+      roadmap([
+        mission({ key: "r1-full-pot", complete: true, claimed: true, current: 1 }),
+        mission({ key: "r1-pin", goal: "pinned", complete: true, claimed: true, current: 1 }),
+        mission({ key: "r1-bonus", goal: "bonusSpent", complete: true, claimed: true, current: 1 }),
+        mission({ key: "r1-level", goal: "level", target: 5, current: 5, reward: 500, complete: true, claimable: true }),
+      ])
+    );
+    claimRoadmapMission.mockResolvedValue({
+      claimed: true,
+      reward: 500,
+      walletBalance: 1600,
+      chapterDone: { chapter: 1, bonus: 1000 },
+      roadmap: { ...roadmap([mission({ key: "r2-gift", goal: "giftSpins", reward: 500 })]), chapter: 2, bonus: 2000 },
     });
+    draw();
+
+    fireEvent.click(await screen.findByRole("button", { name: /rewards waiting: 1/i }));
+
+    const done = await screen.findByRole("dialog", { name: /chapter 1 done/i });
+    expect(claimRoadmapMission).toHaveBeenCalledWith("r1-level");
+    expect(done.textContent).toMatch(/spin the daily gift/i);
+    expect(toogleUserData.mock.calls[0][0].walletBalance).toBe(1600);
+    fireEvent.click(screen.getByRole("button", { name: /let's go/i }));
+    expect(screen.queryByRole("dialog", { name: /chapter 1 done/i })).toBeNull();
+  });
+
+  it("opens her room on her missions, and comes back", async () => {
+    getRoadmap.mockResolvedValue(roadmap([mission({ key: "r1-level", goal: "level", target: 5, current: 3, reward: 500 })]));
     draw();
     fireEvent.click(await screen.findByText(/visit daisu's room/i));
 
     expect(await screen.findByRole("dialog", { name: /daisu's room/i })).toBeTruthy();
-    expect(await screen.findByText("Case cracker")).toBeTruthy();
-    expect(screen.getByText("Open 10 cases.")).toBeTruthy();
+    expect(await screen.findByText("First steps")).toBeTruthy();
+    expect(screen.getByText("Reach level 5")).toBeTruthy();
 
     fireEvent.click(screen.getByText(/pot boosts/i));
     expect(screen.getByText(/nothing here yet/i)).toBeTruthy();

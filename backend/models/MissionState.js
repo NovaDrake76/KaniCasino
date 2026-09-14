@@ -19,6 +19,16 @@ const MissionStateSchema = new mongoose.Schema(
     // completions silently (no toast for things finished before real-time tracking).
     announced: { type: [String], default: [] },
     seeded: { type: Boolean, default: false },
+    // daisu's missions in the beta: the open chapter, when it opened (activity goals count from
+    // there), and what was claimed and visited in it
+    roadmap: {
+      chapter: { type: Number, default: 1 },
+      openedAt: Date,
+      claimed: { type: [String], default: [] },
+      visited: { type: [String], default: [] },
+      // the chapter whose completions at opening were recorded without a toast
+      seeded: { type: Number, default: 0 },
+    },
   },
   { timestamps: true }
 );

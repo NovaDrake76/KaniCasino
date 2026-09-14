@@ -559,6 +559,142 @@
       "titlePot": "The pot",
       "welcomeBody": "I keep the pot around here. You look lost, so I'll make you an offer: a quick tour. The pot, a case, a game. A minute, maybe two, if you keep up.",
       "welcomeTitle": "Oh? A new face."
+    },
+    "roadmap": {
+      "allMissions": "All missions",
+      "bonusLine": "Finish all four for {{bonus}}, and chapter {{next}} opens.",
+      "bonusLineLast": "Finish all four for {{bonus}}.",
+      "chapter": "Chapter {{n}}",
+      "chapterDone": "Chapter {{n}} done",
+      "chapterDoneLine": "Fine. You're not hopeless after all. Here's what I want from you next.",
+      "chapterShort": "Chapter {{n}} · {{done}} of {{total}} done",
+      "chapters": {
+        "1": "First steps",
+        "2": "Settling in",
+        "3": "Coming back",
+        "4": "Regular",
+        "5": "Veteran"
+      },
+      "claim": "Claim",
+      "claimAmount": "Claim {{amount}}",
+      "claimed": "Claimed",
+      "finishedLine": "You did everything I asked. I'll think of more. Don't get comfortable.",
+      "finishedTitle": "Every chapter done",
+      "gotIt": "Got it",
+      "help": "Help",
+      "letsGo": "Let's go",
+      "missions": {
+        "r1-bonus": {
+          "desc": "Play the game my bonus is on. Right now that's {{game}}.",
+          "help": "Every time you take from my jar I add a little extra that only works on one game. Right now it's on {{game}}. Bet there once and the bonus pays before your wallet does.",
+          "title": "Spend a Daisu bonus"
+        },
+        "r1-full-pot": {
+          "desc": "Wait until my jar is full, then take it. A full pot pays 25% more.",
+          "help": "Patience. My jar fills over 8 minutes and the bar shows how far along it is. Take it only when it says Full and you get the whole pot, with the full-pot bonus on top.",
+          "title": "Take a full pot"
+        },
+        "r1-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Levels come from betting, whatever the result. And the higher your level, the bigger my pot gets, so it pays twice.",
+          "title": "Reach level {{target}}"
+        },
+        "r1-pin": {
+          "desc": "Pin a character you own to your profile. Everyone who visits sees it.",
+          "help": "Open your inventory and press the heart on the character you like most. You can only pin one, and only that one counts on the Top Fan boards.",
+          "title": "Pin a character"
+        },
+        "r2-games": {
+          "desc": "Bet on {{target}} different games. One bet each is enough.",
+          "help": "Crash, slots, dice, blackjack, whatever you like. One bet on each of {{target}} different games does it, and you might find a favorite.",
+          "title": "Play {{target}} different games"
+        },
+        "r2-gift": {
+          "desc": "Spin my daily gift once. It's free, every day.",
+          "help": "Once a day I have a gift for you: spin it and take the prize. Open it from my card when it lights up.",
+          "title": "Spin the daily gift"
+        },
+        "r2-level": {
+          "desc": "Keep betting. Every bet earns XP.",
+          "help": "Same as before, just more of it. Level {{target}} makes my pot bigger too, so don't slack.",
+          "title": "Reach level {{target}}"
+        },
+        "r2-sell": {
+          "desc": "Sell something you won back for KP.",
+          "help": "Anything you get from a case can go back for KP. Open your inventory, pick an item and sell it. Keep the ones you like.",
+          "title": "Sell an item"
+        },
+        "r3-cases": {
+          "desc": "Open {{target}} cases, any cases.",
+          "help": "Cheap ones count the same as expensive ones, and opening several at once counts each one.",
+          "title": "Open {{target}} cases"
+        },
+        "r3-collection": {
+          "desc": "Open one of your case collections.",
+          "help": "Every case has a collection: all the items it can drop. Open one from the Collections tab on your profile and see what you're missing.",
+          "title": "Look through a collection"
+        },
+        "r3-market": {
+          "desc": "Buy or sell an item on the marketplace.",
+          "help": "The market is where players trade with each other. Buy something you want, or list one of your items and wait for a buyer.",
+          "title": "Trade on the market"
+        },
+        "r3-streak": {
+          "desc": "Spin the daily gift {{target}} days in a row.",
+          "help": "Come back every day and spin. Miss a day and the streak starts over, and the longer it runs, the better the prizes get.",
+          "title": "A {{target}}-day gift streak"
+        },
+        "r4-collection": {
+          "desc": "Own every item in one case's collection.",
+          "help": "Pick a case and get everything it can drop, from openings or from the market. Once you have it all, it can take a few minutes to show up here.",
+          "title": "Complete a collection"
+        },
+        "r4-level": {
+          "desc": "Keep betting. Every bet earns XP.",
+          "help": "You know how this works by now. Level {{target}}. Go.",
+          "title": "Reach level {{target}}"
+        },
+        "r4-stake": {
+          "desc": "Bet {{target}} KP in total, on anything.",
+          "help": "Every bet counts: games, cases, battles and predictions. It adds up faster than you think.",
+          "title": "Bet {{target}} KP"
+        },
+        "r4-streak": {
+          "desc": "Spin the daily gift {{target}} days in a row.",
+          "help": "A whole week, every single day. I'll know if you skip one.",
+          "title": "A {{target}}-day gift streak"
+        },
+        "r5-battle": {
+          "desc": "Win a case battle against other players.",
+          "help": "In a battle everyone opens the same cases and the best total takes it all. Start one or join one on the Case Battles page.",
+          "title": "Win a case battle"
+        },
+        "r5-level": {
+          "desc": "Keep betting. Every bet earns XP.",
+          "help": "Level {{target}}. Most people never get here. Prove you're not most people.",
+          "title": "Reach level {{target}}"
+        },
+        "r5-stake": {
+          "desc": "Bet {{target}} KP in total, on anything.",
+          "help": "Half a million. You're not new anymore, so don't act like it.",
+          "title": "Bet {{target}} KP"
+        },
+        "r5-top-fan": {
+          "desc": "Be the top fan of the character you pinned.",
+          "help": "The Top Fan boards rank players by how many copies of their pinned character they own. Pin one, own the most, and the crown is yours.",
+          "title": "Become a Top Fan"
+        }
+      },
+      "nextUp": "Next up",
+      "opensAfter": "Opens after chapter {{n}}",
+      "progress": "{{done}} of {{total}} done",
+      "rewardsWaiting": "Rewards waiting: {{n}}"
+    },
+    "achievements": {
+      "count": "{{done}} of {{total}} achievements unlocked",
+      "ready": "{{n}} ready to claim",
+      "tab": "Achievements",
+      "unlocked": "Achievement unlocked"
     }
   },
   "dice": {

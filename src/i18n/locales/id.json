@@ -559,6 +559,142 @@
       "titlePot": "Toples",
       "welcomeBody": "Aku yang menjaga toples di sini. Kamu kelihatan bingung, jadi aku kasih penawaran: tur singkat. Toples, satu kotak, satu game. Satu menit, mungkin dua, kalau kamu bisa mengikuti.",
       "welcomeTitle": "Oh? Wajah baru."
+    },
+    "roadmap": {
+      "allMissions": "Semua misi",
+      "bonusLine": "Selesaikan keempatnya untuk {{bonus}}, dan bab {{next}} terbuka.",
+      "bonusLineLast": "Selesaikan keempatnya untuk {{bonus}}.",
+      "chapter": "Bab {{n}}",
+      "chapterDone": "Bab {{n}} selesai",
+      "chapterDoneLine": "Oke. Ternyata kamu tidak separah itu. Ini yang kumau darimu selanjutnya.",
+      "chapterShort": "Bab {{n}} · {{done}} dari {{total}} selesai",
+      "chapters": {
+        "1": "Langkah pertama",
+        "2": "Mulai terbiasa",
+        "3": "Kembali lagi",
+        "4": "Pelanggan tetap",
+        "5": "Veteran"
+      },
+      "claim": "Ambil",
+      "claimAmount": "Ambil {{amount}}",
+      "claimed": "Sudah diambil",
+      "finishedLine": "Kamu sudah melakukan semua yang kuminta. Nanti kupikirkan lagi. Jangan keenakan.",
+      "finishedTitle": "Semua bab selesai",
+      "gotIt": "Paham",
+      "help": "Bantuan",
+      "letsGo": "Ayo",
+      "missions": {
+        "r1-bonus": {
+          "desc": "Mainkan game tempat bonusku berada. Sekarang di {{game}}.",
+          "help": "Setiap kamu mengambil dari toplesku, aku tambahkan sedikit ekstra yang hanya berlaku di satu game. Sekarang ada di {{game}}. Bertaruh di sana sekali dan bonusnya membayar lebih dulu dari dompetmu.",
+          "title": "Pakai bonus dari Daisu"
+        },
+        "r1-full-pot": {
+          "desc": "Tunggu sampai toplesku penuh, baru ambil. Toples penuh bayar 25% lebih banyak.",
+          "help": "Sabar. Toplesku terisi dalam 8 menit dan bilahnya menunjukkan sejauh mana. Ambil hanya saat tertulis Penuh, dan kamu dapat seluruh toples plus bonus toples penuh.",
+          "title": "Ambil toples penuh"
+        },
+        "r1-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Level datang dari bertaruh, apa pun hasilnya. Dan makin tinggi levelmu, makin besar toplesku, jadi untung dua kali.",
+          "title": "Capai level {{target}}"
+        },
+        "r1-pin": {
+          "desc": "Sematkan karakter milikmu di profil. Semua yang berkunjung bisa melihatnya.",
+          "help": "Buka gudangmu dan tekan hati pada karakter yang paling kamu suka. Hanya bisa satu, dan hanya itu yang dihitung di papan Top Fan.",
+          "title": "Sematkan karakter"
+        },
+        "r2-games": {
+          "desc": "Bertaruh di {{target}} game berbeda. Sekali per game cukup.",
+          "help": "Crash, slot, dadu, blackjack, terserah. Satu taruhan di masing-masing {{target}} game berbeda sudah cukup, siapa tahu kamu menemukan favorit.",
+          "title": "Mainkan {{target}} game berbeda"
+        },
+        "r2-gift": {
+          "desc": "Putar bansos harian dariku sekali. Gratis, setiap hari.",
+          "help": "Sekali sehari aku punya hadiah untukmu: putar dan ambil hadiahnya. Buka dari kartuku saat menyala.",
+          "title": "Putar bansos harian"
+        },
+        "r2-level": {
+          "desc": "Terus bertaruh. Setiap taruhan memberi XP.",
+          "help": "Sama seperti tadi, cuma lebih banyak. Level {{target}} juga membuat toplesku lebih besar, jadi jangan malas.",
+          "title": "Capai level {{target}}"
+        },
+        "r2-sell": {
+          "desc": "Jual kembali barang yang kamu menangkan untuk KP.",
+          "help": "Apa pun yang keluar dari kotak bisa dijual kembali jadi KP. Buka gudangmu, pilih barang, lalu jual. Simpan yang kamu suka.",
+          "title": "Jual barang"
+        },
+        "r3-cases": {
+          "desc": "Buka {{target}} kotak, kotak apa saja.",
+          "help": "Yang murah dihitung sama dengan yang mahal, dan membuka beberapa sekaligus dihitung satu per satu.",
+          "title": "Buka {{target}} kotak"
+        },
+        "r3-collection": {
+          "desc": "Buka salah satu koleksi kotakmu.",
+          "help": "Setiap kotak punya koleksi: semua barang yang bisa keluar darinya. Buka satu dari tab Koleksi di profilmu dan lihat apa yang masih kurang.",
+          "title": "Lihat sebuah koleksi"
+        },
+        "r3-market": {
+          "desc": "Beli atau jual barang di pasar.",
+          "help": "Pasar tempat para pemain berdagang satu sama lain. Beli barang yang kamu mau, atau pasang barangmu dan tunggu pembeli.",
+          "title": "Berdagang di pasar"
+        },
+        "r3-streak": {
+          "desc": "Putar bansos harian {{target}} hari berturut-turut.",
+          "help": "Datang tiap hari dan putar. Lewat sehari, beruntunnya mulai lagi, dan makin panjang beruntunnya, makin bagus hadiahnya.",
+          "title": "Beruntun {{target}} hari bansos"
+        },
+        "r4-collection": {
+          "desc": "Miliki semua barang di koleksi satu kotak.",
+          "help": "Pilih satu kotak dan kumpulkan semua yang bisa keluar darinya, dari membuka atau membeli di pasar. Setelah lengkap, mungkin butuh beberapa menit sampai muncul di sini.",
+          "title": "Lengkapi sebuah koleksi"
+        },
+        "r4-level": {
+          "desc": "Terus bertaruh. Setiap taruhan memberi XP.",
+          "help": "Kamu sudah tahu caranya. Level {{target}}. Ayo.",
+          "title": "Capai level {{target}}"
+        },
+        "r4-stake": {
+          "desc": "Taruhkan total {{target}} KP, di mana saja.",
+          "help": "Setiap taruhan dihitung: game, kotak, adu gacor, dan prediksi. Terkumpulnya lebih cepat dari yang kamu kira.",
+          "title": "Taruhkan {{target}} KP"
+        },
+        "r4-streak": {
+          "desc": "Putar bansos harian {{target}} hari berturut-turut.",
+          "help": "Seminggu penuh, setiap hari. Aku tahu kalau kamu melewatkan satu.",
+          "title": "Beruntun {{target}} hari bansos"
+        },
+        "r5-battle": {
+          "desc": "Menangkan adu gacor melawan pemain lain.",
+          "help": "Di adu gacor semua orang membuka kotak yang sama dan total terbaik membawa pulang semuanya. Buat atau ikut satu di halaman Adu gacor.",
+          "title": "Menangkan adu gacor"
+        },
+        "r5-level": {
+          "desc": "Terus bertaruh. Setiap taruhan memberi XP.",
+          "help": "Level {{target}}. Kebanyakan orang tidak pernah sampai sini. Buktikan kamu bukan kebanyakan orang.",
+          "title": "Capai level {{target}}"
+        },
+        "r5-stake": {
+          "desc": "Taruhkan total {{target}} KP, di mana saja.",
+          "help": "Setengah juta. Kamu bukan pemula lagi, jadi jangan bertingkah seperti pemula.",
+          "title": "Taruhkan {{target}} KP"
+        },
+        "r5-top-fan": {
+          "desc": "Jadi penggemar teratas karakter yang kamu sematkan.",
+          "help": "Papan Top Fan mengurutkan pemain berdasarkan berapa banyak salinan karakter sematan yang mereka punya. Sematkan satu, punya paling banyak, dan mahkotanya milikmu.",
+          "title": "Jadi Top Fan"
+        }
+      },
+      "nextUp": "Berikutnya",
+      "opensAfter": "Terbuka setelah bab {{n}}",
+      "progress": "{{done}} dari {{total}} selesai",
+      "rewardsWaiting": "Hadiah menunggu: {{n}}"
+    },
+    "achievements": {
+      "count": "{{done}} dari {{total}} pencapaian terbuka",
+      "ready": "{{n}} siap diambil",
+      "tab": "Pencapaian",
+      "unlocked": "Pencapaian terbuka"
     }
   },
   "dice": {

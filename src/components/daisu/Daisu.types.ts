@@ -1,5 +1,4 @@
 import type { PickGame } from "../../services/daisu/DaisuService";
-import type { Mission } from "../../services/missions/MissionService";
 import type { useDaisu } from "./Daisu.services";
 
 export type Face = "idle" | "happy" | "surprised" | "sad";
@@ -44,12 +43,6 @@ export interface BonusView {
   left: number;
   expiring: boolean;
   expired: boolean;
-}
-
-export interface MissionGroup {
-  key: string;
-  label: string;
-  missions: Mission[];
 }
 
 export type DaisuViewProps = ReturnType<typeof useDaisu>;

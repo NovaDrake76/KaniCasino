@@ -12,6 +12,7 @@ import {
   AlbumItem,
   QuicksellPreview,
 } from "../../../services/collections/CollectionService";
+import { visitRoadmapGoal } from "../../../services/daisu/RoadmapService";
 import i18n from "../../../i18n";
 
 export type AlbumFilter = "all" | "owned" | "missing" | "duplicates";
@@ -78,6 +79,12 @@ export const useCollectionDetailServices = ({ userId, isOwner, caseId, onBack }:
       active = false;
     };
   }, [caseId, userId, page, filter, sortBy, refresh]);
+
+  // looking through one of your own albums is a mission of daisu's, and only this page sees it
+  useEffect(() => {
+    if (!isOwner || !caseId || !userData?.features?.daisu) return;
+    visitRoadmapGoal("collectionVisits").catch(() => undefined);
+  }, [isOwner, caseId, userData?.features?.daisu]);
 
   // the set can shrink under a page we are already on (selling the last card of a
   // filter, or a hand-typed number), and the pager hides itself once there is one page

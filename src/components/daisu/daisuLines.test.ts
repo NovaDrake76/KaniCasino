@@ -1,10 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { LINE_COUNT, greetingFor, lineKey, pokeMood } from "./daisuLines";
-import { groupMissions } from "./Daisu.services";
 import en from "../../i18n/locales/en.json";
 import pt from "../../i18n/locales/pt.json";
 import ja from "../../i18n/locales/ja.json";
-import type { Mission } from "../../services/missions/MissionService";
 
 const situation = { fill: 0.5, holdsCredit: false, missionReady: false, giftReady: false, wallet: 500, bonusExpiring: false, bonusExpired: false };
 
@@ -61,33 +59,5 @@ describe("being poked", () => {
     expect(pokeMood(5)).toBe("poke1");
     expect(pokeMood(6)).toBe("poke2");
     expect(pokeMood(40)).toBe("poke2");
-  });
-});
-
-const mission = (over: Partial<Mission>): Mission => ({
-  key: "k",
-  title: "t",
-  description: "",
-  category: "games",
-  reward: 100,
-  social: null,
-  target: 10,
-  current: 0,
-  complete: false,
-  claimed: false,
-  claimable: false,
-  ...over,
-});
-
-describe("her room's mission list", () => {
-  it("groups by category in the order the missions tab uses and drops empty groups", () => {
-    const groups = groupMissions([
-      mission({ key: "a", category: "endgame" }),
-      mission({ key: "b", category: "onboarding" }),
-      mission({ key: "c", category: "games" }),
-    ]);
-
-    expect(groups.map((g) => g.key)).toEqual(["onboarding", "games", "endgame"]);
-    expect(groups[0].missions[0].key).toBe("b");
   });
 });

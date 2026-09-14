@@ -6,6 +6,7 @@ const beta = require("../utils/beta");
 const pot = require("../utils/pot");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("../utils/economy");
 const { potClaimLimiter } = require("../middleware/rateLimit");
+const roadmap = require("../utils/roadmap");
 
 const gate = [authMiddleware.isAuthenticated, beta.requireFlag("daisu")];
 
@@ -136,6 +137,35 @@ router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
       nextBonus: updated.nextBonus,
       status: statusOf(updated, now),
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/missions", ...gate, async (req, res) => {
+  try {
+    res.json(await roadmap.viewFor(req.user));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/missions/visit", ...gate, async (req, res) => {
+  try {
+    const r = await roadmap.visit(req.user, req.body && req.body.goal);
+    res.status(r.code).json(r.body);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/missions/:key/claim", ...gate, async (req, res) => {
+  try {
+    const r = await roadmap.claim(req.user, String(req.params.key));
+    res.status(r.code).json(r.body);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

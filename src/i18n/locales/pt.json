@@ -559,6 +559,142 @@
       "titlePot": "O pote",
       "welcomeBody": "Eu cuido do pote por aqui. Você parece perdido, então vou te fazer uma oferta: um tour rapidinho. O pote, uma caixa, um jogo. Um minuto, talvez dois, se você acompanhar.",
       "welcomeTitle": "Hã? Cara nova por aqui."
+    },
+    "roadmap": {
+      "allMissions": "Todas as missões",
+      "bonusLine": "Termine as quatro por {{bonus}}, e o capítulo {{next}} abre.",
+      "bonusLineLast": "Termine as quatro por {{bonus}}.",
+      "chapter": "Capítulo {{n}}",
+      "chapterDone": "Capítulo {{n}} concluído",
+      "chapterDoneLine": "Tá. Você não é um caso perdido, afinal. Agora é isso que eu quero de você.",
+      "chapterShort": "Capítulo {{n}} · {{done}} de {{total}} feitas",
+      "chapters": {
+        "1": "Primeiros passos",
+        "2": "Pegando o jeito",
+        "3": "Voltando sempre",
+        "4": "Frequentador",
+        "5": "Veterano"
+      },
+      "claim": "Resgatar",
+      "claimAmount": "Resgatar {{amount}}",
+      "claimed": "Resgatada",
+      "finishedLine": "Você fez tudo o que eu pedi. Vou pensar em mais. Não se acomoda.",
+      "finishedTitle": "Todos os capítulos feitos",
+      "gotIt": "Entendi",
+      "help": "Ajuda",
+      "letsGo": "Bora",
+      "missions": {
+        "r1-bonus": {
+          "desc": "Jogue o jogo em que está meu bônus. Agora é {{game}}.",
+          "help": "Toda vez que você pega do meu pote, eu coloco um extra que só vale em um jogo. Agora ele está em {{game}}. Aposte lá uma vez e o bônus paga antes da sua carteira.",
+          "title": "Gaste um bônus da Daisu"
+        },
+        "r1-full-pot": {
+          "desc": "Espere meu pote encher e só então pegue. Cheio ele paga 25% a mais.",
+          "help": "Paciência. Meu pote enche em 8 minutos e a barra mostra quanto falta. Pegue só quando estiver Cheio e você leva o pote inteiro, com o bônus de pote cheio por cima.",
+          "title": "Pegue um pote cheio"
+        },
+        "r1-level": {
+          "desc": "Toda aposta dá XP, ganhando ou perdendo.",
+          "help": "Nível vem de apostar, seja qual for o resultado. E quanto maior o seu nível, maior fica o meu pote, então paga duas vezes.",
+          "title": "Chegue ao nível {{target}}"
+        },
+        "r1-pin": {
+          "desc": "Fixe no seu perfil um personagem que você tem. Todo mundo que visita vê.",
+          "help": "Abra seu inventário e aperte o coração no personagem de que você mais gosta. Só dá pra fixar um, e só ele conta no Top Fã.",
+          "title": "Fixe um personagem"
+        },
+        "r2-games": {
+          "desc": "Aposte em {{target}} jogos diferentes. Uma aposta em cada basta.",
+          "help": "Crash, slots, dados, blackjack, o que você quiser. Uma aposta em cada um de {{target}} jogos diferentes resolve, e talvez você ache um favorito.",
+          "title": "Jogue {{target}} jogos diferentes"
+        },
+        "r2-gift": {
+          "desc": "Gire meu presente diário uma vez. É de graça, todo dia.",
+          "help": "Uma vez por dia eu tenho um presente pra você: gire e leve o prêmio. Abra pelo meu card quando ele acender.",
+          "title": "Gire o presente diário"
+        },
+        "r2-level": {
+          "desc": "Continue apostando. Toda aposta dá XP.",
+          "help": "Igual antes, só que mais. O nível {{target}} também deixa meu pote maior, então nada de moleza.",
+          "title": "Chegue ao nível {{target}}"
+        },
+        "r2-sell": {
+          "desc": "Venda algo que você ganhou de volta por KP.",
+          "help": "Tudo que sai de uma caixa pode voltar em KP. Abra seu inventário, escolha um item e venda. Guarde os que você gosta.",
+          "title": "Venda um item"
+        },
+        "r3-cases": {
+          "desc": "Abra {{target}} caixas, quaisquer caixas.",
+          "help": "As baratas contam igual às caras, e abrir várias de uma vez conta cada uma.",
+          "title": "Abra {{target}} caixas"
+        },
+        "r3-collection": {
+          "desc": "Abra uma das suas coleções de caixa.",
+          "help": "Toda caixa tem uma coleção: todos os itens que ela pode dar. Abra uma pela aba Coleções do seu perfil e veja o que está faltando.",
+          "title": "Veja uma coleção"
+        },
+        "r3-market": {
+          "desc": "Compre ou venda um item no mercado.",
+          "help": "O mercado é onde os jogadores negociam entre si. Compre algo que você quer ou anuncie um item seu e espere um comprador.",
+          "title": "Negocie no mercado"
+        },
+        "r3-streak": {
+          "desc": "Gire o presente diário {{target}} dias seguidos.",
+          "help": "Volte todo dia e gire. Perdeu um dia, a sequência recomeça, e quanto mais longa ela fica, melhores os prêmios.",
+          "title": "Sequência de {{target}} dias de presente"
+        },
+        "r4-collection": {
+          "desc": "Tenha todos os itens da coleção de uma caixa.",
+          "help": "Escolha uma caixa e consiga tudo que ela pode dar, abrindo ou comprando no mercado. Quando tiver tudo, pode levar alguns minutos pra aparecer aqui.",
+          "title": "Complete uma coleção"
+        },
+        "r4-level": {
+          "desc": "Continue apostando. Toda aposta dá XP.",
+          "help": "Você já sabe como funciona. Nível {{target}}. Vai.",
+          "title": "Chegue ao nível {{target}}"
+        },
+        "r4-stake": {
+          "desc": "Aposte {{target}} KP no total, no que quiser.",
+          "help": "Toda aposta conta: jogos, caixas, batalhas e previsões. Soma mais rápido do que você imagina.",
+          "title": "Aposte {{target}} KP"
+        },
+        "r4-streak": {
+          "desc": "Gire o presente diário {{target}} dias seguidos.",
+          "help": "Uma semana inteira, todo santo dia. Eu vou saber se você pular um.",
+          "title": "Sequência de {{target}} dias de presente"
+        },
+        "r5-battle": {
+          "desc": "Vença uma batalha de caixas contra outros jogadores.",
+          "help": "Numa batalha todo mundo abre as mesmas caixas e o maior total leva tudo. Crie ou entre em uma na página Batalhas de caixas.",
+          "title": "Vença uma batalha de caixas"
+        },
+        "r5-level": {
+          "desc": "Continue apostando. Toda aposta dá XP.",
+          "help": "Nível {{target}}. A maioria nunca chega aqui. Prove que você não é a maioria.",
+          "title": "Chegue ao nível {{target}}"
+        },
+        "r5-stake": {
+          "desc": "Aposte {{target}} KP no total, no que quiser.",
+          "help": "Meio milhão. Você não é mais novato, então não age como um.",
+          "title": "Aposte {{target}} KP"
+        },
+        "r5-top-fan": {
+          "desc": "Seja o maior fã do personagem que você fixou.",
+          "help": "O ranking de Top Fã ordena os jogadores por quantas cópias do personagem fixado eles têm. Fixe um, tenha mais que todo mundo e a coroa é sua.",
+          "title": "Vire Top Fã"
+        }
+      },
+      "nextUp": "A seguir",
+      "opensAfter": "Abre depois do capítulo {{n}}",
+      "progress": "{{done}} de {{total}} feitas",
+      "rewardsWaiting": "Recompensas esperando: {{n}}"
+    },
+    "achievements": {
+      "count": "{{done}} de {{total}} conquistas desbloqueadas",
+      "ready": "{{n}} para resgatar",
+      "tab": "Conquistas",
+      "unlocked": "Conquista desbloqueada"
     }
   },
   "dice": {

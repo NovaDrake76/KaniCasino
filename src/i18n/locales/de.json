@@ -559,6 +559,142 @@
       "titlePot": "Der Topf",
       "welcomeBody": "Ich hüte hier den Topf. Du siehst verloren aus, also mache ich dir ein Angebot: eine kurze Tour. Der Topf, eine Kiste, ein Spiel. Eine Minute, vielleicht zwei, wenn du mithältst.",
       "welcomeTitle": "Oh? Ein neues Gesicht."
+    },
+    "roadmap": {
+      "allMissions": "Alle Missionen",
+      "bonusLine": "Schaff alle vier für {{bonus}}, dann öffnet sich Kapitel {{next}}.",
+      "bonusLineLast": "Schaff alle vier für {{bonus}}.",
+      "chapter": "Kapitel {{n}}",
+      "chapterDone": "Kapitel {{n}} geschafft",
+      "chapterDoneLine": "Na gut. Du bist doch kein hoffnungsloser Fall. Das will ich als Nächstes von dir.",
+      "chapterShort": "Kapitel {{n}} · {{done}} von {{total}} erledigt",
+      "chapters": {
+        "1": "Erste Schritte",
+        "2": "Eingewöhnen",
+        "3": "Wiederkommen",
+        "4": "Stammgast",
+        "5": "Veteran"
+      },
+      "claim": "Abholen",
+      "claimAmount": "{{amount}} abholen",
+      "claimed": "Abgeholt",
+      "finishedLine": "Du hast alles gemacht, was ich wollte. Mir fällt schon noch was ein. Mach es dir nicht zu bequem.",
+      "finishedTitle": "Alle Kapitel erledigt",
+      "gotIt": "Verstanden",
+      "help": "Hilfe",
+      "letsGo": "Los geht's",
+      "missions": {
+        "r1-bonus": {
+          "desc": "Spiel das Spiel, auf dem mein Bonus liegt. Gerade ist das {{game}}.",
+          "help": "Jedes Mal, wenn du aus meinem Topf nimmst, lege ich ein kleines Extra dazu, das nur bei einem Spiel gilt. Gerade liegt es bei {{game}}. Setz dort einmal, und der Bonus zahlt vor deinem Wallet.",
+          "title": "Gib einen Daisu-Bonus aus"
+        },
+        "r1-full-pot": {
+          "desc": "Warte, bis mein Topf voll ist, und nimm ihn dann. Voll zahlt er 25 % mehr.",
+          "help": "Geduld. Mein Topf füllt sich in 8 Minuten, und der Balken zeigt, wie weit er ist. Nimm ihn erst, wenn Voll dasteht, dann bekommst du den ganzen Topf plus den Bonus für den vollen Topf.",
+          "title": "Nimm einen vollen Topf"
+        },
+        "r1-level": {
+          "desc": "Jede Wette bringt XP, egal ob Gewinn oder Verlust.",
+          "help": "Level kommen vom Wetten, egal wie es ausgeht. Und je höher dein Level, desto größer wird mein Topf, das zahlt sich also doppelt aus.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r1-pin": {
+          "desc": "Pinne einen Charakter, den du besitzt, an dein Profil. Jeder Besucher sieht ihn.",
+          "help": "Öffne dein Inventar und drück das Herz beim Charakter, den du am liebsten magst. Du kannst nur einen pinnen, und nur der zählt auf den Top-Fan-Ranglisten.",
+          "title": "Pinne einen Charakter"
+        },
+        "r2-games": {
+          "desc": "Setz auf {{target}} verschiedene Spiele. Eine Wette pro Spiel reicht.",
+          "help": "Crash, Slots, Würfel, Blackjack, was du willst. Eine Wette bei jedem von {{target}} verschiedenen Spielen reicht, und vielleicht findest du einen Favoriten.",
+          "title": "Spiele {{target}} verschiedene Spiele"
+        },
+        "r2-gift": {
+          "desc": "Dreh einmal mein Tagesgeschenk. Kostenlos, jeden Tag.",
+          "help": "Einmal am Tag habe ich ein Geschenk für dich: dreh es und nimm den Preis mit. Öffne es über meine Karte, wenn es leuchtet.",
+          "title": "Dreh das Tagesgeschenk"
+        },
+        "r2-level": {
+          "desc": "Wette weiter. Jede Wette bringt XP.",
+          "help": "Wie vorher, nur mehr davon. Level {{target}} macht auch meinen Topf größer, also nicht nachlassen.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r2-sell": {
+          "desc": "Verkauf etwas, das du gewonnen hast, für KP zurück.",
+          "help": "Alles aus einer Kiste lässt sich für KP zurückverkaufen. Öffne dein Inventar, wähl ein Item und verkauf es. Behalte die, die du magst.",
+          "title": "Verkaufe ein Item"
+        },
+        "r3-cases": {
+          "desc": "Öffne {{target}} Kisten, egal welche.",
+          "help": "Billige zählen genauso wie teure, und wenn du mehrere auf einmal öffnest, zählt jede einzelne.",
+          "title": "Öffne {{target}} Kisten"
+        },
+        "r3-collection": {
+          "desc": "Öffne eine deiner Kisten-Sammlungen.",
+          "help": "Jede Kiste hat eine Sammlung: alle Items, die sie droppen kann. Öffne eine im Tab Sammlungen in deinem Profil und sieh nach, was dir fehlt.",
+          "title": "Sieh dir eine Sammlung an"
+        },
+        "r3-market": {
+          "desc": "Kauf oder verkauf ein Item auf dem Markt.",
+          "help": "Auf dem Markt handeln Spieler untereinander. Kauf etwas, das du willst, oder stell eins deiner Items ein und warte auf einen Käufer.",
+          "title": "Handle auf dem Markt"
+        },
+        "r3-streak": {
+          "desc": "Dreh das Tagesgeschenk {{target}} Tage am Stück.",
+          "help": "Komm jeden Tag wieder und dreh. Verpasst du einen Tag, fängt die Serie von vorne an, und je länger sie läuft, desto besser die Preise.",
+          "title": "{{target}}-Tage-Geschenkserie"
+        },
+        "r4-collection": {
+          "desc": "Besitze jedes Item aus der Sammlung einer Kiste.",
+          "help": "Such dir eine Kiste aus und hol dir alles, was sie droppen kann, durch Öffnen oder auf dem Markt. Wenn du alles hast, kann es ein paar Minuten dauern, bis es hier auftaucht.",
+          "title": "Vervollständige eine Sammlung"
+        },
+        "r4-level": {
+          "desc": "Wette weiter. Jede Wette bringt XP.",
+          "help": "Du weißt inzwischen, wie das läuft. Level {{target}}. Los.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r4-stake": {
+          "desc": "Setze insgesamt {{target}} KP, egal worauf.",
+          "help": "Jede Wette zählt: Spiele, Kisten, Battles und Vorhersagen. Das summiert sich schneller, als du denkst.",
+          "title": "Setze {{target}} KP"
+        },
+        "r4-streak": {
+          "desc": "Dreh das Tagesgeschenk {{target}} Tage am Stück.",
+          "help": "Eine ganze Woche, jeden einzelnen Tag. Ich merke, wenn du einen auslässt.",
+          "title": "{{target}}-Tage-Geschenkserie"
+        },
+        "r5-battle": {
+          "desc": "Gewinne ein Kisten-Battle gegen andere Spieler.",
+          "help": "In einem Battle öffnen alle dieselben Kisten, und die beste Summe gewinnt alles. Starte eins oder tritt einem auf der Seite Kisten-Battles bei.",
+          "title": "Gewinne ein Kisten-Battle"
+        },
+        "r5-level": {
+          "desc": "Wette weiter. Jede Wette bringt XP.",
+          "help": "Level {{target}}. Die meisten kommen nie hierher. Beweis, dass du nicht die meisten bist.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r5-stake": {
+          "desc": "Setze insgesamt {{target}} KP, egal worauf.",
+          "help": "Eine halbe Million. Du bist nicht mehr neu, also benimm dich nicht so.",
+          "title": "Setze {{target}} KP"
+        },
+        "r5-top-fan": {
+          "desc": "Sei der größte Fan des Charakters, den du gepinnt hast.",
+          "help": "Die Top-Fan-Ranglisten ordnen Spieler danach, wie viele Exemplare ihres gepinnten Charakters sie besitzen. Pinne einen, besitze die meisten, und die Krone gehört dir.",
+          "title": "Werde Top-Fan"
+        }
+      },
+      "nextUp": "Als Nächstes",
+      "opensAfter": "Öffnet nach Kapitel {{n}}",
+      "progress": "{{done}} von {{total}} erledigt",
+      "rewardsWaiting": "Belohnungen bereit: {{n}}"
+    },
+    "achievements": {
+      "count": "{{done}} von {{total}} Erfolgen freigeschaltet",
+      "ready": "{{n}} zum Abholen",
+      "tab": "Erfolge",
+      "unlocked": "Erfolg freigeschaltet"
     }
   },
   "dice": {

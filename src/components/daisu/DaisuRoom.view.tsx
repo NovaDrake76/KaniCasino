@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiArrowLeft, FiX } from "react-icons/fi";
 import { FaGift } from "react-icons/fa";
-import MissionCard from "../../pages/Missions/components/MissionCard";
 import BonusSection from "./BonusSection";
 import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
+import RoadmapPanel from "./roadmap/RoadmapPanel";
 import type { DaisuViewProps } from "./Daisu.types";
 import i18n from "../../i18n";
 
@@ -43,11 +43,12 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   nextPickName,
   pickProgress,
   pickRemaining,
-  groups,
-  caseImage,
-  claimAsk,
-  visitAsk,
+  bonusGame,
+  roadmap,
   claimingMission,
+  claimMission,
+  helpKey,
+  toggleHelp,
   giftReady,
 }) => (
   <motion.div
@@ -145,24 +146,14 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
           </div>
 
           {tab === "missions" ? (
-            <div className="flex flex-col gap-6">
-              {groups.map((g) => (
-                <div key={g.key} className="flex flex-col gap-2">
-                  <h2 className="m-0 text-xs font-semibold uppercase tracking-wide text-ink-muted">{g.label}</h2>
-                  {g.missions.map((m) => (
-                    <MissionCard
-                      key={m.key}
-                      mission={m}
-                      claiming={claimingMission === m.key}
-                      claim={claimAsk}
-                      visit={visitAsk}
-                      caseImage={caseImage}
-                      endgame={g.key === "endgame"}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
+            <RoadmapPanel
+              roadmap={roadmap}
+              claimingMission={claimingMission}
+              helpKey={helpKey}
+              bonusGame={bonusGame}
+              onClaim={claimMission}
+              onHelp={toggleHelp}
+            />
           ) : (
             <div className="flex flex-col gap-2 bg-surface p-4">
               <p className="m-0 text-sm text-ink-soft">{i18n.t("daisu.lines.boostsEmpty.0")}</p>

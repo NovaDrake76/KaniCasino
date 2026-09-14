@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import UserContext from "../../UserContext";
 import { useMissionsServices } from "./Missions.services";
 import MissionsView from "./Missions.view";
 
@@ -11,9 +13,10 @@ interface Props {
 // interface but the API resolves the caller from the token).
 const MissionsPanel: React.FC<Props> = ({ isOwner }) => {
   const service = useMissionsServices({ isOwner });
+  const achievements = !!useContext(UserContext)?.userData?.features?.daisu;
   return (
     <div className="w-full flex justify-center">
-      <MissionsView {...service} />
+      <MissionsView {...service} achievements={achievements} />
     </div>
   );
 };

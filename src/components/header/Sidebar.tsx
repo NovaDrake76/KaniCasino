@@ -10,6 +10,7 @@ import GiftTag from "./GiftTag";
 import useGiftReady from "./useGiftReady";
 import i18n from "../../i18n";
 import { gameLinks, NavLink } from "./gameLinks";
+import { showDaisu } from "../daisu/tour/tourEvents";
 
 interface Sidebar {
     closeSidebar: () => void;
@@ -48,6 +49,13 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             name: i18n.t("nav.missions"),
             path: `/profile/${userData.id}?tab=missions`,
             icon: <BsListCheck className="text-2xl" />,
+            // in daisu's beta the missions are hers, so the link opens her room over the page
+            onClick: userData?.features?.daisu
+                ? (e: React.MouseEvent) => {
+                    e.preventDefault();
+                    showDaisu("room");
+                }
+                : undefined,
         }] : []),
         ...(userData?.isAdmin ? [{
             name: i18n.t("nav.backoffice"),
@@ -90,7 +98,14 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                     </div>
                     <div className="flex flex-col space-y-4 mt-6">
                         {links.map((link, index) => (
-                            <Link key={index} to={link.path} onClick={closeSidebar}>
+                            <Link
+                                key={index}
+                                to={link.path}
+                                onClick={(e) => {
+                                    link.onClick?.(e);
+                                    closeSidebar();
+                                }}
+                            >
                                 <div className="flex items-center gap-4 p-2 text-white">
                                     {link.icon}
                                     <p className="">{link.name}</p>

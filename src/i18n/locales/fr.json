@@ -559,6 +559,142 @@
       "titlePot": "Le pot",
       "welcomeBody": "C'est moi qui garde le pot ici. Tu as l'air perdu, alors je te fais une offre : une petite visite. Le pot, une caisse, un jeu. Une minute, deux peut-être, si tu suis.",
       "welcomeTitle": "Oh ? Une nouvelle tête."
+    },
+    "roadmap": {
+      "allMissions": "Toutes les missions",
+      "bonusLine": "Termine les quatre pour {{bonus}}, et le chapitre {{next}} s'ouvre.",
+      "bonusLineLast": "Termine les quatre pour {{bonus}}.",
+      "chapter": "Chapitre {{n}}",
+      "chapterDone": "Chapitre {{n}} terminé",
+      "chapterDoneLine": "Bon. Tu n'es pas un cas désespéré, finalement. Voilà ce que je veux de toi maintenant.",
+      "chapterShort": "Chapitre {{n}} · {{done}} sur {{total}} faites",
+      "chapters": {
+        "1": "Premiers pas",
+        "2": "On s'installe",
+        "3": "Le retour",
+        "4": "Habitué",
+        "5": "Vétéran"
+      },
+      "claim": "Récupérer",
+      "claimAmount": "Récupérer {{amount}}",
+      "claimed": "Récupérée",
+      "finishedLine": "Tu as fait tout ce que je t'ai demandé. Je vais en trouver d'autres. Ne te repose pas trop.",
+      "finishedTitle": "Tous les chapitres terminés",
+      "gotIt": "Compris",
+      "help": "Aide",
+      "letsGo": "C'est parti",
+      "missions": {
+        "r1-bonus": {
+          "desc": "Joue au jeu où se trouve mon bonus. En ce moment, c'est {{game}}.",
+          "help": "Chaque fois que tu prends dans mon pot, j'ajoute un petit extra qui ne marche que sur un jeu. En ce moment, c'est {{game}}. Mise là-bas une fois et le bonus paie avant ton portefeuille.",
+          "title": "Dépense un bonus de Daisu"
+        },
+        "r1-full-pot": {
+          "desc": "Attends que mon pot soit plein, puis prends-le. Plein, il rapporte 25 % de plus.",
+          "help": "Patience. Mon pot se remplit en 8 minutes et la barre montre où il en est. Prends-le seulement quand il affiche Plein et tu repars avec tout le pot, bonus de pot plein en plus.",
+          "title": "Prends un pot plein"
+        },
+        "r1-level": {
+          "desc": "Chaque mise rapporte de l'XP, gagnée ou perdue.",
+          "help": "Les niveaux viennent des mises, quel que soit le résultat. Et plus ton niveau monte, plus mon pot grossit, donc ça paie deux fois.",
+          "title": "Atteins le niveau {{target}}"
+        },
+        "r1-pin": {
+          "desc": "Épingle sur ton profil un personnage que tu possèdes. Tous tes visiteurs le verront.",
+          "help": "Ouvre ton inventaire et appuie sur le cœur du personnage que tu préfères. Tu ne peux en épingler qu'un, et c'est le seul qui compte pour les classements Top Fan.",
+          "title": "Épingle un personnage"
+        },
+        "r2-games": {
+          "desc": "Mise sur {{target}} jeux différents. Une mise chacun suffit.",
+          "help": "Crash, machines à sous, dés, blackjack, ce que tu veux. Une mise sur chacun de {{target}} jeux différents suffit, et tu trouveras peut-être ton préféré.",
+          "title": "Joue à {{target}} jeux différents"
+        },
+        "r2-gift": {
+          "desc": "Tourne mon cadeau quotidien une fois. C'est gratuit, tous les jours.",
+          "help": "Une fois par jour, j'ai un cadeau pour toi : tourne-le et prends le lot. Ouvre-le depuis ma carte quand il s'allume.",
+          "title": "Tourne le cadeau quotidien"
+        },
+        "r2-level": {
+          "desc": "Continue de miser. Chaque mise rapporte de l'XP.",
+          "help": "Comme avant, en plus grand. Le niveau {{target}} fait aussi grossir mon pot, alors ne traîne pas.",
+          "title": "Atteins le niveau {{target}}"
+        },
+        "r2-sell": {
+          "desc": "Revends quelque chose que tu as gagné contre des KP.",
+          "help": "Tout ce qui sort d'une caisse peut se revendre en KP. Ouvre ton inventaire, choisis un objet et vends-le. Garde ceux que tu aimes.",
+          "title": "Vends un objet"
+        },
+        "r3-cases": {
+          "desc": "Ouvre {{target}} caisses, n'importe lesquelles.",
+          "help": "Les moins chères comptent autant que les chères, et en ouvrir plusieurs d'un coup compte chacune.",
+          "title": "Ouvre {{target}} caisses"
+        },
+        "r3-collection": {
+          "desc": "Ouvre une de tes collections de caisse.",
+          "help": "Chaque caisse a sa collection : tous les objets qu'elle peut donner. Ouvre-en une depuis l'onglet Collections de ton profil et regarde ce qui te manque.",
+          "title": "Parcours une collection"
+        },
+        "r3-market": {
+          "desc": "Achète ou vends un objet sur le marché.",
+          "help": "Le marché, c'est là où les joueurs échangent entre eux. Achète ce qui te plaît, ou mets en vente un de tes objets et attends un acheteur.",
+          "title": "Échange sur le marché"
+        },
+        "r3-streak": {
+          "desc": "Tourne le cadeau quotidien {{target}} jours d'affilée.",
+          "help": "Reviens chaque jour et tourne. Rate un jour et la série repart de zéro, et plus elle dure, meilleurs sont les lots.",
+          "title": "Série de {{target}} jours de cadeau"
+        },
+        "r4-collection": {
+          "desc": "Possède tous les objets de la collection d'une caisse.",
+          "help": "Choisis une caisse et récupère tout ce qu'elle peut donner, en l'ouvrant ou en achetant sur le marché. Une fois tout réuni, ça peut mettre quelques minutes à apparaître ici.",
+          "title": "Complète une collection"
+        },
+        "r4-level": {
+          "desc": "Continue de miser. Chaque mise rapporte de l'XP.",
+          "help": "Tu connais la chanson. Niveau {{target}}. Vas-y.",
+          "title": "Atteins le niveau {{target}}"
+        },
+        "r4-stake": {
+          "desc": "Mise {{target}} KP au total, sur n'importe quoi.",
+          "help": "Chaque mise compte : jeux, caisses, batailles et prédictions. Ça monte plus vite que tu ne crois.",
+          "title": "Mise {{target}} KP"
+        },
+        "r4-streak": {
+          "desc": "Tourne le cadeau quotidien {{target}} jours d'affilée.",
+          "help": "Une semaine entière, chaque jour. Je saurai si tu en sautes un.",
+          "title": "Série de {{target}} jours de cadeau"
+        },
+        "r5-battle": {
+          "desc": "Gagne une bataille de caisses contre d'autres joueurs.",
+          "help": "Dans une bataille, tout le monde ouvre les mêmes caisses et le meilleur total rafle tout. Lance-en une ou rejoins-en une sur la page Batailles de caisses.",
+          "title": "Gagne une bataille de caisses"
+        },
+        "r5-level": {
+          "desc": "Continue de miser. Chaque mise rapporte de l'XP.",
+          "help": "Niveau {{target}}. La plupart n'y arrivent jamais. Prouve que tu n'es pas la plupart.",
+          "title": "Atteins le niveau {{target}}"
+        },
+        "r5-stake": {
+          "desc": "Mise {{target}} KP au total, sur n'importe quoi.",
+          "help": "Un demi-million. Tu n'es plus un débutant, alors ne fais pas comme si.",
+          "title": "Mise {{target}} KP"
+        },
+        "r5-top-fan": {
+          "desc": "Sois le plus grand fan du personnage que tu as épinglé.",
+          "help": "Les classements Top Fan rangent les joueurs selon le nombre d'exemplaires de leur personnage épinglé. Épingles-en un, possèdes-en le plus et la couronne est à toi.",
+          "title": "Deviens Top Fan"
+        }
+      },
+      "nextUp": "Ensuite",
+      "opensAfter": "S'ouvre après le chapitre {{n}}",
+      "progress": "{{done}} sur {{total}} faites",
+      "rewardsWaiting": "Récompenses en attente : {{n}}"
+    },
+    "achievements": {
+      "count": "{{done}} succès débloqués sur {{total}}",
+      "ready": "{{n}} à récupérer",
+      "tab": "Succès",
+      "unlocked": "Succès débloqué"
     }
   },
   "dice": {
