@@ -34,7 +34,7 @@ const RollSchema = new mongoose.Schema(
 );
 
 RollSchema.index({ userId: 1, createdAt: -1 });
-// the audit trail is kept for thirty days and then expires itself. fairness does not
+// the audit trail is kept for three days and then expires itself. fairness does not
 // live here: the server seed is committed before the bet and revealed after, on the Seed
 // and on the Round, so an old draw stays provable to anyone who kept its seed and nonce.
 // this row is the convenience lookup, and one nobody has asked for in months of rolls is
