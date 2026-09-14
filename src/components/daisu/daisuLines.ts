@@ -5,6 +5,7 @@ export type Mood =
   | "full"
   | "filling"
   | "empty"
+  | "failed"
   | "claimed"
   | "claimedCredit"
   | "pickChanged"
@@ -24,6 +25,7 @@ export const LINE_COUNT: Record<Mood, number> = {
   full: 3,
   filling: 3,
   empty: 3,
+  failed: 2,
   claimed: 3,
   claimedCredit: 3,
   pickChanged: 2,

@@ -14,10 +14,20 @@ export interface Line {
   vars?: Record<string, string | number>;
 }
 
-// one click on the jar, floating up as a number
+// one click on the jar, floating up as a number, a little off center so a fast run fans out
 export interface Pop {
   id: number;
   amount: number;
+  x: number;
+}
+
+// the clicks since the last send, counted up under the jar until the server answers for them
+export interface Run {
+  id: number;
+  amount: number;
+  state: "open" | "sending" | "sent" | "failed";
+  // restarts the countdown bar on every click
+  lastClickAt: number;
 }
 
 export interface CreditView {

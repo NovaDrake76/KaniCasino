@@ -408,6 +408,10 @@
         "1": "Nichts drin. Klickst du zum Spaß? ...Süß.",
         "2": "Null. Gib mir eine Sekunde, du Gieriger."
       },
+      "failed": {
+        "0": "Ugh, ist mir aus der Hand gerutscht. Keine Panik, alles ist noch im Topf. Klick nochmal.",
+        "1": "Das ging nicht durch. Guck nicht so, nichts ist weg. Nochmal."
+      },
       "claimed": {
         "0": "Hier, {{amount}}. Verlier nicht alles in einem Dreh. Wirst du aber.",
         "1": "{{amount}}. Gern geschehen. Sag danke.",

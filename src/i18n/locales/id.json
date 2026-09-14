@@ -408,6 +408,10 @@
         "1": "Tidak ada apa-apa. Klik buat iseng? ...Lucu.",
         "2": "Nol. Tunggu sebentar, dasar rakus."
       },
+      "failed": {
+        "0": "Ugh, lepas dari tanganku. Tenang, semuanya masih di toples. Klik lagi.",
+        "1": "Yang tadi tidak masuk. Jangan pasang muka begitu, tidak ada yang hilang. Coba lagi."
+      },
       "claimed": {
         "0": "Nih, {{amount}}. Jangan habis dalam satu putaran. Pasti habis sih.",
         "1": "{{amount}}. Sama-sama. Bilang terima kasih.",

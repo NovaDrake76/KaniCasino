@@ -26,6 +26,8 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   takeFromJar,
   poke,
   pops,
+  run,
+  settleMs,
   line,
   face,
   shaking,
@@ -72,6 +74,8 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
         face={face}
         shaking={shaking}
         pops={pops}
+        run={run}
+        settleMs={settleMs}
         onJar={takeFromJar}
         onPoke={poke}
         jarLabel={i18n.t("daisu.jar")}

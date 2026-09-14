@@ -7,7 +7,7 @@ import { getCases } from "../../services/cases/CaseServices";
 import { useGiftStatus } from "../header/useGiftReady";
 import { GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
 import { greetingFor, lineKey, Mood, pokeMood } from "./daisuLines";
-import type { CreditView, Face, Line, MissionGroup, Pop, RoomTab, Stage } from "./Daisu.types";
+import type { CreditView, Face, Line, MissionGroup, Pop, RoomTab, Run, Stage } from "./Daisu.types";
 import i18n from "../../i18n";
 
 const STAGE_KEY = "kani.daisuStage";
@@ -17,7 +17,7 @@ const CLOSED_TICK_MS = 1000;
 // long enough to read a reaction, short enough that she is not stuck grinning
 const FACE_MS = 1800;
 // a pause this long ends a run of clicks and sends it to the server as one take
-const SETTLE_AFTER_MS = 1500;
+const SETTLE_AFTER_MS = 4000;
 // a run that never pauses still settles this often, so the wallet keeps up
 const SETTLE_LATEST_MS = 15000;
 // clicking an empty jar shakes it every time but she only complains this often
@@ -30,6 +30,8 @@ const WALLET_REFRESH_MS = 3000;
 // the bubble alternates between the jar and the gift while a gift is waiting
 const BUBBLE_SWAP_MS = 4000;
 const POP_MS = 1200;
+// a sent or failed run stays under the jar this long, then fades out
+const RUN_RESULT_MS = 1600;
 
 // the card starts open on a desktop, which is how a player finds out she exists; on a
 // phone it would cover the games, so it starts as the bubble. the room is never restored.
@@ -87,6 +89,7 @@ export const useDaisu = () => {
   const [face, setFace] = useState<Face>("idle");
   const [shaking, setShaking] = useState(false);
   const [pops, setPops] = useState<Pop[]>([]);
+  const [run, setRun] = useState<Run | null>(null);
   const [settling, setSettling] = useState(false);
   const [missions, setMissions] = useState<Mission[]>([]);
   const [caseImage, setCaseImage] = useState<string | undefined>(undefined);
@@ -98,11 +101,16 @@ export const useDaisu = () => {
   const settleTimer = useRef<ReturnType<typeof setTimeout>>();
   const latestTimer = useRef<ReturnType<typeof setTimeout>>();
   const settlingRef = useRef(false);
-  const settleAgain = useRef(false);
+  const runTimer = useRef<ReturnType<typeof setTimeout>>();
   const lastStatusAt = useRef(0);
   const lastEmptyLineAt = useRef(0);
   const greeted = useRef(false);
   const pokes = useRef({ count: 0, at: 0 });
+  // the settle timer runs a callback made on an earlier render, so it reads the pot from these
+  const statusRef = useRef<PotStatus | null>(null);
+  const lastClickFillRef = useRef(0);
+  statusRef.current = status;
+  lastClickFillRef.current = lastClickFill;
 
   const say = useCallback((mood: Mood, vars?: Line["vars"]) => {
     setLine({ key: lineKey(mood, Math.random()), vars });
@@ -118,6 +126,12 @@ export const useDaisu = () => {
     setShaking(true);
     if (shakeTimer.current) clearTimeout(shakeTimer.current);
     shakeTimer.current = setTimeout(() => setShaking(false), 450);
+  }, []);
+
+  const addPop = useCallback((amount: number) => {
+    const id = Date.now() + Math.random();
+    setPops((p) => [...p.slice(-7), { id, amount, x: Math.round((Math.random() - 0.5) * 64) }]);
+    setTimeout(() => setPops((p) => p.filter((x) => x.id !== id)), POP_MS);
   }, []);
 
   const refresh = useCallback(() => {
@@ -248,23 +262,43 @@ export const useDaisu = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, status]);
 
+  // how a run ends: the server's number in green, or the clicked number in red. either way it
+  // fades, unless a new run has already started in its place
+  const endRun = useCallback((state: "sent" | "failed", amount?: number) => {
+    setRun((r) => (r ? { ...r, state, amount: amount ?? r.amount } : r));
+    if (runTimer.current) clearTimeout(runTimer.current);
+    runTimer.current = setTimeout(
+      () => setRun((r) => (r && (r.state === "sent" || r.state === "failed") ? null : r)),
+      RUN_RESULT_MS
+    );
+  }, []);
+
   const settle = useCallback(async () => {
     if (settleTimer.current) clearTimeout(settleTimer.current);
     if (latestTimer.current) clearTimeout(latestTimer.current);
     settleTimer.current = undefined;
     latestTimer.current = undefined;
-    if (settlingRef.current) {
-      settleAgain.current = true;
-      return;
-    }
+    // clicks while a take is in flight join it: the server prices up to the moment it runs
+    if (settlingRef.current) return;
     settlingRef.current = true;
     setSettling(true);
+    // the jar kept filling through the pause and the server takes all of it, so it is poured
+    // into the run first: the number that turns green is then the one that piled up on screen
+    const s = statusRef.current;
+    const fillNow = s ? fillAt(s.fullAt, s.cycleMs, Date.now()) : 0;
+    const rest = s ? takeBetween(s.full, lastClickFillRef.current, fillNow) : 0;
+    if (rest >= 1) {
+      setLastClickFill(fillNow);
+      addPop(rest);
+    }
+    setRun((r) => (r && r.state === "open" ? { ...r, amount: r.amount + (rest >= 1 ? rest : 0), state: "sending" } : r));
     try {
       const res = await claimPot();
       lastStatusAt.current = Date.now();
       setStatus(res.status);
       setLastClickFill(0);
       if (userData) toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
+      endRun("sent", res.amount);
       if (res.pickChanged) {
         say("pickChanged", { game: i18n.t(GAME_NAME_KEYS[res.status.pick]) });
       } else if (res.credit >= 1) {
@@ -274,26 +308,40 @@ export const useDaisu = () => {
       }
       pull("happy");
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { reason?: string; message?: string } } };
+      const e = err as { response?: { data?: { reason?: string } } };
       const reason = e?.response?.data?.reason;
-      if (reason === "empty" || reason === "raced") refresh();
-      else toast.error(e?.response?.data?.message || i18n.t("daisu.couldNotClaim"), { theme: "dark" });
+      // nothing was taken, so the pot still holds every coin of the run: re-read it
+      refresh();
+      if (reason === "raced") {
+        // another tab took this pot first, so the coins did land, only not from here
+        setRun(null);
+      } else {
+        endRun("failed");
+        shake();
+        pull("sad");
+        say(reason === "empty" ? "empty" : "failed");
+      }
     } finally {
       settlingRef.current = false;
       setSettling(false);
-      if (settleAgain.current) {
-        settleAgain.current = false;
-        settleTimer.current = setTimeout(settle, SETTLE_AFTER_MS);
-      }
     }
     // userData is read at settle time on purpose; the wallet it carries is the base
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData, toogleUserData, say, pull, refresh]);
+  }, [userData, toogleUserData, say, pull, shake, refresh, endRun, addPop]);
 
   const scheduleSettle = useCallback(() => {
     if (settleTimer.current) clearTimeout(settleTimer.current);
     settleTimer.current = setTimeout(settle, SETTLE_AFTER_MS);
     if (!latestTimer.current) latestTimer.current = setTimeout(settle, SETTLE_LATEST_MS);
+  }, [settle]);
+
+  // a hidden tab may never come back, so a run waiting out its pause is sent right away
+  useEffect(() => {
+    const onHide = () => {
+      if (document.visibilityState === "hidden" && settleTimer.current) settle();
+    };
+    document.addEventListener("visibilitychange", onHide);
+    return () => document.removeEventListener("visibilitychange", onHide);
   }, [settle]);
 
   // a run left hanging when she unmounts is still sent: the coins are priced by time,
@@ -302,6 +350,7 @@ export const useDaisu = () => {
     () => () => {
       if (faceTimer.current) clearTimeout(faceTimer.current);
       if (shakeTimer.current) clearTimeout(shakeTimer.current);
+      if (runTimer.current) clearTimeout(runTimer.current);
       if (latestTimer.current) clearTimeout(latestTimer.current);
       if (settleTimer.current) {
         clearTimeout(settleTimer.current);
@@ -316,6 +365,8 @@ export const useDaisu = () => {
     const delta = takeBetween(full, lastClickFill, fill);
     if (delta < 1) {
       shake();
+      // mid-run the jar is only catching up between fast clicks, which is not worth a complaint
+      if (run && (run.state === "open" || run.state === "sending")) return;
       pull("surprised");
       if (Date.now() - lastEmptyLineAt.current > EMPTY_LINE_EVERY_MS) {
         lastEmptyLineAt.current = Date.now();
@@ -325,11 +376,15 @@ export const useDaisu = () => {
       return;
     }
     setLastClickFill(fill);
-    const id = Date.now() + Math.random();
-    setPops((p) => [...p.slice(-4), { id, amount: delta }]);
-    setTimeout(() => setPops((p) => p.filter((x) => x.id !== id)), POP_MS);
+    const t = Date.now();
+    addPop(delta);
+    setRun((r) =>
+      r && (r.state === "open" || r.state === "sending")
+        ? { ...r, amount: r.amount + delta, lastClickAt: t }
+        : { id: t + Math.random(), amount: delta, state: "open", lastClickAt: t }
+    );
     pull("happy");
-    scheduleSettle();
+    if (!settlingRef.current) scheduleSettle();
   };
 
   const poke = () => {
@@ -403,6 +458,8 @@ export const useDaisu = () => {
     takeFromJar,
     poke,
     pops,
+    run,
+    settleMs: SETTLE_AFTER_MS,
     line,
     face,
     shaking,

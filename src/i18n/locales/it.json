@@ -408,6 +408,10 @@
         "1": "Niente lì dentro. Clicchi per divertimento? ...Carino.",
         "2": "Zero. Dammi un secondo, avido."
       },
+      "failed": {
+        "0": "Uffa, mi è scivolato. Calma, è tutto ancora nel vaso. Clicca di nuovo.",
+        "1": "Questo non è passato. Non fare quella faccia, non si è perso niente. Riprova."
+      },
       "claimed": {
         "0": "Ecco, {{amount}}. Non perderli tutti in un giro. Lo farai comunque.",
         "1": "{{amount}}. Prego. Di' grazie.",

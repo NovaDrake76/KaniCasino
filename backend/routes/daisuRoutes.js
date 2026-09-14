@@ -5,6 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const beta = require("../utils/beta");
 const pot = require("../utils/pot");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("../utils/economy");
+const { potClaimLimiter } = require("../middleware/rateLimit");
 
 const gate = [authMiddleware.isAuthenticated, beta.requireFlag("daisu")];
 
@@ -32,7 +33,7 @@ router.get("/status", ...gate, (req, res) => {
   res.json(statusOf(req.user));
 });
 
-router.post("/claim", ...gate, async (req, res) => {
+router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
   try {
     const now = new Date();
     const fill = pot.fillAt(req.user.nextBonus, now);

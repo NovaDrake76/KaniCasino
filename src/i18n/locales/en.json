@@ -408,6 +408,10 @@
         "1": "Nothing in there. Are you clicking for fun? ...Cute.",
         "2": "Zero. Give it a second, you greedy thing."
       },
+      "failed": {
+        "0": "Ugh, it slipped out of my hands. Relax, it's all still in the jar. Click again.",
+        "1": "That one didn't go through. Don't make that face, nothing's gone. Try again."
+      },
       "claimed": {
         "0": "There, {{amount}}. Don't lose it all in one spin. You will, though.",
         "1": "{{amount}}. You're welcome. Say thank you.",

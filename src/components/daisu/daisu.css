@@ -45,6 +45,17 @@
   transition: width 0.5s ease;
 }
 
+.daisu-countdown {
+  transform-origin: left center;
+  animation-name: daisu-countdown;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes daisu-countdown {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .daisu-bob, .daisu-hop, .daisu-shake, .daisu-glow { animation: none; }
 }

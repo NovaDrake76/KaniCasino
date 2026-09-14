@@ -408,6 +408,10 @@
         "1": "Não tem nada aí. Está clicando por diversão? ...Fofo.",
         "2": "Zero. Dá um segundo, seu ganancioso."
       },
+      "failed": {
+        "0": "Aff, escorregou da minha mão. Calma, está tudo ainda no pote. Clica de novo.",
+        "1": "Esse não foi. Não faz essa cara, não sumiu nada. Tenta de novo."
+      },
       "claimed": {
         "0": "Toma, {{amount}}. Não perde tudo num giro só. Vai perder, eu sei.",
         "1": "{{amount}}. De nada. Fala obrigado.",

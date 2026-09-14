@@ -408,6 +408,10 @@
         "1": "Rien dedans. Tu cliques pour le plaisir ? ...Mignon.",
         "2": "Zéro. Laisse-moi une seconde, petit gourmand."
       },
+      "failed": {
+        "0": "Pff, ça m'a glissé des mains. Du calme, tout est encore dans le pot. Reclique.",
+        "1": "Celui-là n'est pas passé. Fais pas cette tête, rien n'est perdu. Recommence."
+      },
       "claimed": {
         "0": "Tiens, {{amount}}. Ne perds pas tout en un tour. Tu le feras quand même.",
         "1": "{{amount}}. De rien. Dis merci.",

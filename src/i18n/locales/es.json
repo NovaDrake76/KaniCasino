@@ -408,6 +408,10 @@
         "1": "No hay nada. ¿Haces clic por diversión? ...Qué tierno.",
         "2": "Cero. Dame un segundo, avaricioso."
       },
+      "failed": {
+        "0": "Uf, se me resbaló. Tranquilo, todo sigue en el bote. Haz clic otra vez.",
+        "1": "Ese no pasó. No pongas esa cara, no se perdió nada. Otra vez."
+      },
       "claimed": {
         "0": "Toma, {{amount}}. No lo pierdas todo en un giro. Aunque lo harás.",
         "1": "{{amount}}. De nada. Di gracias.",

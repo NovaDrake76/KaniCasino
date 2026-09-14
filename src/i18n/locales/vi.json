@@ -408,6 +408,10 @@
         "1": "Không có gì đâu. Bấm cho vui à? ...Dễ thương.",
         "2": "Số không. Chờ chút đi, đồ tham."
       },
+      "failed": {
+        "0": "Á, tuột tay mất. Bình tĩnh, vẫn còn nguyên trong hũ. Bấm lại đi.",
+        "1": "Lần đó không qua được. Đừng làm mặt đó, không mất gì đâu. Thử lại."
+      },
       "claimed": {
         "0": "Đây, {{amount}}. Đừng thua hết trong một lượt. Dù kiểu gì cũng thua.",
         "1": "{{amount}}. Không có gì. Nói cảm ơn đi.",

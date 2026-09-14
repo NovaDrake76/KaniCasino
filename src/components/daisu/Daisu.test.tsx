@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { act, render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import DaisuDock from "./index";
 import UserContext from "../../UserContext";
@@ -48,10 +48,18 @@ const status = (fullInMs: number, over: Partial<PotStatus> = {}): PotStatus => (
   ...over,
 });
 
-const toogleUserData = vi.fn();
+const claimed = (amount: number, walletBalance: number) => ({
+  amount,
+  credit: amount / 10,
+  pick: "dice",
+  fill: 1,
+  pickChanged: false,
+  walletBalance,
+  nextBonus: new Date(Date.now() + CYCLE).toISOString(),
+  status: status(CYCLE, { credits: { dice: amount / 10 } }),
+});
 
-// the wallet format puts a non-breaking space after the sign
-const money = (n: string) => new RegExp("K₽[\\s\\u00a0]?" + n);
+const toogleUserData = vi.fn();
 
 const draw = (daisu = true) =>
   render(
@@ -65,6 +73,13 @@ const draw = (daisu = true) =>
   );
 
 const jar = () => screen.getByLabelText("The jar");
+// the jar ticks on Date.now, so fake timers move the pot and the pause together
+const wait = (ms: number) =>
+  act(async () => {
+    vi.advanceTimersByTime(ms);
+  });
+const runState = () => document.querySelector("[data-run]")?.getAttribute("data-run");
+const runAmount = () => Number((document.querySelector("[data-run]")?.textContent || "").replace(/\D/g, ""));
 
 describe("daisu in the corner", () => {
   beforeEach(() => {
@@ -77,6 +92,11 @@ describe("daisu in the corner", () => {
     getPotStatus.mockReset().mockResolvedValue(status(0));
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+    delete (document as { visibilityState?: string }).visibilityState;
+  });
+
   it("is not there for an account outside the beta", async () => {
     draw(false);
     await new Promise((r) => setTimeout(r, 20));
@@ -87,41 +107,84 @@ describe("daisu in the corner", () => {
   it("shows a full jar with the full-pot bonus on it", async () => {
     draw();
     expect(await screen.findByText(/full pot bonus \+25%/i)).toBeTruthy();
-    expect(screen.getAllByText(money("1,000")).length).toBeGreaterThan(0);
   });
 
-  it("takes from the jar on a click, then settles the run once the clicking stops", async () => {
-    claimPot.mockResolvedValue({
-      amount: 1000,
-      credit: 100,
-      pick: "dice",
-      fill: 1,
-      pickChanged: false,
-      walletBalance: 1100,
-      nextBonus: new Date(Date.now() + CYCLE).toISOString(),
-      status: status(CYCLE, { credits: { dice: 100 } }),
-    });
+  it("counts a run of clicks under the jar and sends it once they pause for four seconds", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    getPotStatus.mockResolvedValue(status(60000));
+    claimPot.mockResolvedValue(claimed(900, 1000));
     draw();
-    await screen.findByText(/full pot bonus/i);
-    fireEvent.click(jar());
+    await screen.findByText(/full in \d/i);
 
-    expect(await screen.findByText(money("1,000"), { selector: "span span" })).toBeTruthy();
+    fireEvent.click(jar());
+    await wait(3000);
+    fireEvent.click(jar());
+    await wait(3000);
     expect(claimPot).not.toHaveBeenCalled();
-    await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1), { timeout: 3000 });
-    await waitFor(() => expect(toogleUserData).toHaveBeenCalled());
-    expect(toogleUserData.mock.calls[0][0].walletBalance).toBe(1100);
+    expect(runState()).toBe("open");
+
+    await wait(1100);
+    await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(runState()).toBe("sent"));
+    expect(toogleUserData.mock.calls[0][0].walletBalance).toBe(1000);
     expect(await screen.findByText(/only on dice/i)).toBeTruthy();
   });
 
+  it("pours what refilled during the pause into the run as it sends, so the total is the take", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    getPotStatus.mockResolvedValue(status(60000));
+    claimPot.mockReturnValue(new Promise(() => undefined));
+    draw();
+    await screen.findByText(/full in \d/i);
+
+    fireEvent.click(jar());
+    const clicked = runAmount();
+    await wait(4100);
+
+    await waitFor(() => expect(runState()).toBe("sending"));
+    expect(claimPot).toHaveBeenCalledTimes(1);
+    expect(runAmount()).toBeGreaterThan(clicked);
+  });
+
+  it("turns the run red when the take fails, says so, and re-reads the pot", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    claimPot.mockRejectedValue({ response: { status: 500, data: { message: "Server error" } } });
+    draw();
+    await screen.findByText(/full pot bonus/i);
+
+    fireEvent.click(jar());
+    await wait(4100);
+
+    await waitFor(() => expect(runState()).toBe("failed"));
+    expect(await screen.findByText(/still in the jar|nothing's gone/i)).toBeTruthy();
+    expect(getPotStatus).toHaveBeenCalledTimes(2);
+    expect(toogleUserData).not.toHaveBeenCalled();
+  });
+
+  it("sends a waiting run at once when the tab is hidden", async () => {
+    claimPot.mockResolvedValue(claimed(1000, 1100));
+    draw();
+    await screen.findByText(/full pot bonus/i);
+
+    fireEvent.click(jar());
+    expect(claimPot).not.toHaveBeenCalled();
+    Object.defineProperty(document, "visibilityState", { value: "hidden", configurable: true });
+    fireEvent(document, new Event("visibilitychange"));
+
+    await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
+  });
+
   it("finds an empty jar right after a take and complains without calling home", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     getPotStatus.mockResolvedValue(status(CYCLE));
     draw();
-    await screen.findByText(/full in 8:00/i);
+    await screen.findByText(/full in [78]:\d\d/i);
     fireEvent.click(jar());
 
     expect(await screen.findByText(/learn to count|clicking for fun|greedy/i)).toBeTruthy();
-    await new Promise((r) => setTimeout(r, 1700));
+    await wait(4100);
     expect(claimPot).not.toHaveBeenCalled();
+    expect(runState()).toBeUndefined();
   });
 
   it("talks back when she is poked", async () => {
