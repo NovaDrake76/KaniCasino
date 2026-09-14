@@ -4,6 +4,8 @@ export const JAR_TAKEN_EVENT = "daisu:jar-taken";
 export const CASE_REVEALED_EVENT = "case:revealed";
 export const GAME_RESULT_EVENT = "game:result";
 export const DAISU_STAGE_EVENT = "daisu:stage";
+export const ITEM_PINNED_EVENT = "item:pinned";
+export const ITEM_SOLD_EVENT = "item:sold";
 
 export interface RevealedItem {
   name: string;
@@ -23,3 +25,5 @@ export const emitJarTaken = () => emit(JAR_TAKEN_EVENT);
 export const emitCaseRevealed = (items: RevealedItem[]) => emit(CASE_REVEALED_EVENT, { items });
 export const emitGameResult = (result: GameResult) => emit(GAME_RESULT_EVENT, result);
 export const showDaisu = (stage: "bubble" | "popup" | "room") => emit(DAISU_STAGE_EVENT, stage);
+export const emitItemPinned = () => emit(ITEM_PINNED_EVENT);
+export const emitItemSold = () => emit(ITEM_SOLD_EVENT);

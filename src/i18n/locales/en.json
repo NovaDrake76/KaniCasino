@@ -695,6 +695,60 @@
       "ready": "{{n}} ready to claim",
       "tab": "Achievements",
       "unlocked": "Achievement unlocked"
+    },
+    "help": {
+      "battle": {
+        "line": "Pick cases below, then this button starts the battle. Everyone opens the same cases and the best total takes it all."
+      },
+      "bonus": {
+        "play": "Now play a round. Any bet counts, and the bonus pays first.",
+        "strip": "That's my bonus, right above your bet, with its clock. A bet here spends it before your wallet.",
+        "take": "No bonus right now. Take from my jar and a little extra lands on {{game}}.",
+        "takeWait": "Waiting for a take"
+      },
+      "cases": {
+        "line": "Any case counts, cheap or expensive. Pick one and open it."
+      },
+      "collection": {
+        "complete": "The bar shows how much of each collection you own. Fill one all the way and its badge is yours.",
+        "line": "Every case has a collection. Open one to see what you have and what you're still missing.",
+        "wait": "Waiting for you to open one"
+      },
+      "eyebrow": "Help · {{mission}}",
+      "fans": {
+        "line": "This tab shows every character you own and how far you are from being its Top Fan. Pin the one you're closest on."
+      },
+      "games": {
+        "line": "Pick a game, any game. I'll show you where the bet goes and which button plays it."
+      },
+      "gift": {
+        "later": "You already spun today. The timer says when the next one is ready. Miss it and the streak starts over.",
+        "pick": "Pick a collection. The gift is a case from it, and the longer your streak, the better it gets.",
+        "spin": "Now spin. Then come back tomorrow and spin again, or the streak starts over.",
+        "wait": "Waiting for the spin"
+      },
+      "market": {
+        "line": "Everything players are selling is in here. Open an item to buy it or make an offer, and you can list your own from this page too."
+      },
+      "pin": {
+        "done": "Pinned. Everyone who opens your profile sees it now. Not bad taste, I suppose.",
+        "empty": "Nothing to pin yet. Open a case first, then come back and pick a favorite.",
+        "line": "See the hearts? Click the one on the character you like most. Everyone who visits your profile sees who you picked, so choose well.",
+        "linePhone": "See the hearts? Tap the one on the character you like most. Everyone who visits your profile sees who you picked, so choose well.",
+        "wait": "Waiting for the heart"
+      },
+      "pot": {
+        "line": "My jar. The bar fills over 8 minutes, and a full jar pays the full-pot bonus on top. Take it early and you only get what's in it."
+      },
+      "sell": {
+        "done": "Sold. That's KP back in your wallet. See? Easy.",
+        "empty": "Nothing to sell yet. Open a case first.",
+        "line": "Hover an item and press its sell button. It turns back into KP right away, so pick one you won't miss.",
+        "linePhone": "Tap an item and sell a copy. It turns back into KP right away, so pick one you won't miss.",
+        "wait": "Waiting for a sale"
+      },
+      "showMe": "Show me",
+      "stop": "Stop helping"
     }
   },
   "dice": {

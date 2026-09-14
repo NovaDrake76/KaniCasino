@@ -13,6 +13,7 @@ interface Props {
   helpOpen: boolean;
   onClaim: (key: string) => void;
   onHelp: (key: string) => void;
+  onShowMe?: (key: string) => void;
 }
 
 const t = (key: string) => i18n.t(`daisu.roadmap.${key}`);
@@ -59,7 +60,7 @@ const Action = ({ mission, claiming, helpOpen, onClaim, onHelp }: Omit<Props, "w
   );
 };
 
-const MissionRow = ({ mission, words, art, claiming, helpOpen, onClaim, onHelp }: Props) => (
+const MissionRow = ({ mission, words, art, claiming, helpOpen, onClaim, onHelp, onShowMe }: Props) => (
   <div className={`flex flex-col bg-surface ${mission.claimed ? "opacity-55" : ""}`} style={mission.claimable ? GLOW : undefined}>
     <div className="flex flex-col gap-2.5 p-3.5 md:flex-row md:items-center md:gap-3.5 md:px-4">
       <div className="flex min-w-0 flex-1 items-center gap-3 md:gap-3.5">
@@ -81,6 +82,15 @@ const MissionRow = ({ mission, words, art, claiming, helpOpen, onClaim, onHelp }
         <div className="flex flex-col gap-3">
           <p className="m-0 text-sm leading-relaxed text-ink-soft">{words.help}</p>
           <div className="flex gap-2">
+            {onShowMe && (
+              <button
+                type="button"
+                onClick={() => onShowMe(mission.key)}
+                className="h-9 rounded-md border-none bg-accent px-[18px] text-[13px] font-bold text-white hover:border-none hover:bg-accent-light focus:outline-none"
+              >
+                {i18n.t("daisu.help.showMe")}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => onHelp(mission.key)}

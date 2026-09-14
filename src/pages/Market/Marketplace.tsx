@@ -120,6 +120,7 @@ const Marketplace: React.FC = () => {
           {isLogged && (
             <button
               onClick={() => setOpenSellModal(true)}
+              data-tour="market-sell"
               className="px-4 h-10 rounded-md bg-accent hover:bg-accent-light text-sm font-semibold text-white"
             >
               {i18n.t("market.sellAnItem")}

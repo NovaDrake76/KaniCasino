@@ -11,9 +11,11 @@ export interface Target {
   rect: Rect | null;
   // what the page says about the element through data-tour-state, like a case too dear to open
   state: string | null;
+  // on the page at all, even before it has a size
+  present: boolean;
 }
 
-const NONE: Target = { rect: null, state: null };
+const NONE: Target = { rect: null, state: null, present: false };
 
 const sameRect = (a: Rect | null, b: Rect | null) =>
   a === b || (!!a && !!b && a.top === b.top && a.left === b.left && a.width === b.width && a.height === b.height);
@@ -38,12 +40,13 @@ export const useTarget = (target: string | null): Target => {
           ? { top: Math.round(box.top), left: Math.round(box.left), width: Math.round(box.width), height: Math.round(box.height) }
           : null;
       const state = el ? el.getAttribute("data-tour-state") : null;
+      const present = !!el;
       if (el && rect && !scrolled) {
         scrolled = true;
         el.scrollIntoView({ block: "center", behavior: "smooth" });
       }
-      if (!sameRect(last.rect, rect) || last.state !== state) {
-        last = { rect, state };
+      if (!sameRect(last.rect, rect) || last.state !== state || last.present !== present) {
+        last = { rect, state, present };
         setFound(last);
       }
       frame = window.requestAnimationFrame(tick);

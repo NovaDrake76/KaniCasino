@@ -49,6 +49,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   claimMission,
   helpKey,
   toggleHelp,
+  showMe,
   giftReady,
 }) => (
   <motion.div
@@ -153,6 +154,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
               bonusGame={bonusGame}
               onClaim={claimMission}
               onHelp={toggleHelp}
+              onShowMe={showMe}
             />
           ) : (
             <div className="flex flex-col gap-2 bg-surface p-4">

@@ -13,6 +13,7 @@ interface Props {
   bonusGame: { name: string; art?: string };
   onClaim: (key: string) => void;
   onHelp: (key: string) => void;
+  onShowMe?: (key: string) => void;
 }
 
 const t = (key: string, vars?: Record<string, string | number>) => i18n.t(`daisu.roadmap.${key}`, vars);
@@ -71,7 +72,7 @@ const Finished = () => (
 );
 
 // her room's missions tab: the open chapter, one row per mission, and the chapter after it, locked
-const RoadmapPanel = ({ roadmap, claimingMission, helpKey, bonusGame, onClaim, onHelp }: Props) => {
+const RoadmapPanel = ({ roadmap, claimingMission, helpKey, bonusGame, onClaim, onHelp, onShowMe }: Props) => {
   if (!roadmap) {
     return (
       <div className="flex flex-col gap-3.5">
@@ -95,6 +96,7 @@ const RoadmapPanel = ({ roadmap, claimingMission, helpKey, bonusGame, onClaim, o
           helpOpen={helpKey === m.key}
           onClaim={onClaim}
           onHelp={onHelp}
+          onShowMe={onShowMe}
         />
       ))}
       <NextChapter roadmap={roadmap} game={bonusGame.name} />

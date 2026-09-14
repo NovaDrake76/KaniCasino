@@ -695,6 +695,60 @@
       "ready": "{{n}} siap diambil",
       "tab": "Pencapaian",
       "unlocked": "Pencapaian terbuka"
+    },
+    "help": {
+      "battle": {
+        "line": "Pilih kotak di bawah, lalu tombol ini memulai adu gacor. Semua orang membuka kotak yang sama dan total terbaik membawa pulang semuanya."
+      },
+      "bonus": {
+        "play": "Sekarang main satu ronde. Taruhan berapa pun dihitung, dan bonusnya membayar lebih dulu.",
+        "strip": "Itu bonusku, tepat di atas taruhanmu, lengkap dengan jamnya. Taruhan di sini memakainya lebih dulu dari dompetmu.",
+        "take": "Sekarang tidak ada bonus. Ambil dari toplesku dan sedikit ekstra mendarat di {{game}}.",
+        "takeWait": "Menunggu kamu mengambil"
+      },
+      "cases": {
+        "line": "Kotak apa pun dihitung, murah atau mahal. Pilih satu dan buka."
+      },
+      "collection": {
+        "complete": "Bilahnya menunjukkan berapa banyak yang kamu punya dari setiap koleksi. Lengkapi satu sampai penuh dan lencananya milikmu.",
+        "line": "Setiap kotak punya koleksi. Buka satu untuk melihat apa yang kamu punya dan apa yang masih kurang.",
+        "wait": "Menunggu kamu membuka satu"
+      },
+      "eyebrow": "Bantuan · {{mission}}",
+      "fans": {
+        "line": "Tab ini menunjukkan setiap karakter yang kamu punya dan seberapa jauh kamu dari jadi Top Fan-nya. Sematkan yang paling dekat."
+      },
+      "games": {
+        "line": "Pilih game, yang mana saja. Nanti kutunjukkan tempat taruhannya dan tombol untuk bermain."
+      },
+      "gift": {
+        "later": "Kamu sudah memutar hari ini. Jamnya menunjukkan kapan yang berikutnya siap. Lewatkan, dan beruntunnya mulai dari awal.",
+        "pick": "Pilih koleksi. Bansosnya berupa kotak dari koleksi itu, dan makin panjang beruntunmu, makin bagus hadiahnya.",
+        "spin": "Sekarang putar. Lalu kembali besok dan putar lagi, atau beruntunnya mulai dari awal.",
+        "wait": "Menunggu putaran"
+      },
+      "market": {
+        "line": "Semua yang dijual pemain ada di sini. Buka barang untuk membelinya atau mengajukan penawaran, dan barangmu sendiri juga bisa dipasang dari halaman ini."
+      },
+      "pin": {
+        "done": "Tersemat. Sekarang semua yang membuka profilmu bisa melihatnya. Seleramu lumayan juga.",
+        "empty": "Belum ada yang bisa disematkan. Buka kotak dulu, lalu kembali untuk memilih favoritmu.",
+        "line": "Lihat hati-hatinya? Klik hati pada karakter yang paling kamu suka. Semua yang mengunjungi profilmu bisa melihat pilihanmu, jadi pilih baik-baik.",
+        "linePhone": "Lihat hati-hatinya? Ketuk hati pada karakter yang paling kamu suka. Semua yang mengunjungi profilmu bisa melihat pilihanmu, jadi pilih baik-baik.",
+        "wait": "Menunggu hatinya"
+      },
+      "pot": {
+        "line": "Ini toplesku. Bilahnya terisi dalam 8 menit, dan toples penuh membayar bonus toples penuh sebagai tambahan. Ambil lebih awal dan kamu cuma dapat isinya saat itu."
+      },
+      "sell": {
+        "done": "Terjual. KP-nya sudah kembali ke dompetmu. Tuh kan? Gampang.",
+        "empty": "Belum ada yang bisa dijual. Buka kotak dulu.",
+        "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi KP lagi, jadi pilih yang tidak akan kamu rindukan.",
+        "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi KP lagi, jadi pilih yang tidak akan kamu rindukan.",
+        "wait": "Menunggu penjualan"
+      },
+      "showMe": "Tunjukkan",
+      "stop": "Berhenti membantu"
     }
   },
   "dice": {

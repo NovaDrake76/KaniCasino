@@ -695,6 +695,60 @@
       "ready": "{{n}} à récupérer",
       "tab": "Succès",
       "unlocked": "Succès débloqué"
+    },
+    "help": {
+      "battle": {
+        "line": "Choisis des caisses plus bas, puis ce bouton lance la bataille. Tout le monde ouvre les mêmes caisses et le meilleur total rafle tout."
+      },
+      "bonus": {
+        "play": "Maintenant, joue une partie. N'importe quelle mise compte, et le bonus paie en premier.",
+        "strip": "Voilà mon bonus, juste au-dessus de ta mise, avec son chrono. Une mise ici le dépense avant ton portefeuille.",
+        "take": "Pas de bonus en ce moment. Prends dans mon pot et un petit extra atterrit sur {{game}}.",
+        "takeWait": "J'attends que tu prennes"
+      },
+      "cases": {
+        "line": "N'importe quelle caisse compte, pas chère ou chère. Choisis-en une et ouvre-la."
+      },
+      "collection": {
+        "complete": "La barre montre combien tu possèdes de chaque collection. Remplis-en une jusqu'au bout et son badge est à toi.",
+        "line": "Chaque caisse a sa collection. Ouvre-en une pour voir ce que tu as et ce qui te manque encore.",
+        "wait": "J'attends que tu en ouvres une"
+      },
+      "eyebrow": "Aide · {{mission}}",
+      "fans": {
+        "line": "Cet onglet montre chaque personnage que tu possèdes et ce qu'il te manque pour être son Top Fan. Épingle celui dont tu es le plus proche."
+      },
+      "games": {
+        "line": "Choisis un jeu, n'importe lequel. Je te montre où va la mise et quel bouton lance la partie."
+      },
+      "gift": {
+        "later": "Tu as déjà tourné aujourd'hui. Le chrono indique quand le prochain sera prêt. Rate-le et la série repart de zéro.",
+        "pick": "Choisis une collection. Le cadeau est une caisse de celle-ci, et plus ta série est longue, meilleur il est.",
+        "spin": "Maintenant, tourne. Puis reviens demain et tourne encore, sinon la série repart de zéro.",
+        "wait": "J'attends le tirage"
+      },
+      "market": {
+        "line": "Tout ce que les joueurs vendent est ici. Ouvre un objet pour l'acheter ou faire une offre, et tu peux mettre les tiens en vente depuis cette page aussi."
+      },
+      "pin": {
+        "done": "Épinglé. Tous ceux qui ouvrent ton profil le voient maintenant. Pas mauvais goût, j'imagine.",
+        "empty": "Rien à épingler pour l'instant. Ouvre d'abord une caisse, puis reviens choisir ton préféré.",
+        "line": "Tu vois les cœurs ? Clique sur celui du personnage que tu préfères. Tous ceux qui visitent ton profil voient qui tu as choisi, alors choisis bien.",
+        "linePhone": "Tu vois les cœurs ? Touche celui du personnage que tu préfères. Tous ceux qui visitent ton profil voient qui tu as choisi, alors choisis bien.",
+        "wait": "J'attends le cœur"
+      },
+      "pot": {
+        "line": "Mon pot. La barre se remplit en 8 minutes, et un pot plein paie le bonus de pot plein en plus. Prends-le trop tôt et tu n'as que ce qu'il contient."
+      },
+      "sell": {
+        "done": "Vendu. Ces KP sont de retour dans ton portefeuille. Tu vois ? Facile.",
+        "empty": "Rien à vendre pour l'instant. Ouvre d'abord une caisse.",
+        "line": "Survole un objet et appuie sur son bouton de vente. Il redevient des KP tout de suite, alors choisis-en un qui ne te manquera pas.",
+        "linePhone": "Touche un objet et vends un exemplaire. Il redevient des KP tout de suite, alors choisis-en un qui ne te manquera pas.",
+        "wait": "J'attends une vente"
+      },
+      "showMe": "Montre-moi",
+      "stop": "Arrêter l'aide"
     }
   },
   "dice": {

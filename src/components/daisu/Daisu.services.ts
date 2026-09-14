@@ -8,6 +8,8 @@ import { greetingFor, lineKey, Mood, pokeMood } from "./daisuLines";
 import { setPotStatus, usePotStatus } from "./potStore";
 import { DAISU_STAGE_EVENT, emitJarTaken } from "./tour/tourEvents";
 import { useRoadmap } from "./roadmap/useRoadmap";
+import { missionWords } from "./roadmap/missionCopy";
+import { startHelp } from "./tour/helpStore";
 import type { BonusView, Face, Line, Pop, RoomTab, Run, Stage } from "./Daisu.types";
 import i18n from "../../i18n";
 
@@ -467,6 +469,14 @@ export const useDaisu = () => {
     missions.showHelp(key);
     openRoom();
   };
+  // she folds away and shows the player around the page the mission needs
+  const showMe = (key: string) => {
+    const mission = missions.roadmap?.missions.find((m) => m.key === key);
+    if (!mission || !userId) return;
+    missions.showHelp(null);
+    setStage("bubble");
+    startHelp(userId, mission.key, mission.goal, missionWords(mission.key, mission.target, bonusGame.name).title);
+  };
   const backToPopup = () => setStage("popup");
 
   return {
@@ -476,6 +486,7 @@ export const useDaisu = () => {
     closeToBubble,
     openRoom,
     openRoomHelp,
+    showMe,
     backToPopup,
     tab,
     setTab,

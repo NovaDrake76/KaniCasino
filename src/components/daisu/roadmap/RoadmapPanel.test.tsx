@@ -34,6 +34,7 @@ const chapterOne = (missions: RoadmapMission[]): Roadmap => ({
 const draw = (roadmap: Roadmap | null, helpKey: string | null = null) => {
   const onClaim = vi.fn();
   const onHelp = vi.fn();
+  const onShowMe = vi.fn();
   render(
     <RoadmapPanel
       roadmap={roadmap}
@@ -42,9 +43,10 @@ const draw = (roadmap: Roadmap | null, helpKey: string | null = null) => {
       bonusGame={{ name: "Slots", art: "/images/slot/wild.webp" }}
       onClaim={onClaim}
       onHelp={onHelp}
+      onShowMe={onShowMe}
     />
   );
-  return { onClaim, onHelp };
+  return { onClaim, onHelp, onShowMe };
 };
 
 describe("her missions tab", () => {
@@ -83,10 +85,12 @@ describe("her missions tab", () => {
   });
 
   it("unfolds her explanation under a mission whose help is open", () => {
-    draw(chapterOne([mission({ key: "r1-level", goal: "level", target: 5, current: 3 })]), "r1-level");
+    const { onShowMe } = draw(chapterOne([mission({ key: "r1-level", goal: "level", target: 5, current: 3 })]), "r1-level");
 
     expect(screen.getByText(/levels come from betting/i)).toBeTruthy();
     expect(screen.getByRole("button", { name: "Got it" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Show me" }));
+    expect(onShowMe).toHaveBeenCalledWith("r1-level");
   });
 
   it("says so once every chapter is done", () => {

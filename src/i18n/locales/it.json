@@ -695,6 +695,60 @@
       "ready": "{{n}} da ritirare",
       "tab": "Obiettivi",
       "unlocked": "Obiettivo sbloccato"
+    },
+    "help": {
+      "battle": {
+        "line": "Scegli le casse qui sotto, poi questo pulsante avvia la battaglia. Tutti aprono le stesse casse e il totale migliore prende tutto."
+      },
+      "bonus": {
+        "play": "Ora gioca un round. Qualsiasi puntata conta, e il bonus paga per primo.",
+        "strip": "Questo è il mio bonus, proprio sopra la tua puntata, con il suo timer. Una puntata qui lo spende prima del tuo portafoglio.",
+        "take": "Adesso niente bonus. Prendi dal mio vaso e un piccolo extra finisce su {{game}}.",
+        "takeWait": "Aspetto che prendi"
+      },
+      "cases": {
+        "line": "Qualsiasi cassa conta, economica o cara. Scegline una e aprila."
+      },
+      "collection": {
+        "complete": "La barra mostra quanto possiedi di ogni collezione. Completane una fino in fondo e il suo distintivo è tuo.",
+        "line": "Ogni cassa ha una collezione. Aprine una per vedere cosa hai e cosa ti manca ancora.",
+        "wait": "Aspetto che ne apri una"
+      },
+      "eyebrow": "Aiuto · {{mission}}",
+      "fans": {
+        "line": "Questa scheda mostra ogni personaggio che possiedi e quanto ti manca per esserne il Top Fan. Fissa quello a cui sei più vicino."
+      },
+      "games": {
+        "line": "Scegli un gioco, uno qualsiasi. Ti faccio vedere dove va la puntata e quale pulsante gioca."
+      },
+      "gift": {
+        "later": "Hai già girato oggi. Il timer dice quando sarà pronto il prossimo. Se lo salti, la serie riparte da zero.",
+        "pick": "Scegli una collezione. Il regalo è una cassa di quella, e più lunga è la tua serie, meglio è.",
+        "spin": "Ora gira. Poi torna domani e gira di nuovo, o la serie riparte da zero.",
+        "wait": "Aspetto il giro"
+      },
+      "market": {
+        "line": "Tutto quello che i giocatori vendono è qui. Apri un oggetto per comprarlo o fare un'offerta, e da questa pagina puoi anche mettere in vendita i tuoi."
+      },
+      "pin": {
+        "done": "Fissato. Chiunque apra il tuo profilo ora lo vede. Non hai cattivo gusto, direi.",
+        "empty": "Ancora niente da fissare. Apri prima una cassa, poi torna a scegliere il tuo preferito.",
+        "line": "Vedi i cuori? Clicca quello sul personaggio che ti piace di più. Chiunque visiti il tuo profilo vede chi hai scelto, quindi scegli bene.",
+        "linePhone": "Vedi i cuori? Tocca quello sul personaggio che ti piace di più. Chiunque visiti il tuo profilo vede chi hai scelto, quindi scegli bene.",
+        "wait": "Aspetto il cuore"
+      },
+      "pot": {
+        "line": "Il mio vaso. La barra si riempie in 8 minuti, e un vaso pieno paga in più il bonus del vaso pieno. Se lo prendi prima, ti porti via solo quello che c'è dentro."
+      },
+      "sell": {
+        "done": "Venduto. Quei KP sono tornati nel tuo portafoglio. Visto? Facile.",
+        "empty": "Ancora niente da vendere. Apri prima una cassa.",
+        "line": "Passa il mouse su un oggetto e premi il suo pulsante di vendita. Torna subito in KP, quindi scegline uno che non ti mancherà.",
+        "linePhone": "Tocca un oggetto e vendine una copia. Torna subito in KP, quindi scegline uno che non ti mancherà.",
+        "wait": "Aspetto una vendita"
+      },
+      "showMe": "Fammi vedere",
+      "stop": "Basta aiuto"
     }
   },
   "dice": {

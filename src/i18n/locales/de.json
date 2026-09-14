@@ -695,6 +695,60 @@
       "ready": "{{n}} zum Abholen",
       "tab": "Erfolge",
       "unlocked": "Erfolg freigeschaltet"
+    },
+    "help": {
+      "battle": {
+        "line": "Wähl unten Kisten aus, dann startet dieser Knopf das Battle. Alle öffnen dieselben Kisten, und die beste Summe gewinnt alles."
+      },
+      "bonus": {
+        "play": "Jetzt spiel eine Runde. Jeder Einsatz zählt, und der Bonus zahlt zuerst.",
+        "strip": "Das ist mein Bonus, direkt über deinem Einsatz, mit seiner Uhr. Eine Wette hier verbraucht ihn vor deinem Wallet.",
+        "take": "Gerade kein Bonus. Nimm aus meinem Topf, dann landet ein kleines Extra bei {{game}}.",
+        "takeWait": "Warte, bis du nimmst"
+      },
+      "cases": {
+        "line": "Jede Kiste zählt, billig oder teuer. Such dir eine aus und öffne sie."
+      },
+      "collection": {
+        "complete": "Der Balken zeigt, wie viel du von jeder Sammlung besitzt. Füll eine ganz, und ihr Abzeichen gehört dir.",
+        "line": "Jede Kiste hat eine Sammlung. Öffne eine, um zu sehen, was du hast und was dir noch fehlt.",
+        "wait": "Warte, bis du eine öffnest"
+      },
+      "eyebrow": "Hilfe · {{mission}}",
+      "fans": {
+        "line": "Dieser Tab zeigt jeden Charakter, den du besitzt, und wie weit du davon entfernt bist, sein Top-Fan zu sein. Pinne den, bei dem du am nächsten dran bist."
+      },
+      "games": {
+        "line": "Such dir ein Spiel aus, egal welches. Ich zeige dir, wo der Einsatz hinkommt und welcher Knopf spielt."
+      },
+      "gift": {
+        "later": "Du hast heute schon gedreht. Die Uhr zeigt, wann das nächste bereit ist. Verpasst du es, fängt die Serie von vorne an.",
+        "pick": "Such dir eine Sammlung aus. Das Geschenk ist eine Kiste daraus, und je länger deine Serie, desto besser wird es.",
+        "spin": "Jetzt dreh. Komm morgen wieder und dreh noch mal, sonst fängt die Serie von vorne an.",
+        "wait": "Warte auf den Dreh"
+      },
+      "market": {
+        "line": "Alles, was Spieler verkaufen, ist hier. Öffne ein Item, um es zu kaufen oder ein Angebot zu machen, und deine eigenen kannst du auch von dieser Seite aus einstellen."
+      },
+      "pin": {
+        "done": "Gepinnt. Jeder, der dein Profil öffnet, sieht ihn jetzt. Gar kein schlechter Geschmack, schätze ich.",
+        "empty": "Noch nichts zum Pinnen. Öffne erst eine Kiste und komm dann wieder, um einen Favoriten zu wählen.",
+        "line": "Siehst du die Herzen? Klick das beim Charakter, den du am liebsten magst. Jeder, der dein Profil besucht, sieht, wen du gewählt hast, also wähl gut.",
+        "linePhone": "Siehst du die Herzen? Tipp das beim Charakter, den du am liebsten magst. Jeder, der dein Profil besucht, sieht, wen du gewählt hast, also wähl gut.",
+        "wait": "Warte auf das Herz"
+      },
+      "pot": {
+        "line": "Mein Topf. Der Balken füllt sich in 8 Minuten, und ein voller Topf zahlt den Bonus für den vollen Topf obendrauf. Nimmst du ihn früher, bekommst du nur, was drin ist."
+      },
+      "sell": {
+        "done": "Verkauft. Die KP sind zurück in deinem Wallet. Siehst du? Einfach.",
+        "empty": "Noch nichts zu verkaufen. Öffne erst eine Kiste.",
+        "line": "Fahr mit der Maus über ein Item und drück seinen Verkaufen-Knopf. Es wird sofort wieder zu KP, also nimm eins, das dir nicht fehlen wird.",
+        "linePhone": "Tipp auf ein Item und verkauf ein Exemplar. Es wird sofort wieder zu KP, also nimm eins, das dir nicht fehlen wird.",
+        "wait": "Warte auf einen Verkauf"
+      },
+      "showMe": "Zeig's mir",
+      "stop": "Hilfe beenden"
     }
   },
   "dice": {

@@ -695,6 +695,60 @@
       "ready": "{{n}} thành tích chờ nhận",
       "tab": "Thành tích",
       "unlocked": "Mở khóa thành tích"
+    },
+    "help": {
+      "battle": {
+        "line": "Chọn hòm ở bên dưới, rồi nút này bắt đầu trận đấu. Ai cũng mở cùng các hòm và tổng giá trị cao nhất lấy hết."
+      },
+      "bonus": {
+        "play": "Giờ chơi một ván đi. Cược bao nhiêu cũng tính, và phần thưởng trả trước.",
+        "strip": "Đây là phần thưởng của tôi, ngay trên mức cược của bạn, kèm đồng hồ. Cược ở đây sẽ dùng nó trước ví của bạn.",
+        "take": "Giờ chưa có phần thưởng. Lấy từ hũ của tôi và một chút thêm sẽ rơi vào {{game}}.",
+        "takeWait": "Đang chờ bạn lấy"
+      },
+      "cases": {
+        "line": "Hòm nào cũng tính, rẻ hay đắt. Chọn một hòm và mở."
+      },
+      "collection": {
+        "complete": "Thanh này cho biết bạn có bao nhiêu trong mỗi bộ sưu tập. Gom đủ một bộ và huy hiệu của nó là của bạn.",
+        "line": "Mỗi hòm có một bộ sưu tập. Mở một bộ để xem bạn có gì và còn thiếu gì.",
+        "wait": "Đang chờ bạn mở một bộ"
+      },
+      "eyebrow": "Trợ giúp · {{mission}}",
+      "fans": {
+        "line": "Tab này cho thấy mọi nhân vật bạn sở hữu và bạn còn cách Fan Số Một bao xa. Ghim nhân vật bạn gần nhất."
+      },
+      "games": {
+        "line": "Chọn một trò, trò nào cũng được. Tôi sẽ chỉ bạn nhập mức cược ở đâu và bấm nút nào để chơi."
+      },
+      "gift": {
+        "later": "Hôm nay bạn quay rồi. Đồng hồ cho biết khi nào lượt tiếp theo sẵn sàng. Bỏ lỡ là chuỗi bắt đầu lại.",
+        "pick": "Chọn một bộ sưu tập. Quà là một hòm trong đó, và chuỗi càng dài thì quà càng xịn.",
+        "spin": "Giờ quay đi. Rồi mai quay lại quay tiếp, không thì chuỗi bắt đầu lại.",
+        "wait": "Đang chờ bạn quay"
+      },
+      "market": {
+        "line": "Mọi thứ người chơi đang bán đều ở đây. Mở một vật phẩm để mua hoặc trả giá, và bạn cũng đăng bán đồ của mình từ trang này được."
+      },
+      "pin": {
+        "done": "Ghim rồi. Giờ ai mở hồ sơ của bạn cũng thấy. Gu cũng không tệ nhỉ.",
+        "empty": "Chưa có gì để ghim. Mở một hòm trước, rồi quay lại chọn nhân vật yêu thích.",
+        "line": "Thấy mấy trái tim chưa? Bấm vào trái tim trên nhân vật bạn thích nhất. Ai ghé hồ sơ của bạn cũng thấy bạn chọn ai, nên chọn cho kỹ.",
+        "linePhone": "Thấy mấy trái tim chưa? Chạm vào trái tim trên nhân vật bạn thích nhất. Ai ghé hồ sơ của bạn cũng thấy bạn chọn ai, nên chọn cho kỹ.",
+        "wait": "Đang chờ trái tim"
+      },
+      "pot": {
+        "line": "Hũ của tôi đây. Thanh đầy sau 8 phút, và hũ đầy còn trả thêm thưởng hũ đầy. Lấy sớm thì bạn chỉ nhận được phần đang có."
+      },
+      "sell": {
+        "done": "Bán rồi. Số KP đó đã về ví của bạn. Thấy chưa? Dễ mà.",
+        "empty": "Chưa có gì để bán. Mở một hòm trước đã.",
+        "line": "Rê chuột lên một vật phẩm và bấm nút bán của nó. Nó thành KP ngay, nên chọn thứ bạn không tiếc.",
+        "linePhone": "Chạm vào một vật phẩm và bán một bản. Nó thành KP ngay, nên chọn thứ bạn không tiếc.",
+        "wait": "Đang chờ bạn bán"
+      },
+      "showMe": "Xem cách làm",
+      "stop": "Dừng trợ giúp"
     }
   },
   "dice": {

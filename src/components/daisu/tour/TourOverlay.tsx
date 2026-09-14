@@ -1,69 +1,21 @@
 import { useContext, useEffect, useState } from "react";
-import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FiCheck, FiX } from "react-icons/fi";
 import UserContext from "../../../UserContext";
 import TourBubble from "./TourBubble";
-import { Rect, useTarget } from "./useTarget";
+import { useTarget } from "./useTarget";
+import { Backdrop, Chip, GamePicker, Guided, PlayStep, Spotlight } from "./tourParts";
 import { CASE_REVEALED_EVENT, GAME_RESULT_EVENT, GameResult, JAR_TAKEN_EVENT, RevealedItem, showDaisu } from "./tourEvents";
 import { endTour, finishTour, goTo, startTour, syncTour, TourState, useTour } from "./tourStore";
-import { TOUR_GAMES, TourGameInfo, tourGame } from "./tourGames";
+import { TourGameInfo, tourGame } from "./tourGames";
 import { kp } from "../potMath";
 import { rarityName } from "../../../utils/rarity";
 import i18n from "../../../i18n";
 
-const DIM = "rgba(9, 7, 20, 0.74)";
-const PAD = 6;
 // a beat to see how the round landed before the closing card covers it
 const RESULT_BEAT_MS = 1200;
 const t = (key: string, vars?: Record<string, string | number>) => i18n.t(`daisu.tour.${key}`, vars);
-
-// four dim panels around the target rather than one sheet over it, so the target stays clickable.
-// undimmed, only the outline is drawn and the page stays usable around it
-const Spotlight = ({ rect, dim = true }: { rect: Rect | null; dim?: boolean }) => {
-  if (!rect) return null;
-  const top = rect.top - PAD;
-  const left = rect.left - PAD;
-  const width = rect.width + PAD * 2;
-  const height = rect.height + PAD * 2;
-  const outline = (
-    <div
-      className="pointer-events-none fixed"
-      style={{ top, left, width, height, outline: "2px solid #FFCC00", boxShadow: "0 0 36px 10px rgba(255, 204, 0, 0.28)" }}
-    />
-  );
-  if (!dim) return outline;
-  return (
-    <>
-      <div className="pointer-events-auto fixed inset-x-0 top-0" style={{ height: Math.max(0, top), background: DIM }} />
-      <div className="pointer-events-auto fixed inset-x-0 bottom-0" style={{ top: top + height, background: DIM }} />
-      <div className="pointer-events-auto fixed left-0" style={{ top, height, width: Math.max(0, left), background: DIM }} />
-      <div className="pointer-events-auto fixed right-0" style={{ top, height, left: left + width, background: DIM }} />
-      {outline}
-    </>
-  );
-};
-
-interface GuidedProps {
-  target: string;
-  eyebrow: string;
-  line: string;
-  step: 1 | 2 | 3;
-  wait?: string;
-  next?: { label: string; onClick: () => void };
-  onEnd: () => void;
-}
-
-const Guided = ({ target, ...bubble }: GuidedProps) => {
-  const { rect } = useTarget(target);
-  return (
-    <>
-      <Spotlight rect={rect} />
-      <TourBubble rect={rect} {...bubble} />
-    </>
-  );
-};
 
 // the open button tells her when the case costs more than the player holds, and when it is
 // rolling, which is when she points at the reel instead
@@ -89,52 +41,8 @@ const OpenStep = ({ eyebrow, onEnd, onPickAnother }: { eyebrow: string; onEnd: (
   );
 };
 
-const Chip = ({ children, onEnd }: { children: ReactNode; onEnd: () => void }) => (
-  <div className="pointer-events-auto fixed bottom-20 left-1/2 flex w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3 bg-surface py-2 pl-2 pr-3 shadow-2xl md:bottom-4">
-    <img src="/images/daisu/bust.webp" alt="" className="h-9 w-9 shrink-0 object-contain object-top" />
-    {children}
-    <button
-      type="button"
-      onClick={onEnd}
-      className="h-10 whitespace-nowrap border-none bg-transparent px-1 text-xs font-semibold text-ink-faint hover:border-none hover:text-ink-soft"
-    >
-      {t("end")}
-    </button>
-  </div>
-);
-
-// no dim here: a round can need more of the page than one button. once play is pressed she steps
-// aside to a chip, so the round is not played under her
-const PlayStep = ({ eyebrow, onEnd }: { eyebrow: string; onEnd: () => void }) => {
-  const { rect } = useTarget("play-button");
-  const [pressed, setPressed] = useState(false);
-
-  useEffect(() => {
-    const onClick = (e: MouseEvent) => {
-      const button = e.target instanceof Element ? e.target.closest("button") : null;
-      if (button && !button.disabled && button.closest('[data-tour="play-button"]')) setPressed(true);
-    };
-    document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
-  }, []);
-
-  if (pressed) {
-    return (
-      <Chip onEnd={onEnd}>
-        <span className="text-sm font-semibold text-ink-soft">{t("playWatching")}</span>
-      </Chip>
-    );
-  }
-  return (
-    <>
-      <Spotlight rect={rect} dim={false} />
-      <TourBubble rect={rect} eyebrow={eyebrow} line={t("playLine")} step={3} wait={t("playWait")} onEnd={onEnd} />
-    </>
-  );
-};
-
 const Welcome = ({ onStart, onDecline }: { onStart: () => void; onDecline: () => void }) => (
-  <div className="pointer-events-auto fixed inset-0 flex items-end justify-center md:items-center" style={{ background: DIM }}>
+  <Backdrop>
     <div role="dialog" aria-label={t("welcomeTitle")} className="relative flex max-h-full w-full flex-col overflow-y-auto bg-surface shadow-2xl md:w-[640px] md:flex-row">
       <button
         type="button"
@@ -183,47 +91,7 @@ const Welcome = ({ onStart, onDecline }: { onStart: () => void; onDecline: () =>
         <span className="text-xs text-ink-faint">{t("endAnyTime")}</span>
       </div>
     </div>
-  </div>
-);
-
-const GamePicker = ({ onPick, onEnd }: { onPick: (game: TourGameInfo) => void; onEnd: () => void }) => (
-  <div className="pointer-events-auto fixed inset-0 flex items-end justify-center md:items-center" style={{ background: DIM }}>
-    <div role="dialog" aria-label={t("titleGame")} className="flex max-h-full w-full flex-col overflow-y-auto bg-surface shadow-2xl md:w-[780px]">
-      <div className="flex gap-3.5 px-5 pb-4 pt-5 md:px-6">
-        <img src="/images/daisu/bust.webp" alt="" className="h-[54px] w-[54px] shrink-0 object-contain object-top" />
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{`${t("stepOf", { n: 3 })} · ${t("titleGame")}`}</span>
-          <p className="m-0 text-sm leading-normal text-ink-soft">{t("gamesLine")}</p>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-1 px-5 md:px-6">
-        <span className="h-[3px] bg-accent-gold" />
-        <span className="h-[3px] bg-accent-gold" />
-        <span className="h-[3px] bg-accent-gold" />
-      </div>
-      <div className="grid grid-cols-2 gap-2.5 px-5 pb-2 pt-4 md:grid-cols-4 md:px-6">
-        {TOUR_GAMES.map((game) => (
-          <button
-            key={game.key}
-            type="button"
-            onClick={() => onPick(game)}
-            className="group relative flex h-[132px] flex-col items-center justify-end gap-1.5 rounded-none border-none bg-surface-nav px-2 pb-3 pt-3 hover:border-none hover:bg-surface-raised"
-          >
-            <img src={game.art} alt="" className="block h-[70px] w-auto max-w-[110px] object-contain" />
-            <b className="text-[13px] font-bold text-ink">{i18n.t(game.nameKey)}</b>
-            <small className="text-[11px] text-ink-muted">{t(`games.${game.key}`)}</small>
-            <span className="absolute inset-x-0 bottom-0 h-[3px] bg-accent-gold opacity-0 transition-opacity group-hover:opacity-100" />
-          </button>
-        ))}
-      </div>
-      <div className="flex items-center justify-between gap-3 px-5 pb-5 pt-3 md:px-6">
-        <span className="text-xs text-ink-muted">{t("gamesNote")}</span>
-        <button type="button" onClick={onEnd} className="h-11 border-none bg-transparent px-1 text-xs font-semibold text-ink-faint hover:border-none hover:text-ink-soft">
-          {t("end")}
-        </button>
-      </div>
-    </div>
-  </div>
+  </Backdrop>
 );
 
 const doneLine = (result: GameResult | null) => {
@@ -235,7 +103,7 @@ const doneLine = (result: GameResult | null) => {
 const DoneCard = ({ tour, onMissions, onLater }: { tour: TourState; onMissions: () => void; onLater: () => void }) => {
   const game = tourGame(tour.game);
   return (
-    <div className="pointer-events-auto fixed inset-0 flex items-end justify-center md:items-center" style={{ background: DIM }}>
+    <Backdrop>
       <div role="dialog" aria-label={t("doneTitle")} className="flex max-h-full w-full flex-col overflow-y-auto bg-surface shadow-2xl md:w-[520px]">
         <div className="flex gap-4 px-5 pb-4 pt-6 md:px-6">
           <img src="/images/daisu/idle.webp" alt="" className="block h-32 w-auto shrink-0 md:h-[170px]" />
@@ -276,7 +144,7 @@ const DoneCard = ({ tour, onMissions, onLater }: { tour: TourState; onMissions: 
           </button>
         </div>
       </div>
-    </div>
+    </Backdrop>
   );
 };
 
@@ -384,7 +252,7 @@ const TourOverlay = () => {
     content = <Welcome onStart={startTour} onDecline={endTour} />;
   } else if (step && !onRoute(step, pathname, game)) {
     content = (
-      <Chip onEnd={endTour}>
+      <Chip endLabel={t("end")} onEnd={endTour}>
         <button
           type="button"
           onClick={resume}
@@ -422,7 +290,7 @@ const TourOverlay = () => {
       />
     );
   } else if (step === "game") {
-    content = <GamePicker onPick={pick} onEnd={endTour} />;
+    content = <GamePicker eyebrow={stepTitle(3, t("titleGame"))} line={t("gamesLine")} step={3} endLabel={t("end")} onPick={pick} onEnd={endTour} />;
   } else if (step === "bet" && game) {
     content = (
       <Guided
@@ -435,7 +303,7 @@ const TourOverlay = () => {
       />
     );
   } else if (step === "play" && game) {
-    content = <PlayStep eyebrow={stepTitle(3, i18n.t(game.nameKey))} onEnd={endTour} />;
+    content = <PlayStep eyebrow={stepTitle(3, i18n.t(game.nameKey))} line={t("playLine")} step={3} endLabel={t("end")} onEnd={endTour} />;
   } else if (step === "done") {
     content = (
       <DoneCard

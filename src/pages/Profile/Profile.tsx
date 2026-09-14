@@ -307,7 +307,7 @@ const Profile = () => {
                 />
               ))
             ) : (
-              <h2>{i18n.t("profile.noItems")}</h2>
+              <h2 data-tour="inventory-empty">{i18n.t("profile.noItems")}</h2>
             )}
           </div>
           {inventory &&

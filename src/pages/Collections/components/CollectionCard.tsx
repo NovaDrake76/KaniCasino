@@ -15,6 +15,7 @@ const CollectionCard: React.FC<Props> = ({ collection, isOwner, onClick }) => {
     <button
       type="button"
       onClick={onClick}
+      data-tour="collection-card"
       className={`w-64 flex flex-col rounded-xl bg-surface border p-4 gap-3 text-left transition-all hover:-translate-y-1 hover:bg-surface-raised ${
         c.complete ? "border-accent-gold" : "border-line"
       }`}

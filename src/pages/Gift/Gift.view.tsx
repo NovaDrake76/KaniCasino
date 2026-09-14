@@ -210,7 +210,7 @@ const GiftView = ({
       )}
 
       {!state.canSpin && stage === "picking" && (
-        <div className="notched mb-8 flex w-full flex-col items-center gap-2 bg-surface p-8">
+        <div data-tour="gift-next" className="notched mb-8 flex w-full flex-col items-center gap-2 bg-surface p-8">
           <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">{i18n.t("gift.nextGiftIn")}</span>
           <span className="font-mono text-3xl font-bold text-accent-gold">
             {countdown(state.nextAt) || "any moment"}
@@ -240,7 +240,9 @@ const GiftView = ({
                     <span className="text-xs text-ink-faint">{c.eligible} cases in the pool</span>
                   </div>
                   <div className="mt-auto">
-                    <GameButton onClick={() => onPick(c.category)}>{i18n.t("gift.spin")}</GameButton>
+                    <GameButton onClick={() => onPick(c.category)} tour="gift-pick">
+                      {i18n.t("gift.spin")}
+                    </GameButton>
                   </div>
                 </div>
               </div>
@@ -285,7 +287,7 @@ const GiftView = ({
                 {i18n.t("gift.yourStreakIsCharging")}
               </span>
               <div className="w-full max-w-xs">
-                <GameButton onClick={onSpin} disabled={pending || spinning}>
+                <GameButton onClick={onSpin} disabled={pending || spinning} tour="gift-spin">
                   {i18n.t("gift.spinTheDailyGift")}
                 </GameButton>
               </div>

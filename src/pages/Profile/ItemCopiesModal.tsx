@@ -7,6 +7,7 @@ import Monetary from "../../components/Monetary";
 import Pagination from "../../components/Pagination";
 import Rarities from "../../components/Rarities";
 import { getItemCopies, sellItems } from "../../services/users/UserServices";
+import { emitItemSold } from "../../components/daisu/tour/tourEvents";
 import i18n from "../../i18n";
 
 interface Copy {
@@ -55,6 +56,7 @@ const ItemCopiesModal: React.FC<Props> = ({ userId, item, isOwner, open, setOpen
     try {
       const res = await sellItems([uniqueId]);
       toast.success(res.message, { theme: "dark" });
+      emitItemSold();
       onSold();
       // the page can empty out from under us when the last copy on it goes
       const nextPage = copies.length === 1 && page > 1 ? page - 1 : page;

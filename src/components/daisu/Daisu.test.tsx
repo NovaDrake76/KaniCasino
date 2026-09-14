@@ -5,6 +5,7 @@ import DaisuDock from "./index";
 import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
 import type { PotStatus } from "../../services/daisu/DaisuService";
+import { endHelp, helpState } from "./tour/helpStore";
 
 const getPotStatus = vi.fn();
 const claimPot = vi.fn();
@@ -325,6 +326,18 @@ describe("daisu in the corner", () => {
 
     fireEvent.click(screen.getByText(/back to daisu/i));
     expect(await screen.findByLabelText("Daisu", { selector: "section" })).toBeTruthy();
+  });
+
+  it("folds into her bubble to show how a mission is done", async () => {
+    getRoadmap.mockResolvedValue(roadmap([mission({ key: "r1-level", goal: "level", target: 5, current: 3, reward: 500 })]));
+    draw();
+    fireEvent.click(await screen.findByText(/visit daisu's room/i));
+    fireEvent.click(await screen.findByRole("button", { name: /help/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Show me" }));
+
+    expect(await screen.findByLabelText("Open Daisu")).toBeTruthy();
+    expect(helpState()).toMatchObject({ owner: "u1", mission: "r1-level", goal: "level", title: "Reach level 5" });
+    endHelp();
   });
 
   it("folds into the bubble and remembers that", async () => {

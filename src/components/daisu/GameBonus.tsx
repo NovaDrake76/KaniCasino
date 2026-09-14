@@ -11,7 +11,7 @@ export const GameBonusStrip = ({ game, className }: { game: PickGame; className?
   if (!bonus) return null;
 
   return (
-    <div className={`relative flex items-center gap-2.5 overflow-hidden rounded bg-surface-raised px-2.5 pb-2.5 pt-2 text-left ${className || ""}`}>
+    <div data-tour="game-bonus" className={`relative flex items-center gap-2.5 overflow-hidden rounded bg-surface-raised px-2.5 pb-2.5 pt-2 text-left ${className || ""}`}>
       <img src="/images/daisu/bust.webp" alt="" className="h-8 w-8 shrink-0 object-contain object-top" />
       <div className="flex min-w-0 flex-grow flex-col">
         <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">{i18n.t("daisu.bonusTitle")}</span>

@@ -695,6 +695,60 @@
       "ready": "{{n}} para resgatar",
       "tab": "Conquistas",
       "unlocked": "Conquista desbloqueada"
+    },
+    "help": {
+      "battle": {
+        "line": "Escolha as caixas aqui embaixo e este botão começa a batalha. Todo mundo abre as mesmas caixas e o maior total leva tudo."
+      },
+      "bonus": {
+        "play": "Agora jogue uma rodada. Qualquer aposta conta, e o bônus paga primeiro.",
+        "strip": "Esse é o meu bônus, logo acima da sua aposta, com o relógio dele. Uma aposta aqui gasta o bônus antes da sua carteira.",
+        "take": "Sem bônus agora. Pegue do meu pote e um extra cai em {{game}}.",
+        "takeWait": "Esperando você pegar"
+      },
+      "cases": {
+        "line": "Qualquer caixa conta, barata ou cara. Escolha uma e abra."
+      },
+      "collection": {
+        "complete": "A barra mostra quanto de cada coleção você tem. Complete uma inteira e o distintivo é seu.",
+        "line": "Toda caixa tem uma coleção. Abra uma pra ver o que você tem e o que ainda falta.",
+        "wait": "Esperando você abrir uma"
+      },
+      "eyebrow": "Ajuda · {{mission}}",
+      "fans": {
+        "line": "Esta aba mostra cada personagem que você tem e quanto falta pra ser o Top Fã dele. Fixe aquele de que você está mais perto."
+      },
+      "games": {
+        "line": "Escolha um jogo, qualquer um. Eu mostro onde vai a aposta e qual botão joga."
+      },
+      "gift": {
+        "later": "Você já girou hoje. O relógio mostra quando o próximo fica pronto. Se perder, a sequência recomeça.",
+        "pick": "Escolha uma coleção. O presente é uma caixa dela, e quanto maior a sua sequência, melhor ele fica.",
+        "spin": "Agora gire. Depois volte amanhã e gire de novo, ou a sequência recomeça.",
+        "wait": "Esperando o giro"
+      },
+      "market": {
+        "line": "Tudo que os jogadores estão vendendo fica aqui. Abra um item pra comprar ou fazer uma oferta, e dá pra anunciar os seus nesta página também."
+      },
+      "pin": {
+        "done": "Fixado. Todo mundo que abrir seu perfil vê agora. Até que você tem bom gosto.",
+        "empty": "Nada pra fixar ainda. Abra uma caixa primeiro e depois volte pra escolher um favorito.",
+        "line": "Tá vendo os corações? Clique no do personagem de que você mais gosta. Todo mundo que visita seu perfil vê quem você escolheu, então escolha bem.",
+        "linePhone": "Tá vendo os corações? Toque no do personagem de que você mais gosta. Todo mundo que visita seu perfil vê quem você escolheu, então escolha bem.",
+        "wait": "Esperando o coração"
+      },
+      "pot": {
+        "line": "Meu pote. A barra enche em 8 minutos, e o pote cheio paga o bônus de pote cheio por cima. Pegue antes e você só leva o que tem dentro."
+      },
+      "sell": {
+        "done": "Vendido. Esse KP já voltou pra sua carteira. Viu? Fácil.",
+        "empty": "Nada pra vender ainda. Abra uma caixa primeiro.",
+        "line": "Passe o mouse num item e aperte o botão de vender. Ele vira KP na hora, então escolha um que não vai fazer falta.",
+        "linePhone": "Toque num item e venda uma cópia. Ele vira KP na hora, então escolha um que não vai fazer falta.",
+        "wait": "Esperando uma venda"
+      },
+      "showMe": "Me mostra",
+      "stop": "Parar a ajuda"
     }
   },
   "dice": {
