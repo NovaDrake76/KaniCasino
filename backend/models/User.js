@@ -187,6 +187,10 @@ const UserSchema = new mongoose.Schema({
     startedAt: Date,
     endedAt: Date,
   },
+  // daisu's shop: the features an account in her beta has opened, each bought or kept from its history
+  unlocks: [{ _id: false, key: String, via: String, at: Date }],
+  // when that history was read; it is read once, so a feature never comes or goes on its own afterwards
+  unlocksCheckedAt: Date,
   weeklyWinnings: {
     type: Number,
     default: 0,

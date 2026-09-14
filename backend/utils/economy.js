@@ -51,6 +51,7 @@ const TX = {
   ITEM_SELL: "item_sell",
   ADMIN_ADJUST: "admin_adjust",
   MISSION_REWARD: "mission_reward",
+  SHOP_PURCHASE: "shop_purchase", // an item from daisu's shop, which opens a feature and nothing else
   REFERRAL_BONUS: "referral_bonus", // one-time signup bonus, both sides of a referral
   REFERRAL_COMMISSION: "referral_commission", // the referrer's cut of referred wagers
   REFERRAL_MILESTONE: "referral_milestone", // one-time payout when a referee reaches level 10

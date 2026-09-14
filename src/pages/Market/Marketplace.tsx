@@ -9,6 +9,10 @@ import Monetary from "../../components/Monetary";
 import Filters, { MarketFilters } from "./Filters";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { FiLock } from "react-icons/fi";
+import LockedBanner from "../../components/daisu/shop/LockedBanner";
+import { useLocked } from "../../components/daisu/shop/useLocked";
+import { openDaisuShop } from "../../components/daisu/tour/tourEvents";
 import i18n from "../../i18n";
 
 interface MarketRow {
@@ -44,6 +48,7 @@ const Marketplace: React.FC = () => {
   });
 
   const { isLogged } = useContext(UserContext);
+  const locked = useLocked("tradersLicense");
 
   // a filter change also resets the page, which would fire a second overlapping
   // request; the sequence guard makes sure only the newest response is rendered
@@ -119,14 +124,19 @@ const Marketplace: React.FC = () => {
           </div>
           {isLogged && (
             <button
-              onClick={() => setOpenSellModal(true)}
+              onClick={() => (locked ? openDaisuShop("tradersLicense") : setOpenSellModal(true))}
               data-tour="market-sell"
-              className="px-4 h-10 rounded-md bg-accent hover:bg-accent-light text-sm font-semibold text-white"
+              className={`px-4 h-10 rounded-md text-sm font-semibold flex items-center gap-2 ${
+                locked ? "bg-surface-nav text-ink-faint hover:text-ink-soft" : "bg-accent hover:bg-accent-light text-white"
+              }`}
             >
+              {locked && <FiLock />}
               {i18n.t("market.sellAnItem")}
             </button>
           )}
         </div>
+
+        {locked && <LockedBanner unlock="tradersLicense" />}
 
         <Filters filters={filters} setFilters={setFilters} />
 

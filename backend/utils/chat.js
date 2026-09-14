@@ -2,6 +2,8 @@ const ChatMessage = require("../models/ChatMessage");
 const User = require("../models/User");
 const realtime = require("./realtime");
 const badges = require("./badges");
+const beta = require("./beta");
+const shop = require("./shop");
 const nameFilter = require("./nameFilter");
 const profanity = require("./profanity");
 
@@ -82,7 +84,7 @@ const LINK = new RegExp(
 );
 const INVITE = /(discord\.(gg|com\/invite)|discordapp\.com\/invite|t\.me\/|telegram\.me|chat\.whatsapp)/i;
 
-const CARD = "username slug profilePicture level fanRank selectedBadge badges disabled";
+const CARD = "username slug profilePicture level fanRank selectedBadge badges disabled betaFlags unlocks unlocksCheckedAt";
 
 const clean = (text) =>
   String(text || "")
@@ -146,7 +148,12 @@ async function send(userId, text) {
   const user = await User.findById(userId).select(CARD).lean();
   if (!user) return { error: "auth" };
   if (user.disabled) return { error: "banned" };
-  if ((user.level || 0) < MIN_LEVEL) return { error: "level", minLevel: MIN_LEVEL };
+  // in daisu's beta a chat pass from her shop stands in for the level gate
+  if (beta.has(user, "daisu")) {
+    if (!(await shop.unlocksOf(user)).includes("chatPass")) return { error: "locked", unlock: "chatPass" };
+  } else if ((user.level || 0) < MIN_LEVEL) {
+    return { error: "level", minLevel: MIN_LEVEL };
+  }
 
   // set after the checks, so a refused message does not spend the player's window
   lastSent.set(String(userId), now);

@@ -5,12 +5,13 @@ import UserContext from "../../../UserContext";
 import TourBubble from "./TourBubble";
 import { useTarget } from "./useTarget";
 import { GamePicker, Guided, PlayStep, Spotlight } from "./tourParts";
-import { GAME_RESULT_EVENT, GameResult, ITEM_PINNED_EVENT, ITEM_SOLD_EVENT, showDaisu } from "./tourEvents";
+import { GAME_RESULT_EVENT, GameResult, ITEM_PINNED_EVENT, ITEM_SOLD_EVENT, openChat, openDaisuShop, showDaisu } from "./tourEvents";
 import { endHelp, helpTo, useHelp } from "./helpStore";
 import { useTour } from "./tourStore";
 import { tourGame } from "./tourGames";
 import { Wizard, wizardFor } from "./helpWizards";
 import { usePotStatus } from "../potStore";
+import { useLocked } from "../shop/useLocked";
 import { GAME_NAME_KEYS, GAME_PATHS } from "../potMath";
 import type { PotStatus } from "../../../services/daisu/DaisuService";
 import i18n from "../../../i18n";
@@ -48,6 +49,10 @@ const placeOf = (wizard: Wizard, step: string, userId: string, gamePath: string 
       return at("/battles");
     case "fans":
       return at("/fandom");
+    case "upgrade":
+      return at("/upgrade");
+    case "predictions":
+      return at("/predictions", (pathname) => pathname.startsWith("/predictions"));
     default:
       return gamePath && step !== "take" && step !== "pick" ? at(gamePath) : null;
   }
@@ -137,6 +142,8 @@ const HelpOverlay = () => {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const arrived = useRef<string | null>(null);
+  const bookLocked = useLocked("collectionBook");
+  const licenseLocked = useLocked("tradersLicense");
 
   const wizard = userId && help.owner === userId ? wizardFor(help.goal) : null;
   const step = wizard ? help.step : null;
@@ -149,6 +156,12 @@ const HelpOverlay = () => {
   useEffect(() => {
     if (!wizard || step || touring || !userId) return;
     arrived.current = null;
+    // a page that needs an item from her shop first starts at the shop, on that item
+    if ((wizard === "collection" && bookLocked) || (wizard === "market" && licenseLocked)) {
+      endHelp();
+      openDaisuShop(wizard === "collection" ? "collectionBook" : "tradersLicense");
+      return;
+    }
     if (wizard === "games") {
       helpTo("pick");
       return;
@@ -169,9 +182,13 @@ const HelpOverlay = () => {
       showDaisu("popup");
       return;
     }
+    if (wizard === "chat") {
+      openChat();
+      return;
+    }
     const first = placeOf(wizard, wizard, userId, null);
     if (first) navigate(first.go);
-  }, [wizard, step, touring, userId, status, navigate]);
+  }, [wizard, step, touring, userId, status, navigate, bookLocked, licenseLocked]);
 
   // a take puts a bonus on a game, and that game is where she shows it
   useEffect(() => {
@@ -319,6 +336,12 @@ const HelpOverlay = () => {
     content = <Guided target="battle-create" dim={false} eyebrow={eyebrow} line={t("battle.line")} next={gotIt()} />;
   } else if (step === "fans") {
     content = <Guided target="fandom-reach" dim={false} eyebrow={eyebrow} line={t("fans.line")} next={gotIt()} />;
+  } else if (step === "upgrade") {
+    content = <Guided target="upgrade-panel" dim={false} eyebrow={eyebrow} line={t("upgrade.line")} next={gotIt()} />;
+  } else if (step === "predictions") {
+    content = <Guided target="predictions-list" dim={false} eyebrow={eyebrow} line={t("predictions.line")} next={gotIt()} />;
+  } else if (step === "chat") {
+    content = <Guided target="chat-input" eyebrow={eyebrow} line={t("chat.line")} next={gotIt()} />;
   }
 
   if (!content) return null;

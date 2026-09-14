@@ -19,8 +19,7 @@ export type Mood =
   | "poke1"
   | "poke2"
   | "gift"
-  | "room"
-  | "boostsEmpty";
+  | "room";
 
 export const LINE_COUNT: Record<Mood, number> = {
   hello: 3,
@@ -42,7 +41,6 @@ export const LINE_COUNT: Record<Mood, number> = {
   poke2: 4,
   gift: 2,
   room: 2,
-  boostsEmpty: 1,
 };
 
 export const lineKey = (mood: Mood, roll: number) =>

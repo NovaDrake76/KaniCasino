@@ -1,5 +1,6 @@
 const express = require("express");
 const badges = require("../utils/badges");
+const shop = require("../utils/shop");
 const router = express.Router();
 const { isAuthenticated } = require("../middleware/authMiddleware");
 const {
@@ -51,6 +52,16 @@ module.exports = (io) => {
   router.post("/upgrade", isAuthenticated, upgradeLimiter, async (req, res) => {
     const { selectedItemIds, targetItemId } = req.body;
     const user = req.user;
+
+    // in daisu's beta the upgrade page is an item from her shop
+    let locked;
+    try {
+      locked = await shop.lockFor(user, "upgradeKit");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+    if (locked) return res.status(403).json(locked);
 
     const result = await upgradeItems(user._id, selectedItemIds, targetItemId);
 

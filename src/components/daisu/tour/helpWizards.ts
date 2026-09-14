@@ -1,4 +1,18 @@
-export type Wizard = "pot" | "pin" | "sell" | "bonus" | "games" | "gift" | "market" | "collection" | "cases" | "battle" | "fans";
+export type Wizard =
+  | "pot"
+  | "pin"
+  | "sell"
+  | "bonus"
+  | "games"
+  | "gift"
+  | "market"
+  | "collection"
+  | "cases"
+  | "battle"
+  | "fans"
+  | "upgrade"
+  | "predictions"
+  | "chat";
 
 // how she shows each kind of mission: where it happens and what to point at once there
 const BY_GOAL: Record<string, Wizard> = {
@@ -17,6 +31,12 @@ const BY_GOAL: Record<string, Wizard> = {
   casesOpened: "cases",
   battlesWon: "battle",
   topFan: "fans",
+  // what an item from her shop opened, shown right after it is bought
+  "unlock:collectionBook": "collection",
+  "unlock:tradersLicense": "market",
+  "unlock:upgradeKit": "upgrade",
+  "unlock:predictionPass": "predictions",
+  "unlock:chatPass": "chat",
 };
 
 export const wizardFor = (goal: string | null): Wizard | null => (goal && BY_GOAL[goal]) || null;

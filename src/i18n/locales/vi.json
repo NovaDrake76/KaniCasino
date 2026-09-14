@@ -233,6 +233,7 @@
       "failed": "Gui khong thanh cong. Thu lai nhe.",
       "language": "Vui long khong noi tuc.",
       "level": "Len cap de co the tro chuyen.",
+      "locked": "Bạn cần Vé trò chuyện từ cửa hàng của Daisu để nói.",
       "muted": "Ban bi cam noi trong vai phut.",
       "noLinks": "Khong duoc gui lien ket trong chat.",
       "off": "Chat dang tat.",
@@ -371,7 +372,6 @@
     "bonusSplit": "{{bonus}} từ thưởng, {{wallet}} từ ví",
     "bonusTitle": "Thưởng của Daisu",
     "bonusUsedOn": "Dùng trước cho cược {{game}} của bạn",
-    "boostsSoon": "Mục tiêu hằng ngày giúp hũ đầy nhanh hơn. Chưa viết.",
     "bubbleGift": "Quà",
     "clickHint": "Bấm vào hũ để lấy phần bên trong",
     "close": "Đóng",
@@ -394,7 +394,6 @@
     "pickTitle": "Daisu chọn",
     "play": "Chơi",
     "roomTitle": "Phòng của Daisu",
-    "tabBoosts": "Tăng tốc hũ",
     "tabMissions": "Nhiệm vụ",
     "visit": "Ghé phòng của Daisu",
     "lines": {
@@ -485,9 +484,6 @@
       "room": {
         "0": "Chào mừng đến phòng tôi. Đừng đụng gì. Trừ cái hũ.",
         "1": "Đến thăm à? Hừ. Ngồi xuống, tôi có việc cho bạn làm."
-      },
-      "boostsEmpty": {
-        "0": "Chưa có gì ở đây. Tôi đang nghĩ việc để bắt bạn làm."
       }
     },
     "tour": {
@@ -631,12 +627,12 @@
         },
         "r3-collection": {
           "desc": "Mở một bộ sưu tập hòm của bạn.",
-          "help": "Mỗi hòm có một bộ sưu tập: tất cả vật phẩm nó có thể ra. Mở một bộ từ tab Bộ sưu tập trong hồ sơ và xem bạn còn thiếu gì.",
+          "help": "Mỗi hòm có một bộ sưu tập: tất cả vật phẩm nó có thể ra. Lấy Sổ sưu tập ở cửa hàng của tôi, rồi mở một bộ từ tab Bộ sưu tập trong hồ sơ và xem bạn còn thiếu gì.",
           "title": "Xem một bộ sưu tập"
         },
         "r3-market": {
           "desc": "Mua hoặc bán một vật phẩm ở chợ.",
-          "help": "Chợ là nơi người chơi giao dịch với nhau. Mua thứ bạn muốn, hoặc đăng bán một vật phẩm của bạn rồi chờ người mua.",
+          "help": "Chợ là nơi người chơi giao dịch với nhau. Lấy Giấy phép giao dịch ở cửa hàng của tôi, rồi mua thứ bạn muốn, hoặc đăng bán một vật phẩm của bạn và chờ người mua.",
           "title": "Giao dịch ở chợ"
         },
         "r3-streak": {
@@ -709,6 +705,9 @@
       "cases": {
         "line": "Hòm nào cũng tính, rẻ hay đắt. Chọn một hòm và mở."
       },
+      "chat": {
+        "line": "Gõ vào đây là ai cũng thấy. Tử tế vào, không thì ít nhất cũng phải vui."
+      },
       "collection": {
         "complete": "Thanh này cho biết bạn có bao nhiêu trong mỗi bộ sưu tập. Gom đủ một bộ và huy hiệu của nó là của bạn.",
         "line": "Mỗi hòm có một bộ sưu tập. Mở một bộ để xem bạn có gì và còn thiếu gì.",
@@ -740,6 +739,9 @@
       "pot": {
         "line": "Hũ của tôi đây. Thanh đầy sau 8 phút, và hũ đầy còn trả thêm thưởng hũ đầy. Lấy sớm thì bạn chỉ nhận được phần đang có."
       },
+      "predictions": {
+        "line": "Mỗi thẻ là một thị trường. Mở một thẻ, chọn một kết quả và mua cổ phần; chúng trả thưởng nếu điều đó xảy ra, và bạn có thể bán trước đó."
+      },
       "sell": {
         "done": "Bán rồi. Số KP đó đã về ví của bạn. Thấy chưa? Dễ mà.",
         "empty": "Chưa có gì để bán. Mở một hòm trước đã.",
@@ -748,7 +750,84 @@
         "wait": "Đang chờ bạn bán"
       },
       "showMe": "Xem cách làm",
-      "stop": "Dừng trợ giúp"
+      "stop": "Dừng trợ giúp",
+      "upgrade": {
+        "line": "Chọn vật phẩm trong kho đồ bên dưới, rồi chọn một mục tiêu đáng giá hơn. Chênh lệch càng lớn thì tỉ lệ càng thấp, và nó hiện ra trước khi bạn bấm gì cả."
+      }
+    },
+    "shop": {
+      "after": "Số dư sau khi mua",
+      "buy": "Mua",
+      "buyFor": "Mua với {{amount}}",
+      "failed": "Không mua được. Thử lại nhé.",
+      "items": {
+        "chatPass": {
+          "about": "Cho phép bạn gửi tin nhắn trong khung chat của trang. Chỉ đọc thì không bao giờ cần vé.",
+          "getIt": "Lấy vé",
+          "kept": "giữ lại nhờ lịch sử trò chuyện",
+          "lockedBody": "Cấp {{level}} · {{price}} ở cửa hàng của Daisu",
+          "lockedTitle": "Muốn nói cần Vé trò chuyện",
+          "name": "Vé trò chuyện",
+          "opened": "Giờ bạn nói được rồi. Cố nói gì đó thú vị nhé. Muốn tôi chỉ chỗ không?",
+          "pitch": "Trả tiền để được nói. Có người còn trả tiền để bạn im lặng đấy.",
+          "what": "Nói chuyện trong khung chat của trang. Đọc thì luôn miễn phí."
+        },
+        "collectionBook": {
+          "about": "Mở tab Bộ sưu tập: mọi hòm bạn sưu tầm, những gì bạn còn thiếu và cách bán đồ trùng thật nhanh. Hoàn thành trọn một bộ sưu tập sẽ được huy hiệu của nó.",
+          "getIt": "Mua ở cửa hàng của Daisu",
+          "kept": "giữ lại nhờ huy hiệu bộ sưu tập",
+          "lockedBody": "Sổ sưu tập theo dõi mọi hòm bạn sưu tầm, cho thấy những gì còn thiếu và bán đồ trùng của bạn một lượt.",
+          "lockedTitle": "Bộ sưu tập đang bị khóa",
+          "name": "Sổ sưu tập",
+          "opened": "Của bạn rồi. Tab Bộ sưu tập đã mở. Muốn tôi dẫn bạn đi xem không? Nhiều trang lắm đấy.",
+          "pitch": "Cả một cuốn sổ cho bộ sưu tập của bạn. Cố đừng khóc khi thấy nó trống thế nào.",
+          "what": "Mở tab Bộ sưu tập: mọi hòm bạn sưu tầm, những gì còn thiếu và cách bán đồ trùng thật nhanh."
+        },
+        "predictionPass": {
+          "about": "Mở mục dự đoán: mua cổ phần về những gì sắp xảy ra và bán khi giá chuyển động có lợi cho bạn.",
+          "getIt": "Mua ở cửa hàng của Daisu",
+          "kept": "giữ lại nhờ lịch sử dự đoán",
+          "lockedBody": "Vé dự đoán cho bạn mua cổ phần về những gì sắp xảy ra và bán khi giá thay đổi.",
+          "lockedTitle": "Dự đoán đang bị khóa",
+          "name": "Vé dự đoán",
+          "opened": "Mục dự đoán đã mở. Muốn tôi chỉ cách một thị trường hoạt động không?",
+          "pitch": "Cược vào tương lai. Trưởng thành quá nhỉ.",
+          "what": "Mua cổ phần về những gì sắp xảy ra và bán khi giá thay đổi."
+        },
+        "tradersLicense": {
+          "about": "Cho phép bạn mua từ người chơi khác, đặt lệnh mua và đăng bán vật phẩm của bạn ở chợ.",
+          "getIt": "Lấy giấy phép",
+          "kept": "giữ lại nhờ lịch sử giao dịch",
+          "lockedBody": "Bạn cứ xem thoải mái. Giấy phép giá {{price}} từ cấp {{level}}, ở cửa hàng của Daisu.",
+          "lockedTitle": "Mua bán cần Giấy phép giao dịch",
+          "name": "Giấy phép giao dịch",
+          "opened": "Có giấy phép rồi. Mua, đăng bán, đặt lệnh, cả cái chợ là của bạn. Muốn tôi dẫn đi xem không?",
+          "pitch": "Giấy tờ chính thức để bạn mặc cả với người lạ. Đừng để bị lừa. À mà cứ bị lừa đi, buồn cười lắm.",
+          "what": "Mua từ người chơi khác và đăng bán vật phẩm của bạn ở chợ."
+        },
+        "upgradeKit": {
+          "about": "Mở trang Nâng cấp: đặt vật phẩm bạn có vào để lấy cơ hội nhận món tốt hơn. Tỉ lệ hiện ra trước mỗi lần thử.",
+          "getIt": "Mua ở cửa hàng của Daisu",
+          "kept": "giữ lại nhờ lịch sử nâng cấp",
+          "lockedBody": "Bộ nâng cấp cho bạn đổi vật phẩm bạn có lấy cơ hội nhận thứ tốt hơn, với tỉ lệ hiện ra trước mỗi lần thử.",
+          "lockedTitle": "Nâng cấp đang bị khóa",
+          "name": "Bộ nâng cấp",
+          "opened": "Trang Nâng cấp đã mở. Muốn tôi chỉ cách dùng trước khi bạn ném đồ vào không?",
+          "pitch": "Biến đồ bỏ của bạn thành đồ bỏ xịn hơn. Hoặc thành không có gì. Đó mới là phần hồi hộp.",
+          "what": "Đổi vật phẩm bạn có lấy cơ hội nhận thứ tốt hơn ở trang Nâng cấp."
+        }
+      },
+      "level": "Cấp {{n}}",
+      "locked": "Đã khóa",
+      "needs": "Cần",
+      "notNow": "Để sau",
+      "price": "Giá",
+      "short": "Thiếu {{amount}}",
+      "subtitle": "Những thứ mở ra phần còn lại của nơi này.",
+      "tab": "Cửa hàng",
+      "title": "Cửa hàng của Daisu",
+      "unlocked": "Đã mở khóa",
+      "yours": "Của bạn"
     }
   },
   "dice": {

@@ -233,6 +233,7 @@
       "failed": "Gagal terkirim. Coba lagi.",
       "language": "Tolong jaga bahasanya.",
       "level": "Naikkan level agar bisa mengobrol.",
+      "locked": "Kamu butuh Pass Obrolan dari toko Daisu untuk bicara.",
       "muted": "Kamu dibisukan selama beberapa menit.",
       "noLinks": "Tautan tidak diizinkan di obrolan.",
       "off": "Obrolan sedang dimatikan.",
@@ -371,7 +372,6 @@
     "bonusSplit": "{{bonus}} dari bonus, {{wallet}} dari dompet",
     "bonusTitle": "Bonus dari Daisu",
     "bonusUsedOn": "Dipakai duluan untuk taruhan {{game}}",
-    "boostsSoon": "Target harian yang membuat toples terisi lebih cepat. Belum ditulis.",
     "bubbleGift": "Hadiah",
     "clickHint": "Klik toples untuk mengambil isinya",
     "close": "Tutup",
@@ -394,7 +394,6 @@
     "pickTitle": "Pilihan Daisu",
     "play": "Main",
     "roomTitle": "Kamar Daisu",
-    "tabBoosts": "Pendorong toples",
     "tabMissions": "Misi",
     "visit": "Kunjungi kamar Daisu",
     "lines": {
@@ -485,9 +484,6 @@
       "room": {
         "0": "Selamat datang di kamarku. Jangan sentuh apa pun. Kecuali toples.",
         "1": "Datang berkunjung? Hmph. Duduk, ada yang harus kamu kerjakan."
-      },
-      "boostsEmpty": {
-        "0": "Belum ada apa-apa di sini. Aku sedang memikirkan hal-hal untuk kamu kerjakan."
       }
     },
     "tour": {
@@ -631,12 +627,12 @@
         },
         "r3-collection": {
           "desc": "Buka salah satu koleksi kotakmu.",
-          "help": "Setiap kotak punya koleksi: semua barang yang bisa keluar darinya. Buka satu dari tab Koleksi di profilmu dan lihat apa yang masih kurang.",
+          "help": "Setiap kotak punya koleksi: semua barang yang bisa keluar darinya. Dapatkan Buku Koleksi di tokoku, lalu buka satu dari tab Koleksi di profilmu dan lihat apa yang masih kurang.",
           "title": "Lihat sebuah koleksi"
         },
         "r3-market": {
           "desc": "Beli atau jual barang di pasar.",
-          "help": "Pasar tempat para pemain berdagang satu sama lain. Beli barang yang kamu mau, atau pasang barangmu dan tunggu pembeli.",
+          "help": "Pasar tempat para pemain berdagang satu sama lain. Dapatkan Lisensi Pedagang di tokoku, lalu beli barang yang kamu mau, atau pasang barangmu dan tunggu pembeli.",
           "title": "Berdagang di pasar"
         },
         "r3-streak": {
@@ -709,6 +705,9 @@
       "cases": {
         "line": "Kotak apa pun dihitung, murah atau mahal. Pilih satu dan buka."
       },
+      "chat": {
+        "line": "Ketik di sini dan semua orang bisa lihat. Bersikap baiklah, atau setidaknya lucu."
+      },
       "collection": {
         "complete": "Bilahnya menunjukkan berapa banyak yang kamu punya dari setiap koleksi. Lengkapi satu sampai penuh dan lencananya milikmu.",
         "line": "Setiap kotak punya koleksi. Buka satu untuk melihat apa yang kamu punya dan apa yang masih kurang.",
@@ -740,6 +739,9 @@
       "pot": {
         "line": "Ini toplesku. Bilahnya terisi dalam 8 menit, dan toples penuh membayar bonus toples penuh sebagai tambahan. Ambil lebih awal dan kamu cuma dapat isinya saat itu."
       },
+      "predictions": {
+        "line": "Setiap kartu adalah sebuah pasar. Buka satu, pilih hasil, dan beli saham; saham itu membayar kalau hasilnya terjadi, dan kamu bisa menjualnya sebelum itu."
+      },
       "sell": {
         "done": "Terjual. KP-nya sudah kembali ke dompetmu. Tuh kan? Gampang.",
         "empty": "Belum ada yang bisa dijual. Buka kotak dulu.",
@@ -748,7 +750,84 @@
         "wait": "Menunggu penjualan"
       },
       "showMe": "Tunjukkan",
-      "stop": "Berhenti membantu"
+      "stop": "Berhenti membantu",
+      "upgrade": {
+        "line": "Pilih barang dari gudangmu di bawah, lalu target yang nilainya lebih tinggi. Makin jauh lompatannya, makin kecil peluangnya, dan peluang itu tampil sebelum kamu menekan apa pun."
+      }
+    },
+    "shop": {
+      "after": "Saldomu setelahnya",
+      "buy": "Beli",
+      "buyFor": "Beli seharga {{amount}}",
+      "failed": "Gagal membeli. Coba lagi.",
+      "items": {
+        "chatPass": {
+          "about": "Membuatmu bisa mengirim pesan di obrolan situs. Untuk membaca tidak pernah perlu pass.",
+          "getIt": "Dapatkan pass-nya",
+          "kept": "tetap dimiliki berkat riwayat obrolanmu",
+          "lockedBody": "Level {{level}} · {{price}} di toko Daisu",
+          "lockedTitle": "Bicara butuh Pass Obrolan",
+          "name": "Pass Obrolan",
+          "opened": "Sekarang kamu bisa bicara. Coba bilang sesuatu yang menarik. Mau kutunjukkan tempatnya?",
+          "pitch": "Bayar supaya bisa bicara. Ada juga yang mau bayar supaya kamu diam.",
+          "what": "Bicara di obrolan situs. Membaca selalu gratis."
+        },
+        "collectionBook": {
+          "about": "Membuka tab Koleksi: setiap kotak yang kamu koleksi, apa yang masih kurang, dan cara cepat menjual duplikat. Melengkapi satu koleksi penuh memberi lencananya.",
+          "getIt": "Dapatkan di toko Daisu",
+          "kept": "tetap dimiliki berkat lencana koleksimu",
+          "lockedBody": "Buku Koleksi mencatat setiap kotak yang kamu koleksi, menunjukkan apa yang masih kurang, dan menjual duplikatmu sekaligus.",
+          "lockedTitle": "Koleksi terkunci",
+          "name": "Buku Koleksi",
+          "opened": "Sudah milikmu. Tab Koleksi sekarang terbuka. Mau kutunjukkan isinya? Halamannya banyak.",
+          "pitch": "Satu buku utuh untuk koleksimu. Jangan menangis waktu lihat betapa kosongnya.",
+          "what": "Membuka tab Koleksi: setiap kotak yang kamu koleksi, apa yang kurang, dan cara cepat menjual duplikat."
+        },
+        "predictionPass": {
+          "about": "Membuka prediksi: beli saham tentang apa yang akan terjadi, lalu jual saat harganya bergerak menguntungkanmu.",
+          "getIt": "Dapatkan di toko Daisu",
+          "kept": "tetap dimiliki berkat riwayat prediksimu",
+          "lockedBody": "Dengan Pass Prediksi kamu bisa membeli saham tentang apa yang akan terjadi dan menjualnya saat harganya bergerak.",
+          "lockedTitle": "Prediksi terkunci",
+          "name": "Pass Prediksi",
+          "opened": "Prediksi sudah terbuka. Mau kutunjukkan cara kerja sebuah pasar?",
+          "pitch": "Bertaruh pada masa depan. Dewasa sekali kamu.",
+          "what": "Beli saham tentang apa yang akan terjadi dan jual saat harganya bergerak."
+        },
+        "tradersLicense": {
+          "about": "Membuatmu bisa membeli dari pemain lain, memasang pesanan beli, dan memasang barangmu sendiri di pasar.",
+          "getIt": "Dapatkan lisensinya",
+          "kept": "tetap dimiliki berkat riwayat dagangmu",
+          "lockedBody": "Kamu boleh melihat-lihat sepuasnya. Lisensinya {{price}} mulai level {{level}}, di toko Daisu.",
+          "lockedTitle": "Jual beli butuh Lisensi Pedagang",
+          "name": "Lisensi Pedagang",
+          "opened": "Sudah berlisensi. Beli, pasang, buat pesanan, pasar sepenuhnya milikmu. Mau kutunjukkan?",
+          "pitch": "Dokumen resmi supaya kamu bisa tawar-menawar dengan orang asing. Jangan sampai ditipu. Eh, ditipu juga boleh, lucu.",
+          "what": "Beli dari pemain lain dan pasang barangmu sendiri di pasar."
+        },
+        "upgradeKit": {
+          "about": "Membuka halaman Upgrade: masukkan barang yang kamu punya untuk peluang mendapat yang lebih bagus. Peluangnya tampil sebelum setiap percobaan.",
+          "getIt": "Dapatkan di toko Daisu",
+          "kept": "tetap dimiliki berkat riwayat upgrade-mu",
+          "lockedBody": "Dengan Kit Upgrade kamu bisa menukar barang yang kamu punya dengan peluang dapat yang lebih bagus, dan peluangnya tampil sebelum setiap percobaan.",
+          "lockedTitle": "Upgrade terkunci",
+          "name": "Kit Upgrade",
+          "opened": "Halaman Upgrade sudah terbuka. Mau kutunjukkan cara kerjanya sebelum kamu lempar barangmu ke sana?",
+          "pitch": "Ubah rongsokanmu jadi rongsokan yang lebih bagus. Atau jadi tidak ada apa-apa. Itu bagian serunya.",
+          "what": "Tukar barang yang kamu punya dengan peluang dapat yang lebih bagus di halaman Upgrade."
+        }
+      },
+      "level": "Level {{n}}",
+      "locked": "Terkunci",
+      "needs": "Butuh",
+      "notNow": "Nanti saja",
+      "price": "Harga",
+      "short": "Kurang {{amount}}",
+      "subtitle": "Barang-barang yang membuka sisa tempat ini.",
+      "tab": "Toko",
+      "title": "Toko Daisu",
+      "unlocked": "Terbuka",
+      "yours": "Milikmu"
     }
   },
   "dice": {

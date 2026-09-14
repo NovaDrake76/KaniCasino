@@ -21,6 +21,7 @@ const COUNTERPARTY_FOR_TYPE = {
   referral_bonus: MINT,
   referral_milestone: MINT,
   ad_reward: MINT, // KP printed against outside ad revenue
+  shop_purchase: MINT, // an unlock from daisu's shop: the KP leaves circulation and buys only the feature
 
   referral_commission: HOUSE, // the house shares its edge with the affiliate
   leaderboard_prize: HOUSE, // rakeback: the daily board pays out of the edge it measures

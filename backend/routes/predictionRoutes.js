@@ -5,6 +5,7 @@ const PredictionPosition = require("../models/PredictionPosition");
 const PredictionTrade = require("../models/PredictionTrade");
 const PredictionPricepoint = require("../models/PredictionPricepoint");
 const { trade, quote, publicView } = require("../utils/predictions");
+const shop = require("../utils/shop");
 
 const PAGE_SIZE = 24;
 const FEED_SIZE = 30;
@@ -254,6 +255,9 @@ module.exports = (io) => {
 
   router.post("/:slug/trade", isAuthenticated, async (req, res) => {
     try {
+      // in daisu's beta trading needs the prediction pass from her shop
+      const locked = await shop.lockFor(req.user, "predictionPass");
+      if (locked) return res.status(403).json(locked);
       const prediction = await findBySlug(req.params.slug);
       if (!prediction) return res.status(404).json({ message: "That market does not exist" });
 

@@ -233,6 +233,7 @@
       "failed": "Das ging nicht raus. Versuch es nochmal.",
       "language": "Bitte ohne Schimpfwoerter.",
       "level": "Steig im Level auf, um zu schreiben.",
+      "locked": "Zum Schreiben brauchst du einen Chat-Pass aus Daisus Laden.",
       "muted": "Du bist fuer ein paar Minuten stummgeschaltet.",
       "noLinks": "Links sind im Chat nicht erlaubt.",
       "off": "Der Chat ist gerade aus.",
@@ -371,7 +372,6 @@
     "bonusSplit": "{{bonus}} vom Bonus, {{wallet}} vom Wallet",
     "bonusTitle": "Daisus Bonus",
     "bonusUsedOn": "Zuerst für deine {{game}}-Einsätze",
-    "boostsSoon": "Tagesziele, mit denen sich der Topf schneller füllt. Noch nicht geschrieben.",
     "bubbleGift": "Geschenk",
     "clickHint": "Klick auf den Topf, um zu nehmen, was drin ist",
     "close": "Schließen",
@@ -394,7 +394,6 @@
     "pickTitle": "Daisus Wahl",
     "play": "Spielen",
     "roomTitle": "Daisus Zimmer",
-    "tabBoosts": "Topf-Boosts",
     "tabMissions": "Missionen",
     "visit": "Daisus Zimmer besuchen",
     "lines": {
@@ -485,9 +484,6 @@
       "room": {
         "0": "Willkommen in meinem Zimmer. Fass nichts an. Außer den Topf.",
         "1": "Du kommst mich besuchen? Hmph. Setz dich, ich habe Aufgaben für dich."
-      },
-      "boostsEmpty": {
-        "0": "Hier ist noch nichts. Ich überlege mir Dinge, die du tun musst."
       }
     },
     "tour": {
@@ -631,12 +627,12 @@
         },
         "r3-collection": {
           "desc": "Öffne eine deiner Kisten-Sammlungen.",
-          "help": "Jede Kiste hat eine Sammlung: alle Items, die sie droppen kann. Öffne eine im Tab Sammlungen in deinem Profil und sieh nach, was dir fehlt.",
+          "help": "Jede Kiste hat eine Sammlung: alle Items, die sie droppen kann. Hol dir das Sammelbuch in meinem Laden, öffne eine im Tab Sammlungen in deinem Profil und sieh nach, was dir fehlt.",
           "title": "Sieh dir eine Sammlung an"
         },
         "r3-market": {
           "desc": "Kauf oder verkauf ein Item auf dem Markt.",
-          "help": "Auf dem Markt handeln Spieler untereinander. Kauf etwas, das du willst, oder stell eins deiner Items ein und warte auf einen Käufer.",
+          "help": "Auf dem Markt handeln Spieler untereinander. Hol dir die Händlerlizenz in meinem Laden, dann kauf etwas, das du willst, oder stell eins deiner Items ein und warte auf einen Käufer.",
           "title": "Handle auf dem Markt"
         },
         "r3-streak": {
@@ -709,6 +705,9 @@
       "cases": {
         "line": "Jede Kiste zählt, billig oder teuer. Such dir eine aus und öffne sie."
       },
+      "chat": {
+        "line": "Schreib hier, und alle sehen es. Sei nett, oder wenigstens lustig."
+      },
       "collection": {
         "complete": "Der Balken zeigt, wie viel du von jeder Sammlung besitzt. Füll eine ganz, und ihr Abzeichen gehört dir.",
         "line": "Jede Kiste hat eine Sammlung. Öffne eine, um zu sehen, was du hast und was dir noch fehlt.",
@@ -740,6 +739,9 @@
       "pot": {
         "line": "Mein Topf. Der Balken füllt sich in 8 Minuten, und ein voller Topf zahlt den Bonus für den vollen Topf obendrauf. Nimmst du ihn früher, bekommst du nur, was drin ist."
       },
+      "predictions": {
+        "line": "Jede Karte ist ein Markt. Öffne einen, wähl einen Ausgang und kauf Anteile; sie zahlen, wenn es eintritt, und du kannst vorher verkaufen."
+      },
       "sell": {
         "done": "Verkauft. Die KP sind zurück in deinem Wallet. Siehst du? Einfach.",
         "empty": "Noch nichts zu verkaufen. Öffne erst eine Kiste.",
@@ -748,7 +750,84 @@
         "wait": "Warte auf einen Verkauf"
       },
       "showMe": "Zeig's mir",
-      "stop": "Hilfe beenden"
+      "stop": "Hilfe beenden",
+      "upgrade": {
+        "line": "Wähl unten Items aus deinem Inventar und dann ein Ziel, das mehr wert ist. Je größer der Sprung, desto kleiner die Chance, und sie steht da, bevor du etwas drückst."
+      }
+    },
+    "shop": {
+      "after": "Dein Guthaben danach",
+      "buy": "Kaufen",
+      "buyFor": "Für {{amount}} kaufen",
+      "failed": "Kauf fehlgeschlagen. Versuch es noch mal.",
+      "items": {
+        "chatPass": {
+          "about": "Erlaubt dir, im Chat der Seite Nachrichten zu schreiben. Zum Lesen braucht es nie einen Pass.",
+          "getIt": "Hol dir den Pass",
+          "kept": "behalten dank deiner Chat-Geschichte",
+          "lockedBody": "Level {{level}} · {{price}} in Daisus Laden",
+          "lockedTitle": "Schreiben braucht einen Chat-Pass",
+          "name": "Chat-Pass",
+          "opened": "Du kannst jetzt reden. Versuch, etwas Interessantes zu sagen. Soll ich dir zeigen, wo?",
+          "pitch": "Bezahlen, um zu reden. Manche würden bezahlen, damit du still bist.",
+          "what": "Schreib im Chat der Seite. Lesen ist immer kostenlos."
+        },
+        "collectionBook": {
+          "about": "Öffnet den Tab Sammlungen: jede Kiste, aus der du sammelst, was dir noch fehlt, und ein schneller Weg, Duplikate zu verkaufen. Eine ganze Sammlung zu vervollständigen bringt ihr Abzeichen.",
+          "getIt": "Hol es dir in Daisus Laden",
+          "kept": "behalten dank deiner Sammlungsabzeichen",
+          "lockedBody": "Das Sammelbuch verfolgt jede Kiste, aus der du sammelst, zeigt, was dir noch fehlt, und verkauft deine Duplikate in einem Rutsch.",
+          "lockedTitle": "Sammlungen sind gesperrt",
+          "name": "Sammelbuch",
+          "opened": "Es gehört dir. Der Tab Sammlungen ist jetzt offen. Soll ich dich durchführen? Es sind viele Seiten.",
+          "pitch": "Ein ganzes Buch für deine Sammlung. Versuch nicht zu weinen, wenn du siehst, wie leer es ist.",
+          "what": "Öffnet den Tab Sammlungen: jede Kiste, aus der du sammelst, was fehlt, und ein schneller Weg, Duplikate zu verkaufen."
+        },
+        "predictionPass": {
+          "about": "Öffnet die Prognosen: kauf Anteile darauf, was als Nächstes passiert, und verkauf sie, wenn der Preis sich zu deinen Gunsten bewegt.",
+          "getIt": "Hol es dir in Daisus Laden",
+          "kept": "behalten dank deiner Prognosen",
+          "lockedBody": "Mit dem Prognose-Pass kaufst du Anteile darauf, was als Nächstes passiert, und verkaufst sie, wenn sich der Preis bewegt.",
+          "lockedTitle": "Prognosen sind gesperrt",
+          "name": "Prognose-Pass",
+          "opened": "Die Prognosen sind offen. Soll ich dir zeigen, wie ein Markt funktioniert?",
+          "pitch": "Auf die Zukunft wetten. Sehr erwachsen von dir.",
+          "what": "Kauf Anteile darauf, was als Nächstes passiert, und verkauf sie, wenn sich der Preis bewegt."
+        },
+        "tradersLicense": {
+          "about": "Erlaubt dir, von anderen Spielern zu kaufen, Kaufaufträge zu erteilen und deine eigenen Items auf dem Marktplatz einzustellen.",
+          "getIt": "Hol dir die Lizenz",
+          "kept": "behalten dank deiner Handelsgeschichte",
+          "lockedBody": "Umschauen darfst du, so viel du willst. Die Lizenz kostet {{price}} ab Level {{level}}, in Daisus Laden.",
+          "lockedTitle": "Kaufen und Verkaufen braucht eine Händlerlizenz",
+          "name": "Händlerlizenz",
+          "opened": "Lizenziert. Kaufen, einstellen, Aufträge erteilen, der Marktplatz gehört dir. Soll ich dich herumführen?",
+          "pitch": "Offizieller Papierkram, damit du mit Fremden feilschen kannst. Lass dich nicht abzocken. Na ja, doch, das ist lustig.",
+          "what": "Kauf von anderen Spielern und stell deine eigenen Items auf dem Marktplatz ein."
+        },
+        "upgradeKit": {
+          "about": "Öffnet die Seite Verbessern: setz Items ein, die du besitzt, für die Chance auf ein besseres. Die Chancen stehen vor jedem Versuch da.",
+          "getIt": "Hol es dir in Daisus Laden",
+          "kept": "behalten dank deiner Verbesserungen",
+          "lockedBody": "Mit dem Verbesserungs-Kit tauschst du Items, die du besitzt, gegen die Chance auf etwas Besseres, und die Chancen stehen vor jedem Versuch da.",
+          "lockedTitle": "Verbesserungen sind gesperrt",
+          "name": "Verbesserungs-Kit",
+          "opened": "Die Seite Verbessern ist offen. Soll ich dir zeigen, wie sie funktioniert, bevor du deine Items hineinwirfst?",
+          "pitch": "Mach aus deinem Schrott besseren Schrott. Oder nichts. Das ist der spannende Teil.",
+          "what": "Tausch Items, die du besitzt, gegen die Chance auf etwas Besseres auf der Seite Verbessern."
+        }
+      },
+      "level": "Level {{n}}",
+      "locked": "Gesperrt",
+      "needs": "Benötigt",
+      "notNow": "Nicht jetzt",
+      "price": "Preis",
+      "short": "{{amount}} zu wenig",
+      "subtitle": "Dinge, die den Rest der Seite öffnen.",
+      "tab": "Laden",
+      "title": "Daisus Laden",
+      "unlocked": "Freigeschaltet",
+      "yours": "Deins"
     }
   },
   "dice": {

@@ -13,6 +13,8 @@ const BuyOrder = require("../models/BuyOrder");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
 const { sellValue, marketFee, sellerNet, MARKET_FEE_RATE } = require("../utils/itemValue");
 const market = require("../utils/market");
+const beta = require("../utils/beta");
+const shop = require("../utils/shop");
 const fandom = require("../utils/fandom");
 const itemCatalog = require("../utils/itemCatalog");
 const { isRealMoneyMode } = require("../utils/mode");
@@ -129,6 +131,9 @@ module.exports = (io) => {
   // price, the item sells instantly at that (better) bid.
   router.post("/", isAuthenticated, marketWriteLimiter, async (req, res) => {
     try {
+      // in daisu's beta the trader's license replaces the level gates
+      const locked = await shop.lockFor(req.user, "tradersLicense");
+      if (locked) return res.status(403).json(locked);
       const { item: uniqueId } = req.body;
       const price = cleanPrice(req.body.price);
       if (price === null) {
@@ -139,7 +144,7 @@ module.exports = (io) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      if (user.level < SELL_LEVEL) {
+      if (!beta.has(req.user, "daisu") && user.level < SELL_LEVEL) {
         return res.status(400).json({ message: `You must be at least level ${SELL_LEVEL} to sell items` });
       }
 
@@ -345,6 +350,8 @@ module.exports = (io) => {
   // then escrow the remainder so a later match can never fail for lack of funds.
   router.post("/orders", isAuthenticated, marketWriteLimiter, async (req, res) => {
     try {
+      const locked = await shop.lockFor(req.user, "tradersLicense");
+      if (locked) return res.status(403).json(locked);
       const { itemId } = req.body;
       const price = cleanPrice(req.body.price);
       const quantity = Math.floor(Number(req.body.quantity) || 1);
@@ -354,7 +361,7 @@ module.exports = (io) => {
       if (!Number.isFinite(quantity) || quantity < 1 || quantity > MAX_ORDER_QTY) {
         return res.status(400).json({ message: `Quantity must be between 1 and ${MAX_ORDER_QTY}` });
       }
-      if (req.user.level < BUY_LEVEL) {
+      if (!beta.has(req.user, "daisu") && req.user.level < BUY_LEVEL) {
         return res.status(400).json({ message: `You must be at least level ${BUY_LEVEL} to buy items` });
       }
 
@@ -637,10 +644,12 @@ module.exports = (io) => {
   // Buy a listing outright (id here is the listing's _id)
   router.post("/buy/:id", isAuthenticated, marketBuyLimiter, async (req, res) => {
     try {
+      const locked = await shop.lockFor(req.user, "tradersLicense");
+      if (locked) return res.status(403).json(locked);
       if (!isValidId(req.params.id)) {
         return res.status(404).json({ message: "Item not found" });
       }
-      if (req.user.level < BUY_LEVEL) {
+      if (!beta.has(req.user, "daisu") && req.user.level < BUY_LEVEL) {
         return res.status(400).json({ message: `You must be at least level ${BUY_LEVEL} to buy items` });
       }
 

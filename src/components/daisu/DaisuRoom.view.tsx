@@ -7,11 +7,12 @@ import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
 import RoadmapPanel from "./roadmap/RoadmapPanel";
+import ShopPanel from "./shop/ShopPanel";
 import type { DaisuViewProps } from "./Daisu.types";
 import i18n from "../../i18n";
 
 const tabClass = (active: boolean) =>
-  `border-none bg-transparent px-3 py-2 text-sm font-semibold hover:border-none ${
+  `border-none bg-transparent px-3 py-2 text-sm font-semibold hover:border-none focus:outline-none ${
     active ? "border-b-2 border-b-accent text-ink" : "text-ink-muted hover:text-ink-soft"
   }`;
 
@@ -50,6 +51,8 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   helpKey,
   toggleHelp,
   showMe,
+  shop,
+  pickItem,
   giftReady,
 }) => (
   <motion.div
@@ -141,8 +144,8 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
             <button type="button" onClick={() => setTab("missions")} className={tabClass(tab === "missions")}>
               {i18n.t("daisu.tabMissions")}
             </button>
-            <button type="button" onClick={() => setTab("boosts")} className={tabClass(tab === "boosts")}>
-              {i18n.t("daisu.tabBoosts")}
+            <button type="button" onClick={() => setTab("shop")} className={tabClass(tab === "shop")}>
+              {i18n.t("daisu.shop.tab")}
             </button>
           </div>
 
@@ -157,10 +160,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
               onShowMe={showMe}
             />
           ) : (
-            <div className="flex flex-col gap-2 bg-surface p-4">
-              <p className="m-0 text-sm text-ink-soft">{i18n.t("daisu.lines.boostsEmpty.0")}</p>
-              <p className="m-0 text-xs text-ink-muted">{i18n.t("daisu.boostsSoon")}</p>
-            </div>
+            <ShopPanel shop={shop} onPick={pickItem} />
           )}
         </section>
       </div>

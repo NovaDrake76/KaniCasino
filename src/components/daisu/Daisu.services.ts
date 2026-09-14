@@ -6,10 +6,12 @@ import { useGiftStatus } from "../header/useGiftReady";
 import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
 import { greetingFor, lineKey, Mood, pokeMood } from "./daisuLines";
 import { setPotStatus, usePotStatus } from "./potStore";
-import { DAISU_STAGE_EVENT, emitJarTaken } from "./tour/tourEvents";
+import { DAISU_STAGE_EVENT, emitJarTaken, SHOP_OPEN_EVENT } from "./tour/tourEvents";
 import { useRoadmap } from "./roadmap/useRoadmap";
 import { missionWords } from "./roadmap/missionCopy";
 import { startHelp } from "./tour/helpStore";
+import { useShop } from "./shop/useShop";
+import type { UnlockKey } from "../../services/daisu/ShopService";
 import type { BonusView, Face, Line, Pop, RoomTab, Run, Stage } from "./Daisu.types";
 import i18n from "../../i18n";
 
@@ -220,6 +222,30 @@ export const useDaisu = () => {
       say("missionDone", { amount: kp(reward) });
     },
   });
+
+  const shop = useShop({
+    live: enabled && !!userId,
+    userId,
+    open: stage === "room" && tab === "shop",
+    onBought: (purchase) => {
+      if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks });
+      pull("happy");
+    },
+  });
+  const pickShopItem = useRef(shop.pickItem);
+  pickShopItem.current = shop.pickItem;
+
+  // a locked page sends the player to her shop, open on the item it needs
+  useEffect(() => {
+    const onShop = (e: Event) => {
+      const key = (e as CustomEvent<UnlockKey | undefined>).detail;
+      setTab("shop");
+      setStage("room");
+      if (key) pickShopItem.current(key);
+    };
+    window.addEventListener(SHOP_OPEN_EVENT, onShop);
+    return () => window.removeEventListener(SHOP_OPEN_EVENT, onShop);
+  }, []);
 
   const cycleMs = status?.cycleMs ?? 8 * 60000;
   const full = status?.full ?? 0;
@@ -477,6 +503,14 @@ export const useDaisu = () => {
     setStage("bubble");
     startHelp(userId, mission.key, mission.goal, missionWords(mission.key, mission.target, bonusGame.name).title);
   };
+  // a purchase ends on what it opened, and she offers to show it on the tour's engine
+  const showUnlocked = () => {
+    const key = shop.unlocked;
+    shop.closeUnlocked();
+    if (!key || !userId) return;
+    setStage("bubble");
+    startHelp(userId, `shop:${key}`, `unlock:${key}`, i18n.t(`daisu.shop.items.${key}.name`));
+  };
   const backToPopup = () => setStage("popup");
 
   return {
@@ -487,6 +521,7 @@ export const useDaisu = () => {
     openRoom,
     openRoomHelp,
     showMe,
+    showUnlocked,
     backToPopup,
     tab,
     setTab,
@@ -517,6 +552,16 @@ export const useDaisu = () => {
     pickProgress,
     pickRemaining,
     bonusGame,
+    walletBalance: wallet,
+    level: (userData?.level ?? 0) as number,
+    shop: shop.shop,
+    pickedItem: shop.pickedItem,
+    pickItem: shop.pickItem,
+    closePick: shop.closePick,
+    buying: shop.buying,
+    buyItem: shop.buy,
+    unlocked: shop.unlocked,
+    closeUnlocked: shop.closeUnlocked,
     ...missions,
     missionReady,
     attention,

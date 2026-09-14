@@ -21,6 +21,10 @@ import { IMarketItem } from "../../components/Types";
 import SellItemModal from "./SellItemModal";
 import ConfirmPurchaseModal from "./ConfirmPurchaseModal";
 import PlaceBuyOrderModal from "./PlaceBuyOrderModal";
+import { FiLock } from "react-icons/fi";
+import LockedBanner from "../../components/daisu/shop/LockedBanner";
+import { useLocked } from "../../components/daisu/shop/useLocked";
+import { openDaisuShop } from "../../components/daisu/tour/tourEvents";
 import i18n from "../../i18n";
 
 interface ItemData {
@@ -82,6 +86,9 @@ const ItemPage: React.FC = () => {
   // the url may carry a slug, so the id to compare against comes from the payload
   const resolvedId = (items as any)?.itemId as string | undefined;
   const canonical = (items as any)?.slug as string | undefined;
+  // buying, listing and ordering all wait for the trader's license in daisu's beta
+  const locked = useLocked("tradersLicense");
+  const needLicense = () => openDaisuShop("tradersLicense");
 
   const fetchItemListings = useCallback(async () => {
     setLoading(true);
@@ -145,6 +152,7 @@ const ItemPage: React.FC = () => {
   }, [fetchMarketData]);
 
   const buyItem = (item: IMarketItem) => {
+    if (locked) return needLicense();
     setSelectedItem(item);
     setOpenBuyModal(true);
   };
@@ -231,19 +239,23 @@ const ItemPage: React.FC = () => {
           </div>
           <div className="ml-auto flex gap-2">
             <button
-              onClick={() => setOpenOrderModal(true)}
-              className="px-4 h-10 rounded-md border border-accent-gold/50 text-accent-gold text-sm font-semibold hover:bg-accent-gold/10"
+              onClick={() => (locked ? needLicense() : setOpenOrderModal(true))}
+              className="px-4 h-10 rounded-md border border-accent-gold/50 text-accent-gold text-sm font-semibold hover:bg-accent-gold/10 flex items-center gap-2"
             >
+              {locked && <FiLock />}
               {i18n.t("market.placeBuyOrder")}
             </button>
             <button
-              onClick={() => setOpenSellModal(true)}
-              className="px-4 h-10 rounded-md bg-accent hover:bg-accent-light text-sm font-semibold text-white"
+              onClick={() => (locked ? needLicense() : setOpenSellModal(true))}
+              className="px-4 h-10 rounded-md bg-accent hover:bg-accent-light text-sm font-semibold text-white flex items-center gap-2"
             >
+              {locked && <FiLock />}
               {i18n.t("market.sellAnItem")}
             </button>
           </div>
         </div>
+
+        {locked && <LockedBanner unlock="tradersLicense" />}
 
         {/* the numbers a trader actually needs */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -377,7 +389,7 @@ const ItemPage: React.FC = () => {
             <div className="rounded-xl border border-line bg-surface p-8 text-center flex flex-col items-center gap-3">
               <span className="text-ink-muted">{i18n.t("market.nobodyIsSellingThis")}</span>
               <button
-                onClick={() => setOpenOrderModal(true)}
+                onClick={() => (locked ? needLicense() : setOpenOrderModal(true))}
                 className="px-4 h-10 rounded-md border border-accent-gold/50 text-accent-gold text-sm font-semibold hover:bg-accent-gold/10"
               >
                 {i18n.t("market.placeABuyOrder")}

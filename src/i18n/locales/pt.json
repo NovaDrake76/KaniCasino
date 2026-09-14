@@ -233,6 +233,7 @@
       "failed": "Nao foi enviado. Tente de novo.",
       "language": "Sem palavrao, por favor.",
       "level": "Suba de nivel para poder falar.",
+      "locked": "Você precisa de um Passe do Chat da loja da Daisu pra falar.",
       "muted": "Voce esta mutado por alguns minutos.",
       "noLinks": "Links nao sao permitidos no chat.",
       "off": "O chat esta desligado agora.",
@@ -371,7 +372,6 @@
     "bonusSplit": "{{bonus}} do bônus, {{wallet}} da carteira",
     "bonusTitle": "Bônus da Daisu",
     "bonusUsedOn": "Usado primeiro nas suas apostas de {{game}}",
-    "boostsSoon": "Metas diárias que fazem o pote encher mais rápido. Ainda não escritas.",
     "bubbleGift": "Presente",
     "clickHint": "Clique no pote para pegar o que tem dentro",
     "close": "Fechar",
@@ -394,7 +394,6 @@
     "pickTitle": "Escolha da Daisu",
     "play": "Jogar",
     "roomTitle": "Quarto da Daisu",
-    "tabBoosts": "Turbos do pote",
     "tabMissions": "Missões",
     "visit": "Visitar o quarto da Daisu",
     "lines": {
@@ -485,9 +484,6 @@
       "room": {
         "0": "Bem-vindo ao meu quarto. Não mexe em nada. Só no pote.",
         "1": "Veio me visitar? Hmph. Senta, tenho coisas pra você fazer."
-      },
-      "boostsEmpty": {
-        "0": "Nada aqui ainda. Estou pensando em coisas pra te obrigar a fazer."
       }
     },
     "tour": {
@@ -631,12 +627,12 @@
         },
         "r3-collection": {
           "desc": "Abra uma das suas coleções de caixa.",
-          "help": "Toda caixa tem uma coleção: todos os itens que ela pode dar. Abra uma pela aba Coleções do seu perfil e veja o que está faltando.",
+          "help": "Toda caixa tem uma coleção: todos os itens que ela pode dar. Pegue o Livro de Coleções na minha loja, abra uma pela aba Coleções do seu perfil e veja o que está faltando.",
           "title": "Veja uma coleção"
         },
         "r3-market": {
           "desc": "Compre ou venda um item no mercado.",
-          "help": "O mercado é onde os jogadores negociam entre si. Compre algo que você quer ou anuncie um item seu e espere um comprador.",
+          "help": "O mercado é onde os jogadores negociam entre si. Pegue a Licença de Comerciante na minha loja e depois compre algo que você quer ou anuncie um item seu e espere um comprador.",
           "title": "Negocie no mercado"
         },
         "r3-streak": {
@@ -709,6 +705,9 @@
       "cases": {
         "line": "Qualquer caixa conta, barata ou cara. Escolha uma e abra."
       },
+      "chat": {
+        "line": "Digite aqui e todo mundo vê. Seja legal, ou pelo menos engraçado."
+      },
       "collection": {
         "complete": "A barra mostra quanto de cada coleção você tem. Complete uma inteira e o distintivo é seu.",
         "line": "Toda caixa tem uma coleção. Abra uma pra ver o que você tem e o que ainda falta.",
@@ -740,6 +739,9 @@
       "pot": {
         "line": "Meu pote. A barra enche em 8 minutos, e o pote cheio paga o bônus de pote cheio por cima. Pegue antes e você só leva o que tem dentro."
       },
+      "predictions": {
+        "line": "Cada card é um mercado. Abra um, escolha um resultado e compre cotas; elas pagam se acontecer, e dá pra vender antes disso."
+      },
       "sell": {
         "done": "Vendido. Esse KP já voltou pra sua carteira. Viu? Fácil.",
         "empty": "Nada pra vender ainda. Abra uma caixa primeiro.",
@@ -748,7 +750,84 @@
         "wait": "Esperando uma venda"
       },
       "showMe": "Me mostra",
-      "stop": "Parar a ajuda"
+      "stop": "Parar a ajuda",
+      "upgrade": {
+        "line": "Escolha itens do seu inventário aqui embaixo e depois um alvo que valha mais. Quanto maior o salto, menor a chance, e ela aparece antes de você apertar qualquer coisa."
+      }
+    },
+    "shop": {
+      "after": "Seu saldo depois",
+      "buy": "Comprar",
+      "buyFor": "Comprar por {{amount}}",
+      "failed": "Não deu pra comprar. Tente de novo.",
+      "items": {
+        "chatPass": {
+          "about": "Permite enviar mensagens no chat do site. Ler nunca precisa de passe.",
+          "getIt": "Pegar o passe",
+          "kept": "mantido pelo seu histórico no chat",
+          "lockedBody": "Nível {{level}} · {{price}} na loja da Daisu",
+          "lockedTitle": "Falar exige um Passe do Chat",
+          "name": "Passe do Chat",
+          "opened": "Agora você pode falar. Tente dizer algo interessante. Quer que eu mostre onde?",
+          "pitch": "Pagar pra falar. Tem gente que pagaria pra você ficar quieto.",
+          "what": "Fale no chat do site. Ler é sempre de graça."
+        },
+        "collectionBook": {
+          "about": "Abre a aba Coleções: cada caixa de que você coleciona, o que ainda falta e um jeito rápido de vender repetidos. Completar uma coleção inteira dá o distintivo dela.",
+          "getIt": "Pegar na loja da Daisu",
+          "kept": "mantido pelos seus distintivos de coleção",
+          "lockedBody": "O Livro de Coleções acompanha cada caixa de que você coleciona, mostra o que ainda falta e vende seus repetidos de uma vez.",
+          "lockedTitle": "Coleções bloqueadas",
+          "name": "Livro de Coleções",
+          "opened": "É seu. A aba Coleções está aberta agora. Quer que eu te mostre? São muitas páginas.",
+          "pitch": "Um livro inteiro pra sua coleção. Tente não chorar quando vir como está vazio.",
+          "what": "Abre a aba Coleções: cada caixa de que você coleciona, o que falta e um jeito rápido de vender repetidos."
+        },
+        "predictionPass": {
+          "about": "Abre as previsões: compre cotas sobre o que vai acontecer e venda quando o preço for a seu favor.",
+          "getIt": "Pegar na loja da Daisu",
+          "kept": "mantido pelas suas previsões",
+          "lockedBody": "O Passe de Previsões deixa você comprar cotas sobre o que vai acontecer e vendê-las quando o preço mudar.",
+          "lockedTitle": "Previsões bloqueadas",
+          "name": "Passe de Previsões",
+          "opened": "As previsões estão abertas. Quer que eu mostre como um mercado funciona?",
+          "pitch": "Apostando no futuro. Que maduro da sua parte.",
+          "what": "Compre cotas sobre o que vai acontecer e venda quando o preço mudar."
+        },
+        "tradersLicense": {
+          "about": "Permite comprar de outros jogadores, criar ordens de compra e anunciar seus itens no mercado.",
+          "getIt": "Pegar a licença",
+          "kept": "mantida pelo seu histórico de trocas",
+          "lockedBody": "Pode olhar à vontade. A licença custa {{price}} no nível {{level}}, na loja da Daisu.",
+          "lockedTitle": "Comprar e vender exige uma Licença de Comerciante",
+          "name": "Licença de Comerciante",
+          "opened": "Licenciado. Comprar, anunciar, criar ordens, o mercado é todo seu. Quer que eu te mostre?",
+          "pitch": "Papelada oficial pra você pechinchar com estranhos. Não caia em golpe. Na verdade, caia. É engraçado.",
+          "what": "Compre de outros jogadores e anuncie seus itens no mercado."
+        },
+        "upgradeKit": {
+          "about": "Abre a página Melhorar: coloque itens seus pela chance de um melhor. As chances aparecem antes de cada tentativa.",
+          "getIt": "Pegar na loja da Daisu",
+          "kept": "mantido pelas suas melhorias",
+          "lockedBody": "O Kit de Melhoria deixa você trocar itens seus pela chance de algo melhor, com as chances mostradas antes de cada tentativa.",
+          "lockedTitle": "Melhorias bloqueadas",
+          "name": "Kit de Melhoria",
+          "opened": "A página Melhorar está aberta. Quer que eu mostre como funciona antes de você jogar seus itens nela?",
+          "pitch": "Transforme seu lixo em um lixo melhor. Ou em nada. Essa é a graça.",
+          "what": "Troque itens seus pela chance de algo melhor na página Melhorar."
+        }
+      },
+      "level": "Nível {{n}}",
+      "locked": "Bloqueado",
+      "needs": "Requer",
+      "notNow": "Agora não",
+      "price": "Preço",
+      "short": "Faltam {{amount}}",
+      "subtitle": "Coisas que abrem o resto do lugar.",
+      "tab": "Loja",
+      "title": "Loja da Daisu",
+      "unlocked": "Desbloqueado",
+      "yours": "Seu"
     }
   },
   "dice": {

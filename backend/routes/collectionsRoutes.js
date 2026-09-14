@@ -10,6 +10,7 @@ const itemCatalog = require("../utils/itemCatalog");
 const { sellValue } = require("../utils/itemValue");
 const { sellUniqueIds } = require("../utils/inventorySell");
 const { isAuthenticated } = require("../middleware/authMiddleware");
+const shop = require("../utils/shop");
 
 const PAGE_SIZE = 18;
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
@@ -194,6 +195,9 @@ router.get("/summary", async (req, res) => {
 // a pure read; drives the confirmation modal. always the caller's own inventory.
 router.post("/quicksell/preview", isAuthenticated, async (req, res) => {
   try {
+    // in daisu's beta the collection tools come with the collection book from her shop
+    const locked = await shop.lockFor(req.user, "collectionBook");
+    if (locked) return res.status(403).json(locked);
     const { caseId } = req.body;
     if (!isValidId(caseId)) {
       return res.status(400).json({ message: "Invalid case id" });
@@ -224,6 +228,8 @@ router.post("/quicksell/preview", isAuthenticated, async (req, res) => {
 // req.user; a body userId is ignored.
 router.post("/quicksell/commit", isAuthenticated, async (req, res) => {
   try {
+    const locked = await shop.lockFor(req.user, "collectionBook");
+    if (locked) return res.status(403).json(locked);
     const { caseId, plan } = req.body;
     if (!isValidId(caseId)) {
       return res.status(400).json({ message: "Invalid case id" });

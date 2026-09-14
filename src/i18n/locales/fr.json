@@ -233,6 +233,7 @@
       "failed": "L envoi a echoue. Reessayez.",
       "language": "Pas de grossieretes, merci.",
       "level": "Montez de niveau pour pouvoir parler.",
+      "locked": "Il te faut un Pass de chat de la boutique de Daisu pour parler.",
       "muted": "Vous etes muet pour quelques minutes.",
       "noLinks": "Les liens ne sont pas autorises dans le chat.",
       "off": "Le chat est desactive pour le moment.",
@@ -371,7 +372,6 @@
     "bonusSplit": "{{bonus}} du bonus, {{wallet}} du portefeuille",
     "bonusTitle": "Bonus de Daisu",
     "bonusUsedOn": "Utilisé en premier sur vos mises {{game}}",
-    "boostsSoon": "Des objectifs quotidiens qui remplissent le pot plus vite. Pas encore écrits.",
     "bubbleGift": "Cadeau",
     "clickHint": "Cliquez sur le pot pour prendre ce qu'il contient",
     "close": "Fermer",
@@ -394,7 +394,6 @@
     "pickTitle": "Le choix de Daisu",
     "play": "Jouer",
     "roomTitle": "La chambre de Daisu",
-    "tabBoosts": "Boosts du pot",
     "tabMissions": "Missions",
     "visit": "Visiter la chambre de Daisu",
     "lines": {
@@ -485,9 +484,6 @@
       "room": {
         "0": "Bienvenue dans ma chambre. Ne touche à rien. Sauf au pot.",
         "1": "Tu viens me voir ? Hmph. Assieds-toi, j'ai des choses à te faire faire."
-      },
-      "boostsEmpty": {
-        "0": "Rien ici pour l'instant. Je réfléchis à des choses à te faire faire."
       }
     },
     "tour": {
@@ -631,12 +627,12 @@
         },
         "r3-collection": {
           "desc": "Ouvre une de tes collections de caisse.",
-          "help": "Chaque caisse a sa collection : tous les objets qu'elle peut donner. Ouvre-en une depuis l'onglet Collections de ton profil et regarde ce qui te manque.",
+          "help": "Chaque caisse a sa collection : tous les objets qu'elle peut donner. Prends le Livre des collections dans ma boutique, ouvre-en une depuis l'onglet Collections de ton profil et regarde ce qui te manque.",
           "title": "Parcours une collection"
         },
         "r3-market": {
           "desc": "Achète ou vends un objet sur le marché.",
-          "help": "Le marché, c'est là où les joueurs échangent entre eux. Achète ce qui te plaît, ou mets en vente un de tes objets et attends un acheteur.",
+          "help": "Le marché, c'est là où les joueurs échangent entre eux. Prends la Licence de commerçant dans ma boutique, puis achète ce qui te plaît, ou mets en vente un de tes objets et attends un acheteur.",
           "title": "Échange sur le marché"
         },
         "r3-streak": {
@@ -709,6 +705,9 @@
       "cases": {
         "line": "N'importe quelle caisse compte, pas chère ou chère. Choisis-en une et ouvre-la."
       },
+      "chat": {
+        "line": "Écris ici et tout le monde le verra. Sois gentil, ou au moins drôle."
+      },
       "collection": {
         "complete": "La barre montre combien tu possèdes de chaque collection. Remplis-en une jusqu'au bout et son badge est à toi.",
         "line": "Chaque caisse a sa collection. Ouvre-en une pour voir ce que tu as et ce qui te manque encore.",
@@ -740,6 +739,9 @@
       "pot": {
         "line": "Mon pot. La barre se remplit en 8 minutes, et un pot plein paie le bonus de pot plein en plus. Prends-le trop tôt et tu n'as que ce qu'il contient."
       },
+      "predictions": {
+        "line": "Chaque carte est un marché. Ouvre-en une, choisis un résultat et achète des parts ; elles paient si ça arrive, et tu peux les revendre avant."
+      },
       "sell": {
         "done": "Vendu. Ces KP sont de retour dans ton portefeuille. Tu vois ? Facile.",
         "empty": "Rien à vendre pour l'instant. Ouvre d'abord une caisse.",
@@ -748,7 +750,84 @@
         "wait": "J'attends une vente"
       },
       "showMe": "Montre-moi",
-      "stop": "Arrêter l'aide"
+      "stop": "Arrêter l'aide",
+      "upgrade": {
+        "line": "Choisis des objets de ton inventaire plus bas, puis une cible qui vaut plus. Plus le saut est grand, plus la chance est faible, et elle s'affiche avant que tu appuies sur quoi que ce soit."
+      }
+    },
+    "shop": {
+      "after": "Ton solde après",
+      "buy": "Acheter",
+      "buyFor": "Acheter pour {{amount}}",
+      "failed": "Impossible d'acheter ça. Réessaie.",
+      "items": {
+        "chatPass": {
+          "about": "Te permet d'envoyer des messages dans le chat du site. Le lire ne demande jamais de pass.",
+          "getIt": "Obtenir le pass",
+          "kept": "conservé grâce à ton historique de chat",
+          "lockedBody": "Niveau {{level}} · {{price}} dans la boutique de Daisu",
+          "lockedTitle": "Parler demande un Pass de chat",
+          "name": "Pass de chat",
+          "opened": "Tu peux parler maintenant. Essaie de dire quelque chose d'intéressant. Je te montre où ?",
+          "pitch": "Payer pour parler. Certains paieraient pour que tu te taises.",
+          "what": "Parle dans le chat du site. Lire reste toujours gratuit."
+        },
+        "collectionBook": {
+          "about": "Ouvre l'onglet Collections : chaque caisse que tu collectionnes, ce qui te manque encore et un moyen rapide de vendre les doublons. Terminer une collection entière rapporte son badge.",
+          "getIt": "L'obtenir dans la boutique de Daisu",
+          "kept": "conservé grâce à tes badges de collection",
+          "lockedBody": "Le Livre des collections suit chaque caisse que tu collectionnes, montre ce qui te manque encore et vend tes doublons d'un coup.",
+          "lockedTitle": "Les collections sont verrouillées",
+          "name": "Livre des collections",
+          "opened": "Il est à toi. L'onglet Collections est ouvert. Tu veux que je te le fasse visiter ? Il y a beaucoup de pages.",
+          "pitch": "Un livre entier pour ta collection. Essaie de ne pas pleurer en voyant à quel point il est vide.",
+          "what": "Ouvre l'onglet Collections : chaque caisse que tu collectionnes, ce qui manque et un moyen rapide de vendre les doublons."
+        },
+        "predictionPass": {
+          "about": "Ouvre les prédictions : achète des parts sur ce qui va se passer et revends-les quand le prix tourne en ta faveur.",
+          "getIt": "L'obtenir dans la boutique de Daisu",
+          "kept": "conservé grâce à tes prédictions",
+          "lockedBody": "Le Pass prédictions te permet d'acheter des parts sur ce qui va se passer et de les revendre quand le prix bouge.",
+          "lockedTitle": "Les prédictions sont verrouillées",
+          "name": "Pass prédictions",
+          "opened": "Les prédictions sont ouvertes. Je te montre comment marche un marché ?",
+          "pitch": "Parier sur l'avenir. Très adulte de ta part.",
+          "what": "Achète des parts sur ce qui va se passer et revends-les quand le prix bouge."
+        },
+        "tradersLicense": {
+          "about": "Te permet d'acheter à d'autres joueurs, de passer des ordres d'achat et de mettre tes objets en vente sur le marché.",
+          "getIt": "Obtenir la licence",
+          "kept": "conservée grâce à ton historique d'échanges",
+          "lockedBody": "Tu peux regarder autant que tu veux. La licence coûte {{price}} au niveau {{level}}, dans la boutique de Daisu.",
+          "lockedTitle": "Acheter et vendre demande une Licence de commerçant",
+          "name": "Licence de commerçant",
+          "opened": "Licence en poche. Acheter, vendre, passer des ordres, le marché est à toi. Je te le fais visiter ?",
+          "pitch": "De la paperasse officielle pour marchander avec des inconnus. Ne te fais pas arnaquer. Enfin, si, c'est drôle.",
+          "what": "Achète à d'autres joueurs et mets tes objets en vente sur le marché."
+        },
+        "upgradeKit": {
+          "about": "Ouvre la page Améliorer : mise des objets que tu possèdes contre une chance d'en obtenir un meilleur. Les chances s'affichent avant chaque essai.",
+          "getIt": "L'obtenir dans la boutique de Daisu",
+          "kept": "conservé grâce à tes améliorations",
+          "lockedBody": "Le Kit d'amélioration te permet d'échanger des objets que tu possèdes contre une chance d'obtenir mieux, avec les chances affichées avant chaque essai.",
+          "lockedTitle": "Les améliorations sont verrouillées",
+          "name": "Kit d'amélioration",
+          "opened": "La page Améliorer est ouverte. Je te montre comment ça marche avant que tu y jettes tes objets ?",
+          "pitch": "Transforme tes déchets en meilleurs déchets. Ou en rien. C'est ça qui est excitant.",
+          "what": "Échange des objets que tu possèdes contre une chance d'obtenir mieux sur la page Améliorer."
+        }
+      },
+      "level": "Niveau {{n}}",
+      "locked": "Verrouillé",
+      "needs": "Requis",
+      "notNow": "Pas maintenant",
+      "price": "Prix",
+      "short": "Il manque {{amount}}",
+      "subtitle": "Des choses qui ouvrent le reste du site.",
+      "tab": "Boutique",
+      "title": "Boutique de Daisu",
+      "unlocked": "Débloqué",
+      "yours": "À toi"
     }
   },
   "dice": {

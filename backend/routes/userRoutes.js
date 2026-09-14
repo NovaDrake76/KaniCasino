@@ -27,6 +27,7 @@ const nameFilter = require("../utils/nameFilter");
 const signup = require("../utils/signup");
 const beta = require("../utils/beta");
 const { tourOf } = require("../utils/onboarding");
+const shop = require("../utils/shop");
 const { mintSlug, looksLikeId } = require("../utils/slugs");
 const { visible, isVisible } = require("../utils/visibility");
 const realtime = require("../utils/realtime");
@@ -384,6 +385,7 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
       nameChangeAllowedAt: signup.renameAllowedAt(req.user.usernameChangedAt),
       features: beta.featuresOf(req.user),
       onboarding: tourOf(req.user),
+      unlocks: beta.has(req.user, "daisu") ? await shop.unlocksOf(req.user) : undefined,
       badges: badges.heldBadges(req.user),
       selectedBadge: req.user.selectedBadge || null,
       badge: badges.wornBadge(req.user),

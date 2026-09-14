@@ -79,7 +79,7 @@ const PredictionsView: React.FC<PredictionsViewProps> = ({
           {i18n.t("predictions.noMarkets")}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div data-tour="predictions-list" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {markets.map((market) => (
             <MarketCard key={market._id} market={market} onClick={() => openMarket(market.slug)} />
           ))}

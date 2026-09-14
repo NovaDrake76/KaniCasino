@@ -27,6 +27,10 @@ vi.mock("../../services/chat/ChatService", () => ({
   },
 }));
 
+vi.mock("../../services/daisu/ShopService", () => ({
+  getShop: () => Promise.resolve({ level: 6, walletBalance: 0, items: [{ key: "chatPass", price: 500, level: 5, owned: false, via: null }] }),
+}));
+
 const message = (id: string, text: string, over: Partial<ChatMessage> = {}): ChatMessage => ({
   id,
   _id: `u${id}`,
@@ -40,9 +44,9 @@ const message = (id: string, text: string, over: Partial<ChatMessage> = {}): Cha
   ...over,
 });
 
-const draw = (logged = true) =>
+const draw = (logged = true, me: Record<string, unknown> = {}) =>
   render(
-    <UserContext.Provider value={{ userData: logged ? { id: "me" } : null } as never}>
+    <UserContext.Provider value={{ userData: logged ? { id: "me", ...me } : null } as never}>
       <MemoryRouter>
         <ChatPanel open onClose={() => undefined} />
       </MemoryRouter>
@@ -58,6 +62,16 @@ describe("the site chat panel", () => {
   it("asks for history once it is opened, rather than waiting to be pushed it", () => {
     draw();
     expect(requestHistory).toHaveBeenCalledTimes(1);
+  });
+
+  it("asks an account in daisu's beta for a chat pass instead of the box, and keeps reading open", async () => {
+    draw(true, { features: { daisu: true }, unlocks: [] });
+    act(() => handlers.history?.([message("1", "first")] as never));
+
+    expect(screen.getByText("first")).toBeTruthy();
+    expect(screen.queryByPlaceholderText(/say something/i)).toBeNull();
+    expect(screen.getByText(/talking needs a chat pass/i)).toBeTruthy();
+    expect(await screen.findByText(/level 5 · K₽/i)).toBeTruthy();
   });
 
   it("renders the history it is handed, oldest at the top", () => {

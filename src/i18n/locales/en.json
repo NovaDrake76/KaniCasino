@@ -233,6 +233,7 @@
       "failed": "That did not send. Try again.",
       "language": "Keep the language clean, please.",
       "level": "Reach a higher level to chat.",
+      "locked": "You need a Chat Pass from Daisu's shop to talk.",
       "muted": "You are muted for a few minutes.",
       "noLinks": "Links are not allowed in chat.",
       "off": "Chat is off right now.",
@@ -371,7 +372,6 @@
     "bonusSplit": "{{bonus}} from bonus, {{wallet}} from wallet",
     "bonusTitle": "Daisu's bonus",
     "bonusUsedOn": "Used first on your {{game}} bets",
-    "boostsSoon": "Daily goals that make the pot fill faster. Not written yet.",
     "bubbleGift": "Gift",
     "clickHint": "Click the jar to take what is in it",
     "close": "Close",
@@ -394,7 +394,6 @@
     "pickTitle": "Daisu's pick",
     "play": "Play",
     "roomTitle": "Daisu's room",
-    "tabBoosts": "Pot boosts",
     "tabMissions": "Missions",
     "visit": "Visit Daisu's room",
     "lines": {
@@ -485,9 +484,6 @@
       "room": {
         "0": "Welcome to my room. Don't touch anything. Except the pot.",
         "1": "You came to visit? Hmph. Sit down, I have things for you to do."
-      },
-      "boostsEmpty": {
-        "0": "Nothing here yet. I'm thinking of things to make you do."
       }
     },
     "tour": {
@@ -631,12 +627,12 @@
         },
         "r3-collection": {
           "desc": "Open one of your case collections.",
-          "help": "Every case has a collection: all the items it can drop. Open one from the Collections tab on your profile and see what you're missing.",
+          "help": "Every case has a collection: all the items it can drop. Get the Collection Book in my shop, then open one from the Collections tab on your profile and see what you're missing.",
           "title": "Look through a collection"
         },
         "r3-market": {
           "desc": "Buy or sell an item on the marketplace.",
-          "help": "The market is where players trade with each other. Buy something you want, or list one of your items and wait for a buyer.",
+          "help": "The market is where players trade with each other. Get the Trader's License in my shop, then buy something you want, or list one of your items and wait for a buyer.",
           "title": "Trade on the market"
         },
         "r3-streak": {
@@ -709,6 +705,9 @@
       "cases": {
         "line": "Any case counts, cheap or expensive. Pick one and open it."
       },
+      "chat": {
+        "line": "Type here and everyone sees it. Be nice, or at least be funny."
+      },
       "collection": {
         "complete": "The bar shows how much of each collection you own. Fill one all the way and its badge is yours.",
         "line": "Every case has a collection. Open one to see what you have and what you're still missing.",
@@ -740,6 +739,9 @@
       "pot": {
         "line": "My jar. The bar fills over 8 minutes, and a full jar pays the full-pot bonus on top. Take it early and you only get what's in it."
       },
+      "predictions": {
+        "line": "Every card is a market. Open one, pick an outcome and buy shares; they pay out if it happens, and you can sell before then."
+      },
       "sell": {
         "done": "Sold. That's KP back in your wallet. See? Easy.",
         "empty": "Nothing to sell yet. Open a case first.",
@@ -748,7 +750,84 @@
         "wait": "Waiting for a sale"
       },
       "showMe": "Show me",
-      "stop": "Stop helping"
+      "stop": "Stop helping",
+      "upgrade": {
+        "line": "Pick items from your inventory below, then a target worth more. The bigger the jump, the lower the chance, and it shows before you press anything."
+      }
+    },
+    "shop": {
+      "after": "Your balance after",
+      "buy": "Buy",
+      "buyFor": "Buy for {{amount}}",
+      "failed": "Could not buy that. Try again.",
+      "items": {
+        "chatPass": {
+          "about": "Lets you send messages in the site chat. Reading it never needs a pass.",
+          "getIt": "Get the pass",
+          "kept": "kept from your chat history",
+          "lockedBody": "Level {{level}} · {{price}} in Daisu's shop",
+          "lockedTitle": "Talking needs a Chat Pass",
+          "name": "Chat Pass",
+          "opened": "You can talk now. Try to say something interesting. Want me to show you where?",
+          "pitch": "Paying to talk. Some people would pay you to stay quiet.",
+          "what": "Talk in the site chat. Reading is always free."
+        },
+        "collectionBook": {
+          "about": "Opens the Collections tab: every case you collect from, what you're still missing, and a quick way to sell duplicates. Finishing a whole collection earns its badge.",
+          "getIt": "Get it in Daisu's shop",
+          "kept": "kept from your collection badges",
+          "lockedBody": "The Collection Book tracks every case you collect from, shows what you're still missing and sells your duplicates in one go.",
+          "lockedTitle": "Collections are locked",
+          "name": "Collection Book",
+          "opened": "It's yours. The Collections tab is open now. Want me to walk you through it? There are a lot of pages.",
+          "pitch": "A whole book for your collection. Try not to cry when you see how empty it is.",
+          "what": "Opens the Collections tab: every case you collect from, what's missing, and a quick way to sell duplicates."
+        },
+        "predictionPass": {
+          "about": "Opens predictions: buy shares on what happens next, and sell them whenever the price moves your way.",
+          "getIt": "Get it in Daisu's shop",
+          "kept": "kept from your predictions",
+          "lockedBody": "The Prediction Pass lets you buy shares on what happens next and sell them when the price moves.",
+          "lockedTitle": "Predictions are locked",
+          "name": "Prediction Pass",
+          "opened": "Predictions are open. Want me to show you how a market works?",
+          "pitch": "Betting on the future. Very grown up of you.",
+          "what": "Buy shares on what happens next, and sell them when the price moves."
+        },
+        "tradersLicense": {
+          "about": "Lets you buy from other players, place buy orders and list your own items on the marketplace.",
+          "getIt": "Get the license",
+          "kept": "kept from your trading history",
+          "lockedBody": "You can look around all you want. The license is {{price}} at level {{level}}, in Daisu's shop.",
+          "lockedTitle": "Buying and selling needs a Trader's License",
+          "name": "Trader's License",
+          "opened": "Licensed. Buy, list, place orders, the marketplace is all yours. Want me to show you around it?",
+          "pitch": "Official paperwork, so you can haggle with strangers. Don't get scammed. Actually, do. It's funny.",
+          "what": "Buy from other players and list your own items on the marketplace."
+        },
+        "upgradeKit": {
+          "about": "Opens the Upgrade page: put in items you own for a chance at a better one. The odds show before every try.",
+          "getIt": "Get it in Daisu's shop",
+          "kept": "kept from your upgrades",
+          "lockedBody": "The Upgrade Kit lets you trade items you own for a chance at something better, with the odds shown before every try.",
+          "lockedTitle": "Upgrades are locked",
+          "name": "Upgrade Kit",
+          "opened": "The Upgrade page is open. Want me to show you how it works before you throw your items at it?",
+          "pitch": "Turn your junk into better junk. Or into nothing. That's the exciting part.",
+          "what": "Trade items you own for a chance at something better on the Upgrade page."
+        }
+      },
+      "level": "Level {{n}}",
+      "locked": "Locked",
+      "needs": "Needs",
+      "notNow": "Not now",
+      "price": "Price",
+      "short": "{{amount}} short",
+      "subtitle": "Things that open up the rest of the place.",
+      "tab": "Shop",
+      "title": "Daisu's shop",
+      "unlocked": "Unlocked",
+      "yours": "Yours"
     }
   },
   "dice": {

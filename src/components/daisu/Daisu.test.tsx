@@ -6,6 +6,7 @@ import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
 import type { PotStatus } from "../../services/daisu/DaisuService";
 import { endHelp, helpState } from "./tour/helpStore";
+import { openDaisuShop } from "./tour/tourEvents";
 
 const getPotStatus = vi.fn();
 const claimPot = vi.fn();
@@ -21,6 +22,16 @@ vi.mock("../../services/daisu/RoadmapService", () => ({
   getRoadmap: (...args: unknown[]) => getRoadmap(...args),
   claimRoadmapMission: (...args: unknown[]) => claimRoadmapMission(...args),
 }));
+
+const getShop = vi.fn();
+const buyShopItem = vi.fn();
+vi.mock("../../services/daisu/ShopService", () => ({
+  getShop: (...args: unknown[]) => getShop(...args),
+  buyShopItem: (...args: unknown[]) => buyShopItem(...args),
+}));
+
+const shopItem = (over: object) => ({ key: "collectionBook", price: 5000, level: 5, owned: false, via: null, ...over });
+const shopOf = (items: object[]) => ({ level: 6, walletBalance: 9000, items });
 
 const mission = (over: object) => ({
   key: "r1-full-pot",
@@ -79,10 +90,10 @@ const claimed = (amount: number, walletBalance: number) => ({
 
 const toogleUserData = vi.fn();
 
-const draw = (daisu = true) =>
+const draw = (daisu = true, extra: Record<string, unknown> = {}) =>
   render(
     <UserContext.Provider
-      value={{ userData: { id: "u1", walletBalance: 100, features: { daisu } }, toogleUserData } as never}
+      value={{ userData: { id: "u1", walletBalance: 100, features: { daisu }, ...extra }, toogleUserData } as never}
     >
       <MemoryRouter>
         <DaisuDock />
@@ -107,6 +118,8 @@ describe("daisu in the corner", () => {
     toogleUserData.mockReset();
     getRoadmap.mockReset().mockResolvedValue(roadmap([]));
     claimRoadmapMission.mockReset();
+    getShop.mockReset().mockResolvedValue(shopOf([]));
+    buyShopItem.mockReset();
     claimPot.mockReset();
     getPotStatus.mockReset().mockResolvedValue(status(0));
   });
@@ -321,8 +334,8 @@ describe("daisu in the corner", () => {
     expect(await screen.findByText("First steps")).toBeTruthy();
     expect(screen.getByText("Reach level 5")).toBeTruthy();
 
-    fireEvent.click(screen.getByText(/pot boosts/i));
-    expect(screen.getByText(/nothing here yet/i)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Shop" }));
+    expect(await screen.findByText(/things that open up the rest of the place/i)).toBeTruthy();
 
     fireEvent.click(screen.getByText(/back to daisu/i));
     expect(await screen.findByLabelText("Daisu", { selector: "section" })).toBeTruthy();
@@ -338,6 +351,44 @@ describe("daisu in the corner", () => {
     expect(await screen.findByLabelText("Open Daisu")).toBeTruthy();
     expect(helpState()).toMatchObject({ owner: "u1", mission: "r1-level", goal: "level", title: "Reach level 5" });
     endHelp();
+  });
+
+  it("sells from her shop, and offers to show what the item opened", async () => {
+    getShop.mockResolvedValue(shopOf([shopItem({})]));
+    buyShopItem.mockResolvedValue({
+      bought: true,
+      key: "collectionBook",
+      walletBalance: 4000,
+      unlocks: ["collectionBook"],
+      shop: shopOf([shopItem({ owned: true, via: "bought" })]),
+    });
+    draw(true, { walletBalance: 9000, level: 6, unlocks: [] });
+    fireEvent.click(await screen.findByText(/visit daisu's room/i));
+    fireEvent.click(await screen.findByRole("button", { name: "Shop" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Buy" }));
+
+    fireEvent.click(await screen.findByRole("button", { name: /buy for/i }));
+
+    expect(await screen.findByRole("dialog", { name: /unlocked · collection book/i })).toBeTruthy();
+    expect(buyShopItem).toHaveBeenCalledWith("collectionBook");
+    expect(toogleUserData.mock.calls[toogleUserData.mock.calls.length - 1][0]).toMatchObject({ walletBalance: 4000, unlocks: ["collectionBook"] });
+
+    fireEvent.click(screen.getByRole("button", { name: "Show me" }));
+
+    expect(await screen.findByLabelText("Open Daisu")).toBeTruthy();
+    expect(helpState()).toMatchObject({ mission: "shop:collectionBook", goal: "unlock:collectionBook" });
+    endHelp();
+  });
+
+  it("opens her shop on the item a locked page needs", async () => {
+    getShop.mockResolvedValue(shopOf([shopItem({ key: "chatPass", price: 500 })]));
+    draw(true, { walletBalance: 9000, level: 6, unlocks: [] });
+    await screen.findByLabelText("Daisu", { selector: "section" });
+
+    act(() => openDaisuShop("chatPass"));
+
+    expect(await screen.findByRole("dialog", { name: "Chat Pass" })).toBeTruthy();
+    expect(screen.getByRole("dialog", { name: /daisu's room/i })).toBeTruthy();
   });
 
   it("folds into the bubble and remembers that", async () => {

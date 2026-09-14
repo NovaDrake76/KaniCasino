@@ -7,6 +7,7 @@ const pot = require("../utils/pot");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("../utils/economy");
 const { potClaimLimiter } = require("../middleware/rateLimit");
 const roadmap = require("../utils/roadmap");
+const shop = require("../utils/shop");
 
 const gate = [authMiddleware.isAuthenticated, beta.requireFlag("daisu")];
 
@@ -165,6 +166,25 @@ router.post("/missions/visit", ...gate, async (req, res) => {
 router.post("/missions/:key/claim", ...gate, async (req, res) => {
   try {
     const r = await roadmap.claim(req.user, String(req.params.key));
+    res.status(r.code).json(r.body);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/shop", ...gate, async (req, res) => {
+  try {
+    res.json(await shop.viewFor(req.user));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/shop/:key/buy", ...gate, async (req, res) => {
+  try {
+    const r = await shop.buy(req.user, String(req.params.key));
     res.status(r.code).json(r.body);
   } catch (err) {
     console.error(err);

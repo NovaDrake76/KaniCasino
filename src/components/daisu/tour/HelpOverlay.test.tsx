@@ -31,10 +31,10 @@ const Where = () => {
   return <span data-testid="where">{pathname + search}</span>;
 };
 
-const draw = (id: string, goal: string, path = "/", page: ReactNode = null, title = "A mission") => {
+const draw = (id: string, goal: string, path = "/", page: ReactNode = null, title = "A mission", extra: Record<string, unknown> = {}) => {
   startHelp(id, "r-test", goal, title);
   return render(
-    <UserContext.Provider value={{ userData: { id, features: { daisu: true } } } as never}>
+    <UserContext.Provider value={{ userData: { id, features: { daisu: true }, ...extra } } as never}>
       <MemoryRouter initialEntries={[path]}>
         <Where />
         {page}
@@ -182,6 +182,36 @@ describe("daisu showing how a mission is done", () => {
     expect(where()).toBe("/plinko");
     expect(stages[stages.length - 1]).toBe("bubble");
     expect(screen.getByText(/that's my bonus, right above your bet/i)).toBeTruthy();
+  });
+
+  it("opens the chat and points at where to type once a chat pass is bought", () => {
+    const opened = vi.fn();
+    window.addEventListener("chat:open", opened);
+    draw(nextId(), "unlock:chatPass", "/", <form data-tour="chat-input" />, "Chat Pass");
+
+    expect(opened).toHaveBeenCalled();
+    expect(screen.getByText(/type here and everyone sees it/i)).toBeTruthy();
+    window.removeEventListener("chat:open", opened);
+  });
+
+  it("takes a new upgrade kit to the upgrade page", () => {
+    draw(nextId(), "unlock:upgradeKit", "/", null, "Upgrade Kit");
+
+    expect(where()).toBe("/upgrade");
+    expect(screen.getByText(/pick items from your inventory below/i)).toBeTruthy();
+  });
+
+  it("sends a player without the collection book to her shop rather than to a locked page", () => {
+    const asked: string[] = [];
+    const onShop = (e: Event) => asked.push((e as CustomEvent<string>).detail);
+    window.addEventListener("daisu:shop", onShop);
+
+    draw(nextId(), "collectionVisits", "/marketplace", null, "Look through a collection", { unlocks: [] });
+
+    expect(asked).toEqual(["collectionBook"]);
+    expect(where()).toBe("/marketplace");
+    expect(helpState().mission).toBeNull();
+    window.removeEventListener("daisu:shop", onShop);
   });
 
   it("stays out of the way while the first-login tour runs", () => {
