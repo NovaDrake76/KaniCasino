@@ -95,7 +95,7 @@ const DiceView: React.FC<DiceViewProps> = ({
           )}
 
           {mode === "manual" ? (
-            <GameButton onClick={roll} disabled={rolling}>
+            <GameButton onClick={roll} disabled={rolling} tour="play-button">
               {isLogged ? i18n.t("dice.rollDice") : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           ) : (

@@ -26,6 +26,7 @@ const { resolvePassword } = require("../utils/password");
 const nameFilter = require("../utils/nameFilter");
 const signup = require("../utils/signup");
 const beta = require("../utils/beta");
+const { tourOf } = require("../utils/onboarding");
 const { mintSlug, looksLikeId } = require("../utils/slugs");
 const { visible, isVisible } = require("../utils/visibility");
 const realtime = require("../utils/realtime");
@@ -89,6 +90,7 @@ router.post(
         isAdmin: false,
         marketingOptIn: consented,
         marketingOptInAt: consented ? new Date() : undefined,
+        onboarding: { status: "offered" },
       });
       if (referrer) user.referredBy = referrer._id;
 
@@ -299,6 +301,7 @@ router.post("/google/complete", registerLimiter, registerDailyLimiter, async (re
       basePicture: picture,
       marketingOptIn: consented,
       marketingOptInAt: consented ? new Date() : undefined,
+      onboarding: { status: "offered" },
     });
     if (referrer) user.referredBy = referrer._id;
     await user.save();
@@ -380,6 +383,7 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
       // null when a rename is allowed now, so settings can say when rather than guess
       nameChangeAllowedAt: signup.renameAllowedAt(req.user.usernameChangedAt),
       features: beta.featuresOf(req.user),
+      onboarding: tourOf(req.user),
       badges: badges.heldBadges(req.user),
       selectedBadge: req.user.selectedBadge || null,
       badge: badges.wornBadge(req.user),

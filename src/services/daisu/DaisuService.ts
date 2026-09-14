@@ -42,6 +42,13 @@ export async function getPotStatus(): Promise<PotStatus> {
   return res.data;
 }
 
+export type TourStatus = "offered" | "active" | "skipped" | "done";
+export type TourStep = "pot" | "case" | "open" | "drop" | "game" | "bet" | "play" | "done";
+
+export async function saveTour(status: TourStatus, step?: TourStep): Promise<void> {
+  await api.post("/daisu/tour", { status, step });
+}
+
 export async function claimPot(): Promise<PotClaim> {
   const res = await api.post("/daisu/claim");
   return res.data;

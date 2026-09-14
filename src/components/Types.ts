@@ -29,6 +29,8 @@ export interface User {
     };
     // betas this account is in, as the server sees them
     features?: { daisu?: boolean };
+    // daisu's first-login tour, null for accounts from before it or an offer that lapsed
+    onboarding?: { status: "offered" | "active" | "skipped" | "done"; step: string | null } | null;
 
 }
 

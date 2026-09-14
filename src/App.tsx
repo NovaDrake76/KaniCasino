@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
 import GiftPrompt from "./components/header/GiftPrompt";
 import DaisuDock from "./components/daisu";
+import TourOverlay from "./components/daisu/tour/TourOverlay";
 import ChatDock, { ChatToggle, useChatDock } from "./components/chat/ChatDock";
 import { pushDrop } from "./components/header/liveDrop";
 
@@ -301,6 +302,7 @@ function App() {
                 {!chat.open && <ChatToggle onClick={chat.toggle} />}
                 <GiftPrompt />
                 <DaisuDock />
+                <TourOverlay />
               </SkeletonTheme>
             </Router>
         </Suspense>

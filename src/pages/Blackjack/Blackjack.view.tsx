@@ -244,7 +244,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
             <ActionButton label={i18n.t("blackjack.double")} icon={<GiTwoCoins size={17} />} iconColor="text-[#5EEAD4]" onClick={double} disabled={!canDouble} />
           </div>
 
-          <GameButton onClick={() => deal()} disabled={!betting || acting || betValue > walletBalance}>
+          <GameButton onClick={() => deal()} disabled={!betting || acting || betValue > walletBalance} tour="play-button">
             {acting ? "Dealing..." : phase === "settled" ? "Rebet" : "Deal"}
           </GameButton>
 

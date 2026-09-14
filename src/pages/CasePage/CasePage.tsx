@@ -17,6 +17,7 @@ import { FaGift } from "react-icons/fa";
 import { getGrants } from "../../services/gift/GiftService";
 import type { GiftGrant } from "../../services/gift/GiftService";
 import FreeOpenings from "./FreeOpenings";
+import { emitCaseRevealed } from "../../components/daisu/tour/tourEvents";
 import { applyMeta } from "../../seo/meta";
 import { caseMeta } from "../../seo/caseMeta";
 import i18n from "../../i18n";
@@ -87,7 +88,8 @@ const CasePage = () => {
     applyMeta(title, description, `/case/${(data as any).slug || data._id || id}`);
   }, [data, id]);
 
-  const resetProps = () => {
+  // the items are passed in: these timers are made before the state holding them updates
+  const resetProps = (items: any[] = []) => {
     setShowPrize(false);
     setAnimationAux2(false);
 
@@ -101,6 +103,7 @@ const CasePage = () => {
     setTimeout(() => {
       setStarted(false);
       setShowPrize(true);
+      emitCaseRevealed(items);
     }, 7500);
 
     setTimeout(() => {
@@ -144,9 +147,11 @@ const CasePage = () => {
 
     setLoadingButton(true);
 
+    let items: BasicItem[] = [];
     try {
       const response = await openBox(caseId, quantity, freeNow ? grant?.grantId : undefined);
-      setOpenedItems(response.items);
+      items = response.items;
+      setOpenedItems(items);
       if (freeNow) getGrant();
     } catch (error: any) {
       console.log(error);
@@ -157,7 +162,7 @@ const CasePage = () => {
       return;
     }
 
-    resetProps()
+    resetProps(items)
   };
 
   return (
@@ -189,7 +194,11 @@ const CasePage = () => {
           {loading ? (
             <Skeleton width={240} height={40} />
           ) : (
-            <div className="w-60 ml-0 md:ml-20">
+            <div
+              data-tour="case-open"
+              data-tour-state={loadingButton ? "busy" : !freeNow && userData && data.price > userData.walletBalance ? "too-expensive" : undefined}
+              className="w-60 ml-0 md:ml-20"
+            >
               <MainButton
                 text={userData == null ? i18n.t("upgrade.signInToPlay") : freeNow ? (
                   <div className="flex items-center justify-center gap-1 text-base">

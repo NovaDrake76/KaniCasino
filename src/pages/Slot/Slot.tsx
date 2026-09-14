@@ -179,7 +179,7 @@ const Slots = () => {
                     }}>
 
                     <GameBonusStrip game="slots" className="mx-auto w-full max-w-[320px]" />
-                    <div className="flex w-full items-center justify-center gap-2">
+                    <div data-tour="bet-input" className="flex w-full items-center justify-center gap-2">
                         {
                             ["balance", "bet", "wins"].map((type) => <ValueViewer key={type} type={type as "balance" | "bet" | "wins"} betAmount={betAmount} totalWins={totalWins} />
                             )
@@ -187,7 +187,7 @@ const Slots = () => {
                     </div>
                     <div className="flex items-center justify-center gap-8">
                         {handleChangeBet("subtract")}
-                        <button onClick={handleSpin} disabled={isSpinning} className="bg-[#25D160] w-16 h-16 text-white 
+                        <button onClick={handleSpin} disabled={isSpinning} data-tour="play-button" className="bg-[#25D160] w-16 h-16 text-white 
                             font-bold py-2 px-4 rounded-full transition-all 
                             hover:bg-[#b0ff7c] hover:border-unique border-4 border-[#ECA823] text-sm flex items-center justify-center"
                             style={{

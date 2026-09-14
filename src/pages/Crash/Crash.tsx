@@ -9,6 +9,7 @@ import up from "/images/crash/up.gif";
 import LiveBets from "./LiveBets";
 import GameContainer from "./GameContainer";
 import SideMenu from "./SideMenu";
+import { emitGameResult } from "../../components/daisu/tour/tourEvents";
 
 const socket = SocketConnection.getInstance();
 
@@ -50,15 +51,20 @@ const CrashGame = () => {
     };
   };
 
+  // the stake riding this round and what it cashed out for, read once the round ends
+  const stakeRef = useRef<{ wagered: number; payout: number } | null>(null);
+
   const placeBet = (payload: { amount: number; autoCashoutAt: number | null }) => {
     setUserGambled(true);
     setUserCashedOut(false);
+    stakeRef.current = { wagered: payload.amount, payout: 0 };
 
     // the server has the final word: a refused bet used to leave the ui claiming
     // the player was in the round
     socket.emit("crash:bet", payload, (result: { ok?: boolean; error?: string }) => {
       if (result?.error) {
         setUserGambled(false);
+        stakeRef.current = null;
         toast.error(result.error);
       }
     });
@@ -110,6 +116,7 @@ const CrashGame = () => {
 
   useEffect(() => {
     const cashoutSuccessListener = (data: any) => {
+      if (stakeRef.current) stakeRef.current.payout = Number(data.payout) || 0;
       setUserMultiplier(data.multiplier);
       setUserCashedOut(true);
       setDisableButton(false); // Ensure the button is enabled after a successful cashout
@@ -192,6 +199,10 @@ const CrashGame = () => {
 
     const resultListener = (crashPoint: number) => {
       setCrashPoint(crashPoint);
+      if (stakeRef.current) {
+        emitGameResult({ game: "crash", ...stakeRef.current });
+        stakeRef.current = null;
+      }
 
       setGameStarted(false);
       setGameState({

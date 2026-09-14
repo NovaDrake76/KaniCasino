@@ -9,6 +9,7 @@ import { useGiftStatus } from "../header/useGiftReady";
 import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
 import { greetingFor, lineKey, Mood, pokeMood } from "./daisuLines";
 import { setPotStatus, usePotStatus } from "./potStore";
+import { DAISU_STAGE_EVENT, emitJarTaken } from "./tour/tourEvents";
 import type { BonusView, Face, Line, MissionGroup, Pop, RoomTab, Run, Stage } from "./Daisu.types";
 import i18n from "../../i18n";
 
@@ -192,6 +193,18 @@ export const useDaisu = () => {
     storeStage(stage);
     if (stage === "bubble") greeted.current = false;
   }, [stage]);
+
+  // the tour moves her between stages from outside the dock
+  useEffect(() => {
+    const onStage = (e: Event) => {
+      const next = (e as CustomEvent<Stage>).detail;
+      if (next !== "bubble" && next !== "popup" && next !== "room") return;
+      if (next === "room") setTab("missions");
+      setStage(next);
+    };
+    window.addEventListener(DAISU_STAGE_EVENT, onStage);
+    return () => window.removeEventListener(DAISU_STAGE_EVENT, onStage);
+  }, []);
 
   // her room covers the page, so the page must not scroll under it
   useEffect(() => {
@@ -450,6 +463,7 @@ export const useDaisu = () => {
     setLastClickFill(fill);
     const t = Date.now();
     addPop(delta);
+    emitJarTaken();
     setRun((r) =>
       r && (r.state === "open" || r.state === "sending")
         ? { ...r, amount: r.amount + delta, lastClickAt: t }

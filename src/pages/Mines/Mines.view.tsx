@@ -164,7 +164,7 @@ const MinesView: React.FC<MinesViewProps> = ({
                 </button>
               </>
             ) : (
-              <GameButton onClick={start} disabled={busy}>
+              <GameButton onClick={start} disabled={busy} tour="play-button">
                 {isLogged ? "Bet" : i18n.t("upgrade.signInToPlay")}
               </GameButton>
             )

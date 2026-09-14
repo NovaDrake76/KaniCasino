@@ -78,6 +78,7 @@ const DaisuArt = ({ fill, face, shaking, bust, className, onJar, onPoke, pops = 
           type="button"
           onClick={onJar}
           aria-label={jarLabel}
+          data-tour="daisu-jar"
           style={box(GLASS)}
           className={`absolute cursor-pointer border-none bg-transparent p-0 hover:border-none focus:outline-none ${
             shaking ? "daisu-shake" : ""

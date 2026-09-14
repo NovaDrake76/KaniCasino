@@ -77,7 +77,7 @@ const HiloView: React.FC<HiloViewProps> = ({
               {game?.canCashout ? <>{i18n.t("common.cashOut")} <Monetary value={currentPayout} showFraction /></> : i18n.t("hilo.makeAPrediction")}
             </GameButton>
           ) : (
-            <GameButton onClick={start} disabled={busy}>
+            <GameButton onClick={start} disabled={busy} tour="play-button">
               {isLogged ? "Bet" : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           )}

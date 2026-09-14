@@ -25,7 +25,7 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
                 alt={i18n.t("casePage.leftArrow")}
                 className="hidden lg:flex"
             />
-            <div className="flex flex-col overflow-hidden w-full md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative z-10">
+            <div data-tour="case-prize" className="flex flex-col overflow-hidden w-full md:w-[1100px] h-72 items-center justify-center border-y-4 border-[#16152c] relative z-10">
                 {/* the markers are the only thing saying which slot wins, so they sit above the
                     reels: on a phone the strip fills the width and used to bury them */}
                 <div className={`absolute z-20 pointer-events-none flex w-full items-center ${quantity < 2 ? 'flex-col' : 'flex-row'} justify-between h-[calc(100%+32px)] md:h-[calc(100%+50px)] `}>

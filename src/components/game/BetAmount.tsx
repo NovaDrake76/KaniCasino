@@ -38,7 +38,7 @@ const BetAmount: React.FC<BetAmountProps> = ({
   ];
 
   return (
-    <div className="flex flex-col gap-1">
+    <div data-tour="bet-input" className="flex flex-col gap-1">
       <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
         <span>{label || i18n.t("common.betAmount")}</span>
         <span><Monetary value={betValue} /></span>

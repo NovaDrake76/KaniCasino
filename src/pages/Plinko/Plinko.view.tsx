@@ -159,7 +159,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
         )}
 
         {mode === "manual" ? (
-          <GameButton onClick={drop} disabled={!canDrop}>
+          <GameButton onClick={drop} disabled={!canDrop} tour="play-button">
             {isLogged ? (
               <span className="flex items-center justify-center gap-1">
                 Drop ball <Monetary value={betValue} />

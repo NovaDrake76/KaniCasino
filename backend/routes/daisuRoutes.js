@@ -34,6 +34,30 @@ router.get("/status", ...gate, (req, res) => {
   res.json(statusOf(req.user));
 });
 
+const TOUR_STEPS = ["pot", "case", "open", "drop", "game", "bet", "play", "done"];
+// where each status may be reached from; skipped and done are final, so a tour runs once
+const TOUR_FROM = { active: ["offered", "active"], skipped: ["offered", "active"], done: ["active"] };
+
+router.post("/tour", ...gate, async (req, res) => {
+  const { status, step } = req.body || {};
+  if (!TOUR_FROM[status]) return res.status(400).json({ message: "Unknown tour status" });
+  if (step != null && !TOUR_STEPS.includes(step)) return res.status(400).json({ message: "Unknown tour step" });
+  try {
+    const now = new Date();
+    const was = (req.user.onboarding && req.user.onboarding.status) || null;
+    const set = { "onboarding.status": status };
+    if (step) set["onboarding.step"] = step;
+    if (status === "active" && was === "offered") set["onboarding.startedAt"] = now;
+    if (status !== "active") set["onboarding.endedAt"] = now;
+    const result = await User.updateOne({ _id: req.user._id, "onboarding.status": { $in: TOUR_FROM[status] } }, { $set: set });
+    if (!result.matchedCount) return res.status(409).json({ message: "The tour is not running", reason: "tour" });
+    res.json({ onboarding: { status, step: step || (req.user.onboarding && req.user.onboarding.step) || null } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
   try {
     const now = new Date();

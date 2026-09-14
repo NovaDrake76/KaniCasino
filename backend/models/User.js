@@ -180,6 +180,13 @@ const UserSchema = new mongoose.Schema({
   },
   // features a few accounts see before everyone does
   betaFlags: [String],
+  // daisu's first-login tour: offered to accounts created after it shipped, then taken or skipped
+  onboarding: {
+    status: { type: String, enum: ["offered", "active", "skipped", "done"] },
+    step: String,
+    startedAt: Date,
+    endedAt: Date,
+  },
   weeklyWinnings: {
     type: Number,
     default: 0,

@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from "react
 import type { ReactNode } from "react";
 import { EMPTY, applyRound, clear, load, loadPosition, save, savePosition } from "./sessionStats";
 import type { Point, Round, SessionStats } from "./sessionStats";
+import { emitGameResult } from "../components/daisu/tour/tourEvents";
 
 interface Value {
     stats: SessionStats;
@@ -41,6 +42,7 @@ export const SessionStatsProvider = ({ children }: { children: ReactNode }) => {
             save(next);
             return next;
         });
+        emitGameResult(round);
     }, []);
 
     const reset = useCallback(() => {
