@@ -125,7 +125,8 @@
     "coinflip_win": "Thắng tung đồng xu",
     "crash_bet": "Cược crash",
     "crash_cashout": "Rút tiền crash",
-    "game_credit": "Tín dụng của Daisu",
+    "game_credit": "Thưởng của Daisu",
+    "game_credit_expired": "Thưởng của Daisu hết hạn",
     "item_sell": "Bán cho cửa hàng",
     "market_buy": "Mua trên chợ",
     "market_order": "Đã đặt lệnh mua",
@@ -360,6 +361,16 @@
   },
   "daisu": {
     "back": "Quay lại Daisu",
+    "bonusBubble": "Thưởng {{game}}, {{clock}}",
+    "bonusExpired": "Thưởng {{game}} đã hết hạn",
+    "bonusHurry": "Chơi trước khi hết hạn",
+    "bonusNewOne": "Lấy từ hũ để có thưởng mới",
+    "bonusPaysAll": "Trả bằng thưởng:",
+    "bonusPaysFirst": "trả trước",
+    "bonusSpentFirst": "dùng trước ví của bạn",
+    "bonusSplit": "{{bonus}} từ thưởng, {{wallet}} từ ví",
+    "bonusTitle": "Thưởng của Daisu",
+    "bonusUsedOn": "Dùng trước cho cược {{game}} của bạn",
     "boostsSoon": "Mục tiêu hằng ngày giúp hũ đầy nhanh hơn. Chưa viết.",
     "bubbleGift": "Quà",
     "clickHint": "Bấm vào hũ để lấy phần bên trong",
@@ -377,7 +388,6 @@
     "loading": "...",
     "nextPick": "Tiếp theo: {{game}}, sau {{amount}} nữa",
     "ofFull": "trên {{full}}",
-    "onlyOn": "chỉ dùng ở {{game}}",
     "open": "Mở Daisu",
     "pending": "{{amount}} đang về ví của bạn",
     "pickLine": "Thêm {{share}}% mỗi lần lấy sẽ vào {{game}}",
@@ -412,6 +422,14 @@
         "0": "Á, tuột tay mất. Bình tĩnh, vẫn còn nguyên trong hũ. Bấm lại đi.",
         "1": "Lần đó không qua được. Đừng làm mặt đó, không mất gì đâu. Thử lại."
       },
+      "bonusExpiring": {
+        "0": "Tích tắc. Thưởng {{game}} còn {{left}}, sau đó là của tôi.",
+        "1": "Thưởng {{game}} của bạn sắp biến mất. {{left}}. Nhanh lên."
+      },
+      "bonusExpired": {
+        "0": "Chậm quá. Tôi lấy lại thưởng {{game}} rồi. Lần sau cố lên, đồ chậm chạp.",
+        "1": "Mất rồi. {{credit}} ở {{game}} giờ là của tôi. Ai bảo ngủ gật."
+      },
       "claimed": {
         "0": "Đây, {{amount}}. Đừng thua hết trong một lượt. Dù kiểu gì cũng thua.",
         "1": "{{amount}}. Không có gì. Nói cảm ơn đi.",
@@ -420,7 +438,7 @@
       "claimedCredit": {
         "0": "{{amount}} cho bạn, thêm {{credit}} chỉ dùng được ở {{game}}. Chơi ở đâu là tôi quyết.",
         "1": "Tôi bỏ thêm {{credit}} cho {{game}}. Thắng lại thành KP thật đi, nếu làm được.",
-        "2": "Thêm {{credit}}, chỉ ở {{game}}. Không cãi."
+        "2": "Thêm {{credit}}, chỉ ở {{game}}, và biến mất sau 8 phút. Không cãi."
       },
       "pickChanged": {
         "0": "Nguyên một hũ. Trò mới: {{game}}. Đi đi, tôi đang xem.",

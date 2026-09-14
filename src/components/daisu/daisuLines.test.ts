@@ -6,7 +6,7 @@ import pt from "../../i18n/locales/pt.json";
 import ja from "../../i18n/locales/ja.json";
 import type { Mission } from "../../services/missions/MissionService";
 
-const situation = { fill: 0.5, holdsCredit: false, missionReady: false, giftReady: false, wallet: 500 };
+const situation = { fill: 0.5, holdsCredit: false, missionReady: false, giftReady: false, wallet: 500, bonusExpiring: false, bonusExpired: false };
 
 type Locale = { daisu: { lines: Record<string, Record<string, string>> } };
 
@@ -30,6 +30,12 @@ describe("what she opens with", () => {
   it("leads with a gift, then a reward to collect, over everything else", () => {
     expect(greetingFor({ ...situation, fill: 1, holdsCredit: true, missionReady: true, giftReady: true })).toBe("gift");
     expect(greetingFor({ ...situation, fill: 1, holdsCredit: true, missionReady: true })).toBe("missionReady");
+  });
+
+  it("warns about a bonus about to go before a full pot, and mourns one that just went", () => {
+    expect(greetingFor({ ...situation, fill: 1, bonusExpiring: true, bonusExpired: true })).toBe("bonusExpiring");
+    expect(greetingFor({ ...situation, fill: 1, bonusExpired: true })).toBe("bonusExpired");
+    expect(greetingFor({ ...situation, giftReady: true, bonusExpiring: true })).toBe("gift");
   });
 
   it("then a full pot, then a credit going unused", () => {

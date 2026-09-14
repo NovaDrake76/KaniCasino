@@ -125,7 +125,8 @@
     "coinflip_win": "Victoria en cara o cruz",
     "crash_bet": "Apuesta en crash",
     "crash_cashout": "Retiro en crash",
-    "game_credit": "Crédito de Daisu",
+    "game_credit": "Bono de Daisu",
+    "game_credit_expired": "Bono de Daisu expirado",
     "item_sell": "Vendido a la tienda",
     "market_buy": "Compra en el mercado",
     "market_order": "Orden de compra creada",
@@ -360,6 +361,16 @@
   },
   "daisu": {
     "back": "Volver con Daisu",
+    "bonusBubble": "Bono de {{game}}, {{clock}}",
+    "bonusExpired": "El bono de {{game}} expiró",
+    "bonusHurry": "Juega antes de que se acabe",
+    "bonusNewOne": "Toma del bote para conseguir otro",
+    "bonusPaysAll": "Pagado con bono:",
+    "bonusPaysFirst": "paga primero",
+    "bonusSpentFirst": "se gasta antes que tu billetera",
+    "bonusSplit": "{{bonus}} del bono, {{wallet}} de la billetera",
+    "bonusTitle": "Bono de Daisu",
+    "bonusUsedOn": "Se usa primero en tus apuestas de {{game}}",
     "boostsSoon": "Metas diarias que llenan el bote más rápido. Aún no escritas.",
     "bubbleGift": "Regalo",
     "clickHint": "Haz clic en el bote para tomar lo que hay dentro",
@@ -377,7 +388,6 @@
     "loading": "...",
     "nextPick": "Siguiente: {{game}}, tras {{amount}} más",
     "ofFull": "de {{full}}",
-    "onlyOn": "solo en {{game}}",
     "open": "Abrir a Daisu",
     "pending": "{{amount}} en camino a tu billetera",
     "pickLine": "Un {{share}}% extra de cada toma va a {{game}}",
@@ -412,6 +422,14 @@
         "0": "Uf, se me resbaló. Tranquilo, todo sigue en el bote. Haz clic otra vez.",
         "1": "Ese no pasó. No pongas esa cara, no se perdió nada. Otra vez."
       },
+      "bonusExpiring": {
+        "0": "Tic tac. Quedan {{left}} de tu bono de {{game}}, luego es mío.",
+        "1": "Tu bono de {{game}} está por desaparecer. {{left}}. Muévete."
+      },
+      "bonusExpired": {
+        "0": "Muy lento. Me quedé con tu bono de {{game}}. Quizás la próxima, lento.",
+        "1": "Se fue. Esos {{credit}} en {{game}} ahora son míos. Te dormiste."
+      },
       "claimed": {
         "0": "Toma, {{amount}}. No lo pierdas todo en un giro. Aunque lo harás.",
         "1": "{{amount}}. De nada. Di gracias.",
@@ -420,7 +438,7 @@
       "claimedCredit": {
         "0": "{{amount}} para ti, más {{credit}} que solo sirve en {{game}}. Yo decido dónde juegas.",
         "1": "Te puse {{credit}} para {{game}}. Recupéralo en KP de verdad, si puedes.",
-        "2": "{{credit}} extra, solo en {{game}}. Sin discutir."
+        "2": "{{credit}} extra, solo en {{game}}, y desaparece en 8 minutos. Sin discutir."
       },
       "pickChanged": {
         "0": "Un bote entero. Juego nuevo: {{game}}. Anda, te estoy mirando.",

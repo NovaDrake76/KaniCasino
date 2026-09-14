@@ -13,6 +13,8 @@ interface BetAmountProps {
   disabled?: boolean;
   label?: string;
   hint?: React.ReactNode;
+  // a line under the hint that renders itself, or nothing, like a bonus paying for the bet
+  note?: React.ReactNode;
 }
 
 // the bet field every game shares: one input plus the ½ / 2× steppers, and Max when offered
@@ -27,6 +29,7 @@ const BetAmount: React.FC<BetAmountProps> = ({
   disabled,
   label,
   hint,
+  note,
 }) => {
   const steps = [
     { key: "half", text: "½", run: onHalve },
@@ -69,6 +72,7 @@ const BetAmount: React.FC<BetAmountProps> = ({
         ))}
       </div>
       {hint && <span className="text-xs text-ink-muted">{hint}</span>}
+      {note}
     </div>
   );
 };

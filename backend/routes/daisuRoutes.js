@@ -25,7 +25,8 @@ const statusOf = (user, now = new Date()) => {
     pick: pot.pickAt(index),
     nextPick: pot.pickAt(index + 1),
     pickProgress: user.bonusAmount > 0 ? Math.min(1, (user.potCycleClaimed || 0) / user.bonusAmount) : 0,
-    credits: pot.creditsOf(user),
+    creditTtlMs: pot.CREDIT_TTL_MS,
+    bonuses: pot.bonusesOf(user, now),
   };
 };
 
@@ -51,25 +52,32 @@ router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
     const pick = pot.pickAt(req.user.potPickIndex);
     const advanced = pot.advancePick(req.user.potPickIndex, req.user.potCycleClaimed, amount, req.user.bonusAmount);
     const nextBonus = new Date(now.getTime() + pot.CYCLE_MS);
+    // bonuses nobody played in time go back to the mint with this take
+    const expired = pot.expiredCredits(req.user, now);
 
     // the stored nextBonus is the version the take was priced against: a second request
     // that lands after the first sees a different one and pays nothing
     const updated = await runAtomic(async (session) => {
+      const filter = { _id: req.user._id, nextBonus: req.user.nextBonus };
       const inc = { walletBalance: amount };
-      if (credit > 0) inc[`gameCredits.${pick}`] = credit;
-      const u = await User.findOneAndUpdate(
-        { _id: req.user._id, nextBonus: req.user.nextBonus },
-        {
-          $inc: inc,
-          $set: {
-            nextBonus,
-            bonusAmount: pot.fullAmount(req.user.level),
-            potPickIndex: advanced.index,
-            potCycleClaimed: advanced.cycleClaimed,
-          },
-        },
-        { new: true, projection: WITHOUT_INVENTORY, session }
-      );
+      const set = {
+        nextBonus,
+        bonusAmount: pot.fullAmount(req.user.level),
+        potPickIndex: advanced.index,
+        potCycleClaimed: advanced.cycleClaimed,
+      };
+      // burned amounts are pinned too, so a bet that spent one just before it expired is never burned twice
+      for (const b of expired) {
+        filter[`gameCredits.${b.game}`] = b.amount;
+        set[`gameCredits.${b.game}`] = 0;
+      }
+      if (credit > 0) {
+        // a top-up restarts that game's clock; on an expired bonus it starts over from this credit alone
+        if (expired.some((b) => b.game === pick)) set[`gameCredits.${pick}`] = credit;
+        else inc[`gameCredits.${pick}`] = credit;
+        set[`gameCreditsExpireAt.${pick}`] = new Date(now.getTime() + pot.CREDIT_TTL_MS);
+      }
+      const u = await User.findOneAndUpdate(filter, { $inc: inc, $set: set }, { new: true, projection: WITHOUT_INVENTORY, session });
       if (!u) return null;
       await recordTransaction(
         { userId: req.user._id, type: TX.BONUS, direction: "credit", amount, balanceAfter: u.walletBalance, meta: { fill: Number(fill.toFixed(3)) } },
@@ -78,6 +86,12 @@ router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
       if (credit > 0) {
         await recordTransaction(
           { userId: req.user._id, type: TX.GAME_CREDIT, direction: "credit", amount: credit, balanceAfter: u.walletBalance, meta: { game: pick } },
+          session
+        );
+      }
+      for (const b of expired) {
+        await recordTransaction(
+          { userId: req.user._id, type: TX.GAME_CREDIT_EXPIRED, direction: "debit", amount: b.amount, balanceAfter: u.walletBalance, meta: { game: b.game } },
           session
         );
       }

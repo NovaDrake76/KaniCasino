@@ -13,6 +13,7 @@ import { useSessionStats } from "../../stats/SessionStatsContext";
 import GameBar from "../../components/game/GameBar";
 import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
 import LiveBets from "../../components/game/LiveBets";
+import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 // import { RotatingLines } from "react-loader-spinner";
 
 const renderPlaceholder = () => {
@@ -177,6 +178,7 @@ const Slots = () => {
                         boxShadow: "inset 0px 0px 60px 4px #000",
                     }}>
 
+                    <GameBonusStrip game="slots" className="mx-auto w-full max-w-[320px]" />
                     <div className="flex w-full items-center justify-center gap-2">
                         {
                             ["balance", "bet", "wins"].map((type) => <ValueViewer key={type} type={type as "balance" | "bet" | "wins"} betAmount={betAmount} totalWins={totalWins} />
@@ -196,6 +198,7 @@ const Slots = () => {
                         </button>
                         {handleChangeBet("add")}
                     </div>
+                    <BonusBetHint game="slots" bet={betAmount} className="text-center text-white/70" />
                 </div>
 
                 <GameBar>

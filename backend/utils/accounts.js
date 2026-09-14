@@ -17,6 +17,7 @@ const COUNTERPARTY_FOR_TYPE = {
   bonus: MINT,
   mission_reward: MINT,
   game_credit: MINT, // the tenth on top of a pot claim, locked to one game until it is played
+  game_credit_expired: MINT, // that tenth left unplayed past its clock, going back where it came from
   referral_bonus: MINT,
   referral_milestone: MINT,
   ad_reward: MINT, // KP printed against outside ad revenue

@@ -125,7 +125,8 @@
     "coinflip_win": "Gain à pile ou face",
     "crash_bet": "Mise au crash",
     "crash_cashout": "Encaissement au crash",
-    "game_credit": "Crédit de Daisu",
+    "game_credit": "Bonus de Daisu",
+    "game_credit_expired": "Bonus de Daisu expiré",
     "item_sell": "Vendu à la boutique",
     "market_buy": "Achat sur le marché",
     "market_order": "Ordre d'achat créé",
@@ -360,6 +361,16 @@
   },
   "daisu": {
     "back": "Retour à Daisu",
+    "bonusBubble": "Bonus {{game}}, {{clock}}",
+    "bonusExpired": "Bonus {{game}} expiré",
+    "bonusHurry": "Jouez avant qu'il expire",
+    "bonusNewOne": "Prenez dans le pot pour en avoir un autre",
+    "bonusPaysAll": "Payé avec le bonus :",
+    "bonusPaysFirst": "paie en premier",
+    "bonusSpentFirst": "dépensé avant votre portefeuille",
+    "bonusSplit": "{{bonus}} du bonus, {{wallet}} du portefeuille",
+    "bonusTitle": "Bonus de Daisu",
+    "bonusUsedOn": "Utilisé en premier sur vos mises {{game}}",
     "boostsSoon": "Des objectifs quotidiens qui remplissent le pot plus vite. Pas encore écrits.",
     "bubbleGift": "Cadeau",
     "clickHint": "Cliquez sur le pot pour prendre ce qu'il contient",
@@ -377,7 +388,6 @@
     "loading": "...",
     "nextPick": "Ensuite : {{game}}, après {{amount}} de plus",
     "ofFull": "sur {{full}}",
-    "onlyOn": "seulement sur {{game}}",
     "open": "Ouvrir Daisu",
     "pending": "{{amount}} en route vers votre portefeuille",
     "pickLine": "{{share}}% de plus à chaque prise vont sur {{game}}",
@@ -412,6 +422,14 @@
         "0": "Pff, ça m'a glissé des mains. Du calme, tout est encore dans le pot. Reclique.",
         "1": "Celui-là n'est pas passé. Fais pas cette tête, rien n'est perdu. Recommence."
       },
+      "bonusExpiring": {
+        "0": "Tic tac. Plus que {{left}} sur ton bonus {{game}}, après il est à moi.",
+        "1": "Ton bonus {{game}} va disparaître. {{left}}. Bouge."
+      },
+      "bonusExpired": {
+        "0": "Trop lent. J'ai repris ton bonus {{game}}. La prochaine fois peut-être, lambin.",
+        "1": "Envolé. Ces {{credit}} sur {{game}} sont à moi maintenant. Qui dort perd."
+      },
       "claimed": {
         "0": "Tiens, {{amount}}. Ne perds pas tout en un tour. Tu le feras quand même.",
         "1": "{{amount}}. De rien. Dis merci.",
@@ -420,7 +438,7 @@
       "claimedCredit": {
         "0": "{{amount}} pour toi, plus {{credit}} qui ne marchent que sur {{game}}. C'est moi qui décide où tu joues.",
         "1": "J'ai glissé {{credit}} pour {{game}}. Regagne-les en vrais KP, si tu peux.",
-        "2": "{{credit}} en plus, seulement sur {{game}}. Pas de discussion."
+        "2": "{{credit}} en plus, seulement sur {{game}}, et ça disparaît dans 8 minutes. Pas de discussion."
       },
       "pickChanged": {
         "0": "Un pot entier. Nouveau jeu : {{game}}. Vas-y, je regarde.",

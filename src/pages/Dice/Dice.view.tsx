@@ -1,6 +1,7 @@
 import GameLayout from "../../components/game/GameLayout";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
+import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 import ModeToggle from "../../components/game/ModeToggle";
 import OptionRow from "../../components/game/OptionRow";
 import Monetary from "../../components/Monetary";
@@ -71,6 +72,8 @@ const DiceView: React.FC<DiceViewProps> = ({
         <>
           <ModeToggle mode={mode} setMode={setMode} />
 
+          <GameBonusStrip game="dice" />
+
           <BetAmount
             value={betInput}
             onChange={setBetInput}
@@ -79,6 +82,7 @@ const DiceView: React.FC<DiceViewProps> = ({
             onDouble={doubleBet}
             betValue={betValue}
             disabled={autoRunning}
+            note={<BonusBetHint game="dice" bet={betValue} />}
           />
 
           <div className="flex items-center justify-between text-xs font-semibold text-ink-muted mt-1">

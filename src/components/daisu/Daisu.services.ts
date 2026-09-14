@@ -1,13 +1,15 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
+import { GAME_PLAYED_EVENT } from "../../services/api";
 import { claimPot, getPotStatus, PotStatus } from "../../services/daisu/DaisuService";
 import { claimMission, getMissions, Mission, visitMission } from "../../services/missions/MissionService";
 import { getCases } from "../../services/cases/CaseServices";
 import { useGiftStatus } from "../header/useGiftReady";
-import { GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
+import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
 import { greetingFor, lineKey, Mood, pokeMood } from "./daisuLines";
-import type { CreditView, Face, Line, MissionGroup, Pop, RoomTab, Run, Stage } from "./Daisu.types";
+import { setPotStatus, usePotStatus } from "./potStore";
+import type { BonusView, Face, Line, MissionGroup, Pop, RoomTab, Run, Stage } from "./Daisu.types";
 import i18n from "../../i18n";
 
 const STAGE_KEY = "kani.daisuStage";
@@ -24,9 +26,9 @@ const SETTLE_LATEST_MS = 15000;
 const EMPTY_LINE_EVERY_MS = 2500;
 // pokes closer together than this count as one run, which is what makes her escalate
 const POKE_WINDOW_MS = 8000;
-// a bet can spend a credit, so the dock re-reads after the wallet moves, but never more
-// often than this: dice players bet every second
-const WALLET_REFRESH_MS = 3000;
+// a bet can spend a bonus, so the pot is read again after one, but never more often than
+// this: dice players bet every second
+const BONUS_READ_MS = 3000;
 // the bubble alternates between the jar and the gift while a gift is waiting
 const BUBBLE_SWAP_MS = 4000;
 const POP_MS = 1200;
@@ -78,8 +80,8 @@ export const useDaisu = () => {
   const userId: string | undefined = userData?.id;
   const wallet: number = userData?.walletBalance ?? 0;
   const gift = useGiftStatus();
+  const status = usePotStatus();
 
-  const [status, setStatus] = useState<PotStatus | null>(null);
   const [stage, setStage] = useState<Stage>(readStage);
   const [tab, setTab] = useState<RoomTab>("missions");
   const [now, setNow] = useState(() => Date.now());
@@ -100,12 +102,17 @@ export const useDaisu = () => {
   const shakeTimer = useRef<ReturnType<typeof setTimeout>>();
   const settleTimer = useRef<ReturnType<typeof setTimeout>>();
   const latestTimer = useRef<ReturnType<typeof setTimeout>>();
-  const settlingRef = useRef(false);
+  const readTimer = useRef<ReturnType<typeof setTimeout>>();
   const runTimer = useRef<ReturnType<typeof setTimeout>>();
+  const settlingRef = useRef(false);
   const lastStatusAt = useRef(0);
+  // every status write bumps this, so a read that left before a take cannot land after it
+  const statusSeq = useRef(0);
   const lastEmptyLineAt = useRef(0);
   const greeted = useRef(false);
   const pokes = useRef({ count: 0, at: 0 });
+  // what each bonus was last seen as, so she calls it out once as it runs low and once as it goes
+  const calledOut = useRef<Record<string, string>>({});
   // the settle timer runs a callback made on an earlier render, so it reads the pot from these
   const statusRef = useRef<PotStatus | null>(null);
   const lastClickFillRef = useRef(0);
@@ -134,34 +141,46 @@ export const useDaisu = () => {
     setTimeout(() => setPops((p) => p.filter((x) => x.id !== id)), POP_MS);
   }, []);
 
-  const refresh = useCallback(() => {
+  // reset forgets the clicks since the last take: right for a take or a failed one, wrong
+  // after a bet, which only moves a bonus and leaves the jar where it was
+  const refresh = useCallback((reset = true) => {
     lastStatusAt.current = Date.now();
+    const seq = ++statusSeq.current;
     getPotStatus()
       .then((s) => {
-        setStatus(s);
-        setLastClickFill(0);
+        if (seq !== statusSeq.current) return;
+        setPotStatus(s);
+        if (reset) setLastClickFill(0);
       })
-      .catch(() => setStatus(null));
+      .catch(() => {
+        if (seq === statusSeq.current) setPotStatus(null);
+      });
   }, []);
 
   useEffect(() => {
     if (!enabled || !userId) {
-      setStatus(null);
+      setPotStatus(null);
       greeted.current = false;
       return;
     }
+    // an account starts from its own pot, never from whoever was signed in before
+    setPotStatus(null);
     refresh();
   }, [enabled, userId, refresh]);
 
-  // only a held credit can change between takes, and only a bet spends it
+  // only a bet spends a bonus, and one the bonus paid in full leaves the wallet where it was, so
+  // the games say when they played. a burst of bets on that game becomes one read
   useEffect(() => {
-    if (!enabled || !status) return;
-    const holds = Object.values(status.credits).some((n) => (n || 0) > 0);
-    if (!holds || Date.now() - lastStatusAt.current < WALLET_REFRESH_MS) return;
-    refresh();
-    // the wallet is the trigger; status is only read for what it held
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallet]);
+    if (!enabled) return;
+    const onPlayed = (e: Event) => {
+      const game = (e as CustomEvent<{ game?: string }>).detail?.game;
+      if (!statusRef.current?.bonuses.some((b) => !b.expired && b.game === game)) return;
+      if (readTimer.current) clearTimeout(readTimer.current);
+      readTimer.current = setTimeout(() => refresh(false), Math.max(0, BONUS_READ_MS - (Date.now() - lastStatusAt.current)));
+    };
+    window.addEventListener(GAME_PLAYED_EVENT, onPlayed);
+    return () => window.removeEventListener(GAME_PLAYED_EVENT, onPlayed);
+  }, [enabled, refresh]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -231,11 +250,33 @@ export const useDaisu = () => {
   const fullBonusPct = Math.round((status?.fullBonus ?? 0.25) * 100);
   const creditSharePct = Math.round((status?.creditShare ?? 0.1) * 100);
 
-  const credits: CreditView[] = status
-    ? (Object.entries(status.credits) as [CreditView["game"], number][])
-        .filter(([, n]) => (n || 0) > 0)
-        .map(([game, n]) => ({ game, amount: n, path: GAME_PATHS[game], name: i18n.t(GAME_NAME_KEYS[game]) }))
+  // the server says which bonuses were live when it answered; the clock here keeps them honest
+  // until the next answer, so one runs out on screen the moment it runs out
+  const ttlMs = status?.creditTtlMs ?? cycleMs;
+  const bonuses: BonusView[] = status
+    ? status.bonuses
+        .map((b) => {
+          const msLeft = b.expiresAt ? Math.max(0, Date.parse(b.expiresAt) - now) : 0;
+          const expired = b.expired || msLeft <= 0;
+          return {
+            key: `${b.game}:${b.expiresAt}`,
+            game: b.game,
+            name: i18n.t(GAME_NAME_KEYS[b.game]),
+            path: GAME_PATHS[b.game],
+            art: GAME_ART[b.game],
+            amount: b.amount,
+            msLeft,
+            clock: clock(msLeft),
+            left: ttlMs > 0 ? Math.min(1, msLeft / ttlMs) : 0,
+            expiring: !expired && msLeft <= EXPIRING_MS,
+            expired,
+          };
+        })
+        .sort((a, b) => Number(a.expired) - Number(b.expired) || b.msLeft - a.msLeft)
     : [];
+  const liveBonuses = bonuses.filter((b) => !b.expired);
+  const bubbleBonus = liveBonuses[0] ?? null;
+
   const pickName = status ? i18n.t(GAME_NAME_KEYS[status.pick]) : "";
   const pickPath = status ? GAME_PATHS[status.pick] : "/";
   const nextPickName = status ? i18n.t(GAME_NAME_KEYS[status.nextPick]) : "";
@@ -250,17 +291,46 @@ export const useDaisu = () => {
   useEffect(() => {
     if (stage === "bubble" || !status || greeted.current) return;
     greeted.current = true;
-    const mood = greetingFor({ fill, holdsCredit: credits.length > 0, missionReady, giftReady: gift.canSpin, wallet });
-    const first = credits[0];
+    const soon = liveBonuses.find((b) => b.expiring);
+    const gone = liveBonuses.length ? undefined : bonuses.find((b) => b.expired);
+    const mood = greetingFor({
+      fill,
+      holdsCredit: liveBonuses.length > 0,
+      missionReady,
+      giftReady: gift.canSpin,
+      wallet,
+      bonusExpiring: !!soon,
+      bonusExpired: !!gone,
+    });
+    const about = soon ?? gone ?? liveBonuses[0];
     say(mood, {
       amount: kp(inJar),
       clock: untilFull,
-      credit: kp(first?.amount ?? 0),
-      game: first?.name ?? pickName,
+      left: about?.clock ?? "",
+      credit: kp(about?.amount ?? 0),
+      game: about?.name ?? pickName,
     });
     // reads the derived values of the moment it opened; later ticks must not re-greet
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, status]);
+
+  // the first sight of a bonus is silent, since opening the card already greets with it
+  useEffect(() => {
+    for (const b of bonuses) {
+      const state = b.expired ? "expired" : b.expiring ? "expiring" : "live";
+      const was = calledOut.current[b.key];
+      if (was === state) continue;
+      calledOut.current[b.key] = state;
+      if (!was || stage === "bubble") continue;
+      if (state === "expiring") say("bonusExpiring", { game: b.name, left: b.clock });
+      if (state === "expired") {
+        say("bonusExpired", { game: b.name, credit: kp(b.amount) });
+        pull("sad");
+      }
+    }
+    // the tick is what moves a bonus along; the rest is read as it stands
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [now, status]);
 
   // how a run ends: the server's number in green, or the clicked number in red. either way it
   // fades, unless a new run has already started in its place
@@ -295,7 +365,8 @@ export const useDaisu = () => {
     try {
       const res = await claimPot();
       lastStatusAt.current = Date.now();
-      setStatus(res.status);
+      statusSeq.current += 1;
+      setPotStatus(res.status);
       setLastClickFill(0);
       if (userData) toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
       endRun("sent", res.amount);
@@ -351,6 +422,7 @@ export const useDaisu = () => {
       if (faceTimer.current) clearTimeout(faceTimer.current);
       if (shakeTimer.current) clearTimeout(shakeTimer.current);
       if (runTimer.current) clearTimeout(runTimer.current);
+      if (readTimer.current) clearTimeout(readTimer.current);
       if (latestTimer.current) clearTimeout(latestTimer.current);
       if (settleTimer.current) {
         clearTimeout(settleTimer.current);
@@ -463,7 +535,8 @@ export const useDaisu = () => {
     line,
     face,
     shaking,
-    credits,
+    bonuses,
+    bubbleBonus,
     pickName,
     pickPath,
     nextPickName,

@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiArrowLeft, FiX } from "react-icons/fi";
 import { FaGift } from "react-icons/fa";
-import Monetary from "../Monetary";
 import MissionCard from "../../pages/Missions/components/MissionCard";
+import BonusSection from "./BonusSection";
 import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
@@ -37,7 +37,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   line,
   face,
   shaking,
-  credits,
+  bonuses,
   pickName,
   pickPath,
   nextPickName,
@@ -117,19 +117,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
             <span className="text-[11px] text-ink-muted">
               {i18n.t("daisu.nextPick", { game: nextPickName, amount: pickRemaining.toLocaleString("en-US") })}
             </span>
-            {credits.map((c) => (
-              <div key={c.game} className="flex items-center justify-between bg-surface-raised px-3 py-1.5 text-sm">
-                <span>
-                  <span className="font-semibold text-accent-gold">
-                    <Monetary value={c.amount} />
-                  </span>{" "}
-                  <span className="text-ink-soft">{i18n.t("daisu.onlyOn", { game: c.name })}</span>
-                </span>
-                <Link to={c.path} className="bg-accent px-2.5 py-1 text-xs font-semibold text-white hover:bg-[#4338CA]">
-                  {i18n.t("daisu.play")}
-                </Link>
-              </div>
-            ))}
+            <BonusSection bonuses={bonuses} />
           </div>
         </section>
 

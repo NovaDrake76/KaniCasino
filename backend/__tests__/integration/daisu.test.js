@@ -8,6 +8,7 @@ const User = require("../../models/User");
 const Transaction = require("../../models/Transaction");
 const pot = require("../../utils/pot");
 const { chargeUser, TX } = require("../../utils/economy");
+const { MINT } = require("../../utils/accounts");
 
 let app;
 
@@ -34,6 +35,8 @@ const makeUser = (fields = {}) => {
 
 // a pot that has been filling for this many minutes
 const fillingFor = (mins) => new Date(Date.now() - minutes(mins) + pot.CYCLE_MS);
+// a bonus clock on each of these games, running out this many minutes from now
+const clockFor = (mins, ...games) => Object.fromEntries(games.map((g) => [g, new Date(Date.now() + minutes(mins))]));
 
 const status = (user) => request(app).get("/daisu/status").set("Authorization", `Bearer ${tokenFor(user)}`);
 const claim = (user) => request(app).post("/daisu/claim").set("Authorization", `Bearer ${tokenFor(user)}`);
@@ -101,7 +104,8 @@ describe("reading the pot", () => {
     expect(res.body.pick).toBe(pot.PICKS[2]);
     expect(res.body.nextPick).toBe(pot.PICKS[3]);
     expect(res.body.pickProgress).toBeCloseTo(0.5);
-    expect(res.body.credits).toEqual({});
+    expect(res.body.creditTtlMs).toBe(pot.CREDIT_TTL_MS);
+    expect(res.body.bonuses).toEqual([]);
   });
 });
 
@@ -117,12 +121,13 @@ describe("taking from the pot", () => {
     expect(res.body.pick).toBe(pot.PICKS[0]);
     expect(res.body.pickChanged).toBe(true);
     expect(res.body.walletBalance).toBe(1000);
-    expect(res.body.status.credits).toEqual({ [pot.PICKS[0]]: 100 });
+    expect(res.body.status.bonuses).toMatchObject([{ game: pot.PICKS[0], amount: 100, expired: false }]);
     expect(res.body.status.pick).toBe(pot.PICKS[1]);
 
     const after = await User.findById(user._id).lean();
     expect(after.walletBalance).toBe(1000);
     expect(after.gameCredits[pot.PICKS[0]]).toBe(100);
+    expect(new Date(after.gameCreditsExpireAt[pot.PICKS[0]]).getTime()).toBeGreaterThan(Date.now() + minutes(7));
     expect(after.bonusAmount).toBe(pot.fullAmount(0));
     expect(after.potPickIndex).toBe(1);
     expect(after.potCycleClaimed).toBe(0);
@@ -194,7 +199,7 @@ describe("taking from the pot", () => {
 
 describe("spending a credit", () => {
   it("goes first on its own game, with the wallet covering the rest", async () => {
-    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 } });
+    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 }, gameCreditsExpireAt: clockFor(5, "dice") });
 
     const charged = await chargeUser(user._id, 150, { type: TX.DICE_BET, meta: { note: 1 } });
 
@@ -211,7 +216,7 @@ describe("spending a credit", () => {
   });
 
   it("leaves the wallet alone while the credit covers the whole stake", async () => {
-    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 } });
+    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 }, gameCreditsExpireAt: clockFor(5, "dice") });
 
     await chargeUser(user._id, 40, { type: TX.DICE_BET });
 
@@ -221,7 +226,7 @@ describe("spending a credit", () => {
   });
 
   it("spends a credit held to the cent", async () => {
-    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 4.5 } });
+    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 4.5 }, gameCreditsExpireAt: clockFor(5, "dice") });
 
     const charged = await chargeUser(user._id, 10, { type: TX.DICE_BET });
 
@@ -231,7 +236,7 @@ describe("spending a credit", () => {
   });
 
   it("is no use on any other game", async () => {
-    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 } });
+    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 }, gameCreditsExpireAt: clockFor(5, "dice") });
 
     const charged = await chargeUser(user._id, 80, { type: TX.SLOT_BET });
 
@@ -243,7 +248,7 @@ describe("spending a credit", () => {
   });
 
   it("refuses a stake that wallet and credit together cannot cover", async () => {
-    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 } });
+    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 }, gameCreditsExpireAt: clockFor(5, "dice") });
 
     expect(await chargeUser(user._id, 161, { type: TX.DICE_BET })).toBeNull();
     const after = await User.findById(user._id).lean();
@@ -264,8 +269,83 @@ describe("spending a credit", () => {
   });
 
   it("does not let a case opening or a battle touch it", async () => {
-    const user = await makeUser({ walletBalance: 10, gameCredits: { dice: 60 } });
+    const user = await makeUser({ walletBalance: 10, gameCredits: { dice: 60 }, gameCreditsExpireAt: clockFor(5, "dice") });
 
     expect(await chargeUser(user._id, 50, { type: TX.BATTLE_ENTRY })).toBeNull();
+  });
+});
+
+describe("a bonus running out", () => {
+  it("pays for nothing once it has expired, and stays put for the next take to burn", async () => {
+    const user = await makeUser({ walletBalance: 100, gameCredits: { dice: 60 }, gameCreditsExpireAt: clockFor(-1, "dice") });
+
+    const charged = await chargeUser(user._id, 40, { type: TX.DICE_BET });
+
+    expect(charged.walletBalance).toBe(60);
+    const after = await User.findById(user._id).lean();
+    expect(after.walletBalance).toBe(60);
+    expect(after.gameCredits.dice).toBe(60);
+    const [row] = await Transaction.find({ userId: user._id }).lean();
+    expect(row.meta && row.meta.credit).toBeUndefined();
+  });
+
+  it("counts a credit from before the clock as expired", async () => {
+    const user = await makeUser({ walletBalance: 10, gameCredits: { dice: 60 } });
+
+    expect(await chargeUser(user._id, 50, { type: TX.DICE_BET })).toBeNull();
+  });
+
+  it("says when each bonus runs out, and keeps an expired one listed until the next take", async () => {
+    const user = await makeUser({ gameCredits: { dice: 20, hilo: 5 }, gameCreditsExpireAt: { ...clockFor(3, "dice"), ...clockFor(-1, "hilo") } });
+
+    const res = await status(user);
+
+    expect(res.body.bonuses.map((b) => [b.game, b.amount, b.expired])).toEqual([
+      ["dice", 20, false],
+      ["hilo", 5, true],
+    ]);
+    expect(Date.parse(res.body.bonuses[0].expiresAt)).toBeGreaterThan(Date.now() + minutes(2));
+  });
+
+  it("restarts its clock whenever a take adds to it", async () => {
+    const user = await makeUser({
+      bonusAmount: 1000,
+      nextBonus: fillingFor(60),
+      potPickIndex: 1,
+      gameCredits: { dice: 50 },
+      gameCreditsExpireAt: clockFor(2, "dice"),
+    });
+
+    const res = await claim(user);
+
+    expect(res.status).toBe(200);
+    const after = await User.findById(user._id).lean();
+    expect(after.gameCredits.dice).toBe(150);
+    expect(new Date(after.gameCreditsExpireAt.dice).getTime()).toBeGreaterThan(Date.now() + minutes(7));
+    expect(res.body.status.bonuses[0]).toMatchObject({ game: "dice", amount: 150, expired: false });
+    expect(await Transaction.countDocuments({ userId: user._id, type: TX.GAME_CREDIT_EXPIRED })).toBe(0);
+  });
+
+  it("goes back to the mint with the next take, and an expired pick starts over from the new credit", async () => {
+    const user = await makeUser({
+      bonusAmount: 1000,
+      nextBonus: fillingFor(60),
+      potPickIndex: 1,
+      gameCredits: { slots: 30, dice: 50, mines: 20 },
+      gameCreditsExpireAt: { ...clockFor(-3, "slots", "dice"), ...clockFor(4, "mines") },
+    });
+
+    const res = await claim(user);
+
+    expect(res.status).toBe(200);
+    const after = await User.findById(user._id).lean();
+    expect(after.gameCredits).toMatchObject({ slots: 0, dice: 100, mines: 20 });
+    const burned = await Transaction.find({ userId: user._id, type: TX.GAME_CREDIT_EXPIRED }).sort({ amount: 1 }).lean();
+    expect(burned.map((r) => [r.meta.game, r.amount, r.direction])).toEqual([
+      ["slots", 30, "debit"],
+      ["dice", 50, "debit"],
+    ]);
+    expect(String(burned[0].counterparty)).toBe(String(MINT));
+    expect(res.body.status.bonuses.map((b) => b.game)).toEqual(["dice", "mines"]);
   });
 });

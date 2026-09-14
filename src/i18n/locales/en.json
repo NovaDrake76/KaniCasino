@@ -125,7 +125,8 @@
     "coinflip_win": "Coin flip win",
     "crash_bet": "Crash bet",
     "crash_cashout": "Crash cashout",
-    "game_credit": "Daisu's credit",
+    "game_credit": "Daisu's bonus",
+    "game_credit_expired": "Daisu's bonus expired",
     "item_sell": "Sold to shop",
     "market_buy": "Marketplace purchase",
     "market_order": "Buy order placed",
@@ -360,6 +361,16 @@
   },
   "daisu": {
     "back": "Back to Daisu",
+    "bonusBubble": "{{game}} bonus, {{clock}}",
+    "bonusExpired": "{{game}} bonus expired",
+    "bonusHurry": "Play before it runs out",
+    "bonusNewOne": "Take from the jar for a new one",
+    "bonusPaysAll": "Paid from bonus:",
+    "bonusPaysFirst": "pays first",
+    "bonusSpentFirst": "spent before your wallet",
+    "bonusSplit": "{{bonus}} from bonus, {{wallet}} from wallet",
+    "bonusTitle": "Daisu's bonus",
+    "bonusUsedOn": "Used first on your {{game}} bets",
     "boostsSoon": "Daily goals that make the pot fill faster. Not written yet.",
     "bubbleGift": "Gift",
     "clickHint": "Click the jar to take what is in it",
@@ -377,7 +388,6 @@
     "loading": "...",
     "nextPick": "Next: {{game}}, after {{amount}} more",
     "ofFull": "of {{full}}",
-    "onlyOn": "only on {{game}}",
     "open": "Open Daisu",
     "pending": "{{amount}} on its way to your wallet",
     "pickLine": "An extra {{share}}% of every take goes to {{game}}",
@@ -412,6 +422,14 @@
         "0": "Ugh, it slipped out of my hands. Relax, it's all still in the jar. Click again.",
         "1": "That one didn't go through. Don't make that face, nothing's gone. Try again."
       },
+      "bonusExpiring": {
+        "0": "Tick tock. {{left}} left on your {{game}} bonus, then it's mine.",
+        "1": "Your {{game}} bonus is about to vanish. {{left}}. Move."
+      },
+      "bonusExpired": {
+        "0": "Too slow. I took your {{game}} bonus back. Maybe next time, slowpoke.",
+        "1": "Gone. That {{credit}} on {{game}} is mine now. You snooze, you lose."
+      },
       "claimed": {
         "0": "There, {{amount}}. Don't lose it all in one spin. You will, though.",
         "1": "{{amount}}. You're welcome. Say thank you.",
@@ -420,7 +438,7 @@
       "claimedCredit": {
         "0": "{{amount}} for you, plus {{credit}} that only works on {{game}}. I decide where you play.",
         "1": "I threw in {{credit}} for {{game}}. Win it back as real KP, if you can.",
-        "2": "Extra {{credit}}, {{game}} only. No arguing."
+        "2": "Extra {{credit}}, {{game}} only, and it's gone in 8 minutes. No arguing."
       },
       "pickChanged": {
         "0": "That's a whole pot. New game: {{game}}. Go on, I'm watching.",

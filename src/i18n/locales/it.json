@@ -125,7 +125,8 @@
     "coinflip_win": "Vincita a testa o croce",
     "crash_bet": "Puntata al crash",
     "crash_cashout": "Incasso al crash",
-    "game_credit": "Credito di Daisu",
+    "game_credit": "Bonus di Daisu",
+    "game_credit_expired": "Bonus di Daisu scaduto",
     "item_sell": "Venduto al negozio",
     "market_buy": "Acquisto sul mercato",
     "market_order": "Ordine d'acquisto creato",
@@ -360,6 +361,16 @@
   },
   "daisu": {
     "back": "Torna da Daisu",
+    "bonusBubble": "Bonus {{game}}, {{clock}}",
+    "bonusExpired": "Bonus {{game}} scaduto",
+    "bonusHurry": "Gioca prima che scada",
+    "bonusNewOne": "Prendi dal vaso per averne un altro",
+    "bonusPaysAll": "Pagato col bonus:",
+    "bonusPaysFirst": "paga per primo",
+    "bonusSpentFirst": "speso prima del portafoglio",
+    "bonusSplit": "{{bonus}} dal bonus, {{wallet}} dal portafoglio",
+    "bonusTitle": "Bonus di Daisu",
+    "bonusUsedOn": "Usato per primo sulle tue puntate a {{game}}",
     "boostsSoon": "Obiettivi giornalieri che riempiono il vaso più in fretta. Non ancora scritti.",
     "bubbleGift": "Regalo",
     "clickHint": "Clicca sul vaso per prendere quello che c'è dentro",
@@ -377,7 +388,6 @@
     "loading": "...",
     "nextPick": "Poi: {{game}}, dopo altri {{amount}}",
     "ofFull": "di {{full}}",
-    "onlyOn": "solo su {{game}}",
     "open": "Apri Daisu",
     "pending": "{{amount}} in arrivo nel tuo portafoglio",
     "pickLine": "Un {{share}}% in più di ogni prelievo va su {{game}}",
@@ -412,6 +422,14 @@
         "0": "Uffa, mi è scivolato. Calma, è tutto ancora nel vaso. Clicca di nuovo.",
         "1": "Questo non è passato. Non fare quella faccia, non si è perso niente. Riprova."
       },
+      "bonusExpiring": {
+        "0": "Tic tac. Restano {{left}} sul tuo bonus {{game}}, poi è mio.",
+        "1": "Il tuo bonus {{game}} sta per sparire. {{left}}. Muoviti."
+      },
+      "bonusExpired": {
+        "0": "Troppo lento. Mi sono ripresa il tuo bonus {{game}}. Magari la prossima volta, lumaca.",
+        "1": "Sparito. Quei {{credit}} su {{game}} ora sono miei. Chi dorme non piglia pesci."
+      },
       "claimed": {
         "0": "Ecco, {{amount}}. Non perderli tutti in un giro. Lo farai comunque.",
         "1": "{{amount}}. Prego. Di' grazie.",
@@ -420,7 +438,7 @@
       "claimedCredit": {
         "0": "{{amount}} per te, più {{credit}} che valgono solo su {{game}}. Decido io dove giochi.",
         "1": "Ho messo {{credit}} per {{game}}. Rivincili come KP veri, se ci riesci.",
-        "2": "{{credit}} extra, solo su {{game}}. Niente discussioni."
+        "2": "{{credit}} extra, solo su {{game}}, e sparisce tra 8 minuti. Niente discussioni."
       },
       "pickChanged": {
         "0": "Un vaso intero. Gioco nuovo: {{game}}. Vai, ti guardo.",

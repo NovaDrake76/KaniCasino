@@ -125,7 +125,8 @@
     "coinflip_win": "Menang dengan lemparan koin",
     "crash_bet": "Taruhan Crash",
     "crash_cashout": "Crash dicairkan",
-    "game_credit": "Kredit Daisu",
+    "game_credit": "Bonus dari Daisu",
+    "game_credit_expired": "Bonus dari Daisu kedaluwarsa",
     "item_sell": "Barang laris di toko",
     "market_buy": "Penukaran pada pemasaran",
     "market_order": "Pesanan pembelian telah ditempatkan",
@@ -360,6 +361,16 @@
   },
   "daisu": {
     "back": "Kembali ke Daisu",
+    "bonusBubble": "Bonus {{game}}, {{clock}}",
+    "bonusExpired": "Bonus {{game}} kedaluwarsa",
+    "bonusHurry": "Main sebelum habis",
+    "bonusNewOne": "Ambil dari toples untuk yang baru",
+    "bonusPaysAll": "Dibayar dengan bonus:",
+    "bonusPaysFirst": "bayar duluan",
+    "bonusSpentFirst": "dipakai sebelum dompetmu",
+    "bonusSplit": "{{bonus}} dari bonus, {{wallet}} dari dompet",
+    "bonusTitle": "Bonus dari Daisu",
+    "bonusUsedOn": "Dipakai duluan untuk taruhan {{game}}",
     "boostsSoon": "Target harian yang membuat toples terisi lebih cepat. Belum ditulis.",
     "bubbleGift": "Hadiah",
     "clickHint": "Klik toples untuk mengambil isinya",
@@ -377,7 +388,6 @@
     "loading": "...",
     "nextPick": "Berikutnya: {{game}}, setelah {{amount}} lagi",
     "ofFull": "dari {{full}}",
-    "onlyOn": "hanya di {{game}}",
     "open": "Buka Daisu",
     "pending": "{{amount}} sedang menuju dompetmu",
     "pickLine": "Tambahan {{share}}% dari setiap pengambilan masuk ke {{game}}",
@@ -412,6 +422,14 @@
         "0": "Ugh, lepas dari tanganku. Tenang, semuanya masih di toples. Klik lagi.",
         "1": "Yang tadi tidak masuk. Jangan pasang muka begitu, tidak ada yang hilang. Coba lagi."
       },
+      "bonusExpiring": {
+        "0": "Tik tok. Bonus {{game}}-mu tinggal {{left}}, lalu jadi milikku.",
+        "1": "Bonus {{game}}-mu hampir hilang. {{left}}. Cepat."
+      },
+      "bonusExpired": {
+        "0": "Terlalu lambat. Bonus {{game}}-mu kuambil lagi. Mungkin lain kali, lamban.",
+        "1": "Hilang. {{credit}} di {{game}} sekarang milikku. Siapa suruh ngantuk."
+      },
       "claimed": {
         "0": "Nih, {{amount}}. Jangan habis dalam satu putaran. Pasti habis sih.",
         "1": "{{amount}}. Sama-sama. Bilang terima kasih.",
@@ -420,7 +438,7 @@
       "claimedCredit": {
         "0": "{{amount}} untukmu, plus {{credit}} yang hanya berlaku di {{game}}. Aku yang menentukan di mana kamu main.",
         "1": "Kuselipkan {{credit}} untuk {{game}}. Menangkan kembali sebagai KP asli, kalau bisa.",
-        "2": "Tambahan {{credit}}, hanya di {{game}}. Jangan membantah."
+        "2": "Tambahan {{credit}}, hanya di {{game}}, dan hilang dalam 8 menit. Jangan membantah."
       },
       "pickChanged": {
         "0": "Satu toples penuh. Game baru: {{game}}. Ayo, aku mengawasi.",

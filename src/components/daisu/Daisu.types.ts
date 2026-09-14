@@ -30,11 +30,20 @@ export interface Run {
   lastClickAt: number;
 }
 
-export interface CreditView {
+// one bonus as the dock draws it: ticking down, turning amber, then gone
+export interface BonusView {
+  key: string;
   game: PickGame;
-  amount: number;
-  path: string;
   name: string;
+  path: string;
+  art: string;
+  amount: number;
+  msLeft: number;
+  clock: string;
+  // how much of its life is left, 0 to 1, for the bar under it
+  left: number;
+  expiring: boolean;
+  expired: boolean;
 }
 
 export interface MissionGroup {

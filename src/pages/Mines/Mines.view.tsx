@@ -1,6 +1,7 @@
 import GameLayout from "../../components/game/GameLayout";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
+import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 import ModeToggle from "../../components/game/ModeToggle";
 import OptionRow from "../../components/game/OptionRow";
 import Monetary from "../../components/Monetary";
@@ -99,6 +100,8 @@ const MinesView: React.FC<MinesViewProps> = ({
         <>
           <ModeToggle mode={mode} setMode={setMode} manualDisabled={autoRunning} autoDisabled={active} />
 
+          <GameBonusStrip game="mines" />
+
           <BetAmount
             value={betInput}
             onChange={setBetInput}
@@ -107,6 +110,7 @@ const MinesView: React.FC<MinesViewProps> = ({
             onDouble={doubleBet}
             betValue={betValue}
             disabled={controlsLocked}
+            note={<BonusBetHint game="mines" bet={betValue} />}
           />
 
           <div className="flex gap-3">

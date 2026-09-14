@@ -3,6 +3,7 @@ import { act, render, screen, waitFor, fireEvent } from "@testing-library/react"
 import { MemoryRouter } from "react-router-dom";
 import DaisuDock from "./index";
 import UserContext from "../../UserContext";
+import { GAME_PLAYED_EVENT } from "../../services/api";
 import type { PotStatus } from "../../services/daisu/DaisuService";
 
 const getPotStatus = vi.fn();
@@ -30,6 +31,7 @@ vi.mock("../../services/gift/GiftService", () => ({
 }));
 
 const CYCLE = 8 * 60000;
+const iso = (msFromNow: number) => new Date(Date.now() + msFromNow).toISOString();
 
 // a pot that will be full this far from now
 const status = (fullInMs: number, over: Partial<PotStatus> = {}): PotStatus => ({
@@ -44,7 +46,8 @@ const status = (fullInMs: number, over: Partial<PotStatus> = {}): PotStatus => (
   pick: "dice",
   nextPick: "plinko",
   pickProgress: 0.2,
-  credits: {},
+  creditTtlMs: CYCLE,
+  bonuses: [],
   ...over,
 });
 
@@ -56,7 +59,7 @@ const claimed = (amount: number, walletBalance: number) => ({
   pickChanged: false,
   walletBalance,
   nextBonus: new Date(Date.now() + CYCLE).toISOString(),
-  status: status(CYCLE, { credits: { dice: amount / 10 } }),
+  status: status(CYCLE, { bonuses: [{ game: "dice", amount: amount / 10, expiresAt: iso(CYCLE), expired: false }] }),
 });
 
 const toogleUserData = vi.fn();
@@ -127,7 +130,7 @@ describe("daisu in the corner", () => {
     await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(runState()).toBe("sent"));
     expect(toogleUserData.mock.calls[0][0].walletBalance).toBe(1000);
-    expect(await screen.findByText(/only on dice/i)).toBeTruthy();
+    expect(await screen.findByText(/used first on your dice bets/i)).toBeTruthy();
   });
 
   it("pours what refilled during the pause into the run as it sends, so the total is the take", async () => {
@@ -185,6 +188,70 @@ describe("daisu in the corner", () => {
     await wait(4100);
     expect(claimPot).not.toHaveBeenCalled();
     expect(runState()).toBeUndefined();
+  });
+
+  it("shows the bonus on her pick with its clock, and hurries you in its last minute", async () => {
+    getPotStatus.mockResolvedValue(
+      status(CYCLE, {
+        bonuses: [
+          { game: "plinko", amount: 125, expiresAt: iso(45000), expired: false },
+          { game: "dice", amount: 12.5, expiresAt: iso(-1000), expired: true },
+        ],
+      })
+    );
+    draw();
+
+    expect(await screen.findByText(/play before it runs out/i)).toBeTruthy();
+    expect(screen.getAllByText(/0:4\d/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/dice bonus expired/i)).toBeNull();
+  });
+
+  it("keeps the last bonus as a receipt once every one has run out", async () => {
+    getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "plinko", amount: 125, expiresAt: iso(-60000), expired: true }] }));
+    draw();
+
+    expect(await screen.findByText(/plinko bonus expired/i)).toBeTruthy();
+    expect(screen.getByText(/take from the jar for a new one/i)).toBeTruthy();
+  });
+
+  it("calls a bonus out as it runs out while she is open", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(3000), expired: false }] }));
+    draw();
+    await screen.findByText(/play before it runs out/i);
+
+    await wait(3500);
+
+    expect(await screen.findByText(/took your dice bonus back|on dice is mine now/i)).toBeTruthy();
+    expect(await screen.findByText(/dice bonus expired/i)).toBeTruthy();
+  });
+
+  it("reads the pot again after its bonus game is played, and not after any other", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(200000), expired: false }] }));
+    draw();
+    await screen.findByText(/used first on your dice bets/i);
+    const played = (game: string) =>
+      act(() => {
+        window.dispatchEvent(new CustomEvent(GAME_PLAYED_EVENT, { detail: { game } }));
+      });
+
+    played("plinko");
+    await wait(3500);
+    expect(getPotStatus).toHaveBeenCalledTimes(1);
+
+    played("dice");
+    played("dice");
+    await wait(3500);
+    await waitFor(() => expect(getPotStatus).toHaveBeenCalledTimes(2));
+  });
+
+  it("shows the bonus clock on the folded bubble", async () => {
+    window.localStorage.setItem("kani.daisuStage", "bubble");
+    getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(200000), expired: false }] }));
+    draw();
+
+    expect(await screen.findByText(/dice bonus, 3:\d\d/i)).toBeTruthy();
   });
 
   it("talks back when she is poked", async () => {

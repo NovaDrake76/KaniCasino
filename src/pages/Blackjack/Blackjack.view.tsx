@@ -3,6 +3,7 @@ import { FaClone, FaHandPaper } from "react-icons/fa";
 import GameLayout from "../../components/game/GameLayout";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
+import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 import Monetary from "../../components/Monetary";
 import PlayingCard from "./PlayingCard";
 import { outcomeLabel, totalLabel } from "./blackjackCards";
@@ -194,6 +195,8 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
       }
       panel={
         <>
+          <GameBonusStrip game="blackjack" />
+
           <BetAmount
             value={betInput}
             onChange={setBetInput}
@@ -204,6 +207,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
             betValue={betValue}
             disabled={!betting || acting}
             hint={<>{i18n.t("common.balance")} <Monetary value={walletBalance} /></>}
+            note={<BonusBetHint game="blackjack" bet={betValue} />}
           />
 
           {awaitingInsurance && (

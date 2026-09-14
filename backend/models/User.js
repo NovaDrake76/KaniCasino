@@ -163,6 +163,11 @@ const UserSchema = new mongoose.Schema({
     type: Object,
     default: {},
   },
+  // when each game's credit stops paying, keyed the same way; every take that adds to one pushes it out
+  gameCreditsExpireAt: {
+    type: Object,
+    default: {},
+  },
   // which game the pot's tenth is riding on, and how much of a pot has been taken toward
   // the next one; see utils/pot.js
   potPickIndex: {

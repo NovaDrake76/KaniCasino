@@ -114,8 +114,30 @@ describe("reading credits off a user", () => {
     expect(pot.creditHeld({ gameCredits: { dice: 40 } }, "slots")).toBe(0);
   });
 
-  it("lists only the games with something left", () => {
-    expect(pot.creditsOf({ gameCredits: { dice: 40, slots: 0 } })).toEqual({ dice: 40 });
-    expect(pot.creditsOf({})).toEqual({});
+  it("only lets a bet spend credit still on the clock, and treats credit with no clock as expired", () => {
+    const soon = new Date(Date.now() + 60000);
+    const gone = new Date(Date.now() - 60000);
+    expect(pot.creditLive({ gameCredits: { dice: 40 }, gameCreditsExpireAt: { dice: soon } }, "dice")).toBe(40);
+    expect(pot.creditLive({ gameCredits: { dice: 40 }, gameCreditsExpireAt: { dice: gone } }, "dice")).toBe(0);
+    expect(pot.creditLive({ gameCredits: { dice: 40 } }, "dice")).toBe(0);
+  });
+
+  it("lists live bonuses freshest first, then the expired ones still waiting to be burned", () => {
+    const user = {
+      gameCredits: { slots: 10, dice: 20, mines: 30, hilo: 0 },
+      gameCreditsExpireAt: {
+        slots: new Date(Date.now() + 60000),
+        dice: new Date(Date.now() + 300000),
+        mines: new Date(Date.now() - 1000),
+      },
+    };
+
+    expect(pot.bonusesOf(user).map((b) => [b.game, b.amount, b.expired])).toEqual([
+      ["dice", 20, false],
+      ["slots", 10, false],
+      ["mines", 30, true],
+    ]);
+    expect(pot.expiredCredits(user).map((b) => b.game)).toEqual(["mines"]);
+    expect(pot.bonusesOf({})).toEqual([]);
   });
 });

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import { FaGift } from "react-icons/fa";
 import { BsDoorOpen } from "react-icons/bs";
-import Monetary from "../Monetary";
+import BonusSection from "./BonusSection";
 import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
@@ -31,7 +31,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   line,
   face,
   shaking,
-  credits,
+  bonuses,
   giftReady,
   missionReady,
 }) => (
@@ -95,6 +95,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
     </div>
 
     <div className="flex flex-col gap-2 px-4 pb-4 pt-3">
+      <BonusSection bonuses={bonuses} />
       {giftReady && (
         <Link
           to="/gift"
@@ -107,19 +108,6 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
           <span className="text-xs font-semibold uppercase tracking-wide">{i18n.t("daisu.giftOpen")}</span>
         </Link>
       )}
-      {credits.map((c) => (
-        <div key={c.game} className="flex items-center justify-between bg-surface-raised px-3 py-1.5 text-sm">
-          <span>
-            <span className="font-semibold text-accent-gold">
-              <Monetary value={c.amount} />
-            </span>{" "}
-            <span className="text-ink-soft">{i18n.t("daisu.onlyOn", { game: c.name })}</span>
-          </span>
-          <Link to={c.path} className="bg-accent px-2.5 py-1 text-xs font-semibold text-white hover:bg-[#4338CA]">
-            {i18n.t("daisu.play")}
-          </Link>
-        </div>
-      ))}
     </div>
   </motion.section>
 );

@@ -125,7 +125,8 @@
     "coinflip_win": "Münzwurf-Gewinn",
     "crash_bet": "Crash-Einsatz",
     "crash_cashout": "Crash-Auszahlung",
-    "game_credit": "Daisus Guthaben",
+    "game_credit": "Daisus Bonus",
+    "game_credit_expired": "Daisus Bonus abgelaufen",
     "item_sell": "An den Shop verkauft",
     "market_buy": "Marktkauf",
     "market_order": "Kauforder erstellt",
@@ -360,6 +361,16 @@
   },
   "daisu": {
     "back": "Zurück zu Daisu",
+    "bonusBubble": "{{game}}-Bonus, {{clock}}",
+    "bonusExpired": "{{game}}-Bonus abgelaufen",
+    "bonusHurry": "Spiel, bevor er abläuft",
+    "bonusNewOne": "Nimm aus dem Topf für einen neuen",
+    "bonusPaysAll": "Vom Bonus bezahlt:",
+    "bonusPaysFirst": "zahlt zuerst",
+    "bonusSpentFirst": "wird vor deinem Wallet verbraucht",
+    "bonusSplit": "{{bonus}} vom Bonus, {{wallet}} vom Wallet",
+    "bonusTitle": "Daisus Bonus",
+    "bonusUsedOn": "Zuerst für deine {{game}}-Einsätze",
     "boostsSoon": "Tagesziele, mit denen sich der Topf schneller füllt. Noch nicht geschrieben.",
     "bubbleGift": "Geschenk",
     "clickHint": "Klick auf den Topf, um zu nehmen, was drin ist",
@@ -377,7 +388,6 @@
     "loading": "...",
     "nextPick": "Danach: {{game}}, nach weiteren {{amount}}",
     "ofFull": "von {{full}}",
-    "onlyOn": "nur bei {{game}}",
     "open": "Daisu öffnen",
     "pending": "{{amount}} unterwegs in dein Wallet",
     "pickLine": "Extra {{share}}% jeder Entnahme gehen an {{game}}",
@@ -412,6 +422,14 @@
         "0": "Ugh, ist mir aus der Hand gerutscht. Keine Panik, alles ist noch im Topf. Klick nochmal.",
         "1": "Das ging nicht durch. Guck nicht so, nichts ist weg. Nochmal."
       },
+      "bonusExpiring": {
+        "0": "Tick tack. Noch {{left}} auf deinem {{game}}-Bonus, dann gehört er mir.",
+        "1": "Dein {{game}}-Bonus ist gleich weg. {{left}}. Beweg dich."
+      },
+      "bonusExpired": {
+        "0": "Zu langsam. Ich hab mir deinen {{game}}-Bonus zurückgeholt. Vielleicht nächstes Mal, Schnecke.",
+        "1": "Weg. Die {{credit}} bei {{game}} gehören jetzt mir. Wer schläft, verliert."
+      },
       "claimed": {
         "0": "Hier, {{amount}}. Verlier nicht alles in einem Dreh. Wirst du aber.",
         "1": "{{amount}}. Gern geschehen. Sag danke.",
@@ -420,7 +438,7 @@
       "claimedCredit": {
         "0": "{{amount}} für dich, plus {{credit}}, die nur bei {{game}} gehen. Ich entscheide, wo du spielst.",
         "1": "Ich habe {{credit}} für {{game}} reingelegt. Gewinn sie als echte KP zurück, wenn du kannst.",
-        "2": "Extra {{credit}}, nur bei {{game}}. Keine Widerrede."
+        "2": "Extra {{credit}}, nur bei {{game}}, und in 8 Minuten ist es weg. Keine Widerrede."
       },
       "pickChanged": {
         "0": "Ein ganzer Topf. Neues Spiel: {{game}}. Los, ich schaue zu.",

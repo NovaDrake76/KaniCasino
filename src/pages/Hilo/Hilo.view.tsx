@@ -2,6 +2,7 @@ import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
 import GameLayout from "../../components/game/GameLayout";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
+import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 import Monetary from "../../components/Monetary";
 import PlayingCard, { SuitIcon } from "../Blackjack/PlayingCard";
 import { isRedSuit, rankLabel, suitOf } from "../Blackjack/blackjackCards";
@@ -58,6 +59,8 @@ const HiloView: React.FC<HiloViewProps> = ({
       }
       panel={
         <>
+          <GameBonusStrip game="hilo" />
+
           <BetAmount
             value={betInput}
             onChange={setBetInput}
@@ -66,6 +69,7 @@ const HiloView: React.FC<HiloViewProps> = ({
             onDouble={doubleBet}
             betValue={betValue}
             disabled={controlsLocked}
+            note={<BonusBetHint game="hilo" bet={betValue} />}
           />
 
           {active ? (

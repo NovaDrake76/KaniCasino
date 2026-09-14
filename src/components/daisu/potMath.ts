@@ -26,6 +26,13 @@ export const msUntil = (fullAt: string, cycleMs: number, fill: number, now: numb
 const NBSP = String.fromCharCode(160);
 export const kp = (n: number) => `K₽${NBSP}${Math.floor(n).toLocaleString("en-US")}`;
 
+// a bonus is kept to the cent, so where it pays part of a bet the cents are shown
+export const kpExact = (n: number) =>
+  `K₽${NBSP}${n.toLocaleString("en-US", { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })}`;
+
+// a bonus this close to running out turns amber and she starts counting
+export const EXPIRING_MS = 60000;
+
 export const clock = (ms: number) => {
   const s = Math.ceil(ms / 1000);
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -38,6 +45,16 @@ export const GAME_PATHS: Record<PickGame, string> = {
   mines: "/mines",
   blackjack: "/blackjack",
   hilo: "/hilo",
+};
+
+// the art the home page's game list uses, so a bonus looks like the game it is for
+export const GAME_ART: Record<PickGame, string> = {
+  slots: "/images/slot/wild.webp",
+  dice: "/images/dice.svg",
+  plinko: "/images/plinko.svg",
+  mines: "/images/mines.svg",
+  blackjack: "/images/blackjack.svg",
+  hilo: "/images/hilo.svg",
 };
 
 // the names the navbar already uses, so the pick reads the same everywhere

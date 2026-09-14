@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const User = require("../models/User");
 const Transaction = require("../models/Transaction");
 const { COUNTERPARTY_FOR_TYPE, MINT } = require("./accounts");
-const { GAME_OF_BET, creditHeld } = require("./pot");
+const { GAME_OF_BET, creditHeld, creditLive } = require("./pot");
 
 const BASE_XP = 1000; // xp required for the first level
 const GROWTH_RATE = 1.25; // growth rate for each level
@@ -12,6 +12,7 @@ const TX = {
   SIGNUP: "signup",
   BONUS: "bonus",
   GAME_CREDIT: "game_credit", // the extra tenth of a pot claim, spendable on one game only
+  GAME_CREDIT_EXPIRED: "game_credit_expired", // a bonus not played in time, burned back to the mint
   CASE_OPEN: "case_open",
   SLOT_BET: "slot_bet",
   SLOT_WIN: "slot_win",
@@ -216,11 +217,15 @@ async function takeStake(userId, cost, inc, session) {
 // hands back the pre-image, so the values the caller reads are set here from it.
 async function takeStakeWithCredit(userId, cost, game, awardXp, session) {
   const path = `gameCredits.${game}`;
-  const credit = { $ifNull: [`$${path}`, 0] };
+  const now = new Date();
+  const stored = { $ifNull: [`$${path}`, 0] };
+  // expired credit stays on the document for the next take to burn; it just pays for nothing
+  const live = { $gt: [{ $ifNull: [`$gameCreditsExpireAt.${game}`, new Date(0)] }, now] };
+  const credit = { $cond: [live, stored, 0] };
   const drawn = { $min: [credit, cost] };
   const set = {
     walletBalance: { $subtract: ["$walletBalance", { $subtract: [cost, drawn] }] },
-    [path]: { $subtract: [credit, drawn] },
+    [path]: { $subtract: [stored, drawn] },
   };
   if (awardXp) set.xp = { $add: [{ $ifNull: ["$xp", 0] }, cost * 5] };
   const user = await User.findOneAndUpdate(
@@ -230,7 +235,7 @@ async function takeStakeWithCredit(userId, cost, game, awardXp, session) {
   );
   if (!user) return { user: null, drawn: 0 };
   const held = creditHeld(user, game);
-  const taken = Math.min(held, cost);
+  const taken = Math.min(creditLive(user, game, now), cost);
   user.walletBalance -= cost - taken;
   if (awardXp) user.xp = (user.xp || 0) + cost * 5;
   user.gameCredits = { ...(user.gameCredits || {}), [game]: held - taken };

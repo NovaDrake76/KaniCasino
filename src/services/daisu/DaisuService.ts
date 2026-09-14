@@ -2,6 +2,14 @@ import api from "../api";
 
 export type PickGame = "slots" | "dice" | "plinko" | "mines" | "blackjack" | "hilo";
 
+// the extra tenth of a take, spendable on one game until its clock runs out
+export interface PotBonus {
+  game: PickGame;
+  amount: number;
+  expiresAt: string | null;
+  expired: boolean;
+}
+
 export interface PotStatus {
   fill: number;
   full: number;
@@ -14,7 +22,8 @@ export interface PotStatus {
   pick: PickGame;
   nextPick: PickGame;
   pickProgress: number;
-  credits: Partial<Record<PickGame, number>>;
+  creditTtlMs: number;
+  bonuses: PotBonus[];
 }
 
 export interface PotClaim {

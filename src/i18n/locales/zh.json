@@ -125,7 +125,8 @@
     "coinflip_win": "抛硬币赢取",
     "crash_bet": "Crash 投注",
     "crash_cashout": "Crash 提现",
-    "game_credit": "Daisu 的额度",
+    "game_credit": "Daisu 的奖励",
+    "game_credit_expired": "Daisu 的奖励已过期",
     "item_sell": "出售给商店",
     "market_buy": "市场购买",
     "market_order": "创建买单",
@@ -360,6 +361,16 @@
   },
   "daisu": {
     "back": "回到 Daisu",
+    "bonusBubble": "{{game}} 奖励，{{clock}}",
+    "bonusExpired": "{{game}} 奖励已过期",
+    "bonusHurry": "趁没过期快去玩",
+    "bonusNewOne": "从罐子里拿一次就有新的",
+    "bonusPaysAll": "由奖励支付：",
+    "bonusPaysFirst": "优先支付",
+    "bonusSpentFirst": "先于钱包使用",
+    "bonusSplit": "奖励 {{bonus}}，钱包 {{wallet}}",
+    "bonusTitle": "Daisu 的奖励",
+    "bonusUsedOn": "优先用于你的 {{game}} 下注",
     "boostsSoon": "让罐子装得更快的每日目标。还没写。",
     "bubbleGift": "礼物",
     "clickHint": "点击罐子拿走里面的东西",
@@ -377,7 +388,6 @@
     "loading": "...",
     "nextPick": "下一个：{{game}}，再拿 {{amount}} 后切换",
     "ofFull": "/ {{full}}",
-    "onlyOn": "仅限 {{game}}",
     "open": "打开 Daisu",
     "pending": "{{amount}} 正在进你的钱包",
     "pickLine": "每次拿取额外 {{share}}% 会加到 {{game}}",
@@ -412,6 +422,14 @@
         "0": "啊，手滑了。别慌，都还在罐子里。再点一下。",
         "1": "刚才那次没成功。别摆那张脸，什么都没少。再来。"
       },
+      "bonusExpiring": {
+        "0": "滴答滴答。你的 {{game}} 奖励还剩 {{left}}，然后就归我了。",
+        "1": "你的 {{game}} 奖励快没了。{{left}}。快点。"
+      },
+      "bonusExpired": {
+        "0": "太慢了。你的 {{game}} 奖励我收回了。下次加油吧，慢吞吞的。",
+        "1": "没了。{{game}} 上那 {{credit}} 现在是我的了。谁让你打瞌睡。"
+      },
       "claimed": {
         "0": "给，{{amount}}。别一把输光。不过你会的。",
         "1": "{{amount}}。不客气。说谢谢。",
@@ -420,7 +438,7 @@
       "claimedCredit": {
         "0": "{{amount}} 给你，外加只能在 {{game}} 用的 {{credit}}。你在哪玩由我说了算。",
         "1": "我塞了 {{credit}} 给 {{game}}。有本事就赢成真正的 KP。",
-        "2": "多给 {{credit}}，仅限 {{game}}。不许争。"
+        "2": "多给 {{credit}}，仅限 {{game}}，8 分钟后就没了。不许争。"
       },
       "pickChanged": {
         "0": "整整一罐。新游戏：{{game}}。去吧，我看着呢。",

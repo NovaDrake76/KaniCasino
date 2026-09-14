@@ -10,6 +10,8 @@ export type Mood =
   | "claimedCredit"
   | "pickChanged"
   | "credit"
+  | "bonusExpiring"
+  | "bonusExpired"
   | "missionReady"
   | "missionDone"
   | "broke"
@@ -30,6 +32,8 @@ export const LINE_COUNT: Record<Mood, number> = {
   claimedCredit: 3,
   pickChanged: 2,
   credit: 2,
+  bonusExpiring: 2,
+  bonusExpired: 2,
   missionReady: 2,
   missionDone: 2,
   broke: 2,
@@ -50,13 +54,17 @@ interface Situation {
   missionReady: boolean;
   giftReady: boolean;
   wallet: number;
+  bonusExpiring: boolean;
+  bonusExpired: boolean;
 }
 
-// the opening line: the most useful thing to say first, in the order a player would want
-// to hear it. something to collect beats a full pot, which beats a credit going unused.
-export const greetingFor = ({ fill, holdsCredit, missionReady, giftReady, wallet }: Situation): Mood => {
+// the opening line: the most useful thing to say first. something to collect, then a bonus
+// about to go or just gone, then a full pot, then a credit going unused.
+export const greetingFor = ({ fill, holdsCredit, missionReady, giftReady, wallet, bonusExpiring, bonusExpired }: Situation): Mood => {
   if (giftReady) return "gift";
   if (missionReady) return "missionReady";
+  if (bonusExpiring) return "bonusExpiring";
+  if (bonusExpired) return "bonusExpired";
   if (fill >= 1) return "full";
   if (holdsCredit) return "credit";
   if (wallet < 50 && fill < 0.1) return "broke";

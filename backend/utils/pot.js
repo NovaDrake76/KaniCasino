@@ -11,6 +11,9 @@ const CLICK_RATE = 0.8;
 const FULL_BONUS = 1 / CLICK_RATE - 1;
 // the extra tenth on top of every take, spendable only on the current pick
 const CREDIT_SHARE = 0.1;
+// a bonus stops paying a pot's worth of time after the take that last added to it, so every
+// fill of the jar comes with a game to play before the next one
+const CREDIT_TTL_MS = CYCLE_MS;
 // the games a credit can be spent on: single-request games whose stake never comes back
 // as a refund, so a credit can only turn into real KP by being played
 const PICKS = ["slots", "dice", "plinko", "mines", "blackjack", "hilo"];
@@ -62,20 +65,40 @@ const advancePick = (index, cycleClaimed, amount, full) => {
 };
 
 // works on a hydrated doc, a lean one, or a user that has never held a credit
-const creditHeld = (user, game) => {
-  const credits = user && user.gameCredits;
-  if (!credits) return 0;
-  const held = typeof credits.get === "function" ? credits.get(game) : credits[game];
-  return Number(held) || 0;
+const readKey = (bag, key) => (bag ? (typeof bag.get === "function" ? bag.get(key) : bag[key]) : undefined);
+
+const entriesOf = (bag) => {
+  if (!bag) return [];
+  return typeof bag.entries === "function" && !Array.isArray(bag) ? [...bag.entries()] : Object.entries(bag);
 };
 
-const creditsOf = (user) => {
-  const credits = (user && user.gameCredits) || {};
-  const entries = typeof credits.entries === "function" && !Array.isArray(credits) ? [...credits.entries()] : Object.entries(credits);
-  const out = {};
-  for (const [game, held] of entries) if (Number(held) > 0) out[game] = Number(held);
-  return out;
+const stamp = (iso) => (iso ? Date.parse(iso) : 0);
+
+const creditHeld = (user, game) => Number(readKey(user && user.gameCredits, game)) || 0;
+
+const creditExpiry = (user, game) => {
+  const at = readKey(user && user.gameCreditsExpireAt, game);
+  return at ? new Date(at) : null;
 };
+
+// what a bet can spend right now. credit with no clock predates the rule, so it counts as expired
+const creditLive = (user, game, now = new Date()) => {
+  const at = creditExpiry(user, game);
+  return at && at.getTime() > now.getTime() ? creditHeld(user, game) : 0;
+};
+
+// every game holding credit, live ones first and the freshest of those first. an expired one
+// stays listed until the next take burns it, so the dock can show that it went
+const bonusesOf = (user, now = new Date()) =>
+  entriesOf(user && user.gameCredits)
+    .filter(([, held]) => Number(held) > 0)
+    .map(([game, held]) => {
+      const at = creditExpiry(user, game);
+      return { game, amount: Number(held), expiresAt: at ? at.toISOString() : null, expired: !at || at.getTime() <= now.getTime() };
+    })
+    .sort((a, b) => Number(a.expired) - Number(b.expired) || stamp(b.expiresAt) - stamp(a.expiresAt));
+
+const expiredCredits = (user, now = new Date()) => bonusesOf(user, now).filter((b) => b.expired);
 
 module.exports = {
   CYCLE_MS,
@@ -83,6 +106,7 @@ module.exports = {
   CLICK_RATE,
   FULL_BONUS,
   CREDIT_SHARE,
+  CREDIT_TTL_MS,
   PICKS,
   GAME_OF_BET,
   fullAmount,
@@ -93,5 +117,8 @@ module.exports = {
   pickAt,
   advancePick,
   creditHeld,
-  creditsOf,
+  creditExpiry,
+  creditLive,
+  bonusesOf,
+  expiredCredits,
 };

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import GameLayout from "../../components/game/GameLayout";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
+import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 import ModeToggle from "../../components/game/ModeToggle";
 import OptionRow from "../../components/game/OptionRow";
 import Monetary from "../../components/Monetary";
@@ -137,6 +138,8 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
       <>
         <ModeToggle mode={mode} setMode={setMode} manualDisabled={autoRunning} autoDisabled={autoRunning} />
 
+        <GameBonusStrip game="plinko" />
+
         <BetAmount
           value={betInput}
           onChange={setBetInput}
@@ -146,6 +149,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
           onMax={maxOutBet}
           betValue={betValue}
           hint={i18n.t("plinko.betRange", { max: maxBet.toLocaleString("en-US"), risk })}
+          note={<BonusBetHint game="plinko" bet={betValue} />}
         />
 
         <OptionRow label={i18n.t("plinko.risk")} options={RISKS} value={risk} onChange={changeRisk} disabled={!canChangeRisk} />
