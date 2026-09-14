@@ -260,7 +260,7 @@ router.post("/quicksell/commit", isAuthenticated, async (req, res) => {
         changed: false,
         sold: 0,
         value: 0,
-        walletBalance: user.walletBalance,
+        walletBalance: req.user.walletBalance,
       });
     }
 

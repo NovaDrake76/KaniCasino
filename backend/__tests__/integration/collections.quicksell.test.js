@@ -276,4 +276,19 @@ describe("quicksell commit", () => {
       .send({ caseId: String(c._id), plan: p.body.plan, userId: other._id.toString() });
     expect((await User.findById(other._id)).walletBalance).toBe(999); // untouched
   });
+
+  test("an empty plan with nothing to sell answers with the caller's own balance", async () => {
+    // a signup used to leave its new account in a global, and this answer read that one back
+    const s = uniqueSuffix();
+    const signup = await request(app).post("/users/register").send({ email: `new-${s}@x.com`, username: `new-${s}`, password: "secret1" });
+    expect(signup.status).toBe(200);
+    const u = await makeUser({ walletBalance: 420 });
+    const { c, items } = await makeCase([{ rarity: 1, baseValue: 100 }]);
+    await give(u, items[0], 1, c._id);
+
+    const res = await commit(u, c._id, []);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ changed: false, sold: 0, value: 0, walletBalance: 420 });
+  });
 });
