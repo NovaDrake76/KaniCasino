@@ -106,7 +106,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
         <Link
           to="/gift"
           onClick={closeToBubble}
-          className="flex items-center justify-between bg-accent-gold px-3 py-2 text-sm font-bold text-[#2a2100] hover:bg-accent-amber"
+          className="flex items-center justify-between bg-accent-gold px-3 py-2 text-sm font-bold text-[#2a2100] hover:bg-accent-amber hover:text-[#2a2100]"
         >
           <span className="flex items-center gap-2">
             <FaGift /> {i18n.t("daisu.giftReady")}

@@ -127,7 +127,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
             <Link
               to="/gift"
               onClick={closeToBubble}
-              className="flex items-center justify-between bg-accent-gold px-4 py-3 text-sm font-bold text-[#2a2100] hover:bg-accent-amber"
+              className="flex items-center justify-between bg-accent-gold px-4 py-3 text-sm font-bold text-[#2a2100] hover:bg-accent-amber hover:text-[#2a2100]"
             >
               <span className="flex items-center gap-2">
                 <FaGift className="text-lg" /> {i18n.t("daisu.giftReady")}
