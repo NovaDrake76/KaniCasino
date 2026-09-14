@@ -1,7 +1,4 @@
-// the bonus as a pot that fills over the same eight minutes it always took, taken by
-// clicking the jar as often as the player likes. the one rule every number here must keep:
-// no way of taking pays more per minute than waiting for a full pot, so the mint rate is
-// exactly what the old button paid.
+// the bonus as a pot that fills over the same eight minutes it always took, taken by clicking the jar as often as the player likes; the one rule every number here must keep is that no way of taking pays more per minute than waiting for a full pot, so the mint rate is exactly what the old button paid
 const CYCLE_MS = 8 * 60000;
 // a click that would pay less than this finds the jar empty
 const MIN_CLAIM = 1;

@@ -213,9 +213,7 @@ async function takeStake(userId, cost, inc, session) {
   return { user, drawn: 0 };
 }
 
-// a stake on a game that takes pot credit: the credit for that game goes first and the
-// wallet covers the rest, in one write. the pipeline is what makes the split atomic; it
-// hands back the pre-image, so the values the caller reads are set here from it.
+// a stake on a game that takes pot credit: the credit for that game goes first and the wallet covers the rest, in one write; the pipeline is what makes the split atomic, and since it hands back the pre-image, the values the caller reads are set here from it
 async function takeStakeWithCredit(userId, cost, game, awardXp, session) {
   const path = `gameCredits.${game}`;
   const now = new Date();

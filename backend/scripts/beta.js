@@ -1,8 +1,4 @@
-// put an account into a beta from the shell, or list who is in one.
-//
-//   node scripts/beta.js daisu list
-//   node scripts/beta.js daisu <username|slug|id> on
-//   node scripts/beta.js daisu <username|slug|id> off
+// put an account into a beta from the shell, or list who is in one: node scripts/beta.js daisu list, or node scripts/beta.js daisu <username|slug|id> on|off
 require("dotenv").config();
 const mongoose = require("mongoose");
 const User = require("../models/User");
