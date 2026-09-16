@@ -12,6 +12,7 @@ import Pagination from "../../components/Pagination";
 import Filters from "../../components/InventoryFilters";
 import Modal from "../../components/Modal";
 import i18n from "../../i18n";
+import { digitsOnly, clampDigits } from "../../utils/digits";
 
 interface Props {
   isOpen: boolean;
@@ -49,8 +50,8 @@ const Stat: React.FC<{ label: string; value: React.ReactNode; hint?: string; acc
 
 const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [selectedItem, setSelectedItem] = useState<any>();
-  const [price, setPrice] = useState<number | undefined>();
-  const [quantity, setQuantity] = useState<number>(1);
+  const [priceText, setPriceText] = useState<string>("");
+  const [quantityText, setQuantityText] = useState<string>("1");
   const [inventory, setInventory] = useState<Inventory>();
   const [invItems, setInvItems] = useState<InventoryItem[]>([]);
   const [loadingInventory, setLoadingInventory] = useState<boolean>(true);
@@ -65,7 +66,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
 
   const CloseModal = () => {
     setSelectedItem(null);
-    setPrice(0);
+    setPriceText("");
     setInvItems([]);
     setHistory(null);
     setPage(1);
@@ -87,7 +88,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
         setHistory(h);
         // pre-fill with the most defensible ask we can suggest
         const suggested = h.stats.median7d ?? h.stats.median30d ?? h.stats.lowestListing ?? h.stats.floor;
-        if (suggested) setPrice(suggested);
+        if (suggested) setPriceText(String(suggested));
       })
       .catch(() => {
         // guidance is a nice-to-have; listing still works without it
@@ -102,6 +103,8 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
 
   const handleSubmit = async () => {
     setLoadingButton(true);
+    const price = parseInt(priceText, 10) || 0;
+    const quantity = clampDigits(quantityText, 1, selectedItem?.quantity ?? 1, 1);
     if (!price || price < 1 || price > 1000000) {
       setLoadingButton(false);
       return toast.error(i18n.t("market.priceMustBeBetween"), {});
@@ -174,12 +177,11 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   if (!isOpen) return null;
 
   const maxQuantity = selectedItem?.quantity ?? 1;
-  const clampQuantity = (raw: string) =>
-    Math.min(Math.max(1, Math.floor(Number(raw)) || 1), maxQuantity);
+  const price = parseInt(priceText, 10) || 0;
 
   const stats = history?.stats;
   const feeRate = stats?.feeRate ?? 0.05;
-  const p = price || 0;
+  const p = price;
   const crossesBid = !!(stats?.bestBid && p > 0 && p <= stats.bestBid);
   // an ask that crosses a resting bid clears at the BID, not the ask: quote what the
   // seller will actually be paid, not what they typed
@@ -210,7 +212,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
                 return (
                   <div
                     key={item._id + index}
-                    onClick={() => { setSelectedItem(item); setQuantity(1); }}
+                    onClick={() => { setSelectedItem(item); setQuantityText("1"); }}
                     className={`rounded-lg cursor-pointer transition-all p-1 border-2 ${
                       isSelected ? "border-accent bg-accent/10" : "border-transparent hover:bg-surface"
                     }`}
@@ -268,7 +270,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               <span className="text-[11px] text-ink-muted mr-1">{i18n.t("market.quickPrice")}</span>
               {stats?.median7d ? (
                 <button
-                  onClick={() => setPrice(stats.median7d as number)}
+                  onClick={() => setPriceText(String(stats.median7d))}
                   className="px-2 py-1 rounded border border-line text-xs hover:bg-surface-raised"
                 >
                   {i18n.t("market.median")}
@@ -277,13 +279,13 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               {stats?.lowestListing ? (
                 <>
                   <button
-                    onClick={() => setPrice(stats.lowestListing as number)}
+                    onClick={() => setPriceText(String(stats.lowestListing))}
                     className="px-2 py-1 rounded border border-line text-xs hover:bg-surface-raised"
                   >
                     {i18n.t("market.matchLowest")}
                   </button>
                   <button
-                    onClick={() => setPrice(Math.max(1, (stats.lowestListing as number) - 1))}
+                    onClick={() => setPriceText(String(Math.max(1, (stats.lowestListing as number) - 1)))}
                     className="px-2 py-1 rounded border border-line text-xs hover:bg-surface-raised"
                   >
                     {i18n.t("market.undercutBy1")}
@@ -292,7 +294,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               ) : null}
               {stats?.bestBid ? (
                 <button
-                  onClick={() => setPrice(stats.bestBid as number)}
+                  onClick={() => setPriceText(String(stats.bestBid))}
                   className="px-2 py-1 rounded border border-accent-gold/50 text-accent-gold text-xs hover:bg-accent-gold/10"
                 >
                   {i18n.t("market.sellToBidNow")}
@@ -323,59 +325,54 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
               )}
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1 sm:flex-none">
-                <span className="absolute inset-y-0 left-3 flex items-center text-ink-muted text-sm pointer-events-none">
-                  K₽
-                </span>
-                <input
-                  type="number"
-                  min={0}
-                  max={1000000}
-                  placeholder={i18n.t("market.price")}
-                  value={price ?? ""}
-                  onKeyDown={(event) => {
-                    if (
-                      !/[0-9]/.test(event.key) &&
-                      !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(event.key)
-                    ) {
-                      event.preventDefault();
-                    }
-                  }}
-                  onChange={(e) => setPrice(parseInt(e.target.value) || 0)}
-                  className="w-full sm:w-36 bg-surface-nav border border-line focus:border-accent outline-none rounded pl-9 pr-3 py-2 text-sm"
-                />
-              </div>
-              {maxQuantity > 1 && (
-                <div className="relative shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="relative flex-1 min-w-0 sm:flex-none">
                   <span className="absolute inset-y-0 left-3 flex items-center text-ink-muted text-sm pointer-events-none">
-                    ×
+                    K₽
                   </span>
                   <input
-                    type="number"
-                    min={1}
-                    max={maxQuantity}
-                    value={quantity}
-                    onChange={(e) => setQuantity(clampQuantity(e.target.value))}
-                    title={i18n.t("market.youOwnCount", { count: maxQuantity })}
-                    className="w-24 bg-surface-nav border border-line focus:border-accent outline-none rounded pl-7 pr-2 py-2 text-sm"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder={i18n.t("market.price")}
+                    value={priceText}
+                    onChange={(e) => setPriceText(digitsOnly(e.target.value))}
+                    className="w-full sm:w-36 bg-surface-nav border border-line focus:border-accent outline-none rounded pl-9 pr-3 py-2 text-sm"
                   />
                 </div>
-              )}
-              <button
-                onClick={CloseModal}
-                className="px-4 py-2 rounded bg-surface-raised hover:bg-red-700 text-sm font-semibold"
-              >
-                {i18n.t("market.close")}
-              </button>
-              <div className="w-32 shrink-0">
-                <MainButton
-                  text={crossesBid ? i18n.t("market.sellNow") : i18n.t("market.listItem")}
-                  onClick={handleSubmit}
-                  loading={loadingButton}
-                  disabled={!selectedItem || !price || loadingButton}
-                  type={crossesBid ? "success" : "button"}
-                />
+                {maxQuantity > 1 && (
+                  <div className="relative shrink-0">
+                    <span className="absolute inset-y-0 left-3 flex items-center text-ink-muted text-sm pointer-events-none">
+                      ×
+                    </span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={quantityText}
+                      onChange={(e) => setQuantityText(digitsOnly(e.target.value, 4))}
+                      onBlur={() => setQuantityText(String(clampDigits(quantityText, 1, maxQuantity, 1)))}
+                      title={i18n.t("market.youOwnCount", { count: maxQuantity })}
+                      className="w-24 bg-surface-nav border border-line focus:border-accent outline-none rounded pl-7 pr-2 py-2 text-sm"
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={CloseModal}
+                  className="shrink-0 px-4 py-2 rounded bg-surface-raised hover:bg-red-700 text-sm font-semibold"
+                >
+                  {i18n.t("market.close")}
+                </button>
+                <div className="flex-1 sm:flex-none sm:w-32">
+                  <MainButton
+                    text={crossesBid ? i18n.t("market.sellNow") : i18n.t("market.listItem")}
+                    onClick={handleSubmit}
+                    loading={loadingButton}
+                    disabled={!selectedItem || !price || loadingButton}
+                    type={crossesBid ? "success" : "button"}
+                  />
+                </div>
               </div>
             </div>
           </div>
