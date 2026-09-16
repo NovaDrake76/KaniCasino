@@ -88,13 +88,12 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       path: "/fandom",
       icon: <BsHeartFill className="text-2xl" />,
     },
-    // in the daisu beta the gift is hers to hand over, so the corner carries it instead
-    ...(userData?.features?.daisu ? [] : [{
+    {
       name: i18n.t("nav.dailyGift"),
       path: "/gift",
       icon: <FaGift className="text-2xl" />,
       badge: giftReady ? <GiftTag /> : undefined,
-    }]),
+    },
     // missions live on the caller's own profile, so there is nowhere to send a guest
     ...(userData?.id ? [{
       name: i18n.t("nav.missions"),
