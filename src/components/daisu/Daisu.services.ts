@@ -39,17 +39,15 @@ const POP_MS = 1200;
 // a sent or failed run stays under the jar this long, then fades out
 const RUN_RESULT_MS = 1600;
 
-// the card starts open on a desktop, which is how a player finds out she exists; on a
-// phone it would cover the games, so it starts as the bubble. the room is never restored.
+// she starts folded into her bubble, so a first login meets her welcome alone and not her card beside it. the room is never restored.
 const readStage = (): Stage => {
-  const wide = window.innerWidth >= 768;
   try {
     const stored = window.localStorage.getItem(STAGE_KEY);
     if (stored === "popup" || stored === "bubble") return stored;
   } catch {
     // storage blocked: fall through to the default
   }
-  return wide ? "popup" : "bubble";
+  return "bubble";
 };
 
 const storeStage = (stage: Stage) => {
@@ -68,7 +66,10 @@ export const useDaisu = () => {
   const wallet: number = userData?.walletBalance ?? 0;
   const gift = useGiftStatus();
   const status = usePotStatus();
-  const pokeLocked = useTour().pokeMode === "locked";
+  const tour = useTour();
+  const pokeLocked = tour.pokeMode === "locked";
+  // while her tour runs, the tour is the only one talking
+  const touring = tour.status === "offered" || tour.status === "active";
 
   const [stage, setStage] = useState<Stage>(readStage);
   const [tab, setTab] = useState<RoomTab>("missions");
@@ -304,7 +305,7 @@ export const useDaisu = () => {
 
   // she speaks once per opening, once there is something to speak about
   useEffect(() => {
-    if (stage === "bubble" || !status || greeted.current) return;
+    if (stage === "bubble" || !status || greeted.current || touring) return;
     greeted.current = true;
     const soon = liveBonuses.find((b) => b.expiring);
     const gone = liveBonuses.length ? undefined : bonuses.find((b) => b.expired);
@@ -327,7 +328,7 @@ export const useDaisu = () => {
     });
     // reads the derived values of the moment it opened; later ticks must not re-greet
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, status]);
+  }, [stage, status, touring]);
 
   // the first sight of a bonus is silent, since opening the card already greets with it
   useEffect(() => {
@@ -543,6 +544,7 @@ export const useDaisu = () => {
     takeFromJar,
     poke,
     pokeLocked,
+    touring,
     pops,
     run,
     settleMs: SETTLE_AFTER_MS,

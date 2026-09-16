@@ -17,7 +17,7 @@ const SpeechBubble = ({ line, className }: Props) => (
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18 }}
-      className="relative m-0"
+      className="relative m-0 min-h-[3lh]"
     >
       <TypedText text={line ? i18n.t(line.key, line.vars) : i18n.t("daisu.loading")} />
     </motion.p>

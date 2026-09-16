@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "Riscuoti +{{amount}} K₽",
     "adPlaceholder": "Spazio di prova",
-    "claim": "Riscuoti bonus",
-    "nextIn": "Prossimo bonus tra {{clock}}",
-    "ready": "Bonus pronto"
+    "claim": "Riscuoti bonus"
   },
   "casePage": {
     "addToBattle": "Aggiungi a una battaglia",
@@ -588,9 +586,6 @@
       "rollWait": "Gira",
       "showMissions": "Mostrami le missioni",
       "start": "Fammi fare un giro",
-      "statCase": "Cassa aperta",
-      "statGame": "Giocato",
-      "statPot": "Vaso preso",
       "stepOf": "Passo {{n}} di 3",
       "titleCase": "Una cassa",
       "titleGame": "Un gioco",

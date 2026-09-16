@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "Resgatar +{{amount}} K₽",
     "adPlaceholder": "Espaço de teste",
-    "claim": "Resgatar bônus",
-    "nextIn": "Próximo bônus em {{clock}}",
-    "ready": "Bônus pronto"
+    "claim": "Resgatar bônus"
   },
   "casePage": {
     "addToBattle": "Adicionar à batalha",
@@ -588,9 +586,6 @@
       "rollWait": "Girando",
       "showMissions": "Mostrar minhas missões",
       "start": "Me mostra tudo",
-      "statCase": "Abriu uma caixa",
-      "statGame": "Jogou",
-      "statPot": "Pegou o pote",
       "stepOf": "Passo {{n}} de 3",
       "titleCase": "Uma caixa",
       "titleGame": "Um jogo",

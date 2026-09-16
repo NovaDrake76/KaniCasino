@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "+{{amount}} K₽ を受け取る",
     "adPlaceholder": "テスト用の枠",
-    "claim": "ボーナスを受け取る",
-    "nextIn": "次のボーナスまで {{clock}}",
-    "ready": "ボーナス受取可"
+    "claim": "ボーナスを受け取る"
   },
   "casePage": {
     "addToBattle": "バトルに追加",
@@ -588,9 +586,6 @@
       "rollWait": "回転中",
       "showMissions": "ミッションを見る",
       "start": "案内して",
-      "statCase": "ケースを開けた",
-      "statGame": "プレイした",
-      "statPot": "ポットを受け取った",
       "stepOf": "ステップ {{n}}/3",
       "titleCase": "ケース",
       "titleGame": "ゲーム",

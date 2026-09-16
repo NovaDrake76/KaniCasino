@@ -21,20 +21,22 @@ interface Props {
 const WIDTH = 380;
 const GAP = 16;
 const EDGE = 12;
+// the height a beside bubble is centered for, whatever its line: a longer line grows it downward instead of moving it
+const NOMINAL = 180;
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
-// beside what it points at, else below or above it; with nothing to point at yet, low and centered
+// beside what it points at, else below or above it; with nothing to point at yet, low and centered. an edge that faces the target stays put when a line is longer
 const placement = (rect: Rect | null, height: number, prefer?: "above") => {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  if (!rect) return { left: (vw - WIDTH) / 2, top: vh - height - 32 };
+  if (!rect) return { left: (vw - WIDTH) / 2, bottom: 32 };
   const left = clamp(rect.left + rect.width / 2 - WIDTH / 2, EDGE, vw - WIDTH - EDGE);
-  if (prefer === "above" && rect.top - GAP - height >= EDGE) return { left, top: rect.top - GAP - height };
-  const beside = clamp(rect.top + rect.height / 2 - height / 2, EDGE, vh - height - EDGE);
+  if (prefer === "above" && rect.top - GAP - height >= EDGE) return { left, bottom: vh - rect.top + GAP };
+  const beside = clamp(rect.top + rect.height / 2 - NOMINAL / 2, EDGE, vh - height - EDGE);
   if (rect.left + rect.width + GAP + WIDTH <= vw - EDGE) return { left: rect.left + rect.width + GAP, top: beside };
   if (rect.left - GAP - WIDTH >= EDGE) return { left: rect.left - GAP - WIDTH, top: beside };
   if (rect.top + rect.height + GAP + height <= vh - EDGE) return { left, top: rect.top + rect.height + GAP };
-  return { left, top: Math.max(EDGE, rect.top - GAP - height) };
+  return { left, bottom: Math.min(vh - EDGE - height, vh - rect.top + GAP) };
 };
 
 // what she says at a step. on a phone it is a sheet on the half of the screen away from the target

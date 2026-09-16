@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FiCheck, FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 import UserContext from "../../../UserContext";
 import TourBubble from "./TourBubble";
 import TypedText from "../TypedText";
@@ -169,7 +169,6 @@ const doneLine = (result: GameResult | null) => {
 };
 
 const DoneCard = ({ tour, onMissions, onLater }: { tour: TourState; onMissions: () => void; onLater: () => void }) => {
-  const game = tourGame(tour.game);
   return (
     <Backdrop>
       <div role="dialog" aria-label={t("doneTitle")} className="flex max-h-full w-full flex-col overflow-y-auto bg-surface shadow-2xl md:w-[520px]">
@@ -183,20 +182,6 @@ const DoneCard = ({ tour, onMissions, onLater }: { tour: TourState; onMissions: 
             <p className="m-0 text-sm leading-normal text-ink-soft">
               <TypedText text={t("doneOut")} />
             </p>
-          </div>
-        </div>
-        <div className="mx-5 grid grid-cols-3 gap-px bg-line md:mx-6">
-          <div className="flex min-w-0 flex-col gap-0.5 bg-surface-nav px-3 py-2.5">
-            <span className="text-xs font-semibold text-ink-muted">{t("statPot")}</span>
-            <FiCheck className="text-sm text-accent-gold" />
-          </div>
-          <div className="flex min-w-0 flex-col gap-0.5 bg-surface-nav px-3 py-2.5">
-            <span className="text-xs font-semibold text-ink-muted">{t("statCase")}</span>
-            <b className="truncate text-sm">{tour.drop ? tour.drop.name : <FiCheck className="text-accent-gold" />}</b>
-          </div>
-          <div className="flex min-w-0 flex-col gap-0.5 bg-surface-nav px-3 py-2.5">
-            <span className="text-xs font-semibold text-ink-muted">{t("statGame")}</span>
-            <b className="truncate text-sm">{game ? i18n.t(game.nameKey) : <FiCheck className="text-accent-gold" />}</b>
           </div>
         </div>
         <div className="flex flex-col gap-2 px-5 pb-6 pt-4 md:flex-row md:px-6">

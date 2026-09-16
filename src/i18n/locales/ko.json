@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "+{{amount}} K₽ 받기",
     "adPlaceholder": "테스트 자리",
-    "claim": "보너스 받기",
-    "nextIn": "다음 보너스까지 {{clock}}",
-    "ready": "보너스 준비됨"
+    "claim": "보너스 받기"
   },
   "casePage": {
     "addToBattle": "배틀에 추가",
@@ -588,9 +586,6 @@
       "rollWait": "돌아가는 중",
       "showMissions": "내 미션 보기",
       "start": "안내해 줘",
-      "statCase": "케이스 열었음",
-      "statGame": "플레이함",
-      "statPot": "항아리 받음",
       "stepOf": "{{n}}/3단계",
       "titleCase": "케이스",
       "titleGame": "게임",

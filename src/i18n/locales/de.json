@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "+{{amount}} K₽ abholen",
     "adPlaceholder": "Testplatzhalter",
-    "claim": "Bonus abholen",
-    "nextIn": "Nächster Bonus in {{clock}}",
-    "ready": "Bonus bereit"
+    "claim": "Bonus abholen"
   },
   "casePage": {
     "addToBattle": "Zum Battle hinzufügen",
@@ -588,9 +586,6 @@
       "rollWait": "Dreht sich",
       "showMissions": "Zeig mir meine Missionen",
       "start": "Zeig mir alles",
-      "statCase": "Kiste geöffnet",
-      "statGame": "Gespielt",
-      "statPot": "Topf genommen",
       "stepOf": "Schritt {{n}} von 3",
       "titleCase": "Eine Kiste",
       "titleGame": "Ein Spiel",

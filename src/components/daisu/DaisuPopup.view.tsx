@@ -26,6 +26,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   takeFromJar,
   poke,
   pokeLocked,
+  touring,
   pops,
   run,
   settleMs,
@@ -71,7 +72,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
     </header>
 
     <div className="flex flex-col gap-3 px-4 pt-4">
-      <SpeechBubble line={line} />
+      {!touring && <SpeechBubble line={line} />}
       <DaisuArt
         fill={fill}
         face={face}

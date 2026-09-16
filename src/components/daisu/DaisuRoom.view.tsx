@@ -33,6 +33,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   takeFromJar,
   poke,
   pokeLocked,
+  touring,
   pops,
   run,
   settleMs,
@@ -86,7 +87,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
 
       <div className="grid gap-8 md:grid-cols-[22rem_minmax(0,1fr)]">
         <section className="flex flex-col gap-4">
-          <SpeechBubble line={line} />
+          {!touring && <SpeechBubble line={line} />}
           <DaisuArt
             fill={fill}
             face={face}

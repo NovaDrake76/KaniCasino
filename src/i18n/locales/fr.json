@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "Récupérer +{{amount}} K₽",
     "adPlaceholder": "Espace de test",
-    "claim": "Récupérer le bonus",
-    "nextIn": "Prochain bonus dans {{clock}}",
-    "ready": "Bonus prêt"
+    "claim": "Récupérer le bonus"
   },
   "casePage": {
     "addToBattle": "Ajouter à une bataille",
@@ -588,9 +586,6 @@
       "rollWait": "Ça tourne",
       "showMissions": "Voir mes missions",
       "start": "Fais-moi visiter",
-      "statCase": "Caisse ouverte",
-      "statGame": "Jeu",
-      "statPot": "Pot récupéré",
       "stepOf": "Étape {{n}} sur 3",
       "titleCase": "Une caisse",
       "titleGame": "Un jeu",

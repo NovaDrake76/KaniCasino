@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "Klaim +{{amount}} K₽",
     "adPlaceholder": "Nyoba placeholder",
-    "claim": "Klaim Tambahan",
-    "nextIn": "Bonus berikutnya dalam {{clock}}",
-    "ready": "Bonus siap"
+    "claim": "Klaim Tambahan"
   },
   "casePage": {
     "addToBattle": "Add ke adu",
@@ -588,9 +586,6 @@
       "rollWait": "Berputar",
       "showMissions": "Tunjukkan misiku",
       "start": "Ajak aku keliling",
-      "statCase": "Membuka kotak",
-      "statGame": "Bermain",
-      "statPot": "Mengambil toples",
       "stepOf": "Langkah {{n}} dari 3",
       "titleCase": "Satu kotak",
       "titleGame": "Satu game",

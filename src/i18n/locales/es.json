@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "Reclamar +{{amount}} K₽",
     "adPlaceholder": "Espacio de prueba",
-    "claim": "Reclamar bono",
-    "nextIn": "Próximo bono en {{clock}}",
-    "ready": "Bono listo"
+    "claim": "Reclamar bono"
   },
   "casePage": {
     "addToBattle": "Añadir a una batalla",
@@ -588,9 +586,6 @@
       "rollWait": "Girando",
       "showMissions": "Ver mis misiones",
       "start": "Enséñame todo",
-      "statCase": "Abriste una caja",
-      "statGame": "Jugaste",
-      "statPot": "Tomaste el bote",
       "stepOf": "Paso {{n}} de 3",
       "titleCase": "Una caja",
       "titleGame": "Un juego",

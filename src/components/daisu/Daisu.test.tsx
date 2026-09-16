@@ -7,13 +7,14 @@ import { GAME_PLAYED_EVENT } from "../../services/api";
 import type { PotStatus } from "../../services/daisu/DaisuService";
 import { endHelp, helpState } from "./tour/helpStore";
 import { DAISU_POKED_EVENT, openDaisuShop } from "./tour/tourEvents";
-import { setPokeMode } from "./tour/tourStore";
+import { endTour, setPokeMode, syncTour } from "./tour/tourStore";
 
 const getPotStatus = vi.fn();
 const claimPot = vi.fn();
 vi.mock("../../services/daisu/DaisuService", () => ({
   getPotStatus: (...args: unknown[]) => getPotStatus(...args),
   claimPot: (...args: unknown[]) => claimPot(...args),
+  saveTour: () => Promise.resolve(),
 }));
 
 const getRoadmap = vi.fn();
@@ -417,6 +418,27 @@ describe("daisu in the corner", () => {
 
     expect(await screen.findByRole("dialog", { name: "Chat Pass" })).toBeTruthy();
     expect(screen.getByRole("dialog", { name: /daisu's room/i })).toBeTruthy();
+  });
+
+  it("starts folded into her bubble on a first visit", async () => {
+    window.localStorage.clear();
+    draw();
+
+    expect(await screen.findByLabelText("Open Daisu")).toBeTruthy();
+    expect(screen.queryByLabelText("Daisu", { selector: "section" })).toBeNull();
+  });
+
+  it("keeps quiet on her card while her tour runs, and talks again once it ends", async () => {
+    act(() => syncTour("quiet-1", { status: "active", step: "pot" }));
+    draw();
+    await screen.findByText(/full pot bonus/i);
+    expect(document.querySelector('section[aria-label="Daisu"] p')).toBeNull();
+
+    act(() => endTour());
+    fireEvent.click(screen.getByLabelText("Close"));
+    fireEvent.click(await screen.findByLabelText("Open Daisu"));
+    await waitFor(() => expect(document.querySelector('section[aria-label="Daisu"] p')?.textContent).toBeTruthy());
+    act(() => syncTour(null, null));
   });
 
   it("folds into the bubble and remembers that", async () => {

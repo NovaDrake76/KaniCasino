@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "领取 +{{amount}} K₽",
     "adPlaceholder": "测试占位",
-    "claim": "领取奖励",
-    "nextIn": "下次奖励 {{clock}}",
-    "ready": "奖励已就绪"
+    "claim": "领取奖励"
   },
   "casePage": {
     "addToBattle": "加入对战",
@@ -588,9 +586,6 @@
       "rollWait": "转动中",
       "showMissions": "看看我的任务",
       "start": "带我转转",
-      "statCase": "开了箱子",
-      "statGame": "玩了",
-      "statPot": "拿了罐子",
       "stepOf": "第 {{n}} 步，共 3 步",
       "titleCase": "箱子",
       "titleGame": "游戏",

@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "Claim +{{amount}} K₽",
     "adPlaceholder": "Test placeholder",
-    "claim": "Claim Bonus",
-    "nextIn": "Next bonus in {{clock}}",
-    "ready": "Bonus ready"
+    "claim": "Claim Bonus"
   },
   "casePage": {
     "addToBattle": "Add to battle",
@@ -588,9 +586,6 @@
       "rollWait": "Rolling",
       "showMissions": "Show me my missions",
       "start": "Show me around",
-      "statCase": "Opened a case",
-      "statGame": "Played",
-      "statPot": "Took the pot",
       "stepOf": "Step {{n}} of 3",
       "titleCase": "A case",
       "titleGame": "A game",

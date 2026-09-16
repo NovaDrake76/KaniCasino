@@ -209,9 +209,7 @@
   "bonus": {
     "adClaim": "Nhận +{{amount}} K₽",
     "adPlaceholder": "Chỗ thử nghiệm",
-    "claim": "Nhận thưởng",
-    "nextIn": "Thưởng tiếp theo sau {{clock}}",
-    "ready": "Thưởng sẵn sàng"
+    "claim": "Nhận thưởng"
   },
   "casePage": {
     "addToBattle": "Thêm vào trận đấu",
@@ -588,9 +586,6 @@
       "rollWait": "Đang quay",
       "showMissions": "Xem nhiệm vụ của tôi",
       "start": "Dẫn tôi đi xem",
-      "statCase": "Đã mở hòm",
-      "statGame": "Đã chơi",
-      "statPot": "Đã lấy hũ",
       "stepOf": "Bước {{n}}/3",
       "titleCase": "Một hòm",
       "titleGame": "Một trò chơi",
