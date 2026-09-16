@@ -40,24 +40,24 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
   }
 
   return (
-    <div className="fixed flex items-center justify-center h-screen w-screen z-50 top-[40px] bg-black/40">
-      <div className="bg-[#17132B] p-8 rounded w-[600px] min-h-[290px] ">
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/40 px-4">
+      <div className="bg-[#17132B] p-5 md:p-8 rounded w-full max-w-[600px] max-h-[90vh] overflow-y-auto">
         <h2 className="text-lg font-semibold mb-2">{i18n.t("market.confirmPurchase")}</h2>
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white text-lg">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-white md:text-lg break-words min-w-0">
             Are you sure you want to buy the {item.item.name} for {item.price} KP?
           </p>
-          <img src={item.item.image} alt="" className="h-28" />
+          <img src={item.item.image} alt="" className="h-24 md:h-28 shrink-0" />
         </div>
 
-        <div className="flex items-center justify-end gap-4 mt-12">
+        <div className="flex items-center justify-end gap-4 mt-8 md:mt-12">
           <button
             className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md"
             onClick={onClose}
           >
             {i18n.t("collections.cancel")}
           </button>
-          <div className="w-44">
+          <div className="flex-1 sm:flex-none sm:w-44">
             <MainButton
               text={i18n.t("market.confirm")}
               onClick={handleConfirm}
