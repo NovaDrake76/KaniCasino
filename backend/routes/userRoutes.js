@@ -79,7 +79,7 @@ router.post(
       const placeholder = getRandomPlaceholderImage();
       // strictly true, so a stray truthy value cannot sign somebody up to the mailing list
       const consented = marketingOptIn === true;
-      user = new User({
+      const user = new User({
         email,
         username,
         slug: await mintSlug(User, username, { alsoTaken: "pastSlugs" }),
