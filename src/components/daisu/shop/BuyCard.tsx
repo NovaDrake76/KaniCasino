@@ -6,6 +6,7 @@ import type { ShopItem } from "../../../services/daisu/ShopService";
 import ShopArt from "./ShopArt";
 import { kp } from "../potMath";
 import i18n from "../../../i18n";
+import TypedText from "../TypedText";
 
 interface Props {
   item: ShopItem;
@@ -60,7 +61,7 @@ const BuyCard = ({ item, walletBalance, level, buying, onBuy, onClose }: Props) 
         </div>
         <div className="flex items-start gap-3 bg-surface-nav p-3">
           <img src="/images/daisu/bust.webp" alt="" className="h-10 w-10 shrink-0 object-contain object-top" />
-          <p className="m-0 text-[13px] leading-normal text-ink-soft">{t(`items.${item.key}.pitch`)}</p>
+          <p className="m-0 text-[13px] leading-normal text-ink-soft"><TypedText text={t(`items.${item.key}.pitch`)} /></p>
         </div>
         <div className="flex flex-col gap-2">
           <button

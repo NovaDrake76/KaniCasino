@@ -4,6 +4,7 @@ import type { Roadmap } from "../../../services/daisu/RoadmapService";
 import { chapterName, missionWords } from "./missionCopy";
 import { kp } from "../potMath";
 import i18n from "../../../i18n";
+import TypedText from "../TypedText";
 
 interface Props {
   done: { chapter: number; bonus: number };
@@ -31,7 +32,7 @@ const ChapterDone = ({ done, roadmap, game, onClose }: Props) =>
           <div className="flex flex-col gap-2.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">{t("chapterDone", { n: done.chapter })}</span>
             <span className="text-[32px] font-extrabold leading-none text-accent-gold md:text-[40px]">+{kp(done.bonus)}</span>
-            <p className="m-0 text-sm leading-normal text-ink-soft">{t(roadmap?.finished ? "finishedLine" : "chapterDoneLine")}</p>
+            <p className="m-0 text-sm leading-normal text-ink-soft"><TypedText text={t(roadmap?.finished ? "finishedLine" : "chapterDoneLine")} /></p>
           </div>
         </div>
         {roadmap && !roadmap.finished && (

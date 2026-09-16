@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import type { Line } from "./Daisu.types";
 import i18n from "../../i18n";
+import TypedText from "./TypedText";
 
 interface Props {
   line: Line | null;
@@ -18,7 +19,7 @@ const SpeechBubble = ({ line, className }: Props) => (
       transition={{ duration: 0.18 }}
       className="relative m-0"
     >
-      {line ? i18n.t(line.key, line.vars) : i18n.t("daisu.loading")}
+      <TypedText text={line ? i18n.t(line.key, line.vars) : i18n.t("daisu.loading")} />
     </motion.p>
   </div>
 );

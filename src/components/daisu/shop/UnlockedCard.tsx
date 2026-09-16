@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import type { UnlockKey } from "../../../services/daisu/ShopService";
 import ShopArt from "./ShopArt";
 import i18n from "../../../i18n";
+import TypedText from "../TypedText";
 
 interface Props {
   unlock: UnlockKey;
@@ -28,7 +29,7 @@ const UnlockedCard = ({ unlock, onShowMe, onLater }: Props) =>
         <span className="text-2xl font-extrabold leading-tight md:text-[28px]">{t(`items.${unlock}.name`)}</span>
         <div className="flex items-start gap-3 bg-surface-nav p-3 text-left">
           <img src="/images/daisu/bust.webp" alt="" className="h-10 w-10 shrink-0 object-contain object-top" />
-          <p className="m-0 text-[13px] leading-normal text-ink-soft">{t(`items.${unlock}.opened`)}</p>
+          <p className="m-0 text-[13px] leading-normal text-ink-soft"><TypedText text={t(`items.${unlock}.opened`)} /></p>
         </div>
         <div className="flex w-full flex-col gap-2.5 md:flex-row">
           <button
