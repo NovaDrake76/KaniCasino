@@ -8,6 +8,7 @@ export const ITEM_PINNED_EVENT = "item:pinned";
 export const ITEM_SOLD_EVENT = "item:sold";
 export const SHOP_OPEN_EVENT = "daisu:shop";
 export const CHAT_OPEN_EVENT = "chat:open";
+export const DAISU_POKED_EVENT = "daisu:poked";
 
 export interface RevealedItem {
   name: string;
@@ -32,3 +33,4 @@ export const emitItemSold = () => emit(ITEM_SOLD_EVENT);
 // her room on the shop, on one item's card when a key is given
 export const openDaisuShop = (key?: string) => emit(SHOP_OPEN_EVENT, key);
 export const openChat = () => emit(CHAT_OPEN_EVENT);
+export const emitPoked = () => emit(DAISU_POKED_EVENT);

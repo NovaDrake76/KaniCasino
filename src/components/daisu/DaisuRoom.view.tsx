@@ -32,6 +32,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   creditSharePct,
   takeFromJar,
   poke,
+  pokeLocked,
   pops,
   run,
   settleMs,
@@ -95,6 +96,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
             settleMs={settleMs}
             onJar={takeFromJar}
             onPoke={poke}
+            pokeLocked={pokeLocked}
             jarLabel={i18n.t("daisu.jar")}
             pokeLabel="Daisu"
             className="mx-auto w-full max-w-[22rem]"

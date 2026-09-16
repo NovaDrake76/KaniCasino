@@ -18,6 +18,7 @@ interface Props {
   settleMs?: number;
   jarLabel?: string;
   pokeLabel?: string;
+  pokeLocked?: boolean;
 }
 
 // one drawing per face; a face without its own drawing falls back to idle, so new art
@@ -56,7 +57,7 @@ const box = (r: typeof GLASS) => ({
 
 // daisu holding the jar. the coins in the drawing are covered from the top by as much
 // of the jar as has been taken, so the picture itself is the gauge
-const DaisuArt = ({ fill, face, shaking, bust, className, onJar, onPoke, pops = [], run, settleMs, jarLabel, pokeLabel }: Props) => {
+const DaisuArt = ({ fill, face, shaking, bust, className, onJar, onPoke, pops = [], run, settleMs, jarLabel, pokeLabel, pokeLocked }: Props) => {
   const level = Math.max(0, Math.min(1, fill));
   const src = bust ? BUST : SPRITES[face] || SPRITES.idle;
 
@@ -72,7 +73,8 @@ const DaisuArt = ({ fill, face, shaking, bust, className, onJar, onPoke, pops = 
           type="button"
           onClick={onPoke}
           aria-label={pokeLabel}
-          className="absolute inset-0 cursor-pointer border-none bg-transparent p-0 hover:border-none focus:outline-none"
+          disabled={pokeLocked}
+          className="absolute inset-0 cursor-pointer border-none bg-transparent p-0 hover:border-none focus:outline-none disabled:cursor-default"
         />
         <button
           type="button"

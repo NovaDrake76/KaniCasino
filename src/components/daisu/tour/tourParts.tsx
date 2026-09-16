@@ -1,27 +1,48 @@
 import { useEffect, useState } from "react";
 import type { ComponentProps, ReactNode } from "react";
+import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 import TourBubble from "./TourBubble";
 import { Rect, useTarget } from "./useTarget";
 import { TOUR_GAMES, TourGameInfo } from "./tourGames";
+import { getCases } from "../../../services/cases/CaseServices";
+import { CaseLite, cheapestPerCategory } from "./tourCases";
+import Monetary from "../../Monetary";
 import i18n from "../../../i18n";
+import TypedText from "../TypedText";
 
 const DIM = "rgba(9, 7, 20, 0.74)";
 const PAD = 6;
 const t = (key: string) => i18n.t(`daisu.tour.${key}`);
 
-// four dim panels around the target rather than one sheet over it, so the target stays clickable.
-// undimmed, only the outline is drawn and the page stays usable around it
-export const Spotlight = ({ rect, dim = true }: { rect: Rect | null; dim?: boolean }) => {
+// the outline around what she points at, with the page left in full view around it. bold is for a player who keeps missing it.
+// dimmed, four panels cover everything but the target, so only the target stays clickable
+export const Spotlight = ({ rect, dim = false, bold = false }: { rect: Rect | null; dim?: boolean; bold?: boolean }) => {
   if (!rect) return null;
-  const top = rect.top - PAD;
-  const left = rect.left - PAD;
-  const width = rect.width + PAD * 2;
-  const height = rect.height + PAD * 2;
+  const pad = bold ? PAD + 4 : PAD;
+  const top = rect.top - pad;
+  const left = rect.left - pad;
+  const width = rect.width + pad * 2;
+  const height = rect.height + pad * 2;
   const outline = (
-    <div
-      className="pointer-events-none fixed"
-      style={{ top, left, width, height, outline: "2px solid #FFCC00", boxShadow: "0 0 36px 10px rgba(255, 204, 0, 0.28)" }}
-    />
+    <>
+      <div
+        className="pointer-events-none fixed"
+        style={{
+          top,
+          left,
+          width,
+          height,
+          outline: `${bold ? 5 : 2}px solid #FFCC00`,
+          boxShadow: `0 0 36px ${bold ? 16 : 10}px rgba(255, 204, 0, ${bold ? 0.45 : 0.28})`,
+        }}
+      />
+      {bold && (
+        <>
+          <FiChevronsRight aria-hidden className="pointer-events-none fixed text-4xl text-accent-gold drop-shadow" style={{ top: top + height / 2 - 18, left: left - 46 }} />
+          <FiChevronsLeft aria-hidden className="pointer-events-none fixed text-4xl text-accent-gold drop-shadow" style={{ top: top + height / 2 - 18, left: left + width + 10 }} />
+        </>
+      )}
+    </>
   );
   if (!dim) return outline;
   return (
@@ -42,14 +63,16 @@ export const Backdrop = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-type GuidedProps = Omit<ComponentProps<typeof TourBubble>, "rect"> & { target: string; dim?: boolean };
+// anchor places her words beside something bigger than the target, like her whole card around the jar, so they never cover it
+type GuidedProps = Omit<ComponentProps<typeof TourBubble>, "rect"> & { target: string; anchor?: string; dim?: boolean; bold?: boolean };
 
-export const Guided = ({ target, dim = true, ...bubble }: GuidedProps) => {
+export const Guided = ({ target, anchor, dim = false, bold = false, ...bubble }: GuidedProps) => {
   const { rect } = useTarget(target);
+  const around = useTarget(anchor ?? null);
   return (
     <>
-      <Spotlight rect={rect} dim={dim} />
-      <TourBubble rect={rect} {...bubble} />
+      <Spotlight rect={rect} dim={dim} bold={bold} />
+      <TourBubble rect={around.rect ?? rect} {...bubble} />
     </>
   );
 };
@@ -123,7 +146,9 @@ export const GamePicker = ({ eyebrow, line, step, endLabel, onPick, onEnd }: Pic
         <img src="/images/daisu/bust.webp" alt="" className="h-[54px] w-[54px] shrink-0 object-contain object-top" />
         <div className="flex flex-col gap-1.5">
           <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{eyebrow}</span>
-          <p className="m-0 text-sm leading-normal text-ink-soft">{line}</p>
+          <p className="m-0 text-sm leading-normal text-ink-soft">
+            <TypedText text={line} />
+          </p>
         </div>
       </div>
       {step && (
@@ -161,3 +186,75 @@ export const GamePicker = ({ eyebrow, line, step, endLabel, onPick, onEnd }: Pic
     </div>
   </Backdrop>
 );
+
+interface CasePickerProps {
+  eyebrow: string;
+  line: string;
+  endLabel: string;
+  onPick: (id: string) => void;
+  onEnd: () => void;
+}
+
+export const CasePicker = ({ eyebrow, line, endLabel, onPick, onEnd }: CasePickerProps) => {
+  const [cases, setCases] = useState<CaseLite[] | null>(null);
+
+  useEffect(() => {
+    let live = true;
+    getCases()
+      .then((list: CaseLite[]) => live && setCases(cheapestPerCategory(Array.isArray(list) ? list : [])))
+      .catch(() => live && setCases([]));
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  return (
+    <Backdrop>
+      <div role="dialog" aria-label={eyebrow} className="flex max-h-full w-full flex-col overflow-y-auto bg-surface shadow-2xl md:w-[780px]">
+        <div className="flex gap-3.5 px-5 pb-4 pt-5 md:px-6">
+          <img src="/images/daisu/bust.webp" alt="" className="h-[54px] w-[54px] shrink-0 object-contain object-top" />
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{eyebrow}</span>
+            <p className="m-0 text-sm leading-normal text-ink-soft">
+              <TypedText text={line} />
+            </p>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-1 px-5 md:px-6">
+          <span className="h-[3px] bg-accent-gold" />
+          <span className="h-[3px] bg-accent-gold" />
+          <span className="h-[3px] bg-surface-nav" />
+        </div>
+        <div className="grid grid-cols-2 gap-2.5 px-5 pb-2 pt-4 md:grid-cols-5 md:px-6">
+          {cases === null
+            ? [0, 1, 2, 3, 4].map((i) => <div key={i} className="h-[150px] animate-pulse bg-surface-nav" />)
+            : cases.map((c) => (
+                <button
+                  key={c._id}
+                  type="button"
+                  onClick={() => onPick(c._id)}
+                  className="group relative flex h-[150px] flex-col items-center justify-end gap-1 rounded-none border-none bg-surface-nav px-2 pb-3 pt-2 hover:border-none hover:bg-surface-raised focus:outline-none"
+                >
+                  <img src={c.image} alt="" className="block h-[72px] w-auto max-w-[110px] object-contain" />
+                  <b className="line-clamp-1 text-[13px] font-bold text-ink">{c.title}</b>
+                  <small className="text-[11px] text-ink-muted">{c.category}</small>
+                  <span className="text-xs font-bold text-accent-gold">
+                    <Monetary value={c.price} />
+                  </span>
+                  <span className="absolute inset-x-0 bottom-0 h-[3px] bg-accent-gold opacity-0 transition-opacity group-hover:opacity-100" />
+                </button>
+              ))}
+        </div>
+        <div className="flex items-center justify-end gap-3 px-5 pb-5 pt-3 md:px-6">
+          <button
+            type="button"
+            onClick={onEnd}
+            className="h-11 shrink-0 whitespace-nowrap border-none bg-transparent px-1 text-xs font-semibold text-ink-faint hover:border-none hover:text-ink-soft focus:outline-none"
+          >
+            {endLabel}
+          </button>
+        </div>
+      </div>
+    </Backdrop>
+  );
+};

@@ -1,12 +1,12 @@
-// how long daisu's first-login tour stays on offer after signup. an account the flag reaches later
-// has been playing without it, so she does not greet it as a new face
+// how long after signup daisu greets an account as a new face; older accounts get her hello for players who already know their way
 const OFFER_DAYS = 7;
 
-// what /users/me says about the tour: nothing for an account from before it or an offer that lapsed
+// what /users/me says about the tour: an account from before it, or one whose offer went untaken, is offered it as a returning player
 const tourOf = (user, now = Date.now()) => {
   const status = user && user.onboarding && user.onboarding.status;
-  if (!status) return null;
-  if (status === "offered" && now - user._id.getTimestamp().getTime() > OFFER_DAYS * 86400000) return null;
+  const old = !!user && now - user._id.getTimestamp().getTime() > OFFER_DAYS * 86400000;
+  if (!status) return { status: "offered", step: null, returning: true };
+  if (status === "offered") return { status, step: null, returning: old };
   return { status, step: user.onboarding.step || null };
 };
 

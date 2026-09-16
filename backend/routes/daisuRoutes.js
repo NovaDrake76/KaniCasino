@@ -36,9 +36,9 @@ router.get("/status", ...gate, (req, res) => {
   res.json(statusOf(req.user));
 });
 
-const TOUR_STEPS = ["pot", "case", "open", "drop", "game", "bet", "play", "done"];
-// where each status may be reached from; skipped and done are final, so a tour runs once
-const TOUR_FROM = { active: ["offered", "active"], skipped: ["offered", "active"], done: ["active"] };
+const TOUR_STEPS = ["pot", "case", "open", "drop", "game", "bet", "range", "play", "done"];
+// where each status may be reached from; skipped and done are final, so a tour runs once. null is an account from before the tour
+const TOUR_FROM = { active: ["offered", "active", null], skipped: ["offered", "active", null], done: ["active"] };
 
 router.post("/tour", ...gate, async (req, res) => {
   const { status, step } = req.body || {};
@@ -49,7 +49,7 @@ router.post("/tour", ...gate, async (req, res) => {
     const was = (req.user.onboarding && req.user.onboarding.status) || null;
     const set = { "onboarding.status": status };
     if (step) set["onboarding.step"] = step;
-    if (status === "active" && was === "offered") set["onboarding.startedAt"] = now;
+    if (status === "active" && (was === "offered" || was === null)) set["onboarding.startedAt"] = now;
     if (status !== "active") set["onboarding.endedAt"] = now;
     const result = await User.updateOne({ _id: req.user._id, "onboarding.status": { $in: TOUR_FROM[status] } }, { $set: set });
     if (!result.matchedCount) return res.status(409).json({ message: "The tour is not running", reason: "tour" });

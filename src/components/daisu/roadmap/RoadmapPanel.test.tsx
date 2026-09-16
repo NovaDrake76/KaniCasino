@@ -66,7 +66,9 @@ describe("her missions tab", () => {
     expect(screen.getByText("3 / 5")).toBeTruthy();
     expect(screen.getByText("Claimed")).toBeTruthy();
     expect(screen.getByText(/chapter 2 · settling in/i)).toBeTruthy();
-    expect(screen.getByText(/opens after chapter 1/i)).toBeTruthy();
+    expect(screen.getByText(/complete previous missions to unlock/i)).toBeTruthy();
+    expect(screen.queryByText(/finish all four/i)).toBeNull();
+    expect(screen.queryByText(/spin the daily gift/i)).toBeNull();
   });
 
   it("claims a finished mission and asks for help on one that is not", () => {

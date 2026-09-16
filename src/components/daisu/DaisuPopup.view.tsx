@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiX } from "react-icons/fi";
+import { FiChevronRight, FiX } from "react-icons/fi";
 import { FaGift } from "react-icons/fa";
 import { BsDoorOpen } from "react-icons/bs";
-import BonusSection from "./BonusSection";
+import ActiveBonuses from "./ActiveBonuses";
 import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
-import NextUp from "./roadmap/NextUp";
 import type { DaisuViewProps } from "./Daisu.types";
 import i18n from "../../i18n";
 
@@ -16,7 +15,6 @@ const spring = { type: "spring", stiffness: 420, damping: 32 } as const;
 const DaisuPopupView: React.FC<DaisuViewProps> = ({
   closeToBubble,
   openRoom,
-  openRoomHelp,
   fill,
   inJar,
   full,
@@ -27,6 +25,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   fullBonusPct,
   takeFromJar,
   poke,
+  pokeLocked,
   pops,
   run,
   settleMs,
@@ -34,10 +33,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   face,
   shaking,
   bonuses,
-  bonusGame,
   roadmap,
-  claimingMission,
-  claimMission,
   giftReady,
   missionReady,
 }) => (
@@ -46,6 +42,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
     animate={{ opacity: 1, y: 0, scale: 1 }}
     transition={spring}
     aria-label="Daisu"
+    data-tour="daisu-card"
     className="fixed bottom-4 right-4 z-sticky flex max-h-[calc(100vh-2rem)] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-y-auto bg-surface shadow-2xl"
   >
     <header className="flex items-center justify-between border-b border-line px-4 py-2">
@@ -84,6 +81,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
         settleMs={settleMs}
         onJar={takeFromJar}
         onPoke={poke}
+        pokeLocked={pokeLocked}
         jarLabel={i18n.t("daisu.jar")}
         pokeLabel="Daisu"
         className="mx-auto h-64"
@@ -101,7 +99,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
     </div>
 
     <div className="flex flex-col gap-2 px-4 pb-4 pt-3">
-      <BonusSection bonuses={bonuses} />
+      <ActiveBonuses bonuses={bonuses} />
       {giftReady && (
         <Link
           to="/gift"
@@ -114,14 +112,22 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
           <span className="text-xs font-semibold uppercase tracking-wide">{i18n.t("daisu.giftOpen")}</span>
         </Link>
       )}
-      <NextUp
-        roadmap={roadmap}
-        claimingMission={claimingMission}
-        bonusGame={bonusGame}
-        onClaim={claimMission}
-        onHelp={openRoomHelp}
-        onAll={openRoom}
-      />
+      {roadmap && !roadmap.finished && (
+        <button
+          type="button"
+          onClick={openRoom}
+          className="flex w-full items-center justify-between gap-2 border-none bg-transparent px-0 py-1 text-left text-xs font-semibold text-ink-soft hover:border-none hover:text-ink focus:outline-none"
+        >
+          <span className="flex items-center gap-2">
+            <span className={`h-1.5 w-1.5 ${missionReady ? "bg-accent-gold" : "bg-ink-faint"}`} />
+            {i18n.t("daisu.missionsDone", {
+              done: roadmap.missions.filter((m) => m.complete).length,
+              total: roadmap.missions.length,
+            })}
+          </span>
+          <FiChevronRight aria-hidden />
+        </button>
+      )}
     </div>
   </motion.section>
 );

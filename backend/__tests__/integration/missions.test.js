@@ -340,4 +340,14 @@ describe("POST /missions/:key/visit (social, honor-system)", () => {
     const u = await makeUser();
     expect((await auth(request(app).post("/missions/first-case/visit"), u)).status).toBe(400);
   });
+
+  test("a secret achievement stays off the list until it is earned, then shows up to be claimed", async () => {
+    const u = await makeUser();
+    expect(find((await getMissions(u)).body, "men-kisser")).toBeUndefined();
+
+    expect((await auth(request(app).post("/missions/men-kisser/visit"), u)).status).toBe(200);
+
+    const secret = find((await getMissions(u)).body, "men-kisser");
+    expect(secret).toMatchObject({ category: "secret", complete: true, claimable: true });
+  });
 });

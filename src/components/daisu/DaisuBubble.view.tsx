@@ -13,6 +13,7 @@ const DaisuBubbleView: React.FC<DaisuViewProps> = ({ openPopup, inJar, fill, fac
     <motion.button
       type="button"
       onClick={openPopup}
+      data-tour="daisu-bubble"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       aria-label={i18n.t("daisu.open")}

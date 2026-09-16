@@ -149,6 +149,8 @@ function currentFor(mission, ctx) {
     case "social":
       if (mission.social === "discord") return ctx.inDiscord ? 1 : 0;
       return ctx.visited.has(mission.key) ? 1 : 0;
+    case "secret":
+      return ctx.visited.has(mission.key) ? 1 : 0;
     default: return 0;
   }
 }
@@ -174,7 +176,7 @@ function view(mission, ctx) {
 
 async function getMissionsView(userId) {
   const ctx = await buildContext(userId);
-  const missions = ACTIVE.map((m) => view(m, ctx));
+  const missions = ACTIVE.map((m) => view(m, ctx)).filter((m, i) => !ACTIVE[i].secret || m.complete);
   const totals = {
     total: missions.length,
     completed: missions.filter((m) => m.complete).length,
@@ -222,7 +224,7 @@ async function getPendingAnnouncements(userId, { light = false } = {}) {
 // the join/follow, which is why these rewards are tiny.
 async function markVisited(userId, key) {
   const mission = byKey(key);
-  if (!mission || mission.metric !== "social") return { ok: false };
+  if (!mission || (mission.metric !== "social" && mission.metric !== "secret")) return { ok: false };
   await MissionState.updateOne(
     { userId },
     { $setOnInsert: { userId }, $addToSet: { visited: key } },

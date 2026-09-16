@@ -23,8 +23,9 @@ const CATEGORY_LABELS: Record<string, string> = {
   collection: "missions.collection",
   community: "missions.community",
   endgame: "missions.allIn",
+  secret: "missions.secret",
 };
-const CATEGORY_ORDER = ["onboarding", "games", "collection", "community", "endgame"];
+const CATEGORY_ORDER = ["onboarding", "games", "collection", "community", "endgame", "secret"];
 
 const MissionsView: React.FC<Props> = ({
   data,

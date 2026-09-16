@@ -6,7 +6,8 @@ import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
 import type { PotStatus } from "../../services/daisu/DaisuService";
 import { endHelp, helpState } from "./tour/helpStore";
-import { openDaisuShop } from "./tour/tourEvents";
+import { DAISU_POKED_EVENT, openDaisuShop } from "./tour/tourEvents";
+import { setPokeMode } from "./tour/tourStore";
 
 const getPotStatus = vi.fn();
 const claimPot = vi.fn();
@@ -102,6 +103,8 @@ const draw = (daisu = true, extra: Record<string, unknown> = {}) =>
   );
 
 const jar = () => screen.getByLabelText("The jar");
+// her card keeps the bonuses behind a single line, shown on hover
+const showBonuses = async () => fireEvent.mouseEnter(await screen.findByRole("button", { name: /active bonuses/i }));
 // the jar ticks on Date.now, so fake timers move the pot and the pause together
 const wait = (ms: number) =>
   act(async () => {
@@ -159,6 +162,7 @@ describe("daisu in the corner", () => {
     await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(runState()).toBe("sent"));
     expect(toogleUserData.mock.calls[0][0].walletBalance).toBe(1000);
+    await showBonuses();
     expect(await screen.findByText(/used first on your dice bets/i)).toBeTruthy();
   });
 
@@ -229,36 +233,39 @@ describe("daisu in the corner", () => {
       })
     );
     draw();
+    await showBonuses();
 
     expect(await screen.findByText(/play before it runs out/i)).toBeTruthy();
     expect(screen.getAllByText(/0:4\d/).length).toBeGreaterThan(0);
     expect(screen.queryByText(/dice bonus expired/i)).toBeNull();
   });
 
-  it("keeps the last bonus as a receipt once every one has run out", async () => {
+  it("drops the bonus line from her card once every bonus has run out", async () => {
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "plinko", amount: 125, expiresAt: iso(-60000), expired: true }] }));
     draw();
+    await screen.findByText(/full in \d/i);
 
-    expect(await screen.findByText(/plinko bonus expired/i)).toBeTruthy();
-    expect(screen.getByText(/take from the jar for a new one/i)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /active bonuses/i })).toBeNull();
   });
 
   it("calls a bonus out as it runs out while she is open", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(3000), expired: false }] }));
     draw();
+    await showBonuses();
     await screen.findByText(/play before it runs out/i);
 
     await wait(3500);
 
     expect(await screen.findByText(/took your dice bonus back|on dice is mine now/i)).toBeTruthy();
-    expect(await screen.findByText(/dice bonus expired/i)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /active bonuses/i })).toBeNull();
   });
 
   it("reads the pot again after its bonus game is played, and not after any other", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(200000), expired: false }] }));
     draw();
+    await showBonuses();
     await screen.findByText(/used first on your dice bets/i);
     const played = (game: string) =>
       act(() => {
@@ -291,13 +298,32 @@ describe("daisu in the corner", () => {
     expect(await screen.findByText(/^What\?$|I'm busy|poking me|not the pot/)).toBeTruthy();
   });
 
+  it("leaves her answers to the tour while it scripts them, and cannot be poked once it locks her", async () => {
+    const poked = vi.fn();
+    window.addEventListener(DAISU_POKED_EVENT, poked);
+    setPokeMode("script");
+    draw();
+    await screen.findByText(/full pot bonus/i);
+    const her = screen.getByLabelText("Daisu", { selector: "button" });
+
+    fireEvent.click(her);
+    expect(poked).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/^What\?$|I'm busy|poking me|not the pot/)).toBeNull();
+
+    act(() => setPokeMode("locked"));
+    expect(her).toBeDisabled();
+
+    act(() => setPokeMode(null));
+    window.removeEventListener(DAISU_POKED_EVENT, poked);
+  });
+
   it("offers her gift when one is waiting", async () => {
     giftReady = true;
     draw();
     expect(await screen.findByText(/daisu has a gift for you/i)).toBeTruthy();
   });
 
-  it("claims a reward from her card, and the last one of a chapter shows what comes next", async () => {
+  it("counts her missions on her card, opens them in her room, and the last claim of a chapter shows what comes next", async () => {
     getRoadmap.mockResolvedValue(
       roadmap([
         mission({ key: "r1-full-pot", complete: true, claimed: true, current: 1 }),
@@ -315,7 +341,9 @@ describe("daisu in the corner", () => {
     });
     draw();
 
-    fireEvent.click(await screen.findByRole("button", { name: /rewards waiting: 1/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /4 of 4 missions complete/i }));
+    expect(await screen.findByRole("dialog", { name: /daisu's room/i })).toBeTruthy();
+    fireEvent.click(await screen.findByRole("button", { name: /^claim/i }));
 
     const done = await screen.findByRole("dialog", { name: /chapter 1 done/i });
     expect(claimRoadmapMission).toHaveBeenCalledWith("r1-level");

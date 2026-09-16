@@ -45,19 +45,19 @@ describe("the first-login tour", () => {
     expect(made.onboarding.status).toBe("offered");
   });
 
-  it("tells the app where the tour stands, and nothing for an account from before it", async () => {
+  it("tells the app where the tour stands, and offers it to an account from before it as a returning player", async () => {
     const fresh = await makeUser({ onboarding: { status: "offered" } });
     const old = await makeUser();
 
-    expect((await me(fresh)).body.onboarding).toEqual({ status: "offered", step: null });
-    expect((await me(old)).body.onboarding).toBeNull();
+    expect((await me(fresh)).body.onboarding).toEqual({ status: "offered", step: null, returning: false });
+    expect((await me(old)).body.onboarding).toEqual({ status: "offered", step: null, returning: true });
   });
 
-  it("lets an untaken offer lapse a week after signup, but keeps a tour already under way", async () => {
+  it("greets an offer left untaken for a week as a returning player, and keeps a tour already under way", async () => {
     const late = await makeUser({ _id: idFrom(8, "0000000000000000"), onboarding: { status: "offered" } });
     const started = await makeUser({ _id: idFrom(8, "0000000000000001"), onboarding: { status: "active", step: "case" } });
 
-    expect((await me(late)).body.onboarding).toBeNull();
+    expect((await me(late)).body.onboarding).toEqual({ status: "offered", step: null, returning: true });
     expect((await me(started)).body.onboarding).toEqual({ status: "active", step: "case" });
   });
 
@@ -74,13 +74,21 @@ describe("the first-login tour", () => {
     expect(after.onboarding.endedAt).toBeTruthy();
   });
 
-  it("runs once: no restart after a skip, and no start for an account never offered one", async () => {
+  it("runs once: no restart after a skip or once done, and an account from before it can start it", async () => {
     const skipped = await makeUser({ onboarding: { status: "offered" } });
     expect((await tour(skipped, { status: "skipped" })).status).toBe(200);
     expect((await tour(skipped, { status: "active", step: "pot" })).status).toBe(409);
 
     const old = await makeUser();
-    expect((await tour(old, { status: "active", step: "pot" })).status).toBe(409);
+    expect((await tour(old, { status: "active", step: "pot" })).status).toBe(200);
+
+    const finished = await makeUser({ onboarding: { status: "done", step: "done" } });
+    expect((await tour(finished, { status: "active", step: "pot" })).status).toBe(409);
+  });
+
+  it("knows the dice range step", async () => {
+    const user = await makeUser({ onboarding: { status: "active", step: "bet" } });
+    expect((await tour(user, { status: "active", step: "range" })).status).toBe(200);
   });
 
   it("refuses a status or a step it does not know", async () => {

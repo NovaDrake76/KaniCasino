@@ -56,6 +56,12 @@
   to { transform: scaleX(0); }
 }
 
+/* while she points at the jar it holds still, so the outline and her words do not bob with it */
+body.daisu-still .daisu-bob,
+body.daisu-still .daisu-hop {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .daisu-bob, .daisu-hop, .daisu-shake, .daisu-glow { animation: none; }
 }

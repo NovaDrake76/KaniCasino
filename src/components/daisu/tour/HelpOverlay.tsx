@@ -200,6 +200,13 @@ const HelpOverlay = () => {
     navigate(GAME_PATHS[bonus.game]);
   }, [step, status, navigate]);
 
+  // the jar holds still while she points at it
+  useEffect(() => {
+    if (step !== "pot" && step !== "take") return;
+    document.body.classList.add("daisu-still");
+    return () => document.body.classList.remove("daisu-still");
+  }, [step]);
+
   // once the player has reached the page a step is about, walking off it ends the help
   useEffect(() => {
     if (!place) return;
@@ -260,7 +267,7 @@ const HelpOverlay = () => {
 
   let content: JSX.Element | null = null;
   if (step === "pot") {
-    content = <Guided target="daisu-jar" eyebrow={eyebrow} line={t("pot.line")} next={gotIt()} />;
+    content = <Guided target="daisu-jar" anchor="daisu-card" eyebrow={eyebrow} line={t("pot.line")} next={gotIt()} />;
   } else if (step === "pin" || step === "sell") {
     content = <ItemStep verb={step} done={false} eyebrow={eyebrow} stop={stop} />;
   } else if (step === "pinned" || step === "sold") {
@@ -269,6 +276,7 @@ const HelpOverlay = () => {
     content = (
       <Guided
         target="daisu-jar"
+        anchor="daisu-card"
         eyebrow={eyebrow}
         line={t("bonus.take", { game: i18n.t(GAME_NAME_KEYS[status.pick]) })}
         wait={t("bonus.takeWait")}

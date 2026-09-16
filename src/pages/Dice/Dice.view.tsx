@@ -119,77 +119,79 @@ const DiceView: React.FC<DiceViewProps> = ({
             ))}
           </div>
 
-          <div className="px-2 pt-14 pb-1">
-            <div className="flex justify-between text-xs text-ink-muted mb-2 font-semibold px-3">
-              {TICKS.map((t) => (
-                <span key={t}>{t}</span>
-              ))}
-            </div>
-            <div className="bg-surface-deep rounded-full p-2.5 border border-line shadow-inner">
-              <div
-                {...trackHandlers}
-                className="relative h-3.5 rounded-full cursor-pointer touch-none select-none"
-                style={{ background: winGradient }}
-              >
-                {last && (
-                  <div
-                    className={`absolute bottom-full mb-2 -translate-x-1/2 flex flex-col items-center pointer-events-none ${dragging ? "" : "transition-all duration-500 ease-out"}`}
-                    style={{ left: `${markerPct}%` }}
-                  >
-                    <div
-                      className={`w-12 h-12 rounded-lg rotate-45 flex items-center justify-center shadow-lg ${last.won ? "bg-green-500" : "bg-red-500"}`}
-                    >
-                      <span className="-rotate-45 text-white font-extrabold text-xs">
-                        {last.resultValue.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                )}
+          <div data-tour="dice-range" className="flex flex-col gap-6">
+            <div className="px-2 pt-14 pb-1">
+              <div className="flex justify-between text-xs text-ink-muted mb-2 font-semibold px-3">
+                {TICKS.map((t) => (
+                  <span key={t}>{t}</span>
+                ))}
+              </div>
+              <div className="bg-surface-deep rounded-full p-2.5 border border-line shadow-inner">
                 <div
-                  className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-8 bg-accent rounded shadow-md border-2 border-white/80 ${dragging ? "cursor-grabbing scale-110" : "cursor-grab"} transition-transform`}
-                  style={{ left: `${targetPct}%` }}
-                />
+                  {...trackHandlers}
+                  className="relative h-3.5 rounded-full cursor-pointer touch-none select-none"
+                  style={{ background: winGradient }}
+                >
+                  {last && (
+                    <div
+                      className={`absolute bottom-full mb-2 -translate-x-1/2 flex flex-col items-center pointer-events-none ${dragging ? "" : "transition-all duration-500 ease-out"}`}
+                      style={{ left: `${markerPct}%` }}
+                    >
+                      <div
+                        className={`w-12 h-12 rounded-lg rotate-45 flex items-center justify-center shadow-lg ${last.won ? "bg-green-500" : "bg-red-500"}`}
+                      >
+                        <span className="-rotate-45 text-white font-extrabold text-xs">
+                          {last.resultValue.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  <div
+                    className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-8 bg-accent rounded shadow-md border-2 border-white/80 ${dragging ? "cursor-grabbing scale-110" : "cursor-grab"} transition-transform`}
+                    style={{ left: `${targetPct}%` }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-ink-muted">{i18n.t("dice.multiplier")}</span>
-              <input
-                type="number"
-                step="0.0001"
-                value={controls.multiplier}
-                onChange={(e) => changeMultiplier(Number(e.target.value))}
-                disabled={autoRunning}
-                className="p-2 bg-surface-nav border border-line rounded text-sm disabled:opacity-50"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-ink-muted">
-                Roll {direction === "over" ? "Over" : "Under"}
-              </span>
-              <button
-                onClick={toggleDirection}
-                disabled={autoRunning}
-                className="p-2 bg-surface-nav border border-line rounded text-sm flex items-center justify-between hover:bg-surface-raised disabled:opacity-50"
-              >
-                <span>{(target / 100).toFixed(2)}</span>
-                <span className="text-ink-muted text-xs">⇄</span>
-              </button>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs font-semibold text-ink-muted">{i18n.t("dice.winChance")}</span>
-              <div className="relative">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-ink-muted">{i18n.t("dice.multiplier")}</span>
                 <input
                   type="number"
-                  step="0.01"
-                  value={Number(controls.winChance.toFixed(2))}
-                  onChange={(e) => changeWinChance(Number(e.target.value))}
+                  step="0.0001"
+                  value={controls.multiplier}
+                  onChange={(e) => changeMultiplier(Number(e.target.value))}
                   disabled={autoRunning}
-                  className="p-2 pr-7 bg-surface-nav border border-line rounded text-sm w-full disabled:opacity-50"
+                  className="p-2 bg-surface-nav border border-line rounded text-sm disabled:opacity-50"
                 />
-                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-ink-muted text-xs">%</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-ink-muted">
+                  Roll {direction === "over" ? "Over" : "Under"}
+                </span>
+                <button
+                  onClick={toggleDirection}
+                  disabled={autoRunning}
+                  className="p-2 bg-surface-nav border border-line rounded text-sm flex items-center justify-between hover:bg-surface-raised disabled:opacity-50"
+                >
+                  <span>{(target / 100).toFixed(2)}</span>
+                  <span className="text-ink-muted text-xs">⇄</span>
+                </button>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-ink-muted">{i18n.t("dice.winChance")}</span>
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={Number(controls.winChance.toFixed(2))}
+                    onChange={(e) => changeWinChance(Number(e.target.value))}
+                    disabled={autoRunning}
+                    className="p-2 pr-7 bg-surface-nav border border-line rounded text-sm w-full disabled:opacity-50"
+                  />
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-ink-muted text-xs">%</span>
+                </div>
               </div>
             </div>
           </div>

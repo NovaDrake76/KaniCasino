@@ -3,7 +3,6 @@ import { FiLock } from "react-icons/fi";
 import type { Roadmap } from "../../../services/daisu/RoadmapService";
 import MissionRow from "./MissionRow";
 import { chapterName, missionWords } from "./missionCopy";
-import { kp } from "../potMath";
 import i18n from "../../../i18n";
 
 interface Props {
@@ -21,31 +20,17 @@ const t = (key: string, vars?: Record<string, string | number>) => i18n.t(`daisu
 const ChapterHeader = ({ roadmap }: { roadmap: Roadmap }) => {
   const done = roadmap.missions.filter((m) => m.complete).length;
   return (
-    <div className="flex flex-col gap-2.5 bg-surface px-4 py-3.5 md:px-5 md:py-4">
-      <div className="flex items-end justify-between gap-4">
-        <div className="flex min-w-0 flex-col gap-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">{t("chapter", { n: roadmap.chapter })}</span>
-          <span className="text-[19px] font-extrabold leading-tight md:text-[22px]">{t(`chapters.${roadmap.chapter}`)}</span>
-        </div>
-        <div className="flex shrink-0 flex-col items-end gap-2">
-          <span className="text-xs font-semibold text-ink-soft">{t("progress", { done, total: roadmap.missions.length })}</span>
-          <div className="grid grid-cols-4 gap-[3px] md:gap-1">
-            {roadmap.missions.map((m) => (
-              <span key={m.key} className={`h-1 w-[22px] md:h-[5px] md:w-11 ${m.complete ? "bg-accent-gold" : "bg-surface-nav"}`} />
-            ))}
-          </div>
-        </div>
+    <div className="flex items-center justify-between gap-4 bg-surface px-4 py-3.5 md:px-5 md:py-4">
+      <div className="flex min-w-0 flex-col gap-1">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">{t("chapter", { n: roadmap.chapter })}</span>
+        <span className="text-[19px] font-extrabold leading-tight md:text-[22px]">{t(`chapters.${roadmap.chapter}`)}</span>
       </div>
-      <span className="text-xs text-ink-muted">
-        {roadmap.next
-          ? t("bonusLine", { bonus: kp(roadmap.bonus), next: roadmap.next.chapter })
-          : t("bonusLineLast", { bonus: kp(roadmap.bonus) })}
-      </span>
+      <span className="shrink-0 text-xs font-semibold text-ink-soft">{t("progress", { done, total: roadmap.missions.length })}</span>
     </div>
   );
 };
 
-const NextChapter = ({ roadmap, game }: { roadmap: Roadmap; game: string }) =>
+const NextChapter = ({ roadmap }: { roadmap: Roadmap }) =>
   roadmap.next && (
     <div className="flex items-center gap-3.5 bg-surface-nav px-4 py-3.5">
       <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-surface-page md:h-12 md:w-12">
@@ -53,11 +38,8 @@ const NextChapter = ({ roadmap, game }: { roadmap: Roadmap; game: string }) =>
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{chapterName(roadmap.next.chapter)}</span>
-        <span className="text-xs leading-snug text-ink-faint">
-          {roadmap.next.missions.map((m) => missionWords(m.key, m.target, game).title).join(" · ")}
-        </span>
+        <span className="text-xs leading-snug text-ink-faint">{t("locked")}</span>
       </div>
-      <span className="hidden shrink-0 text-xs text-ink-faint md:block">{t("opensAfter", { n: roadmap.chapter })}</span>
     </div>
   );
 
@@ -99,7 +81,7 @@ const RoadmapPanel = ({ roadmap, claimingMission, helpKey, bonusGame, onClaim, o
           onShowMe={onShowMe}
         />
       ))}
-      <NextChapter roadmap={roadmap} game={bonusGame.name} />
+      <NextChapter roadmap={roadmap} />
     </div>
   );
 };

@@ -51,6 +51,9 @@ const CATALOG = [
   { key: "level-30", category: "endgame", title: "Ascended", description: "Reach level 30.", metric: "level", target: 30, reward: 15000 },
   { key: "collections-all", category: "endgame", title: "Master collector", description: "Complete every collection.", metric: "allCollectionsComplete", target: 1, reward: 50000 },
   { key: "millionaire", category: "endgame", title: "Millionaire", description: "Hold a balance of 1,000,000 K₽.", metric: "walletBalance", target: 1000000, reward: 30000 },
+
+  // secret: kept off the list until earned, and granted by the moment that earns it
+  { key: "men-kisser", category: "secret", title: "Men kisser", description: "Told Daisu what you like.", metric: "secret", target: 1, reward: 100, secret: true },
 ];
 
 const BY_KEY = new Map(CATALOG.map((m) => [m.key, m]));

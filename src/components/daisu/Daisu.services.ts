@@ -6,10 +6,11 @@ import { useGiftStatus } from "../header/useGiftReady";
 import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
 import { greetingFor, lineKey, Mood, pokeMood } from "./daisuLines";
 import { setPotStatus, usePotStatus } from "./potStore";
-import { DAISU_STAGE_EVENT, emitJarTaken, SHOP_OPEN_EVENT } from "./tour/tourEvents";
+import { DAISU_STAGE_EVENT, emitJarTaken, emitPoked, SHOP_OPEN_EVENT } from "./tour/tourEvents";
 import { useRoadmap } from "./roadmap/useRoadmap";
 import { missionWords } from "./roadmap/missionCopy";
 import { startHelp } from "./tour/helpStore";
+import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import type { UnlockKey } from "../../services/daisu/ShopService";
 import type { BonusView, Face, Line, Pop, RoomTab, Run, Stage } from "./Daisu.types";
@@ -67,6 +68,7 @@ export const useDaisu = () => {
   const wallet: number = userData?.walletBalance ?? 0;
   const gift = useGiftStatus();
   const status = usePotStatus();
+  const pokeLocked = useTour().pokeMode === "locked";
 
   const [stage, setStage] = useState<Stage>(readStage);
   const [tab, setTab] = useState<RoomTab>("missions");
@@ -474,6 +476,14 @@ export const useDaisu = () => {
   };
 
   const poke = () => {
+    // on the tour's pot step her answers to a poke are the tour's to give, and at the end of them she is not clickable at all
+    const mode = tourState().pokeMode;
+    if (mode === "locked") return;
+    if (mode === "script") {
+      emitPoked();
+      pull("surprised");
+      return;
+    }
     const t = Date.now();
     if (t - pokes.current.at > POKE_WINDOW_MS) pokes.current.count = 0;
     pokes.current = { count: pokes.current.count + 1, at: t };
@@ -489,11 +499,6 @@ export const useDaisu = () => {
     setTab("missions");
     setStage("room");
     say("room");
-  };
-  // help asked for from her card opens in her room, already unfolded
-  const openRoomHelp = (key: string) => {
-    missions.showHelp(key);
-    openRoom();
   };
   // she folds away and shows the player around the page the mission needs
   const showMe = (key: string) => {
@@ -519,7 +524,6 @@ export const useDaisu = () => {
     openPopup,
     closeToBubble,
     openRoom,
-    openRoomHelp,
     showMe,
     showUnlocked,
     backToPopup,
@@ -538,6 +542,7 @@ export const useDaisu = () => {
     creditSharePct,
     takeFromJar,
     poke,
+    pokeLocked,
     pops,
     run,
     settleMs: SETTLE_AFTER_MS,
