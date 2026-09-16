@@ -14,13 +14,16 @@ import {
   abandonAdWatch,
   AdRewardStatus,
 } from "../../services/rewards/AdRewardServices";
-import { showDaisu } from "../daisu/tour/tourEvents";
+import { claimPot } from "../../services/daisu/DaisuService";
+import { setPotStatus } from "../daisu/potStore";
+import { kp } from "../daisu/potMath";
+import { emitJarTaken } from "../daisu/tour/tourEvents";
 import i18n from "../../i18n";
 
 interface IBonus {
   bonusDate: string;
   userData: User;
-  // the pot in the corner is the bonus now: the button opens her card, ready when the pot is full and counting down until then
+  // the pot in the corner is the bonus now: the button takes whatever is in her jar, straight to the wallet
   potMode?: boolean;
 }
 
@@ -80,6 +83,21 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
       // bonus claim does not change how many ads are left, so nothing to refetch here
     } catch (error: any) {
       toast.error(`${error.response?.data?.message || i18n.t("nav.couldNotClaimThe")}!`, { theme: "dark" });
+    } finally {
+      setLoadingBonus(false);
+    }
+  };
+
+  const claimFromPot = async () => {
+    setLoadingBonus(true);
+    try {
+      const res = await claimPot();
+      setPotStatus(res.status);
+      toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
+      emitJarTaken();
+      toast.success(`+${kp(res.amount)}`, { theme: "dark" });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || i18n.t("daisu.couldNotClaim"), { theme: "dark" });
     } finally {
       setLoadingBonus(false);
     }
@@ -149,15 +167,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
     <>
       {potMode ? (
         <div className="flex items-center gap-2">
-          <MainButton
-            onClick={() => showDaisu("popup")}
-            pulse={bonusAvailable}
-            text={
-              <span className="whitespace-nowrap text-sm">
-                {bonusAvailable ? i18n.t("bonus.ready") : i18n.t("bonus.nextIn", { clock: timeLeft })}
-              </span>
-            }
-          />
+          <MainButton text={i18n.t("bonus.claim")} onClick={claimFromPot} pulse={bonusAvailable} disabled={loadingBonus} />
           {adOffered && (
             <MainButton
               onClick={beginAd}
