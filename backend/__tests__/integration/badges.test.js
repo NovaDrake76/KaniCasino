@@ -292,6 +292,54 @@ describe("collection badges", () => {
     expect(await badges.sweepCollections()).toBe(0);
   });
 
+  describe("checked the moment items arrive", () => {
+    const { casesCompletedBy } = require("../../utils/collectionCheck");
+    beforeEach(() => {
+      badges.invalidateCollectionSets();
+      itemCatalog.invalidate();
+    });
+
+    it("awards the badge as the last item of a category lands, without waiting for the sweep", async () => {
+      const items = await makeCategory("Touhou", ["a", "b", "c", "d"]);
+      const user = await makeUser({ inventory: own(items.slice(0, 3)) });
+
+      expect(await badges.checkCollectionsFor(user._id, [items[2]._id])).toBe(0);
+
+      await User.updateOne({ _id: user._id }, { $push: { inventory: own([items[3]])[0] } });
+      expect(await badges.checkCollectionsFor(user._id, [items[3]._id])).toBe(1);
+      expect(badges.heldBadges(await User.findById(user._id).lean()).map((b) => b.key)).toEqual(["collection:touhou"]);
+
+      // held already, so a later item in that category asks nothing more
+      expect(await badges.checkCollectionsFor(user._id, [items[0]._id])).toBe(0);
+    });
+
+    it("skips categories the arriving items do not belong to", async () => {
+      const touhou = await makeCategory("Touhou", ["a", "b"]);
+      const animals = await makeCategory("Animals", ["x", "y"]);
+      const user = await makeUser({ inventory: own([...touhou, ...animals]) });
+
+      expect(await badges.checkCollectionsFor(user._id, [animals[0]._id])).toBe(1);
+      expect(badges.heldBadges(await User.findById(user._id).lean()).map((b) => b.key)).toEqual(["collection:animals"]);
+    });
+
+    it("agrees with the sweep on uncollectible cases and deleted items", async () => {
+      const base = await makeCategory("Blue Archive", ["a", "b", "c", "d"]);
+      await makePremium("Blue Archive", ["alt-a"]);
+      await Item.deleteOne({ _id: base[3]._id });
+      itemCatalog.invalidate();
+      const user = await makeUser({ inventory: own(base.slice(0, 3)) });
+
+      expect(await badges.checkCollectionsFor(user._id, [base[2]._id])).toBe(1);
+    });
+
+    it("tells each case apart for the mission, counting duplicates once", async () => {
+      const items = await makeCategory("Touhou", ["a", "b", "c", "d"]);
+      const user = await makeUser({ inventory: own([items[0], items[0], items[1]]) });
+
+      expect(await casesCompletedBy(user._id)).toBe(1);
+    });
+  });
+
   it("carries the category name and tells the player", async () => {
     const items = await makeCategory("Uma Musume", ["a", "b"]);
     const user = await makeUser({ inventory: own(items) });

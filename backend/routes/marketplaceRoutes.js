@@ -20,6 +20,7 @@ const itemCatalog = require("../utils/itemCatalog");
 const { isRealMoneyMode } = require("../utils/mode");
 const { looksLikeId } = require("../utils/slugs");
 const { marketBuyLimiter, marketWriteLimiter } = require("../middleware/rateLimit");
+const badges = require("../utils/badges");
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -633,6 +634,7 @@ module.exports = (io) => {
         { $push: { inventory: market.inventoryEntryFrom(item) } }
       );
       await fandom.touch(req.user._id, item.item);
+      await badges.touchCollections(req.user._id, item.item);
 
       res.json({ message: "Item removed" });
     } catch (err) {
