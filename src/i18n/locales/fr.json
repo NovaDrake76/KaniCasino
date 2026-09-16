@@ -677,7 +677,7 @@
         },
         "r4-collection": {
           "desc": "Possède tous les objets de la collection d'une caisse.",
-          "help": "Choisis une caisse et récupère tout ce qu'elle peut donner, en l'ouvrant ou en achetant sur le marché. Une fois tout réuni, ça peut mettre quelques minutes à apparaître ici.",
+          "help": "Choisis une caisse et récupère tout ce qu'elle peut donner, en l'ouvrant ou en achetant sur le marché. Ça compte dès que tu as tout.",
           "title": "Complète une collection"
         },
         "r4-level": {

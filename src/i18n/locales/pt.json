@@ -677,7 +677,7 @@
         },
         "r4-collection": {
           "desc": "Tenha todos os itens da coleção de uma caixa.",
-          "help": "Escolha uma caixa e consiga tudo que ela pode dar, abrindo ou comprando no mercado. Quando tiver tudo, pode levar alguns minutos pra aparecer aqui.",
+          "help": "Escolha uma caixa e consiga tudo que ela pode dar, abrindo ou comprando no mercado. Conta no momento em que você tiver tudo.",
           "title": "Complete uma coleção"
         },
         "r4-level": {

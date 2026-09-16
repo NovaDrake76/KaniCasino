@@ -677,7 +677,7 @@
         },
         "r4-collection": {
           "desc": "Possiedi ogni oggetto della collezione di una cassa.",
-          "help": "Scegli una cassa e prendi tutto quello che può dare, aprendola o comprando al mercato. Quando hai tutto, può volerci qualche minuto prima che compaia qui.",
+          "help": "Scegli una cassa e prendi tutto quello che può dare, aprendola o comprando al mercato. Conta nel momento in cui hai tutto.",
           "title": "Completa una collezione"
         },
         "r4-level": {

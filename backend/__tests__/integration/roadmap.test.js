@@ -8,6 +8,8 @@ const User = require("../../models/User");
 const Transaction = require("../../models/Transaction");
 const MissionState = require("../../models/MissionState");
 const { TX } = require("../../utils/economy");
+const Item = require("../../models/Item");
+const Case = require("../../models/Case");
 
 let app;
 
@@ -161,6 +163,22 @@ describe("daisu's missions", () => {
 
     expect(await pending(user)).toEqual([{ key: "r1-full-pot", reward: 250, target: 1, roadmap: true }]);
     expect(await pending(user)).toEqual([]);
+  });
+
+  it("completes a collection the moment one case's items are all held, not a whole category, with no badge needed", async () => {
+    const item = (name) => Item.create({ name, image: "i.png", rarity: "2", baseValue: 10 });
+    const [a, b, c] = await Promise.all([item("a"), item("b"), item("c")]);
+    await Case.create({ title: "Touhou A", image: "c.png", price: 100, category: "Touhou", items: [a._id, b._id] });
+    await Case.create({ title: "Touhou B", image: "c.png", price: 100, category: "Touhou", items: [c._id] });
+    const user = await makeUser({ inventory: [{ _id: a._id, rarity: "2" }] });
+    await roadmapOf(user);
+    await openChapter(user, 4);
+
+    expect(mission((await roadmapOf(user)).body, "r4-collection").complete).toBe(false);
+
+    await User.updateOne({ _id: user._id }, { $push: { inventory: { _id: b._id, rarity: "2" } } });
+
+    expect(mission((await roadmapOf(user)).body, "r4-collection").complete).toBe(true);
   });
 
   it("has nothing left after the last chapter", async () => {

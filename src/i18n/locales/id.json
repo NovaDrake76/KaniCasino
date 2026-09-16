@@ -677,7 +677,7 @@
         },
         "r4-collection": {
           "desc": "Miliki semua barang di koleksi satu kotak.",
-          "help": "Pilih satu kotak dan kumpulkan semua yang bisa keluar darinya, dari membuka atau membeli di pasar. Setelah lengkap, mungkin butuh beberapa menit sampai muncul di sini.",
+          "help": "Pilih satu kotak dan kumpulkan semua yang bisa keluar darinya, dari membuka atau membeli di pasar. Langsung dihitung begitu semuanya lengkap.",
           "title": "Lengkapi sebuah koleksi"
         },
         "r4-level": {

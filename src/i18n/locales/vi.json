@@ -677,7 +677,7 @@
         },
         "r4-collection": {
           "desc": "Sở hữu mọi vật phẩm trong bộ sưu tập của một hòm.",
-          "help": "Chọn một hòm và gom đủ mọi thứ nó có thể ra, bằng cách mở hoặc mua ở chợ. Khi đã đủ, có thể mất vài phút mới hiện ở đây.",
+          "help": "Chọn một hòm và gom đủ mọi thứ nó có thể ra, bằng cách mở hoặc mua ở chợ. Được tính ngay khi bạn có đủ.",
           "title": "Hoàn thành một bộ sưu tập"
         },
         "r4-level": {

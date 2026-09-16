@@ -677,7 +677,7 @@
         },
         "r4-collection": {
           "desc": "Ten todos los objetos de la colección de una caja.",
-          "help": "Elige una caja y consigue todo lo que puede dar, abriéndola o comprando en el mercado. Cuando lo tengas todo, puede tardar unos minutos en aparecer aquí.",
+          "help": "Elige una caja y consigue todo lo que puede dar, abriéndola o comprando en el mercado. Cuenta en el momento en que lo tengas todo.",
           "title": "Completa una colección"
         },
         "r4-level": {

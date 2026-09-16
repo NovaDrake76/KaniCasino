@@ -677,7 +677,7 @@
         },
         "r4-collection": {
           "desc": "Own every item in one case's collection.",
-          "help": "Pick a case and get everything it can drop, from openings or from the market. Once you have it all, it can take a few minutes to show up here.",
+          "help": "Pick a case and get everything it can drop, from openings or from the market. It counts the moment you have it all.",
           "title": "Complete a collection"
         },
         "r4-level": {

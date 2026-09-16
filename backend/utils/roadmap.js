@@ -6,6 +6,7 @@ const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { CHAPTERS, chapterOf } = require("./roadmapCatalog");
 const { liveStreak } = require("./dailyGift");
 const { getIo } = require("./realtime");
+const { casesCompletedBy } = require("./collectionCheck");
 
 const GAME_BETS = [TX.SLOT_BET, TX.PLINKO_BET, TX.CRASH_BET, TX.COINFLIP_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET];
 const TRADES = [TX.MARKET_BUY, TX.MARKET_SALE, TX.MARKET_ORDER_FILL];
@@ -77,9 +78,12 @@ async function ledgerSince(userId, since, goals) {
 async function progressOf(user, roadmap, chapter, now = new Date()) {
   const goals = chapter.missions.map((m) => m.goal);
   const since = new Date(roadmap.openedAt);
-  const [ledger, battlesWon] = await Promise.all([
+  const needsCases = chapter.missions.some((m) => m.goal === "collectionsCompleted" && !roadmap.claimed.includes(m.key));
+  const [ledger, battlesWon, casesDone] = await Promise.all([
     ledgerSince(user._id, since, goals),
     goals.includes("battlesWon") ? Battle.countDocuments({ winnerUserIds: user._id, status: "finished", finishedAt: { $gte: since } }) : 0,
+    // one case's whole collection, the unit the Collections page shows, counted the moment it is held
+    needsCases ? casesCompletedBy(user._id) : 0,
   ]);
   const valueOf = (mission) => {
     switch (mission.goal) {
@@ -87,7 +91,7 @@ async function progressOf(user, roadmap, chapter, now = new Date()) {
       case "pinned": return user.fixedItem && user.fixedItem.name ? 1 : 0;
       case "giftStreak": return liveStreak(user.giftStreak, user.giftLastAt, now) || 0;
       case "topFan": return user.fanRank && user.fanRank.rank === 1 ? 1 : 0;
-      case "collectionsCompleted": return (user.badges || []).filter((b) => String(b.key).startsWith("collection:")).length;
+      case "collectionsCompleted": return casesDone;
       case "giftSpins": return user.giftLastAt && new Date(user.giftLastAt) >= since ? 1 : 0;
       case "battlesWon": return battlesWon;
       case "collectionVisits": return roadmap.visited.includes(mission.key) ? 1 : 0;

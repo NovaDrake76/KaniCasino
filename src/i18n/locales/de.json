@@ -677,7 +677,7 @@
         },
         "r4-collection": {
           "desc": "Besitze jedes Item aus der Sammlung einer Kiste.",
-          "help": "Such dir eine Kiste aus und hol dir alles, was sie droppen kann, durch Öffnen oder auf dem Markt. Wenn du alles hast, kann es ein paar Minuten dauern, bis es hier auftaucht.",
+          "help": "Such dir eine Kiste aus und hol dir alles, was sie droppen kann, durch Öffnen oder auf dem Markt. Es zählt in dem Moment, in dem du alles hast.",
           "title": "Vervollständige eine Sammlung"
         },
         "r4-level": {
