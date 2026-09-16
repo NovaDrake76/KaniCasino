@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { act, render, screen, waitFor, fireEvent } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import DaisuDock from "./index";
 import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
@@ -99,10 +99,12 @@ const draw = (daisu = true, extra: Record<string, unknown> = {}) =>
     >
       <MemoryRouter>
         <DaisuDock />
+        <Where />
       </MemoryRouter>
     </UserContext.Provider>
   );
 
+const Where = () => <span data-testid="where">{useLocation().pathname}</span>;
 const jar = () => screen.getByLabelText("The jar");
 // her card keeps the bonuses behind a single line, shown on hover
 const showBonuses = async () => fireEvent.mouseEnter(await screen.findByRole("button", { name: /active bonuses/i }));
@@ -239,6 +241,25 @@ describe("daisu in the corner", () => {
     expect(await screen.findByText(/play before it runs out/i)).toBeTruthy();
     expect(screen.getAllByText(/0:4\d/).length).toBeGreaterThan(0);
     expect(screen.queryByText(/dice bonus expired/i)).toBeNull();
+  });
+
+  it("previews her bonuses without play buttons, and a click on the line goes to the first bonus game", async () => {
+    getPotStatus.mockResolvedValue(
+      status(CYCLE, {
+        bonuses: [
+          { game: "plinko", amount: 125, expiresAt: iso(200000), expired: false },
+          { game: "dice", amount: 40, expiresAt: iso(100000), expired: false },
+        ],
+      })
+    );
+    draw();
+    await showBonuses();
+
+    expect(await screen.findByText(/used first on your plinko bets/i)).toBeTruthy();
+    expect(screen.queryByRole("link", { name: /^play$/i })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /active bonuses/i }));
+    expect(await screen.findByTestId("where")).toHaveTextContent("/plinko");
   });
 
   it("drops the bonus line from her card once every bonus has run out", async () => {

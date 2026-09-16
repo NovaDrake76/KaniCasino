@@ -20,7 +20,7 @@ const Bar = ({ bonus, thick }: { bonus: BonusView; thick?: boolean }) => (
   </span>
 );
 
-const PickCard = ({ bonus }: { bonus: BonusView }) => (
+const PickCard = ({ bonus, readOnly }: { bonus: BonusView; readOnly?: boolean }) => (
   <div className={`relative flex items-center gap-3 overflow-hidden px-3 pb-[13px] pt-2.5 ${bonus.expiring ? "bg-[#402E3C]" : "bg-surface-raised"}`}>
     <img src={bonus.art} alt="" className="h-[54px] w-10 shrink-0 object-contain" />
     <div className="flex min-w-0 flex-grow flex-col gap-0.5">
@@ -35,27 +35,35 @@ const PickCard = ({ bonus }: { bonus: BonusView }) => (
         {bonus.expiring ? i18n.t("daisu.bonusHurry") : i18n.t("daisu.bonusUsedOn", { game: bonus.name })}
       </span>
     </div>
-    <Link to={bonus.path} className="shrink-0 bg-accent px-3.5 py-2 text-[13px] font-bold text-white hover:bg-[#4338CA] hover:text-white">
-      {i18n.t("daisu.play")}
-    </Link>
+    {!readOnly && (
+      <Link to={bonus.path} className="shrink-0 bg-accent px-3.5 py-2 text-[13px] font-bold text-white hover:bg-[#4338CA] hover:text-white">
+        {i18n.t("daisu.play")}
+      </Link>
+    )}
     <Bar bonus={bonus} thick />
   </div>
 );
 
-const OlderRow = ({ bonus }: { bonus: BonusView }) => (
-  <Link
-    to={bonus.path}
-    className="relative flex items-center gap-2.5 overflow-hidden bg-surface-nav px-3 pb-2 pt-1.5 text-ink hover:bg-surface-hover hover:text-ink"
-  >
-    <img src={bonus.art} alt="" className="h-[27px] w-5 shrink-0 object-contain" />
-    <span className="flex-grow truncate text-[13px] font-semibold">{bonus.name}</span>
-    <span className="text-[13px] font-bold text-accent-gold">
-      <Monetary value={Math.floor(bonus.amount)} />
-    </span>
-    <Countdown bonus={bonus} className={`w-12 justify-end text-[11px] ${bonus.expiring ? "" : "text-ink-muted"}`} />
-    <Bar bonus={bonus} />
-  </Link>
-);
+const OlderRow = ({ bonus, readOnly }: { bonus: BonusView; readOnly?: boolean }) => {
+  const row = "relative flex items-center gap-2.5 overflow-hidden bg-surface-nav px-3 pb-2 pt-1.5 text-ink";
+  const content = (
+    <>
+      <img src={bonus.art} alt="" className="h-[27px] w-5 shrink-0 object-contain" />
+      <span className="flex-grow truncate text-[13px] font-semibold">{bonus.name}</span>
+      <span className="text-[13px] font-bold text-accent-gold">
+        <Monetary value={Math.floor(bonus.amount)} />
+      </span>
+      <Countdown bonus={bonus} className={`w-12 justify-end text-[11px] ${bonus.expiring ? "" : "text-ink-muted"}`} />
+      <Bar bonus={bonus} />
+    </>
+  );
+  if (readOnly) return <div className={row}>{content}</div>;
+  return (
+    <Link to={bonus.path} className={`${row} hover:bg-surface-hover hover:text-ink`}>
+      {content}
+    </Link>
+  );
+};
 
 const ExpiredRow = ({ bonus }: { bonus: BonusView }) => (
   <div className="flex items-center gap-3 bg-surface-nav px-3 py-2.5">
@@ -70,9 +78,9 @@ const ExpiredRow = ({ bonus }: { bonus: BonusView }) => (
   </div>
 );
 
-// the freshest bonus as a card with its clock, older ones still ticking as a line each, and once
-// every one has run out, the last as a receipt until the next take
-const BonusSection = ({ bonuses }: { bonuses: BonusView[] }) => {
+// the freshest bonus as a card with its clock, older ones still ticking as a line each, and once every one has run out, the last as a receipt until the next take.
+// read-only is the hover preview on her card, which a cursor cannot reach, so it carries no play buttons
+const BonusSection = ({ bonuses, readOnly }: { bonuses: BonusView[]; readOnly?: boolean }) => {
   const live = bonuses.filter((b) => !b.expired);
   const receipt = live.length ? null : bonuses.find((b) => b.expired);
   if (!live.length && !receipt) return null;
@@ -84,9 +92,9 @@ const BonusSection = ({ bonuses }: { bonuses: BonusView[] }) => {
         <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">{i18n.t("daisu.bonusTitle")}</span>
         <span className="text-[11px] text-ink-faint">{i18n.t("daisu.bonusSpentFirst")}</span>
       </div>
-      {pick && <PickCard bonus={pick} />}
+      {pick && <PickCard bonus={pick} readOnly={readOnly} />}
       {older.map((b) => (
-        <OlderRow key={b.key} bonus={b} />
+        <OlderRow key={b.key} bonus={b} readOnly={readOnly} />
       ))}
       {receipt && <ExpiredRow bonus={receipt} />}
     </div>
