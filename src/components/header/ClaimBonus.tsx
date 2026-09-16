@@ -14,12 +14,13 @@ import {
   abandonAdWatch,
   AdRewardStatus,
 } from "../../services/rewards/AdRewardServices";
+import { showDaisu } from "../daisu/tour/tourEvents";
 import i18n from "../../i18n";
 
 interface IBonus {
   bonusDate: string;
   userData: User;
-  // the pot in the corner is the bonus now; the button only keeps the ad offer
+  // the pot in the corner is the bonus now: the button opens her card, ready when the pot is full and counting down until then
   potMode?: boolean;
 }
 
@@ -144,23 +145,32 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
   // the offer only stands in while the bonus is cooling down and an ad is left today
   const adOffered = (potMode || !bonusAvailable) && !!adStatus && adStatus.enabled && adStatus.remainingToday > 0;
 
-  if (potMode && !adOffered && !adOpen) return null;
-
   return (
     <>
       {potMode ? (
-        adOffered && (
+        <div className="flex items-center gap-2">
           <MainButton
-            onClick={beginAd}
-            disabled={adBusy}
+            onClick={() => showDaisu("popup")}
+            pulse={bonusAvailable}
             text={
-              <span className="flex items-center gap-2 whitespace-nowrap">
-                <BiMoviePlay className="text-lg" />
-                <span className="font-bold">+{adStatus?.amount}</span>
+              <span className="whitespace-nowrap text-sm">
+                {bonusAvailable ? i18n.t("bonus.ready") : i18n.t("bonus.nextIn", { clock: timeLeft })}
               </span>
             }
           />
-        )
+          {adOffered && (
+            <MainButton
+              onClick={beginAd}
+              disabled={adBusy}
+              text={
+                <span className="flex items-center gap-2 whitespace-nowrap">
+                  <BiMoviePlay className="text-lg" />
+                  <span className="font-bold">+{adStatus?.amount}</span>
+                </span>
+              }
+            />
+          )}
+        </div>
       ) : bonusAvailable ? (
         <MainButton text={i18n.t("bonus.claim")} onClick={claimUserBonus} pulse disabled={loadingBonus} />
       ) : adOffered ? (
