@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "Thưởng của bạn",
-      "kicker": "Thưởng {{game}}",
+      "kicker": "Số dư thưởng {{game}}",
       "forGame": "để cược ở {{game}}",
       "spends": "Cược ở {{game}} sẽ dùng khoản này trước ví của bạn",
       "spentFirst": "dùng trước",

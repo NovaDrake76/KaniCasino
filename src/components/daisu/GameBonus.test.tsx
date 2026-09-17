@@ -45,7 +45,7 @@ describe("daisu's bonus inside a game", () => {
     setPotStatus(pot([{ game: "dice", amount: 85, expiresAt: iso(160500), expired: false }]));
     draw(10);
 
-    expect(screen.getByText(/dice bonus/i)).toBeTruthy();
+    expect(screen.getByText(/dice bonus balance/i)).toBeTruthy();
     expect(screen.getByText(/spent first/i)).toBeTruthy();
     expect(screen.getByText("2:41")).toBeTruthy();
     expect(screen.getByText(/this bet/i).textContent).toMatch(/K₽\s10 from your bonus, nothing from your wallet/);

@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "Bonusmu",
-      "kicker": "Bonus {{game}}",
+      "kicker": "Saldo bonus {{game}}",
       "forGame": "untuk taruhan di {{game}}",
       "spends": "Taruhanmu di {{game}} memakai ini sebelum dompetmu",
       "spentFirst": "dipakai dulu",

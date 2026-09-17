@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "Dein Bonus",
-      "kicker": "{{game}}-Bonus",
+      "kicker": "{{game}}-Bonusguthaben",
       "forGame": "zum Setzen bei {{game}}",
       "spends": "Deine {{game}}-Einsätze verbrauchen das vor deinem Guthaben",
       "spentFirst": "wird zuerst verbraucht",

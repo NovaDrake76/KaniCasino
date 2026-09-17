@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "你的奖励",
-      "kicker": "{{game}} 奖励",
+      "kicker": "{{game}} 奖励余额",
       "forGame": "用于 {{game}} 下注",
       "spends": "你在 {{game}} 的下注会先花这个，再花钱包",
       "spentFirst": "优先使用",

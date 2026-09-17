@@ -166,7 +166,7 @@ describe("daisu in the corner", () => {
     await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(runState()).toBe("sent"));
     expect(toogleUserData.mock.calls[0][0].walletBalance).toBe(1000);
-    expect(await ticket(/dice bonus/i)).toBeTruthy();
+    expect(await ticket(/dice bonus balance/i)).toBeTruthy();
   });
 
   it("pours what refilled during the pause into the run as it sends, so the total is the take", async () => {
@@ -279,17 +279,17 @@ describe("daisu in the corner", () => {
     );
     draw();
 
-    const plinko = await ticket(/plinko bonus/i);
+    const plinko = await ticket(/plinko bonus balance/i);
     expect(plinko.textContent).toMatch(/K₽\s125/);
     expect(plinko.textContent).toMatch(/0:4\d/);
-    expect(screen.queryByRole("link", { name: /dice bonus/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /dice bonus balance/i })).toBeNull();
   });
 
   it("goes to the bonus game when its ticket is clicked", async () => {
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "plinko", amount: 125, expiresAt: iso(200000), expired: false }] }));
     draw();
 
-    fireEvent.click(await ticket(/plinko bonus/i));
+    fireEvent.click(await ticket(/plinko bonus balance/i));
     expect(await screen.findByTestId("where")).toHaveTextContent("/plinko");
   });
 
@@ -319,19 +319,19 @@ describe("daisu in the corner", () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(3000), expired: false }] }));
     draw();
-    await ticket(/dice bonus/i);
+    await ticket(/dice bonus balance/i);
 
     await wait(3500);
 
     expect(await screen.findByText(/took your dice bonus back|on dice is mine now/i)).toBeTruthy();
-    expect(screen.queryByRole("link", { name: /dice bonus/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /dice bonus balance/i })).toBeNull();
   });
 
   it("reads the pot again after its bonus game is played, and not after any other", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(200000), expired: false }] }));
     draw();
-    await ticket(/dice bonus/i);
+    await ticket(/dice bonus balance/i);
     const played = (game: string) =>
       act(() => {
         window.dispatchEvent(new CustomEvent(GAME_PLAYED_EVENT, { detail: { game } }));

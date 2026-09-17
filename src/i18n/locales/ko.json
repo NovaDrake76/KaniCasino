@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "내 보너스",
-      "kicker": "{{game}} 보너스",
+      "kicker": "{{game}} 보너스 잔액",
       "forGame": "{{game}} 베팅용",
       "spends": "{{game}} 베팅은 지갑보다 이걸 먼저 써",
       "spentFirst": "먼저 사용됨",

@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "あなたのボーナス",
-      "kicker": "{{game}}ボーナス",
+      "kicker": "{{game}}ボーナス残高",
       "forGame": "{{game}}で使える",
       "spends": "{{game}}のベットは、財布より先にこれを使うわ",
       "spentFirst": "先に使われる",

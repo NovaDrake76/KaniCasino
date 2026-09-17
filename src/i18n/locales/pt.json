@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "Seu bônus",
-      "kicker": "Bônus de {{game}}",
+      "kicker": "Saldo bônus de {{game}}",
       "forGame": "pra apostar em {{game}}",
       "spends": "Suas apostas em {{game}} gastam isso antes da carteira",
       "spentFirst": "gasto primeiro",

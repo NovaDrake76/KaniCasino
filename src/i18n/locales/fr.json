@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "Ton bonus",
-      "kicker": "Bonus {{game}}",
+      "kicker": "Solde bonus {{game}}",
       "forGame": "à miser sur {{game}}",
       "spends": "Tes mises sur {{game}} dépensent ça avant ton portefeuille",
       "spentFirst": "dépensé en premier",

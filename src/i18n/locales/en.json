@@ -1033,7 +1033,7 @@
     },
     "ticket": {
       "yours": "Your bonus",
-      "kicker": "{{game}} bonus",
+      "kicker": "{{game}} bonus balance",
       "forGame": "to bet on {{game}}",
       "spends": "Your {{game}} bets spend this before your wallet",
       "spentFirst": "spent first",
