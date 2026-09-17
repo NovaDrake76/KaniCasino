@@ -453,18 +453,9 @@
     "queuedClickToCancel": "待機中（クリックでキャンセル）"
   },
   "daisu": {
-    "activeBonuses": "有効なボーナスがあります",
     "back": "ダイスに戻る",
     "bonusBubble": "{{game}}ボーナス、{{clock}}",
-    "bonusExpired": "{{game}}ボーナスは期限切れ",
     "bonusHurry": "なくなる前に遊ぼう",
-    "bonusNewOne": "ポットから受け取ると新しいボーナス",
-    "bonusPaysAll": "ボーナスで支払い:",
-    "bonusPaysFirst": "先に支払い",
-    "bonusSpentFirst": "ウォレットより先に使われます",
-    "bonusSplit": "ボーナスから{{bonus}}、ウォレットから{{wallet}}",
-    "bonusTitle": "ダイスのボーナス",
-    "bonusUsedOn": "{{game}}のベットで先に使われます",
     "bubbleGift": "ギフト",
     "clickHint": "ポットをクリックして中身を受け取る",
     "close": "閉じる",
@@ -480,15 +471,11 @@
     "keeps": "ポット係",
     "loading": "...",
     "missionsDone": "ミッション {{done}}/{{total}} 完了",
-    "nextPick": "次は{{game}}、あと{{amount}}で切り替わります",
     "ofFull": "/ {{full}}",
     "open": "ダイスを開く",
     "pending": "{{amount}}がウォレットに向かっています",
-    "pickLine": "受け取るたびに{{share}}%が{{game}}用に追加",
-    "pickTitle": "ダイスのおすすめ",
     "play": "遊ぶ",
     "roomTitle": "ダイスの部屋",
-    "tabMissions": "ミッション",
     "visit": "ダイスの部屋へ",
     "lines": {
       "hello": {
@@ -987,9 +974,20 @@
     },
     "shop": {
       "after": "購入後の残高",
-      "buy": "買う",
       "buyFor": "{{amount}}で買う",
       "failed": "買えなかったわ。もう一回やって。",
+      "level": "レベル{{n}}",
+      "needs": "必要",
+      "notNow": "今はいい",
+      "price": "価格",
+      "short": "{{amount}}足りない",
+      "soon": "ここに新しい何かが並ぶわ。",
+      "tipBuy": "{{price}} · レベル{{n}} · クリックで購入",
+      "tipLevel": "レベル{{n}}が必要 · 今はレベル{{level}}",
+      "tipShort": "{{price}} · あと{{amount}}必要",
+      "title": "ダイスのショップ",
+      "unlocked": "解放",
+      "yours": "所持済み",
       "items": {
         "chatPass": {
           "about": "サイトのチャットにメッセージを送れるようになるわ。読むだけならパスはいらないの。",
@@ -1035,18 +1033,18 @@
           "pitch": "知らない人と値切り合うための正式な書類よ。騙されないでね。いや、騙されて。面白いから。",
           "what": "ほかのプレイヤーから買ったり、自分のアイテムをマーケットに出品したりできるわ。"
         }
-      },
-      "level": "レベル{{n}}",
-      "locked": "ロック中",
-      "needs": "必要",
-      "notNow": "今はいい",
-      "price": "価格",
-      "short": "{{amount}}足りない",
-      "subtitle": "この場所の残りを開けてくれるものよ。",
-      "tab": "ショップ",
-      "title": "ダイスのショップ",
-      "unlocked": "解放",
-      "yours": "所持済み"
+      }
+    },
+    "ticket": {
+      "yours": "あなたのボーナス",
+      "kicker": "{{game}}ボーナス",
+      "forGame": "{{game}}で使える",
+      "spends": "{{game}}のベットは、財布より先にこれを使うわ",
+      "spentFirst": "先に使われる",
+      "source": "ポットから受け取るたびに、{{share}}%おまけして1つのゲーム用ボーナスにしてあげる。",
+      "none": "今はボーナスなし。ポットから受け取れば、{{game}}用に{{share}}%おまけするわ。",
+      "betAll": "このベット：ボーナスから{{bonus}}、財布からは0",
+      "betSplit": "このベット：ボーナスから{{bonus}}、財布から{{wallet}}"
     }
   },
   "dice": {

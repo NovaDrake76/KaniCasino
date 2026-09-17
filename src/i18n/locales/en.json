@@ -453,18 +453,9 @@
     "queuedClickToCancel": "Queued (click to cancel)"
   },
   "daisu": {
-    "activeBonuses": "You've got active bonuses",
     "back": "Back to Daisu",
     "bonusBubble": "{{game}} bonus, {{clock}}",
-    "bonusExpired": "{{game}} bonus expired",
     "bonusHurry": "Play before it runs out",
-    "bonusNewOne": "Take from the jar for a new one",
-    "bonusPaysAll": "Paid from bonus:",
-    "bonusPaysFirst": "pays first",
-    "bonusSpentFirst": "spent before your wallet",
-    "bonusSplit": "{{bonus}} from bonus, {{wallet}} from wallet",
-    "bonusTitle": "Daisu's bonus",
-    "bonusUsedOn": "Used first on your {{game}} bets",
     "bubbleGift": "Gift",
     "clickHint": "Click the jar to take what is in it",
     "close": "Close",
@@ -480,15 +471,11 @@
     "keeps": "keeps the pot",
     "loading": "...",
     "missionsDone": "{{done}} of {{total}} missions complete",
-    "nextPick": "Next: {{game}}, after {{amount}} more",
     "ofFull": "of {{full}}",
     "open": "Open Daisu",
     "pending": "{{amount}} on its way to your wallet",
-    "pickLine": "An extra {{share}}% of every take goes to {{game}}",
-    "pickTitle": "Daisu's pick",
     "play": "Play",
     "roomTitle": "Daisu's room",
-    "tabMissions": "Missions",
     "visit": "Visit Daisu's room",
     "lines": {
       "hello": {
@@ -987,9 +974,20 @@
     },
     "shop": {
       "after": "Your balance after",
-      "buy": "Buy",
       "buyFor": "Buy for {{amount}}",
       "failed": "Could not buy that. Try again.",
+      "level": "Level {{n}}",
+      "needs": "Needs",
+      "notNow": "Not now",
+      "price": "Price",
+      "short": "{{amount}} short",
+      "soon": "Something new will show up here.",
+      "tipBuy": "{{price}} · level {{n}} · click to buy",
+      "tipLevel": "Needs level {{n}} · you are level {{level}}",
+      "tipShort": "{{price}} · you need {{amount}} more",
+      "title": "Daisu's shop",
+      "unlocked": "Unlocked",
+      "yours": "Yours",
       "items": {
         "chatPass": {
           "about": "Lets you send messages in the site chat. Reading it never needs a pass.",
@@ -1035,18 +1033,18 @@
           "pitch": "Official paperwork, so you can haggle with strangers. Don't get scammed. Actually, do. It's funny.",
           "what": "Buy from other players and list your own items on the marketplace."
         }
-      },
-      "level": "Level {{n}}",
-      "locked": "Locked",
-      "needs": "Needs",
-      "notNow": "Not now",
-      "price": "Price",
-      "short": "{{amount}} short",
-      "subtitle": "Things that open up the rest of the place.",
-      "tab": "Shop",
-      "title": "Daisu's shop",
-      "unlocked": "Unlocked",
-      "yours": "Yours"
+      }
+    },
+    "ticket": {
+      "yours": "Your bonus",
+      "kicker": "{{game}} bonus",
+      "forGame": "to bet on {{game}}",
+      "spends": "Your {{game}} bets spend this before your wallet",
+      "spentFirst": "spent first",
+      "source": "Every time you take from the jar, I add {{share}}% extra as a bonus for one game.",
+      "none": "No bonus right now. Take from the jar and I add {{share}}% extra to bet on {{game}}.",
+      "betAll": "This bet: {{bonus}} from your bonus, nothing from your wallet",
+      "betSplit": "This bet: {{bonus}} from your bonus, {{wallet}} from your wallet"
     }
   },
   "dice": {

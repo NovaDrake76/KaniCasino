@@ -453,18 +453,9 @@
     "queuedClickToCancel": "In der Warteschlange (klicken zum Abbrechen)"
   },
   "daisu": {
-    "activeBonuses": "Du hast aktive Boni",
     "back": "Zurück zu Daisu",
     "bonusBubble": "{{game}}-Bonus, {{clock}}",
-    "bonusExpired": "{{game}}-Bonus abgelaufen",
     "bonusHurry": "Spiel, bevor er abläuft",
-    "bonusNewOne": "Nimm aus dem Topf für einen neuen",
-    "bonusPaysAll": "Vom Bonus bezahlt:",
-    "bonusPaysFirst": "zahlt zuerst",
-    "bonusSpentFirst": "wird vor deinem Wallet verbraucht",
-    "bonusSplit": "{{bonus}} vom Bonus, {{wallet}} vom Wallet",
-    "bonusTitle": "Daisus Bonus",
-    "bonusUsedOn": "Zuerst für deine {{game}}-Einsätze",
     "bubbleGift": "Geschenk",
     "clickHint": "Klick auf den Topf, um zu nehmen, was drin ist",
     "close": "Schließen",
@@ -480,15 +471,11 @@
     "keeps": "hütet den Topf",
     "loading": "...",
     "missionsDone": "{{done}} von {{total}} Missionen erledigt",
-    "nextPick": "Danach: {{game}}, nach weiteren {{amount}}",
     "ofFull": "von {{full}}",
     "open": "Daisu öffnen",
     "pending": "{{amount}} unterwegs in dein Wallet",
-    "pickLine": "Extra {{share}}% jeder Entnahme gehen an {{game}}",
-    "pickTitle": "Daisus Wahl",
     "play": "Spielen",
     "roomTitle": "Daisus Zimmer",
-    "tabMissions": "Missionen",
     "visit": "Daisus Zimmer besuchen",
     "lines": {
       "hello": {
@@ -987,9 +974,20 @@
     },
     "shop": {
       "after": "Dein Guthaben danach",
-      "buy": "Kaufen",
       "buyFor": "Für {{amount}} kaufen",
       "failed": "Kauf fehlgeschlagen. Versuch es noch mal.",
+      "level": "Level {{n}}",
+      "needs": "Benötigt",
+      "notNow": "Nicht jetzt",
+      "price": "Preis",
+      "short": "{{amount}} zu wenig",
+      "soon": "Hier taucht bald etwas Neues auf.",
+      "tipBuy": "{{price}} · Level {{n}} · zum Kaufen klicken",
+      "tipLevel": "Braucht Level {{n}} · du bist Level {{level}}",
+      "tipShort": "{{price}} · dir fehlen {{amount}}",
+      "title": "Daisus Laden",
+      "unlocked": "Freigeschaltet",
+      "yours": "Deins",
       "items": {
         "chatPass": {
           "about": "Erlaubt dir, im Chat der Seite Nachrichten zu schreiben. Zum Lesen braucht es nie einen Pass.",
@@ -1035,18 +1033,18 @@
           "pitch": "Offizieller Papierkram, damit du mit Fremden feilschen kannst. Lass dich nicht abzocken. Na ja, doch, das ist lustig.",
           "what": "Kauf von anderen Spielern und stell deine eigenen Items auf dem Marktplatz ein."
         }
-      },
-      "level": "Level {{n}}",
-      "locked": "Gesperrt",
-      "needs": "Benötigt",
-      "notNow": "Nicht jetzt",
-      "price": "Preis",
-      "short": "{{amount}} zu wenig",
-      "subtitle": "Dinge, die den Rest der Seite öffnen.",
-      "tab": "Laden",
-      "title": "Daisus Laden",
-      "unlocked": "Freigeschaltet",
-      "yours": "Deins"
+      }
+    },
+    "ticket": {
+      "yours": "Dein Bonus",
+      "kicker": "{{game}}-Bonus",
+      "forGame": "zum Setzen bei {{game}}",
+      "spends": "Deine {{game}}-Einsätze verbrauchen das vor deinem Guthaben",
+      "spentFirst": "wird zuerst verbraucht",
+      "source": "Jedes Mal, wenn du aus dem Topf nimmst, lege ich {{share}} % extra als Bonus für ein Spiel drauf.",
+      "none": "Gerade kein Bonus. Nimm aus dem Topf und ich lege {{share}} % extra für {{game}} drauf.",
+      "betAll": "Dieser Einsatz: {{bonus}} aus deinem Bonus, nichts aus deinem Guthaben",
+      "betSplit": "Dieser Einsatz: {{bonus}} aus deinem Bonus, {{wallet}} aus deinem Guthaben"
     }
   },
   "dice": {

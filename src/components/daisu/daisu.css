@@ -65,3 +65,11 @@ body.daisu-still .daisu-hop {
 @media (prefers-reduced-motion: reduce) {
   .daisu-bob, .daisu-hop, .daisu-shake, .daisu-glow { animation: none; }
 }
+
+/* a ticket's two bites at the perforation, cut out of the element itself so it sits on any background */
+.daisu-ticket {
+  -webkit-mask: radial-gradient(circle 7px at var(--stub) 0, #0000 97%, #000), radial-gradient(circle 7px at var(--stub) 100%, #0000 97%, #000);
+  -webkit-mask-composite: source-in;
+  mask: radial-gradient(circle 7px at var(--stub) 0, #0000 97%, #000), radial-gradient(circle 7px at var(--stub) 100%, #0000 97%, #000);
+  mask-composite: intersect;
+}

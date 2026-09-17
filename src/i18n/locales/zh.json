@@ -453,18 +453,9 @@
     "queuedClickToCancel": "排队中（点击取消）"
   },
   "daisu": {
-    "activeBonuses": "你有生效中的奖励",
     "back": "回到 Daisu",
     "bonusBubble": "{{game}} 奖励，{{clock}}",
-    "bonusExpired": "{{game}} 奖励已过期",
     "bonusHurry": "趁没过期快去玩",
-    "bonusNewOne": "从罐子里拿一次就有新的",
-    "bonusPaysAll": "由奖励支付：",
-    "bonusPaysFirst": "优先支付",
-    "bonusSpentFirst": "先于钱包使用",
-    "bonusSplit": "奖励 {{bonus}}，钱包 {{wallet}}",
-    "bonusTitle": "Daisu 的奖励",
-    "bonusUsedOn": "优先用于你的 {{game}} 下注",
     "bubbleGift": "礼物",
     "clickHint": "点击罐子拿走里面的东西",
     "close": "关闭",
@@ -480,15 +471,11 @@
     "keeps": "看管罐子",
     "loading": "...",
     "missionsDone": "已完成 {{done}}/{{total}} 个任务",
-    "nextPick": "下一个：{{game}}，再拿 {{amount}} 后切换",
     "ofFull": "/ {{full}}",
     "open": "打开 Daisu",
     "pending": "{{amount}} 正在进你的钱包",
-    "pickLine": "每次拿取额外 {{share}}% 会加到 {{game}}",
-    "pickTitle": "Daisu 的推荐",
     "play": "去玩",
     "roomTitle": "Daisu 的房间",
-    "tabMissions": "任务",
     "visit": "去 Daisu 的房间",
     "lines": {
       "hello": {
@@ -987,9 +974,20 @@
     },
     "shop": {
       "after": "购买后余额",
-      "buy": "购买",
       "buyFor": "花 {{amount}} 购买",
       "failed": "购买失败，再试一次。",
+      "level": "{{n}} 级",
+      "needs": "需要",
+      "notNow": "先不了",
+      "price": "价格",
+      "short": "还差 {{amount}}",
+      "soon": "这里会出现新东西。",
+      "tipBuy": "{{price}} · 等级 {{n}} · 点击购买",
+      "tipLevel": "需要等级 {{n}} · 你现在等级 {{level}}",
+      "tipShort": "{{price}} · 还差 {{amount}}",
+      "title": "Daisu 的商店",
+      "unlocked": "已解锁",
+      "yours": "已拥有",
       "items": {
         "chatPass": {
           "about": "让你在网站聊天里发送消息。只是阅读的话永远不需要通行证。",
@@ -1035,18 +1033,18 @@
           "pitch": "跟陌生人讨价还价用的正式文件。别被骗了。算了，被骗也行，挺好笑的。",
           "what": "向其他玩家购买，也能在市场上架你自己的物品。"
         }
-      },
-      "level": "{{n}} 级",
-      "locked": "未解锁",
-      "needs": "需要",
-      "notNow": "先不了",
-      "price": "价格",
-      "short": "还差 {{amount}}",
-      "subtitle": "能打开这里其他地方的东西。",
-      "tab": "商店",
-      "title": "Daisu 的商店",
-      "unlocked": "已解锁",
-      "yours": "已拥有"
+      }
+    },
+    "ticket": {
+      "yours": "你的奖励",
+      "kicker": "{{game}} 奖励",
+      "forGame": "用于 {{game}} 下注",
+      "spends": "你在 {{game}} 的下注会先花这个，再花钱包",
+      "spentFirst": "优先使用",
+      "source": "每次从罐子里拿钱，我都会多给 {{share}}%，作为某个游戏的奖励。",
+      "none": "现在没有奖励。从罐子里拿钱，我会多给 {{share}}% 用于 {{game}} 下注。",
+      "betAll": "本次下注：奖励出 {{bonus}}，钱包不出",
+      "betSplit": "本次下注：奖励出 {{bonus}}，钱包出 {{wallet}}"
     }
   },
   "dice": {

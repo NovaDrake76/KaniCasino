@@ -453,18 +453,9 @@
     "queuedClickToCancel": "Ditunggu (klik buat batalin)"
   },
   "daisu": {
-    "activeBonuses": "Kamu punya bonus aktif",
     "back": "Kembali ke Daisu",
     "bonusBubble": "Bonus {{game}}, {{clock}}",
-    "bonusExpired": "Bonus {{game}} kedaluwarsa",
     "bonusHurry": "Main sebelum habis",
-    "bonusNewOne": "Ambil dari toples untuk yang baru",
-    "bonusPaysAll": "Dibayar dengan bonus:",
-    "bonusPaysFirst": "bayar duluan",
-    "bonusSpentFirst": "dipakai sebelum dompetmu",
-    "bonusSplit": "{{bonus}} dari bonus, {{wallet}} dari dompet",
-    "bonusTitle": "Bonus dari Daisu",
-    "bonusUsedOn": "Dipakai duluan untuk taruhan {{game}}",
     "bubbleGift": "Hadiah",
     "clickHint": "Klik toples untuk mengambil isinya",
     "close": "Tutup",
@@ -480,15 +471,11 @@
     "keeps": "penjaga toples",
     "loading": "...",
     "missionsDone": "{{done}} dari {{total}} misi selesai",
-    "nextPick": "Berikutnya: {{game}}, setelah {{amount}} lagi",
     "ofFull": "dari {{full}}",
     "open": "Buka Daisu",
     "pending": "{{amount}} sedang menuju dompetmu",
-    "pickLine": "Tambahan {{share}}% dari setiap pengambilan masuk ke {{game}}",
-    "pickTitle": "Pilihan Daisu",
     "play": "Main",
     "roomTitle": "Kamar Daisu",
-    "tabMissions": "Misi",
     "visit": "Kunjungi kamar Daisu",
     "lines": {
       "hello": {
@@ -987,9 +974,20 @@
     },
     "shop": {
       "after": "Saldomu setelahnya",
-      "buy": "Beli",
       "buyFor": "Beli seharga {{amount}}",
       "failed": "Gagal membeli. Coba lagi.",
+      "level": "Level {{n}}",
+      "needs": "Butuh",
+      "notNow": "Nanti saja",
+      "price": "Harga",
+      "short": "Kurang {{amount}}",
+      "soon": "Sesuatu yang baru akan muncul di sini.",
+      "tipBuy": "{{price}} · level {{n}} · klik untuk beli",
+      "tipLevel": "Butuh level {{n}} · kamu level {{level}}",
+      "tipShort": "{{price}} · kurang {{amount}}",
+      "title": "Toko Daisu",
+      "unlocked": "Terbuka",
+      "yours": "Milikmu",
       "items": {
         "chatPass": {
           "about": "Membuatmu bisa mengirim pesan di obrolan situs. Untuk membaca tidak pernah perlu pass.",
@@ -1035,18 +1033,18 @@
           "pitch": "Dokumen resmi supaya kamu bisa tawar-menawar dengan orang asing. Jangan sampai ditipu. Eh, ditipu juga boleh, lucu.",
           "what": "Beli dari pemain lain dan pasang barangmu sendiri di pasar."
         }
-      },
-      "level": "Level {{n}}",
-      "locked": "Terkunci",
-      "needs": "Butuh",
-      "notNow": "Nanti saja",
-      "price": "Harga",
-      "short": "Kurang {{amount}}",
-      "subtitle": "Barang-barang yang membuka sisa tempat ini.",
-      "tab": "Toko",
-      "title": "Toko Daisu",
-      "unlocked": "Terbuka",
-      "yours": "Milikmu"
+      }
+    },
+    "ticket": {
+      "yours": "Bonusmu",
+      "kicker": "Bonus {{game}}",
+      "forGame": "untuk taruhan di {{game}}",
+      "spends": "Taruhanmu di {{game}} memakai ini sebelum dompetmu",
+      "spentFirst": "dipakai dulu",
+      "source": "Setiap kali kamu mengambil dari toples, aku tambahkan {{share}}% ekstra sebagai bonus untuk satu game.",
+      "none": "Belum ada bonus. Ambil dari toples dan aku tambahkan {{share}}% ekstra untuk taruhan di {{game}}.",
+      "betAll": "Taruhan ini: {{bonus}} dari bonusmu, tidak ada dari dompet",
+      "betSplit": "Taruhan ini: {{bonus}} dari bonusmu, {{wallet}} dari dompet"
     }
   },
   "dice": {

@@ -453,18 +453,9 @@
     "queuedClickToCancel": "Đang xếp hàng (bấm để huỷ)"
   },
   "daisu": {
-    "activeBonuses": "Bạn có phần thưởng đang hoạt động",
     "back": "Quay lại Daisu",
     "bonusBubble": "Thưởng {{game}}, {{clock}}",
-    "bonusExpired": "Thưởng {{game}} đã hết hạn",
     "bonusHurry": "Chơi trước khi hết hạn",
-    "bonusNewOne": "Lấy từ hũ để có thưởng mới",
-    "bonusPaysAll": "Trả bằng thưởng:",
-    "bonusPaysFirst": "trả trước",
-    "bonusSpentFirst": "dùng trước ví của bạn",
-    "bonusSplit": "{{bonus}} từ thưởng, {{wallet}} từ ví",
-    "bonusTitle": "Thưởng của Daisu",
-    "bonusUsedOn": "Dùng trước cho cược {{game}} của bạn",
     "bubbleGift": "Quà",
     "clickHint": "Bấm vào hũ để lấy phần bên trong",
     "close": "Đóng",
@@ -480,15 +471,11 @@
     "keeps": "giữ hũ",
     "loading": "...",
     "missionsDone": "Hoàn thành {{done}}/{{total}} nhiệm vụ",
-    "nextPick": "Tiếp theo: {{game}}, sau {{amount}} nữa",
     "ofFull": "trên {{full}}",
     "open": "Mở Daisu",
     "pending": "{{amount}} đang về ví của bạn",
-    "pickLine": "Thêm {{share}}% mỗi lần lấy sẽ vào {{game}}",
-    "pickTitle": "Daisu chọn",
     "play": "Chơi",
     "roomTitle": "Phòng của Daisu",
-    "tabMissions": "Nhiệm vụ",
     "visit": "Ghé phòng của Daisu",
     "lines": {
       "hello": {
@@ -987,9 +974,20 @@
     },
     "shop": {
       "after": "Số dư sau khi mua",
-      "buy": "Mua",
       "buyFor": "Mua với {{amount}}",
       "failed": "Không mua được. Thử lại nhé.",
+      "level": "Cấp {{n}}",
+      "needs": "Cần",
+      "notNow": "Để sau",
+      "price": "Giá",
+      "short": "Thiếu {{amount}}",
+      "soon": "Sẽ có thứ mới xuất hiện ở đây.",
+      "tipBuy": "{{price}} · cấp {{n}} · bấm để mua",
+      "tipLevel": "Cần cấp {{n}} · bạn đang cấp {{level}}",
+      "tipShort": "{{price}} · còn thiếu {{amount}}",
+      "title": "Cửa hàng của Daisu",
+      "unlocked": "Đã mở khóa",
+      "yours": "Của bạn",
       "items": {
         "chatPass": {
           "about": "Cho phép bạn gửi tin nhắn trong khung chat của trang. Chỉ đọc thì không bao giờ cần vé.",
@@ -1035,18 +1033,18 @@
           "pitch": "Giấy tờ chính thức để bạn mặc cả với người lạ. Đừng để bị lừa. À mà cứ bị lừa đi, buồn cười lắm.",
           "what": "Mua từ người chơi khác và đăng bán vật phẩm của bạn ở chợ."
         }
-      },
-      "level": "Cấp {{n}}",
-      "locked": "Đã khóa",
-      "needs": "Cần",
-      "notNow": "Để sau",
-      "price": "Giá",
-      "short": "Thiếu {{amount}}",
-      "subtitle": "Những thứ mở ra phần còn lại của nơi này.",
-      "tab": "Cửa hàng",
-      "title": "Cửa hàng của Daisu",
-      "unlocked": "Đã mở khóa",
-      "yours": "Của bạn"
+      }
+    },
+    "ticket": {
+      "yours": "Thưởng của bạn",
+      "kicker": "Thưởng {{game}}",
+      "forGame": "để cược ở {{game}}",
+      "spends": "Cược ở {{game}} sẽ dùng khoản này trước ví của bạn",
+      "spentFirst": "dùng trước",
+      "source": "Mỗi lần bạn lấy từ hũ, tôi thêm {{share}}% làm thưởng cho một trò chơi.",
+      "none": "Hiện chưa có thưởng. Lấy từ hũ và tôi thêm {{share}}% để cược ở {{game}}.",
+      "betAll": "Lượt cược này: {{bonus}} từ thưởng, không lấy từ ví",
+      "betSplit": "Lượt cược này: {{bonus}} từ thưởng, {{wallet}} từ ví"
     }
   },
   "dice": {

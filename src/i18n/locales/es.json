@@ -453,18 +453,9 @@
     "queuedClickToCancel": "En cola (haz clic para cancelar)"
   },
   "daisu": {
-    "activeBonuses": "Tienes bonos activos",
     "back": "Volver con Daisu",
     "bonusBubble": "Bono de {{game}}, {{clock}}",
-    "bonusExpired": "El bono de {{game}} expiró",
     "bonusHurry": "Juega antes de que se acabe",
-    "bonusNewOne": "Toma del bote para conseguir otro",
-    "bonusPaysAll": "Pagado con bono:",
-    "bonusPaysFirst": "paga primero",
-    "bonusSpentFirst": "se gasta antes que tu billetera",
-    "bonusSplit": "{{bonus}} del bono, {{wallet}} de la billetera",
-    "bonusTitle": "Bono de Daisu",
-    "bonusUsedOn": "Se usa primero en tus apuestas de {{game}}",
     "bubbleGift": "Regalo",
     "clickHint": "Haz clic en el bote para tomar lo que hay dentro",
     "close": "Cerrar",
@@ -480,15 +471,11 @@
     "keeps": "cuida el bote",
     "loading": "...",
     "missionsDone": "{{done}} de {{total}} misiones completadas",
-    "nextPick": "Siguiente: {{game}}, tras {{amount}} más",
     "ofFull": "de {{full}}",
     "open": "Abrir a Daisu",
     "pending": "{{amount}} en camino a tu billetera",
-    "pickLine": "Un {{share}}% extra de cada toma va a {{game}}",
-    "pickTitle": "La elección de Daisu",
     "play": "Jugar",
     "roomTitle": "El cuarto de Daisu",
-    "tabMissions": "Misiones",
     "visit": "Visitar el cuarto de Daisu",
     "lines": {
       "hello": {
@@ -987,9 +974,20 @@
     },
     "shop": {
       "after": "Tu saldo después",
-      "buy": "Comprar",
       "buyFor": "Comprar por {{amount}}",
       "failed": "No se pudo comprar. Inténtalo de nuevo.",
+      "level": "Nivel {{n}}",
+      "needs": "Requiere",
+      "notNow": "Ahora no",
+      "price": "Precio",
+      "short": "Te faltan {{amount}}",
+      "soon": "Algo nuevo aparecerá aquí.",
+      "tipBuy": "{{price}} · nivel {{n}} · clic para comprar",
+      "tipLevel": "Necesita nivel {{n}} · eres nivel {{level}}",
+      "tipShort": "{{price}} · te faltan {{amount}}",
+      "title": "Tienda de Daisu",
+      "unlocked": "Desbloqueado",
+      "yours": "Tuyo",
       "items": {
         "chatPass": {
           "about": "Te deja enviar mensajes en el chat del sitio. Para leerlo nunca hace falta pase.",
@@ -1035,18 +1033,18 @@
           "pitch": "Papeleo oficial para regatear con desconocidos. Que no te estafen. Bueno, sí, que es divertido.",
           "what": "Compra a otros jugadores y publica tus objetos en el mercado."
         }
-      },
-      "level": "Nivel {{n}}",
-      "locked": "Bloqueado",
-      "needs": "Requiere",
-      "notNow": "Ahora no",
-      "price": "Precio",
-      "short": "Te faltan {{amount}}",
-      "subtitle": "Cosas que abren el resto del sitio.",
-      "tab": "Tienda",
-      "title": "Tienda de Daisu",
-      "unlocked": "Desbloqueado",
-      "yours": "Tuyo"
+      }
+    },
+    "ticket": {
+      "yours": "Tu bono",
+      "kicker": "Bono de {{game}}",
+      "forGame": "para apostar en {{game}}",
+      "spends": "Tus apuestas en {{game}} gastan esto antes que tu cartera",
+      "spentFirst": "se gasta primero",
+      "source": "Cada vez que tomas del bote, añado un {{share}}% extra como bono para un juego.",
+      "none": "Ahora no hay bono. Toma del bote y añado un {{share}}% extra para apostar en {{game}}.",
+      "betAll": "Esta apuesta: {{bonus}} de tu bono, nada de tu cartera",
+      "betSplit": "Esta apuesta: {{bonus}} de tu bono, {{wallet}} de tu cartera"
     }
   },
   "dice": {

@@ -6,7 +6,6 @@ export type Face = "idle" | "happy" | "surprised" | "sad";
 // the bubble in the corner, the card she talks from, and her room with everything in it
 export type Stage = "bubble" | "popup" | "room";
 
-export type RoomTab = "missions" | "shop";
 
 export interface Line {
   key: string;

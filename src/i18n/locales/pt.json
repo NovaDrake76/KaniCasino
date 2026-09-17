@@ -453,18 +453,9 @@
     "queuedClickToCancel": "Na fila (clique para cancelar)"
   },
   "daisu": {
-    "activeBonuses": "Você tem bônus ativos",
     "back": "Voltar para a Daisu",
     "bonusBubble": "Bônus de {{game}}, {{clock}}",
-    "bonusExpired": "Bônus de {{game}} expirou",
     "bonusHurry": "Jogue antes que acabe",
-    "bonusNewOne": "Pegue do pote para ganhar outro",
-    "bonusPaysAll": "Pago com bônus:",
-    "bonusPaysFirst": "paga primeiro",
-    "bonusSpentFirst": "usado antes da sua carteira",
-    "bonusSplit": "{{bonus}} do bônus, {{wallet}} da carteira",
-    "bonusTitle": "Bônus da Daisu",
-    "bonusUsedOn": "Usado primeiro nas suas apostas de {{game}}",
     "bubbleGift": "Presente",
     "clickHint": "Clique no pote para pegar o que tem dentro",
     "close": "Fechar",
@@ -480,15 +471,11 @@
     "keeps": "cuida do pote",
     "loading": "...",
     "missionsDone": "{{done}} de {{total}} missões concluídas",
-    "nextPick": "Próximo: {{game}}, depois de mais {{amount}}",
     "ofFull": "de {{full}}",
     "open": "Abrir a Daisu",
     "pending": "{{amount}} a caminho da sua carteira",
-    "pickLine": "{{share}}% a mais de cada coleta vai para {{game}}",
-    "pickTitle": "Escolha da Daisu",
     "play": "Jogar",
     "roomTitle": "Quarto da Daisu",
-    "tabMissions": "Missões",
     "visit": "Visitar o quarto da Daisu",
     "lines": {
       "hello": {
@@ -987,9 +974,20 @@
     },
     "shop": {
       "after": "Seu saldo depois",
-      "buy": "Comprar",
       "buyFor": "Comprar por {{amount}}",
       "failed": "Não deu pra comprar. Tente de novo.",
+      "level": "Nível {{n}}",
+      "needs": "Requer",
+      "notNow": "Agora não",
+      "price": "Preço",
+      "short": "Faltam {{amount}}",
+      "soon": "Algo novo vai aparecer aqui.",
+      "tipBuy": "{{price}} · nível {{n}} · clique pra comprar",
+      "tipLevel": "Precisa do nível {{n}} · você está no nível {{level}}",
+      "tipShort": "{{price}} · faltam {{amount}}",
+      "title": "Loja da Daisu",
+      "unlocked": "Desbloqueado",
+      "yours": "Seu",
       "items": {
         "chatPass": {
           "about": "Permite enviar mensagens no chat do site. Ler nunca precisa de passe.",
@@ -1035,18 +1033,18 @@
           "pitch": "Papelada oficial pra você pechinchar com estranhos. Não caia em golpe. Na verdade, caia. É engraçado.",
           "what": "Compre de outros jogadores e anuncie seus itens no mercado."
         }
-      },
-      "level": "Nível {{n}}",
-      "locked": "Bloqueado",
-      "needs": "Requer",
-      "notNow": "Agora não",
-      "price": "Preço",
-      "short": "Faltam {{amount}}",
-      "subtitle": "Coisas que abrem o resto do lugar.",
-      "tab": "Loja",
-      "title": "Loja da Daisu",
-      "unlocked": "Desbloqueado",
-      "yours": "Seu"
+      }
+    },
+    "ticket": {
+      "yours": "Seu bônus",
+      "kicker": "Bônus de {{game}}",
+      "forGame": "pra apostar em {{game}}",
+      "spends": "Suas apostas em {{game}} gastam isso antes da carteira",
+      "spentFirst": "gasto primeiro",
+      "source": "Toda vez que você pega do pote, eu coloco {{share}}% a mais como bônus pra um jogo.",
+      "none": "Sem bônus agora. Pega do pote e eu coloco {{share}}% a mais pra apostar em {{game}}.",
+      "betAll": "Esta aposta: {{bonus}} do seu bônus, nada da carteira",
+      "betSplit": "Esta aposta: {{bonus}} do seu bônus, {{wallet}} da carteira"
     }
   },
   "dice": {
