@@ -13,8 +13,6 @@ interface Roulette {
   overlay?: (item: BasicItem) => React.ReactNode;
 }
 
-// the strip is clipped to this, and the window shows the middle of it
-const CLIP = 1100;
 const GAP = 8; // gap-2 between slots
 
 const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, direction = "horizontal", overlay }) => {
@@ -71,15 +69,21 @@ const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, dire
   useEffect(() => {
     if (!spin || !rouletteItems.length) return;
     const slot = rouletteRef.current?.firstElementChild as HTMLElement | null;
-    if (!slot) return;
+    const clip = rouletteRef.current?.parentElement;
+    if (!slot || !clip) return;
 
     const size = direction == "vertical" ? slot.offsetHeight : slot.offsetWidth;
-    if (!size) return;
+    // the window is 1100 wide only when the screen has room for it, so it is measured too:
+    // aiming at the middle of an 1100 that was not there stopped a phone two slots early
+    const view = direction == "vertical" ? clip.clientHeight : clip.clientWidth;
+    if (!size || !view) return;
     const winning = direction == "vertical" ? 48 : 36;
     // put the middle of the winning slot on the middle of the window
-    const centre = winning * (size + GAP) + size / 2 - CLIP / 2;
-    // the horizontal reel stops a little off centre so it never looks mechanical
-    const jitter = direction == "vertical" ? 0 : Math.floor(Math.random() * 151) - 75;
+    const centre = winning * (size + GAP) + size / 2 - view / 2;
+    // the horizontal reel stops a little off centre so it never looks mechanical, but never
+    // far enough for the winning slot to leave a narrow window
+    const wobble = Math.max(0, Math.min(75, (view - size) / 2));
+    const jitter = direction == "vertical" ? 0 : Math.round(Math.random() * 2 * wobble - wobble);
     setTranslateValue(`${-Math.round(centre + jitter)}px`);
   }, [spin, rouletteItems, direction]);
 
