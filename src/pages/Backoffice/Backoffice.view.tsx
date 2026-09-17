@@ -78,6 +78,7 @@ const LINE_LABELS: Record<string, string> = {
   referral_milestone: "Referral milestones",
   referral_commission: "Referral commission",
   ad_reward: "Ad rewards",
+  arcade_reward: "Arcade rewards",
   admin_adjust: "Admin adjustments",
 };
 const label = (type: string) => LINE_LABELS[type] || type.replace(/_/g, " ");

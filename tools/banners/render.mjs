@@ -24,33 +24,8 @@ const touhou = (f) => pathToFileURL(path.join(repo, "public", "images", "cards",
 // no third-party art lands in the repo. rendering needs network.
 const BUCKET = "https://kanicases.s3.amazonaws.com";
 const item = (p) => `${BUCKET}/${p}`;
-// one-off inputs that stay out of git: the steam capsule for a giveaway lives at the repo
-// root while the slide runs and is deleted with it
-const local = (f) => pathToFileURL(path.join(repo, f)).href;
 
 const BANNERS = [
-  {
-    // a 24 hour discord giveaway of the touhou 6 steam release. the capsule is the prize
-    // itself, the two scarlet devils are the ones on its cover
-    name: "touhou-giveaway",
-    title: "GIVEAWAY",
-    sub: "NEW TOUHOU 6 ON STEAM",
-    seed: 6,
-    motif: "capsule",
-    capsule: local("touhou.png"),
-    subjects: [
-      { src: touhou("flandre.webp"), height: 370, left: 1000, z: 4 },
-      { src: touhou("remilia.webp"), height: 380, left: 505, z: 4 },
-    ],
-    theme: {
-      base: "#5A0E20", dark: "#170408", mid: "#B8213C",
-      glow: "rgba(255,84,118,.40)", lift: "rgba(255,150,175,.16)",
-      ring: "rgba(255,175,195,.20)", streak: "rgba(255,215,225,.10)",
-      motif: "#FFD9E1",
-      ink: "#FFFFFF", "ink-shadow": "#7A0E27", "glow-text": "rgba(255,84,118,.55)",
-      accent: "#FFD34F",
-    },
-  },
   {
     name: "blackjack",
     title: "BLACKJACK",

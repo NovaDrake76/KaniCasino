@@ -27,6 +27,8 @@ import Backoffice from "./pages/Backoffice/Backoffice";
 import Predictions from "./pages/Predictions/Predictions";
 import PredictionMarket from "./pages/Predictions/Market";
 import LinkDiscord from "./pages/Discord/LinkDiscord";
+import ArcadeHome from "./pages/Arcade/ArcadeHome";
+import DailyHalo from "./pages/Arcade/DailyHalo";
 
 const defaultRoutes = (
   <>
@@ -58,6 +60,8 @@ const defaultRoutes = (
     <Route path="/unsubscribe" element={<Unsubscribe />} />
     <Route path="/gift" element={<Gift />} />
     <Route path="/link/discord" element={<LinkDiscord />} />
+    <Route path="/arcade" element={<ArcadeHome />} />
+    <Route path="/arcade/daily-halo" element={<DailyHalo />} />
   </>
 );
 

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 348">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#221f3d"/>
+      <stop offset="1" stop-color="#151225"/>
+    </linearGradient>
+    <radialGradient id="sky" cx="0.5" cy="0.4" r="0.5">
+      <stop offset="0" stop-color="#0a8bfa" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#0a8bfa" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a3560"/>
+      <stop offset="1" stop-color="#2a2740"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="348" rx="14" fill="url(#bg)"/>
+  <circle cx="128" cy="150" r="110" fill="url(#sky)"/>
+  <g>
+    <ellipse cx="128" cy="92" rx="58" ry="19" fill="none" stroke="#5CC8FF" stroke-opacity="0.3" stroke-width="14"/>
+    <ellipse cx="128" cy="92" rx="58" ry="19" fill="none" stroke="#5CC8FF" stroke-width="6"/>
+    <polygon points="128,58 134,70 128,76 122,70" fill="#5CC8FF"/>
+    <polygon points="62,92 74,86 80,92 74,98" fill="#5CC8FF"/>
+    <polygon points="194,92 182,86 176,92 182,98" fill="#5CC8FF"/>
+  </g>
+  <g>
+    <path d="M62 150 Q62 132 82 132 L174 132 Q194 132 194 150 L206 206 Q210 228 190 228 Q176 228 166 212 L154 196 L102 196 L90 212 Q80 228 66 228 Q46 228 50 206 Z" fill="url(#pad)" stroke="#151225" stroke-width="3"/>
+    <g fill="#e1dde9">
+      <rect x="80" y="148" width="12" height="36" rx="3"/>
+      <rect x="68" y="160" width="36" height="12" rx="3"/>
+    </g>
+    <circle cx="170" cy="152" r="8" fill="#FFD34F"/>
+    <circle cx="186" cy="166" r="8" fill="#22C55E"/>
+    <circle cx="154" cy="166" r="8" fill="#5CC8FF"/>
+    <circle cx="170" cy="180" r="8" fill="#DF3D6E"/>
+    <rect x="114" y="156" width="10" height="5" rx="2.5" fill="#8a8398"/>
+    <rect x="132" y="156" width="10" height="5" rx="2.5" fill="#8a8398"/>
+  </g>
+  <text x="128" y="298" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#e1dde9" letter-spacing="5">ARCADE</text>
+</svg>

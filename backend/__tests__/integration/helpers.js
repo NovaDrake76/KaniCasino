@@ -19,6 +19,7 @@ const fandomRoutes = require("../../routes/fandomRoutes");
 const predictionRoutes = require("../../routes/predictionRoutes");
 const discordRoutes = require("../../routes/discordRoutes");
 const daisuRoutes = require("../../routes/daisuRoutes");
+const arcadeRoutes = require("../../routes/arcadeRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -47,6 +48,7 @@ function makeApp() {
   app.get("/discord/oauth/callback", discordRoutes.oauthCallback);
   app.use("/discord", discordRoutes);
   app.use("/daisu", daisuRoutes);
+  app.use("/arcade", arcadeRoutes);
   return app;
 }
 

@@ -107,6 +107,7 @@ const predictionRoutes = require("./routes/predictionRoutes")(io);
 const discordRoutes = require("./routes/discordRoutes");
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
 const daisuRoutes = require("./routes/daisuRoutes");
+const arcadeRoutes = require("./routes/arcadeRoutes");
 
 // Connect to MongoDB
 mongoose
@@ -175,6 +176,7 @@ app.use("/friends", friendsRoutes);
 app.use("/fair", fairRoutes);
 app.use("/collections", collectionsRoutes);
 app.use("/daisu", daisuRoutes);
+app.use("/arcade", arcadeRoutes);
 app.use("/missions", missionsRoutes);
 app.use("/referrals", referralRoutes);
 app.use("/rewards", rewardRoutes);

@@ -139,7 +139,8 @@ for (const [route, meta] of Object.entries(routes.static)) {
     title: meta.title,
     description: meta.description,
     url: routes.site + route,
-    image: routes.defaultImage,
+    // a page with its own art shares it; crawlers need the address absolute
+    image: meta.image ? routes.site + meta.image : routes.defaultImage,
   });
   write(route, route === "/" ? structuredData(html) : html);
   count++;

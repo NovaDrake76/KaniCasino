@@ -68,6 +68,14 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
       image: "/images/hilo.svg",
       link: "/hilo",
     },
+    {
+      id: "11",
+      title: i18n.t("arcade.title"),
+      image: "/images/arcade.svg",
+      link: "/arcade",
+      // the arcade is a door to other games, not one game to play
+      cta: i18n.t("home.playNonGambling"),
+    },
   ];
   return (
     <section className="w-full flex flex-col py-6 items-center">
@@ -91,7 +99,7 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
                   loading="lazy"
                   className="h-24 md:h-32 w-full object-contain"
                 />
-                <div className="text-sm font-semibold text-center pt-3">{i18n.t("home.playGame", { game: item.title })}</div>
+                <div className="text-sm font-semibold text-center pt-3">{item.cta || i18n.t("home.playGame", { game: item.title })}</div>
               </div>
             </Link>
           ))}

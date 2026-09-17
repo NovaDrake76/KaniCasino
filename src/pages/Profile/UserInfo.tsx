@@ -11,6 +11,7 @@ import { User } from '../../components/Types'
 // the card renderer and its display faces are dead weight until someone opens the sheet
 const ShareCard = lazy(() => import("../../components/fanCard/ShareCard"));
 import { canShareCard, cardFromStanding } from "../../components/fanCard/cardData";
+import { levelProgress, xpForLevel } from "../../utils/levelCurve";
 import i18n from "../../i18n";
 
 interface UserProps {
@@ -18,16 +19,6 @@ interface UserProps {
   isSameUser: boolean;
   setRefresh?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-const getPercentX = (x: number, y: number) => {
-  return Math.round((x / y) * 100);
-};
-
-const getPercentY = (x: number, y: number) => {
-  const xPercent = getPercentX(x, y);
-
-  return 100 - xPercent;
-};
 
 const UserInfo: React.FC<UserProps> = ({
   user: { id, profilePicture, level, username, xp, fixedItem, nextBonus, fanRank, collectionRank, badge, badges, selectedBadge },
@@ -42,16 +33,8 @@ const UserInfo: React.FC<UserProps> = ({
     [fanRank, username, level, fixedItem]
   );
 
-  const calculateRequiredXP = (level: number) => {
-    const baseXP = 1000;
-    let requiredXP = baseXP;
-    for (let i = 1; i <= level; i++) {
-      requiredXP += baseXP * Math.pow(1.25, i - 1);
-    }
-    requiredXP = Math.round(requiredXP);
-
-    return requiredXP;
-  };
+  const nextLevelXp = xpForLevel(level + 1);
+  const filled = Math.round(levelProgress(xp, level) * 100);
 
 
   return (
@@ -94,20 +77,20 @@ const UserInfo: React.FC<UserProps> = ({
               <div
                 className={`h-1 bg-blue-400 rounded rounded-l-none z-10`}
                 style={{
-                  width: `${getPercentX(xp, calculateRequiredXP(level))}%`,
+                  width: `${filled}%`,
                 }}
               />{" "}
               <div
                 className={`h-1 bg-[#3a365a] rounded rounded-r-none -translate-x-1 z-0`}
                 style={{
-                  width: `${getPercentY(xp, calculateRequiredXP(level))}%`,
+                  width: `${100 - filled}%`,
                 }}
               />
             </div>
             <div className="flex w-full items-center justify-between">
               <span className="text-[#dddcfc] font-semibold">
                 {`XP ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(xp)} / 
-    ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(calculateRequiredXP(level))
+    ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(nextLevelXp)
                   }`}
               </span>
               <Tooltip id="my-tooltip" />

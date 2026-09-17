@@ -218,7 +218,7 @@ const ItemPage: React.FC = () => {
           </div>
         )}
         {/* item header */}
-        <div className="flex items-center gap-4 rounded-xl border border-line bg-surface p-4">
+        <div className="flex flex-wrap items-center gap-4 rounded-xl border border-line bg-surface p-4">
           <div
             className="w-20 h-20 shrink-0 rounded-t-lg bg-surface-nav flex items-center justify-center border-b-4"
             style={{ borderColor: color }}
@@ -229,25 +229,25 @@ const ItemPage: React.FC = () => {
               <Skeleton width={56} height={56} />
             )}
           </div>
-          <div className="flex flex-col min-w-0">
-            <h1 className="text-2xl font-bold truncate" style={{ color }}>
+          <div className="flex flex-col flex-1 min-w-0">
+            <h1 className="text-xl md:text-2xl font-bold truncate" style={{ color }}>
               {item ? item.name : <Skeleton width={180} />}
             </h1>
             <span className="text-xs" style={{ color }}>
               {item ? rarityName(item.rarity) : ""}
             </span>
           </div>
-          <div className="ml-auto flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto">
             <button
               onClick={() => (locked ? needLicense() : setOpenOrderModal(true))}
-              className="px-4 h-10 rounded-md border border-accent-gold/50 text-accent-gold text-sm font-semibold hover:bg-accent-gold/10 flex items-center gap-2"
+              className="flex-1 sm:flex-none px-3 sm:px-4 h-10 whitespace-nowrap rounded-md border border-accent-gold/50 text-accent-gold text-sm font-semibold hover:bg-accent-gold/10 flex items-center justify-center gap-2"
             >
               {locked && <FiLock />}
               {i18n.t("market.placeBuyOrder")}
             </button>
             <button
               onClick={() => (locked ? needLicense() : setOpenSellModal(true))}
-              className="px-4 h-10 rounded-md bg-accent hover:bg-accent-light text-sm font-semibold text-white flex items-center gap-2"
+              className="flex-1 sm:flex-none px-3 sm:px-4 h-10 whitespace-nowrap rounded-md bg-accent hover:bg-accent-light text-sm font-semibold text-white flex items-center justify-center gap-2"
             >
               {locked && <FiLock />}
               {i18n.t("market.sellAnItem")}

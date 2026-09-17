@@ -14,7 +14,7 @@ const PAGE_SIZE = 20;
 const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.PREDICTION_PAYOUT];
 const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND, TX.PREDICTION_REFUND];
 // KP printed to players outside the games
-const FAUCET_TYPES = [TX.SIGNUP, TX.BONUS, TX.MISSION_REWARD, TX.REFERRAL_BONUS, TX.REFERRAL_MILESTONE, TX.AD_REWARD];
+const FAUCET_TYPES = [TX.SIGNUP, TX.BONUS, TX.MISSION_REWARD, TX.REFERRAL_BONUS, TX.REFERRAL_MILESTONE, TX.AD_REWARD, TX.ARCADE_REWARD];
 // designed edges per game, so the realized return can be judged against intent
 // predictions is the one line whose theoretical return falls out of its configuration
 // rather than a designed constant: a book that sums to 1 + vig returns 1 / (1 + vig)
