@@ -1,6 +1,6 @@
 import api from "../api";
 
-export type UnlockKey = "collectionBook" | "tradersLicense" | "upgradeKit" | "chatPass" | "predictionPass";
+export type UnlockKey = "collectionBook" | "tradersLicense" | "chatPass" | "predictionPass";
 
 export interface ShopItem {
   key: UnlockKey;

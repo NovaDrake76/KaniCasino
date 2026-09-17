@@ -891,10 +891,7 @@
         "wait": "Esperando uma venda"
       },
       "showMe": "Me mostra",
-      "stop": "Parar a ajuda",
-      "upgrade": {
-        "line": "Escolha itens do seu inventário aqui embaixo e depois um alvo que valha mais. Quanto maior o salto, menor a chance, e ela aparece antes de você apertar qualquer coisa."
-      }
+      "stop": "Parar a ajuda"
     },
     "shop": {
       "after": "Seu saldo depois",
@@ -945,17 +942,6 @@
           "opened": "Licenciado. Comprar, anunciar, criar ordens, o mercado é todo seu. Quer que eu te mostre?",
           "pitch": "Papelada oficial pra você pechinchar com estranhos. Não caia em golpe. Na verdade, caia. É engraçado.",
           "what": "Compre de outros jogadores e anuncie seus itens no mercado."
-        },
-        "upgradeKit": {
-          "about": "Abre a página Melhorar: coloque itens seus pela chance de um melhor. As chances aparecem antes de cada tentativa.",
-          "getIt": "Pegar na loja da Daisu",
-          "kept": "mantido pelas suas melhorias",
-          "lockedBody": "O Kit de Melhoria deixa você trocar itens seus pela chance de algo melhor, com as chances mostradas antes de cada tentativa.",
-          "lockedTitle": "Melhorias bloqueadas",
-          "name": "Kit de Melhoria",
-          "opened": "A página Melhorar está aberta. Quer que eu mostre como funciona antes de você jogar seus itens nela?",
-          "pitch": "Transforme seu lixo em um lixo melhor. Ou em nada. Essa é a graça.",
-          "what": "Troque itens seus pela chance de algo melhor na página Melhorar."
         }
       },
       "level": "Nível {{n}}",

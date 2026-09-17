@@ -891,10 +891,7 @@
         "wait": "J'attends une vente"
       },
       "showMe": "Montre-moi",
-      "stop": "Arrêter l'aide",
-      "upgrade": {
-        "line": "Choisis des objets de ton inventaire plus bas, puis une cible qui vaut plus. Plus le saut est grand, plus la chance est faible, et elle s'affiche avant que tu appuies sur quoi que ce soit."
-      }
+      "stop": "Arrêter l'aide"
     },
     "shop": {
       "after": "Ton solde après",
@@ -945,17 +942,6 @@
           "opened": "Licence en poche. Acheter, vendre, passer des ordres, le marché est à toi. Je te le fais visiter ?",
           "pitch": "De la paperasse officielle pour marchander avec des inconnus. Ne te fais pas arnaquer. Enfin, si, c'est drôle.",
           "what": "Achète à d'autres joueurs et mets tes objets en vente sur le marché."
-        },
-        "upgradeKit": {
-          "about": "Ouvre la page Améliorer : mise des objets que tu possèdes contre une chance d'en obtenir un meilleur. Les chances s'affichent avant chaque essai.",
-          "getIt": "L'obtenir dans la boutique de Daisu",
-          "kept": "conservé grâce à tes améliorations",
-          "lockedBody": "Le Kit d'amélioration te permet d'échanger des objets que tu possèdes contre une chance d'obtenir mieux, avec les chances affichées avant chaque essai.",
-          "lockedTitle": "Les améliorations sont verrouillées",
-          "name": "Kit d'amélioration",
-          "opened": "La page Améliorer est ouverte. Je te montre comment ça marche avant que tu y jettes tes objets ?",
-          "pitch": "Transforme tes déchets en meilleurs déchets. Ou en rien. C'est ça qui est excitant.",
-          "what": "Échange des objets que tu possèdes contre une chance d'obtenir mieux sur la page Améliorer."
         }
       },
       "level": "Niveau {{n}}",

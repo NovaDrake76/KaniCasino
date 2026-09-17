@@ -891,10 +891,7 @@
         "wait": "Waiting for a sale"
       },
       "showMe": "Show me",
-      "stop": "Stop helping",
-      "upgrade": {
-        "line": "Pick items from your inventory below, then a target worth more. The bigger the jump, the lower the chance, and it shows before you press anything."
-      }
+      "stop": "Stop helping"
     },
     "shop": {
       "after": "Your balance after",
@@ -945,17 +942,6 @@
           "opened": "Licensed. Buy, list, place orders, the marketplace is all yours. Want me to show you around it?",
           "pitch": "Official paperwork, so you can haggle with strangers. Don't get scammed. Actually, do. It's funny.",
           "what": "Buy from other players and list your own items on the marketplace."
-        },
-        "upgradeKit": {
-          "about": "Opens the Upgrade page: put in items you own for a chance at a better one. The odds show before every try.",
-          "getIt": "Get it in Daisu's shop",
-          "kept": "kept from your upgrades",
-          "lockedBody": "The Upgrade Kit lets you trade items you own for a chance at something better, with the odds shown before every try.",
-          "lockedTitle": "Upgrades are locked",
-          "name": "Upgrade Kit",
-          "opened": "The Upgrade page is open. Want me to show you how it works before you throw your items at it?",
-          "pitch": "Turn your junk into better junk. Or into nothing. That's the exciting part.",
-          "what": "Trade items you own for a chance at something better on the Upgrade page."
         }
       },
       "level": "Level {{n}}",

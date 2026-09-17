@@ -891,10 +891,7 @@
         "wait": "Menunggu penjualan"
       },
       "showMe": "Tunjukkan",
-      "stop": "Berhenti membantu",
-      "upgrade": {
-        "line": "Pilih barang dari gudangmu di bawah, lalu target yang nilainya lebih tinggi. Makin jauh lompatannya, makin kecil peluangnya, dan peluang itu tampil sebelum kamu menekan apa pun."
-      }
+      "stop": "Berhenti membantu"
     },
     "shop": {
       "after": "Saldomu setelahnya",
@@ -945,17 +942,6 @@
           "opened": "Sudah berlisensi. Beli, pasang, buat pesanan, pasar sepenuhnya milikmu. Mau kutunjukkan?",
           "pitch": "Dokumen resmi supaya kamu bisa tawar-menawar dengan orang asing. Jangan sampai ditipu. Eh, ditipu juga boleh, lucu.",
           "what": "Beli dari pemain lain dan pasang barangmu sendiri di pasar."
-        },
-        "upgradeKit": {
-          "about": "Membuka halaman Upgrade: masukkan barang yang kamu punya untuk peluang mendapat yang lebih bagus. Peluangnya tampil sebelum setiap percobaan.",
-          "getIt": "Dapatkan di toko Daisu",
-          "kept": "tetap dimiliki berkat riwayat upgrade-mu",
-          "lockedBody": "Dengan Kit Upgrade kamu bisa menukar barang yang kamu punya dengan peluang dapat yang lebih bagus, dan peluangnya tampil sebelum setiap percobaan.",
-          "lockedTitle": "Upgrade terkunci",
-          "name": "Kit Upgrade",
-          "opened": "Halaman Upgrade sudah terbuka. Mau kutunjukkan cara kerjanya sebelum kamu lempar barangmu ke sana?",
-          "pitch": "Ubah rongsokanmu jadi rongsokan yang lebih bagus. Atau jadi tidak ada apa-apa. Itu bagian serunya.",
-          "what": "Tukar barang yang kamu punya dengan peluang dapat yang lebih bagus di halaman Upgrade."
         }
       },
       "level": "Level {{n}}",

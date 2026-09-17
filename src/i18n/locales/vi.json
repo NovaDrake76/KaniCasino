@@ -891,10 +891,7 @@
         "wait": "Đang chờ bạn bán"
       },
       "showMe": "Xem cách làm",
-      "stop": "Dừng trợ giúp",
-      "upgrade": {
-        "line": "Chọn vật phẩm trong kho đồ bên dưới, rồi chọn một mục tiêu đáng giá hơn. Chênh lệch càng lớn thì tỉ lệ càng thấp, và nó hiện ra trước khi bạn bấm gì cả."
-      }
+      "stop": "Dừng trợ giúp"
     },
     "shop": {
       "after": "Số dư sau khi mua",
@@ -945,17 +942,6 @@
           "opened": "Có giấy phép rồi. Mua, đăng bán, đặt lệnh, cả cái chợ là của bạn. Muốn tôi dẫn đi xem không?",
           "pitch": "Giấy tờ chính thức để bạn mặc cả với người lạ. Đừng để bị lừa. À mà cứ bị lừa đi, buồn cười lắm.",
           "what": "Mua từ người chơi khác và đăng bán vật phẩm của bạn ở chợ."
-        },
-        "upgradeKit": {
-          "about": "Mở trang Nâng cấp: đặt vật phẩm bạn có vào để lấy cơ hội nhận món tốt hơn. Tỉ lệ hiện ra trước mỗi lần thử.",
-          "getIt": "Mua ở cửa hàng của Daisu",
-          "kept": "giữ lại nhờ lịch sử nâng cấp",
-          "lockedBody": "Bộ nâng cấp cho bạn đổi vật phẩm bạn có lấy cơ hội nhận thứ tốt hơn, với tỉ lệ hiện ra trước mỗi lần thử.",
-          "lockedTitle": "Nâng cấp đang bị khóa",
-          "name": "Bộ nâng cấp",
-          "opened": "Trang Nâng cấp đã mở. Muốn tôi chỉ cách dùng trước khi bạn ném đồ vào không?",
-          "pitch": "Biến đồ bỏ của bạn thành đồ bỏ xịn hơn. Hoặc thành không có gì. Đó mới là phần hồi hộp.",
-          "what": "Đổi vật phẩm bạn có lấy cơ hội nhận thứ tốt hơn ở trang Nâng cấp."
         }
       },
       "level": "Cấp {{n}}",

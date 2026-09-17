@@ -51,7 +51,7 @@ describe("daisu's shop", () => {
     const res = await shopOf(user);
 
     expect(res.status).toBe(200);
-    expect(res.body.items.map((i) => i.key)).toEqual(["collectionBook", "tradersLicense", "upgradeKit", "chatPass", "predictionPass"]);
+    expect(res.body.items.map((i) => i.key)).toEqual(["collectionBook", "tradersLicense", "chatPass", "predictionPass"]);
     expect(item(res.body, "chatPass")).toMatchObject({ price: 500, level: 5, owned: false, via: null });
     expect(res.body).toMatchObject({ walletBalance: 10000, level: 6 });
     expect((await shopOf(await makeUser({ betaFlags: [] }))).status).toBe(403);
@@ -79,12 +79,12 @@ describe("daisu's shop", () => {
   it("charges once when several purchases of the same item land together", async () => {
     const user = await makeUser();
 
-    const results = await Promise.all([buy(user, "upgradeKit"), buy(user, "upgradeKit"), buy(user, "upgradeKit")]);
+    const results = await Promise.all([buy(user, "chatPass"), buy(user, "chatPass"), buy(user, "chatPass")]);
 
     expect(results.filter((r) => r.body.bought)).toHaveLength(1);
     const fresh = await User.findById(user._id).lean();
-    expect(fresh.walletBalance).toBe(8000);
-    expect(fresh.unlocks.filter((u) => u.key === "upgradeKit")).toHaveLength(1);
+    expect(fresh.walletBalance).toBe(9500);
+    expect(fresh.unlocks.filter((u) => u.key === "chatPass")).toHaveLength(1);
     expect(await Transaction.countDocuments({ userId: user._id, type: TX.SHOP_PURCHASE })).toBe(1);
   });
 
@@ -123,20 +123,22 @@ describe("daisu's shop", () => {
     expect((await as(outsider, request(app).get("/users/me"))).body.unlocks).toBeUndefined();
   });
 
-  it("locks the market, the upgrade page, trading predictions and quicksell until the item is theirs", async () => {
+  it("locks the market, trading predictions and quicksell until the item is theirs, and never the upgrade game", async () => {
     const user = await makeUser();
 
     const res = [
       await as(user, request(app).post("/marketplace").send({ item: "x", price: 10 })),
       await as(user, request(app).post(`/marketplace/buy/${someId()}`)),
       await as(user, request(app).post("/marketplace/orders").send({ itemId: someId(), price: 10 })),
-      await as(user, request(app).post("/games/upgrade").send({ selectedItemIds: [], targetItemId: someId() })),
       await as(user, request(app).post("/predictions/nothing/trade").send({ outcome: "yes", action: "buy", shares: 1 })),
       await as(user, request(app).post("/collections/quicksell/preview").send({ caseId: someId() })),
     ];
 
-    expect(res.map((r) => [r.status, r.body.reason])).toEqual(Array(6).fill([403, "locked"]));
-    expect(res.map((r) => r.body.unlock)).toEqual(["tradersLicense", "tradersLicense", "tradersLicense", "upgradeKit", "predictionPass", "collectionBook"]);
+    expect(res.map((r) => [r.status, r.body.reason])).toEqual(Array(5).fill([403, "locked"]));
+    expect(res.map((r) => r.body.unlock)).toEqual(["tradersLicense", "tradersLicense", "tradersLicense", "predictionPass", "collectionBook"]);
+
+    const upgrade = await as(user, request(app).post("/games/upgrade").send({ selectedItemIds: [], targetItemId: someId() }));
+    expect(upgrade.body.reason).not.toBe("locked");
   });
 
   it("lets a licensed trader buy below level 10, where anyone outside the beta still needs the level", async () => {

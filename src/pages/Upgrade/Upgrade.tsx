@@ -4,8 +4,6 @@ import Title from "../../components/Title";
 import { Tooltip } from "react-tooltip";
 import Items from "./Items";
 import TopContent from "./TopContent";
-import LockedPanel from "../../components/daisu/shop/LockedPanel";
-import { useLocked } from "../../components/daisu/shop/useLocked";
 import i18n from "../../i18n";
 
 interface selectedItems {
@@ -25,17 +23,6 @@ const Upgrade: React.FC = () => {
     const [toggleReload, setToggleReload] = useState<boolean>(false);
     const [finished, setFinished] = useState(false);
     const [spinning, setSpinning] = useState(false);
-    const locked = useLocked("upgradeKit");
-
-    if (locked) {
-        return (
-            <div className="flex w-full justify-center px-4 py-8 md:px-8">
-                <div className="w-full max-w-[1312px]">
-                    <LockedPanel unlock="upgradeKit" />
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="w-full flex justify-center z-10">
@@ -54,12 +41,10 @@ const Upgrade: React.FC = () => {
                     </span>
                 </div>
 
-                <div data-tour="upgrade-panel">
-                    <TopContent selectedItems={selectedItems} setSelectedItems={setSelectedItems} selectedTarget={selectedTarget}
-                        setSelectedTarget={setSelectedTarget} successRate={successRate} finished={finished} setFinished={setFinished}
-                        toggleReload={toggleReload} setToggleReload={setToggleReload}
-                        spinning={spinning} setSpinning={setSpinning} />
-                </div>
+                <TopContent selectedItems={selectedItems} setSelectedItems={setSelectedItems} selectedTarget={selectedTarget}
+                    setSelectedTarget={setSelectedTarget} successRate={successRate} finished={finished} setFinished={setFinished}
+                    toggleReload={toggleReload} setToggleReload={setToggleReload}
+                    spinning={spinning} setSpinning={setSpinning} />
                 <div className="flex justify-center">
                     <Title title={i18n.t("help.upgradeItems")} />
                 </div>

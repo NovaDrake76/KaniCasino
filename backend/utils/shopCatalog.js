@@ -3,7 +3,6 @@
 const ITEMS = [
   { key: "collectionBook", price: 5000, level: 5 },
   { key: "tradersLicense", price: 2500, level: 5 },
-  { key: "upgradeKit", price: 2000, level: 5 },
   { key: "chatPass", price: 500, level: 5 },
   { key: "predictionPass", price: 5000, level: 15 },
 ];

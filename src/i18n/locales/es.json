@@ -891,10 +891,7 @@
         "wait": "Esperando una venta"
       },
       "showMe": "Enséñame",
-      "stop": "Dejar la ayuda",
-      "upgrade": {
-        "line": "Elige objetos de tu inventario aquí abajo y luego un objetivo que valga más. Cuanto mayor el salto, menor la probabilidad, y se ve antes de que pulses nada."
-      }
+      "stop": "Dejar la ayuda"
     },
     "shop": {
       "after": "Tu saldo después",
@@ -945,17 +942,6 @@
           "opened": "Con licencia. Comprar, publicar, poner órdenes, el mercado es todo tuyo. ¿Te lo enseño?",
           "pitch": "Papeleo oficial para regatear con desconocidos. Que no te estafen. Bueno, sí, que es divertido.",
           "what": "Compra a otros jugadores y publica tus objetos en el mercado."
-        },
-        "upgradeKit": {
-          "about": "Abre la página Mejorar: pon objetos tuyos por la oportunidad de uno mejor. Las probabilidades se ven antes de cada intento.",
-          "getIt": "Consíguelo en la tienda de Daisu",
-          "kept": "conservado por tus mejoras",
-          "lockedBody": "El Kit de Mejora te deja cambiar objetos tuyos por la oportunidad de algo mejor, con las probabilidades a la vista antes de cada intento.",
-          "lockedTitle": "Las mejoras están bloqueadas",
-          "name": "Kit de Mejora",
-          "opened": "La página Mejorar está abierta. ¿Te enseño cómo funciona antes de que le tires tus objetos?",
-          "pitch": "Convierte tu basura en mejor basura. O en nada. Esa es la parte emocionante.",
-          "what": "Cambia objetos tuyos por la oportunidad de algo mejor en la página Mejorar."
         }
       },
       "level": "Nivel {{n}}",

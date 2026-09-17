@@ -891,10 +891,7 @@
         "wait": "Warte auf einen Verkauf"
       },
       "showMe": "Zeig's mir",
-      "stop": "Hilfe beenden",
-      "upgrade": {
-        "line": "Wähl unten Items aus deinem Inventar und dann ein Ziel, das mehr wert ist. Je größer der Sprung, desto kleiner die Chance, und sie steht da, bevor du etwas drückst."
-      }
+      "stop": "Hilfe beenden"
     },
     "shop": {
       "after": "Dein Guthaben danach",
@@ -945,17 +942,6 @@
           "opened": "Lizenziert. Kaufen, einstellen, Aufträge erteilen, der Marktplatz gehört dir. Soll ich dich herumführen?",
           "pitch": "Offizieller Papierkram, damit du mit Fremden feilschen kannst. Lass dich nicht abzocken. Na ja, doch, das ist lustig.",
           "what": "Kauf von anderen Spielern und stell deine eigenen Items auf dem Marktplatz ein."
-        },
-        "upgradeKit": {
-          "about": "Öffnet die Seite Verbessern: setz Items ein, die du besitzt, für die Chance auf ein besseres. Die Chancen stehen vor jedem Versuch da.",
-          "getIt": "Hol es dir in Daisus Laden",
-          "kept": "behalten dank deiner Verbesserungen",
-          "lockedBody": "Mit dem Verbesserungs-Kit tauschst du Items, die du besitzt, gegen die Chance auf etwas Besseres, und die Chancen stehen vor jedem Versuch da.",
-          "lockedTitle": "Verbesserungen sind gesperrt",
-          "name": "Verbesserungs-Kit",
-          "opened": "Die Seite Verbessern ist offen. Soll ich dir zeigen, wie sie funktioniert, bevor du deine Items hineinwirfst?",
-          "pitch": "Mach aus deinem Schrott besseren Schrott. Oder nichts. Das ist der spannende Teil.",
-          "what": "Tausch Items, die du besitzt, gegen die Chance auf etwas Besseres auf der Seite Verbessern."
         }
       },
       "level": "Level {{n}}",

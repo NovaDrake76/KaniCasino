@@ -10,7 +10,6 @@ export type Wizard =
   | "cases"
   | "battle"
   | "fans"
-  | "upgrade"
   | "predictions"
   | "chat";
 
@@ -34,7 +33,6 @@ const BY_GOAL: Record<string, Wizard> = {
   // what an item from her shop opened, shown right after it is bought
   "unlock:collectionBook": "collection",
   "unlock:tradersLicense": "market",
-  "unlock:upgradeKit": "upgrade",
   "unlock:predictionPass": "predictions",
   "unlock:chatPass": "chat",
 };

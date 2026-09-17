@@ -891,10 +891,7 @@
         "wait": "Aspetto una vendita"
       },
       "showMe": "Fammi vedere",
-      "stop": "Basta aiuto",
-      "upgrade": {
-        "line": "Scegli oggetti dal tuo inventario qui sotto, poi un obiettivo che valga di più. Più grande è il salto, più bassa è la probabilità, e la vedi prima di premere qualsiasi cosa."
-      }
+      "stop": "Basta aiuto"
     },
     "shop": {
       "after": "Il tuo saldo dopo",
@@ -945,17 +942,6 @@
           "opened": "Licenza presa. Comprare, vendere, piazzare ordini, il mercato è tutto tuo. Te lo faccio vedere?",
           "pitch": "Scartoffie ufficiali per contrattare con degli sconosciuti. Non farti fregare. Anzi, sì, è divertente.",
           "what": "Compra da altri giocatori e metti in vendita i tuoi oggetti al mercato."
-        },
-        "upgradeKit": {
-          "about": "Apre la pagina Migliora: metti in gioco oggetti che possiedi per la possibilità di uno migliore. Le probabilità si vedono prima di ogni tentativo.",
-          "getIt": "Prendilo nel negozio di Daisu",
-          "kept": "tenuto grazie ai tuoi miglioramenti",
-          "lockedBody": "Il Kit di miglioramento ti fa scambiare oggetti che possiedi per la possibilità di qualcosa di meglio, con le probabilità in vista prima di ogni tentativo.",
-          "lockedTitle": "I miglioramenti sono bloccati",
-          "name": "Kit di miglioramento",
-          "opened": "La pagina Migliora è aperta. Vuoi che ti mostri come funziona prima di buttarci dentro i tuoi oggetti?",
-          "pitch": "Trasforma la tua spazzatura in spazzatura migliore. O in niente. È questo il bello.",
-          "what": "Scambia oggetti che possiedi per la possibilità di qualcosa di meglio nella pagina Migliora."
         }
       },
       "level": "Livello {{n}}",

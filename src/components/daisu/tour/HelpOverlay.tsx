@@ -49,8 +49,6 @@ const placeOf = (wizard: Wizard, step: string, userId: string, gamePath: string 
       return at("/battles");
     case "fans":
       return at("/fandom");
-    case "upgrade":
-      return at("/upgrade");
     case "predictions":
       return at("/predictions", (pathname) => pathname.startsWith("/predictions"));
     default:
@@ -344,8 +342,6 @@ const HelpOverlay = () => {
     content = <Guided target="battle-create" dim={false} eyebrow={eyebrow} line={t("battle.line")} next={gotIt()} />;
   } else if (step === "fans") {
     content = <Guided target="fandom-reach" dim={false} eyebrow={eyebrow} line={t("fans.line")} next={gotIt()} />;
-  } else if (step === "upgrade") {
-    content = <Guided target="upgrade-panel" dim={false} eyebrow={eyebrow} line={t("upgrade.line")} next={gotIt()} />;
   } else if (step === "predictions") {
     content = <Guided target="predictions-list" dim={false} eyebrow={eyebrow} line={t("predictions.line")} next={gotIt()} />;
   } else if (step === "chat") {

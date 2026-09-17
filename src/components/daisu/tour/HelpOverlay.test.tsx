@@ -194,13 +194,6 @@ describe("daisu showing how a mission is done", () => {
     window.removeEventListener("chat:open", opened);
   });
 
-  it("takes a new upgrade kit to the upgrade page", () => {
-    draw(nextId(), "unlock:upgradeKit", "/", null, "Upgrade Kit");
-
-    expect(where()).toBe("/upgrade");
-    expect(screen.getByText(/pick items from your inventory below/i)).toBeTruthy();
-  });
-
   it("sends a player without the collection book to her shop rather than to a locked page", () => {
     const asked: string[] = [];
     const onShop = (e: Event) => asked.push((e as CustomEvent<string>).detail);

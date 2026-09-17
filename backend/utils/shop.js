@@ -1,6 +1,5 @@
 const User = require("../models/User");
 const Transaction = require("../models/Transaction");
-const Roll = require("../models/Roll");
 const ChatMessage = require("../models/ChatMessage");
 const Marketplace = require("../models/Marketplace");
 const PredictionTrade = require("../models/PredictionTrade");
@@ -18,8 +17,6 @@ const EVIDENCE = {
   tradersLicense: async (user) =>
     !!(await Transaction.exists({ userId: user._id, type: { $in: [TX.MARKET_BUY, TX.MARKET_SALE, TX.MARKET_ORDER] } })) ||
     !!(await Marketplace.exists({ sellerId: user._id })),
-  // an upgrade moves items, not KP, so its rolls are the only trace, and they last three days
-  upgradeKit: async (user) => !!(await Roll.exists({ userId: user._id, game: "upgrade" })),
   chatPass: async (user) => !!(await ChatMessage.exists({ userId: user._id })),
   predictionPass: async (user) => !!(await PredictionTrade.exists({ userId: user._id })),
 };
