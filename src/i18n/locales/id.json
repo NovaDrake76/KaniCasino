@@ -248,7 +248,7 @@
     "report": "Laporkan pesan ini",
     "reported": "Dilaporkan. Terima kasih.",
     "rules": {
-      "begging": "Jangan meminta KP atau item.",
+      "begging": "Jangan meminta K₽ atau item.",
       "promo": "Dilarang menaruh tautan, kode referal, atau promosi milikmu.",
       "respect": "Tidak ada rasisme, pelecehan, atau makian. Laporkan, jangan dibalas.",
       "spam": "Dilarang spam atau banjir pesan. Bisa kena mute.",
@@ -402,17 +402,56 @@
       "hello": {
         "0": "Oh, kamu kembali. Jangan senang dulu, toplesnya masih terisi.",
         "1": "Lama banget. Hampir saja kuhabiskan sendiri.",
-        "2": "Hmph. Ya sudah, masuk. Jangan sentuh apa pun selain toples."
+        "2": "Oh, halo, Tuan Penjudi. Sudah bangkrut?",
+        "3": "All in lagi? wkwkwk~",
+        "4": "All in, tiap 8 menit.",
+        "5": "Senang melihatmu lagi, Tuan Penjudi.",
+        "6": "Bukan, aku bukan orang Jerman.",
+        "7": "Telinga kucing ini? Aksesori, maaf mengecewakanmu.",
+        "8": "Maaf, aku tidak pacaran dengan cowok bangkrut.",
+        "9": "Aku? Aku kerja paruh waktu untuk menghidupi adikku.",
+        "10": "Satu kotak lagi saja, ayolah.",
+        "11": "Tidak terjadi apa-apa tanggal 31 Agustus.",
+        "12": "Kamu harus naik pakai martingale.",
+        "13": "Nomorku? Aku lagi nonton reels, maaf.",
+        "14": "Crash berikutnya bakal 430.2X.",
+        "15": "3 blackjack berturut-turut? Kamu bercanda?",
+        "16": "Membunuh itu tidak dibenarkan.",
+        "17": "Kalau kamu terus berjudi begini, tahun depan aku beli mobil baru.",
+        "18": "Aku sudah menunjukkan kode sumberku, tolong jawab aku.",
+        "19": "Orang di peringkat 1 papan skor? Tidak, dia tidak bicara denganku.",
+        "20": "Ulang tahunku? Tanggal 7 Juli.",
+        "21": "Keberuntungan berpihak pada orang bodoh.",
+        "22": "Tora! Tora! Tora!",
+        "23": "Hati-hati dengan bola hitam yang melayang di antara pepohonan saat malam.",
+        "24": "Ini D-Day.",
+        "25": "Slotnya tidak dicurangi, aku yakin uangmu bakal kembali.",
+        "26": "Brutal.",
+        "27": "Kenapa Dogs Case tidak ada di daftar paling banyak dibuka?",
+        "28": "90% penjudi lupa membuka hadiah harian.",
+        "29": "Momokinha do céu que brutal",
+        "30": "Watanawhat?",
+        "31": "Aku punya Discord, tahu? Kamu harus gabung ke servernya.",
+        "32": "Maksudmu namanya bukan Twitter lagi?",
+        "33": "Nipah? Kita tanam di B?",
+        "34": "Tuan Penjudi, waspadalah dengan kiwi laser.",
+        "35": "Pencapaian rahasia? Kamu bisa lihat di kode sumber.",
+        "36": "Hah? Kepitingnya di mana?"
       },
       "full": {
         "0": "Sudah penuh. Jadi? Ambil sebelum aku berubah pikiran.",
-        "1": "Toples penuh dan kamu cuma duduk. Ambil, lamban.",
-        "2": "Lihat itu. Penuh. Padahal kamu hampir tidak melakukan apa-apa."
+        "1": "Lihat itu. Penuh. Padahal kamu hampir tidak melakukan apa-apa.",
+        "2": "Toplesnya akhirnya penuh. Ambil.",
+        "3": "Waktunya main lagi.",
+        "4": "Ini hadiahmu sebagai penjudi yang baik."
       },
       "filling": {
         "0": "Tidak sabar, ya? Ada {{amount}} di dalam. Lemah.",
         "1": "{{amount}} sekarang, atau tunggu {{clock}} untuk bonus toples penuh seperti orang dewasa.",
-        "2": "Colek toplesnya kalau perlu. Ada {{amount}}. Jangan nangis nanti."
+        "2": "Colek toplesnya kalau perlu. Ada {{amount}}. Jangan nangis nanti.",
+        "3": "Kalau kamu tunggu sebentar lagi, kamu dapat bonus bagus.",
+        "4": "Wah Wah.",
+        "5": "Jadi kamu salah satu yang tidak sabaran, ya?"
       },
       "empty": {
         "0": "KOSONG. Kamu baru saja mengambilnya. Belajar menghitung.",
@@ -421,11 +460,13 @@
       },
       "failed": {
         "0": "Ugh, lepas dari tanganku. Tenang, semuanya masih di toples. Klik lagi.",
-        "1": "Yang tadi tidak masuk. Jangan pasang muka begitu, tidak ada yang hilang. Coba lagi."
+        "1": "Yang tadi tidak masuk. Jangan pasang muka begitu, tidak ada yang hilang. Coba lagi.",
+        "2": "Ada yang salah, tunggu sebentar.",
+        "3": "Hm... Sepertinya ada masalah dengan server. Minta bantuan di Discord."
       },
       "bonusExpiring": {
-        "0": "Tik tok. Bonus {{game}}-mu tinggal {{left}}, lalu jadi milikku.",
-        "1": "Bonus {{game}}-mu hampir hilang. {{left}}. Cepat."
+        "0": "Aku sudah kasih bonus di {{game}}, tidak mau main? Berakhir dalam {{left}}.",
+        "1": "Kamu harus main {{game}}, aku sudah kasih bonus bagus."
       },
       "bonusExpired": {
         "0": "Terlalu lambat. Bonus {{game}}-mu kuambil lagi. Mungkin lain kali, lamban.",
@@ -434,12 +475,16 @@
       "claimed": {
         "0": "Nih, {{amount}}. Jangan habis dalam satu putaran. Pasti habis sih.",
         "1": "{{amount}}. Sama-sama. Bilang terima kasih.",
-        "2": "Ya sudah, {{amount}}. Sekarang pergi menang sesuatu, sekali saja."
+        "2": "Ya sudah, {{amount}}. Sekarang pergi menang sesuatu, sekali saja.",
+        "3": "Nih, sana bersenang-senang.",
+        "4": "Ini sistem pity-mu.",
+        "5": "Ambil ini, supaya kamu bisa all in lebih sering.",
+        "6": "Waktunya buka beberapa kotak lagi."
       },
       "claimedCredit": {
-        "0": "{{amount}} untukmu, plus {{credit}} yang hanya berlaku di {{game}}. Aku yang menentukan di mana kamu main.",
-        "1": "Kuselipkan {{credit}} untuk {{game}}. Menangkan kembali sebagai KP asli, kalau bisa.",
-        "2": "Tambahan {{credit}}, hanya di {{game}}, dan hilang dalam 8 menit. Jangan membantah."
+        "0": "Kuselipkan {{credit}} untuk {{game}}. Menangkan kembali sebagai K₽ asli, kalau bisa.",
+        "1": "Tambahan {{credit}}, hanya di {{game}}, dan hilang dalam 8 menit. Jangan membantah.",
+        "2": "Ini saldo tambahan untuk main {{game}}."
       },
       "pickChanged": {
         "0": "Satu toples penuh. Game baru: {{game}}. Ayo, aku mengawasi.",
@@ -459,13 +504,16 @@
       },
       "broke": {
         "0": "Sudah bangkrut? Toples penuh dalam {{clock}}. Duduk. Tunggu.",
-        "1": "Tidak ada KP dan tidak ada toples. Dua-duanya salahmu. {{clock}}."
+        "1": "Tidak ada K₽ dan tidak ada toples. Dua-duanya salahmu. {{clock}}.",
+        "2": "Coba kutebak, kamu lagi percaya diri.",
+        "3": "Kamu all in? wkwkwk~"
       },
       "poke0": {
         "0": "Apa?",
         "1": "Ya? Aku sibuk.",
         "2": "Butuh sesuatu, atau memang suka mencolekku?",
-        "3": "Toplesnya di sana. Aku bukan toples."
+        "3": "Toplesnya di sana. Aku bukan toples.",
+        "4": "Tuan Penjudi, aku bukan toplesnya."
       },
       "poke1": {
         "0": "Berhenti.",
@@ -484,8 +532,69 @@
         "1": "Hadiah. Dariku. Sama-sama, tentu saja."
       },
       "room": {
-        "0": "Selamat datang di kamarku. Jangan sentuh apa pun. Kecuali toples.",
-        "1": "Datang berkunjung? Hmph. Duduk, ada yang harus kamu kerjakan."
+        "0": "Selamat datang di kamarku, Tuan Penjudi.",
+        "1": "Selamat datang.",
+        "2": "Banyak yang harus kita lakukan."
+      },
+      "helloRank1": {
+        "0": "Senang ya bangkrut terus?",
+        "1": "Cara menyematkanku di profilmu? Maaf, itu khusus VIP.",
+        "2": "Kamu berjudi di dunia nyata? Tidak? Syukurlah.",
+        "3": "Uangnya seharusnya naik, bukan turun.",
+        "4": "Jangan lupa kerjakan misinya, Tuan Penjudi."
+      },
+      "helloRank2": {
+        "0": "Aku sering melihatmu di sini. Kamu tidak datang cuma untukku, kan?",
+        "1": "Jangan bilang siapa-siapa. Hadiah harianmu berikutnya bakal spesial.",
+        "2": "Hai, Tuan Penjudi. Mau mandi? Atau makan malam? Atau mungkin... all in di blackjack?",
+        "3": "Tuan Penjudi, kamu tahu cara menghindari peluru?",
+        "4": "Seperti kataku, aku bukan orang Jerman.",
+        "5": "Iwak."
+      },
+      "helloRank3": {
+        "0": "Buka 100 kotak sekaligus? Maaf, itu tidak bisa kuberikan.",
+        "1": "Item untuk kencan denganku? Itu 40 miliar K₽.",
+        "2": "Gagal jadi peringkat 1? Tenang, kamu akan selalu jadi pecundang nomor 1-ku.",
+        "3": "Aku mau buka beberapa Dogs Case, bisa pinjam sedikit K₽?",
+        "4": "Halo, Tuan Penjudi. Besok aku libur, jadi jangan menangis kalau aku tidak muncul, ya?",
+        "5": "Halo, Tuan Penjudi, aku lagi berusaha dapat lencana top fan si anjing mentega, mau jual beberapa?",
+        "6": "Tuan Penjudi, kamu sudah cukup umur, kan?",
+        "7": "Adikku? Dia tidak boleh berjudi, dia masih anak-anak.",
+        "8": "All in di merah.",
+        "9": "We rise."
+      },
+      "helloRank4": {
+        "0": "Senang melihatmu setiap hari, Tuan Penjudi.",
+        "1": "Sepertinya kamu akhirnya kaya. Sepadan?",
+        "2": "Seharusnya mereka menambah anjing di Dogs Case.",
+        "3": "Mau case battle denganku? Mungkin nanti...",
+        "4": "Tidak, aku tidak punya halo.",
+        "5": "Tuan Penjudi, levelmu sudah tinggi, tapi kamu masih datang menemuiku. Terima kasih.",
+        "6": "Toples sialan ini makin berat!",
+        "7": "Toplesnya makin berat... Jangan-jangan kamu lagi farming XP?"
+      },
+      "helloRank5": {
+        "0": "Aku? Aku lebih suka Hikari.",
+        "1": "Sistem pity? Tidak, aku tidak akan membuatnya.",
+        "2": "Aku bisa memutar Bad Apple di kotak teks ini, mau lihat?",
+        "3": "Kamu top fan? Jadi kamu suka gadis lain, ya...",
+        "4": "Aku ingin sekali punya anjing mentega.",
+        "5": "Berkat kamu, akhirnya aku bisa melunasi biaya kuliahku.",
+        "6": "Shu Shu Po Po~",
+        "7": "Aku juga suka kamu. Sebagai pelanggan.",
+        "8": "Tuan Penjudi, jangan-jangan kamu tidak punya pacar?",
+        "9": "Suatu hari aku akan jadi fumo.",
+        "10": "Bakal ada kepala yang menggelinding kalau aku memecahkan toples ini.",
+        "11": "Aku? Aku monarkis.",
+        "12": "Itu klik ke-100.000 milikmu. Selamat.",
+        "13": "Sekarang kamu sebaiknya all in terus.",
+        "14": "Mereka harus menambah game, kan?",
+        "15": "Akhirnya kita sampai di endgame.",
+        "16": "Ini akhirnya.",
+        "17": "Ingat aku di luar sana.",
+        "18": "Semuanya akan segera berakhir.",
+        "19": "Nihahaha?",
+        "20": "Kamu penjudi sukses pertama yang pernah kutemui."
       }
     },
     "tour": {
@@ -651,8 +760,8 @@
           "title": "Capai level {{target}}"
         },
         "r2-sell": {
-          "desc": "Jual kembali barang yang kamu menangkan untuk KP.",
-          "help": "Apa pun yang keluar dari kotak bisa dijual kembali jadi KP. Buka gudangmu, pilih barang, lalu jual. Simpan yang kamu suka.",
+          "desc": "Jual kembali barang yang kamu menangkan untuk K₽.",
+          "help": "Apa pun yang keluar dari kotak bisa dijual kembali jadi K₽. Buka gudangmu, pilih barang, lalu jual. Simpan yang kamu suka.",
           "title": "Jual barang"
         },
         "r3-cases": {
@@ -686,9 +795,9 @@
           "title": "Capai level {{target}}"
         },
         "r4-stake": {
-          "desc": "Taruhkan total {{target}} KP, di mana saja.",
+          "desc": "Taruhkan total {{target}} K₽, di mana saja.",
           "help": "Setiap taruhan dihitung: game, kotak, adu gacor, dan prediksi. Terkumpulnya lebih cepat dari yang kamu kira.",
-          "title": "Taruhkan {{target}} KP"
+          "title": "Taruhkan {{target}} K₽"
         },
         "r4-streak": {
           "desc": "Putar bansos harian {{target}} hari berturut-turut.",
@@ -706,9 +815,9 @@
           "title": "Capai level {{target}}"
         },
         "r5-stake": {
-          "desc": "Taruhkan total {{target}} KP, di mana saja.",
+          "desc": "Taruhkan total {{target}} K₽, di mana saja.",
           "help": "Setengah juta. Kamu bukan pemula lagi, jadi jangan bertingkah seperti pemula.",
-          "title": "Taruhkan {{target}} KP"
+          "title": "Taruhkan {{target}} K₽"
         },
         "r5-top-fan": {
           "desc": "Jadi penggemar teratas karakter yang kamu sematkan.",
@@ -775,10 +884,10 @@
         "line": "Setiap kartu adalah sebuah pasar. Buka satu, pilih hasil, dan beli saham; saham itu membayar kalau hasilnya terjadi, dan kamu bisa menjualnya sebelum itu."
       },
       "sell": {
-        "done": "Terjual. KP-nya sudah kembali ke dompetmu. Tuh kan? Gampang.",
+        "done": "Terjual. K₽-nya sudah kembali ke dompetmu. Tuh kan? Gampang.",
         "empty": "Belum ada yang bisa dijual. Buka kotak dulu.",
-        "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi KP lagi, jadi pilih yang tidak akan kamu rindukan.",
-        "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi KP lagi, jadi pilih yang tidak akan kamu rindukan.",
+        "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
+        "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "wait": "Menunggu penjualan"
       },
       "showMe": "Tunjukkan",
@@ -1245,7 +1354,7 @@
     "game": "PERMAINAN",
     "houseEdge": "KEUNGGULAN BANDAR",
     "edgeVaries": "bervariasi",
-    "notScored": "Upgrade mempertaruhkan item dan bukan KP, jadi tidak menghasilkan poin. Transaksi pasar dan bonus 8 menit bukan taruhan dan tidak pernah dihitung.",
+    "notScored": "Upgrade mempertaruhkan item dan bukan K₽, jadi tidak menghasilkan poin. Transaksi pasar dan bonus 8 menit bukan taruhan dan tidak pernah dihitung.",
     "resultTitle": "KAMU FINIS #{{rank}} KEMARIN",
     "resultPoints": "{{points}} poin",
     "resultPaid": "Dibayarkan ke saldomu saat papan direset tengah malam.",

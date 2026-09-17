@@ -4,7 +4,7 @@ import { GAME_PLAYED_EVENT } from "../../services/api";
 import { claimPot, getPotStatus, PotStatus } from "../../services/daisu/DaisuService";
 import { useGiftStatus } from "../header/useGiftReady";
 import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
-import { greetingFor, lineKey, Mood, pokeMood } from "./daisuLines";
+import { greetingFor, lineKey, Mood, openingMood, pokeMood, relationshipRank } from "./daisuLines";
 import { setPotStatus, usePotStatus } from "./potStore";
 import { DAISU_STAGE_EVENT, emitJarTaken, emitPoked, SHOP_OPEN_EVENT } from "./tour/tourEvents";
 import { useRoadmap } from "./roadmap/useRoadmap";
@@ -105,8 +105,10 @@ export const useDaisu = () => {
   statusRef.current = status;
   lastClickFillRef.current = lastClickFill;
 
+  // her missions load after the first render, so the rank the lines are picked with is read at the moment she speaks
+  const rankRef = useRef(0);
   const say = useCallback((mood: Mood, vars?: Line["vars"]) => {
-    setLine({ key: lineKey(mood, Math.random()), vars });
+    setLine({ key: lineKey(mood, Math.random(), rankRef.current), vars });
   }, []);
 
   const pull = useCallback((f: Face) => {
@@ -300,6 +302,7 @@ export const useDaisu = () => {
     ? { name: bubbleBonus.name, art: bubbleBonus.art }
     : { name: pickName, art: status ? GAME_ART[status.pick] : undefined };
 
+  rankRef.current = relationshipRank(missions.roadmap);
   const missionReady = !!missions.roadmap?.missions.some((m) => m.claimable);
   const attention = isFull || missionReady || gift.canSpin;
 
@@ -319,7 +322,7 @@ export const useDaisu = () => {
       bonusExpired: !!gone,
     });
     const about = soon ?? gone ?? liveBonuses[0];
-    say(mood, {
+    say(openingMood(mood, Math.random()), {
       amount: kp(inJar),
       clock: untilFull,
       left: about?.clock ?? "",
@@ -386,9 +389,12 @@ export const useDaisu = () => {
       setLastClickFill(0);
       if (userData) toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
       endRun("sent", res.amount);
+      // said once the run has settled, so a burst of clicks gets one line: teasing for a pot taken early, thanks for a full one
       if (res.pickChanged) {
         say("pickChanged", { game: i18n.t(GAME_NAME_KEYS[res.status.pick]) });
-      } else if (res.credit >= 1) {
+      } else if (res.fill < 1) {
+        say("filling", { amount: kp(res.amount), clock: clock(msUntil(res.status.fullAt, res.status.cycleMs, 1, Date.now())) });
+      } else if (res.credit >= 1 && Math.random() < 0.5) {
         say("claimedCredit", { amount: kp(res.amount), credit: kp(res.credit), game: i18n.t(GAME_NAME_KEYS[res.pick]) });
       } else {
         say("claimed", { amount: kp(res.amount) });

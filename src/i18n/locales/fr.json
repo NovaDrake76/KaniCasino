@@ -248,7 +248,7 @@
     "report": "Signaler ce message",
     "reported": "Signale. Merci.",
     "rules": {
-      "begging": "Ne mendiez ni KP ni objets.",
+      "begging": "Ne mendiez ni K₽ ni objets.",
       "promo": "Ni liens, ni codes de parrainage, ni promotion personnelle.",
       "respect": "Ni racisme, ni harcelement, ni insultes. Signalez plutot que de repondre.",
       "spam": "Ni spam ni flood. Cela vaut un mute.",
@@ -402,17 +402,56 @@
       "hello": {
         "0": "Ah, te revoilà. Ne t'emballe pas, le pot se remplit encore.",
         "1": "T'en as mis du temps. J'allais tout dépenser moi-même.",
-        "2": "Hmph. Bon, entre. Ne touche à rien sauf au pot."
+        "2": "Oh, bonjour, M. le Joueur. Déjà fauché ?",
+        "3": "Encore all in ? mdrrr~",
+        "4": "All in, toutes les 8 minutes.",
+        "5": "Ça fait plaisir de te revoir, M. le Joueur.",
+        "6": "Non, je ne suis pas allemande.",
+        "7": "Ces oreilles de chat ? Des accessoires, désolée de te décevoir.",
+        "8": "Désolée, je ne sors pas avec les fauchés.",
+        "9": "Moi ? Je bosse à temps partiel pour nourrir ma sœur.",
+        "10": "Juste une caisse de plus, allez.",
+        "11": "Il ne s'est rien passé le 31 août.",
+        "12": "Tu devrais grimper à coups de martingale.",
+        "13": "Mon numéro ? Je regarde des reels là, désolée.",
+        "14": "Le prochain crash sera à 430.2X.",
+        "15": "3 blackjacks d'affilée ? Tu te moques de moi ?",
+        "16": "Tuer n'est pas justifié.",
+        "17": "Si tu continues à jouer comme ça, l'an prochain je m'achète une voiture neuve.",
+        "18": "Je t'ai montré mon code source, réponds-moi s'il te plaît.",
+        "19": "Le type top 1 du classement ? Non, il ne me parle pas.",
+        "20": "Mon anniversaire ? C'est le 7 juillet.",
+        "21": "La fortune sourit aux fous.",
+        "22": "Tora ! Tora ! Tora !",
+        "23": "Méfie-toi de la boule noire qui voyage entre les arbres la nuit.",
+        "24": "C'est le jour J.",
+        "25": "Les machines à sous ne sont pas truquées, je suis sûre que tu vas récupérer ton argent.",
+        "26": "Brutal.",
+        "27": "Pourquoi la Dogs Case n'est pas dans la liste des plus ouvertes ?",
+        "28": "90 % des joueurs oublient d'ouvrir le cadeau du jour.",
+        "29": "Momokinha do céu que brutal",
+        "30": "Watanawhat ?",
+        "31": "J'ai un Discord, tu sais ? Tu devrais rejoindre le serveur.",
+        "32": "Comment ça, ça ne s'appelle plus Twitter ?",
+        "33": "Nipah ? On plante sur B ?",
+        "34": "M. le Joueur, méfie-toi des kiwis laser.",
+        "35": "Les succès secrets ? Tu peux regarder le code source.",
+        "36": "Hein ? Où sont les crabes ?"
       },
       "full": {
         "0": "Il est plein. Alors ? Prends-le avant que je change d'avis.",
-        "1": "Un pot plein et tu restais là. Prends-le, lambin.",
-        "2": "Regarde ça. Plein. Et tu n'as presque rien fait."
+        "1": "Regarde ça. Plein. Et tu n'as presque rien fait.",
+        "2": "Le pot est enfin plein. Prends-le.",
+        "3": "L'heure de jouer encore.",
+        "4": "Voilà ta récompense de bon joueur."
       },
       "filling": {
         "0": "Tu peux pas attendre, hein ? Il y a {{amount}} dedans. Faible.",
         "1": "{{amount}} maintenant, ou attends {{clock}} pour le bonus du pot plein, comme un grand.",
-        "2": "Tape sur le pot si tu veux. {{amount}} dedans. Ne viens pas pleurer."
+        "2": "Tape sur le pot si tu veux. {{amount}} dedans. Ne viens pas pleurer.",
+        "3": "Si tu attends encore un peu, tu auras un joli bonus.",
+        "4": "Wah Wah.",
+        "5": "Alors tu fais partie des pressés, hein ?"
       },
       "empty": {
         "0": "Il est VIDE. Tu viens de le prendre. Apprends à compter.",
@@ -421,11 +460,13 @@
       },
       "failed": {
         "0": "Pff, ça m'a glissé des mains. Du calme, tout est encore dans le pot. Reclique.",
-        "1": "Celui-là n'est pas passé. Fais pas cette tête, rien n'est perdu. Recommence."
+        "1": "Celui-là n'est pas passé. Fais pas cette tête, rien n'est perdu. Recommence.",
+        "2": "Quelque chose s'est mal passé, attends.",
+        "3": "Hm... On dirait qu'il y a un problème avec le serveur. Demande de l'aide sur Discord."
       },
       "bonusExpiring": {
-        "0": "Tic tac. Plus que {{left}} sur ton bonus {{game}}, après il est à moi.",
-        "1": "Ton bonus {{game}} va disparaître. {{left}}. Bouge."
+        "0": "Je t'ai donné un bonus sur {{game}}, tu ne vas pas y jouer ? Il expire dans {{left}}.",
+        "1": "Tu devrais jouer à {{game}}, je t'ai donné un joli bonus."
       },
       "bonusExpired": {
         "0": "Trop lent. J'ai repris ton bonus {{game}}. La prochaine fois peut-être, lambin.",
@@ -434,12 +475,16 @@
       "claimed": {
         "0": "Tiens, {{amount}}. Ne perds pas tout en un tour. Tu le feras quand même.",
         "1": "{{amount}}. De rien. Dis merci.",
-        "2": "Bon, {{amount}}. Va gagner quelque chose pour une fois."
+        "2": "Bon, {{amount}}. Va gagner quelque chose pour une fois.",
+        "3": "Tiens, va t'amuser.",
+        "4": "Voilà ton système de pity.",
+        "5": "Tiens, c'est pour faire all in plus souvent.",
+        "6": "L'heure d'ouvrir encore quelques caisses."
       },
       "claimedCredit": {
-        "0": "{{amount}} pour toi, plus {{credit}} qui ne marchent que sur {{game}}. C'est moi qui décide où tu joues.",
-        "1": "J'ai glissé {{credit}} pour {{game}}. Regagne-les en vrais KP, si tu peux.",
-        "2": "{{credit}} en plus, seulement sur {{game}}, et ça disparaît dans 8 minutes. Pas de discussion."
+        "0": "J'ai glissé {{credit}} pour {{game}}. Regagne-les en vrais K₽, si tu peux.",
+        "1": "{{credit}} en plus, seulement sur {{game}}, et ça disparaît dans 8 minutes. Pas de discussion.",
+        "2": "Voilà un peu de solde en plus pour jouer à {{game}}."
       },
       "pickChanged": {
         "0": "Un pot entier. Nouveau jeu : {{game}}. Vas-y, je regarde.",
@@ -459,13 +504,16 @@
       },
       "broke": {
         "0": "Déjà fauché ? Le pot est plein dans {{clock}}. Assis. Attends.",
-        "1": "Pas de KP et pas de pot. Les deux, c'est ta faute. {{clock}}."
+        "1": "Pas de K₽ et pas de pot. Les deux, c'est ta faute. {{clock}}.",
+        "2": "Laisse-moi deviner, tu te sentais confiant.",
+        "3": "Tu as fait all in ? mdrrr~"
       },
       "poke0": {
         "0": "Quoi ?",
         "1": "Oui ? Je suis occupée.",
         "2": "Tu as besoin de quelque chose, ou tu aimes juste me piquer ?",
-        "3": "Le pot est là-bas. Je ne suis pas le pot."
+        "3": "Le pot est là-bas. Je ne suis pas le pot.",
+        "4": "M. le Joueur, je ne suis pas le pot."
       },
       "poke1": {
         "0": "Arrête.",
@@ -484,8 +532,69 @@
         "1": "Un cadeau. De moi. De rien, évidemment."
       },
       "room": {
-        "0": "Bienvenue dans ma chambre. Ne touche à rien. Sauf au pot.",
-        "1": "Tu viens me voir ? Hmph. Assieds-toi, j'ai des choses à te faire faire."
+        "0": "Bienvenue dans ma chambre, M. le Joueur.",
+        "1": "Bienvenue.",
+        "2": "On a beaucoup à faire."
+      },
+      "helloRank1": {
+        "0": "Ça t'amuse d'être fauché tout le temps ?",
+        "1": "Comment m'épingler sur ton profil ? Désolée, c'est réservé aux VIP.",
+        "2": "Tu joues dans la vraie vie ? Non ? Dieu merci.",
+        "3": "L'argent est censé monter, pas descendre.",
+        "4": "Pense à faire les missions, M. le Joueur."
+      },
+      "helloRank2": {
+        "0": "Je te vois souvent ici. Tu ne viens pas que pour moi, hein ?",
+        "1": "Ne le dis à personne. Ton prochain cadeau du jour sera spécial.",
+        "2": "Salut, M. le Joueur. Tu veux un bain ? Le dîner ? Ou peut-être... all in au blackjack ?",
+        "3": "M. le Joueur, tu sais esquiver les balles ?",
+        "4": "Comme je l'ai dit, je ne suis pas allemande.",
+        "5": "Iwak."
+      },
+      "helloRank3": {
+        "0": "Ouvrir 100 caisses d'un coup ? Désolée, je ne peux pas proposer ça.",
+        "1": "Un objet pour sortir avec moi ? Ce serait 40 milliards de K₽.",
+        "2": "Pas de top 1 ? T'inquiète, tu seras toujours mon top 1 des perdants.",
+        "3": "Je veux ouvrir des Dogs Case, tu me prêtes quelques K₽ ?",
+        "4": "Bonjour, M. le Joueur. Demain c'est mon jour de repos, alors ne pleure pas si je ne suis pas là, d'accord ?",
+        "5": "Bonjour, M. le Joueur, j'essaie d'avoir le badge top fan du chien beurre, tu m'en vendrais ?",
+        "6": "M. le Joueur, tu es majeur, hein ?",
+        "7": "Ma sœur ? Elle ne peut pas jouer, c'est une enfant.",
+        "8": "All in sur le rouge.",
+        "9": "We rise."
+      },
+      "helloRank4": {
+        "0": "Ça fait plaisir de te voir tous les jours, M. le Joueur.",
+        "1": "On dirait que tu es enfin riche. Ça valait le coup ?",
+        "2": "Ils devraient ajouter plus de chiens dans la Dogs Case.",
+        "3": "Tu veux faire une bataille de caisses avec moi ? Peut-être plus tard...",
+        "4": "Non, je n'ai pas d'auréole.",
+        "5": "M. le Joueur, tu es haut niveau maintenant, mais tu viens encore me voir. Merci.",
+        "6": "Ce fichu pot devient trop lourd !",
+        "7": "Le pot devient lourd... Tu farmerais pas de l'XP, par hasard ?"
+      },
+      "helloRank5": {
+        "0": "Moi ? Je préfère Hikari.",
+        "1": "Un système de pity ? Non, je ne l'implémenterai pas.",
+        "2": "Je peux passer Bad Apple dans cette zone de texte, tu veux voir ?",
+        "3": "Tu es top fan ? Donc tu aimes d'autres filles, hein...",
+        "4": "J'adorerais un chien beurre.",
+        "5": "Grâce à toi, je peux enfin payer mes études.",
+        "6": "Shu Shu Po Po~",
+        "7": "Je t'aime bien aussi. En tant que client.",
+        "8": "M. le Joueur, tu n'aurais pas de copine, par hasard ?",
+        "9": "Un jour je deviendrai une fumo.",
+        "10": "Des têtes vont tomber si je casse ce pot.",
+        "11": "Moi ? Je suis monarchiste.",
+        "12": "C'était ton 100 000e clic. Félicitations.",
+        "13": "À ce stade, tu devrais faire all in tout le temps.",
+        "14": "Ils devraient ajouter plus de jeux, non ?",
+        "15": "On est enfin à l'endgame.",
+        "16": "C'est la fin.",
+        "17": "Souviens-toi de moi là-bas.",
+        "18": "Tout sera bientôt fini.",
+        "19": "Nihahaha ?",
+        "20": "Tu es le premier joueur gagnant que j'aie jamais rencontré."
       }
     },
     "tour": {
@@ -651,8 +760,8 @@
           "title": "Atteins le niveau {{target}}"
         },
         "r2-sell": {
-          "desc": "Revends quelque chose que tu as gagné contre des KP.",
-          "help": "Tout ce qui sort d'une caisse peut se revendre en KP. Ouvre ton inventaire, choisis un objet et vends-le. Garde ceux que tu aimes.",
+          "desc": "Revends quelque chose que tu as gagné contre des K₽.",
+          "help": "Tout ce qui sort d'une caisse peut se revendre en K₽. Ouvre ton inventaire, choisis un objet et vends-le. Garde ceux que tu aimes.",
           "title": "Vends un objet"
         },
         "r3-cases": {
@@ -686,9 +795,9 @@
           "title": "Atteins le niveau {{target}}"
         },
         "r4-stake": {
-          "desc": "Mise {{target}} KP au total, sur n'importe quoi.",
+          "desc": "Mise {{target}} K₽ au total, sur n'importe quoi.",
           "help": "Chaque mise compte : jeux, caisses, batailles et prédictions. Ça monte plus vite que tu ne crois.",
-          "title": "Mise {{target}} KP"
+          "title": "Mise {{target}} K₽"
         },
         "r4-streak": {
           "desc": "Tourne le cadeau quotidien {{target}} jours d'affilée.",
@@ -706,9 +815,9 @@
           "title": "Atteins le niveau {{target}}"
         },
         "r5-stake": {
-          "desc": "Mise {{target}} KP au total, sur n'importe quoi.",
+          "desc": "Mise {{target}} K₽ au total, sur n'importe quoi.",
           "help": "Un demi-million. Tu n'es plus un débutant, alors ne fais pas comme si.",
-          "title": "Mise {{target}} KP"
+          "title": "Mise {{target}} K₽"
         },
         "r5-top-fan": {
           "desc": "Sois le plus grand fan du personnage que tu as épinglé.",
@@ -775,10 +884,10 @@
         "line": "Chaque carte est un marché. Ouvre-en une, choisis un résultat et achète des parts ; elles paient si ça arrive, et tu peux les revendre avant."
       },
       "sell": {
-        "done": "Vendu. Ces KP sont de retour dans ton portefeuille. Tu vois ? Facile.",
+        "done": "Vendu. Ces K₽ sont de retour dans ton portefeuille. Tu vois ? Facile.",
         "empty": "Rien à vendre pour l'instant. Ouvre d'abord une caisse.",
-        "line": "Survole un objet et appuie sur son bouton de vente. Il redevient des KP tout de suite, alors choisis-en un qui ne te manquera pas.",
-        "linePhone": "Touche un objet et vends un exemplaire. Il redevient des KP tout de suite, alors choisis-en un qui ne te manquera pas.",
+        "line": "Survole un objet et appuie sur son bouton de vente. Il redevient des K₽ tout de suite, alors choisis-en un qui ne te manquera pas.",
+        "linePhone": "Touche un objet et vends un exemplaire. Il redevient des K₽ tout de suite, alors choisis-en un qui ne te manquera pas.",
         "wait": "J'attends une vente"
       },
       "showMe": "Montre-moi",
@@ -1245,7 +1354,7 @@
     "game": "JEU",
     "houseEdge": "AVANTAGE",
     "edgeVaries": "variable",
-    "notScored": "L'Upgrade mise des objets et non des KP, il ne rapporte donc aucun point. Les ventes du marché et le bonus de 8 minutes ne sont pas des mises et ne comptent jamais.",
+    "notScored": "L'Upgrade mise des objets et non des K₽, il ne rapporte donc aucun point. Les ventes du marché et le bonus de 8 minutes ne sont pas des mises et ne comptent jamais.",
     "resultTitle": "VOUS AVEZ FINI #{{rank}} HIER",
     "resultPoints": "{{points}} points",
     "resultPaid": "Versé sur votre solde à la remise à zéro de minuit.",

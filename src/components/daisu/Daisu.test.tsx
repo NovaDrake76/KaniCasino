@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { act, render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
+import en from "../../i18n/locales/en.json";
 import DaisuDock from "./index";
 import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
@@ -185,6 +186,30 @@ describe("daisu in the corner", () => {
     expect(runAmount()).toBeGreaterThan(clicked);
   });
 
+  it("says one filling line once a run of clicks on an unfull pot settles, and none while clicking", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    getPotStatus.mockResolvedValue(status(60000));
+    claimPot.mockResolvedValue({ ...claimed(700, 800), fill: 0.7 });
+    // the highest roll picks each mood's last line, which for filling is one with nothing to fill in
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.9999);
+    const filling = Object.values(en.daisu.lines.filling);
+    const last = filling[filling.length - 1];
+    draw();
+    await screen.findByText(/full in \d/i);
+    const said = () => document.querySelector('section[aria-label="Daisu"] p')?.textContent || "";
+    const before = said();
+
+    fireEvent.click(jar());
+    await wait(1000);
+    fireEvent.click(jar());
+    expect(said()).toBe(before);
+
+    await wait(4100);
+    await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(said()).toBe(last));
+    random.mockRestore();
+  });
+
   it("turns the run red when the take fails, says so, and re-reads the pot", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     claimPot.mockRejectedValue({ response: { status: 500, data: { message: "Server error" } } });
@@ -195,7 +220,7 @@ describe("daisu in the corner", () => {
     await wait(4100);
 
     await waitFor(() => expect(runState()).toBe("failed"));
-    expect(await screen.findByText(/still in the jar|nothing's gone/i)).toBeTruthy();
+    expect(await screen.findByText(/still in the jar|nothing's gone|went wrong|problem with the server/i)).toBeTruthy();
     expect(getPotStatus).toHaveBeenCalledTimes(2);
     expect(toogleUserData).not.toHaveBeenCalled();
   });

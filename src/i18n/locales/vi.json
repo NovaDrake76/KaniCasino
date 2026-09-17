@@ -248,7 +248,7 @@
     "report": "Bao cao tin nhan nay",
     "reported": "Da bao cao. Cam on ban.",
     "rules": {
-      "begging": "Khong xin KP hay vat pham.",
+      "begging": "Khong xin K₽ hay vat pham.",
       "promo": "Khong dat lien ket, ma gioi thieu hay quang ba cua rieng ban.",
       "respect": "Khong phan biet chung toc, quay roi hay chui boi. Hay bao cao thay vi dap tra.",
       "spam": "Khong spam hay tran tin nhan. Se bi cam noi.",
@@ -402,17 +402,56 @@
       "hello": {
         "0": "Ồ, quay lại rồi à. Đừng hí hửng, hũ vẫn đang đầy dần thôi.",
         "1": "Lâu thế. Tôi suýt tự tiêu hết rồi đấy.",
-        "2": "Hừ. Được rồi, vào đi. Đừng đụng gì ngoài cái hũ."
+        "2": "Ồ, chào Ngài Con Bạc. Cháy túi rồi à?",
+        "3": "Lại all in nữa à? kkk~",
+        "4": "All in, mỗi 8 phút.",
+        "5": "Vui được gặp lại ngài, Ngài Con Bạc.",
+        "6": "Không, tôi không phải người Đức.",
+        "7": "Đôi tai mèo này? Phụ kiện thôi, xin lỗi đã làm ngài thất vọng.",
+        "8": "Xin lỗi, tôi không hẹn hò với mấy anh cháy túi.",
+        "9": "Tôi á? Tôi làm thêm để nuôi em gái.",
+        "10": "Thêm một hòm nữa thôi, nào.",
+        "11": "Không có gì xảy ra vào ngày 31 tháng 8.",
+        "12": "Ngài nên leo lên bằng martingale.",
+        "13": "Số của tôi? Tôi đang xem reels, xin lỗi.",
+        "14": "Lần crash tới sẽ là 430.2X.",
+        "15": "3 blackjack liên tiếp? Đùa tôi à?",
+        "16": "Giết người là không thể biện minh.",
+        "17": "Nếu ngài cứ cờ bạc thế này, năm sau tôi sẽ mua xe mới.",
+        "18": "Tôi đã cho ngài xem mã nguồn của tôi rồi, trả lời tôi đi.",
+        "19": "Người top 1 bảng xếp hạng? Không, anh ta không nói chuyện với tôi.",
+        "20": "Sinh nhật tôi? Ngày 7 tháng 7.",
+        "21": "Vận may mỉm cười với kẻ ngốc.",
+        "22": "Tora! Tora! Tora!",
+        "23": "Cẩn thận với quả cầu đen bay giữa những hàng cây vào ban đêm.",
+        "24": "Hôm nay là ngày D.",
+        "25": "Máy slot không gian lận đâu, tôi chắc ngài sẽ lấy lại tiền.",
+        "26": "Tàn bạo.",
+        "27": "Sao Dogs Case không có trong danh sách mở nhiều nhất?",
+        "28": "90% con bạc quên mở quà hằng ngày.",
+        "29": "Momokinha do céu que brutal",
+        "30": "Watanawhat?",
+        "31": "Tôi có Discord đấy, biết không? Ngài nên vào server.",
+        "32": "Ý ngài là nó không còn tên Twitter nữa à?",
+        "33": "Nipah? Mình đặt bom ở B nhé?",
+        "34": "Ngài Con Bạc, cẩn thận lũ kiwi laser.",
+        "35": "Thành tựu bí mật? Ngài có thể xem mã nguồn.",
+        "36": "Hả? Mấy con cua đâu rồi?"
       },
       "full": {
         "0": "Đầy rồi. Sao? Lấy đi trước khi tôi đổi ý.",
-        "1": "Hũ đầy mà cứ ngồi đó. Lấy đi, đồ chậm chạp.",
-        "2": "Nhìn kìa. Đầy. Mà bạn có làm gì đâu."
+        "1": "Nhìn kìa. Đầy. Mà bạn có làm gì đâu.",
+        "2": "Cái hũ cuối cùng cũng đầy. Lấy đi.",
+        "3": "Đến lúc chơi tiếp rồi.",
+        "4": "Đây là phần thưởng cho con bạc ngoan."
       },
       "filling": {
         "0": "Không đợi được hả? Có {{amount}} trong đó. Yếu ghê.",
         "1": "{{amount}} ngay bây giờ, hoặc đợi {{clock}} để lấy thưởng hũ đầy như người lớn.",
-        "2": "Muốn thì chọc hũ đi. Có {{amount}}. Đừng khóc sau nhé."
+        "2": "Muốn thì chọc hũ đi. Có {{amount}}. Đừng khóc sau nhé.",
+        "3": "Nếu chờ thêm chút nữa, ngài sẽ được một phần thưởng hời.",
+        "4": "Wah Wah.",
+        "5": "Vậy ngài là loại nóng vội, hả?"
       },
       "empty": {
         "0": "TRỐNG rồi. Bạn vừa lấy xong mà. Học đếm đi.",
@@ -421,11 +460,13 @@
       },
       "failed": {
         "0": "Á, tuột tay mất. Bình tĩnh, vẫn còn nguyên trong hũ. Bấm lại đi.",
-        "1": "Lần đó không qua được. Đừng làm mặt đó, không mất gì đâu. Thử lại."
+        "1": "Lần đó không qua được. Đừng làm mặt đó, không mất gì đâu. Thử lại.",
+        "2": "Có gì đó không ổn, chờ chút.",
+        "3": "Hm... Có vẻ máy chủ đang gặp sự cố. Hãy nhờ giúp đỡ trên Discord."
       },
       "bonusExpiring": {
-        "0": "Tích tắc. Thưởng {{game}} còn {{left}}, sau đó là của tôi.",
-        "1": "Thưởng {{game}} của bạn sắp biến mất. {{left}}. Nhanh lên."
+        "0": "Tôi đã cho ngài thưởng ở {{game}}, ngài không chơi à? Nó hết hạn sau {{left}}.",
+        "1": "Ngài nên chơi {{game}}, tôi đã cho ngài phần thưởng hời."
       },
       "bonusExpired": {
         "0": "Chậm quá. Tôi lấy lại thưởng {{game}} rồi. Lần sau cố lên, đồ chậm chạp.",
@@ -434,12 +475,16 @@
       "claimed": {
         "0": "Đây, {{amount}}. Đừng thua hết trong một lượt. Dù kiểu gì cũng thua.",
         "1": "{{amount}}. Không có gì. Nói cảm ơn đi.",
-        "2": "Được rồi, {{amount}}. Giờ đi thắng gì đó cho một lần."
+        "2": "Được rồi, {{amount}}. Giờ đi thắng gì đó cho một lần.",
+        "3": "Đây, đi chơi vui vẻ nhé.",
+        "4": "Đây là hệ thống bảo hiểm của ngài.",
+        "5": "Cầm lấy, để ngài all in được nhiều lần hơn.",
+        "6": "Đến lúc mở thêm vài hòm rồi."
       },
       "claimedCredit": {
-        "0": "{{amount}} cho bạn, thêm {{credit}} chỉ dùng được ở {{game}}. Chơi ở đâu là tôi quyết.",
-        "1": "Tôi bỏ thêm {{credit}} cho {{game}}. Thắng lại thành KP thật đi, nếu làm được.",
-        "2": "Thêm {{credit}}, chỉ ở {{game}}, và biến mất sau 8 phút. Không cãi."
+        "0": "Tôi bỏ thêm {{credit}} cho {{game}}. Thắng lại thành K₽ thật đi, nếu làm được.",
+        "1": "Thêm {{credit}}, chỉ ở {{game}}, và biến mất sau 8 phút. Không cãi.",
+        "2": "Đây là số dư thêm để chơi {{game}}."
       },
       "pickChanged": {
         "0": "Nguyên một hũ. Trò mới: {{game}}. Đi đi, tôi đang xem.",
@@ -459,13 +504,16 @@
       },
       "broke": {
         "0": "Cháy túi rồi à? Hũ đầy sau {{clock}}. Ngồi xuống. Đợi.",
-        "1": "Không KP, không hũ. Cả hai đều tại bạn. {{clock}}."
+        "1": "Không K₽, không hũ. Cả hai đều tại bạn. {{clock}}.",
+        "2": "Để tôi đoán, ngài đang tự tin lắm.",
+        "3": "Ngài all in à? kkk~"
       },
       "poke0": {
         "0": "Gì?",
         "1": "Sao? Tôi đang bận.",
         "2": "Cần gì không, hay chỉ thích chọc tôi?",
-        "3": "Hũ ở đằng kia. Tôi không phải cái hũ."
+        "3": "Hũ ở đằng kia. Tôi không phải cái hũ.",
+        "4": "Ngài Con Bạc, tôi không phải cái hũ."
       },
       "poke1": {
         "0": "Thôi đi.",
@@ -484,8 +532,69 @@
         "1": "Quà. Từ tôi. Không cần cảm ơn, đương nhiên."
       },
       "room": {
-        "0": "Chào mừng đến phòng tôi. Đừng đụng gì. Trừ cái hũ.",
-        "1": "Đến thăm à? Hừ. Ngồi xuống, tôi có việc cho bạn làm."
+        "0": "Chào mừng đến phòng tôi, Ngài Con Bạc.",
+        "1": "Chào mừng.",
+        "2": "Chúng ta có nhiều việc phải làm."
+      },
+      "helloRank1": {
+        "0": "Ngài vui khi lúc nào cũng cháy túi à?",
+        "1": "Cách ghim tôi lên hồ sơ? Xin lỗi, chỉ dành cho VIP thôi.",
+        "2": "Ngài có cờ bạc ngoài đời không? Không à? Tạ ơn trời.",
+        "3": "Tiền phải đi lên chứ, không phải đi xuống.",
+        "4": "Nhớ làm nhiệm vụ nhé, Ngài Con Bạc."
+      },
+      "helloRank2": {
+        "0": "Tôi thấy ngài ở đây nhiều quá. Ngài không đến chỉ vì tôi đấy chứ?",
+        "1": "Đừng nói với ai. Quà hằng ngày tiếp theo của ngài sẽ đặc biệt.",
+        "2": "Chào Ngài Con Bạc. Ngài muốn tắm? Hay ăn tối? Hay có lẽ... all in blackjack?",
+        "3": "Ngài Con Bạc, ngài có biết né đạn không?",
+        "4": "Như tôi đã nói, tôi không phải người Đức.",
+        "5": "Iwak."
+      },
+      "helloRank3": {
+        "0": "Mở 100 hòm cùng lúc? Xin lỗi, tôi không làm được.",
+        "1": "Một vật phẩm để hẹn hò với tôi? Sẽ là 40 tỷ K₽.",
+        "2": "Không lên được top 1? Đừng lo, ngài sẽ luôn là kẻ thua top 1 của tôi.",
+        "3": "Tôi muốn mở vài Dogs Case, cho tôi mượn ít K₽ được không?",
+        "4": "Chào Ngài Con Bạc. Mai tôi nghỉ, nên đừng khóc nếu tôi không xuất hiện nhé?",
+        "5": "Chào Ngài Con Bạc, tôi đang cố lấy huy hiệu top fan của chú chó bơ, ngài bán cho tôi vài con được không?",
+        "6": "Ngài Con Bạc, ngài đủ tuổi rồi, đúng không?",
+        "7": "Em gái tôi? Con bé không được cờ bạc, nó còn nhỏ.",
+        "8": "All in cửa đỏ.",
+        "9": "We rise."
+      },
+      "helloRank4": {
+        "0": "Thật vui khi gặp ngài mỗi ngày, Ngài Con Bạc.",
+        "1": "Có vẻ cuối cùng ngài cũng giàu rồi. Có đáng không?",
+        "2": "Họ nên thêm nhiều chó hơn vào Dogs Case.",
+        "3": "Ngài muốn đấu hòm với tôi à? Để sau nhé...",
+        "4": "Không, tôi không có vầng hào quang.",
+        "5": "Ngài Con Bạc, giờ ngài cấp cao rồi mà vẫn đến gặp tôi. Cảm ơn.",
+        "6": "Cái hũ chết tiệt này nặng quá rồi!",
+        "7": "Hũ đang nặng dần... Có phải ngài đang cày XP không?"
+      },
+      "helloRank5": {
+        "0": "Tôi á? Tôi thích Hikari hơn.",
+        "1": "Hệ thống bảo hiểm? Không, tôi sẽ không làm cái đó.",
+        "2": "Tôi có thể chạy Bad Apple trong ô chữ này, ngài muốn xem không?",
+        "3": "Ngài là top fan à? Vậy là ngài thích cô gái khác, hửm...",
+        "4": "Tôi rất muốn có một chú chó bơ.",
+        "5": "Nhờ ngài, cuối cùng tôi cũng trả được tiền học.",
+        "6": "Shu Shu Po Po~",
+        "7": "Tôi cũng thích ngài. Với tư cách khách hàng.",
+        "8": "Ngài Con Bạc, có phải ngài chưa có bạn gái?",
+        "9": "Một ngày nào đó tôi sẽ thành fumo.",
+        "10": "Sẽ có người mất đầu nếu tôi làm vỡ cái hũ này.",
+        "11": "Tôi á? Tôi theo chủ nghĩa quân chủ.",
+        "12": "Đó là cú bấm thứ 100.000 của ngài. Chúc mừng.",
+        "13": "Đến nước này thì ngài nên all in mọi lúc.",
+        "14": "Họ nên thêm nhiều trò chơi hơn, nhỉ?",
+        "15": "Cuối cùng chúng ta cũng đến endgame.",
+        "16": "Đây là kết thúc.",
+        "17": "Hãy nhớ đến tôi ở ngoài kia.",
+        "18": "Mọi thứ sẽ sớm kết thúc thôi.",
+        "19": "Nihahaha?",
+        "20": "Ngài là con bạc thành công đầu tiên mà tôi từng gặp."
       }
     },
     "tour": {
@@ -651,8 +760,8 @@
           "title": "Đạt cấp {{target}}"
         },
         "r2-sell": {
-          "desc": "Bán lại thứ bạn thắng được để lấy KP.",
-          "help": "Mọi thứ ra từ hòm đều bán lại được lấy KP. Mở kho đồ, chọn một vật phẩm và bán. Giữ lại những thứ bạn thích.",
+          "desc": "Bán lại thứ bạn thắng được để lấy K₽.",
+          "help": "Mọi thứ ra từ hòm đều bán lại được lấy K₽. Mở kho đồ, chọn một vật phẩm và bán. Giữ lại những thứ bạn thích.",
           "title": "Bán một vật phẩm"
         },
         "r3-cases": {
@@ -686,9 +795,9 @@
           "title": "Đạt cấp {{target}}"
         },
         "r4-stake": {
-          "desc": "Cược tổng cộng {{target}} KP, vào bất cứ thứ gì.",
+          "desc": "Cược tổng cộng {{target}} K₽, vào bất cứ thứ gì.",
           "help": "Lần cược nào cũng tính: trò chơi, hòm, đấu hòm và dự đoán. Cộng dồn nhanh hơn bạn nghĩ.",
-          "title": "Cược {{target}} KP"
+          "title": "Cược {{target}} K₽"
         },
         "r4-streak": {
           "desc": "Quay quà hằng ngày {{target}} ngày liên tiếp.",
@@ -706,9 +815,9 @@
           "title": "Đạt cấp {{target}}"
         },
         "r5-stake": {
-          "desc": "Cược tổng cộng {{target}} KP, vào bất cứ thứ gì.",
+          "desc": "Cược tổng cộng {{target}} K₽, vào bất cứ thứ gì.",
           "help": "Nửa triệu. Bạn không còn là người mới nữa, nên đừng hành xử như người mới.",
-          "title": "Cược {{target}} KP"
+          "title": "Cược {{target}} K₽"
         },
         "r5-top-fan": {
           "desc": "Làm fan số một của nhân vật bạn đã ghim.",
@@ -775,10 +884,10 @@
         "line": "Mỗi thẻ là một thị trường. Mở một thẻ, chọn một kết quả và mua cổ phần; chúng trả thưởng nếu điều đó xảy ra, và bạn có thể bán trước đó."
       },
       "sell": {
-        "done": "Bán rồi. Số KP đó đã về ví của bạn. Thấy chưa? Dễ mà.",
+        "done": "Bán rồi. Số K₽ đó đã về ví của bạn. Thấy chưa? Dễ mà.",
         "empty": "Chưa có gì để bán. Mở một hòm trước đã.",
-        "line": "Rê chuột lên một vật phẩm và bấm nút bán của nó. Nó thành KP ngay, nên chọn thứ bạn không tiếc.",
-        "linePhone": "Chạm vào một vật phẩm và bán một bản. Nó thành KP ngay, nên chọn thứ bạn không tiếc.",
+        "line": "Rê chuột lên một vật phẩm và bấm nút bán của nó. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
+        "linePhone": "Chạm vào một vật phẩm và bán một bản. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "wait": "Đang chờ bạn bán"
       },
       "showMe": "Xem cách làm",
@@ -1245,7 +1354,7 @@
     "game": "TRÒ CHƠI",
     "houseEdge": "LỢI THẾ NHÀ CÁI",
     "edgeVaries": "thay đổi",
-    "notScored": "Upgrade đặt vật phẩm chứ không phải KP nên không được điểm. Giao dịch chợ và phần thưởng 8 phút không phải là cược nên không bao giờ được tính.",
+    "notScored": "Upgrade đặt vật phẩm chứ không phải K₽ nên không được điểm. Giao dịch chợ và phần thưởng 8 phút không phải là cược nên không bao giờ được tính.",
     "resultTitle": "HÔM QUA BẠN VỀ #{{rank}}",
     "resultPoints": "{{points}} điểm",
     "resultPaid": "Đã cộng vào số dư khi bảng làm mới lúc nửa đêm.",

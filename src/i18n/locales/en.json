@@ -248,7 +248,7 @@
     "report": "Report this message",
     "reported": "Reported. Thanks.",
     "rules": {
-      "begging": "No begging for KP or items.",
+      "begging": "No begging for K₽ or items.",
       "promo": "No links, referral codes or promoting anything of your own.",
       "respect": "No racism, harassment or slurs. Report it rather than answering it.",
       "spam": "No spam or flooding. It gets you muted.",
@@ -402,17 +402,56 @@
       "hello": {
         "0": "Oh, you're back. Don't get excited, the pot is still filling.",
         "1": "Took you long enough. I was about to spend it myself.",
-        "2": "Hmph. Fine, come in. Don't touch anything except the pot."
+        "2": "Oh, hello, Mr. Gambler. Broke already?",
+        "3": "Did you go all in again? lolol~",
+        "4": "All in, every 8 minutes.",
+        "5": "It's good to see you again, Mr. Gambler.",
+        "6": "No, I'm not German.",
+        "7": "Those cat ears? Accessories, sorry to disappoint you.",
+        "8": "Sorry, I don't date broke guys.",
+        "9": "Me? I'm working part time to feed my sister.",
+        "10": "Just one more case, c'mon.",
+        "11": "Nothing happened on Aug 31.",
+        "12": "You should totally martingale your way up.",
+        "13": "My number? I'm watching reels now, sorry.",
+        "14": "Next crash will be 430.2X.",
+        "15": "3 blackjacks in a row? Are you kidding me?",
+        "16": "Killing isn't justified.",
+        "17": "If you keep gambling like this, next year I'll buy a new car.",
+        "18": "I showed you my source code, please answer me.",
+        "19": "The guy on top 1 of the leaderboard? No, he doesn't talk to me.",
+        "20": "My birthday? It's July 7.",
+        "21": "Fortune favours the fool.",
+        "22": "Tora! Tora! Tora!",
+        "23": "Be careful with the black ball travelling between the trees at night.",
+        "24": "It's D-Day.",
+        "25": "The slots aren't rigged, I'm sure you'll get your money back.",
+        "26": "Brutal.",
+        "27": "Why isn't the Dogs Case on the 'most opened' list?",
+        "28": "90% of gamblers forget to open the daily gift.",
+        "29": "Momokinha do céu que brutal",
+        "30": "Watanawhat?",
+        "31": "I have a Discord, you know? You should join the Discord server.",
+        "32": "What do you mean it's not called Twitter anymore?",
+        "33": "Nipah? Are we planting on B?",
+        "34": "Mr. Gambler, beware of the laser kiwis.",
+        "35": "The secret achievements? You can look at the source code.",
+        "36": "Huh? Where are the crabs?"
       },
       "full": {
         "0": "It's full. Well? Take it before I change my mind.",
-        "1": "A full pot and you were just sitting there. Take it, slowpoke.",
-        "2": "Look at that. Full. You barely had to do anything."
+        "1": "Look at that. Full. You barely had to do anything.",
+        "2": "The jar is finally full. Take it.",
+        "3": "Time to play more.",
+        "4": "Here's your good gambler reward."
       },
       "filling": {
         "0": "Can't wait, huh? There's {{amount}} in there. Weak.",
         "1": "{{amount}} right now, or wait {{clock}} for the full bonus like a grown-up.",
-        "2": "Poke the jar if you must. {{amount}} in it. Don't cry later."
+        "2": "Poke the jar if you must. {{amount}} in it. Don't cry later.",
+        "3": "If you wait a little more, you'll get a nice bonus.",
+        "4": "Wah Wah.",
+        "5": "So you're one of those quickshots, huh?"
       },
       "empty": {
         "0": "It's EMPTY. You just took it. Learn to count.",
@@ -421,11 +460,13 @@
       },
       "failed": {
         "0": "Ugh, it slipped out of my hands. Relax, it's all still in the jar. Click again.",
-        "1": "That one didn't go through. Don't make that face, nothing's gone. Try again."
+        "1": "That one didn't go through. Don't make that face, nothing's gone. Try again.",
+        "2": "Something went wrong, hold on.",
+        "3": "Hm... There seems to be a problem with the server. Ask for help on Discord."
       },
       "bonusExpiring": {
-        "0": "Tick tock. {{left}} left on your {{game}} bonus, then it's mine.",
-        "1": "Your {{game}} bonus is about to vanish. {{left}}. Move."
+        "0": "I gave you a bonus on {{game}}, you won't play it? It expires in {{left}}.",
+        "1": "You should play {{game}}, I gave you a nice bonus."
       },
       "bonusExpired": {
         "0": "Too slow. I took your {{game}} bonus back. Maybe next time, slowpoke.",
@@ -434,12 +475,16 @@
       "claimed": {
         "0": "There, {{amount}}. Don't lose it all in one spin. You will, though.",
         "1": "{{amount}}. You're welcome. Say thank you.",
-        "2": "Fine, {{amount}}. Now go win something for once."
+        "2": "Fine, {{amount}}. Now go win something for once.",
+        "3": "Here, go have some fun.",
+        "4": "Here's your pity system.",
+        "5": "Take this, it's for you to go all in more times.",
+        "6": "Time to open some more cases."
       },
       "claimedCredit": {
-        "0": "{{amount}} for you, plus {{credit}} that only works on {{game}}. I decide where you play.",
-        "1": "I threw in {{credit}} for {{game}}. Win it back as real KP, if you can.",
-        "2": "Extra {{credit}}, {{game}} only, and it's gone in 8 minutes. No arguing."
+        "0": "I threw in {{credit}} for {{game}}. Win it back as real K₽, if you can.",
+        "1": "Extra {{credit}}, {{game}} only, and it's gone in 8 minutes. No arguing.",
+        "2": "Here's some extra balance for playing {{game}}."
       },
       "pickChanged": {
         "0": "That's a whole pot. New game: {{game}}. Go on, I'm watching.",
@@ -459,13 +504,16 @@
       },
       "broke": {
         "0": "Broke already? The pot is full in {{clock}}. Sit. Wait.",
-        "1": "No KP and no pot. Both your fault. {{clock}}."
+        "1": "No K₽ and no pot. Both your fault. {{clock}}.",
+        "2": "Let me guess, you were feeling confident.",
+        "3": "You went all in? lolol~"
       },
       "poke0": {
         "0": "What?",
         "1": "Yes? I'm busy.",
         "2": "Did you need something, or do you just like poking me?",
-        "3": "The pot is over there. I'm not the pot."
+        "3": "The pot is over there. I'm not the pot.",
+        "4": "Mr. Gambler, I'm not the pot."
       },
       "poke1": {
         "0": "Stop that.",
@@ -484,8 +532,69 @@
         "1": "A gift. From me. You're welcome, obviously."
       },
       "room": {
-        "0": "Welcome to my room. Don't touch anything. Except the pot.",
-        "1": "You came to visit? Hmph. Sit down, I have things for you to do."
+        "0": "Welcome to my room, Mr. Gambler.",
+        "1": "Welcome.",
+        "2": "We've got a lot to do."
+      },
+      "helloRank1": {
+        "0": "Are you having fun going broke all the time?",
+        "1": "How to pin me on your profile? Sorry, that's for VIPs only.",
+        "2": "Do you gamble in real life? No? Thank God.",
+        "3": "You're supposed to make the money go up, not down.",
+        "4": "Remember to work on the missions, Mr. Gambler."
+      },
+      "helloRank2": {
+        "0": "I'm seeing you a lot here. You're not here just for me, right?",
+        "1": "Don't tell anyone. Your next daily gift will be special.",
+        "2": "Hi, Mr. Gambler. Do you want to take a bath? Or dinner? Or maybe... all in on blackjack?",
+        "3": "Mr. Gambler, do you know how to dodge bullets?",
+        "4": "As I said, I'm not German.",
+        "5": "Iwak."
+      },
+      "helloRank3": {
+        "0": "Open 100 cases at the same time? Sorry, I can't provide that.",
+        "1": "An item to go out with me? That would be 40 billion K₽.",
+        "2": "Failed to get top 1? Don't worry, you'll always be my top 1 loser.",
+        "3": "I want to open some Dogs Cases, can you spare some K₽?",
+        "4": "Hello, Mr. Gambler. I'll be on my day off tomorrow, so don't cry if I don't show up, ok?",
+        "5": "Hello, Mr. Gambler, I'm trying to get the top fan badge of the butter dog, would you sell me some?",
+        "6": "Mr. Gambler, you're over the legal age, right?",
+        "7": "My sister? She can't gamble, she's a kid.",
+        "8": "All in on red.",
+        "9": "We rise."
+      },
+      "helloRank4": {
+        "0": "It's nice to see you every day, Mr. Gambler.",
+        "1": "Looks like you're finally rich. Was it worth it?",
+        "2": "They should add more dogs to the Dogs Case.",
+        "3": "You wanna do a case battle with me? Maybe later...",
+        "4": "No, I don't have a halo.",
+        "5": "Mr. Gambler, you're high level now, but you still come here to see me. Thanks.",
+        "6": "This damn jar is getting too heavy!",
+        "7": "The jar is getting heavy... Are you perhaps farming XP?"
+      },
+      "helloRank5": {
+        "0": "Me? I prefer Hikari.",
+        "1": "A pity system? No, I won't implement that.",
+        "2": "I can play Bad Apple on this text box, do you want to see it?",
+        "3": "You're a top fan? So you like other girls, huh...",
+        "4": "I would love a butter dog.",
+        "5": "Thanks to you, I can finally pay off my studies.",
+        "6": "Shu Shu Po Po~",
+        "7": "I like you too. As a customer.",
+        "8": "Mr. Gambler, perhaps you don't have a girlfriend?",
+        "9": "One day I'll become a fumo.",
+        "10": "Heads will roll if I break this jar.",
+        "11": "Me? I'm a monarchist.",
+        "12": "That's your 100,000th click. Congrats.",
+        "13": "You should go all in all the time at this point.",
+        "14": "They should add more games, right?",
+        "15": "We're finally at the endgame.",
+        "16": "It's the end.",
+        "17": "Remember me out there.",
+        "18": "It will all be over soon.",
+        "19": "Nihahaha?",
+        "20": "You're the first successful gambler I've ever met."
       }
     },
     "tour": {
@@ -651,8 +760,8 @@
           "title": "Reach level {{target}}"
         },
         "r2-sell": {
-          "desc": "Sell something you won back for KP.",
-          "help": "Anything you get from a case can go back for KP. Open your inventory, pick an item and sell it. Keep the ones you like.",
+          "desc": "Sell something you won back for K₽.",
+          "help": "Anything you get from a case can go back for K₽. Open your inventory, pick an item and sell it. Keep the ones you like.",
           "title": "Sell an item"
         },
         "r3-cases": {
@@ -686,9 +795,9 @@
           "title": "Reach level {{target}}"
         },
         "r4-stake": {
-          "desc": "Bet {{target}} KP in total, on anything.",
+          "desc": "Bet K₽ {{target}} in total, on anything.",
           "help": "Every bet counts: games, cases, battles and predictions. It adds up faster than you think.",
-          "title": "Bet {{target}} KP"
+          "title": "Bet K₽ {{target}}"
         },
         "r4-streak": {
           "desc": "Spin the daily gift {{target}} days in a row.",
@@ -706,9 +815,9 @@
           "title": "Reach level {{target}}"
         },
         "r5-stake": {
-          "desc": "Bet {{target}} KP in total, on anything.",
+          "desc": "Bet K₽ {{target}} in total, on anything.",
           "help": "Half a million. You're not new anymore, so don't act like it.",
-          "title": "Bet {{target}} KP"
+          "title": "Bet K₽ {{target}}"
         },
         "r5-top-fan": {
           "desc": "Be the top fan of the character you pinned.",
@@ -775,10 +884,10 @@
         "line": "Every card is a market. Open one, pick an outcome and buy shares; they pay out if it happens, and you can sell before then."
       },
       "sell": {
-        "done": "Sold. That's KP back in your wallet. See? Easy.",
+        "done": "Sold. That's K₽ back in your wallet. See? Easy.",
         "empty": "Nothing to sell yet. Open a case first.",
-        "line": "Hover an item and press its sell button. It turns back into KP right away, so pick one you won't miss.",
-        "linePhone": "Tap an item and sell a copy. It turns back into KP right away, so pick one you won't miss.",
+        "line": "Hover an item and press its sell button. It turns back into K₽ right away, so pick one you won't miss.",
+        "linePhone": "Tap an item and sell a copy. It turns back into K₽ right away, so pick one you won't miss.",
         "wait": "Waiting for a sale"
       },
       "showMe": "Show me",
@@ -1245,7 +1354,7 @@
     "game": "GAME",
     "houseEdge": "HOUSE EDGE",
     "edgeVaries": "varies",
-    "notScored": "Upgrader stakes items rather than KP, so it earns no points. Marketplace trades and the 8-minute bonus are not bets and never count.",
+    "notScored": "Upgrader stakes items rather than K₽, so it earns no points. Marketplace trades and the 8-minute bonus are not bets and never count.",
     "resultTitle": "YOU FINISHED #{{rank}} YESTERDAY",
     "resultPoints": "{{points}} points",
     "resultPaid": "Paid into your balance when the board reset at midnight.",
