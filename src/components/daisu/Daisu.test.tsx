@@ -209,6 +209,24 @@ describe("daisu in the corner", () => {
     random.mockRestore();
   });
 
+  it("talks about the bonus this take gave, never about the game the next one moves to", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+    getPotStatus.mockResolvedValue(status(0));
+    claimPot.mockResolvedValue({ ...claimed(1000, 1100), pick: "slots", pickChanged: true, status: status(CYCLE, { pick: "dice" }) });
+    draw();
+    await screen.findByText(/full pot bonus/i);
+
+    fireEvent.click(jar());
+    await wait(4100);
+    await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
+
+    const said = () => document.querySelector('section[aria-label="Daisu"] p')?.textContent || "";
+    await waitFor(() => expect(said()).toMatch(/slots/i));
+    expect(said()).not.toMatch(/dice|new game/i);
+    random.mockRestore();
+  });
+
   it("turns the run red when the take fails, says so, and re-reads the pot", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     claimPot.mockRejectedValue({ response: { status: 500, data: { message: "Server error" } } });

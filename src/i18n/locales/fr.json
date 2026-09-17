@@ -565,10 +565,6 @@
         "1": "{{credit}} en plus, seulement sur {{game}}, et ça disparaît dans 8 minutes. Pas de discussion.",
         "2": "Voilà un peu de solde en plus pour jouer à {{game}}."
       },
-      "pickChanged": {
-        "0": "Un pot entier. Nouveau jeu : {{game}}. Vas-y, je regarde.",
-        "1": "Tu en as vidé un. Ton extra passe sur {{game}} maintenant. Essaie de suivre."
-      },
       "credit": {
         "0": "Tu n'as toujours pas utilisé les {{credit}} sur {{game}} ? Peur ?",
         "1": "{{credit}} qui traînent sur {{game}}. Pathétique. Vas-y."

@@ -382,10 +382,9 @@ export const useDaisu = () => {
       setLastClickFill(0);
       if (userData) toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
       endRun("sent", res.amount);
-      // said once the run has settled, so a burst of clicks gets one line: teasing for a pot taken early, thanks for a full one
-      if (res.pickChanged) {
-        say("pickChanged", { game: i18n.t(GAME_NAME_KEYS[res.status.pick]) });
-      } else if (res.fill < 1) {
+      // said once the run has settled, so a burst of clicks gets one line: teasing for a pot taken early, thanks for a full one.
+      // the game her next bonus moves to is never announced: this take's bonus is still on the old one, and naming another game beside its ticket reads as a mistake
+      if (res.fill < 1) {
         say("filling", { amount: kp(res.amount), clock: clock(msUntil(res.status.fullAt, res.status.cycleMs, 1, Date.now())) });
       } else if (res.credit >= 1 && Math.random() < 0.5) {
         say("claimedCredit", { amount: kp(res.amount), credit: kp(res.credit), game: i18n.t(GAME_NAME_KEYS[res.pick]) });

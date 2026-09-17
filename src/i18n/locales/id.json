@@ -565,10 +565,6 @@
         "1": "Tambahan {{credit}}, hanya di {{game}}, dan hilang dalam 8 menit. Jangan membantah.",
         "2": "Ini saldo tambahan untuk main {{game}}."
       },
-      "pickChanged": {
-        "0": "Satu toples penuh. Game baru: {{game}}. Ayo, aku mengawasi.",
-        "1": "Kamu mengosongkan satu. Tambahanmu sekarang pindah ke {{game}}. Coba ikuti."
-      },
       "credit": {
         "0": "Masih belum pakai {{credit}} di {{game}}? Takut?",
         "1": "{{credit}} menganggur di {{game}}. Menyedihkan. Pergi."

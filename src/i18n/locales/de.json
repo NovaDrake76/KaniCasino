@@ -565,10 +565,6 @@
         "1": "Extra {{credit}}, nur bei {{game}}, und in 8 Minuten ist es weg. Keine Widerrede.",
         "2": "Hier ist etwas Extra-Guthaben für {{game}}."
       },
-      "pickChanged": {
-        "0": "Ein ganzer Topf. Neues Spiel: {{game}}. Los, ich schaue zu.",
-        "1": "Du hast einen geleert. Dein Extra geht jetzt an {{game}}. Versuch mitzukommen."
-      },
       "credit": {
         "0": "Du hast die {{credit}} bei {{game}} immer noch nicht benutzt? Angst?",
         "1": "{{credit}} liegen bei {{game}} nutzlos rum. Erbärmlich. Los."

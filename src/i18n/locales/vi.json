@@ -565,10 +565,6 @@
         "1": "Thêm {{credit}}, chỉ ở {{game}}, và biến mất sau 8 phút. Không cãi.",
         "2": "Đây là số dư thêm để chơi {{game}}."
       },
-      "pickChanged": {
-        "0": "Nguyên một hũ. Trò mới: {{game}}. Đi đi, tôi đang xem.",
-        "1": "Bạn vét sạch một hũ rồi. Phần thêm giờ chuyển sang {{game}}. Theo kịp nhé."
-      },
       "credit": {
         "0": "Vẫn chưa dùng {{credit}} ở {{game}} à? Sợ hả?",
         "1": "{{credit}} nằm không ở {{game}}. Thảm hại. Đi đi."

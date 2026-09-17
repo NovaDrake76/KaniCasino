@@ -565,10 +565,6 @@
         "1": "Extra {{credit}}, {{game}} only, and it's gone in 8 minutes. No arguing.",
         "2": "Here's some extra balance for playing {{game}}."
       },
-      "pickChanged": {
-        "0": "That's a whole pot. New game: {{game}}. Go on, I'm watching.",
-        "1": "You emptied one. I'm moving your extra to {{game}} now. Try to keep up."
-      },
       "credit": {
         "0": "You still haven't used the {{credit}} on {{game}}? Scared?",
         "1": "{{credit}} sitting on {{game}} doing nothing. Pathetic. Go."

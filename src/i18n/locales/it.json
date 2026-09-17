@@ -565,10 +565,6 @@
         "1": "{{credit}} extra, solo su {{game}}, e sparisce tra 8 minuti. Niente discussioni.",
         "2": "Ecco un po' di saldo extra per giocare a {{game}}."
       },
-      "pickChanged": {
-        "0": "Un vaso intero. Gioco nuovo: {{game}}. Vai, ti guardo.",
-        "1": "Ne hai svuotato uno. Il tuo extra passa su {{game}} adesso. Cerca di stare al passo."
-      },
       "credit": {
         "0": "Non hai ancora usato i {{credit}} su {{game}}? Paura?",
         "1": "{{credit}} fermi su {{game}} a non fare niente. Patetico. Vai."
