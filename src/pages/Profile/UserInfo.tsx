@@ -108,7 +108,7 @@ const UserInfo: React.FC<UserProps> = ({
         </div>
       </div>
       <div className="mt-4 md:mt-0">
-        {fixedItem && <FixedItem fixedItem={fixedItem} isSameUser={isSameUser} setRefresh={setRefresh} />}
+        {fixedItem?.name && <FixedItem fixedItem={fixedItem} isSameUser={isSameUser} setRefresh={setRefresh} />}
         <FanStanding
           fanRank={fanRank}
           collectionRank={collectionRank}
