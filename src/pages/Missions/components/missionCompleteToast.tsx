@@ -15,10 +15,25 @@ import i18n from "../../../i18n";
 export function toastMissionComplete(m: PendingMission, targetPath?: string) {
   // one of daisu's finished, so whatever shows her missions reads them again straight away
   if (m.roadmap) window.dispatchEvent(new CustomEvent(ROADMAP_CHANGED_EVENT));
-  whenStakeClears(() => showMissionToast(m, targetPath));
+  whenStakeClears(() => enqueue((done) => showMissionToast(m, targetPath, done)));
 }
 
-function showMissionToast(m: PendingMission, targetPath?: string) {
+// one toast at a time: a burst of completions waits its turn instead of stacking up the corner
+const waiting: Array<() => void> = [];
+let showing = false;
+
+const showNext = () => {
+  const show = waiting.shift();
+  showing = !!show;
+  if (show) show();
+};
+
+function enqueue(show: (done: () => void) => void) {
+  waiting.push(() => show(showNext));
+  if (!showing) showNext();
+}
+
+function showMissionToast(m: PendingMission, targetPath: string | undefined, done: () => void) {
   const title = m.roadmap
     ? i18n.t(`daisu.roadmap.missions.${m.key}.title`, { target: (m.target ?? 0).toLocaleString("en-US") })
     : m.title;
@@ -46,6 +61,7 @@ function showMissionToast(m: PendingMission, targetPath?: string) {
       autoClose: 6000,
       closeOnClick: !!open,
       onClick: open,
+      onClose: done,
     }
   );
 }
