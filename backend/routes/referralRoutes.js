@@ -1,5 +1,6 @@
 const express = require("express");
 const { isAuthenticated } = require("../middleware/authMiddleware");
+const shop = require("../utils/shop");
 const referrals = require("../utils/referrals");
 
 module.exports = (io) => {
@@ -20,6 +21,9 @@ module.exports = (io) => {
   // POST /referrals/code : create the vanity code, once
   router.post("/code", isAuthenticated, async (req, res) => {
     try {
+      // in daisu's beta becoming an affiliate is an item from her shop
+      const locked = await shop.lockFor(req.user, "affiliateCard");
+      if (locked) return res.status(403).json(locked);
       const r = await referrals.setReferralCode(req.user._id, req.body.code);
       res.status(r.code).json(r.body);
     } catch (err) {

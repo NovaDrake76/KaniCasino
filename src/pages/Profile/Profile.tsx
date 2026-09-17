@@ -60,6 +60,7 @@ const Profile = () => {
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
   const collectionsLocked = useLocked("collectionBook");
+  const affiliatesLocked = useLocked("affiliateCard");
   // the url param may be a slug, so anything that speaks to the api by id waits for the
   // resolved one off the loaded profile
   const resolvedId = (user as any)?._id as string | undefined;
@@ -241,7 +242,7 @@ const Profile = () => {
                         active ? "text-white" : "text-[#84819a] hover:text-white"
                       }`}
                     >
-                      {t.key === "collections" && isSameUser && collectionsLocked && <FiLock className="mr-1.5 inline-block -translate-y-px text-xs" />}
+                      {((t.key === "collections" && collectionsLocked) || (t.key === "affiliates" && affiliatesLocked)) && isSameUser && <FiLock className="mr-1.5 inline-block -translate-y-px text-xs" />}
                       {t.label}
                       {isNew && (
                         <span className="absolute -top-2 -right-2 flex items-center rounded-full bg-accent-gold px-1.5 py-0.5 text-[9px] font-extrabold uppercase leading-none text-black shadow animate-pulse">
@@ -265,7 +266,7 @@ const Profile = () => {
           ) : activeTab === "missions" ? (
             <MissionsPanel userId={profileId as string} isOwner={isSameUser} />
           ) : activeTab === "affiliates" ? (
-            <AffiliatesPanel isOwner={isSameUser} />
+            isSameUser && affiliatesLocked ? <LockedPanel unlock="affiliateCard" /> : <AffiliatesPanel isOwner={isSameUser} />
           ) : activeTab === "predictions" ? (
             <PredictionsPanel />
           ) : activeTab === "settings" ? (

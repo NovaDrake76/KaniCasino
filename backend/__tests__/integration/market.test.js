@@ -76,6 +76,32 @@ function giveItem(user, item, uniqueId) {
 }
 
 describe("market fee + sale history", () => {
+  test("a seller holding daisu's merchant seal pays 2%, on a bought listing and on a filled order, and is quoted 2%", async () => {
+    const sealed = { betaFlags: ["daisu"], unlocks: [{ key: "merchantSeal", via: "bought", at: new Date() }], unlocksCheckedAt: new Date() };
+    const seller = await makeUser({ walletBalance: 0, ...sealed });
+    const buyer = await makeUser({ walletBalance: 1000 });
+    const item = await makeItem();
+    const listing = await makeListing(seller, item, 100);
+
+    await request(app).post(`/marketplace/buy/${listing._id}`).set(...auth(buyer));
+
+    expect((await User.findById(seller._id)).walletBalance).toBe(98);
+    const [sale] = await MarketSale.find({ item: item._id });
+    expect(sale).toMatchObject({ fee: 2, sellerNet: 98 });
+    const [feeRow] = await Transaction.find({ type: TX.MARKET_FEE });
+    expect(feeRow.amount).toBe(2);
+
+    const quoted = await request(app).get(`/marketplace/item/${item._id}/history`).set(...auth(seller));
+    expect(quoted.body.stats.feeRate).toBe(0.02);
+    expect((await request(app).get(`/marketplace/item/${item._id}/history`)).body.stats.feeRate).toBe(0.05);
+
+    // the seal is hers to give: the flag alone, or the seal outside her beta, changes nothing
+    const plain = await makeUser({ walletBalance: 0, unlocks: sealed.unlocks });
+    const second = await makeListing(plain, item, 100);
+    await request(app).post(`/marketplace/buy/${second._id}`).set(...auth(buyer));
+    expect((await User.findById(plain._id)).walletBalance).toBe(95);
+  });
+
   test("a buy takes the 5% fee, pays the seller the rest, and records the sale", async () => {
     const seller = await makeUser({ walletBalance: 0 });
     const buyer = await makeUser({ walletBalance: 500 });

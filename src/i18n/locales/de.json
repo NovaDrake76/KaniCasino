@@ -909,6 +909,12 @@
       "unlocked": "Erfolg freigeschaltet"
     },
     "help": {
+      "eyebrow": "Hilfe · {{mission}}",
+      "showMe": "Zeig's mir",
+      "stop": "Hilfe beenden",
+      "affiliates": {
+        "line": "Das ist deine Partnerseite. Wähle hier deinen Einladungscode und teile den Link: Jeder, der damit beitritt, bringt dir K₽."
+      },
       "battle": {
         "line": "Wähl unten Kisten aus, dann startet dieser Knopf das Battle. Alle öffnen dieselben Kisten, und die beste Summe gewinnt alles."
       },
@@ -929,7 +935,6 @@
         "line": "Jede Kiste hat eine Sammlung. Öffne eine, um zu sehen, was du hast und was dir noch fehlt.",
         "wait": "Warte, bis du eine öffnest"
       },
-      "eyebrow": "Hilfe · {{mission}}",
       "fans": {
         "line": "Dieser Tab zeigt jeden Charakter, den du besitzt, und wie weit du davon entfernt bist, sein Top-Fan zu sein. Pinne den, bei dem du am nächsten dran bist."
       },
@@ -964,9 +969,7 @@
         "line": "Fahr mit der Maus über ein Item und drück seinen Verkaufen-Knopf. Es wird sofort wieder zu K₽, also nimm eins, das dir nicht fehlen wird.",
         "linePhone": "Tipp auf ein Item und verkauf ein Exemplar. Es wird sofort wieder zu K₽, also nimm eins, das dir nicht fehlen wird.",
         "wait": "Warte auf einen Verkauf"
-      },
-      "showMe": "Zeig's mir",
-      "stop": "Hilfe beenden"
+      }
     },
     "shop": {
       "after": "Dein Guthaben danach",
@@ -977,7 +980,7 @@
       "notNow": "Nicht jetzt",
       "price": "Preis",
       "short": "{{amount}} zu wenig",
-      "soon": "Hier taucht bald etwas Neues auf.",
+      "soon": "Kauf einen Gegenstand, um zu sehen, was als Nächstes kommt.",
       "tipBuy": "{{price}} · Level {{n}} · zum Kaufen klicken",
       "tipLevel": "Braucht Level {{n}} · du bist Level {{level}}",
       "tipShort": "{{price}} · dir fehlen {{amount}}",
@@ -985,6 +988,17 @@
       "unlocked": "Freigeschaltet",
       "yours": "Deins",
       "items": {
+        "affiliateCard": {
+          "about": "Öffnet den Tab Partner: Wähle deinen Einladungscode, teile deinen Link und verdiene K₽, wenn deine Eingeladenen sich anmelden, Level 10 erreichen und wetten.",
+          "getIt": "Hol sie dir in Daisus Laden",
+          "kept": "behalten durch deinen Einladungscode",
+          "lockedBody": "Die Partnerkarte gibt dir einen Einladungscode. Jeder, der sich damit anmeldet, bringt dir K₽: bei der Anmeldung, bei Level 10 und einen Anteil an seinen Einsätzen.",
+          "lockedTitle": "Partner ist gesperrt",
+          "name": "Partnerkarte",
+          "opened": "Du bist im Geschäft. Such dir einen Code aus und teile ihn. Soll ich dir zeigen, wo?",
+          "pitch": "Du bringst mir Kunden, ich zahle dir einen Anteil. Einfaches Geschäft.",
+          "what": "Hol dir deinen eigenen Einladungscode und verdiene K₽ an den Spielern, die du bringst."
+        },
         "chatPass": {
           "about": "Erlaubt dir, im Chat der Seite Nachrichten zu schreiben. Zum Lesen braucht es nie einen Pass.",
           "getIt": "Hol dir den Pass",
@@ -1006,6 +1020,20 @@
           "opened": "Es gehört dir. Der Tab Sammlungen ist jetzt offen. Soll ich dich durchführen? Es sind viele Seiten.",
           "pitch": "Ein ganzes Buch für deine Sammlung. Versuch nicht zu weinen, wenn du siehst, wie leer es ist.",
           "what": "Öffnet den Tab Sammlungen: jede Kiste, aus der du sammelst, was fehlt, und ein schneller Weg, Duplikate zu verkaufen."
+        },
+        "giftCharm": {
+          "about": "Ein dauerhafter Bonus auf das tägliche Geschenk, zusätzlich zu deiner Serie und dem Discord-Bonus: Bessere Preise kommen 10 % öfter. Er läuft nie ab.",
+          "name": "Geschenk-Talisman",
+          "opened": "Er ist aktiv. Dein nächstes tägliches Geschenk neigt sich schon zu deinen Gunsten. Willst du es sehen?",
+          "pitch": "Ein Glücksbringer. Er funktioniert, anders als deine Wettstrategie.",
+          "what": "Dein tägliches Geschenk neigt sich dauerhaft 10 % stärker zu den besseren Preisen."
+        },
+        "merchantSeal": {
+          "about": "Jeder deiner Verkäufe auf dem Markt zahlt dem Haus 2 % statt 5 %. Das gilt für Angebote und für Kaufaufträge, die du bedienst, für immer.",
+          "name": "Händlersiegel",
+          "opened": "Besiegelt. Ab jetzt nimmt der Markt nur 2 % deiner Verkäufe. Wollen wir etwas verkaufen?",
+          "pitch": "Zahl mir einmal, damit du mir für immer weniger zahlst. Ich hasse es, dass das ein guter Deal ist.",
+          "what": "Deine Marktverkäufe zahlen dauerhaft 2 % Gebühr statt 5 %."
         },
         "predictionPass": {
           "about": "Öffnet die Prognosen: kauf Anteile darauf, was als Nächstes passiert, und verkauf sie, wenn der Preis sich zu deinen Gunsten bewegt.",
@@ -1245,6 +1273,7 @@
     "betterPrizesOnceLinked": "mehr Chance auf bessere Preise nach dem Verknuepfen",
     "bonus": "Bonus",
     "chanceOf": "{{chance}}% Chance",
+    "charm": "Daisus Geschenk-Talisman",
     "chooseACollection": "Wähle eine Sammlung",
     "couldNotLoadYour": "Dein Tagesgeschenk konnte nicht geladen werden.",
     "couldNotOpenYour": "Dein Geschenk konnte nicht geöffnet werden",

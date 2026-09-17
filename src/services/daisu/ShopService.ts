@@ -1,6 +1,6 @@
 import api from "../api";
 
-export type UnlockKey = "collectionBook" | "tradersLicense" | "chatPass" | "predictionPass";
+export type UnlockKey = "chatPass" | "tradersLicense" | "collectionBook" | "affiliateCard" | "predictionPass" | "giftCharm" | "merchantSeal";
 
 export interface ShopItem {
   key: UnlockKey;
@@ -12,7 +12,9 @@ export interface ShopItem {
 }
 
 export interface Shop {
+  // what the shelf shows: everything held and the next few; hidden counts the items still to be revealed by buying
   items: ShopItem[];
+  hidden?: number;
   walletBalance: number;
   level: number;
 }

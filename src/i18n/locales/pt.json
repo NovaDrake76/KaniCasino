@@ -909,6 +909,12 @@
       "unlocked": "Conquista desbloqueada"
     },
     "help": {
+      "eyebrow": "Ajuda · {{mission}}",
+      "showMe": "Me mostra",
+      "stop": "Parar a ajuda",
+      "affiliates": {
+        "line": "Essa é a sua página de afiliados. Escolhe seu código de convite aqui e compartilha o link: todo mundo que entrar com ele te rende K₽."
+      },
       "battle": {
         "line": "Escolha as caixas aqui embaixo e este botão começa a batalha. Todo mundo abre as mesmas caixas e o maior total leva tudo."
       },
@@ -929,7 +935,6 @@
         "line": "Toda caixa tem uma coleção. Abra uma pra ver o que você tem e o que ainda falta.",
         "wait": "Esperando você abrir uma"
       },
-      "eyebrow": "Ajuda · {{mission}}",
       "fans": {
         "line": "Esta aba mostra cada personagem que você tem e quanto falta pra ser o Top Fã dele. Fixe aquele de que você está mais perto."
       },
@@ -964,9 +969,7 @@
         "line": "Passe o mouse num item e aperte o botão de vender. Ele vira K₽ na hora, então escolha um que não vai fazer falta.",
         "linePhone": "Toque num item e venda uma cópia. Ele vira K₽ na hora, então escolha um que não vai fazer falta.",
         "wait": "Esperando uma venda"
-      },
-      "showMe": "Me mostra",
-      "stop": "Parar a ajuda"
+      }
     },
     "shop": {
       "after": "Seu saldo depois",
@@ -977,7 +980,7 @@
       "notNow": "Agora não",
       "price": "Preço",
       "short": "Faltam {{amount}}",
-      "soon": "Algo novo vai aparecer aqui.",
+      "soon": "Compre um item pra descobrir o que vem depois.",
       "tipBuy": "{{price}} · nível {{n}} · clique pra comprar",
       "tipLevel": "Precisa do nível {{n}} · você está no nível {{level}}",
       "tipShort": "{{price}} · faltam {{amount}}",
@@ -985,6 +988,17 @@
       "unlocked": "Desbloqueado",
       "yours": "Seu",
       "items": {
+        "affiliateCard": {
+          "about": "Abre a aba Afiliados: escolha seu código de convite, compartilhe seu link e ganhe K₽ quando quem você convidou se cadastrar, chegar ao nível 10 e apostar.",
+          "getIt": "Pegue na loja da Daisu",
+          "kept": "mantido pelo seu código de convite",
+          "lockedBody": "O Cartão de Afiliado te dá um código de convite. Todo mundo que se cadastrar com ele te rende K₽: no cadastro, no nível 10 e uma parte do que apostarem.",
+          "lockedTitle": "Afiliados está bloqueado",
+          "name": "Cartão de Afiliado",
+          "opened": "Negócio fechado. Escolhe um código e começa a compartilhar. Quer que eu te mostre onde?",
+          "pitch": "Você me traz clientes, eu te pago uma parte. Negócio simples.",
+          "what": "Ganhe seu próprio código de convite e receba K₽ dos jogadores que você trouxer."
+        },
         "chatPass": {
           "about": "Permite enviar mensagens no chat do site. Ler nunca precisa de passe.",
           "getIt": "Pegar o passe",
@@ -1006,6 +1020,20 @@
           "opened": "É seu. A aba Coleções está aberta agora. Quer que eu te mostre? São muitas páginas.",
           "pitch": "Um livro inteiro pra sua coleção. Tente não chorar quando vir como está vazio.",
           "what": "Abre a aba Coleções: cada caixa de que você coleciona, o que falta e um jeito rápido de vender repetidos."
+        },
+        "giftCharm": {
+          "about": "Um bônus permanente no presente diário, somado à sua sequência e ao bônus do Discord: prêmios melhores saem 10% mais vezes. Nunca acaba.",
+          "name": "Amuleto do Presente",
+          "opened": "Tá ativo. Seu próximo presente diário já pende pro seu lado. Quer ver?",
+          "pitch": "Um amuleto da sorte. Funciona, diferente da sua estratégia de aposta.",
+          "what": "Seu presente diário pende 10% a mais para os prêmios melhores, pra sempre."
+        },
+        "merchantSeal": {
+          "about": "Toda venda sua no mercado paga 2% pra casa em vez de 5%. Vale pra anúncios e pra ordens de compra que você atender, pra sempre.",
+          "name": "Selo do Mercador",
+          "opened": "Selado. A partir de agora o mercado só fica com 2% das suas vendas. Quer ir vender alguma coisa?",
+          "pitch": "Me paga uma vez pra me pagar menos pra sempre. Odeio que isso seja um bom negócio.",
+          "what": "Suas vendas no mercado pagam 2% de taxa em vez de 5%, pra sempre."
         },
         "predictionPass": {
           "about": "Abre as previsões: compre cotas sobre o que vai acontecer e venda quando o preço for a seu favor.",
@@ -1245,6 +1273,7 @@
     "betterPrizesOnceLinked": "mais chance de premios melhores apos vincular",
     "bonus": "bonus",
     "chanceOf": "{{chance}}% de chance",
+    "charm": "Amuleto do presente da Daisu",
     "chooseACollection": "Escolha uma coleção",
     "couldNotLoadYour": "Não foi possível carregar seu presente diário.",
     "couldNotOpenYour": "Não foi possível abrir seu presente",

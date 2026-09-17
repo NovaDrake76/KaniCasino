@@ -9,6 +9,12 @@ const { roll, TOTAL } = require("../utils/provablyFair");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
 const { WITHOUT_INVENTORY } = require("../utils/economy");
+const shop = require("../utils/shop");
+const { GIFT_CHARM_TILT } = require("../utils/shopCatalog");
+
+// every standing boost on a player's gift as one number: the discord membership and daisu's gift charm add up
+const charmOf = (user) => (shop.holds(user, "giftCharm") ? GIFT_CHARM_TILT : 0);
+const boostOf = (user) => (user.discordId && user.discordInGuild === true ? gift.DISCORD_TILT : 0) + charmOf(user);
 
 const living = (user, now = new Date()) =>
   (user.freeOpens || []).filter((g) => g.remaining > 0 && new Date(g.expiresAt) > now);
@@ -25,7 +31,7 @@ async function casesByCategory() {
 // the categories a player can choose between, each with the table it would spin and a
 // cover to show. the table is public on purpose: the odds are the pitch.
 async function state(userId) {
-  const user = await User.findById(userId).select("giftStreak giftNextAt giftLastAt freeOpens level discordId discordInGuild");
+  const user = await User.findById(userId).select("giftStreak giftNextAt giftLastAt freeOpens level discordId discordInGuild betaFlags unlocks");
   if (!user) return null;
 
   const now = new Date();
@@ -36,7 +42,7 @@ async function state(userId) {
   // will actually use: the two must never disagree.
   const banked = gift.liveStreak(user.giftStreak, user.giftLastAt, now);
   const streak = gift.nextStreak(user.giftStreak, user.giftLastAt, now);
-  const discord = !!user.discordId && user.discordInGuild === true;
+  const discord = boostOf(user);
   const byId = new Map(
     Object.values(grouped)
       .flat()
@@ -73,6 +79,7 @@ async function state(userId) {
   // the streak's whole effect stated as one number: how much likelier it makes the rarest
   // prize, which is exactly the weight multiplier it puts on the top slot of either wheel
   const rareBoost = (days, linked = discord) => Number((1 + gift.totalTilt(days, linked) * 2).toFixed(2));
+  const charm = charmOf(user);
   const streakMax = gift.STREAK_DAYS;
 
   return {
@@ -85,8 +92,10 @@ async function state(userId) {
       // what the boost is worth where they stand, so the panel never advertises a number
       // that their level and streak would not actually produce
       boost: Number((rareBoost(streak, true) - rareBoost(streak, false)).toFixed(2)),
-      topSlotAverage: Number(gift.topSlotAverage(user.level || 0, streak, true).toFixed(2)),
+      topSlotAverage: Number(gift.topSlotAverage(user.level || 0, streak, gift.DISCORD_TILT + charm).toFixed(2)),
     },
+    // daisu's gift charm, a standing boost like the discord one and added to it
+    charm: { held: charm > 0, boost: Number((GIFT_CHARM_TILT * 2).toFixed(2)) },
     // the locked rungs stay visible: they are the reason to keep levelling
     topSlot: wheel.map((t) => ({
       multiplier: t.multiplier,
@@ -177,7 +186,7 @@ router.get("/grants", isAuthenticated, async (req, res) => {
 router.post("/spin", isAuthenticated, async (req, res) => {
   try {
     const category = String(req.body?.category || "");
-    const user = await User.findById(req.user._id).select("giftStreak giftNextAt giftLastAt level freeOpens discordId discordInGuild");
+    const user = await User.findById(req.user._id).select("giftStreak giftNextAt giftLastAt level freeOpens discordId discordInGuild betaFlags unlocks");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const now = new Date();
@@ -199,7 +208,7 @@ router.post("/spin", isAuthenticated, async (req, res) => {
     const reelRoll = roll(reserved.serverSeed, reserved.clientSeed, reserved.startNonce);
     const topRoll = roll(reserved.serverSeed, reserved.clientSeed, reserved.startNonce + 1);
 
-    const discord = !!user.discordId && user.discordInGuild === true;
+    const discord = boostOf(user);
     const won = gift.pickSlot(table, reelRoll, TOTAL, streak, discord);
     const wheel = gift.topSlotFor(user.level || 0);
 

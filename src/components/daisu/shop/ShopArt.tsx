@@ -5,6 +5,9 @@ const ART: Record<string, PixelIconName> = {
   tradersLicense: "scroll",
   chatPass: "chat",
   predictionPass: "crystal",
+  affiliateCard: "letter",
+  giftCharm: "clover",
+  merchantSeal: "seal",
 };
 
 // one picture per item; sizes are rounded to a multiple of 16 so the pixels stay square

@@ -39,6 +39,8 @@ const placeOf = (wizard: Wizard, step: string, userId: string, gamePath: string 
       return at(`/profile/${userId}`, onProfile);
     case "collection":
       return at(`/profile/${userId}?tab=collections`, (pathname, search) => onProfile(pathname) && search.includes("tab=collections"));
+    case "affiliates":
+      return at(`/profile/${userId}?tab=affiliates`, (pathname, search) => onProfile(pathname) && search.includes("tab=affiliates"));
     case "gift":
       return at("/gift");
     case "market":
@@ -342,6 +344,8 @@ const HelpOverlay = () => {
     content = <Guided target="battle-create" dim={false} eyebrow={eyebrow} line={t("battle.line")} next={gotIt()} />;
   } else if (step === "fans") {
     content = <Guided target="fandom-reach" dim={false} eyebrow={eyebrow} line={t("fans.line")} next={gotIt()} />;
+  } else if (step === "affiliates") {
+    content = <Guided target="affiliates-code" dim={false} eyebrow={eyebrow} line={t("affiliates.line")} next={gotIt()} />;
   } else if (step === "predictions") {
     content = <Guided target="predictions-list" dim={false} eyebrow={eyebrow} line={t("predictions.line")} next={gotIt()} />;
   } else if (step === "chat") {

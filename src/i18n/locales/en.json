@@ -909,6 +909,12 @@
       "unlocked": "Achievement unlocked"
     },
     "help": {
+      "eyebrow": "Help · {{mission}}",
+      "showMe": "Show me",
+      "stop": "Stop helping",
+      "affiliates": {
+        "line": "This is your affiliates page. Pick your invite code here, then share the link: everyone who joins with it pays you K₽."
+      },
       "battle": {
         "line": "Pick cases below, then this button starts the battle. Everyone opens the same cases and the best total takes it all."
       },
@@ -929,7 +935,6 @@
         "line": "Every case has a collection. Open one to see what you have and what you're still missing.",
         "wait": "Waiting for you to open one"
       },
-      "eyebrow": "Help · {{mission}}",
       "fans": {
         "line": "This tab shows every character you own and how far you are from being its Top Fan. Pin the one you're closest on."
       },
@@ -964,9 +969,7 @@
         "line": "Hover an item and press its sell button. It turns back into K₽ right away, so pick one you won't miss.",
         "linePhone": "Tap an item and sell a copy. It turns back into K₽ right away, so pick one you won't miss.",
         "wait": "Waiting for a sale"
-      },
-      "showMe": "Show me",
-      "stop": "Stop helping"
+      }
     },
     "shop": {
       "after": "Your balance after",
@@ -977,7 +980,7 @@
       "notNow": "Not now",
       "price": "Price",
       "short": "{{amount}} short",
-      "soon": "Something new will show up here.",
+      "soon": "Buy an item to find out what comes next.",
       "tipBuy": "{{price}} · level {{n}} · click to buy",
       "tipLevel": "Needs level {{n}} · you are level {{level}}",
       "tipShort": "{{price}} · you need {{amount}} more",
@@ -985,6 +988,17 @@
       "unlocked": "Unlocked",
       "yours": "Yours",
       "items": {
+        "affiliateCard": {
+          "about": "Opens the Affiliates tab: pick your invite code, share your link, and earn K₽ when the players you invite sign up, reach level 10 and place bets.",
+          "getIt": "Get it in Daisu's shop",
+          "kept": "kept from your invite code",
+          "lockedBody": "The Affiliate Card gives you an invite code. Everyone who signs up with it pays you K₽: on signup, at level 10, and a cut of what they bet.",
+          "lockedTitle": "Affiliates are locked",
+          "name": "Affiliate Card",
+          "opened": "You're in business. Pick a code and start sharing it. Want me to show you where?",
+          "pitch": "You bring me customers, I pay you a cut. Simple business.",
+          "what": "Get your own invite code and earn K₽ from the players you bring."
+        },
         "chatPass": {
           "about": "Lets you send messages in the site chat. Reading it never needs a pass.",
           "getIt": "Get the pass",
@@ -1006,6 +1020,20 @@
           "opened": "It's yours. The Collections tab is open now. Want me to walk you through it? There are a lot of pages.",
           "pitch": "A whole book for your collection. Try not to cry when you see how empty it is.",
           "what": "Opens the Collections tab: every case you collect from, what's missing, and a quick way to sell duplicates."
+        },
+        "giftCharm": {
+          "about": "A standing boost on the daily gift, on top of your streak and the Discord boost: better prizes come up 10% more often. It never runs out.",
+          "name": "Gift Charm",
+          "opened": "It's on. Your next daily gift already leans your way. Want to see it?",
+          "pitch": "A lucky charm. It works, unlike your betting strategy.",
+          "what": "Your daily gift leans 10% further toward the better prizes, for good."
+        },
+        "merchantSeal": {
+          "about": "Every sale you make on the marketplace pays the house 2% instead of 5%. It applies to listings and to buy orders you fill, forever.",
+          "name": "Merchant's Seal",
+          "opened": "Sealed. From now on the market only takes 2% of your sales. Want to go sell something?",
+          "pitch": "Pay me once so you pay me less forever. I hate that this is a good deal.",
+          "what": "Your market sales pay a 2% fee instead of 5%, for good."
         },
         "predictionPass": {
           "about": "Opens predictions: buy shares on what happens next, and sell them whenever the price moves your way.",
@@ -1245,6 +1273,7 @@
     "betterPrizesOnceLinked": "more chance of better prizes once linked",
     "bonus": "bonus",
     "chanceOf": "{{chance}}% chance",
+    "charm": "Daisu's gift charm",
     "chooseACollection": "Choose a collection",
     "couldNotLoadYour": "Could not load your daily gift.",
     "couldNotOpenYour": "Could not open your gift",

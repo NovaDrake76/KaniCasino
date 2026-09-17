@@ -127,7 +127,7 @@ const AffiliatesView: React.FC<Props> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="bg-surface rounded-lg p-5 flex flex-col gap-3">
+          <div data-tour="affiliates-code" className="bg-surface rounded-lg p-5 flex flex-col gap-3">
             <h2 className="text-ink font-semibold">{i18n.t("affiliates.yourReferralLink")}</h2>
             {data.referralCode ? (
               <div className="flex items-center gap-2">

@@ -6,7 +6,7 @@ import type { Shop, ShopItem } from "../../../services/daisu/ShopService";
 
 const item = (over: Partial<ShopItem>): ShopItem => ({ key: "collectionBook", price: 5000, level: 5, owned: false, via: null, ...over });
 
-const shop = (level: number, items: ShopItem[]): Shop => ({ level, walletBalance: 6240, items });
+const shop = (level: number, items: ShopItem[], hidden = 4): Shop => ({ level, walletBalance: 6240, items, hidden });
 
 describe("her shop shelf", () => {
   it("keeps every item in sight with its state, teases what is to come, and opens an item's card on a click", () => {
@@ -34,6 +34,15 @@ describe("her shop shelf", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /prediction pass/i }));
     expect(onPick).toHaveBeenCalledWith("predictionPass");
+  });
+
+  it("stands a ? in for the items still hidden, two at most, and none once everything is on the shelf", () => {
+    const { unmount } = render(<ShopShelf shop={shop(6, [item({})], 1)} onPick={vi.fn()} />);
+    expect(screen.getAllByText("???")).toHaveLength(1);
+    unmount();
+
+    render(<ShopShelf shop={shop(6, [item({})], 0)} onPick={vi.fn()} />);
+    expect(screen.queryByText("???")).toBeNull();
   });
 
   it("asks before buying, and will not sell what the wallet cannot cover", () => {

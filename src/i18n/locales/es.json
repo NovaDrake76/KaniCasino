@@ -909,6 +909,12 @@
       "unlocked": "Logro desbloqueado"
     },
     "help": {
+      "eyebrow": "Ayuda · {{mission}}",
+      "showMe": "Enséñame",
+      "stop": "Dejar la ayuda",
+      "affiliates": {
+        "line": "Esta es tu página de afiliados. Elige aquí tu código de invitación y comparte el enlace: todo el que entre con él te paga K₽."
+      },
       "battle": {
         "line": "Elige cajas aquí abajo y este botón empieza la batalla. Todos abren las mismas cajas y el mejor total se lo lleva todo."
       },
@@ -929,7 +935,6 @@
         "line": "Cada caja tiene una colección. Abre una para ver lo que tienes y lo que todavía te falta.",
         "wait": "Esperando a que abras una"
       },
-      "eyebrow": "Ayuda · {{mission}}",
       "fans": {
         "line": "Esta pestaña muestra cada personaje que tienes y cuánto te falta para ser su Top Fan. Fija el que tengas más cerca."
       },
@@ -964,9 +969,7 @@
         "line": "Pasa el ratón por un objeto y pulsa su botón de vender. Vuelve como K₽ al instante, así que elige uno que no vayas a echar de menos.",
         "linePhone": "Toca un objeto y vende una copia. Vuelve como K₽ al instante, así que elige uno que no vayas a echar de menos.",
         "wait": "Esperando una venta"
-      },
-      "showMe": "Enséñame",
-      "stop": "Dejar la ayuda"
+      }
     },
     "shop": {
       "after": "Tu saldo después",
@@ -977,7 +980,7 @@
       "notNow": "Ahora no",
       "price": "Precio",
       "short": "Te faltan {{amount}}",
-      "soon": "Algo nuevo aparecerá aquí.",
+      "soon": "Compra un objeto para descubrir qué viene después.",
       "tipBuy": "{{price}} · nivel {{n}} · clic para comprar",
       "tipLevel": "Necesita nivel {{n}} · eres nivel {{level}}",
       "tipShort": "{{price}} · te faltan {{amount}}",
@@ -985,6 +988,17 @@
       "unlocked": "Desbloqueado",
       "yours": "Tuyo",
       "items": {
+        "affiliateCard": {
+          "about": "Abre la pestaña Afiliados: elige tu código de invitación, comparte tu enlace y gana K₽ cuando tus invitados se registren, lleguen al nivel 10 y apuesten.",
+          "getIt": "Consíguela en la tienda de Daisu",
+          "kept": "conservado por tu código de invitación",
+          "lockedBody": "La Tarjeta de Afiliado te da un código de invitación. Todo el que se registre con él te paga K₽: al registrarse, al nivel 10 y una parte de lo que apueste.",
+          "lockedTitle": "Afiliados está bloqueado",
+          "name": "Tarjeta de Afiliado",
+          "opened": "Ya estás en el negocio. Elige un código y empieza a compartirlo. ¿Te enseño dónde?",
+          "pitch": "Tú me traes clientes, yo te pago una parte. Negocio sencillo.",
+          "what": "Consigue tu propio código de invitación y gana K₽ con los jugadores que traigas."
+        },
         "chatPass": {
           "about": "Te deja enviar mensajes en el chat del sitio. Para leerlo nunca hace falta pase.",
           "getIt": "Consigue el pase",
@@ -1006,6 +1020,20 @@
           "opened": "Es tuyo. La pestaña Colecciones ya está abierta. ¿Quieres que te la enseñe? Tiene muchas páginas.",
           "pitch": "Un libro entero para tu colección. Intenta no llorar cuando veas lo vacío que está.",
           "what": "Abre la pestaña Colecciones: cada caja que coleccionas, lo que falta y una forma rápida de vender duplicados."
+        },
+        "giftCharm": {
+          "about": "Un impulso permanente al regalo diario, sumado a tu racha y al de Discord: los mejores premios salen un 10% más a menudo. Nunca se acaba.",
+          "name": "Amuleto del Regalo",
+          "opened": "Ya está activo. Tu próximo regalo diario ya se inclina a tu favor. ¿Quieres verlo?",
+          "pitch": "Un amuleto de la suerte. Funciona, a diferencia de tu estrategia de apuestas.",
+          "what": "Tu regalo diario se inclina un 10% más hacia los mejores premios, para siempre."
+        },
+        "merchantSeal": {
+          "about": "Cada venta que hagas en el mercado paga a la casa un 2% en vez de un 5%. Vale para anuncios y para órdenes de compra que cubras, para siempre.",
+          "name": "Sello del Mercader",
+          "opened": "Sellado. Desde ahora el mercado solo se queda con el 2% de tus ventas. ¿Vamos a vender algo?",
+          "pitch": "Págame una vez para pagarme menos para siempre. Odio que sea un buen trato.",
+          "what": "Tus ventas en el mercado pagan un 2% de comisión en vez de un 5%, para siempre."
         },
         "predictionPass": {
           "about": "Abre las predicciones: compra participaciones sobre lo que va a pasar y véndelas cuando el precio se mueva a tu favor.",
@@ -1245,6 +1273,7 @@
     "betterPrizesOnceLinked": "mas probabilidad de mejores premios al vincular",
     "bonus": "bono",
     "chanceOf": "{{chance}}% de probabilidad",
+    "charm": "Amuleto del regalo de Daisu",
     "chooseACollection": "Elige una colección",
     "couldNotLoadYour": "No se pudo cargar tu regalo diario.",
     "couldNotOpenYour": "No se pudo abrir tu regalo",

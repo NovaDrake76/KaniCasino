@@ -909,6 +909,12 @@
       "unlocked": "Pencapaian terbuka"
     },
     "help": {
+      "eyebrow": "Bantuan · {{mission}}",
+      "showMe": "Tunjukkan",
+      "stop": "Berhenti membantu",
+      "affiliates": {
+        "line": "Ini halaman afiliasimu. Pilih kode undanganmu di sini, lalu bagikan tautannya: setiap orang yang bergabung dengannya memberimu K₽."
+      },
       "battle": {
         "line": "Pilih kotak di bawah, lalu tombol ini memulai adu gacor. Semua orang membuka kotak yang sama dan total terbaik membawa pulang semuanya."
       },
@@ -929,7 +935,6 @@
         "line": "Setiap kotak punya koleksi. Buka satu untuk melihat apa yang kamu punya dan apa yang masih kurang.",
         "wait": "Menunggu kamu membuka satu"
       },
-      "eyebrow": "Bantuan · {{mission}}",
       "fans": {
         "line": "Tab ini menunjukkan setiap karakter yang kamu punya dan seberapa jauh kamu dari jadi Top Fan-nya. Sematkan yang paling dekat."
       },
@@ -964,9 +969,7 @@
         "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "wait": "Menunggu penjualan"
-      },
-      "showMe": "Tunjukkan",
-      "stop": "Berhenti membantu"
+      }
     },
     "shop": {
       "after": "Saldomu setelahnya",
@@ -977,7 +980,7 @@
       "notNow": "Nanti saja",
       "price": "Harga",
       "short": "Kurang {{amount}}",
-      "soon": "Sesuatu yang baru akan muncul di sini.",
+      "soon": "Beli satu item untuk tahu apa berikutnya.",
       "tipBuy": "{{price}} · level {{n}} · klik untuk beli",
       "tipLevel": "Butuh level {{n}} · kamu level {{level}}",
       "tipShort": "{{price}} · kurang {{amount}}",
@@ -985,6 +988,17 @@
       "unlocked": "Terbuka",
       "yours": "Milikmu",
       "items": {
+        "affiliateCard": {
+          "about": "Membuka tab Afiliasi: pilih kode undanganmu, bagikan tautanmu, dan raih K₽ saat orang yang kamu undang mendaftar, mencapai level 10, dan bertaruh.",
+          "getIt": "Dapatkan di toko Daisu",
+          "kept": "dipertahankan dari kode undanganmu",
+          "lockedBody": "Kartu Afiliasi memberimu kode undangan. Setiap orang yang mendaftar dengannya memberimu K₽: saat mendaftar, di level 10, dan sebagian dari taruhannya.",
+          "lockedTitle": "Afiliasi terkunci",
+          "name": "Kartu Afiliasi",
+          "opened": "Kamu resmi berbisnis. Pilih kode dan mulai bagikan. Mau kutunjukkan tempatnya?",
+          "pitch": "Kamu bawakan aku pelanggan, aku beri kamu bagian. Bisnis sederhana.",
+          "what": "Dapatkan kode undanganmu sendiri dan raih K₽ dari pemain yang kamu ajak."
+        },
         "chatPass": {
           "about": "Membuatmu bisa mengirim pesan di obrolan situs. Untuk membaca tidak pernah perlu pass.",
           "getIt": "Dapatkan pass-nya",
@@ -1006,6 +1020,20 @@
           "opened": "Sudah milikmu. Tab Koleksi sekarang terbuka. Mau kutunjukkan isinya? Halamannya banyak.",
           "pitch": "Satu buku utuh untuk koleksimu. Jangan menangis waktu lihat betapa kosongnya.",
           "what": "Membuka tab Koleksi: setiap kotak yang kamu koleksi, apa yang kurang, dan cara cepat menjual duplikat."
+        },
+        "giftCharm": {
+          "about": "Bonus tetap untuk hadiah harian, di atas streak dan bonus Discord-mu: hadiah yang lebih bagus muncul 10% lebih sering. Tidak pernah habis.",
+          "name": "Jimat Hadiah",
+          "opened": "Sudah aktif. Hadiah harianmu berikutnya sudah condong ke arahmu. Mau lihat?",
+          "pitch": "Jimat keberuntungan. Yang ini berfungsi, tidak seperti strategi taruhanmu.",
+          "what": "Hadiah harianmu condong 10% lebih jauh ke hadiah yang lebih bagus, selamanya."
+        },
+        "merchantSeal": {
+          "about": "Setiap penjualanmu di pasar membayar 2% ke bandar, bukan 5%. Berlaku untuk listing dan untuk order beli yang kamu penuhi, selamanya.",
+          "name": "Segel Pedagang",
+          "opened": "Tersegel. Mulai sekarang pasar hanya mengambil 2% dari penjualanmu. Mau jual sesuatu?",
+          "pitch": "Bayar aku sekali supaya kamu membayarku lebih sedikit selamanya. Aku benci ini tawaran yang bagus.",
+          "what": "Penjualanmu di pasar membayar biaya 2%, bukan 5%, selamanya."
         },
         "predictionPass": {
           "about": "Membuka prediksi: beli saham tentang apa yang akan terjadi, lalu jual saat harganya bergerak menguntungkanmu.",
@@ -1245,6 +1273,7 @@
     "betterPrizesOnceLinked": "peluang hadiah bagus lebih besar setelah terhubung",
     "bonus": "bonus",
     "chanceOf": "peluang {{chance}}%",
+    "charm": "Jimat hadiah Daisu",
     "chooseACollection": "Pilih koleksi",
     "couldNotLoadYour": "Hadiah harianmu tidak dapat dimuat.",
     "couldNotOpenYour": "Tidak bisa membuka hadiah kamu",

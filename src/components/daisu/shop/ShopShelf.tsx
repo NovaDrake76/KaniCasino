@@ -12,7 +12,7 @@ interface Props {
   onPick: (key: UnlockKey) => void;
 }
 
-// empty places on the shelf, so it reads as something that will grow
+// at most this many "?" places stand in for the items still hidden, so the shelf hints at more without saying how much
 const TEASERS = 2;
 const t = (key: string, vars?: Record<string, string | number>) => i18n.t(`daisu.shop.${key}`, vars);
 
@@ -75,7 +75,7 @@ const ShopShelf = ({ shop, onPick }: Props) => (
         ? shop.items.map((item) => <Slot key={item.key} item={item} shop={shop} onPick={onPick} />)
         : [0, 1, 2, 3].map((i) => <Skeleton key={i} width={84} height={96} borderRadius={0} />)}
       {shop &&
-        Array.from({ length: TEASERS }, (_, i) => (
+        Array.from({ length: Math.min(TEASERS, shop.hidden ?? 0) }, (_, i) => (
           <span
             key={i}
             className="group relative flex h-[88px] w-[76px] shrink-0 items-center justify-center outline-dashed outline-2 -outline-offset-2 outline-line-strong md:h-24 md:w-[84px]"
