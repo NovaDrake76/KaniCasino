@@ -179,6 +179,7 @@ async function openCase({ user, caseId, quantity, grantId = null, source = null 
   // the fan boards are a ten-minute snapshot, so a player who just pulled the
   // character they pinned would read the old count next to their new inventory
   await fandom.touch(user._id, winningItems.map((item) => item._id));
+  await badges.touchCollections(user._id, winningItems.map((item) => item._id));
 
   const items = winningItems.map((item, index) => ({
     ...item,

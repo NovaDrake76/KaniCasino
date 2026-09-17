@@ -123,6 +123,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
 
         <div className="mt-2">
           <GameButton
+            tour="play-button"
             onClick={userGambled && gameStarted ? handleCashout : handleBet}
             disabled={disabled}
           >

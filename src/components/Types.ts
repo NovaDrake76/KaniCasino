@@ -1,5 +1,6 @@
 import { FanRank } from "../services/fandom/FandomService";
 import { Badge, BadgeKey } from "../services/badges/BadgeService";
+import type { UnlockKey } from "../services/daisu/ShopService";
 
 export interface User {
     id: string;
@@ -27,6 +28,12 @@ export interface User {
         total: number;
         rank: number;
     };
+    // betas this account is in, as the server sees them
+    features?: { daisu?: boolean };
+    // daisu's first-login tour, null for accounts from before it or an offer that lapsed
+    onboarding?: { status: "offered" | "active" | "skipped" | "done"; step: string | null; returning?: boolean } | null;
+    // what daisu's shop has opened for an account in her beta; absent for everyone else
+    unlocks?: UnlockKey[];
 
 }
 

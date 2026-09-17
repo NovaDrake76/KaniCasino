@@ -39,6 +39,7 @@ const FandomView: React.FC<FandomViewProps> = ({
           <button
             key={key}
             onClick={() => selectTab(key)}
+            data-tour={key === "reach" ? "fandom-reach" : undefined}
             className={`notched-sm border-0 px-4 py-2 text-xs font-semibold outline-none transition-all ${
               tab === key ? "bg-[#4F46E5] text-white" : "bg-[#212031] text-[#C9C6DE] hover:text-white"
             }`}

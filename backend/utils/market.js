@@ -7,6 +7,7 @@ const { creditUser, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = requ
 const { marketFee, sellerNet } = require("./itemValue");
 const { HOUSE, ESCROW } = require("./accounts");
 const fandom = require("./fandom");
+const badges = require("./badges");
 
 // the house cut on a settled trade, booked to HOUSE so the three trade legs (buyer,
 // seller, house) sum to zero. best-effort, like the rest of the ledger for now.
@@ -190,6 +191,7 @@ async function purchaseListing({ listingId, buyerId, io }) {
     return { ok: false, code: 410, message: "Seller no longer available; purchase reversed" };
   }
   await fandom.touch(buyerId, claimed.item);
+  await badges.touchCollections(buyerId, claimed.item);
 
   await recordMarketFee({
     price: claimed.price,
@@ -250,6 +252,7 @@ async function fillOrderWithItem({ pending, order, io }) {
     return { ok: false, reason: "buyer gone" };
   }
   await fandom.touch(claimedOrder.userId, pending.item);
+  await badges.touchCollections(claimedOrder.userId, pending.item);
 
   const net = sellerNet(price);
   const seller = await creditUser(pending.sellerId, net, 0, {

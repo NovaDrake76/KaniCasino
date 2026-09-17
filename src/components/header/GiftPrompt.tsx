@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import UserContext from "../../UserContext";
 import { Link, useLocation } from "react-router-dom";
 import { FaGift } from "react-icons/fa";
 import { useGiftStatus } from "./useGiftReady";
@@ -18,6 +19,7 @@ const dismissedFor = (nextAt: string | null) => {
 
 const GiftPrompt = () => {
   const status = useGiftStatus();
+  const { userData } = useContext(UserContext);
   const { pathname } = useLocation();
   const [dismissed, setDismissed] = useState(false);
 
@@ -35,7 +37,7 @@ const GiftPrompt = () => {
   };
 
   // nothing to nag about on the page that grants it
-  if (!status.canSpin || dismissed || pathname.startsWith("/gift")) return null;
+  if (!status.canSpin || dismissed || pathname.startsWith("/gift") || userData?.features?.daisu) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-sticky flex max-w-[calc(100vw-2rem)] items-stretch bg-surface shadow-lg">

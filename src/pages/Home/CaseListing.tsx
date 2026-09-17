@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
 import Case from "../../components/Case";
+import UserContext from "../../UserContext";
 
 interface CaseListingProps {
   name: string;
@@ -35,6 +36,9 @@ const CaseSkeleton = () => (
 const collapseKey = (name: string) => `caseSection:${name}`;
 
 const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loading, collapsible, sectionId, eager }) => {
+  const { userData } = useContext(UserContext);
+  // on a phone daisu's tour points at a single case, so it is one the player can afford
+  const affordable = loading || !userData ? -1 : cases.findIndex((c: any) => c.price <= userData.walletBalance);
   const [collapsed, setCollapsed] = useState<boolean>(() => {
     try {
       return localStorage.getItem(collapseKey(name)) === "hidden";
@@ -85,13 +89,16 @@ const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loa
           <div className="text-sm text-ink-muted pt-3">{description}</div>
         )}
         {!collapsed && (
-          <div className="flex flex-col md:flex-row md:flex-wrap items-center md:items-start justify-center md:justify-start gap-8 pt-6 animate-fade-in">
+          <div
+            data-tour={loading ? undefined : "case-shelf"}
+            className="flex flex-col md:flex-row md:flex-wrap items-center md:items-start justify-center md:justify-start gap-8 pt-6 animate-fade-in"
+          >
             {loading
               ? Array(6)
                   .fill(0)
                   .map((_, index) => <CaseSkeleton key={index} />)
               : cases.map((item: any, index: number) => (
-                  <Link to={`/case/${item._id}`} key={item._id}>
+                  <Link to={`/case/${item._id}`} key={item._id} data-tour={index === affordable ? "case-card" : undefined}>
                     <Case
                       key={item._id}
                       id={item._id}

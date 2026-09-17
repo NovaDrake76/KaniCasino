@@ -16,9 +16,12 @@ const COUNTERPARTY_FOR_TYPE = {
   signup: MINT,
   bonus: MINT,
   mission_reward: MINT,
+  game_credit: MINT, // the tenth on top of a pot claim, locked to one game until it is played
+  game_credit_expired: MINT, // that tenth left unplayed past its clock, going back where it came from
   referral_bonus: MINT,
   referral_milestone: MINT,
   ad_reward: MINT, // KP printed against outside ad revenue
+  shop_purchase: MINT, // an unlock from daisu's shop: the KP leaves circulation and buys only the feature
   arcade_reward: MINT, // a solved daily halo, paid once a day
 
   referral_commission: HOUSE, // the house shares its edge with the affiliate

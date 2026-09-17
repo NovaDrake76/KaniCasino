@@ -7,6 +7,7 @@ import { RotatingLines } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import UserContext from "../UserContext";
 import Monetary from "./Monetary";
+import { emitItemPinned, emitItemSold } from "./daisu/tour/tourEvents";
 import i18n from "../i18n";
 
 
@@ -39,6 +40,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinn
   const fixPlayerItem = async (itemId: string) => {
     try {
       await fixItem(itemId);
+      emitItemPinned();
       onPinned ? onPinned() : setRefresh && setRefresh((prev) => !prev);
     } catch (error) {
       console.log(error);
@@ -56,6 +58,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinn
         toogleUserData({ ...userData, walletBalance: res.walletBalance });
       }
       toast.success(res.message, { theme: "dark" });
+      emitItemSold();
       setRefresh && setRefresh((prev) => !prev);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || i18n.t("common.couldNotSellItem"), { theme: "dark" });
@@ -70,7 +73,7 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinn
   const canSell = !!sellable && !!item.uniqueId && (item.sellValue ?? 0) > 0;
 
   return (
-    <div className={`relative group ${ItemsWidthSize}`}>
+    <div className={`relative group ${ItemsWidthSize}`} data-tour={sellable ? "item-card" : undefined}>
       <div
         className={`flex flex-col w-full items-center justify-center bg-[#212031] rounded-t-lg relative border-b-4 border-[color:var(--rc)] ${canSell ? "group-hover:border-[#212031]" : ""} ${onClick ? "cursor-pointer" : ""}`}
         style={{ "--rc": color } as React.CSSProperties}
@@ -109,7 +112,8 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinn
         </div>
         {fixable && (
           <div
-            className="absolute top-1 right-1 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all"
+            data-tour="item-pin"
+            className="absolute top-1 right-1 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 [.daisu-help-pin_&]:opacity-100 [.daisu-help-pin_&]:translate-y-0 transition-all"
             onClick={(e) => { e.stopPropagation(); fixPlayerItem(item._id); }}
             title={i18n.t("fandom.pinHint", { name: item.name })}
           >

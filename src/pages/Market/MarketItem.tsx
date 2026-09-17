@@ -29,6 +29,7 @@ const MarketItem: React.FC<Props> = ({ item }) => {
     <button
       type="button"
       onClick={() => navigate(`/marketplace/item/${item._id}`)}
+      data-tour="market-item"
       className="group w-[200px] rounded-xl border border-line bg-surface hover:border-line-strong hover:-translate-y-1 transition-all overflow-hidden text-left"
     >
       <div

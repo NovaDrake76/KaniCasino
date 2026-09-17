@@ -6,6 +6,7 @@ import { StatusChip } from "../MarketStatus";
 import ChartRange from "../../../components/ChartRange";
 import { endsInLabel } from "../marketTime";
 import TradePanel from "./TradePanel";
+import LockedBanner from "../../../components/daisu/shop/LockedBanner";
 import TradeFeed from "./TradeFeed";
 import { MarketViewProps } from "./Market.types";
 import { toPercent } from "../../../services/predictions/PredictionService";
@@ -148,7 +149,7 @@ const MarketView: React.FC<MarketViewProps> = (props) => {
         </div>
 
         <div className="lg:col-start-2 lg:row-start-1 lg:sticky lg:top-4">
-          <TradePanel {...props} />
+          {props.locked ? <LockedBanner unlock="predictionPass" compact /> : <TradePanel {...props} />}
         </div>
 
         <div className="lg:col-start-1 lg:row-start-2 min-w-0">

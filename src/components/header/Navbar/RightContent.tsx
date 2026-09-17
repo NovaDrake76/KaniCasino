@@ -38,7 +38,7 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNoti
                 {
                     !loading && (
                         //button to claim bonus (also offers the optional watch-ad reward)
-                        <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} />
+                        <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} potMode={!!userData?.features?.daisu} />
                     )
                 }
             </div>

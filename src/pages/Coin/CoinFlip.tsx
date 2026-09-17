@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import SocketConnection from "../../services/socket"
 import { setStakeAtRisk } from "../../services/stakeGuard";
@@ -9,6 +9,7 @@ import LiveBets from "./LiveBets";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
 import { getCoinFlipHistory } from "../../services/games/GamesServices";
+import { emitGameResult } from "../../components/daisu/tour/tourEvents";
 import i18n from "../../i18n";
 
 const socket = SocketConnection.getInstance();
@@ -59,6 +60,9 @@ const CoinFlip = () => {
       });
   }, []);
 
+  // the stake and side the round was entered with; the side buttons stay live while it flips
+  const placedRef = useRef<{ wagered: number; side: number | null } | null>(null);
+
   const handleBet = () => {
     if (!isLogged) {
       toogleUserFlow(true);
@@ -67,12 +71,14 @@ const CoinFlip = () => {
 
     setUserGambled(true);
     setBetAux(bet);
+    placedRef.current = { wagered: bet, side: choice };
 
     // the server has the final word: a refused bet used to leave the ui claiming
     // the player was in the round
     socket.emit("coinFlip:bet", bet, choice, (result: { ok?: boolean; error?: string }) => {
       if (result?.error) {
         setUserGambled(false);
+        placedRef.current = null;
         toast.error(result.error);
       }
     });
@@ -89,6 +95,11 @@ const CoinFlip = () => {
     const resultListener = (result: number) => {
       setResult(result);
       setSpinning(false);
+      if (placedRef.current) {
+        const { wagered, side } = placedRef.current;
+        emitGameResult({ game: "coinflip", wagered, payout: result === side ? Math.floor(wagered * WIN_MULTIPLIER) : 0 });
+        placedRef.current = null;
+      }
 
       //wait 1 second before adding the result to the history
       setTimeout(() => {
@@ -190,6 +201,7 @@ const CoinFlip = () => {
             </div></div>
           <div className="w-full mt-4">
             <GameButton
+              tour="play-button"
               onClick={handleBet}
               disabled={
                 choice === null || bet < MIN_BET || userGambled || (userData !== null && userData.walletBalance < bet) || spinning || bet > MAX_BET

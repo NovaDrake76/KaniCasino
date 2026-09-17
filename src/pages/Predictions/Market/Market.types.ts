@@ -16,6 +16,8 @@ export interface MarketViewProps {
   chancePct: number | null;
   trades: MarketTrade[];
   isLogged: boolean;
+  // in daisu's beta trading waits for the prediction pass from her shop
+  locked: boolean;
   walletBalance: number;
   selected: string | null;
   select: (key: string) => void;

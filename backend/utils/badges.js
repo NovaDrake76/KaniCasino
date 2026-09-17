@@ -3,6 +3,8 @@ const MissionState = require("../models/MissionState");
 const Notification = require("../models/Notification");
 const Case = require("../models/Case");
 const itemCatalog = require("./itemCatalog");
+const realtime = require("./realtime");
+const { categoriesHeldBy } = require("./collectionCheck");
 const { CATALOG } = require("./missionsCatalog");
 
 const TOP_FAN = "topFan";
@@ -137,13 +139,52 @@ async function collectionSets() {
     if (!label) continue;
     const slug = slugify(label);
     if (!slug) continue;
-    if (!byCategory.has(slug)) byCategory.set(slug, { slug, label, ids: new Set() });
+    if (!byCategory.has(slug)) byCategory.set(slug, { slug, label, labels: new Set(), ids: new Set() });
+    byCategory.get(slug).labels.add(one.category);
     for (const id of one.items || []) {
       if (live.has(String(id))) byCategory.get(slug).ids.add(String(id));
     }
   }
-  return [...byCategory.values()].filter((c) => c.ids.size > 0);
+  const sets = [...byCategory.values()].filter((c) => c.ids.size > 0);
+  setsCache = { at: Date.now(), sets };
+  return sets;
 }
+
+// the sets change only when an admin edits a case, so the check that runs on every opening reuses them for as long as the sweep's own interval
+const SETS_TTL_MS = 10 * 60 * 1000;
+let setsCache = null;
+const cachedSets = async () => (setsCache && Date.now() - setsCache.at < SETS_TTL_MS ? setsCache.sets : collectionSets());
+const invalidateCollectionSets = () => {
+  setsCache = null;
+};
+
+// the moment items arrive: only the categories one of them belongs to and the player has no badge for, checked inside mongo. most openings match no open category and read nothing more
+async function checkCollectionsFor(userId, itemIds) {
+  const gained = [...new Set((Array.isArray(itemIds) ? itemIds : [itemIds]).filter(Boolean).map(String))];
+  if (!userId || !gained.length) return 0;
+  const candidates = (await cachedSets()).filter((set) => gained.some((id) => set.ids.has(id)));
+  if (!candidates.length) return 0;
+  const user = await User.findById(userId, { badges: 1 }).lean();
+  const held = new Set(((user && user.badges) || []).map((b) => b.key));
+  const open = candidates.filter((set) => !held.has(COLLECTION + set.slug));
+  if (!open.length) return 0;
+
+  const cases = await categoriesHeldBy(
+    userId,
+    open.flatMap((set) => [...set.labels]),
+    Math.min(...open.map((set) => set.ids.size))
+  );
+  let awarded = 0;
+  for (const set of open) {
+    const mine = cases.filter((c) => slugify((c.category || "").trim()) === set.slug);
+    if (mine.length && mine.every((c) => c.held) && (await award(userId, COLLECTION + set.slug, realtime.getIo(), null, set.label))) awarded += 1;
+  }
+  return awarded;
+}
+
+// a badge check must never be what fails the opening, trade or battle that moved the item: the ten-minute sweep would still award it
+const touchCollections = (userId, itemIds) =>
+  checkCollectionsFor(userId, itemIds).catch((err) => console.error("collection check:", err.message));
 
 // completing a collection is kept for good: selling something afterwards does not take it
 // back, so nobody has to be afraid to trade once they have it.
@@ -212,6 +253,9 @@ module.exports = {
   slugify,
   collectionSets,
   sweepCollections,
+  checkCollectionsFor,
+  touchCollections,
+  invalidateCollectionSets,
   catalog,
   SOCIAL_KEYS,
   heldBadges,

@@ -12,6 +12,8 @@ interface Props {
   visit: (key: string, url: string) => void;
   isOwner: boolean;
   caseImage?: string;
+  // in daisu's beta her missions are the roadmap, and these are counted as achievements
+  achievements?: boolean;
 }
 
 // resolved per render: a module constant would hold the language the bundle loaded in
@@ -21,8 +23,9 @@ const CATEGORY_LABELS: Record<string, string> = {
   collection: "missions.collection",
   community: "missions.community",
   endgame: "missions.allIn",
+  secret: "missions.secret",
 };
-const CATEGORY_ORDER = ["onboarding", "games", "collection", "community", "endgame"];
+const CATEGORY_ORDER = ["onboarding", "games", "collection", "community", "endgame", "secret"];
 
 const MissionsView: React.FC<Props> = ({
   data,
@@ -33,6 +36,7 @@ const MissionsView: React.FC<Props> = ({
   visit,
   isOwner,
   caseImage,
+  achievements,
 }) => {
   if (!isOwner) {
     return <p className="text-ink-muted py-8 text-center">{i18n.t("missions.missionsArePrivate")}</p>;
@@ -61,11 +65,17 @@ const MissionsView: React.FC<Props> = ({
     <div className="w-full max-w-[1100px] flex flex-col gap-8">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <span className="text-sm text-ink-muted">
-          <span className="text-ink font-semibold">{data.totals.claimed}</span> of {data.totals.total} missions claimed
+          {achievements ? (
+            i18n.t("daisu.achievements.count", { done: data.totals.completed, total: data.totals.total })
+          ) : (
+            <>
+              <span className="text-ink font-semibold">{data.totals.claimed}</span> of {data.totals.total} missions claimed
+            </>
+          )}
         </span>
         {data.totals.claimable > 0 && (
           <span className="px-3 py-1.5 rounded-lg bg-accent-gold/15 text-accent-gold text-sm font-semibold animate-pulse">
-            {data.totals.claimable} ready to claim
+            {achievements ? i18n.t("daisu.achievements.ready", { n: data.totals.claimable }) : `${data.totals.claimable} ready to claim`}
           </span>
         )}
       </div>
