@@ -11,14 +11,14 @@ const { HOUSE, ESCROW } = require("./accounts");
 const fandom = require("./fandom");
 const badges = require("./badges");
 
-// the house cut on a settled trade, booked to HOUSE so the three trade legs (buyer,
-// seller, house) sum to zero. best-effort, like the rest of the ledger for now.
 // the fee a seller's sales pay; one small read of the seller, who is rarely the one making the request
 async function feeRateOf(sellerId) {
   const seller = await User.findById(sellerId, { betaFlags: 1, unlocks: 1 }).lean();
   return shop.holds(seller, "merchantSeal") ? SEAL_FEE_RATE : MARKET_FEE_RATE;
 }
 
+// the house cut on a settled trade, booked to HOUSE so the three trade legs (buyer,
+// seller, house) sum to zero. best-effort, like the rest of the ledger for now.
 async function recordMarketFee({ price, rate, buyerId, meta }) {
   const fee = marketFee(price, rate);
   if (!fee) return;

@@ -74,10 +74,11 @@ const DISCORD_TILT = 0.15;
 
 const streakTilt = (streak) => Math.min((streak || 0) * STREAK_STEP, MAX_STREAK_TILT);
 
-// what every weighting below actually leans on. the levers add rather than multiply, so
-// each panel on the page can state its own contribution and they still sum to this.
 // the second lever is the discord boost as a yes or no, or a number once other boosts (daisu's gift charm) add to it
 const boostTilt = (boost) => (typeof boost === "number" ? boost : boost ? DISCORD_TILT : 0);
+
+// what every weighting below actually leans on. the levers add rather than multiply, so
+// each panel on the page can state its own contribution and they still sum to this.
 const totalTilt = (streak, boost) => streakTilt(streak) + boostTilt(boost);
 
 const eligible = (cases) =>
