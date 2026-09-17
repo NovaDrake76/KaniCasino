@@ -32,7 +32,7 @@ const makeUser = (fields = {}) => {
     email: `a${s}@k.co`,
     password: "x",
     walletBalance: 10000,
-    level: 6,
+    level: 12,
     betaFlags: ["daisu"],
     ...fields,
   });
@@ -52,8 +52,8 @@ describe("daisu's shop", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.items.map((i) => i.key)).toEqual(["chatPass", "tradersLicense", "collectionBook", "predictionPass"]);
-    expect(item(res.body, "chatPass")).toMatchObject({ price: 1000, level: 5, owned: false, via: null });
-    expect(res.body).toMatchObject({ walletBalance: 10000, level: 6 });
+    expect(item(res.body, "chatPass")).toMatchObject({ price: 1000, level: 10, owned: false, via: null });
+    expect(res.body).toMatchObject({ walletBalance: 10000, level: 12 });
     expect((await shopOf(await makeUser({ betaFlags: [] }))).status).toBe(403);
   });
 
@@ -141,8 +141,16 @@ describe("daisu's shop", () => {
     expect(upgrade.body.reason).not.toBe("locked");
   });
 
-  it("lets a licensed trader buy below level 10, where anyone outside the beta still needs the level", async () => {
-    const trader = await makeUser({ level: 5 });
+  it("sells the chat pass and the license from level 10 only, so a fresh account cannot buy its way into either", async () => {
+    const fresh = await makeUser({ level: 9 });
+
+    expect((await buy(fresh, "chatPass")).body).toMatchObject({ reason: "level" });
+    expect((await buy(fresh, "tradersLicense")).body).toMatchObject({ reason: "level" });
+    expect((await User.findById(fresh._id).lean()).walletBalance).toBe(10000);
+  });
+
+  it("lets a licensed trader into the market, where anyone outside the beta still needs the level", async () => {
+    const trader = await makeUser({ level: 10 });
     await buy(trader, "tradersLicense");
 
     const res = await as(trader, request(app).post(`/marketplace/buy/${someId()}`));
