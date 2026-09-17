@@ -13,7 +13,7 @@ import { startHelp } from "./tour/helpStore";
 import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import type { UnlockKey } from "../../services/daisu/ShopService";
-import type { BonusView, Face, Line, Pop, RoomTab, Run, Stage } from "./Daisu.types";
+import type { BonusView, Face, Line, Pop, Run, Stage } from "./Daisu.types";
 import i18n from "../../i18n";
 
 const STAGE_KEY = "kani.daisuStage";
@@ -72,7 +72,6 @@ export const useDaisu = () => {
   const touring = tour.status === "offered" || tour.status === "active";
 
   const [stage, setStage] = useState<Stage>(readStage);
-  const [tab, setTab] = useState<RoomTab>("missions");
   const [now, setNow] = useState(() => Date.now());
   // where the fill stood at the last click: what is between there and now is in the jar
   const [lastClickFill, setLastClickFill] = useState(0);
@@ -186,7 +185,6 @@ export const useDaisu = () => {
     const onStage = (e: Event) => {
       const next = (e as CustomEvent<Stage>).detail;
       if (next !== "bubble" && next !== "popup" && next !== "room") return;
-      if (next === "room") setTab("missions");
       setStage(next);
     };
     window.addEventListener(DAISU_STAGE_EVENT, onStage);
@@ -231,7 +229,7 @@ export const useDaisu = () => {
   const shop = useShop({
     live: enabled && !!userId,
     userId,
-    open: stage === "room" && tab === "shop",
+    open: stage === "room",
     onBought: (purchase) => {
       if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks });
       pull("happy");
@@ -244,7 +242,6 @@ export const useDaisu = () => {
   useEffect(() => {
     const onShop = (e: Event) => {
       const key = (e as CustomEvent<UnlockKey | undefined>).detail;
-      setTab("shop");
       setStage("room");
       if (key) pickShopItem.current(key);
     };
@@ -293,10 +290,6 @@ export const useDaisu = () => {
   const bubbleBonus = liveBonuses[0] ?? null;
 
   const pickName = status ? i18n.t(GAME_NAME_KEYS[status.pick]) : "";
-  const pickPath = status ? GAME_PATHS[status.pick] : "/";
-  const nextPickName = status ? i18n.t(GAME_NAME_KEYS[status.nextPick]) : "";
-  const pickProgress = status?.pickProgress ?? 0;
-  const pickRemaining = Math.max(0, Math.ceil(full * (1 - pickProgress)));
   // the game a bonus mission points at: the one holding a live bonus, else the one the next take feeds
   const bonusGame = bubbleBonus
     ? { name: bubbleBonus.name, art: bubbleBonus.art }
@@ -389,10 +382,9 @@ export const useDaisu = () => {
       setLastClickFill(0);
       if (userData) toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
       endRun("sent", res.amount);
-      // said once the run has settled, so a burst of clicks gets one line: teasing for a pot taken early, thanks for a full one
-      if (res.pickChanged) {
-        say("pickChanged", { game: i18n.t(GAME_NAME_KEYS[res.status.pick]) });
-      } else if (res.fill < 1) {
+      // said once the run has settled, so a burst of clicks gets one line: teasing for a pot taken early, thanks for a full one.
+      // the game her next bonus moves to is never announced: this take's bonus is still on the old one, and naming another game beside its ticket reads as a mistake
+      if (res.fill < 1) {
         say("filling", { amount: kp(res.amount), clock: clock(msUntil(res.status.fullAt, res.status.cycleMs, 1, Date.now())) });
       } else if (res.credit >= 1 && Math.random() < 0.5) {
         say("claimedCredit", { amount: kp(res.amount), credit: kp(res.credit), game: i18n.t(GAME_NAME_KEYS[res.pick]) });
@@ -501,9 +493,7 @@ export const useDaisu = () => {
 
   const openPopup = () => setStage("popup");
   const closeToBubble = () => setStage("bubble");
-  // her room always opens on her missions; the boosts are a tab away
   const openRoom = () => {
-    setTab("missions");
     setStage("room");
     say("room");
   };
@@ -523,6 +513,14 @@ export const useDaisu = () => {
     setStage("bubble");
     startHelp(userId, `shop:${key}`, `unlock:${key}`, i18n.t(`daisu.shop.items.${key}.name`));
   };
+  // an item already held, picked off her shelf: she folds away and shows where it is used
+  const showItem = () => {
+    const key = shop.pickedItem?.key;
+    shop.closePick();
+    if (!key || !userId) return;
+    setStage("bubble");
+    startHelp(userId, `shop:${key}`, `unlock:${key}`, i18n.t(`daisu.shop.items.${key}.name`));
+  };
   const backToPopup = () => setStage("popup");
 
   return {
@@ -533,9 +531,8 @@ export const useDaisu = () => {
     openRoom,
     showMe,
     showUnlocked,
+    showItem,
     backToPopup,
-    tab,
-    setTab,
     loaded: !!status,
     fill: jarLevel,
     inJar,
@@ -560,10 +557,6 @@ export const useDaisu = () => {
     bonuses,
     bubbleBonus,
     pickName,
-    pickPath,
-    nextPickName,
-    pickProgress,
-    pickRemaining,
     bonusGame,
     walletBalance: wallet,
     level: (userData?.level ?? 0) as number,

@@ -107,8 +107,8 @@ const draw = (daisu = true, extra: Record<string, unknown> = {}) =>
 
 const Where = () => <span data-testid="where">{useLocation().pathname}</span>;
 const jar = () => screen.getByLabelText("The jar");
-// her card keeps the bonuses behind a single line, shown on hover
-const showBonuses = async () => fireEvent.mouseEnter(await screen.findByRole("button", { name: /active bonuses/i }));
+// her card shows each live bonus as a small ticket that links to its game
+const ticket = (game: RegExp) => screen.findByRole("link", { name: game });
 // the jar ticks on Date.now, so fake timers move the pot and the pause together
 const wait = (ms: number) =>
   act(async () => {
@@ -166,8 +166,7 @@ describe("daisu in the corner", () => {
     await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(runState()).toBe("sent"));
     expect(toogleUserData.mock.calls[0][0].walletBalance).toBe(1000);
-    await showBonuses();
-    expect(await screen.findByText(/used first on your dice bets/i)).toBeTruthy();
+    expect(await ticket(/dice bonus balance/i)).toBeTruthy();
   });
 
   it("pours what refilled during the pause into the run as it sends, so the total is the take", async () => {
@@ -207,6 +206,24 @@ describe("daisu in the corner", () => {
     await wait(4100);
     await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(said()).toBe(last));
+    random.mockRestore();
+  });
+
+  it("talks about the bonus this take gave, never about the game the next one moves to", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+    getPotStatus.mockResolvedValue(status(0));
+    claimPot.mockResolvedValue({ ...claimed(1000, 1100), pick: "slots", pickChanged: true, status: status(CYCLE, { pick: "dice" }) });
+    draw();
+    await screen.findByText(/full pot bonus/i);
+
+    fireEvent.click(jar());
+    await wait(4100);
+    await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
+
+    const said = () => document.querySelector('section[aria-label="Daisu"] p')?.textContent || "";
+    await waitFor(() => expect(said()).toMatch(/slots/i));
+    expect(said()).not.toMatch(/dice|new game/i);
     random.mockRestore();
   });
 
@@ -251,7 +268,7 @@ describe("daisu in the corner", () => {
     expect(runState()).toBeUndefined();
   });
 
-  it("shows the bonus on her pick with its clock, and hurries you in its last minute", async () => {
+  it("shows a live bonus on her card as a ticket with its clock, and leaves an expired one off", async () => {
     getPotStatus.mockResolvedValue(
       status(CYCLE, {
         bonuses: [
@@ -261,59 +278,60 @@ describe("daisu in the corner", () => {
       })
     );
     draw();
-    await showBonuses();
 
-    expect(await screen.findByText(/play before it runs out/i)).toBeTruthy();
-    expect(screen.getAllByText(/0:4\d/).length).toBeGreaterThan(0);
-    expect(screen.queryByText(/dice bonus expired/i)).toBeNull();
+    const plinko = await ticket(/plinko bonus balance/i);
+    expect(plinko.textContent).toMatch(/K₽\s125/);
+    expect(plinko.textContent).toMatch(/0:4\d/);
+    expect(screen.queryByRole("link", { name: /dice bonus balance/i })).toBeNull();
   });
 
-  it("previews her bonuses without play buttons, and a click on the line goes to the first bonus game", async () => {
-    getPotStatus.mockResolvedValue(
-      status(CYCLE, {
-        bonuses: [
-          { game: "plinko", amount: 125, expiresAt: iso(200000), expired: false },
-          { game: "dice", amount: 40, expiresAt: iso(100000), expired: false },
-        ],
-      })
-    );
+  it("goes to the bonus game when its ticket is clicked", async () => {
+    getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "plinko", amount: 125, expiresAt: iso(200000), expired: false }] }));
     draw();
-    await showBonuses();
 
-    expect(await screen.findByText(/used first on your plinko bets/i)).toBeTruthy();
-    expect(screen.queryByRole("link", { name: /^play$/i })).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: /active bonuses/i }));
+    fireEvent.click(await ticket(/plinko bonus balance/i));
     expect(await screen.findByTestId("where")).toHaveTextContent("/plinko");
   });
 
-  it("drops the bonus line from her card once every bonus has run out", async () => {
-    getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "plinko", amount: 125, expiresAt: iso(-60000), expired: true }] }));
-    draw();
-    await screen.findByText(/full in \d/i);
+  it("explains the bonus in her room as one ticket, and says how to get one when there is none", async () => {
+    getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(200000), expired: false }] }));
+    const { unmount } = draw();
+    fireEvent.click(await screen.findByText(/visit daisu's room/i));
 
-    expect(screen.queryByRole("button", { name: /active bonuses/i })).toBeNull();
+    expect(await screen.findByText(/your dice bets spend this before your wallet/i)).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Play" })).toHaveAttribute("href", "/dice");
+    expect(screen.getByText(/i add 10% extra as a bonus for one game/i)).toBeTruthy();
+    expect(screen.queryByText(/daisu's pick|next:/i)).toBeNull();
+
+    fireEvent.click(screen.getByRole("link", { name: "Play" }));
+    expect(await screen.findByLabelText("Open Daisu")).toBeTruthy();
+    expect(screen.getByTestId("where")).toHaveTextContent("/dice");
+    unmount();
+
+    getPotStatus.mockResolvedValue(status(CYCLE));
+    window.localStorage.setItem("kani.daisuStage", "popup");
+    draw();
+    fireEvent.click(await screen.findByText(/visit daisu's room/i));
+    expect(await screen.findByText(/no bonus right now\. take from the jar and i add 10% extra to bet on dice/i)).toBeTruthy();
   });
 
-  it("calls a bonus out as it runs out while she is open", async () => {
+  it("calls a bonus out as it runs out while she is open, and its ticket goes", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(3000), expired: false }] }));
     draw();
-    await showBonuses();
-    await screen.findByText(/play before it runs out/i);
+    await ticket(/dice bonus balance/i);
 
     await wait(3500);
 
     expect(await screen.findByText(/took your dice bonus back|on dice is mine now/i)).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /active bonuses/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /dice bonus balance/i })).toBeNull();
   });
 
   it("reads the pot again after its bonus game is played, and not after any other", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "dice", amount: 85, expiresAt: iso(200000), expired: false }] }));
     draw();
-    await showBonuses();
-    await screen.findByText(/used first on your dice bets/i);
+    await ticket(/dice bonus balance/i);
     const played = (game: string) =>
       act(() => {
         window.dispatchEvent(new CustomEvent(GAME_PLAYED_EVENT, { detail: { game } }));
@@ -409,8 +427,7 @@ describe("daisu in the corner", () => {
     expect(await screen.findByText("First steps")).toBeTruthy();
     expect(screen.getByText("Reach level 5")).toBeTruthy();
 
-    fireEvent.click(screen.getByRole("button", { name: "Shop" }));
-    expect(await screen.findByText(/things that open up the rest of the place/i)).toBeTruthy();
+    expect(await screen.findByText("Daisu's shop")).toBeTruthy();
 
     fireEvent.click(screen.getByText(/back to daisu/i));
     expect(await screen.findByLabelText("Daisu", { selector: "section" })).toBeTruthy();
@@ -439,8 +456,7 @@ describe("daisu in the corner", () => {
     });
     draw(true, { walletBalance: 9000, level: 6, unlocks: [] });
     fireEvent.click(await screen.findByText(/visit daisu's room/i));
-    fireEvent.click(await screen.findByRole("button", { name: "Shop" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Buy" }));
+    fireEvent.click(await screen.findByRole("button", { name: /collection book/i }));
 
     fireEvent.click(await screen.findByRole("button", { name: /buy for/i }));
 
@@ -451,6 +467,21 @@ describe("daisu in the corner", () => {
     fireEvent.click(screen.getByRole("button", { name: "Show me" }));
 
     expect(await screen.findByLabelText("Open Daisu")).toBeTruthy();
+    expect(helpState()).toMatchObject({ mission: "shop:collectionBook", goal: "unlock:collectionBook" });
+    endHelp();
+  });
+
+  it("offers to show where an item already held is used, straight from her shelf", async () => {
+    getShop.mockResolvedValue(shopOf([shopItem({ owned: true, via: "history" })]));
+    draw(true, { walletBalance: 9000, level: 6, unlocks: ["collectionBook"] });
+    fireEvent.click(await screen.findByText(/visit daisu's room/i));
+    fireEvent.click(await screen.findByRole("button", { name: /collection book/i }));
+
+    const card = await screen.findByRole("dialog", { name: "Collection Book" });
+    expect(card.textContent).toMatch(/yours/i);
+    expect(screen.queryByRole("button", { name: /buy for/i })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Show me" }));
     expect(helpState()).toMatchObject({ mission: "shop:collectionBook", goal: "unlock:collectionBook" });
     endHelp();
   });

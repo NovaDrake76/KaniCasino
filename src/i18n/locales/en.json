@@ -453,18 +453,9 @@
     "queuedClickToCancel": "Queued (click to cancel)"
   },
   "daisu": {
-    "activeBonuses": "You've got active bonuses",
     "back": "Back to Daisu",
     "bonusBubble": "{{game}} bonus, {{clock}}",
-    "bonusExpired": "{{game}} bonus expired",
     "bonusHurry": "Play before it runs out",
-    "bonusNewOne": "Take from the jar for a new one",
-    "bonusPaysAll": "Paid from bonus:",
-    "bonusPaysFirst": "pays first",
-    "bonusSpentFirst": "spent before your wallet",
-    "bonusSplit": "{{bonus}} from bonus, {{wallet}} from wallet",
-    "bonusTitle": "Daisu's bonus",
-    "bonusUsedOn": "Used first on your {{game}} bets",
     "bubbleGift": "Gift",
     "clickHint": "Click the jar to take what is in it",
     "close": "Close",
@@ -480,15 +471,11 @@
     "keeps": "keeps the pot",
     "loading": "...",
     "missionsDone": "{{done}} of {{total}} missions complete",
-    "nextPick": "Next: {{game}}, after {{amount}} more",
     "ofFull": "of {{full}}",
     "open": "Open Daisu",
     "pending": "{{amount}} on its way to your wallet",
-    "pickLine": "An extra {{share}}% of every take goes to {{game}}",
-    "pickTitle": "Daisu's pick",
     "play": "Play",
     "roomTitle": "Daisu's room",
-    "tabMissions": "Missions",
     "visit": "Visit Daisu's room",
     "lines": {
       "hello": {
@@ -577,10 +564,6 @@
         "0": "I threw in {{credit}} for {{game}}. Win it back as real K₽, if you can.",
         "1": "Extra {{credit}}, {{game}} only, and it's gone in 8 minutes. No arguing.",
         "2": "Here's some extra balance for playing {{game}}."
-      },
-      "pickChanged": {
-        "0": "That's a whole pot. New game: {{game}}. Go on, I'm watching.",
-        "1": "You emptied one. I'm moving your extra to {{game}} now. Try to keep up."
       },
       "credit": {
         "0": "You still haven't used the {{credit}} on {{game}}? Scared?",
@@ -926,6 +909,12 @@
       "unlocked": "Achievement unlocked"
     },
     "help": {
+      "eyebrow": "Help · {{mission}}",
+      "showMe": "Show me",
+      "stop": "Stop helping",
+      "affiliates": {
+        "line": "This is your affiliates page. Pick your invite code here, then share the link: everyone who joins with it pays you K₽."
+      },
       "battle": {
         "line": "Pick cases below, then this button starts the battle. Everyone opens the same cases and the best total takes it all."
       },
@@ -946,7 +935,6 @@
         "line": "Every case has a collection. Open one to see what you have and what you're still missing.",
         "wait": "Waiting for you to open one"
       },
-      "eyebrow": "Help · {{mission}}",
       "fans": {
         "line": "This tab shows every character you own and how far you are from being its Top Fan. Pin the one you're closest on."
       },
@@ -981,16 +969,36 @@
         "line": "Hover an item and press its sell button. It turns back into K₽ right away, so pick one you won't miss.",
         "linePhone": "Tap an item and sell a copy. It turns back into K₽ right away, so pick one you won't miss.",
         "wait": "Waiting for a sale"
-      },
-      "showMe": "Show me",
-      "stop": "Stop helping"
+      }
     },
     "shop": {
       "after": "Your balance after",
-      "buy": "Buy",
       "buyFor": "Buy for {{amount}}",
       "failed": "Could not buy that. Try again.",
+      "level": "Level {{n}}",
+      "needs": "Needs",
+      "notNow": "Not now",
+      "price": "Price",
+      "short": "{{amount}} short",
+      "soon": "Buy an item to find out what comes next.",
+      "tipBuy": "{{price}} · level {{n}} · click to buy",
+      "tipLevel": "Needs level {{n}} · you are level {{level}}",
+      "tipShort": "{{price}} · you need {{amount}} more",
+      "title": "Daisu's shop",
+      "unlocked": "Unlocked",
+      "yours": "Yours",
       "items": {
+        "affiliateCard": {
+          "about": "Opens the Affiliates tab: pick your invite code, share your link, and earn K₽ when the players you invite sign up, reach level 10 and place bets.",
+          "getIt": "Get it in Daisu's shop",
+          "kept": "kept from your invite code",
+          "lockedBody": "The Affiliate Card gives you an invite code. Everyone who signs up with it pays you K₽: on signup, at level 10, and a cut of what they bet.",
+          "lockedTitle": "Affiliates are locked",
+          "name": "Affiliate Card",
+          "opened": "You're in business. Pick a code and start sharing it. Want me to show you where?",
+          "pitch": "You bring me customers, I pay you a cut. Simple business.",
+          "what": "Get your own invite code and earn K₽ from the players you bring."
+        },
         "chatPass": {
           "about": "Lets you send messages in the site chat. Reading it never needs a pass.",
           "getIt": "Get the pass",
@@ -1012,6 +1020,20 @@
           "opened": "It's yours. The Collections tab is open now. Want me to walk you through it? There are a lot of pages.",
           "pitch": "A whole book for your collection. Try not to cry when you see how empty it is.",
           "what": "Opens the Collections tab: every case you collect from, what's missing, and a quick way to sell duplicates."
+        },
+        "giftCharm": {
+          "about": "A standing boost on the daily gift, on top of your streak and the Discord boost: better prizes come up 10% more often. It never runs out.",
+          "name": "Gift Charm",
+          "opened": "It's on. Your next daily gift already leans your way. Want to see it?",
+          "pitch": "A lucky charm. It works, unlike your betting strategy.",
+          "what": "Your daily gift leans 10% further toward the better prizes, for good."
+        },
+        "merchantSeal": {
+          "about": "Every sale you make on the marketplace pays the house 2% instead of 5%. It applies to listings and to buy orders you fill, forever.",
+          "name": "Merchant's Seal",
+          "opened": "Sealed. From now on the market only takes 2% of your sales. Want to go sell something?",
+          "pitch": "Pay me once so you pay me less forever. I hate that this is a good deal.",
+          "what": "Your market sales pay a 2% fee instead of 5%, for good."
         },
         "predictionPass": {
           "about": "Opens predictions: buy shares on what happens next, and sell them whenever the price moves your way.",
@@ -1035,18 +1057,18 @@
           "pitch": "Official paperwork, so you can haggle with strangers. Don't get scammed. Actually, do. It's funny.",
           "what": "Buy from other players and list your own items on the marketplace."
         }
-      },
-      "level": "Level {{n}}",
-      "locked": "Locked",
-      "needs": "Needs",
-      "notNow": "Not now",
-      "price": "Price",
-      "short": "{{amount}} short",
-      "subtitle": "Things that open up the rest of the place.",
-      "tab": "Shop",
-      "title": "Daisu's shop",
-      "unlocked": "Unlocked",
-      "yours": "Yours"
+      }
+    },
+    "ticket": {
+      "yours": "Your bonus",
+      "kicker": "{{game}} bonus balance",
+      "forGame": "to bet on {{game}}",
+      "spends": "Your {{game}} bets spend this before your wallet",
+      "spentFirst": "spent first",
+      "source": "Every time you take from the jar, I add {{share}}% extra as a bonus for one game.",
+      "none": "No bonus right now. Take from the jar and I add {{share}}% extra to bet on {{game}}.",
+      "betAll": "This bet: {{bonus}} from your bonus, nothing from your wallet",
+      "betSplit": "This bet: {{bonus}} from your bonus, {{wallet}} from your wallet"
     }
   },
   "dice": {
@@ -1251,6 +1273,7 @@
     "betterPrizesOnceLinked": "more chance of better prizes once linked",
     "bonus": "bonus",
     "chanceOf": "{{chance}}% chance",
+    "charm": "Daisu's gift charm",
     "chooseACollection": "Choose a collection",
     "couldNotLoadYour": "Could not load your daily gift.",
     "couldNotOpenYour": "Could not open your gift",

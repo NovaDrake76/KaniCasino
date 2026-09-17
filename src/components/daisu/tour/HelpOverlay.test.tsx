@@ -194,6 +194,13 @@ describe("daisu showing how a mission is done", () => {
     window.removeEventListener("chat:open", opened);
   });
 
+  it("takes a new affiliate to their affiliates tab and points at the invite code", () => {
+    draw(nextId(), "unlock:affiliateCard", "/", <div data-tour="affiliates-code" />, "Affiliate Card");
+
+    expect(where()).toMatch(/^\/profile\//);
+    expect(screen.getByText(/pick your invite code here/i)).toBeTruthy();
+  });
+
   it("sends a player without the collection book to her shop rather than to a locked page", () => {
     const asked: string[] = [];
     const onShop = (e: Event) => asked.push((e as CustomEvent<string>).detail);

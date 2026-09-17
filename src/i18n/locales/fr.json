@@ -453,18 +453,9 @@
     "queuedClickToCancel": "En file (cliquez pour annuler)"
   },
   "daisu": {
-    "activeBonuses": "Tu as des bonus actifs",
     "back": "Retour à Daisu",
     "bonusBubble": "Bonus {{game}}, {{clock}}",
-    "bonusExpired": "Bonus {{game}} expiré",
     "bonusHurry": "Jouez avant qu'il expire",
-    "bonusNewOne": "Prenez dans le pot pour en avoir un autre",
-    "bonusPaysAll": "Payé avec le bonus :",
-    "bonusPaysFirst": "paie en premier",
-    "bonusSpentFirst": "dépensé avant votre portefeuille",
-    "bonusSplit": "{{bonus}} du bonus, {{wallet}} du portefeuille",
-    "bonusTitle": "Bonus de Daisu",
-    "bonusUsedOn": "Utilisé en premier sur vos mises {{game}}",
     "bubbleGift": "Cadeau",
     "clickHint": "Cliquez sur le pot pour prendre ce qu'il contient",
     "close": "Fermer",
@@ -480,15 +471,11 @@
     "keeps": "garde le pot",
     "loading": "...",
     "missionsDone": "{{done}} missions sur {{total}} terminées",
-    "nextPick": "Ensuite : {{game}}, après {{amount}} de plus",
     "ofFull": "sur {{full}}",
     "open": "Ouvrir Daisu",
     "pending": "{{amount}} en route vers votre portefeuille",
-    "pickLine": "{{share}}% de plus à chaque prise vont sur {{game}}",
-    "pickTitle": "Le choix de Daisu",
     "play": "Jouer",
     "roomTitle": "La chambre de Daisu",
-    "tabMissions": "Missions",
     "visit": "Visiter la chambre de Daisu",
     "lines": {
       "hello": {
@@ -577,10 +564,6 @@
         "0": "J'ai glissé {{credit}} pour {{game}}. Regagne-les en vrais K₽, si tu peux.",
         "1": "{{credit}} en plus, seulement sur {{game}}, et ça disparaît dans 8 minutes. Pas de discussion.",
         "2": "Voilà un peu de solde en plus pour jouer à {{game}}."
-      },
-      "pickChanged": {
-        "0": "Un pot entier. Nouveau jeu : {{game}}. Vas-y, je regarde.",
-        "1": "Tu en as vidé un. Ton extra passe sur {{game}} maintenant. Essaie de suivre."
       },
       "credit": {
         "0": "Tu n'as toujours pas utilisé les {{credit}} sur {{game}} ? Peur ?",
@@ -926,6 +909,12 @@
       "unlocked": "Succès débloqué"
     },
     "help": {
+      "eyebrow": "Aide · {{mission}}",
+      "showMe": "Montre-moi",
+      "stop": "Arrêter l'aide",
+      "affiliates": {
+        "line": "Voici ta page d'affiliés. Choisis ton code d'invitation ici, puis partage le lien : chaque personne qui rejoint avec te rapporte des K₽."
+      },
       "battle": {
         "line": "Choisis des caisses plus bas, puis ce bouton lance la bataille. Tout le monde ouvre les mêmes caisses et le meilleur total rafle tout."
       },
@@ -946,7 +935,6 @@
         "line": "Chaque caisse a sa collection. Ouvre-en une pour voir ce que tu as et ce qui te manque encore.",
         "wait": "J'attends que tu en ouvres une"
       },
-      "eyebrow": "Aide · {{mission}}",
       "fans": {
         "line": "Cet onglet montre chaque personnage que tu possèdes et ce qu'il te manque pour être son Top Fan. Épingle celui dont tu es le plus proche."
       },
@@ -981,16 +969,36 @@
         "line": "Survole un objet et appuie sur son bouton de vente. Il redevient des K₽ tout de suite, alors choisis-en un qui ne te manquera pas.",
         "linePhone": "Touche un objet et vends un exemplaire. Il redevient des K₽ tout de suite, alors choisis-en un qui ne te manquera pas.",
         "wait": "J'attends une vente"
-      },
-      "showMe": "Montre-moi",
-      "stop": "Arrêter l'aide"
+      }
     },
     "shop": {
       "after": "Ton solde après",
-      "buy": "Acheter",
       "buyFor": "Acheter pour {{amount}}",
       "failed": "Impossible d'acheter ça. Réessaie.",
+      "level": "Niveau {{n}}",
+      "needs": "Requis",
+      "notNow": "Pas maintenant",
+      "price": "Prix",
+      "short": "Il manque {{amount}}",
+      "soon": "Achète un objet pour découvrir la suite.",
+      "tipBuy": "{{price}} · niveau {{n}} · clique pour acheter",
+      "tipLevel": "Niveau {{n}} requis · tu es niveau {{level}}",
+      "tipShort": "{{price}} · il te manque {{amount}}",
+      "title": "Boutique de Daisu",
+      "unlocked": "Débloqué",
+      "yours": "À toi",
       "items": {
+        "affiliateCard": {
+          "about": "Ouvre l'onglet Affiliés : choisis ton code d'invitation, partage ton lien et gagne des K₽ quand tes invités s'inscrivent, atteignent le niveau 10 et misent.",
+          "getIt": "À prendre dans la boutique de Daisu",
+          "kept": "conservé grâce à ton code d'invitation",
+          "lockedBody": "La Carte d'Affilié te donne un code d'invitation. Chaque personne qui s'inscrit avec te rapporte des K₽ : à l'inscription, au niveau 10, et une part de ses mises.",
+          "lockedTitle": "Les affiliés sont verrouillés",
+          "name": "Carte d'Affilié",
+          "opened": "Tu es dans les affaires. Choisis un code et commence à le partager. Je te montre où ?",
+          "pitch": "Tu m'amènes des clients, je te verse une part. Simple comme bonjour.",
+          "what": "Obtiens ton propre code d'invitation et gagne des K₽ grâce aux joueurs que tu amènes."
+        },
         "chatPass": {
           "about": "Te permet d'envoyer des messages dans le chat du site. Le lire ne demande jamais de pass.",
           "getIt": "Obtenir le pass",
@@ -1012,6 +1020,20 @@
           "opened": "Il est à toi. L'onglet Collections est ouvert. Tu veux que je te le fasse visiter ? Il y a beaucoup de pages.",
           "pitch": "Un livre entier pour ta collection. Essaie de ne pas pleurer en voyant à quel point il est vide.",
           "what": "Ouvre l'onglet Collections : chaque caisse que tu collectionnes, ce qui manque et un moyen rapide de vendre les doublons."
+        },
+        "giftCharm": {
+          "about": "Un bonus permanent sur le cadeau du jour, en plus de ta série et du bonus Discord : les meilleurs lots sortent 10 % plus souvent. Il ne s'épuise jamais.",
+          "name": "Charme du Cadeau",
+          "opened": "C'est actif. Ton prochain cadeau du jour penche déjà de ton côté. Tu veux voir ?",
+          "pitch": "Un porte-bonheur. Il marche, contrairement à ta stratégie de mise.",
+          "what": "Ton cadeau du jour penche 10 % de plus vers les meilleurs lots, pour toujours."
+        },
+        "merchantSeal": {
+          "about": "Chaque vente que tu fais au marché verse 2 % à la maison au lieu de 5 %. Ça vaut pour les annonces et pour les ordres d'achat que tu remplis, pour toujours.",
+          "name": "Sceau du Marchand",
+          "opened": "Scellé. Désormais le marché ne prend que 2 % de tes ventes. On va vendre quelque chose ?",
+          "pitch": "Paie-moi une fois pour me payer moins pour toujours. Je déteste que ce soit une bonne affaire.",
+          "what": "Tes ventes au marché paient 2 % de frais au lieu de 5 %, pour toujours."
         },
         "predictionPass": {
           "about": "Ouvre les prédictions : achète des parts sur ce qui va se passer et revends-les quand le prix tourne en ta faveur.",
@@ -1035,18 +1057,18 @@
           "pitch": "De la paperasse officielle pour marchander avec des inconnus. Ne te fais pas arnaquer. Enfin, si, c'est drôle.",
           "what": "Achète à d'autres joueurs et mets tes objets en vente sur le marché."
         }
-      },
-      "level": "Niveau {{n}}",
-      "locked": "Verrouillé",
-      "needs": "Requis",
-      "notNow": "Pas maintenant",
-      "price": "Prix",
-      "short": "Il manque {{amount}}",
-      "subtitle": "Des choses qui ouvrent le reste du site.",
-      "tab": "Boutique",
-      "title": "Boutique de Daisu",
-      "unlocked": "Débloqué",
-      "yours": "À toi"
+      }
+    },
+    "ticket": {
+      "yours": "Ton bonus",
+      "kicker": "Solde bonus {{game}}",
+      "forGame": "à miser sur {{game}}",
+      "spends": "Tes mises sur {{game}} dépensent ça avant ton portefeuille",
+      "spentFirst": "dépensé en premier",
+      "source": "Chaque fois que tu prends dans le pot, j'ajoute {{share}} % en plus comme bonus pour un jeu.",
+      "none": "Pas de bonus pour l'instant. Prends dans le pot et j'ajoute {{share}} % en plus à miser sur {{game}}.",
+      "betAll": "Cette mise : {{bonus}} de ton bonus, rien de ton portefeuille",
+      "betSplit": "Cette mise : {{bonus}} de ton bonus, {{wallet}} de ton portefeuille"
     }
   },
   "dice": {
@@ -1251,6 +1273,7 @@
     "betterPrizesOnceLinked": "de chances en plus une fois lie",
     "bonus": "bonus",
     "chanceOf": "{{chance}}% de chance",
+    "charm": "Charme du cadeau de Daisu",
     "chooseACollection": "Choisissez une collection",
     "couldNotLoadYour": "Impossible de charger votre cadeau quotidien.",
     "couldNotOpenYour": "Impossible d'ouvrir votre cadeau",

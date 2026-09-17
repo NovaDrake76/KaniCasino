@@ -3,8 +3,10 @@ import Skeleton from "react-loading-skeleton";
 import Title from "../../components/Title";
 import Roulette from "../../components/Roulette";
 import GameButton from "../../components/game/GameButton";
-import { TOP_SLOT_TICKS, countdown, kp, topSlotAt, topSlotStart } from "./Gift.services";
+import { TOP_SLOT_TICKS, countdown, gainOf, kp, topSlotAt, topSlotStart } from "./Gift.services";
 import DiscordBoost from "./DiscordBoost";
+import { betterPrizes } from "./BoostCard";
+import PixelIcon from "../../components/daisu/PixelIcon";
 import StreakLadder from "./StreakLadder";
 import LevelRungs from "./LevelRungs";
 import type { GiftViewProps, TopSlotRung } from "./Gift.types";
@@ -180,6 +182,15 @@ const GiftView = ({
 
         <DiscordBoost discord={state.discord} />
       </div>
+
+      {state.charm?.held && (
+        <div className="mb-5 flex w-full items-center gap-3 bg-surface px-5 py-3">
+          <PixelIcon name="clover" size={32} />
+          <span className="text-[13px] font-semibold text-ink-soft">{i18n.t("gift.charm")}</span>
+          <span className="ml-auto text-lg font-extrabold text-accent-gold">{gainOf(state.charm.boost)}</span>
+          <span className="text-[12px] text-ink-soft">{betterPrizes()}</span>
+        </div>
+      )}
 
       {/* the wheel is only worth a screenful while it is running. sitting open above the
           picker it pushed the cases below the fold, and the level card already says what

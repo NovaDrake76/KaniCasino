@@ -41,11 +41,10 @@ function baseValuesForCase(caseDoc) {
 
 const sellValue = (baseValue) => Math.floor((baseValue || 0) * SELL_RATE);
 
-// the buyer always pays the listed price; the seller keeps it minus the house fee,
-// which is burned (a KP sink). both derive from the same price so they can never
-// disagree about who got what.
-const marketFee = (price) => Math.floor(Math.max(0, price || 0) * MARKET_FEE_RATE);
-const sellerNet = (price) => Math.max(0, (price || 0) - marketFee(price));
+// the buyer always pays the listed price; the seller keeps it minus the house fee, which is burned (a KP sink), and both derive from the same price so they can never disagree about who got what.
+// the rate is the seller's own: everyone pays the standard one unless daisu's merchant seal lowered theirs
+const marketFee = (price, rate = MARKET_FEE_RATE) => Math.floor(Math.max(0, price || 0) * rate);
+const sellerNet = (price, rate = MARKET_FEE_RATE) => Math.max(0, (price || 0) - marketFee(price, rate));
 
 // recompute and persist baseValue for every item in a case, and (re)materialize the
 // provably-fair range table, bumping the case's config version + archiving it when

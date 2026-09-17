@@ -46,6 +46,8 @@ export interface GiftState {
   level: number;
   streak: number;
   discord: GiftDiscordBoost;
+  // daisu's gift charm, a standing boost already counted in every number here
+  charm?: { held: boolean; boost: number };
   streakTilt: number;
   maxStreakTilt: number;
   topSlot: TopSlotRung[];

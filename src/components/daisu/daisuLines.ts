@@ -10,7 +10,6 @@ export type Mood =
   | "failed"
   | "claimed"
   | "claimedCredit"
-  | "pickChanged"
   | "credit"
   | "bonusExpiring"
   | "bonusExpired"

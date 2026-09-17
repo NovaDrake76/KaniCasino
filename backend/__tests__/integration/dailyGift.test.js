@@ -107,6 +107,23 @@ describe("what the streak is worth", () => {
     expect(b.body.atBestStreak.rareBoost).toBe(a.body.atBestStreak.rareBoost);
   });
 
+  it("leans the gift a little further for a player holding daisu's gift charm, and only inside her beta", async () => {
+    await seedCategory("Touhou", [60]);
+    const charm = { unlocks: [{ key: "giftCharm", via: "bought", at: new Date() }], unlocksCheckedAt: new Date() };
+    const plain = await makeUser({ level: 60 });
+    const charmed = await makeUser({ level: 60, betaFlags: ["daisu"], ...charm });
+    const outsider = await makeUser({ level: 60, ...charm });
+
+    const a = (await auth(request(app).get("/gift"), plain)).body;
+    const b = (await auth(request(app).get("/gift"), charmed)).body;
+    const c = (await auth(request(app).get("/gift"), outsider)).body;
+
+    expect(b.rareBoost).toBeCloseTo(a.rareBoost + 0.1, 2);
+    expect(b.charm).toEqual({ held: true, boost: 0.1 });
+    expect(a.charm.held).toBe(false);
+    expect(c.rareBoost).toBe(a.rareBoost);
+  });
+
   it("stops promising more once the streak is already there", async () => {
     await seedCategory("Touhou", [60]);
     const maxed = await onStreak(gift.STREAK_DAYS, { level: 60 });

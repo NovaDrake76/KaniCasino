@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { FiChevronRight, FiX } from "react-icons/fi";
 import { FaGift } from "react-icons/fa";
 import { BsDoorOpen } from "react-icons/bs";
-import ActiveBonuses from "./ActiveBonuses";
+import BonusTicket from "./BonusTicket";
 import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
@@ -100,7 +100,11 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
     </div>
 
     <div className="flex flex-col gap-2 px-4 pb-4 pt-3">
-      <ActiveBonuses bonuses={bonuses} />
+      {bonuses
+        .filter((b) => !b.expired)
+        .map((b) => (
+          <BonusTicket key={b.key} bonus={b} small />
+        ))}
       {giftReady && (
         <Link
           to="/gift"

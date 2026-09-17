@@ -4,15 +4,23 @@ const MarketSale = require("../models/MarketSale");
 const BuyOrder = require("../models/BuyOrder");
 const Notification = require("../models/Notification");
 const { creditUser, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = require("./economy");
-const { marketFee, sellerNet } = require("./itemValue");
+const { marketFee, sellerNet, MARKET_FEE_RATE } = require("./itemValue");
+const { SEAL_FEE_RATE } = require("./shopCatalog");
+const shop = require("./shop");
 const { HOUSE, ESCROW } = require("./accounts");
 const fandom = require("./fandom");
 const badges = require("./badges");
 
+// the fee a seller's sales pay; one small read of the seller, who is rarely the one making the request
+async function feeRateOf(sellerId) {
+  const seller = await User.findById(sellerId, { betaFlags: 1, unlocks: 1 }).lean();
+  return shop.holds(seller, "merchantSeal") ? SEAL_FEE_RATE : MARKET_FEE_RATE;
+}
+
 // the house cut on a settled trade, booked to HOUSE so the three trade legs (buyer,
 // seller, house) sum to zero. best-effort, like the rest of the ledger for now.
-async function recordMarketFee({ price, buyerId, meta }) {
-  const fee = marketFee(price);
+async function recordMarketFee({ price, rate, buyerId, meta }) {
+  const fee = marketFee(price, rate);
   if (!fee) return;
   await recordTransaction({
     userId: HOUSE,
@@ -53,15 +61,15 @@ function restoreListing(claimed) {
 
 // the durable price-history record. best-effort: a failed write must never break a
 // settled trade, mirroring recordTransaction.
-async function logSale({ listing, buyerId, price, viaOrder = false }) {
+async function logSale({ listing, buyerId, price, rate, viaOrder = false }) {
   try {
     return await MarketSale.create({
       item: listing.item,
       itemName: listing.itemName,
       rarity: listing.rarity,
       price,
-      fee: marketFee(price),
-      sellerNet: sellerNet(price),
+      fee: marketFee(price, rate),
+      sellerNet: sellerNet(price, rate),
       sellerId: listing.sellerId,
       buyerId,
       listingId: listing.uniqueId,
@@ -144,7 +152,8 @@ async function purchaseListing({ listingId, buyerId, io }) {
     return { ok: false, code: 400, message: "Insufficient balance" };
   }
 
-  const net = sellerNet(claimed.price);
+  const rate = await feeRateOf(claimed.sellerId);
+  const net = sellerNet(claimed.price, rate);
   const seller = await creditUser(claimed.sellerId, net, 0, {
     type: TX.MARKET_SALE,
     counterparty: null,
@@ -154,7 +163,7 @@ async function purchaseListing({ listingId, buyerId, io }) {
       buyerId,
       listingId: claimed.uniqueId,
       price: claimed.price,
-      fee: marketFee(claimed.price),
+      fee: marketFee(claimed.price, rate),
     },
   });
 
@@ -195,11 +204,12 @@ async function purchaseListing({ listingId, buyerId, io }) {
 
   await recordMarketFee({
     price: claimed.price,
+    rate,
     buyerId,
     meta: { itemName: claimed.itemName, listingId: claimed.uniqueId },
   });
 
-  await logSale({ listing: claimed, buyerId, price: claimed.price });
+  await logSale({ listing: claimed, buyerId, price: claimed.price, rate });
   if (io) {
     io.to(buyerId.toString()).emit("userDataUpdated", {
       walletBalance: updatedBuyer.walletBalance,
@@ -254,7 +264,8 @@ async function fillOrderWithItem({ pending, order, io }) {
   await fandom.touch(claimedOrder.userId, pending.item);
   await badges.touchCollections(claimedOrder.userId, pending.item);
 
-  const net = sellerNet(price);
+  const rate = await feeRateOf(pending.sellerId);
+  const net = sellerNet(price, rate);
   const seller = await creditUser(pending.sellerId, net, 0, {
     type: TX.MARKET_SALE,
     counterparty: null,
@@ -264,7 +275,7 @@ async function fillOrderWithItem({ pending, order, io }) {
       buyerId: claimedOrder.userId,
       listingId: pending.uniqueId,
       price,
-      fee: marketFee(price),
+      fee: marketFee(price, rate),
       viaOrder: true,
     },
   });
@@ -303,6 +314,7 @@ async function fillOrderWithItem({ pending, order, io }) {
   });
   await recordMarketFee({
     price,
+    rate,
     buyerId: claimedOrder.userId,
     meta: { itemName: pending.itemName, orderId: String(order._id), viaOrder: true },
   });
@@ -311,7 +323,7 @@ async function fillOrderWithItem({ pending, order, io }) {
     await BuyOrder.updateOne({ _id: order._id, status: "open" }, { $set: { status: "filled" } });
   }
 
-  await logSale({ listing: pending, buyerId: claimedOrder.userId, price, viaOrder: true });
+  await logSale({ listing: pending, buyerId: claimedOrder.userId, price, rate, viaOrder: true });
 
   if (io) {
     io.to(claimedOrder.userId.toString()).emit("newNotification", {
@@ -327,7 +339,7 @@ async function fillOrderWithItem({ pending, order, io }) {
     io,
   });
 
-  return { ok: true, price, order: claimedOrder };
+  return { ok: true, price, net, order: claimedOrder };
 }
 
 // the best resting bid that a listing at `price` would cross (highest, then oldest)
@@ -348,4 +360,5 @@ module.exports = {
   purchaseListing,
   fillOrderWithItem,
   findMatchingOrder,
+  feeRateOf,
 };

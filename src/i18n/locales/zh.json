@@ -453,18 +453,9 @@
     "queuedClickToCancel": "排队中（点击取消）"
   },
   "daisu": {
-    "activeBonuses": "你有生效中的奖励",
     "back": "回到 Daisu",
     "bonusBubble": "{{game}} 奖励，{{clock}}",
-    "bonusExpired": "{{game}} 奖励已过期",
     "bonusHurry": "趁没过期快去玩",
-    "bonusNewOne": "从罐子里拿一次就有新的",
-    "bonusPaysAll": "由奖励支付：",
-    "bonusPaysFirst": "优先支付",
-    "bonusSpentFirst": "先于钱包使用",
-    "bonusSplit": "奖励 {{bonus}}，钱包 {{wallet}}",
-    "bonusTitle": "Daisu 的奖励",
-    "bonusUsedOn": "优先用于你的 {{game}} 下注",
     "bubbleGift": "礼物",
     "clickHint": "点击罐子拿走里面的东西",
     "close": "关闭",
@@ -480,15 +471,11 @@
     "keeps": "看管罐子",
     "loading": "...",
     "missionsDone": "已完成 {{done}}/{{total}} 个任务",
-    "nextPick": "下一个：{{game}}，再拿 {{amount}} 后切换",
     "ofFull": "/ {{full}}",
     "open": "打开 Daisu",
     "pending": "{{amount}} 正在进你的钱包",
-    "pickLine": "每次拿取额外 {{share}}% 会加到 {{game}}",
-    "pickTitle": "Daisu 的推荐",
     "play": "去玩",
     "roomTitle": "Daisu 的房间",
-    "tabMissions": "任务",
     "visit": "去 Daisu 的房间",
     "lines": {
       "hello": {
@@ -577,10 +564,6 @@
         "0": "我塞了 {{credit}} 给 {{game}}。有本事就赢成真正的 K₽。",
         "1": "多给 {{credit}}，仅限 {{game}}，8 分钟后就没了。不许争。",
         "2": "这是给你玩 {{game}} 的额外余额。"
-      },
-      "pickChanged": {
-        "0": "整整一罐。新游戏：{{game}}。去吧，我看着呢。",
-        "1": "你清空了一罐。额外的现在放到 {{game}} 去了。跟上。"
       },
       "credit": {
         "0": "{{game}} 上的 {{credit}} 还没用？怕了？",
@@ -926,6 +909,12 @@
       "unlocked": "成就解锁"
     },
     "help": {
+      "eyebrow": "帮助 · {{mission}}",
+      "showMe": "带我看看",
+      "stop": "停止帮助",
+      "affiliates": {
+        "line": "这是你的推广页。在这里选定邀请码，然后分享链接：每个用它加入的人都会给你带来 K₽。"
+      },
       "battle": {
         "line": "在下面选好箱子，再按这个按钮开始对战。大家开同样的箱子，总价值最高的人拿走全部。"
       },
@@ -946,7 +935,6 @@
         "line": "每个箱子都有收藏册。打开一个，看看你有什么、还缺什么。",
         "wait": "等你打开一个"
       },
-      "eyebrow": "帮助 · {{mission}}",
       "fans": {
         "line": "这个标签页显示你拥有的每个角色，以及离成为它的头号粉丝还差多少。置顶你最接近的那个。"
       },
@@ -981,16 +969,36 @@
         "line": "把鼠标移到物品上，按它的出售按钮。马上就会变回 K₽，所以挑一个不会舍不得的。",
         "linePhone": "轻点一件物品，卖掉一件。马上就会变回 K₽，所以挑一个不会舍不得的。",
         "wait": "等你卖出"
-      },
-      "showMe": "带我看看",
-      "stop": "停止帮助"
+      }
     },
     "shop": {
       "after": "购买后余额",
-      "buy": "购买",
       "buyFor": "花 {{amount}} 购买",
       "failed": "购买失败，再试一次。",
+      "level": "{{n}} 级",
+      "needs": "需要",
+      "notNow": "先不了",
+      "price": "价格",
+      "short": "还差 {{amount}}",
+      "soon": "买下一件物品，就能知道接下来是什么。",
+      "tipBuy": "{{price}} · 等级 {{n}} · 点击购买",
+      "tipLevel": "需要等级 {{n}} · 你现在等级 {{level}}",
+      "tipShort": "{{price}} · 还差 {{amount}}",
+      "title": "Daisu 的商店",
+      "unlocked": "已解锁",
+      "yours": "已拥有",
       "items": {
+        "affiliateCard": {
+          "about": "开启推广页：选定你的邀请码，分享链接，当你邀请的人注册、达到 10 级以及下注时，你都能拿到 K₽。",
+          "getIt": "去 Daisu 的商店获取",
+          "kept": "因已设置邀请码而保留",
+          "lockedBody": "推广卡会给你一个邀请码。用它注册的每个人都会给你带来 K₽：注册时、到 10 级时，以及他们下注额的一部分。",
+          "lockedTitle": "推广已锁定",
+          "name": "推广卡",
+          "opened": "开张了。选个邀请码开始分享吧。要我告诉你在哪吗？",
+          "pitch": "你给我带客人，我分你一份。很简单的生意。",
+          "what": "获得你自己的邀请码，从你带来的玩家身上赚 K₽。"
+        },
         "chatPass": {
           "about": "让你在网站聊天里发送消息。只是阅读的话永远不需要通行证。",
           "getIt": "去拿通行证",
@@ -1012,6 +1020,20 @@
           "opened": "归你了。收藏册标签页现在打开了。要我带你看看吗？页数可不少。",
           "pitch": "为你的收藏准备的一整本书。看到它有多空的时候别哭。",
           "what": "打开收藏册标签页：你收集的每个箱子、还缺什么，以及快速卖掉重复物品的方法。"
+        },
+        "giftCharm": {
+          "about": "每日礼物的常驻加成，叠加在连续天数和 Discord 加成之上：更好的奖品出现的频率提高 10%。永不失效。",
+          "name": "礼物护符",
+          "opened": "已生效。你的下一个每日礼物已经向你倾斜了。想看看吗？",
+          "pitch": "一个幸运护符。它真的有用，不像你的下注策略。",
+          "what": "你的每日礼物永久向更好的奖品多倾斜 10%。"
+        },
+        "merchantSeal": {
+          "about": "你在市场上的每笔出售只向庄家支付 2%，而不是 5%。对挂单和你成交的求购单都永久有效。",
+          "name": "商人印章",
+          "opened": "盖章了。从现在起市场只抽你销售额的 2%。去卖点什么吗？",
+          "pitch": "付我一次，以后永远少付我。我讨厌这居然是笔好买卖。",
+          "what": "你在市场的出售手续费永久从 5% 降到 2%。"
         },
         "predictionPass": {
           "about": "打开预测：购买关于未来事件的份额，价格朝你有利的方向变动时卖出。",
@@ -1035,18 +1057,18 @@
           "pitch": "跟陌生人讨价还价用的正式文件。别被骗了。算了，被骗也行，挺好笑的。",
           "what": "向其他玩家购买，也能在市场上架你自己的物品。"
         }
-      },
-      "level": "{{n}} 级",
-      "locked": "未解锁",
-      "needs": "需要",
-      "notNow": "先不了",
-      "price": "价格",
-      "short": "还差 {{amount}}",
-      "subtitle": "能打开这里其他地方的东西。",
-      "tab": "商店",
-      "title": "Daisu 的商店",
-      "unlocked": "已解锁",
-      "yours": "已拥有"
+      }
+    },
+    "ticket": {
+      "yours": "你的奖励",
+      "kicker": "{{game}} 奖励余额",
+      "forGame": "用于 {{game}} 下注",
+      "spends": "你在 {{game}} 的下注会先花这个，再花钱包",
+      "spentFirst": "优先使用",
+      "source": "每次从罐子里拿钱，我都会多给 {{share}}%，作为某个游戏的奖励。",
+      "none": "现在没有奖励。从罐子里拿钱，我会多给 {{share}}% 用于 {{game}} 下注。",
+      "betAll": "本次下注：奖励出 {{bonus}}，钱包不出",
+      "betSplit": "本次下注：奖励出 {{bonus}}，钱包出 {{wallet}}"
     }
   },
   "dice": {
@@ -1251,6 +1273,7 @@
     "betterPrizesOnceLinked": "绑定后获得更高的好奖品概率",
     "bonus": "奖励",
     "chanceOf": "{{chance}}% 概率",
+    "charm": "Daisu 的礼物护符",
     "chooseACollection": "选择一个系列",
     "couldNotLoadYour": "无法加载你的每日礼物。",
     "couldNotOpenYour": "无法打开你的礼物",

@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
-const { isAuthenticated } = require("../middleware/authMiddleware");
+const { isAuthenticated, maybeAuthenticated } = require("../middleware/authMiddleware");
 
 const User = require("../models/User");
 const { copiesFor } = require("../utils/inventoryCounts");
@@ -15,6 +15,7 @@ const { sellValue, marketFee, sellerNet, MARKET_FEE_RATE } = require("../utils/i
 const market = require("../utils/market");
 const beta = require("../utils/beta");
 const shop = require("../utils/shop");
+const { SEAL_FEE_RATE } = require("../utils/shopCatalog");
 const fandom = require("../utils/fandom");
 const itemCatalog = require("../utils/itemCatalog");
 const { isRealMoneyMode } = require("../utils/mode");
@@ -210,7 +211,7 @@ module.exports = (io) => {
           if (!order) break;
           const filled = await market.fillOrderWithItem({ pending, order, io });
           if (filled.ok) {
-            return { sold: true, soldFor: filled.price, received: sellerNet(filled.price) };
+            return { sold: true, soldFor: filled.price, received: filled.net };
           }
           if (filled.reason === "seller gone") break;
         }
@@ -492,7 +493,7 @@ module.exports = (io) => {
   // ------------------------------------------------------------- item views
 
   // the price-history series + everything a seller needs to price an item
-  router.get("/item/:itemId/history", async (req, res) => {
+  router.get("/item/:itemId/history", maybeAuthenticated, async (req, res) => {
     try {
       const itemId = await resolveItemId(req.params.itemId);
       if (!itemId) return res.status(404).json({ message: "Item not found" });
@@ -549,7 +550,8 @@ module.exports = (io) => {
           median30d: prices30.length ? median(prices30) : null,
           volume7d: prices7.length,
           volume30d: prices30.length,
-          feeRate: MARKET_FEE_RATE,
+          // the fee this viewer would pay as a seller, which daisu's merchant seal lowers
+          feeRate: shop.holds(req.user, "merchantSeal") ? SEAL_FEE_RATE : MARKET_FEE_RATE,
         },
       });
     } catch (error) {

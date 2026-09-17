@@ -453,18 +453,9 @@
     "queuedClickToCancel": "Đang xếp hàng (bấm để huỷ)"
   },
   "daisu": {
-    "activeBonuses": "Bạn có phần thưởng đang hoạt động",
     "back": "Quay lại Daisu",
     "bonusBubble": "Thưởng {{game}}, {{clock}}",
-    "bonusExpired": "Thưởng {{game}} đã hết hạn",
     "bonusHurry": "Chơi trước khi hết hạn",
-    "bonusNewOne": "Lấy từ hũ để có thưởng mới",
-    "bonusPaysAll": "Trả bằng thưởng:",
-    "bonusPaysFirst": "trả trước",
-    "bonusSpentFirst": "dùng trước ví của bạn",
-    "bonusSplit": "{{bonus}} từ thưởng, {{wallet}} từ ví",
-    "bonusTitle": "Thưởng của Daisu",
-    "bonusUsedOn": "Dùng trước cho cược {{game}} của bạn",
     "bubbleGift": "Quà",
     "clickHint": "Bấm vào hũ để lấy phần bên trong",
     "close": "Đóng",
@@ -480,15 +471,11 @@
     "keeps": "giữ hũ",
     "loading": "...",
     "missionsDone": "Hoàn thành {{done}}/{{total}} nhiệm vụ",
-    "nextPick": "Tiếp theo: {{game}}, sau {{amount}} nữa",
     "ofFull": "trên {{full}}",
     "open": "Mở Daisu",
     "pending": "{{amount}} đang về ví của bạn",
-    "pickLine": "Thêm {{share}}% mỗi lần lấy sẽ vào {{game}}",
-    "pickTitle": "Daisu chọn",
     "play": "Chơi",
     "roomTitle": "Phòng của Daisu",
-    "tabMissions": "Nhiệm vụ",
     "visit": "Ghé phòng của Daisu",
     "lines": {
       "hello": {
@@ -577,10 +564,6 @@
         "0": "Tôi bỏ thêm {{credit}} cho {{game}}. Thắng lại thành K₽ thật đi, nếu làm được.",
         "1": "Thêm {{credit}}, chỉ ở {{game}}, và biến mất sau 8 phút. Không cãi.",
         "2": "Đây là số dư thêm để chơi {{game}}."
-      },
-      "pickChanged": {
-        "0": "Nguyên một hũ. Trò mới: {{game}}. Đi đi, tôi đang xem.",
-        "1": "Bạn vét sạch một hũ rồi. Phần thêm giờ chuyển sang {{game}}. Theo kịp nhé."
       },
       "credit": {
         "0": "Vẫn chưa dùng {{credit}} ở {{game}} à? Sợ hả?",
@@ -926,6 +909,12 @@
       "unlocked": "Mở khóa thành tích"
     },
     "help": {
+      "eyebrow": "Trợ giúp · {{mission}}",
+      "showMe": "Xem cách làm",
+      "stop": "Dừng trợ giúp",
+      "affiliates": {
+        "line": "Đây là trang liên kết của bạn. Chọn mã mời ở đây rồi chia sẻ liên kết: ai tham gia bằng mã đó đều mang K₽ về cho bạn."
+      },
       "battle": {
         "line": "Chọn hòm ở bên dưới, rồi nút này bắt đầu trận đấu. Ai cũng mở cùng các hòm và tổng giá trị cao nhất lấy hết."
       },
@@ -946,7 +935,6 @@
         "line": "Mỗi hòm có một bộ sưu tập. Mở một bộ để xem bạn có gì và còn thiếu gì.",
         "wait": "Đang chờ bạn mở một bộ"
       },
-      "eyebrow": "Trợ giúp · {{mission}}",
       "fans": {
         "line": "Tab này cho thấy mọi nhân vật bạn sở hữu và bạn còn cách Fan Số Một bao xa. Ghim nhân vật bạn gần nhất."
       },
@@ -981,16 +969,36 @@
         "line": "Rê chuột lên một vật phẩm và bấm nút bán của nó. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "linePhone": "Chạm vào một vật phẩm và bán một bản. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "wait": "Đang chờ bạn bán"
-      },
-      "showMe": "Xem cách làm",
-      "stop": "Dừng trợ giúp"
+      }
     },
     "shop": {
       "after": "Số dư sau khi mua",
-      "buy": "Mua",
       "buyFor": "Mua với {{amount}}",
       "failed": "Không mua được. Thử lại nhé.",
+      "level": "Cấp {{n}}",
+      "needs": "Cần",
+      "notNow": "Để sau",
+      "price": "Giá",
+      "short": "Thiếu {{amount}}",
+      "soon": "Mua một món để biết món tiếp theo là gì.",
+      "tipBuy": "{{price}} · cấp {{n}} · bấm để mua",
+      "tipLevel": "Cần cấp {{n}} · bạn đang cấp {{level}}",
+      "tipShort": "{{price}} · còn thiếu {{amount}}",
+      "title": "Cửa hàng của Daisu",
+      "unlocked": "Đã mở khóa",
+      "yours": "Của bạn",
       "items": {
+        "affiliateCard": {
+          "about": "Mở tab Liên kết: chọn mã mời, chia sẻ liên kết và nhận K₽ khi người bạn mời đăng ký, đạt cấp 10 và đặt cược.",
+          "getIt": "Lấy ở cửa hàng của Daisu",
+          "kept": "giữ lại nhờ mã mời của bạn",
+          "lockedBody": "Thẻ Liên Kết cho bạn một mã mời. Ai đăng ký bằng mã đó đều mang K₽ về cho bạn: khi đăng ký, khi đạt cấp 10, và một phần số tiền họ cược.",
+          "lockedTitle": "Liên kết đang bị khóa",
+          "name": "Thẻ Liên Kết",
+          "opened": "Bạn vào nghề rồi đấy. Chọn một mã và bắt đầu chia sẻ. Muốn tôi chỉ chỗ không?",
+          "pitch": "Bạn mang khách đến, tôi chia phần cho bạn. Làm ăn đơn giản.",
+          "what": "Nhận mã mời của riêng bạn và kiếm K₽ từ những người chơi bạn mời về."
+        },
         "chatPass": {
           "about": "Cho phép bạn gửi tin nhắn trong khung chat của trang. Chỉ đọc thì không bao giờ cần vé.",
           "getIt": "Lấy vé",
@@ -1012,6 +1020,20 @@
           "opened": "Của bạn rồi. Tab Bộ sưu tập đã mở. Muốn tôi dẫn bạn đi xem không? Nhiều trang lắm đấy.",
           "pitch": "Cả một cuốn sổ cho bộ sưu tập của bạn. Cố đừng khóc khi thấy nó trống thế nào.",
           "what": "Mở tab Bộ sưu tập: mọi hòm bạn sưu tầm, những gì còn thiếu và cách bán đồ trùng thật nhanh."
+        },
+        "giftCharm": {
+          "about": "Một mức tăng vĩnh viễn cho quà hằng ngày, cộng thêm vào chuỗi ngày và mức tăng Discord: phần thưởng tốt xuất hiện thường hơn 10%. Không bao giờ hết.",
+          "name": "Bùa Quà Tặng",
+          "opened": "Đã bật. Quà hằng ngày tiếp theo đã nghiêng về phía bạn. Muốn xem không?",
+          "pitch": "Một lá bùa may mắn. Nó có tác dụng, không như chiến thuật cược của bạn.",
+          "what": "Quà hằng ngày của bạn nghiêng thêm 10% về phía phần thưởng tốt hơn, mãi mãi."
+        },
+        "merchantSeal": {
+          "about": "Mỗi lần bạn bán trên chợ chỉ trả nhà cái 2% thay vì 5%. Áp dụng cho cả tin đăng bán và lệnh mua mà bạn khớp, mãi mãi.",
+          "name": "Ấn Thương Nhân",
+          "opened": "Đã đóng ấn. Từ giờ chợ chỉ lấy 2% doanh số của bạn. Đi bán gì đó chứ?",
+          "pitch": "Trả tôi một lần để trả tôi ít hơn mãi mãi. Tôi ghét việc đây là một món hời.",
+          "what": "Bán hàng trên chợ chỉ mất phí 2% thay vì 5%, mãi mãi."
         },
         "predictionPass": {
           "about": "Mở mục dự đoán: mua cổ phần về những gì sắp xảy ra và bán khi giá chuyển động có lợi cho bạn.",
@@ -1035,18 +1057,18 @@
           "pitch": "Giấy tờ chính thức để bạn mặc cả với người lạ. Đừng để bị lừa. À mà cứ bị lừa đi, buồn cười lắm.",
           "what": "Mua từ người chơi khác và đăng bán vật phẩm của bạn ở chợ."
         }
-      },
-      "level": "Cấp {{n}}",
-      "locked": "Đã khóa",
-      "needs": "Cần",
-      "notNow": "Để sau",
-      "price": "Giá",
-      "short": "Thiếu {{amount}}",
-      "subtitle": "Những thứ mở ra phần còn lại của nơi này.",
-      "tab": "Cửa hàng",
-      "title": "Cửa hàng của Daisu",
-      "unlocked": "Đã mở khóa",
-      "yours": "Của bạn"
+      }
+    },
+    "ticket": {
+      "yours": "Thưởng của bạn",
+      "kicker": "Số dư thưởng {{game}}",
+      "forGame": "để cược ở {{game}}",
+      "spends": "Cược ở {{game}} sẽ dùng khoản này trước ví của bạn",
+      "spentFirst": "dùng trước",
+      "source": "Mỗi lần bạn lấy từ hũ, tôi thêm {{share}}% làm thưởng cho một trò chơi.",
+      "none": "Hiện chưa có thưởng. Lấy từ hũ và tôi thêm {{share}}% để cược ở {{game}}.",
+      "betAll": "Lượt cược này: {{bonus}} từ thưởng, không lấy từ ví",
+      "betSplit": "Lượt cược này: {{bonus}} từ thưởng, {{wallet}} từ ví"
     }
   },
   "dice": {
@@ -1251,6 +1273,7 @@
     "betterPrizesOnceLinked": "co hoi trung phan thuong tot hon sau khi lien ket",
     "bonus": "thuong",
     "chanceOf": "{{chance}}% co hoi",
+    "charm": "Bùa quà tặng của Daisu",
     "chooseACollection": "Chọn một bộ sưu tập",
     "couldNotLoadYour": "Không tải được quà hằng ngày của bạn.",
     "couldNotOpenYour": "Không mở được quà của bạn",

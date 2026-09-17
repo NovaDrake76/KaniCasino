@@ -4,7 +4,7 @@ const ChatMessage = require("../models/ChatMessage");
 const Marketplace = require("../models/Marketplace");
 const PredictionTrade = require("../models/PredictionTrade");
 const beta = require("./beta");
-const { ITEMS, itemOf } = require("./shopCatalog");
+const { ITEMS, itemOf, REVEAL_AHEAD } = require("./shopCatalog");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("./economy");
 const { getIo } = require("./realtime");
 
@@ -18,6 +18,10 @@ const EVIDENCE = {
     !!(await Transaction.exists({ userId: user._id, type: { $in: [TX.MARKET_BUY, TX.MARKET_SALE, TX.MARKET_ORDER] } })) ||
     !!(await Marketplace.exists({ sellerId: user._id })),
   chatPass: async (user) => !!(await ChatMessage.exists({ userId: user._id })),
+  // a code already set is an affiliate already at work; the charm and the seal are new perks, so nobody held them before
+  affiliateCard: async (user) => !!user.referralCode,
+  giftCharm: async () => false,
+  merchantSeal: async () => false,
   predictionPass: async (user) => !!(await PredictionTrade.exists({ userId: user._id })),
 };
 
@@ -56,22 +60,36 @@ async function lockFor(user, key) {
   return { message: "That needs an item from Daisu's shop", reason: "locked", unlock: key };
 }
 
+// what the shelf shows: everything held, and the next few items in order. the rest are only counted, so buying is how the player finds out what comes next
+const revealedFor = (held) => {
+  const keys = keysOf(held);
+  let ahead = 0;
+  return ITEMS.filter((item) => keys.includes(item.key) || ++ahead <= REVEAL_AHEAD);
+};
+
 async function viewFor(user) {
   const held = await heldBy(user);
+  const shown = revealedFor(held);
   return {
-    items: ITEMS.map((item) => {
+    items: shown.map((item) => {
       const mine = held.find((u) => u.key === item.key);
       return { ...item, owned: !!mine, via: mine ? mine.via : null };
     }),
+    hidden: ITEMS.length - shown.length,
     walletBalance: user.walletBalance,
     level: user.level || 0,
   };
 }
 
+// a perk checked on a hot path, like a sale's fee: no history is read, because a perk is only ever bought
+const holds = (user, key) => !!user && beta.has(user, "daisu") && keysOf(user.unlocks).includes(key);
+
 async function buy(user, key) {
   const item = itemOf(key);
   if (!item) return { code: 404, body: { message: "That is not in the shop" } };
   const held = await heldBy(user);
+  // an item still off the shelf cannot be bought by guessing its name
+  if (!revealedFor(held).some((shown) => shown.key === key)) return { code: 404, body: { message: "That is not in the shop" } };
   if (held.some((u) => u.key === key)) {
     return { code: 200, body: { bought: false, alreadyOwned: true, key, unlocks: keysOf(held), shop: await viewFor(user) } };
   }
@@ -116,4 +134,4 @@ async function buy(user, key) {
   };
 }
 
-module.exports = { unlocksOf, lockFor, viewFor, buy };
+module.exports = { unlocksOf, lockFor, holds, viewFor, buy };

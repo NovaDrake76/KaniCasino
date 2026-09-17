@@ -453,18 +453,9 @@
     "queuedClickToCancel": "Ditunggu (klik buat batalin)"
   },
   "daisu": {
-    "activeBonuses": "Kamu punya bonus aktif",
     "back": "Kembali ke Daisu",
     "bonusBubble": "Bonus {{game}}, {{clock}}",
-    "bonusExpired": "Bonus {{game}} kedaluwarsa",
     "bonusHurry": "Main sebelum habis",
-    "bonusNewOne": "Ambil dari toples untuk yang baru",
-    "bonusPaysAll": "Dibayar dengan bonus:",
-    "bonusPaysFirst": "bayar duluan",
-    "bonusSpentFirst": "dipakai sebelum dompetmu",
-    "bonusSplit": "{{bonus}} dari bonus, {{wallet}} dari dompet",
-    "bonusTitle": "Bonus dari Daisu",
-    "bonusUsedOn": "Dipakai duluan untuk taruhan {{game}}",
     "bubbleGift": "Hadiah",
     "clickHint": "Klik toples untuk mengambil isinya",
     "close": "Tutup",
@@ -480,15 +471,11 @@
     "keeps": "penjaga toples",
     "loading": "...",
     "missionsDone": "{{done}} dari {{total}} misi selesai",
-    "nextPick": "Berikutnya: {{game}}, setelah {{amount}} lagi",
     "ofFull": "dari {{full}}",
     "open": "Buka Daisu",
     "pending": "{{amount}} sedang menuju dompetmu",
-    "pickLine": "Tambahan {{share}}% dari setiap pengambilan masuk ke {{game}}",
-    "pickTitle": "Pilihan Daisu",
     "play": "Main",
     "roomTitle": "Kamar Daisu",
-    "tabMissions": "Misi",
     "visit": "Kunjungi kamar Daisu",
     "lines": {
       "hello": {
@@ -577,10 +564,6 @@
         "0": "Kuselipkan {{credit}} untuk {{game}}. Menangkan kembali sebagai K₽ asli, kalau bisa.",
         "1": "Tambahan {{credit}}, hanya di {{game}}, dan hilang dalam 8 menit. Jangan membantah.",
         "2": "Ini saldo tambahan untuk main {{game}}."
-      },
-      "pickChanged": {
-        "0": "Satu toples penuh. Game baru: {{game}}. Ayo, aku mengawasi.",
-        "1": "Kamu mengosongkan satu. Tambahanmu sekarang pindah ke {{game}}. Coba ikuti."
       },
       "credit": {
         "0": "Masih belum pakai {{credit}} di {{game}}? Takut?",
@@ -926,6 +909,12 @@
       "unlocked": "Pencapaian terbuka"
     },
     "help": {
+      "eyebrow": "Bantuan · {{mission}}",
+      "showMe": "Tunjukkan",
+      "stop": "Berhenti membantu",
+      "affiliates": {
+        "line": "Ini halaman afiliasimu. Pilih kode undanganmu di sini, lalu bagikan tautannya: setiap orang yang bergabung dengannya memberimu K₽."
+      },
       "battle": {
         "line": "Pilih kotak di bawah, lalu tombol ini memulai adu gacor. Semua orang membuka kotak yang sama dan total terbaik membawa pulang semuanya."
       },
@@ -946,7 +935,6 @@
         "line": "Setiap kotak punya koleksi. Buka satu untuk melihat apa yang kamu punya dan apa yang masih kurang.",
         "wait": "Menunggu kamu membuka satu"
       },
-      "eyebrow": "Bantuan · {{mission}}",
       "fans": {
         "line": "Tab ini menunjukkan setiap karakter yang kamu punya dan seberapa jauh kamu dari jadi Top Fan-nya. Sematkan yang paling dekat."
       },
@@ -981,16 +969,36 @@
         "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "wait": "Menunggu penjualan"
-      },
-      "showMe": "Tunjukkan",
-      "stop": "Berhenti membantu"
+      }
     },
     "shop": {
       "after": "Saldomu setelahnya",
-      "buy": "Beli",
       "buyFor": "Beli seharga {{amount}}",
       "failed": "Gagal membeli. Coba lagi.",
+      "level": "Level {{n}}",
+      "needs": "Butuh",
+      "notNow": "Nanti saja",
+      "price": "Harga",
+      "short": "Kurang {{amount}}",
+      "soon": "Beli satu item untuk tahu apa berikutnya.",
+      "tipBuy": "{{price}} · level {{n}} · klik untuk beli",
+      "tipLevel": "Butuh level {{n}} · kamu level {{level}}",
+      "tipShort": "{{price}} · kurang {{amount}}",
+      "title": "Toko Daisu",
+      "unlocked": "Terbuka",
+      "yours": "Milikmu",
       "items": {
+        "affiliateCard": {
+          "about": "Membuka tab Afiliasi: pilih kode undanganmu, bagikan tautanmu, dan raih K₽ saat orang yang kamu undang mendaftar, mencapai level 10, dan bertaruh.",
+          "getIt": "Dapatkan di toko Daisu",
+          "kept": "dipertahankan dari kode undanganmu",
+          "lockedBody": "Kartu Afiliasi memberimu kode undangan. Setiap orang yang mendaftar dengannya memberimu K₽: saat mendaftar, di level 10, dan sebagian dari taruhannya.",
+          "lockedTitle": "Afiliasi terkunci",
+          "name": "Kartu Afiliasi",
+          "opened": "Kamu resmi berbisnis. Pilih kode dan mulai bagikan. Mau kutunjukkan tempatnya?",
+          "pitch": "Kamu bawakan aku pelanggan, aku beri kamu bagian. Bisnis sederhana.",
+          "what": "Dapatkan kode undanganmu sendiri dan raih K₽ dari pemain yang kamu ajak."
+        },
         "chatPass": {
           "about": "Membuatmu bisa mengirim pesan di obrolan situs. Untuk membaca tidak pernah perlu pass.",
           "getIt": "Dapatkan pass-nya",
@@ -1012,6 +1020,20 @@
           "opened": "Sudah milikmu. Tab Koleksi sekarang terbuka. Mau kutunjukkan isinya? Halamannya banyak.",
           "pitch": "Satu buku utuh untuk koleksimu. Jangan menangis waktu lihat betapa kosongnya.",
           "what": "Membuka tab Koleksi: setiap kotak yang kamu koleksi, apa yang kurang, dan cara cepat menjual duplikat."
+        },
+        "giftCharm": {
+          "about": "Bonus tetap untuk hadiah harian, di atas streak dan bonus Discord-mu: hadiah yang lebih bagus muncul 10% lebih sering. Tidak pernah habis.",
+          "name": "Jimat Hadiah",
+          "opened": "Sudah aktif. Hadiah harianmu berikutnya sudah condong ke arahmu. Mau lihat?",
+          "pitch": "Jimat keberuntungan. Yang ini berfungsi, tidak seperti strategi taruhanmu.",
+          "what": "Hadiah harianmu condong 10% lebih jauh ke hadiah yang lebih bagus, selamanya."
+        },
+        "merchantSeal": {
+          "about": "Setiap penjualanmu di pasar membayar 2% ke bandar, bukan 5%. Berlaku untuk listing dan untuk order beli yang kamu penuhi, selamanya.",
+          "name": "Segel Pedagang",
+          "opened": "Tersegel. Mulai sekarang pasar hanya mengambil 2% dari penjualanmu. Mau jual sesuatu?",
+          "pitch": "Bayar aku sekali supaya kamu membayarku lebih sedikit selamanya. Aku benci ini tawaran yang bagus.",
+          "what": "Penjualanmu di pasar membayar biaya 2%, bukan 5%, selamanya."
         },
         "predictionPass": {
           "about": "Membuka prediksi: beli saham tentang apa yang akan terjadi, lalu jual saat harganya bergerak menguntungkanmu.",
@@ -1035,18 +1057,18 @@
           "pitch": "Dokumen resmi supaya kamu bisa tawar-menawar dengan orang asing. Jangan sampai ditipu. Eh, ditipu juga boleh, lucu.",
           "what": "Beli dari pemain lain dan pasang barangmu sendiri di pasar."
         }
-      },
-      "level": "Level {{n}}",
-      "locked": "Terkunci",
-      "needs": "Butuh",
-      "notNow": "Nanti saja",
-      "price": "Harga",
-      "short": "Kurang {{amount}}",
-      "subtitle": "Barang-barang yang membuka sisa tempat ini.",
-      "tab": "Toko",
-      "title": "Toko Daisu",
-      "unlocked": "Terbuka",
-      "yours": "Milikmu"
+      }
+    },
+    "ticket": {
+      "yours": "Bonusmu",
+      "kicker": "Saldo bonus {{game}}",
+      "forGame": "untuk taruhan di {{game}}",
+      "spends": "Taruhanmu di {{game}} memakai ini sebelum dompetmu",
+      "spentFirst": "dipakai dulu",
+      "source": "Setiap kali kamu mengambil dari toples, aku tambahkan {{share}}% ekstra sebagai bonus untuk satu game.",
+      "none": "Belum ada bonus. Ambil dari toples dan aku tambahkan {{share}}% ekstra untuk taruhan di {{game}}.",
+      "betAll": "Taruhan ini: {{bonus}} dari bonusmu, tidak ada dari dompet",
+      "betSplit": "Taruhan ini: {{bonus}} dari bonusmu, {{wallet}} dari dompet"
     }
   },
   "dice": {
@@ -1251,6 +1273,7 @@
     "betterPrizesOnceLinked": "peluang hadiah bagus lebih besar setelah terhubung",
     "bonus": "bonus",
     "chanceOf": "peluang {{chance}}%",
+    "charm": "Jimat hadiah Daisu",
     "chooseACollection": "Pilih koleksi",
     "couldNotLoadYour": "Hadiah harianmu tidak dapat dimuat.",
     "couldNotOpenYour": "Tidak bisa membuka hadiah kamu",
