@@ -167,7 +167,17 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
     <>
       {potMode ? (
         <div className="flex items-center gap-2">
-          <MainButton text={i18n.t("bonus.claim")} onClick={claimFromPot} pulse={bonusAvailable} disabled={loadingBonus} />
+          <MainButton
+            onClick={claimFromPot}
+            pulse={bonusAvailable}
+            disabled={loadingBonus}
+            text={
+              <span className="flex items-center gap-2 whitespace-nowrap">
+                <img src="/images/daisu/bust.webp" alt="" className="-my-1 h-8 w-8 object-contain object-top" />
+                {i18n.t("bonus.claim")}
+              </span>
+            }
+          />
           {adOffered && (
             <MainButton
               onClick={beginAd}
