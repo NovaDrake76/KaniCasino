@@ -51,8 +51,8 @@ describe("daisu's shop", () => {
     const res = await shopOf(user);
 
     expect(res.status).toBe(200);
-    expect(res.body.items.map((i) => i.key)).toEqual(["collectionBook", "tradersLicense", "chatPass", "predictionPass"]);
-    expect(item(res.body, "chatPass")).toMatchObject({ price: 500, level: 5, owned: false, via: null });
+    expect(res.body.items.map((i) => i.key)).toEqual(["chatPass", "tradersLicense", "collectionBook", "predictionPass"]);
+    expect(item(res.body, "chatPass")).toMatchObject({ price: 1000, level: 5, owned: false, via: null });
     expect(res.body).toMatchObject({ walletBalance: 10000, level: 6 });
     expect((await shopOf(await makeUser({ betaFlags: [] }))).status).toBe(403);
   });
@@ -63,17 +63,17 @@ describe("daisu's shop", () => {
     const res = await buy(user, "tradersLicense");
 
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ bought: true, key: "tradersLicense", walletBalance: 7500, unlocks: ["tradersLicense"] });
+    expect(res.body).toMatchObject({ bought: true, key: "tradersLicense", walletBalance: 7000, unlocks: ["tradersLicense"] });
     expect(item(res.body.shop, "tradersLicense")).toMatchObject({ owned: true, via: "bought" });
     const rows = await Transaction.find({ userId: user._id, type: TX.SHOP_PURCHASE }).lean();
     expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({ direction: "debit", amount: 2500, balanceAfter: 7500, meta: { unlock: "tradersLicense" } });
+    expect(rows[0]).toMatchObject({ direction: "debit", amount: 3000, balanceAfter: 7000, meta: { unlock: "tradersLicense" } });
     expect(String(rows[0].counterparty)).toBe(String(MINT));
 
     const again = await buy(user, "tradersLicense");
 
     expect(again.body).toMatchObject({ bought: false, alreadyOwned: true });
-    expect((await User.findById(user._id).lean()).walletBalance).toBe(7500);
+    expect((await User.findById(user._id).lean()).walletBalance).toBe(7000);
   });
 
   it("charges once when several purchases of the same item land together", async () => {
@@ -83,7 +83,7 @@ describe("daisu's shop", () => {
 
     expect(results.filter((r) => r.body.bought)).toHaveLength(1);
     const fresh = await User.findById(user._id).lean();
-    expect(fresh.walletBalance).toBe(9500);
+    expect(fresh.walletBalance).toBe(9000);
     expect(fresh.unlocks.filter((u) => u.key === "chatPass")).toHaveLength(1);
     expect(await Transaction.countDocuments({ userId: user._id, type: TX.SHOP_PURCHASE })).toBe(1);
   });
