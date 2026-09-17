@@ -14,18 +14,24 @@ import {
   abandonAdWatch,
   AdRewardStatus,
 } from "../../services/rewards/AdRewardServices";
+import { claimPot } from "../../services/daisu/DaisuService";
+import { setPotStatus } from "../daisu/potStore";
+import { kp } from "../daisu/potMath";
+import { emitJarTaken } from "../daisu/tour/tourEvents";
 import i18n from "../../i18n";
 
 interface IBonus {
   bonusDate: string;
   userData: User;
+  // the pot in the corner is the bonus now: the button takes whatever is in her jar, straight to the wallet
+  potMode?: boolean;
 }
 
 // one button, three states: while the bonus is on cooldown it shows the countdown; when it
 // is due it becomes Claim Bonus; and if the player has a rewarded ad left, the cooldown
 // state instead offers the ad (+KP) alongside the countdown. the ad is always optional: when
 // the countdown reaches zero the bonus takes over and any un-watched ad offer just goes away.
-const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
+const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) => {
   const [bonusAvailable, setBonusAvailable] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
   const [loadingBonus, setLoadingBonus] = useState(false);
@@ -77,6 +83,21 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
       // bonus claim does not change how many ads are left, so nothing to refetch here
     } catch (error: any) {
       toast.error(`${error.response?.data?.message || i18n.t("nav.couldNotClaimThe")}!`, { theme: "dark" });
+    } finally {
+      setLoadingBonus(false);
+    }
+  };
+
+  const claimFromPot = async () => {
+    setLoadingBonus(true);
+    try {
+      const res = await claimPot();
+      setPotStatus(res.status);
+      toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
+      emitJarTaken();
+      toast.success(`+${kp(res.amount)}`, { theme: "dark" });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || i18n.t("daisu.couldNotClaim"), { theme: "dark" });
     } finally {
       setLoadingBonus(false);
     }
@@ -140,11 +161,27 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData }) => {
   };
 
   // the offer only stands in while the bonus is cooling down and an ad is left today
-  const adOffered = !bonusAvailable && !!adStatus && adStatus.enabled && adStatus.remainingToday > 0;
+  const adOffered = (potMode || !bonusAvailable) && !!adStatus && adStatus.enabled && adStatus.remainingToday > 0;
 
   return (
     <>
-      {bonusAvailable ? (
+      {potMode ? (
+        <div className="flex items-center gap-2">
+          <MainButton text={i18n.t("bonus.claim")} onClick={claimFromPot} pulse={bonusAvailable} disabled={loadingBonus} />
+          {adOffered && (
+            <MainButton
+              onClick={beginAd}
+              disabled={adBusy}
+              text={
+                <span className="flex items-center gap-2 whitespace-nowrap">
+                  <BiMoviePlay className="text-lg" />
+                  <span className="font-bold">+{adStatus?.amount}</span>
+                </span>
+              }
+            />
+          )}
+        </div>
+      ) : bonusAvailable ? (
         <MainButton text={i18n.t("bonus.claim")} onClick={claimUserBonus} pulse disabled={loadingBonus} />
       ) : adOffered ? (
         <MainButton

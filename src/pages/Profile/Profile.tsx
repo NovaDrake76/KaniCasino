@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { getUser, getInventory } from "../../services/users/UserServices";
-import { FiFilter } from 'react-icons/fi'
+import { FiFilter, FiLock } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
 import FriendButton from "./FriendButton";
 import Item from "../../components/Item";
@@ -17,6 +17,8 @@ import { resolveTab, Tab } from "./tabs";
 import PredictionsPanel from "./PredictionsPanel";
 import ItemCopiesModal from "./ItemCopiesModal";
 import EmailSettings from "./EmailSettings";
+import LockedPanel from "../../components/daisu/shop/LockedPanel";
+import { useLocked } from "../../components/daisu/shop/useLocked";
 import { User } from '../../components/Types'
 import i18n from "../../i18n";
 
@@ -57,6 +59,7 @@ const Profile = () => {
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
   const navigate = useNavigate();
+  const collectionsLocked = useLocked("collectionBook");
   // the url param may be a slug, so anything that speaks to the api by id waits for the
   // resolved one off the loaded profile
   const resolvedId = (user as any)?._id as string | undefined;
@@ -179,7 +182,7 @@ const Profile = () => {
     { key: "collections", label: i18n.t("profile.collections") },
     ...(isSameUser
       ? [
-          { key: "missions" as const, label: i18n.t("profile.missions") },
+          { key: "missions" as const, label: userData?.features?.daisu ? i18n.t("daisu.achievements.tab") : i18n.t("profile.missions") },
           { key: "affiliates" as const, label: i18n.t("profile.affiliates") },
           { key: "predictions" as const, label: i18n.t("predictions.myPositions") },
           { key: "history" as const, label: i18n.t("profile.balanceHistory") },
@@ -238,6 +241,7 @@ const Profile = () => {
                         active ? "text-white" : "text-[#84819a] hover:text-white"
                       }`}
                     >
+                      {t.key === "collections" && isSameUser && collectionsLocked && <FiLock className="mr-1.5 inline-block -translate-y-px text-xs" />}
                       {t.label}
                       {isNew && (
                         <span className="absolute -top-2 -right-2 flex items-center rounded-full bg-accent-gold px-1.5 py-0.5 text-[9px] font-extrabold uppercase leading-none text-black shadow animate-pulse">
@@ -267,7 +271,11 @@ const Profile = () => {
           ) : activeTab === "settings" ? (
             <EmailSettings />
           ) : activeTab === "collections" ? (
-            <CollectionsPanel userId={profileId as string} isOwner={isSameUser} />
+            isSameUser && collectionsLocked ? (
+              <LockedPanel unlock="collectionBook" />
+            ) : (
+              <CollectionsPanel userId={profileId as string} isOwner={isSameUser} />
+            )
           ) : (
           <>
           <div className="flex flex-col w-full items-end mr-[70px] gap-4 -mt-10">
@@ -307,7 +315,7 @@ const Profile = () => {
                 />
               ))
             ) : (
-              <h2>{i18n.t("profile.noItems")}</h2>
+              <h2 data-tour="inventory-empty">{i18n.t("profile.noItems")}</h2>
             )}
           </div>
           {inventory &&

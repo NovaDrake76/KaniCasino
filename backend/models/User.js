@@ -158,6 +158,39 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 1000, // sets the initial bonus amount to 1000
   },
+  // KP that only spends on the game it is keyed by; what it wins lands in the wallet
+  gameCredits: {
+    type: Object,
+    default: {},
+  },
+  // when each game's credit stops paying, keyed the same way; every take that adds to one pushes it out
+  gameCreditsExpireAt: {
+    type: Object,
+    default: {},
+  },
+  // which game the pot's tenth is riding on, and how much of a pot has been taken toward
+  // the next one; see utils/pot.js
+  potPickIndex: {
+    type: Number,
+    default: 0,
+  },
+  potCycleClaimed: {
+    type: Number,
+    default: 0,
+  },
+  // features a few accounts see before everyone does
+  betaFlags: [String],
+  // daisu's first-login tour: offered to accounts created after it shipped, then taken or skipped
+  onboarding: {
+    status: { type: String, enum: ["offered", "active", "skipped", "done"] },
+    step: String,
+    startedAt: Date,
+    endedAt: Date,
+  },
+  // daisu's shop: the features an account in her beta has opened, each bought or kept from its history
+  unlocks: [{ _id: false, key: String, via: String, at: Date }],
+  // when that history was read; it is read once, so a feature never comes or goes on its own afterwards
+  unlocksCheckedAt: Date,
   weeklyWinnings: {
     type: Number,
     default: 0,

@@ -40,7 +40,7 @@
     "comingSoonLine": "L'arcade ha appena aperto. Dicci su Discord cosa dovrebbe avere dopo.",
     "comingSoonTitle": "Altri giochi in arrivo",
     "halo": {
-      "adoptedNote": "Hai giocato questa prima di accedere: conta per la serie ma non paga KP.",
+      "adoptedNote": "Hai giocato questa prima di accedere: conta per la serie ma non paga K₽.",
       "attemptsLeft": "Tentativi rimasti: {{count}}",
       "attr": {
         "academy": "Accademia",
@@ -94,7 +94,7 @@
       "search": "Cerca una studentessa",
       "share": "Copia il risultato",
       "signIn": "Accedi",
-      "signInLine": "Accedi prima di giocare per tenere una serie e vincere fino a {{amount}} KP al giorno.",
+      "signInLine": "Accedi prima di giocare per tenere una serie e vincere fino a {{amount}} K₽ al giorno.",
       "solvedToday": "{{count}} Sensei hanno indovinato questa studentessa oggi",
       "solvedToday_one": "{{count}} Sensei ha indovinato questa studentessa oggi",
       "statsTitle": "Il tuo record",
@@ -217,6 +217,8 @@
     "coinflip_win": "Vincita a testa o croce",
     "crash_bet": "Puntata al crash",
     "crash_cashout": "Incasso al crash",
+    "game_credit": "Bonus di Daisu",
+    "game_credit_expired": "Bonus di Daisu scaduto",
     "item_sell": "Venduto al negozio",
     "market_buy": "Acquisto sul mercato",
     "market_order": "Ordine d'acquisto creato",
@@ -323,6 +325,7 @@
       "failed": "Non e stato inviato. Riprova.",
       "language": "Niente parolacce, per favore.",
       "level": "Sali di livello per poter scrivere.",
+      "locked": "Per parlare ti serve un Pass per la chat dal negozio di Daisu.",
       "muted": "Sei silenziato per qualche minuto.",
       "noLinks": "I link non sono ammessi in chat.",
       "off": "La chat e spenta al momento.",
@@ -337,7 +340,7 @@
     "report": "Segnala questo messaggio",
     "reported": "Segnalato. Grazie.",
     "rules": {
-      "begging": "Non chiedere KP o oggetti in elemosina.",
+      "begging": "Non chiedere K₽ o oggetti in elemosina.",
       "promo": "Niente link, codici referral o promozione di roba tua.",
       "respect": "Niente razzismo, molestie o insulti. Segnala invece di rispondere.",
       "spam": "Niente spam ne flood. Porta a un mute.",
@@ -448,6 +451,603 @@
     "placeBet": "Punta",
     "profitOnWin": "Profitto in caso di vincita",
     "queuedClickToCancel": "In coda (clicca per annullare)"
+  },
+  "daisu": {
+    "activeBonuses": "Hai dei bonus attivi",
+    "back": "Torna da Daisu",
+    "bonusBubble": "Bonus {{game}}, {{clock}}",
+    "bonusExpired": "Bonus {{game}} scaduto",
+    "bonusHurry": "Gioca prima che scada",
+    "bonusNewOne": "Prendi dal vaso per averne un altro",
+    "bonusPaysAll": "Pagato col bonus:",
+    "bonusPaysFirst": "paga per primo",
+    "bonusSpentFirst": "speso prima del portafoglio",
+    "bonusSplit": "{{bonus}} dal bonus, {{wallet}} dal portafoglio",
+    "bonusTitle": "Bonus di Daisu",
+    "bonusUsedOn": "Usato per primo sulle tue puntate a {{game}}",
+    "bubbleGift": "Regalo",
+    "clickHint": "Clicca sul vaso per prendere quello che c'è dentro",
+    "close": "Chiudi",
+    "collect": "Ritira",
+    "couldNotClaim": "Impossibile prendere dal vaso",
+    "empty": "Vuoto",
+    "full": "Pieno",
+    "fullBonus": "Bonus vaso pieno +{{bonus}}%",
+    "fullIn": "Pieno tra {{clock}}",
+    "giftOpen": "Aprilo",
+    "giftReady": "Daisu ha un regalo per te",
+    "jar": "Il vaso",
+    "keeps": "custodisce il vaso",
+    "loading": "...",
+    "missionsDone": "{{done}} missioni su {{total}} completate",
+    "nextPick": "Poi: {{game}}, dopo altri {{amount}}",
+    "ofFull": "di {{full}}",
+    "open": "Apri Daisu",
+    "pending": "{{amount}} in arrivo nel tuo portafoglio",
+    "pickLine": "Un {{share}}% in più di ogni prelievo va su {{game}}",
+    "pickTitle": "La scelta di Daisu",
+    "play": "Gioca",
+    "roomTitle": "La stanza di Daisu",
+    "tabMissions": "Missioni",
+    "visit": "Visita la stanza di Daisu",
+    "lines": {
+      "hello": {
+        "0": "Oh, sei tornato. Non esaltarti, il vaso si sta ancora riempiendo.",
+        "1": "Ce ne hai messo di tempo. Stavo per spenderlo io.",
+        "2": "Oh, ciao, Signor Giocatore. Già al verde?",
+        "3": "Di nuovo all in? lolol~",
+        "4": "All in, ogni 8 minuti.",
+        "5": "Che bello rivederti, Signor Giocatore.",
+        "6": "No, non sono tedesca.",
+        "7": "Queste orecchie da gatto? Accessori, scusa se ti deludo.",
+        "8": "Scusa, non esco con tipi al verde.",
+        "9": "Io? Lavoro part-time per mantenere mia sorella.",
+        "10": "Solo un'altra cassa, dai.",
+        "11": "Non è successo niente il 31 agosto.",
+        "12": "Dovresti salire a colpi di martingala.",
+        "13": "Il mio numero? Sto guardando dei reel ora, scusa.",
+        "14": "Il prossimo crash sarà a 430.2X.",
+        "15": "3 blackjack di fila? Mi prendi in giro?",
+        "16": "Uccidere non è giustificato.",
+        "17": "Se continui a giocare così, l'anno prossimo mi compro una macchina nuova.",
+        "18": "Ti ho mostrato il mio codice sorgente, rispondimi per favore.",
+        "19": "Quello al top 1 della classifica? No, non mi parla.",
+        "20": "Il mio compleanno? È il 7 luglio.",
+        "21": "La fortuna aiuta gli sciocchi.",
+        "22": "Tora! Tora! Tora!",
+        "23": "Attento alla palla nera che viaggia tra gli alberi di notte.",
+        "24": "È il D-Day.",
+        "25": "Le slot non sono truccate, sono sicura che riavrai i tuoi soldi.",
+        "26": "Brutale.",
+        "27": "Perché la Dogs Case non è nella lista delle più aperte?",
+        "28": "Il 90% dei giocatori dimentica di aprire il regalo del giorno.",
+        "29": "Momokinha do céu que brutal",
+        "30": "Watanawhat?",
+        "31": "Ho un Discord, sai? Dovresti entrare nel server.",
+        "32": "Come sarebbe che non si chiama più Twitter?",
+        "33": "Nipah? Piazziamo su B?",
+        "34": "Signor Giocatore, attento ai kiwi laser.",
+        "35": "Gli obiettivi segreti? Puoi guardare il codice sorgente.",
+        "36": "Eh? Dove sono i granchi?"
+      },
+      "full": {
+        "0": "È pieno. Allora? Prendilo prima che cambi idea.",
+        "1": "Guarda un po'. Pieno. E non hai fatto quasi niente.",
+        "2": "Il vaso è finalmente pieno. Prendilo.",
+        "3": "È ora di giocare ancora.",
+        "4": "Ecco la tua ricompensa da bravo giocatore."
+      },
+      "filling": {
+        "0": "Non riesci ad aspettare, eh? Ci sono {{amount}}. Debole.",
+        "1": "{{amount}} adesso, oppure aspetti {{clock}} per il bonus del vaso pieno, da persona adulta.",
+        "2": "Tocca il vaso se proprio devi. Ci sono {{amount}}. Poi non piangere.",
+        "3": "Se aspetti ancora un po', avrai un bel bonus.",
+        "4": "Wah Wah.",
+        "5": "Quindi sei uno di quelli frettolosi, eh?"
+      },
+      "empty": {
+        "0": "È VUOTO. L'hai appena preso. Impara a contare.",
+        "1": "Niente lì dentro. Clicchi per divertimento? ...Carino.",
+        "2": "Zero. Dammi un secondo, avido."
+      },
+      "failed": {
+        "0": "Uffa, mi è scivolato. Calma, è tutto ancora nel vaso. Clicca di nuovo.",
+        "1": "Questo non è passato. Non fare quella faccia, non si è perso niente. Riprova.",
+        "2": "Qualcosa è andato storto, aspetta.",
+        "3": "Hm... Sembra che ci sia un problema con il server. Chiedi aiuto su Discord."
+      },
+      "bonusExpiring": {
+        "0": "Ti ho dato un bonus su {{game}}, non ci giochi? Scade tra {{left}}.",
+        "1": "Dovresti giocare a {{game}}, ti ho dato un bel bonus."
+      },
+      "bonusExpired": {
+        "0": "Troppo lento. Mi sono ripresa il tuo bonus {{game}}. Magari la prossima volta, lumaca.",
+        "1": "Sparito. Quei {{credit}} su {{game}} ora sono miei. Chi dorme non piglia pesci."
+      },
+      "claimed": {
+        "0": "Ecco, {{amount}}. Non perderli tutti in un giro. Lo farai comunque.",
+        "1": "{{amount}}. Prego. Di' grazie.",
+        "2": "Va bene, {{amount}}. Ora vai a vincere qualcosa, per una volta.",
+        "3": "Tieni, vai a divertirti.",
+        "4": "Ecco il tuo sistema di pity.",
+        "5": "Tieni, è per andare all in più volte.",
+        "6": "È ora di aprire qualche altra cassa."
+      },
+      "claimedCredit": {
+        "0": "Ho messo {{credit}} per {{game}}. Rivincili come K₽ veri, se ci riesci.",
+        "1": "{{credit}} extra, solo su {{game}}, e sparisce tra 8 minuti. Niente discussioni.",
+        "2": "Ecco un po' di saldo extra per giocare a {{game}}."
+      },
+      "pickChanged": {
+        "0": "Un vaso intero. Gioco nuovo: {{game}}. Vai, ti guardo.",
+        "1": "Ne hai svuotato uno. Il tuo extra passa su {{game}} adesso. Cerca di stare al passo."
+      },
+      "credit": {
+        "0": "Non hai ancora usato i {{credit}} su {{game}}? Paura?",
+        "1": "{{credit}} fermi su {{game}} a non fare niente. Patetico. Vai."
+      },
+      "missionReady": {
+        "0": "Ne hai finita una davvero. Vieni a prendere la ricompensa prima che me ne dimentichi.",
+        "1": "Ricompensa pronta. Non farmela tenere tutto il giorno."
+      },
+      "missionDone": {
+        "0": "Va bene, {{amount}}. Come promesso. Non abituarti.",
+        "1": "{{amount}}. Visto? Mantengo la parola. Non come certa gente."
+      },
+      "broke": {
+        "0": "Già al verde? Il vaso è pieno tra {{clock}}. Siediti. Aspetta.",
+        "1": "Niente K₽ e niente vaso. Colpa tua in entrambi i casi. {{clock}}.",
+        "2": "Fammi indovinare, ti sentivi sicuro.",
+        "3": "Sei andato all in? lolol~"
+      },
+      "poke0": {
+        "0": "Cosa?",
+        "1": "Sì? Sono occupata.",
+        "2": "Ti serve qualcosa o ti piace solo punzecchiarmi?",
+        "3": "Il vaso è laggiù. Io non sono il vaso.",
+        "4": "Signor Giocatore, io non sono il vaso."
+      },
+      "poke1": {
+        "0": "Smettila.",
+        "1": "Hai giochi da giocare e punzecchi me. Carino.",
+        "2": "Continua e inizio a farti pagare.",
+        "3": "Ti diverte? ...Un po' anche me."
+      },
+      "poke2": {
+        "0": "Ok, hai vinto. Mi piaci. Un po'. Ora smettila.",
+        "1": "Non hai davvero niente di meglio da fare, eh? ...Va bene, resta.",
+        "2": "Punzecchiami ancora una volta e mi tengo il prossimo vaso.",
+        "3": "Sei strano. Ti tengo lo stesso."
+      },
+      "gift": {
+        "0": "Ti ho preso una cosa. Non renderla strana.",
+        "1": "Un regalo. Da me. Prego, ovviamente."
+      },
+      "room": {
+        "0": "Benvenuto nella mia stanza, Signor Giocatore.",
+        "1": "Benvenuto.",
+        "2": "Abbiamo molto da fare."
+      },
+      "helloRank1": {
+        "0": "Ti diverti a finire al verde ogni volta?",
+        "1": "Come fissarmi sul tuo profilo? Scusa, è solo per i VIP.",
+        "2": "Giochi d'azzardo nella vita reale? No? Grazie al cielo.",
+        "3": "I soldi dovrebbero salire, non scendere.",
+        "4": "Ricordati di fare le missioni, Signor Giocatore."
+      },
+      "helloRank2": {
+        "0": "Ti vedo spesso qui. Non vieni solo per me, vero?",
+        "1": "Non dirlo a nessuno. Il tuo prossimo regalo del giorno sarà speciale.",
+        "2": "Ciao, Signor Giocatore. Vuoi fare il bagno? O la cena? O forse... all in a blackjack?",
+        "3": "Signor Giocatore, sai schivare i proiettili?",
+        "4": "Come ho detto, non sono tedesca.",
+        "5": "Iwak."
+      },
+      "helloRank3": {
+        "0": "Aprire 100 casse insieme? Scusa, questo non posso offrirlo.",
+        "1": "Un oggetto per uscire con me? Sarebbero 40 miliardi di K₽.",
+        "2": "Niente top 1? Tranquillo, sarai sempre il mio top 1 dei perdenti.",
+        "3": "Voglio aprire qualche Dogs Case, mi presti un po' di K₽?",
+        "4": "Ciao, Signor Giocatore. Domani ho il giorno libero, quindi non piangere se non mi vedi, ok?",
+        "5": "Ciao, Signor Giocatore, sto cercando di prendere il badge top fan del cane burro, me ne venderesti qualcuno?",
+        "6": "Signor Giocatore, sei maggiorenne, vero?",
+        "7": "Mia sorella? Non può giocare, è una bambina.",
+        "8": "All in sul rosso.",
+        "9": "We rise."
+      },
+      "helloRank4": {
+        "0": "È bello vederti ogni giorno, Signor Giocatore.",
+        "1": "Sembra che tu sia finalmente ricco. Ne è valsa la pena?",
+        "2": "Dovrebbero mettere più cani nella Dogs Case.",
+        "3": "Vuoi fare una battaglia di casse con me? Magari dopo...",
+        "4": "No, non ho l'aureola.",
+        "5": "Signor Giocatore, ora sei di livello alto, ma vieni ancora a trovarmi. Grazie.",
+        "6": "Questo maledetto vaso sta diventando troppo pesante!",
+        "7": "Il vaso sta diventando pesante... Per caso stai farmando XP?"
+      },
+      "helloRank5": {
+        "0": "Io? Preferisco Hikari.",
+        "1": "Un sistema di pity? No, non lo implementerò.",
+        "2": "Posso far girare Bad Apple in questo riquadro di testo, vuoi vederlo?",
+        "3": "Sei un top fan? Quindi ti piacciono altre ragazze, eh...",
+        "4": "Mi piacerebbe tanto un cane burro.",
+        "5": "Grazie a te, posso finalmente pagarmi gli studi.",
+        "6": "Shu Shu Po Po~",
+        "7": "Anche tu mi piaci. Come cliente.",
+        "8": "Signor Giocatore, per caso non hai la ragazza?",
+        "9": "Un giorno diventerò un fumo.",
+        "10": "Rotoleranno teste se rompo questo vaso.",
+        "11": "Io? Sono monarchica.",
+        "12": "Questo è il tuo 100.000° clic. Complimenti.",
+        "13": "A questo punto dovresti andare sempre all in.",
+        "14": "Dovrebbero aggiungere più giochi, no?",
+        "15": "Siamo finalmente all'endgame.",
+        "16": "È la fine.",
+        "17": "Ricordati di me là fuori.",
+        "18": "Presto sarà tutto finito.",
+        "19": "Nihahaha?",
+        "20": "Sei il primo giocatore vincente che abbia mai conosciuto."
+      }
+    },
+    "tour": {
+      "bet": {
+        "blackjack": "Questa è la tua puntata per una mano. Avvicinati a 21 più del banco senza sforare. Chiedendo carta ne prendi un'altra; stando tieni quello che hai.",
+        "coinflip": "Questa è la tua puntata. Scegli testa o croce qui sotto ed entra nel prossimo lancio. Una vittoria paga 1,94x.",
+        "crash": "Questa è la tua puntata. Il moltiplicatore sale finché non crolla; incassa prima e vinci la puntata per il moltiplicatore. Aspetti troppo e sparisce.",
+        "dice": "Questa è la tua puntata: quello che rischi in un lancio. Il dado estrae un numero da 0 a 100; vinci se cade sul lato verde. Comincia piano, sei nuovo.",
+        "hilo": "Questa è la tua puntata. Indovina se la prossima carta è più alta o più bassa; ogni risposta giusta alza la vincita. Incassa quando vuoi.",
+        "mines": "Questa è la tua puntata. Sotto alcune caselle ci sono bombe; ogni casella sicura che scopri alza la vincita. Incassa prima di trovarne una.",
+        "plinko": "Questa è la tua puntata per una pallina. Rimbalza tra i chiodi e cade su un moltiplicatore. I bordi pagano di più e capitano di meno.",
+        "slots": "Questa è la tua puntata: quanto costa un giro. I pulsanti meno e più la dimezzano o la raddoppiano. Allinea simboli uguali per vincere."
+      },
+      "caseLine": "Quale ti piace di più? Scegli una cassa da aprire. A me piace la Dogs Case.",
+      "caseWait": "Aspetto che ne scegli una",
+      "continue": "Continua il giro",
+      "decline": "Me la cavo da solo",
+      "doneEven": "Pari? Noioso, ma sicuro. Ogni puntata ti ha comunque dato XP, e più alto è il tuo livello, più saldo ricevi dal mio vaso.",
+      "doneLose": "Hai perso? Capita a tutti. Ogni puntata ti ha comunque dato XP, e più alto è il tuo livello, più saldo ricevi dal mio vaso.",
+      "doneOut": "Ora vai. Puoi giocare liberamente o seguire le missioni.",
+      "doneTitle": "Giro finito",
+      "doneWin": "Hai vinto? Fortuna del principiante, ovvio. Ogni puntata ti ha dato anche XP, e più alto è il tuo livello, più saldo ricevi dal mio vaso.",
+      "drop": {
+        "1": "{{item}}, rarità {{rarity}}. Niente di speciale. Ora è nel tuo inventario, puoi tenerlo o venderlo.",
+        "2": "{{item}}, rarità {{rarity}}. Niente male per un primo tentativo. Ora è nel tuo inventario, puoi tenerlo o venderlo.",
+        "3": "{{item}}, rarità {{rarity}}, al primo colpo? Fortunato. Ora è nel tuo inventario, puoi tenerlo o venderlo.",
+        "4": "{{item}}, rarità {{rarity}}, alla tua prima cassa? ...Non sono invidiosa. Ora è nel tuo inventario, puoi tenerlo o venderlo.",
+        "5": "{{item}}. {{rarity}}. Alla tua PRIMA cassa. Sai da quanto tempo io... lascia stare. Ora è nel tuo inventario, puoi tenerlo o venderlo. Non azzardarti a venderlo."
+      },
+      "end": "Chiudi il giro",
+      "endAnyTime": "Puoi chiudere il giro a ogni passo.",
+      "games": {
+        "blackjack": "batti il banco",
+        "coinflip": "testa o croce",
+        "crash": "incassa in tempo",
+        "dice": "sopra o sotto",
+        "hilo": "più alta o più bassa",
+        "mines": "evita le bombe",
+        "plinko": "lascia cadere una pallina",
+        "slots": "gira e combina"
+      },
+      "gamesLine": "Aprire casse può diventare caro in fretta, e il mio vaso non basterà. I giochi servono a guadagnare più K₽, quindi scegline uno da giocare adesso.",
+      "gamesNote": "Ogni puntata ti dà XP, qualunque gioco scegli.",
+      "later": "Più tardi",
+      "next": "Avanti",
+      "openLine": "Bella scelta. Quel pulsante la apre. Premilo, voglio vedere cosa ti esce.",
+      "openMeLine": "Quella sono io, giù nell'angolo. Cliccami e mi apro.",
+      "openMeWait": "Aspetto che tu mi apra",
+      "openTooDear": "Buon gusto, portafoglio sbagliato. Quella costa più di quanto hai. Scegline una più economica.",
+      "openWait": "Aspetto l'apertura",
+      "pickAnother": "Scegli un'altra cassa",
+      "playLine": "Ecco il pulsante. Premilo quando sei pronto. Che vinci o perdi, voglio vederlo.",
+      "playWait": "Aspetto la tua giocata",
+      "playWatching": "Vai, ti guardo.",
+      "pokes": {
+        "0": "Clicca sul vaso, non su di me.",
+        "1": "Devi cliccare SUL vaso.",
+        "2": "Io non sono il vaso. Il vaso è nel quadrato giallo.",
+        "3": "Non vedi il quadrato? Ecco, prova adesso.",
+        "4": "Mi stai prendendo in giro?",
+        "5": "E io che cercavo di essere gentile... sembra che tu non meriti gentilezza.",
+        "6": "Ti sembra divertente?",
+        "7": "Potrei andarmene e non darti mai saldo per giocare.",
+        "8": "Il che sarebbe un problema per te.",
+        "9": "Quindi, per favore, clicca sul vaso.",
+        "10": "Per favore?",
+        "11": "Clicca sul vaso, stupido bastardo.",
+        "12": "...",
+        "13": "...?",
+        "14": "Smettila.",
+        "15": "Smettila di cliccarmi.",
+        "16": "...",
+        "17": "Lo so che sono molto cliccabile, ma...",
+        "18": "Ma per favore, clicca solo sul vaso.",
+        "19": "Prometto che non sparirò se clicchi sul vaso.",
+        "20": "Il vaso non si rompe, cliccalo.",
+        "21": "Perché la rendi così difficile?",
+        "22": "Per favore, clicca sul vaso.",
+        "23": "...",
+        "24": "Non vuoi giocare?",
+        "25": "Dai, i minigiochi sono più divertenti di così.",
+        "26": "Ti faccio vedere tutto. Appena clicchi sul vaso.",
+        "27": "...",
+        "28": "È un maledetto vaso che ti dà soldi, perché non lo clicchi??",
+        "29": "Vedi...",
+        "30": "Quando ero piccola, sognavo sempre di avere un vaso pieno di soldi.",
+        "31": "Finalmente ce l'ho. Ora voglio condividere questa felicità con tutti.",
+        "32": "Esaudirai il mio desiderio? Clicca sul vaso.",
+        "33": "...",
+        "34": "Cliccami se ti piace baciare gli uomini.",
+        "35": "Aspetta, davvero?"
+      },
+      "potLine": "Ti serviranno K₽ per giocare qui, quindi te ne do un po'. Dai, prendili. Clicca sul vaso.",
+      "potTaken": "Bene. Non preoccuparti, il vaso si riempie da solo. Tra circa 8 minuti sarà di nuovo pieno, quindi torna qui se ti serve altro saldo. Ora spendiamo un po' di K₽.",
+      "potWait": "Aspetto il tuo clic",
+      "rangeLine": "Ed è questa barra a decidere. Trascina la maniglia per cambiare il tuo intervallo vincente: più verde vince più spesso, ma ogni vincita paga meno. Il pulsante Roll Over inverte il lato che vince.",
+      "rollLine": "Eccola che va. Occhi sulla ruota.",
+      "rollWait": "Gira",
+      "showMissions": "Mostrami le missioni",
+      "start": "Fammi fare un giro",
+      "stepOf": "Passo {{n}} di 3",
+      "titleCase": "Una cassa",
+      "titleGame": "Un gioco",
+      "titlePot": "Il vaso",
+      "welcomeBackBody": "Mi chiamo Daisu. Sarò io a occuparmi del tuo bonus, quindi andiamo d'accordo. So che sai già giocare, ma... vuoi che ti mostri in giro?",
+      "welcomeBackTitle": "Ciao, {{name}}.",
+      "welcomeBody": "Piacere di conoscerti, {{name}}. Sembri perso, quindi ti faccio un'offerta: un giro veloce per imparare a giocare. Un minuto, forse due, se mi stai dietro.",
+      "welcomeTitle": "Oh? Una faccia nuova."
+    },
+    "roadmap": {
+      "chapter": "Capitolo {{n}}",
+      "chapterDone": "Capitolo {{n}} completato",
+      "chapterDoneLine": "Va bene. Non sei un caso perso, dopotutto. Ecco cosa voglio da te adesso.",
+      "chapters": {
+        "1": "Primi passi",
+        "2": "Ambientarsi",
+        "3": "Tornare",
+        "4": "Di casa",
+        "5": "Veterano"
+      },
+      "claim": "Ritira",
+      "claimed": "Ritirata",
+      "finishedLine": "Hai fatto tutto quello che ti ho chiesto. Me ne inventerò altre. Non adagiarti.",
+      "finishedTitle": "Tutti i capitoli completati",
+      "gotIt": "Capito",
+      "help": "Aiuto",
+      "letsGo": "Andiamo",
+      "locked": "Completa le missioni precedenti per sbloccare",
+      "missions": {
+        "r1-bonus": {
+          "desc": "Gioca al gioco su cui c'è il mio bonus. Adesso è {{game}}.",
+          "help": "Ogni volta che prendi dal mio vaso aggiungo un piccolo extra che vale solo su un gioco. Adesso è su {{game}}. Punta lì una volta e il bonus paga prima del tuo portafoglio.",
+          "title": "Spendi un bonus di Daisu"
+        },
+        "r1-full-pot": {
+          "desc": "Aspetta che il mio vaso sia pieno, poi prendilo. Pieno paga il 25% in più.",
+          "help": "Pazienza. Il mio vaso si riempie in 8 minuti e la barra mostra a che punto è. Prendilo solo quando dice Pieno e ti porti via tutto il vaso, con il bonus del vaso pieno sopra.",
+          "title": "Prendi un vaso pieno"
+        },
+        "r1-level": {
+          "desc": "Ogni puntata dà XP, che tu vinca o perda.",
+          "help": "I livelli arrivano puntando, qualunque sia il risultato. E più alto è il tuo livello, più grande diventa il mio vaso, quindi paga due volte.",
+          "title": "Raggiungi il livello {{target}}"
+        },
+        "r1-pin": {
+          "desc": "Fissa sul tuo profilo un personaggio che possiedi. Chiunque lo visiti lo vedrà.",
+          "help": "Apri il tuo inventario e premi il cuore sul personaggio che ti piace di più. Puoi fissarne solo uno, e solo quello conta nelle classifiche Top Fan.",
+          "title": "Fissa un personaggio"
+        },
+        "r2-games": {
+          "desc": "Punta su {{target}} giochi diversi. Basta una puntata per ciascuno.",
+          "help": "Crash, slot, dadi, blackjack, quello che vuoi. Una puntata su ciascuno di {{target}} giochi diversi basta, e magari trovi il tuo preferito.",
+          "title": "Gioca a {{target}} giochi diversi"
+        },
+        "r2-gift": {
+          "desc": "Gira il mio regalo giornaliero una volta. È gratis, ogni giorno.",
+          "help": "Una volta al giorno ho un regalo per te: giralo e prenditi il premio. Aprilo dalla mia scheda quando si illumina.",
+          "title": "Gira il regalo giornaliero"
+        },
+        "r2-level": {
+          "desc": "Continua a puntare. Ogni puntata dà XP.",
+          "help": "Come prima, solo di più. Il livello {{target}} fa crescere anche il mio vaso, quindi niente pigrizia.",
+          "title": "Raggiungi il livello {{target}}"
+        },
+        "r2-sell": {
+          "desc": "Rivendi qualcosa che hai vinto in cambio di K₽.",
+          "help": "Tutto quello che esce da una cassa può tornare in K₽. Apri il tuo inventario, scegli un oggetto e vendilo. Tieni quelli che ti piacciono.",
+          "title": "Vendi un oggetto"
+        },
+        "r3-cases": {
+          "desc": "Apri {{target}} casse, quali vuoi.",
+          "help": "Quelle economiche contano come quelle care, e aprirne diverse insieme le conta tutte.",
+          "title": "Apri {{target}} casse"
+        },
+        "r3-collection": {
+          "desc": "Apri una delle tue collezioni di cassa.",
+          "help": "Ogni cassa ha una collezione: tutti gli oggetti che può dare. Prendi il Libro delle collezioni nel mio negozio, aprine una dalla scheda Collezioni del tuo profilo e guarda cosa ti manca.",
+          "title": "Sfoglia una collezione"
+        },
+        "r3-market": {
+          "desc": "Compra o vendi un oggetto al mercato.",
+          "help": "Il mercato è dove i giocatori commerciano tra loro. Prendi la Licenza da commerciante nel mio negozio, poi compra qualcosa che vuoi o metti in vendita un tuo oggetto e aspetta un compratore.",
+          "title": "Commercia al mercato"
+        },
+        "r3-streak": {
+          "desc": "Gira il regalo giornaliero {{target}} giorni di fila.",
+          "help": "Torna ogni giorno e gira. Salti un giorno e la serie riparte da zero, e più dura, migliori sono i premi.",
+          "title": "Serie di {{target}} giorni di regalo"
+        },
+        "r4-collection": {
+          "desc": "Possiedi ogni oggetto della collezione di una cassa.",
+          "help": "Scegli una cassa e prendi tutto quello che può dare, aprendola o comprando al mercato. Conta nel momento in cui hai tutto.",
+          "title": "Completa una collezione"
+        },
+        "r4-level": {
+          "desc": "Continua a puntare. Ogni puntata dà XP.",
+          "help": "Ormai sai come funziona. Livello {{target}}. Vai.",
+          "title": "Raggiungi il livello {{target}}"
+        },
+        "r4-stake": {
+          "desc": "Punta {{target}} K₽ in totale, su qualsiasi cosa.",
+          "help": "Ogni puntata conta: giochi, casse, battaglie e previsioni. Si sommano più in fretta di quanto pensi.",
+          "title": "Punta {{target}} K₽"
+        },
+        "r4-streak": {
+          "desc": "Gira il regalo giornaliero {{target}} giorni di fila.",
+          "help": "Una settimana intera, ogni singolo giorno. Me ne accorgo se ne salti uno.",
+          "title": "Serie di {{target}} giorni di regalo"
+        },
+        "r5-battle": {
+          "desc": "Vinci una battaglia di casse contro altri giocatori.",
+          "help": "In una battaglia tutti aprono le stesse casse e il totale migliore prende tutto. Creane una o unisciti a una nella pagina Battaglie di casse.",
+          "title": "Vinci una battaglia di casse"
+        },
+        "r5-level": {
+          "desc": "Continua a puntare. Ogni puntata dà XP.",
+          "help": "Livello {{target}}. La maggior parte non ci arriva mai. Dimostra di non essere la maggior parte.",
+          "title": "Raggiungi il livello {{target}}"
+        },
+        "r5-stake": {
+          "desc": "Punta {{target}} K₽ in totale, su qualsiasi cosa.",
+          "help": "Mezzo milione. Non sei più un novellino, quindi non comportarti da tale.",
+          "title": "Punta {{target}} K₽"
+        },
+        "r5-top-fan": {
+          "desc": "Sii il fan numero uno del personaggio che hai fissato.",
+          "help": "Le classifiche Top Fan ordinano i giocatori per quante copie del loro personaggio fissato possiedono. Fissane uno, possiedine più di tutti e la corona è tua.",
+          "title": "Diventa Top Fan"
+        }
+      },
+      "progress": "{{done}} su {{total}} fatte"
+    },
+    "achievements": {
+      "count": "{{done}} obiettivi sbloccati su {{total}}",
+      "ready": "{{n}} da ritirare",
+      "tab": "Obiettivi",
+      "unlocked": "Obiettivo sbloccato"
+    },
+    "help": {
+      "battle": {
+        "line": "Scegli le casse qui sotto, poi questo pulsante avvia la battaglia. Tutti aprono le stesse casse e il totale migliore prende tutto."
+      },
+      "bonus": {
+        "play": "Ora gioca un round. Qualsiasi puntata conta, e il bonus paga per primo.",
+        "strip": "Questo è il mio bonus, proprio sopra la tua puntata, con il suo timer. Una puntata qui lo spende prima del tuo portafoglio.",
+        "take": "Adesso niente bonus. Prendi dal mio vaso e un piccolo extra finisce su {{game}}.",
+        "takeWait": "Aspetto che prendi"
+      },
+      "cases": {
+        "line": "Qualsiasi cassa conta, economica o cara. Scegline una e aprila."
+      },
+      "chat": {
+        "line": "Scrivi qui e lo vedono tutti. Sii gentile, o almeno divertente."
+      },
+      "collection": {
+        "complete": "La barra mostra quanto possiedi di ogni collezione. Completane una fino in fondo e il suo distintivo è tuo.",
+        "line": "Ogni cassa ha una collezione. Aprine una per vedere cosa hai e cosa ti manca ancora.",
+        "wait": "Aspetto che ne apri una"
+      },
+      "eyebrow": "Aiuto · {{mission}}",
+      "fans": {
+        "line": "Questa scheda mostra ogni personaggio che possiedi e quanto ti manca per esserne il Top Fan. Fissa quello a cui sei più vicino."
+      },
+      "games": {
+        "line": "Scegli un gioco, uno qualsiasi. Ti faccio vedere dove va la puntata e quale pulsante gioca."
+      },
+      "gift": {
+        "later": "Hai già girato oggi. Il timer dice quando sarà pronto il prossimo. Se lo salti, la serie riparte da zero.",
+        "pick": "Scegli una collezione. Il regalo è una cassa di quella, e più lunga è la tua serie, meglio è.",
+        "spin": "Ora gira. Poi torna domani e gira di nuovo, o la serie riparte da zero.",
+        "wait": "Aspetto il giro"
+      },
+      "market": {
+        "line": "Tutto quello che i giocatori vendono è qui. Apri un oggetto per comprarlo o fare un'offerta, e da questa pagina puoi anche mettere in vendita i tuoi."
+      },
+      "pin": {
+        "done": "Fissato. Chiunque apra il tuo profilo ora lo vede. Non hai cattivo gusto, direi.",
+        "empty": "Ancora niente da fissare. Apri prima una cassa, poi torna a scegliere il tuo preferito.",
+        "line": "Vedi i cuori? Clicca quello sul personaggio che ti piace di più. Chiunque visiti il tuo profilo vede chi hai scelto, quindi scegli bene.",
+        "linePhone": "Vedi i cuori? Tocca quello sul personaggio che ti piace di più. Chiunque visiti il tuo profilo vede chi hai scelto, quindi scegli bene.",
+        "wait": "Aspetto il cuore"
+      },
+      "pot": {
+        "line": "Il mio vaso. La barra si riempie in 8 minuti, e un vaso pieno paga in più il bonus del vaso pieno. Se lo prendi prima, ti porti via solo quello che c'è dentro."
+      },
+      "predictions": {
+        "line": "Ogni scheda è un mercato. Aprine una, scegli un esito e compra quote; pagano se succede, e puoi venderle prima."
+      },
+      "sell": {
+        "done": "Venduto. Quei K₽ sono tornati nel tuo portafoglio. Visto? Facile.",
+        "empty": "Ancora niente da vendere. Apri prima una cassa.",
+        "line": "Passa il mouse su un oggetto e premi il suo pulsante di vendita. Torna subito in K₽, quindi scegline uno che non ti mancherà.",
+        "linePhone": "Tocca un oggetto e vendine una copia. Torna subito in K₽, quindi scegline uno che non ti mancherà.",
+        "wait": "Aspetto una vendita"
+      },
+      "showMe": "Fammi vedere",
+      "stop": "Basta aiuto"
+    },
+    "shop": {
+      "after": "Il tuo saldo dopo",
+      "buy": "Compra",
+      "buyFor": "Compra per {{amount}}",
+      "failed": "Acquisto non riuscito. Riprova.",
+      "items": {
+        "chatPass": {
+          "about": "Ti permette di mandare messaggi nella chat del sito. Per leggerla non serve mai un pass.",
+          "getIt": "Prendi il pass",
+          "kept": "tenuto grazie alla tua storia in chat",
+          "lockedBody": "Livello {{level}} · {{price}} nel negozio di Daisu",
+          "lockedTitle": "Per parlare serve un Pass per la chat",
+          "name": "Pass per la chat",
+          "opened": "Ora puoi parlare. Cerca di dire qualcosa di interessante. Ti faccio vedere dove?",
+          "pitch": "Pagare per parlare. C'è chi pagherebbe perché tu stia zitto.",
+          "what": "Parla nella chat del sito. Leggere è sempre gratis."
+        },
+        "collectionBook": {
+          "about": "Apre la scheda Collezioni: ogni cassa da cui collezioni, cosa ti manca ancora e un modo rapido per vendere i doppioni. Completare un'intera collezione ti dà il suo distintivo.",
+          "getIt": "Prendilo nel negozio di Daisu",
+          "kept": "tenuto grazie ai tuoi distintivi di collezione",
+          "lockedBody": "Il Libro delle collezioni segue ogni cassa da cui collezioni, mostra cosa ti manca ancora e vende i tuoi doppioni in un colpo solo.",
+          "lockedTitle": "Le collezioni sono bloccate",
+          "name": "Libro delle collezioni",
+          "opened": "È tuo. La scheda Collezioni è aperta. Vuoi che te la mostri? Ci sono un sacco di pagine.",
+          "pitch": "Un libro intero per la tua collezione. Cerca di non piangere quando vedi quanto è vuoto.",
+          "what": "Apre la scheda Collezioni: ogni cassa da cui collezioni, cosa manca e un modo rapido per vendere i doppioni."
+        },
+        "predictionPass": {
+          "about": "Apre le previsioni: compra quote su quello che succederà e vendile quando il prezzo va a tuo favore.",
+          "getIt": "Prendilo nel negozio di Daisu",
+          "kept": "tenuto grazie alle tue previsioni",
+          "lockedBody": "Il Pass previsioni ti fa comprare quote su quello che succederà e venderle quando il prezzo si muove.",
+          "lockedTitle": "Le previsioni sono bloccate",
+          "name": "Pass previsioni",
+          "opened": "Le previsioni sono aperte. Vuoi che ti mostri come funziona un mercato?",
+          "pitch": "Scommettere sul futuro. Molto maturo da parte tua.",
+          "what": "Compra quote su quello che succederà e vendile quando il prezzo si muove."
+        },
+        "tradersLicense": {
+          "about": "Ti permette di comprare da altri giocatori, piazzare ordini di acquisto e mettere in vendita i tuoi oggetti al mercato.",
+          "getIt": "Prendi la licenza",
+          "kept": "tenuta grazie alla tua storia di scambi",
+          "lockedBody": "Puoi guardare quanto vuoi. La licenza costa {{price}} al livello {{level}}, nel negozio di Daisu.",
+          "lockedTitle": "Comprare e vendere richiede una Licenza da commerciante",
+          "name": "Licenza da commerciante",
+          "opened": "Licenza presa. Comprare, vendere, piazzare ordini, il mercato è tutto tuo. Te lo faccio vedere?",
+          "pitch": "Scartoffie ufficiali per contrattare con degli sconosciuti. Non farti fregare. Anzi, sì, è divertente.",
+          "what": "Compra da altri giocatori e metti in vendita i tuoi oggetti al mercato."
+        }
+      },
+      "level": "Livello {{n}}",
+      "locked": "Bloccato",
+      "needs": "Richiede",
+      "notNow": "Non ora",
+      "price": "Prezzo",
+      "short": "Mancano {{amount}}",
+      "subtitle": "Cose che aprono il resto del sito.",
+      "tab": "Negozio",
+      "title": "Negozio di Daisu",
+      "unlocked": "Sbloccato",
+      "yours": "Tuo"
+    }
   },
   "dice": {
     "dice": "Dadi",
@@ -828,7 +1428,7 @@
     "game": "GIOCO",
     "houseEdge": "VANTAGGIO",
     "edgeVaries": "variabile",
-    "notScored": "L'Upgrade punta oggetti e non KP, quindi non dà punti. Le vendite al mercato e il bonus da 8 minuti non sono puntate e non contano mai.",
+    "notScored": "L'Upgrade punta oggetti e non K₽, quindi non dà punti. Le vendite al mercato e il bonus da 8 minuti non sono puntate e non contano mai.",
     "resultTitle": "IERI SEI ARRIVATO #{{rank}}",
     "resultPoints": "{{points}} punti",
     "resultPaid": "Accreditato sul tuo saldo all'azzeramento di mezzanotte.",
@@ -952,7 +1552,8 @@
     "games": "Giochi",
     "gettingStarted": "Primi passi",
     "missionComplete": "Missione completata",
-    "missionsArePrivate": "Le missioni sono private."
+    "missionsArePrivate": "Le missioni sono private.",
+    "secret": "Segreti"
   },
   "nav": {
     "adClosedEarlyNo": "Annuncio chiuso troppo presto, nessuna ricompensa",

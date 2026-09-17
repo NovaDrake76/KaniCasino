@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FiChevronRight, FiMessageSquare } from "react-icons/fi";
 import ChatPanel from "./ChatPanel";
+import { CHAT_OPEN_EVENT } from "../daisu/tour/tourEvents";
 import i18n from "../../i18n";
 
 const KEY = "kani.chatOpen";
@@ -175,6 +176,13 @@ export const useChatDock = () => {
   };
 
   const toggle = () => remember(!open);
+
+  // daisu's help opens the chat to show where to type
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener(CHAT_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(CHAT_OPEN_EVENT, onOpen);
+  }, []);
 
   return {
     open,

@@ -119,6 +119,7 @@ const BattlesView: React.FC<BattlesViewProps> = ({
         <button
           onClick={create}
           disabled={creating || !selected.length}
+          data-tour="battle-create"
           className="px-6 py-2.5 rounded bg-green-700 hover:bg-green-600 font-semibold disabled:opacity-50"
         >
           {creating ? "Creating..." : i18n.t("battles.createBattle")}

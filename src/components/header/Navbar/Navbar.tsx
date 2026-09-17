@@ -15,6 +15,7 @@ import GiftTag from "../GiftTag";
 import GamesMenu from "./GamesMenu";
 import { NavLink } from "../gameLinks";
 import useGiftReady from "../useGiftReady";
+import { showDaisu } from "../../daisu/tour/tourEvents";
 import i18n from "../../../i18n";
 
 interface Navbar {
@@ -98,6 +99,13 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       name: i18n.t("nav.missions"),
       path: `/profile/${userData.id}?tab=missions`,
       icon: <BsListCheck className="text-2xl" />,
+      // in daisu's beta the missions are hers, so the link opens her room over the page
+      onClick: userData?.features?.daisu
+        ? (e: React.MouseEvent) => {
+            e.preventDefault();
+            showDaisu("room");
+          }
+        : undefined,
     }] : []),
     // only admins see the backoffice; the api refuses everyone else anyway
     ...(userData?.isAdmin ? [{
@@ -181,6 +189,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
                   to={link.path}
                   key={index}
                   title={link.name}
+                  onClick={link.onClick}
                   className="flex shrink-0 items-center gap-2 font-normal text-xs 2xl:text-sm cursor-pointer "
                 >
                   <span className="text-[#625F7E] hover:text-gray-200 transition-all ">

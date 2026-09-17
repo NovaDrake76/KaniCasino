@@ -8,7 +8,7 @@ const { HOUSE, MINT, ESCROW, GENESIS } = require("../utils/accounts");
 // read-only audit: derive each account from the ledger and compare players against their
 // stored wallet. legacy accounts have no opening row, so drift is expected until genesis.
 async function reconcile() {
-  const users = await User.find({}, { walletBalance: 1 }).lean();
+  const users = await User.find({}, { walletBalance: 1, gameCredits: 1 }).lean();
   let drifting = 0;
   let totalDrift = 0;
   let circulating = 0;
@@ -17,11 +17,13 @@ async function reconcile() {
   for (const u of users) {
     const derived = await accountBalance(u._id);
     circulating += derived;
-    const drift = u.walletBalance - derived;
+    // pot credit is part of what the ledger says a player holds, expired or not, until a take burns it
+    const credits = Object.values(u.gameCredits || {}).reduce((s, n) => s + (Number(n) || 0), 0);
+    const drift = Math.round((u.walletBalance + credits - derived) * 100) / 100;
     if (drift !== 0) {
       drifting += 1;
       totalDrift += drift;
-      worst.push({ userId: String(u._id), wallet: u.walletBalance, derived, drift });
+      worst.push({ userId: String(u._id), wallet: u.walletBalance, credits, derived, drift });
     }
   }
   worst.sort((a, b) => Math.abs(b.drift) - Math.abs(a.drift));

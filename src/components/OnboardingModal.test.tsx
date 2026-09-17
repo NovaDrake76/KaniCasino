@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import OnboardingModal from "./OnboardingModal";
+import UserContext from "../UserContext";
 
 // the tour reads the route to know when to stay out of the way
 const at = (path: string) =>
@@ -52,5 +53,16 @@ describe("OnboardingModal", () => {
   it("still shows once that visitor reaches the site", () => {
     at("/");
     expect(screen.getByText("Welcome to KaniCasino!")).toBeInTheDocument();
+  });
+
+  it("leaves daisu's beta to her own tour", () => {
+    const { container } = render(
+      <UserContext.Provider value={{ userData: { id: "u1", features: { daisu: true } } }}>
+        <MemoryRouter initialEntries={["/"]}>
+          <OnboardingModal />
+        </MemoryRouter>
+      </UserContext.Provider>
+    );
+    expect(container).toBeEmptyDOMElement();
   });
 });

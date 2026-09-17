@@ -21,6 +21,8 @@ import {
 } from "../../../services/predictions/PredictionService";
 import { Range, withinRange } from "../../../components/timeRange";
 import { TradeAction } from "./Market.types";
+import { useLocked } from "../../../components/daisu/shop/useLocked";
+import { openDaisuShop } from "../../../components/daisu/tour/tourEvents";
 import i18n from "../../../i18n";
 
 const QUOTE_DEBOUNCE_MS = 250;
@@ -50,6 +52,8 @@ export const useMarketServices = () => {
 
   const shares = Math.max(0, Math.floor(Number(sharesInput) || 0));
   const isLogged = userData != null;
+  // in daisu's beta trading waits for the prediction pass, so a locked account asks for no quotes
+  const locked = useLocked("predictionPass");
 
   useEffect(() => {
     let active = true;
@@ -174,7 +178,7 @@ export const useMarketServices = () => {
   // the quote is the server's, not a local guess: what it says is what the fill charges
   const quoteSeq = useRef(0);
   useEffect(() => {
-    if (!isLogged || !selected || shares <= 0 || !market || market.status !== "open") {
+    if (!isLogged || locked || !selected || shares <= 0 || !market || market.status !== "open") {
       setQuote(null);
       setQuoteError(null);
       return;
@@ -199,10 +203,11 @@ export const useMarketServices = () => {
     }, QUOTE_DEBOUNCE_MS);
 
     return () => clearTimeout(timer);
-  }, [slug, selected, action, shares, isLogged, market]);
+  }, [slug, selected, action, shares, isLogged, locked, market]);
 
   const submit = async () => {
     if (!isLogged) return toogleUserFlow(true);
+    if (locked) return openDaisuShop("predictionPass");
     if (!selected || shares <= 0 || submitting || quoting) return;
 
     setSubmitting(true);
@@ -255,6 +260,7 @@ export const useMarketServices = () => {
     chancePct: yes ? Math.round(yes.priceBps / 100) : null,
     trades,
     isLogged,
+    locked,
     walletBalance: userData?.walletBalance ?? 0,
     selected,
     select: (key: string) => {

@@ -3,6 +3,8 @@ interface GameButtonProps {
   onClick: () => void;
   disabled?: boolean;
   variant?: "primary" | "cashout" | "danger" | "secondary";
+  // what daisu's tour calls this button when it points at it
+  tour?: string;
 }
 
 // the four actions a game can offer, so play is green everywhere and cashing out is always gold.
@@ -14,10 +16,11 @@ const variants = {
   secondary: "bg-accent enabled:hover:bg-accent-light text-white",
 };
 
-const GameButton: React.FC<GameButtonProps> = ({ children, onClick, disabled, variant = "primary" }) => (
+const GameButton: React.FC<GameButtonProps> = ({ children, onClick, disabled, variant = "primary", tour }) => (
   <button
     onClick={onClick}
     disabled={disabled}
+    data-tour={tour}
     className={`w-full min-h-[46px] px-3 rounded font-bold transition-colors disabled:opacity-40 ${variants[variant]}`}
   >
     {children}

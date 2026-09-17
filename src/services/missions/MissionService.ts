@@ -21,8 +21,13 @@ export interface MissionsData {
 
 export interface PendingMission {
   key: string;
-  title: string;
+  // daisu's own missions come without one: their words live in the locale files
+  title?: string;
   reward: number;
+  target?: number;
+  roadmap?: boolean;
+  // in daisu's beta the old missions are counted as achievements
+  achievement?: boolean;
 }
 
 export interface ClaimResult {

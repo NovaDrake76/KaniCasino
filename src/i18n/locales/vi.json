@@ -40,7 +40,7 @@
     "comingSoonLine": "Arcade vừa mở cửa. Hãy nói với chúng tôi trên Discord nên thêm gì tiếp theo.",
     "comingSoonTitle": "Sắp có thêm trò chơi",
     "halo": {
-      "adoptedNote": "Bạn chơi ván này trước khi đăng nhập, nên nó giữ chuỗi nhưng không trả KP.",
+      "adoptedNote": "Bạn chơi ván này trước khi đăng nhập, nên nó giữ chuỗi nhưng không trả K₽.",
       "attemptsLeft": "Lượt còn lại: {{count}}",
       "attr": {
         "academy": "Học viện",
@@ -94,7 +94,7 @@
       "search": "Tìm học sinh",
       "share": "Sao chép kết quả",
       "signIn": "Đăng nhập",
-      "signInLine": "Đăng nhập trước khi chơi để giữ chuỗi và thắng tới {{amount}} KP mỗi ngày.",
+      "signInLine": "Đăng nhập trước khi chơi để giữ chuỗi và thắng tới {{amount}} K₽ mỗi ngày.",
       "solvedToday": "Hôm nay {{count}} Sensei đã đoán đúng học sinh này",
       "solvedToday_one": "Hôm nay {{count}} Sensei đã đoán đúng học sinh này",
       "statsTitle": "Thành tích của bạn",
@@ -217,6 +217,8 @@
     "coinflip_win": "Thắng tung đồng xu",
     "crash_bet": "Cược crash",
     "crash_cashout": "Rút tiền crash",
+    "game_credit": "Thưởng của Daisu",
+    "game_credit_expired": "Thưởng của Daisu hết hạn",
     "item_sell": "Bán cho cửa hàng",
     "market_buy": "Mua trên chợ",
     "market_order": "Đã đặt lệnh mua",
@@ -323,6 +325,7 @@
       "failed": "Gui khong thanh cong. Thu lai nhe.",
       "language": "Vui long khong noi tuc.",
       "level": "Len cap de co the tro chuyen.",
+      "locked": "Bạn cần Vé trò chuyện từ cửa hàng của Daisu để nói.",
       "muted": "Ban bi cam noi trong vai phut.",
       "noLinks": "Khong duoc gui lien ket trong chat.",
       "off": "Chat dang tat.",
@@ -337,7 +340,7 @@
     "report": "Bao cao tin nhan nay",
     "reported": "Da bao cao. Cam on ban.",
     "rules": {
-      "begging": "Khong xin KP hay vat pham.",
+      "begging": "Khong xin K₽ hay vat pham.",
       "promo": "Khong dat lien ket, ma gioi thieu hay quang ba cua rieng ban.",
       "respect": "Khong phan biet chung toc, quay roi hay chui boi. Hay bao cao thay vi dap tra.",
       "spam": "Khong spam hay tran tin nhan. Se bi cam noi.",
@@ -448,6 +451,603 @@
     "placeBet": "Đặt cược",
     "profitOnWin": "Lợi nhuận khi thắng",
     "queuedClickToCancel": "Đang xếp hàng (bấm để huỷ)"
+  },
+  "daisu": {
+    "activeBonuses": "Bạn có phần thưởng đang hoạt động",
+    "back": "Quay lại Daisu",
+    "bonusBubble": "Thưởng {{game}}, {{clock}}",
+    "bonusExpired": "Thưởng {{game}} đã hết hạn",
+    "bonusHurry": "Chơi trước khi hết hạn",
+    "bonusNewOne": "Lấy từ hũ để có thưởng mới",
+    "bonusPaysAll": "Trả bằng thưởng:",
+    "bonusPaysFirst": "trả trước",
+    "bonusSpentFirst": "dùng trước ví của bạn",
+    "bonusSplit": "{{bonus}} từ thưởng, {{wallet}} từ ví",
+    "bonusTitle": "Thưởng của Daisu",
+    "bonusUsedOn": "Dùng trước cho cược {{game}} của bạn",
+    "bubbleGift": "Quà",
+    "clickHint": "Bấm vào hũ để lấy phần bên trong",
+    "close": "Đóng",
+    "collect": "Nhận",
+    "couldNotClaim": "Không lấy được từ hũ",
+    "empty": "Trống",
+    "full": "Đầy",
+    "fullBonus": "Thưởng hũ đầy +{{bonus}}%",
+    "fullIn": "Đầy sau {{clock}}",
+    "giftOpen": "Mở",
+    "giftReady": "Daisu có quà cho bạn",
+    "jar": "Cái hũ",
+    "keeps": "giữ hũ",
+    "loading": "...",
+    "missionsDone": "Hoàn thành {{done}}/{{total}} nhiệm vụ",
+    "nextPick": "Tiếp theo: {{game}}, sau {{amount}} nữa",
+    "ofFull": "trên {{full}}",
+    "open": "Mở Daisu",
+    "pending": "{{amount}} đang về ví của bạn",
+    "pickLine": "Thêm {{share}}% mỗi lần lấy sẽ vào {{game}}",
+    "pickTitle": "Daisu chọn",
+    "play": "Chơi",
+    "roomTitle": "Phòng của Daisu",
+    "tabMissions": "Nhiệm vụ",
+    "visit": "Ghé phòng của Daisu",
+    "lines": {
+      "hello": {
+        "0": "Ồ, quay lại rồi à. Đừng hí hửng, hũ vẫn đang đầy dần thôi.",
+        "1": "Lâu thế. Tôi suýt tự tiêu hết rồi đấy.",
+        "2": "Ồ, chào Ngài Con Bạc. Cháy túi rồi à?",
+        "3": "Lại all in nữa à? kkk~",
+        "4": "All in, mỗi 8 phút.",
+        "5": "Vui được gặp lại ngài, Ngài Con Bạc.",
+        "6": "Không, tôi không phải người Đức.",
+        "7": "Đôi tai mèo này? Phụ kiện thôi, xin lỗi đã làm ngài thất vọng.",
+        "8": "Xin lỗi, tôi không hẹn hò với mấy anh cháy túi.",
+        "9": "Tôi á? Tôi làm thêm để nuôi em gái.",
+        "10": "Thêm một hòm nữa thôi, nào.",
+        "11": "Không có gì xảy ra vào ngày 31 tháng 8.",
+        "12": "Ngài nên leo lên bằng martingale.",
+        "13": "Số của tôi? Tôi đang xem reels, xin lỗi.",
+        "14": "Lần crash tới sẽ là 430.2X.",
+        "15": "3 blackjack liên tiếp? Đùa tôi à?",
+        "16": "Giết người là không thể biện minh.",
+        "17": "Nếu ngài cứ cờ bạc thế này, năm sau tôi sẽ mua xe mới.",
+        "18": "Tôi đã cho ngài xem mã nguồn của tôi rồi, trả lời tôi đi.",
+        "19": "Người top 1 bảng xếp hạng? Không, anh ta không nói chuyện với tôi.",
+        "20": "Sinh nhật tôi? Ngày 7 tháng 7.",
+        "21": "Vận may mỉm cười với kẻ ngốc.",
+        "22": "Tora! Tora! Tora!",
+        "23": "Cẩn thận với quả cầu đen bay giữa những hàng cây vào ban đêm.",
+        "24": "Hôm nay là ngày D.",
+        "25": "Máy slot không gian lận đâu, tôi chắc ngài sẽ lấy lại tiền.",
+        "26": "Tàn bạo.",
+        "27": "Sao Dogs Case không có trong danh sách mở nhiều nhất?",
+        "28": "90% con bạc quên mở quà hằng ngày.",
+        "29": "Momokinha do céu que brutal",
+        "30": "Watanawhat?",
+        "31": "Tôi có Discord đấy, biết không? Ngài nên vào server.",
+        "32": "Ý ngài là nó không còn tên Twitter nữa à?",
+        "33": "Nipah? Mình đặt bom ở B nhé?",
+        "34": "Ngài Con Bạc, cẩn thận lũ kiwi laser.",
+        "35": "Thành tựu bí mật? Ngài có thể xem mã nguồn.",
+        "36": "Hả? Mấy con cua đâu rồi?"
+      },
+      "full": {
+        "0": "Đầy rồi. Sao? Lấy đi trước khi tôi đổi ý.",
+        "1": "Nhìn kìa. Đầy. Mà bạn có làm gì đâu.",
+        "2": "Cái hũ cuối cùng cũng đầy. Lấy đi.",
+        "3": "Đến lúc chơi tiếp rồi.",
+        "4": "Đây là phần thưởng cho con bạc ngoan."
+      },
+      "filling": {
+        "0": "Không đợi được hả? Có {{amount}} trong đó. Yếu ghê.",
+        "1": "{{amount}} ngay bây giờ, hoặc đợi {{clock}} để lấy thưởng hũ đầy như người lớn.",
+        "2": "Muốn thì chọc hũ đi. Có {{amount}}. Đừng khóc sau nhé.",
+        "3": "Nếu chờ thêm chút nữa, ngài sẽ được một phần thưởng hời.",
+        "4": "Wah Wah.",
+        "5": "Vậy ngài là loại nóng vội, hả?"
+      },
+      "empty": {
+        "0": "TRỐNG rồi. Bạn vừa lấy xong mà. Học đếm đi.",
+        "1": "Không có gì đâu. Bấm cho vui à? ...Dễ thương.",
+        "2": "Số không. Chờ chút đi, đồ tham."
+      },
+      "failed": {
+        "0": "Á, tuột tay mất. Bình tĩnh, vẫn còn nguyên trong hũ. Bấm lại đi.",
+        "1": "Lần đó không qua được. Đừng làm mặt đó, không mất gì đâu. Thử lại.",
+        "2": "Có gì đó không ổn, chờ chút.",
+        "3": "Hm... Có vẻ máy chủ đang gặp sự cố. Hãy nhờ giúp đỡ trên Discord."
+      },
+      "bonusExpiring": {
+        "0": "Tôi đã cho ngài thưởng ở {{game}}, ngài không chơi à? Nó hết hạn sau {{left}}.",
+        "1": "Ngài nên chơi {{game}}, tôi đã cho ngài phần thưởng hời."
+      },
+      "bonusExpired": {
+        "0": "Chậm quá. Tôi lấy lại thưởng {{game}} rồi. Lần sau cố lên, đồ chậm chạp.",
+        "1": "Mất rồi. {{credit}} ở {{game}} giờ là của tôi. Ai bảo ngủ gật."
+      },
+      "claimed": {
+        "0": "Đây, {{amount}}. Đừng thua hết trong một lượt. Dù kiểu gì cũng thua.",
+        "1": "{{amount}}. Không có gì. Nói cảm ơn đi.",
+        "2": "Được rồi, {{amount}}. Giờ đi thắng gì đó cho một lần.",
+        "3": "Đây, đi chơi vui vẻ nhé.",
+        "4": "Đây là hệ thống bảo hiểm của ngài.",
+        "5": "Cầm lấy, để ngài all in được nhiều lần hơn.",
+        "6": "Đến lúc mở thêm vài hòm rồi."
+      },
+      "claimedCredit": {
+        "0": "Tôi bỏ thêm {{credit}} cho {{game}}. Thắng lại thành K₽ thật đi, nếu làm được.",
+        "1": "Thêm {{credit}}, chỉ ở {{game}}, và biến mất sau 8 phút. Không cãi.",
+        "2": "Đây là số dư thêm để chơi {{game}}."
+      },
+      "pickChanged": {
+        "0": "Nguyên một hũ. Trò mới: {{game}}. Đi đi, tôi đang xem.",
+        "1": "Bạn vét sạch một hũ rồi. Phần thêm giờ chuyển sang {{game}}. Theo kịp nhé."
+      },
+      "credit": {
+        "0": "Vẫn chưa dùng {{credit}} ở {{game}} à? Sợ hả?",
+        "1": "{{credit}} nằm không ở {{game}}. Thảm hại. Đi đi."
+      },
+      "missionReady": {
+        "0": "Bạn làm xong một cái thật à. Đến lấy thưởng trước khi tôi quên.",
+        "1": "Thưởng sẵn rồi. Đừng bắt tôi cầm cả ngày."
+      },
+      "missionDone": {
+        "0": "Được rồi, {{amount}}. Như đã hứa. Đừng quen.",
+        "1": "{{amount}}. Thấy chưa? Tôi giữ lời. Không như ai đó."
+      },
+      "broke": {
+        "0": "Cháy túi rồi à? Hũ đầy sau {{clock}}. Ngồi xuống. Đợi.",
+        "1": "Không K₽, không hũ. Cả hai đều tại bạn. {{clock}}.",
+        "2": "Để tôi đoán, ngài đang tự tin lắm.",
+        "3": "Ngài all in à? kkk~"
+      },
+      "poke0": {
+        "0": "Gì?",
+        "1": "Sao? Tôi đang bận.",
+        "2": "Cần gì không, hay chỉ thích chọc tôi?",
+        "3": "Hũ ở đằng kia. Tôi không phải cái hũ.",
+        "4": "Ngài Con Bạc, tôi không phải cái hũ."
+      },
+      "poke1": {
+        "0": "Thôi đi.",
+        "1": "Có trò để chơi mà lại đi chọc tôi. Dễ thương.",
+        "2": "Tiếp nữa là tôi tính phí đấy.",
+        "3": "Vui lắm hả? ...Tôi cũng thấy hơi vui."
+      },
+      "poke2": {
+        "0": "Được rồi, bạn thắng. Tôi thích bạn. Một chút. Giờ thì dừng.",
+        "1": "Bạn thật sự không có gì hay hơn để làm hả? ...Thôi, ở lại đi.",
+        "2": "Chọc thêm một lần nữa là tôi giữ hũ tiếp theo.",
+        "3": "Bạn kỳ ghê. Nhưng tôi vẫn giữ bạn."
+      },
+      "gift": {
+        "0": "Tôi có cái này cho bạn. Đừng làm nó kỳ cục.",
+        "1": "Quà. Từ tôi. Không cần cảm ơn, đương nhiên."
+      },
+      "room": {
+        "0": "Chào mừng đến phòng tôi, Ngài Con Bạc.",
+        "1": "Chào mừng.",
+        "2": "Chúng ta có nhiều việc phải làm."
+      },
+      "helloRank1": {
+        "0": "Ngài vui khi lúc nào cũng cháy túi à?",
+        "1": "Cách ghim tôi lên hồ sơ? Xin lỗi, chỉ dành cho VIP thôi.",
+        "2": "Ngài có cờ bạc ngoài đời không? Không à? Tạ ơn trời.",
+        "3": "Tiền phải đi lên chứ, không phải đi xuống.",
+        "4": "Nhớ làm nhiệm vụ nhé, Ngài Con Bạc."
+      },
+      "helloRank2": {
+        "0": "Tôi thấy ngài ở đây nhiều quá. Ngài không đến chỉ vì tôi đấy chứ?",
+        "1": "Đừng nói với ai. Quà hằng ngày tiếp theo của ngài sẽ đặc biệt.",
+        "2": "Chào Ngài Con Bạc. Ngài muốn tắm? Hay ăn tối? Hay có lẽ... all in blackjack?",
+        "3": "Ngài Con Bạc, ngài có biết né đạn không?",
+        "4": "Như tôi đã nói, tôi không phải người Đức.",
+        "5": "Iwak."
+      },
+      "helloRank3": {
+        "0": "Mở 100 hòm cùng lúc? Xin lỗi, tôi không làm được.",
+        "1": "Một vật phẩm để hẹn hò với tôi? Sẽ là 40 tỷ K₽.",
+        "2": "Không lên được top 1? Đừng lo, ngài sẽ luôn là kẻ thua top 1 của tôi.",
+        "3": "Tôi muốn mở vài Dogs Case, cho tôi mượn ít K₽ được không?",
+        "4": "Chào Ngài Con Bạc. Mai tôi nghỉ, nên đừng khóc nếu tôi không xuất hiện nhé?",
+        "5": "Chào Ngài Con Bạc, tôi đang cố lấy huy hiệu top fan của chú chó bơ, ngài bán cho tôi vài con được không?",
+        "6": "Ngài Con Bạc, ngài đủ tuổi rồi, đúng không?",
+        "7": "Em gái tôi? Con bé không được cờ bạc, nó còn nhỏ.",
+        "8": "All in cửa đỏ.",
+        "9": "We rise."
+      },
+      "helloRank4": {
+        "0": "Thật vui khi gặp ngài mỗi ngày, Ngài Con Bạc.",
+        "1": "Có vẻ cuối cùng ngài cũng giàu rồi. Có đáng không?",
+        "2": "Họ nên thêm nhiều chó hơn vào Dogs Case.",
+        "3": "Ngài muốn đấu hòm với tôi à? Để sau nhé...",
+        "4": "Không, tôi không có vầng hào quang.",
+        "5": "Ngài Con Bạc, giờ ngài cấp cao rồi mà vẫn đến gặp tôi. Cảm ơn.",
+        "6": "Cái hũ chết tiệt này nặng quá rồi!",
+        "7": "Hũ đang nặng dần... Có phải ngài đang cày XP không?"
+      },
+      "helloRank5": {
+        "0": "Tôi á? Tôi thích Hikari hơn.",
+        "1": "Hệ thống bảo hiểm? Không, tôi sẽ không làm cái đó.",
+        "2": "Tôi có thể chạy Bad Apple trong ô chữ này, ngài muốn xem không?",
+        "3": "Ngài là top fan à? Vậy là ngài thích cô gái khác, hửm...",
+        "4": "Tôi rất muốn có một chú chó bơ.",
+        "5": "Nhờ ngài, cuối cùng tôi cũng trả được tiền học.",
+        "6": "Shu Shu Po Po~",
+        "7": "Tôi cũng thích ngài. Với tư cách khách hàng.",
+        "8": "Ngài Con Bạc, có phải ngài chưa có bạn gái?",
+        "9": "Một ngày nào đó tôi sẽ thành fumo.",
+        "10": "Sẽ có người mất đầu nếu tôi làm vỡ cái hũ này.",
+        "11": "Tôi á? Tôi theo chủ nghĩa quân chủ.",
+        "12": "Đó là cú bấm thứ 100.000 của ngài. Chúc mừng.",
+        "13": "Đến nước này thì ngài nên all in mọi lúc.",
+        "14": "Họ nên thêm nhiều trò chơi hơn, nhỉ?",
+        "15": "Cuối cùng chúng ta cũng đến endgame.",
+        "16": "Đây là kết thúc.",
+        "17": "Hãy nhớ đến tôi ở ngoài kia.",
+        "18": "Mọi thứ sẽ sớm kết thúc thôi.",
+        "19": "Nihahaha?",
+        "20": "Ngài là con bạc thành công đầu tiên mà tôi từng gặp."
+      }
+    },
+    "tour": {
+      "bet": {
+        "blackjack": "Đây là tiền cược cho một ván. Đạt gần 21 hơn nhà cái mà không vượt quá. Rút thêm để lấy một lá, dừng để giữ bài hiện có.",
+        "coinflip": "Đây là tiền cược. Chọn ngửa hoặc sấp ngay bên dưới rồi vào lượt tung tiếp theo. Thắng được 1,94 lần.",
+        "crash": "Đây là tiền cược. Hệ số tăng dần cho đến khi sập; rút trước lúc đó là bạn nhận tiền cược nhân hệ số. Đợi lâu quá là mất hết.",
+        "dice": "Đây là tiền cược: số bạn đặt cho một lần gieo. Xúc xắc ra một số từ 0 đến 100; rơi vào phía xanh là thắng. Bạn là người mới, cược ít thôi.",
+        "hilo": "Đây là tiền cược. Đoán lá tiếp theo cao hơn hay thấp hơn; mỗi lần đoán đúng tiền thưởng lại tăng. Muốn rút lúc nào cũng được.",
+        "mines": "Đây là tiền cược. Bom nấp dưới một số ô; mỗi ô an toàn bạn lật lên làm tiền thưởng tăng. Rút trước khi dính bom.",
+        "plinko": "Đây là tiền cược cho một quả bóng. Nó nảy qua các cọc và rơi vào một hệ số. Hai bên mép trả nhiều nhất nhưng ít khi trúng nhất.",
+        "slots": "Đây là tiền cược: giá của một lượt quay. Nút trừ và cộng giảm một nửa hoặc gấp đôi nó. Xếp các biểu tượng giống nhau thành hàng để thắng."
+      },
+      "caseLine": "Bạn thích cái nào nhất? Chọn một hòm để mở. Tôi thích Dogs Case.",
+      "caseWait": "Đang chờ bạn chọn một hòm",
+      "continue": "Tiếp tục hướng dẫn",
+      "decline": "Tôi tự tìm hiểu",
+      "doneEven": "Hòa à? Chán, nhưng an toàn. Mỗi lần cược vẫn cho bạn XP, và cấp càng cao thì bạn càng nhận nhiều số dư từ hũ của tôi.",
+      "doneLose": "Thua à? Ai cũng có lúc thế. Mỗi lần cược vẫn cho bạn XP, và cấp càng cao thì bạn càng nhận nhiều số dư từ hũ của tôi.",
+      "doneOut": "Giờ thì đi đi. Bạn có thể chơi tự do, hoặc làm theo nhiệm vụ.",
+      "doneTitle": "Xong hướng dẫn",
+      "doneWin": "Thắng à? May mắn của người mới, rõ rồi. Mỗi lần cược còn cho bạn XP, và cấp càng cao thì bạn càng nhận nhiều số dư từ hũ của tôi.",
+      "drop": {
+        "1": "{{item}}, độ hiếm {{rarity}}. Chẳng có gì đặc biệt. Giờ nó ở trong kho đồ, bạn có thể giữ hoặc bán.",
+        "2": "{{item}}, độ hiếm {{rarity}}. Lần đầu mà vậy là không tệ. Giờ nó ở trong kho đồ, bạn có thể giữ hoặc bán.",
+        "3": "{{item}}, độ hiếm {{rarity}}, ngay lần đầu? May thật. Giờ nó ở trong kho đồ, bạn có thể giữ hoặc bán.",
+        "4": "{{item}}, độ hiếm {{rarity}}, ngay hòm đầu tiên? ...Tôi không ghen tị đâu. Giờ nó ở trong kho đồ, bạn có thể giữ hoặc bán.",
+        "5": "{{item}}. {{rarity}}. Ngay hòm ĐẦU TIÊN. Bạn có biết tôi đã... thôi bỏ đi. Giờ nó ở trong kho đồ, bạn có thể giữ hoặc bán. Đừng có mà bán."
+      },
+      "end": "Kết thúc hướng dẫn",
+      "endAnyTime": "Bạn có thể kết thúc hướng dẫn ở bất kỳ bước nào.",
+      "games": {
+        "blackjack": "thắng nhà cái",
+        "coinflip": "ngửa hay sấp",
+        "crash": "rút kịp lúc",
+        "dice": "trên hay dưới",
+        "hilo": "cao hơn hay thấp hơn",
+        "mines": "né bom",
+        "plinko": "thả một quả bóng",
+        "slots": "quay và ghép"
+      },
+      "gamesLine": "Mở hòm có thể tốn kém rất nhanh, và hũ của tôi sẽ không đủ. Trò chơi giúp kiếm thêm K₽, nên chọn một trò để chơi ngay.",
+      "gamesNote": "Chọn trò nào thì mỗi lần cược cũng cho bạn XP.",
+      "later": "Để sau",
+      "next": "Tiếp",
+      "openLine": "Chọn khá đấy. Nút đó để mở. Bấm đi, tôi muốn xem bạn được gì.",
+      "openMeLine": "Tôi ở dưới góc kia kìa. Bấm vào tôi là tôi mở ra.",
+      "openMeWait": "Đang chờ bạn mở tôi ra",
+      "openTooDear": "Có mắt nhìn đấy, nhưng ví thì không. Hòm đó đắt hơn số bạn có. Chọn hòm rẻ hơn đi.",
+      "openWait": "Đang chờ bạn mở",
+      "pickAnother": "Chọn hòm khác",
+      "playLine": "Nút đó đấy. Sẵn sàng thì bấm. Thắng hay thua tôi cũng muốn xem.",
+      "playWait": "Đang chờ bạn chơi",
+      "playWatching": "Chơi đi, tôi đang xem.",
+      "pokes": {
+        "0": "Bấm vào cái hũ, không phải tôi.",
+        "1": "Bạn phải bấm VÀO cái hũ.",
+        "2": "Tôi không phải cái hũ. Cái hũ ở trong ô vuông màu vàng.",
+        "3": "Bạn không thấy ô vuông à? Đây, thử lại xem.",
+        "4": "Bạn đang chế giễu tôi à?",
+        "5": "Vậy mà tôi đã cố tử tế... có vẻ bạn không xứng đáng được tử tế.",
+        "6": "Bạn thấy chuyện này buồn cười lắm à?",
+        "7": "Tôi có thể bỏ đi và không bao giờ cho bạn số dư để chơi.",
+        "8": "Như vậy thì bạn thiệt thôi.",
+        "9": "Nên làm ơn bấm vào cái hũ.",
+        "10": "Làm ơn?",
+        "11": "Bấm vào cái hũ đi, đồ khốn ngốc nghếch.",
+        "12": "...",
+        "13": "...?",
+        "14": "Thôi đi.",
+        "15": "Đừng bấm vào tôi nữa.",
+        "16": "...",
+        "17": "Tôi biết tôi rất đáng để bấm, nhưng...",
+        "18": "Nhưng làm ơn, chỉ bấm vào cái hũ thôi.",
+        "19": "Tôi hứa sẽ không biến mất nếu bạn bấm vào cái hũ.",
+        "20": "Cái hũ không vỡ đâu, bấm đi.",
+        "21": "Sao bạn lại làm khó thế?",
+        "22": "Làm ơn, bấm vào cái hũ.",
+        "23": "...",
+        "24": "Bạn không muốn chơi à?",
+        "25": "Thôi nào, mấy trò mini vui hơn thế này nhiều.",
+        "26": "Tôi sẽ dẫn bạn đi xem. Khi bạn bấm vào cái hũ.",
+        "27": "...",
+        "28": "Đó là cái hũ chết tiệt cho bạn tiền, sao bạn không bấm vào??",
+        "29": "Bạn biết không...",
+        "30": "Hồi nhỏ, tôi luôn mơ có một cái hũ đầy tiền.",
+        "31": "Cuối cùng tôi cũng có. Giờ tôi muốn chia sẻ niềm vui này với mọi người.",
+        "32": "Bạn sẽ thực hiện ước mơ của tôi chứ? Bấm vào cái hũ.",
+        "33": "...",
+        "34": "Bấm vào tôi nếu bạn thích hôn đàn ông.",
+        "35": "Khoan, thật á?"
+      },
+      "potLine": "Bạn sẽ cần K₽ để chơi ở đây, nên tôi cho bạn một ít. Nào, lấy đi. Bấm vào cái hũ.",
+      "potTaken": "Tốt. Đừng lo, hũ tự đầy lại. Khoảng 8 phút nữa nó sẽ đầy lại, nên quay lại đây nếu bạn cần thêm số dư. Giờ tiêu một ít K₽ nào.",
+      "potWait": "Đang chờ bạn bấm",
+      "rangeLine": "Và thanh này quyết định thắng thua. Kéo tay cầm để đổi khoảng thắng của bạn: càng nhiều màu xanh thì càng hay thắng, nhưng mỗi lần thắng được ít hơn. Nút Roll Over đảo bên thắng.",
+      "rollLine": "Quay rồi đấy. Nhìn vòng quay đi.",
+      "rollWait": "Đang quay",
+      "showMissions": "Xem nhiệm vụ của tôi",
+      "start": "Dẫn tôi đi xem",
+      "stepOf": "Bước {{n}}/3",
+      "titleCase": "Một hòm",
+      "titleGame": "Một trò chơi",
+      "titlePot": "Cái hũ",
+      "welcomeBackBody": "Tên tôi là Daisu. Tôi sẽ lo phần thưởng của bạn, nên hãy hòa thuận nhé. Tôi biết bạn đã biết cách chơi rồi, nhưng... bạn có muốn tôi dẫn đi một vòng không?",
+      "welcomeBackTitle": "Xin chào, {{name}}.",
+      "welcomeBody": "Rất vui được gặp bạn, {{name}}. Trông bạn có vẻ lạc lối, nên tôi có một đề nghị: một chuyến tham quan nhanh để học cách chơi. Một phút, có thể hai, nếu bạn theo kịp.",
+      "welcomeTitle": "Ồ? Mặt mới à."
+    },
+    "roadmap": {
+      "chapter": "Chương {{n}}",
+      "chapterDone": "Xong chương {{n}}",
+      "chapterDoneLine": "Được rồi. Hóa ra bạn cũng không đến nỗi vô vọng. Đây là việc tôi muốn bạn làm tiếp.",
+      "chapters": {
+        "1": "Những bước đầu",
+        "2": "Dần quen",
+        "3": "Quay lại thường xuyên",
+        "4": "Khách quen",
+        "5": "Kỳ cựu"
+      },
+      "claim": "Nhận",
+      "claimed": "Đã nhận",
+      "finishedLine": "Bạn làm hết mọi thứ tôi bảo rồi. Tôi sẽ nghĩ thêm. Đừng có tự mãn.",
+      "finishedTitle": "Đã xong mọi chương",
+      "gotIt": "Hiểu rồi",
+      "help": "Trợ giúp",
+      "letsGo": "Đi thôi",
+      "locked": "Hoàn thành các nhiệm vụ trước để mở khóa",
+      "missions": {
+        "r1-bonus": {
+          "desc": "Chơi trò mà phần thưởng của tôi đang nằm ở đó. Giờ là {{game}}.",
+          "help": "Mỗi lần bạn lấy từ hũ, tôi thêm một chút chỉ dùng được cho một trò. Giờ nó ở {{game}}. Cược ở đó một lần là phần thưởng trả trước cả ví của bạn.",
+          "title": "Dùng một phần thưởng của Daisu"
+        },
+        "r1-full-pot": {
+          "desc": "Đợi hũ của tôi đầy rồi hãy lấy. Hũ đầy được thêm 25%.",
+          "help": "Kiên nhẫn. Hũ của tôi đầy sau 8 phút và thanh tiến độ cho biết đã được bao nhiêu. Chỉ lấy khi nó hiện Đầy, bạn sẽ nhận cả hũ kèm thưởng hũ đầy.",
+          "title": "Lấy một hũ đầy"
+        },
+        "r1-level": {
+          "desc": "Mỗi lần cược đều cho XP, thắng hay thua.",
+          "help": "Cấp đến từ việc cược, kết quả thế nào cũng được. Mà cấp càng cao thì hũ của tôi càng lớn, nên lợi gấp đôi.",
+          "title": "Đạt cấp {{target}}"
+        },
+        "r1-pin": {
+          "desc": "Ghim một nhân vật bạn sở hữu lên hồ sơ. Ai ghé thăm cũng thấy.",
+          "help": "Mở kho đồ và bấm trái tim trên nhân vật bạn thích nhất. Chỉ ghim được một, và chỉ nhân vật đó được tính trên bảng Fan Số Một.",
+          "title": "Ghim một nhân vật"
+        },
+        "r2-games": {
+          "desc": "Cược vào {{target}} trò khác nhau. Mỗi trò một lần là đủ.",
+          "help": "Crash, slots, xúc xắc, blackjack, trò nào cũng được. Mỗi trò trong {{target}} trò khác nhau cược một lần là xong, biết đâu bạn tìm được trò ưng ý.",
+          "title": "Chơi {{target}} trò khác nhau"
+        },
+        "r2-gift": {
+          "desc": "Quay quà hằng ngày của tôi một lần. Miễn phí, ngày nào cũng có.",
+          "help": "Mỗi ngày tôi có một món quà cho bạn: quay và lấy giải. Mở nó từ thẻ của tôi khi nó sáng lên.",
+          "title": "Quay quà hằng ngày"
+        },
+        "r2-level": {
+          "desc": "Cứ cược tiếp. Mỗi lần cược đều cho XP.",
+          "help": "Như lúc nãy, chỉ là nhiều hơn. Cấp {{target}} cũng làm hũ của tôi lớn hơn, nên đừng lười.",
+          "title": "Đạt cấp {{target}}"
+        },
+        "r2-sell": {
+          "desc": "Bán lại thứ bạn thắng được để lấy K₽.",
+          "help": "Mọi thứ ra từ hòm đều bán lại được lấy K₽. Mở kho đồ, chọn một vật phẩm và bán. Giữ lại những thứ bạn thích.",
+          "title": "Bán một vật phẩm"
+        },
+        "r3-cases": {
+          "desc": "Mở {{target}} hòm, hòm nào cũng được.",
+          "help": "Hòm rẻ tính như hòm đắt, và mở nhiều hòm một lúc thì tính từng hòm.",
+          "title": "Mở {{target}} hòm"
+        },
+        "r3-collection": {
+          "desc": "Mở một bộ sưu tập hòm của bạn.",
+          "help": "Mỗi hòm có một bộ sưu tập: tất cả vật phẩm nó có thể ra. Lấy Sổ sưu tập ở cửa hàng của tôi, rồi mở một bộ từ tab Bộ sưu tập trong hồ sơ và xem bạn còn thiếu gì.",
+          "title": "Xem một bộ sưu tập"
+        },
+        "r3-market": {
+          "desc": "Mua hoặc bán một vật phẩm ở chợ.",
+          "help": "Chợ là nơi người chơi giao dịch với nhau. Lấy Giấy phép giao dịch ở cửa hàng của tôi, rồi mua thứ bạn muốn, hoặc đăng bán một vật phẩm của bạn và chờ người mua.",
+          "title": "Giao dịch ở chợ"
+        },
+        "r3-streak": {
+          "desc": "Quay quà hằng ngày {{target}} ngày liên tiếp.",
+          "help": "Ngày nào cũng quay lại và quay. Bỏ một ngày là chuỗi bắt đầu lại, và chuỗi càng dài thì giải càng xịn.",
+          "title": "Chuỗi quà {{target}} ngày"
+        },
+        "r4-collection": {
+          "desc": "Sở hữu mọi vật phẩm trong bộ sưu tập của một hòm.",
+          "help": "Chọn một hòm và gom đủ mọi thứ nó có thể ra, bằng cách mở hoặc mua ở chợ. Được tính ngay khi bạn có đủ.",
+          "title": "Hoàn thành một bộ sưu tập"
+        },
+        "r4-level": {
+          "desc": "Cứ cược tiếp. Mỗi lần cược đều cho XP.",
+          "help": "Giờ thì bạn biết cách rồi. Cấp {{target}}. Đi đi.",
+          "title": "Đạt cấp {{target}}"
+        },
+        "r4-stake": {
+          "desc": "Cược tổng cộng {{target}} K₽, vào bất cứ thứ gì.",
+          "help": "Lần cược nào cũng tính: trò chơi, hòm, đấu hòm và dự đoán. Cộng dồn nhanh hơn bạn nghĩ.",
+          "title": "Cược {{target}} K₽"
+        },
+        "r4-streak": {
+          "desc": "Quay quà hằng ngày {{target}} ngày liên tiếp.",
+          "help": "Trọn một tuần, không sót ngày nào. Bỏ một ngày là tôi biết.",
+          "title": "Chuỗi quà {{target}} ngày"
+        },
+        "r5-battle": {
+          "desc": "Thắng một trận đấu hòm với người chơi khác.",
+          "help": "Trong trận đấu, ai cũng mở cùng các hòm và tổng giá trị cao nhất lấy hết. Tạo hoặc tham gia một trận ở trang Đấu hòm.",
+          "title": "Thắng một trận đấu hòm"
+        },
+        "r5-level": {
+          "desc": "Cứ cược tiếp. Mỗi lần cược đều cho XP.",
+          "help": "Cấp {{target}}. Hầu hết mọi người không bao giờ tới được đây. Chứng minh bạn không phải hầu hết mọi người.",
+          "title": "Đạt cấp {{target}}"
+        },
+        "r5-stake": {
+          "desc": "Cược tổng cộng {{target}} K₽, vào bất cứ thứ gì.",
+          "help": "Nửa triệu. Bạn không còn là người mới nữa, nên đừng hành xử như người mới.",
+          "title": "Cược {{target}} K₽"
+        },
+        "r5-top-fan": {
+          "desc": "Làm fan số một của nhân vật bạn đã ghim.",
+          "help": "Bảng Fan Số Một xếp người chơi theo số bản sao nhân vật đã ghim mà họ sở hữu. Ghim một nhân vật, sở hữu nhiều nhất và vương miện là của bạn.",
+          "title": "Trở thành Fan Số Một"
+        }
+      },
+      "progress": "Xong {{done}}/{{total}}"
+    },
+    "achievements": {
+      "count": "Đã mở {{done}}/{{total}} thành tích",
+      "ready": "{{n}} thành tích chờ nhận",
+      "tab": "Thành tích",
+      "unlocked": "Mở khóa thành tích"
+    },
+    "help": {
+      "battle": {
+        "line": "Chọn hòm ở bên dưới, rồi nút này bắt đầu trận đấu. Ai cũng mở cùng các hòm và tổng giá trị cao nhất lấy hết."
+      },
+      "bonus": {
+        "play": "Giờ chơi một ván đi. Cược bao nhiêu cũng tính, và phần thưởng trả trước.",
+        "strip": "Đây là phần thưởng của tôi, ngay trên mức cược của bạn, kèm đồng hồ. Cược ở đây sẽ dùng nó trước ví của bạn.",
+        "take": "Giờ chưa có phần thưởng. Lấy từ hũ của tôi và một chút thêm sẽ rơi vào {{game}}.",
+        "takeWait": "Đang chờ bạn lấy"
+      },
+      "cases": {
+        "line": "Hòm nào cũng tính, rẻ hay đắt. Chọn một hòm và mở."
+      },
+      "chat": {
+        "line": "Gõ vào đây là ai cũng thấy. Tử tế vào, không thì ít nhất cũng phải vui."
+      },
+      "collection": {
+        "complete": "Thanh này cho biết bạn có bao nhiêu trong mỗi bộ sưu tập. Gom đủ một bộ và huy hiệu của nó là của bạn.",
+        "line": "Mỗi hòm có một bộ sưu tập. Mở một bộ để xem bạn có gì và còn thiếu gì.",
+        "wait": "Đang chờ bạn mở một bộ"
+      },
+      "eyebrow": "Trợ giúp · {{mission}}",
+      "fans": {
+        "line": "Tab này cho thấy mọi nhân vật bạn sở hữu và bạn còn cách Fan Số Một bao xa. Ghim nhân vật bạn gần nhất."
+      },
+      "games": {
+        "line": "Chọn một trò, trò nào cũng được. Tôi sẽ chỉ bạn nhập mức cược ở đâu và bấm nút nào để chơi."
+      },
+      "gift": {
+        "later": "Hôm nay bạn quay rồi. Đồng hồ cho biết khi nào lượt tiếp theo sẵn sàng. Bỏ lỡ là chuỗi bắt đầu lại.",
+        "pick": "Chọn một bộ sưu tập. Quà là một hòm trong đó, và chuỗi càng dài thì quà càng xịn.",
+        "spin": "Giờ quay đi. Rồi mai quay lại quay tiếp, không thì chuỗi bắt đầu lại.",
+        "wait": "Đang chờ bạn quay"
+      },
+      "market": {
+        "line": "Mọi thứ người chơi đang bán đều ở đây. Mở một vật phẩm để mua hoặc trả giá, và bạn cũng đăng bán đồ của mình từ trang này được."
+      },
+      "pin": {
+        "done": "Ghim rồi. Giờ ai mở hồ sơ của bạn cũng thấy. Gu cũng không tệ nhỉ.",
+        "empty": "Chưa có gì để ghim. Mở một hòm trước, rồi quay lại chọn nhân vật yêu thích.",
+        "line": "Thấy mấy trái tim chưa? Bấm vào trái tim trên nhân vật bạn thích nhất. Ai ghé hồ sơ của bạn cũng thấy bạn chọn ai, nên chọn cho kỹ.",
+        "linePhone": "Thấy mấy trái tim chưa? Chạm vào trái tim trên nhân vật bạn thích nhất. Ai ghé hồ sơ của bạn cũng thấy bạn chọn ai, nên chọn cho kỹ.",
+        "wait": "Đang chờ trái tim"
+      },
+      "pot": {
+        "line": "Hũ của tôi đây. Thanh đầy sau 8 phút, và hũ đầy còn trả thêm thưởng hũ đầy. Lấy sớm thì bạn chỉ nhận được phần đang có."
+      },
+      "predictions": {
+        "line": "Mỗi thẻ là một thị trường. Mở một thẻ, chọn một kết quả và mua cổ phần; chúng trả thưởng nếu điều đó xảy ra, và bạn có thể bán trước đó."
+      },
+      "sell": {
+        "done": "Bán rồi. Số K₽ đó đã về ví của bạn. Thấy chưa? Dễ mà.",
+        "empty": "Chưa có gì để bán. Mở một hòm trước đã.",
+        "line": "Rê chuột lên một vật phẩm và bấm nút bán của nó. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
+        "linePhone": "Chạm vào một vật phẩm và bán một bản. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
+        "wait": "Đang chờ bạn bán"
+      },
+      "showMe": "Xem cách làm",
+      "stop": "Dừng trợ giúp"
+    },
+    "shop": {
+      "after": "Số dư sau khi mua",
+      "buy": "Mua",
+      "buyFor": "Mua với {{amount}}",
+      "failed": "Không mua được. Thử lại nhé.",
+      "items": {
+        "chatPass": {
+          "about": "Cho phép bạn gửi tin nhắn trong khung chat của trang. Chỉ đọc thì không bao giờ cần vé.",
+          "getIt": "Lấy vé",
+          "kept": "giữ lại nhờ lịch sử trò chuyện",
+          "lockedBody": "Cấp {{level}} · {{price}} ở cửa hàng của Daisu",
+          "lockedTitle": "Muốn nói cần Vé trò chuyện",
+          "name": "Vé trò chuyện",
+          "opened": "Giờ bạn nói được rồi. Cố nói gì đó thú vị nhé. Muốn tôi chỉ chỗ không?",
+          "pitch": "Trả tiền để được nói. Có người còn trả tiền để bạn im lặng đấy.",
+          "what": "Nói chuyện trong khung chat của trang. Đọc thì luôn miễn phí."
+        },
+        "collectionBook": {
+          "about": "Mở tab Bộ sưu tập: mọi hòm bạn sưu tầm, những gì bạn còn thiếu và cách bán đồ trùng thật nhanh. Hoàn thành trọn một bộ sưu tập sẽ được huy hiệu của nó.",
+          "getIt": "Mua ở cửa hàng của Daisu",
+          "kept": "giữ lại nhờ huy hiệu bộ sưu tập",
+          "lockedBody": "Sổ sưu tập theo dõi mọi hòm bạn sưu tầm, cho thấy những gì còn thiếu và bán đồ trùng của bạn một lượt.",
+          "lockedTitle": "Bộ sưu tập đang bị khóa",
+          "name": "Sổ sưu tập",
+          "opened": "Của bạn rồi. Tab Bộ sưu tập đã mở. Muốn tôi dẫn bạn đi xem không? Nhiều trang lắm đấy.",
+          "pitch": "Cả một cuốn sổ cho bộ sưu tập của bạn. Cố đừng khóc khi thấy nó trống thế nào.",
+          "what": "Mở tab Bộ sưu tập: mọi hòm bạn sưu tầm, những gì còn thiếu và cách bán đồ trùng thật nhanh."
+        },
+        "predictionPass": {
+          "about": "Mở mục dự đoán: mua cổ phần về những gì sắp xảy ra và bán khi giá chuyển động có lợi cho bạn.",
+          "getIt": "Mua ở cửa hàng của Daisu",
+          "kept": "giữ lại nhờ lịch sử dự đoán",
+          "lockedBody": "Vé dự đoán cho bạn mua cổ phần về những gì sắp xảy ra và bán khi giá thay đổi.",
+          "lockedTitle": "Dự đoán đang bị khóa",
+          "name": "Vé dự đoán",
+          "opened": "Mục dự đoán đã mở. Muốn tôi chỉ cách một thị trường hoạt động không?",
+          "pitch": "Cược vào tương lai. Trưởng thành quá nhỉ.",
+          "what": "Mua cổ phần về những gì sắp xảy ra và bán khi giá thay đổi."
+        },
+        "tradersLicense": {
+          "about": "Cho phép bạn mua từ người chơi khác, đặt lệnh mua và đăng bán vật phẩm của bạn ở chợ.",
+          "getIt": "Lấy giấy phép",
+          "kept": "giữ lại nhờ lịch sử giao dịch",
+          "lockedBody": "Bạn cứ xem thoải mái. Giấy phép giá {{price}} từ cấp {{level}}, ở cửa hàng của Daisu.",
+          "lockedTitle": "Mua bán cần Giấy phép giao dịch",
+          "name": "Giấy phép giao dịch",
+          "opened": "Có giấy phép rồi. Mua, đăng bán, đặt lệnh, cả cái chợ là của bạn. Muốn tôi dẫn đi xem không?",
+          "pitch": "Giấy tờ chính thức để bạn mặc cả với người lạ. Đừng để bị lừa. À mà cứ bị lừa đi, buồn cười lắm.",
+          "what": "Mua từ người chơi khác và đăng bán vật phẩm của bạn ở chợ."
+        }
+      },
+      "level": "Cấp {{n}}",
+      "locked": "Đã khóa",
+      "needs": "Cần",
+      "notNow": "Để sau",
+      "price": "Giá",
+      "short": "Thiếu {{amount}}",
+      "subtitle": "Những thứ mở ra phần còn lại của nơi này.",
+      "tab": "Cửa hàng",
+      "title": "Cửa hàng của Daisu",
+      "unlocked": "Đã mở khóa",
+      "yours": "Của bạn"
+    }
   },
   "dice": {
     "dice": "Xúc xắc",
@@ -828,7 +1428,7 @@
     "game": "TRÒ CHƠI",
     "houseEdge": "LỢI THẾ NHÀ CÁI",
     "edgeVaries": "thay đổi",
-    "notScored": "Upgrade đặt vật phẩm chứ không phải KP nên không được điểm. Giao dịch chợ và phần thưởng 8 phút không phải là cược nên không bao giờ được tính.",
+    "notScored": "Upgrade đặt vật phẩm chứ không phải K₽ nên không được điểm. Giao dịch chợ và phần thưởng 8 phút không phải là cược nên không bao giờ được tính.",
     "resultTitle": "HÔM QUA BẠN VỀ #{{rank}}",
     "resultPoints": "{{points}} điểm",
     "resultPaid": "Đã cộng vào số dư khi bảng làm mới lúc nửa đêm.",
@@ -952,7 +1552,8 @@
     "games": "Trò chơi",
     "gettingStarted": "Bắt đầu",
     "missionComplete": "Hoàn thành nhiệm vụ",
-    "missionsArePrivate": "Nhiệm vụ là riêng tư."
+    "missionsArePrivate": "Nhiệm vụ là riêng tư.",
+    "secret": "Bí mật"
   },
   "nav": {
     "adClosedEarlyNo": "Đóng quảng cáo quá sớm, không có thưởng",

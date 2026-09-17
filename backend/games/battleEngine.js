@@ -15,6 +15,7 @@ const {
 } = require("../utils/provablyFair");
 const { buildRangeTable } = require("../utils/caseRanges");
 const { getOrCreateActiveSeed } = require("../utils/seeds");
+const badges = require("../utils/badges");
 
 const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
 
@@ -236,6 +237,7 @@ async function finishBattle(battle, io = noopIo) {
     if (invItems.length) {
       await User.updateOne({ _id: w.userId }, { $push: { inventory: { $each: invItems } } });
       await fandom.touch(w.userId, invItems.map((it) => it._id));
+      await badges.touchCollections(w.userId, invItems.map((it) => it._id));
     }
   }
 

@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import Modal from "./Modal";
+import UserContext from "../UserContext";
 import MainButton from "./MainButton";
 import i18n from "../i18n";
 
@@ -27,6 +28,8 @@ const steps = () => [
 
 const OnboardingModal = () => {
   const { pathname } = useLocation();
+  // daisu's beta gets her tour instead of this one
+  const userData = useContext(UserContext)?.userData;
   // storage can be blocked; then the tour shows every visit, which is harmless
   const [open, setOpen] = useState<boolean>(() => {
     try {
@@ -47,7 +50,7 @@ const OnboardingModal = () => {
 
   // a visitor arriving from the discord bot is mid-task, and this would cover the panel
   // they came to use. the tour waits until they reach the site proper.
-  if (!open || pathname.startsWith("/link/")) return null;
+  if (!open || pathname.startsWith("/link/") || userData?.features?.daisu) return null;
 
   return (
     <Modal open={open} setOpen={dismiss} width="520px">

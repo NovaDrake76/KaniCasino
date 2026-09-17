@@ -9,6 +9,8 @@ export interface NavLink {
   path: string;
   icon: JSX.Element;
   badge?: JSX.Element;
+  // opens something in place of navigating; the path still serves a middle click
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 // one list for the navbar menu and the sidebar, so a new game is added in one place.

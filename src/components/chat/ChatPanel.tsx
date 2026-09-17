@@ -7,6 +7,8 @@ import Avatar from "../Avatar";
 import Badge from "../Badge";
 import RainPool from "./RainPool";
 import useChat from "./useChat";
+import LockedChat from "../daisu/shop/LockedChat";
+import { useLocked } from "../daisu/shop/useLocked";
 import type { ChatMessage } from "../../services/chat/ChatService";
 import i18n from "../../i18n";
 
@@ -66,6 +68,7 @@ const Message = ({ message, onReport }: { message: ChatMessage; onReport: (id: s
 
 const ChatPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const { messages, loaded, error, sending, send, report, clearError, me } = useChat(open);
+  const locked = useLocked("chatPass");
   const [draft, setDraft] = useState("");
   const [reported, setReported] = useState<string | null>(null);
   const [showRules, setShowRules] = useState(false);
@@ -144,8 +147,10 @@ const ChatPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
 
       {showRules && <ChatRules onClose={() => setShowRules(false)} />}
 
-      {me ? (
-        <form onSubmit={submit} className="flex gap-1.5 border-t border-line p-2">
+      {me && locked ? (
+        <LockedChat />
+      ) : me ? (
+        <form onSubmit={submit} data-tour="chat-input" className="flex gap-1.5 border-t border-line p-2">
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value.slice(0, MAX_LENGTH))}

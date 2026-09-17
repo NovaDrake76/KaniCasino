@@ -157,6 +157,10 @@ const marketBuyLimiter = perUser(30, "Too many purchases, slow down a little.");
 // listing and buy orders both write a row that other players then read
 const marketWriteLimiter = perUser(30, "Too many marketplace writes, slow down a little.");
 
+// the pot prices a take by time, so this only bounds the writes: the jar sends a run of
+// clicks once they pause for four seconds, about fifteen a minute at the very most
+const potClaimLimiter = perUser(30, "Too many takes, slow down a little.", 60 * 1000);
+
 module.exports = {
   artLimiter,
   loginLimiter,
@@ -173,4 +177,5 @@ module.exports = {
   blackjackActionLimiter,
   marketBuyLimiter,
   marketWriteLimiter,
+  potClaimLimiter,
 };

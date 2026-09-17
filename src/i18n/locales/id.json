@@ -40,7 +40,7 @@
     "comingSoonLine": "Arcade baru dibuka. Beri tahu kami di Discord apa yang harus ditambahkan berikutnya.",
     "comingSoonTitle": "Game lain segera hadir",
     "halo": {
-      "adoptedNote": "Kamu memainkan ini sebelum masuk, jadi tetap dihitung untuk rentetan tapi tidak membayar KP.",
+      "adoptedNote": "Kamu memainkan ini sebelum masuk, jadi tetap dihitung untuk rentetan tapi tidak membayar K₽.",
       "attemptsLeft": "Sisa percobaan: {{count}}",
       "attr": {
         "academy": "Akademi",
@@ -94,7 +94,7 @@
       "search": "Cari murid",
       "share": "Salin hasil",
       "signIn": "Masuk",
-      "signInLine": "Masuk sebelum bermain untuk menjaga rentetan dan menang hingga {{amount}} KP per hari.",
+      "signInLine": "Masuk sebelum bermain untuk menjaga rentetan dan menang hingga {{amount}} K₽ per hari.",
       "solvedToday": "{{count}} Sensei menebak murid ini hari ini",
       "solvedToday_one": "{{count}} Sensei menebak murid ini hari ini",
       "statsTitle": "Rekormu",
@@ -217,6 +217,8 @@
     "coinflip_win": "Menang dengan lemparan koin",
     "crash_bet": "Taruhan Crash",
     "crash_cashout": "Crash dicairkan",
+    "game_credit": "Bonus dari Daisu",
+    "game_credit_expired": "Bonus dari Daisu kedaluwarsa",
     "item_sell": "Barang laris di toko",
     "market_buy": "Penukaran pada pemasaran",
     "market_order": "Pesanan pembelian telah ditempatkan",
@@ -323,6 +325,7 @@
       "failed": "Gagal terkirim. Coba lagi.",
       "language": "Tolong jaga bahasanya.",
       "level": "Naikkan level agar bisa mengobrol.",
+      "locked": "Kamu butuh Pass Obrolan dari toko Daisu untuk bicara.",
       "muted": "Kamu dibisukan selama beberapa menit.",
       "noLinks": "Tautan tidak diizinkan di obrolan.",
       "off": "Obrolan sedang dimatikan.",
@@ -337,7 +340,7 @@
     "report": "Laporkan pesan ini",
     "reported": "Dilaporkan. Terima kasih.",
     "rules": {
-      "begging": "Jangan meminta KP atau item.",
+      "begging": "Jangan meminta K₽ atau item.",
       "promo": "Dilarang menaruh tautan, kode referal, atau promosi milikmu.",
       "respect": "Tidak ada rasisme, pelecehan, atau makian. Laporkan, jangan dibalas.",
       "spam": "Dilarang spam atau banjir pesan. Bisa kena mute.",
@@ -448,6 +451,603 @@
     "placeBet": "Taruh taruhan",
     "profitOnWin": "Keuntungan pada kemenangan",
     "queuedClickToCancel": "Ditunggu (klik buat batalin)"
+  },
+  "daisu": {
+    "activeBonuses": "Kamu punya bonus aktif",
+    "back": "Kembali ke Daisu",
+    "bonusBubble": "Bonus {{game}}, {{clock}}",
+    "bonusExpired": "Bonus {{game}} kedaluwarsa",
+    "bonusHurry": "Main sebelum habis",
+    "bonusNewOne": "Ambil dari toples untuk yang baru",
+    "bonusPaysAll": "Dibayar dengan bonus:",
+    "bonusPaysFirst": "bayar duluan",
+    "bonusSpentFirst": "dipakai sebelum dompetmu",
+    "bonusSplit": "{{bonus}} dari bonus, {{wallet}} dari dompet",
+    "bonusTitle": "Bonus dari Daisu",
+    "bonusUsedOn": "Dipakai duluan untuk taruhan {{game}}",
+    "bubbleGift": "Hadiah",
+    "clickHint": "Klik toples untuk mengambil isinya",
+    "close": "Tutup",
+    "collect": "Ambil",
+    "couldNotClaim": "Tidak bisa mengambil dari toples",
+    "empty": "Kosong",
+    "full": "Penuh",
+    "fullBonus": "Bonus toples penuh +{{bonus}}%",
+    "fullIn": "Penuh dalam {{clock}}",
+    "giftOpen": "Buka",
+    "giftReady": "Daisu punya hadiah untukmu",
+    "jar": "Toples",
+    "keeps": "penjaga toples",
+    "loading": "...",
+    "missionsDone": "{{done}} dari {{total}} misi selesai",
+    "nextPick": "Berikutnya: {{game}}, setelah {{amount}} lagi",
+    "ofFull": "dari {{full}}",
+    "open": "Buka Daisu",
+    "pending": "{{amount}} sedang menuju dompetmu",
+    "pickLine": "Tambahan {{share}}% dari setiap pengambilan masuk ke {{game}}",
+    "pickTitle": "Pilihan Daisu",
+    "play": "Main",
+    "roomTitle": "Kamar Daisu",
+    "tabMissions": "Misi",
+    "visit": "Kunjungi kamar Daisu",
+    "lines": {
+      "hello": {
+        "0": "Oh, kamu kembali. Jangan senang dulu, toplesnya masih terisi.",
+        "1": "Lama banget. Hampir saja kuhabiskan sendiri.",
+        "2": "Oh, halo, Tuan Penjudi. Sudah bangkrut?",
+        "3": "All in lagi? wkwkwk~",
+        "4": "All in, tiap 8 menit.",
+        "5": "Senang melihatmu lagi, Tuan Penjudi.",
+        "6": "Bukan, aku bukan orang Jerman.",
+        "7": "Telinga kucing ini? Aksesori, maaf mengecewakanmu.",
+        "8": "Maaf, aku tidak pacaran dengan cowok bangkrut.",
+        "9": "Aku? Aku kerja paruh waktu untuk menghidupi adikku.",
+        "10": "Satu kotak lagi saja, ayolah.",
+        "11": "Tidak terjadi apa-apa tanggal 31 Agustus.",
+        "12": "Kamu harus naik pakai martingale.",
+        "13": "Nomorku? Aku lagi nonton reels, maaf.",
+        "14": "Crash berikutnya bakal 430.2X.",
+        "15": "3 blackjack berturut-turut? Kamu bercanda?",
+        "16": "Membunuh itu tidak dibenarkan.",
+        "17": "Kalau kamu terus berjudi begini, tahun depan aku beli mobil baru.",
+        "18": "Aku sudah menunjukkan kode sumberku, tolong jawab aku.",
+        "19": "Orang di peringkat 1 papan skor? Tidak, dia tidak bicara denganku.",
+        "20": "Ulang tahunku? Tanggal 7 Juli.",
+        "21": "Keberuntungan berpihak pada orang bodoh.",
+        "22": "Tora! Tora! Tora!",
+        "23": "Hati-hati dengan bola hitam yang melayang di antara pepohonan saat malam.",
+        "24": "Ini D-Day.",
+        "25": "Slotnya tidak dicurangi, aku yakin uangmu bakal kembali.",
+        "26": "Brutal.",
+        "27": "Kenapa Dogs Case tidak ada di daftar paling banyak dibuka?",
+        "28": "90% penjudi lupa membuka hadiah harian.",
+        "29": "Momokinha do céu que brutal",
+        "30": "Watanawhat?",
+        "31": "Aku punya Discord, tahu? Kamu harus gabung ke servernya.",
+        "32": "Maksudmu namanya bukan Twitter lagi?",
+        "33": "Nipah? Kita tanam di B?",
+        "34": "Tuan Penjudi, waspadalah dengan kiwi laser.",
+        "35": "Pencapaian rahasia? Kamu bisa lihat di kode sumber.",
+        "36": "Hah? Kepitingnya di mana?"
+      },
+      "full": {
+        "0": "Sudah penuh. Jadi? Ambil sebelum aku berubah pikiran.",
+        "1": "Lihat itu. Penuh. Padahal kamu hampir tidak melakukan apa-apa.",
+        "2": "Toplesnya akhirnya penuh. Ambil.",
+        "3": "Waktunya main lagi.",
+        "4": "Ini hadiahmu sebagai penjudi yang baik."
+      },
+      "filling": {
+        "0": "Tidak sabar, ya? Ada {{amount}} di dalam. Lemah.",
+        "1": "{{amount}} sekarang, atau tunggu {{clock}} untuk bonus toples penuh seperti orang dewasa.",
+        "2": "Colek toplesnya kalau perlu. Ada {{amount}}. Jangan nangis nanti.",
+        "3": "Kalau kamu tunggu sebentar lagi, kamu dapat bonus bagus.",
+        "4": "Wah Wah.",
+        "5": "Jadi kamu salah satu yang tidak sabaran, ya?"
+      },
+      "empty": {
+        "0": "KOSONG. Kamu baru saja mengambilnya. Belajar menghitung.",
+        "1": "Tidak ada apa-apa. Klik buat iseng? ...Lucu.",
+        "2": "Nol. Tunggu sebentar, dasar rakus."
+      },
+      "failed": {
+        "0": "Ugh, lepas dari tanganku. Tenang, semuanya masih di toples. Klik lagi.",
+        "1": "Yang tadi tidak masuk. Jangan pasang muka begitu, tidak ada yang hilang. Coba lagi.",
+        "2": "Ada yang salah, tunggu sebentar.",
+        "3": "Hm... Sepertinya ada masalah dengan server. Minta bantuan di Discord."
+      },
+      "bonusExpiring": {
+        "0": "Aku sudah kasih bonus di {{game}}, tidak mau main? Berakhir dalam {{left}}.",
+        "1": "Kamu harus main {{game}}, aku sudah kasih bonus bagus."
+      },
+      "bonusExpired": {
+        "0": "Terlalu lambat. Bonus {{game}}-mu kuambil lagi. Mungkin lain kali, lamban.",
+        "1": "Hilang. {{credit}} di {{game}} sekarang milikku. Siapa suruh ngantuk."
+      },
+      "claimed": {
+        "0": "Nih, {{amount}}. Jangan habis dalam satu putaran. Pasti habis sih.",
+        "1": "{{amount}}. Sama-sama. Bilang terima kasih.",
+        "2": "Ya sudah, {{amount}}. Sekarang pergi menang sesuatu, sekali saja.",
+        "3": "Nih, sana bersenang-senang.",
+        "4": "Ini sistem pity-mu.",
+        "5": "Ambil ini, supaya kamu bisa all in lebih sering.",
+        "6": "Waktunya buka beberapa kotak lagi."
+      },
+      "claimedCredit": {
+        "0": "Kuselipkan {{credit}} untuk {{game}}. Menangkan kembali sebagai K₽ asli, kalau bisa.",
+        "1": "Tambahan {{credit}}, hanya di {{game}}, dan hilang dalam 8 menit. Jangan membantah.",
+        "2": "Ini saldo tambahan untuk main {{game}}."
+      },
+      "pickChanged": {
+        "0": "Satu toples penuh. Game baru: {{game}}. Ayo, aku mengawasi.",
+        "1": "Kamu mengosongkan satu. Tambahanmu sekarang pindah ke {{game}}. Coba ikuti."
+      },
+      "credit": {
+        "0": "Masih belum pakai {{credit}} di {{game}}? Takut?",
+        "1": "{{credit}} menganggur di {{game}}. Menyedihkan. Pergi."
+      },
+      "missionReady": {
+        "0": "Kamu benar-benar menyelesaikan satu. Ambil hadiahmu sebelum aku lupa.",
+        "1": "Hadiahnya siap. Jangan buat aku memegangnya seharian."
+      },
+      "missionDone": {
+        "0": "Ya sudah, {{amount}}. Seperti janjiku. Jangan terbiasa.",
+        "1": "{{amount}}. Lihat? Aku menepati janji. Tidak seperti orang lain."
+      },
+      "broke": {
+        "0": "Sudah bangkrut? Toples penuh dalam {{clock}}. Duduk. Tunggu.",
+        "1": "Tidak ada K₽ dan tidak ada toples. Dua-duanya salahmu. {{clock}}.",
+        "2": "Coba kutebak, kamu lagi percaya diri.",
+        "3": "Kamu all in? wkwkwk~"
+      },
+      "poke0": {
+        "0": "Apa?",
+        "1": "Ya? Aku sibuk.",
+        "2": "Butuh sesuatu, atau memang suka mencolekku?",
+        "3": "Toplesnya di sana. Aku bukan toples.",
+        "4": "Tuan Penjudi, aku bukan toplesnya."
+      },
+      "poke1": {
+        "0": "Berhenti.",
+        "1": "Ada game untuk dimainkan dan kamu malah mencolekku. Lucu.",
+        "2": "Terus saja dan aku mulai menagih.",
+        "3": "Ini seru buatmu? ...Sedikit seru buatku juga."
+      },
+      "poke2": {
+        "0": "Oke, kamu menang. Aku suka kamu. Sedikit. Sekarang berhenti.",
+        "1": "Kamu benar-benar tidak punya kerjaan lain, ya? ...Ya sudah, tinggal saja.",
+        "2": "Colek sekali lagi dan toples berikutnya kusimpan.",
+        "3": "Kamu aneh. Tapi tetap kusimpan."
+      },
+      "gift": {
+        "0": "Aku punya sesuatu untukmu. Jangan dibuat canggung.",
+        "1": "Hadiah. Dariku. Sama-sama, tentu saja."
+      },
+      "room": {
+        "0": "Selamat datang di kamarku, Tuan Penjudi.",
+        "1": "Selamat datang.",
+        "2": "Banyak yang harus kita lakukan."
+      },
+      "helloRank1": {
+        "0": "Senang ya bangkrut terus?",
+        "1": "Cara menyematkanku di profilmu? Maaf, itu khusus VIP.",
+        "2": "Kamu berjudi di dunia nyata? Tidak? Syukurlah.",
+        "3": "Uangnya seharusnya naik, bukan turun.",
+        "4": "Jangan lupa kerjakan misinya, Tuan Penjudi."
+      },
+      "helloRank2": {
+        "0": "Aku sering melihatmu di sini. Kamu tidak datang cuma untukku, kan?",
+        "1": "Jangan bilang siapa-siapa. Hadiah harianmu berikutnya bakal spesial.",
+        "2": "Hai, Tuan Penjudi. Mau mandi? Atau makan malam? Atau mungkin... all in di blackjack?",
+        "3": "Tuan Penjudi, kamu tahu cara menghindari peluru?",
+        "4": "Seperti kataku, aku bukan orang Jerman.",
+        "5": "Iwak."
+      },
+      "helloRank3": {
+        "0": "Buka 100 kotak sekaligus? Maaf, itu tidak bisa kuberikan.",
+        "1": "Item untuk kencan denganku? Itu 40 miliar K₽.",
+        "2": "Gagal jadi peringkat 1? Tenang, kamu akan selalu jadi pecundang nomor 1-ku.",
+        "3": "Aku mau buka beberapa Dogs Case, bisa pinjam sedikit K₽?",
+        "4": "Halo, Tuan Penjudi. Besok aku libur, jadi jangan menangis kalau aku tidak muncul, ya?",
+        "5": "Halo, Tuan Penjudi, aku lagi berusaha dapat lencana top fan si anjing mentega, mau jual beberapa?",
+        "6": "Tuan Penjudi, kamu sudah cukup umur, kan?",
+        "7": "Adikku? Dia tidak boleh berjudi, dia masih anak-anak.",
+        "8": "All in di merah.",
+        "9": "We rise."
+      },
+      "helloRank4": {
+        "0": "Senang melihatmu setiap hari, Tuan Penjudi.",
+        "1": "Sepertinya kamu akhirnya kaya. Sepadan?",
+        "2": "Seharusnya mereka menambah anjing di Dogs Case.",
+        "3": "Mau case battle denganku? Mungkin nanti...",
+        "4": "Tidak, aku tidak punya halo.",
+        "5": "Tuan Penjudi, levelmu sudah tinggi, tapi kamu masih datang menemuiku. Terima kasih.",
+        "6": "Toples sialan ini makin berat!",
+        "7": "Toplesnya makin berat... Jangan-jangan kamu lagi farming XP?"
+      },
+      "helloRank5": {
+        "0": "Aku? Aku lebih suka Hikari.",
+        "1": "Sistem pity? Tidak, aku tidak akan membuatnya.",
+        "2": "Aku bisa memutar Bad Apple di kotak teks ini, mau lihat?",
+        "3": "Kamu top fan? Jadi kamu suka gadis lain, ya...",
+        "4": "Aku ingin sekali punya anjing mentega.",
+        "5": "Berkat kamu, akhirnya aku bisa melunasi biaya kuliahku.",
+        "6": "Shu Shu Po Po~",
+        "7": "Aku juga suka kamu. Sebagai pelanggan.",
+        "8": "Tuan Penjudi, jangan-jangan kamu tidak punya pacar?",
+        "9": "Suatu hari aku akan jadi fumo.",
+        "10": "Bakal ada kepala yang menggelinding kalau aku memecahkan toples ini.",
+        "11": "Aku? Aku monarkis.",
+        "12": "Itu klik ke-100.000 milikmu. Selamat.",
+        "13": "Sekarang kamu sebaiknya all in terus.",
+        "14": "Mereka harus menambah game, kan?",
+        "15": "Akhirnya kita sampai di endgame.",
+        "16": "Ini akhirnya.",
+        "17": "Ingat aku di luar sana.",
+        "18": "Semuanya akan segera berakhir.",
+        "19": "Nihahaha?",
+        "20": "Kamu penjudi sukses pertama yang pernah kutemui."
+      }
+    },
+    "tour": {
+      "bet": {
+        "blackjack": "Ini taruhanmu untuk satu tangan. Dekati 21 lebih dari bandar tanpa lewat. Hit menambah satu kartu, stand bertahan dengan kartu yang ada.",
+        "coinflip": "Ini taruhanmu. Pilih satu sisi koin di bawahnya dan ikut lemparan berikutnya. Menang dibayar 1,94x.",
+        "crash": "Ini taruhanmu. Pengalinya naik terus sampai jatuh; cairkan sebelum itu dan kamu dapat taruhan dikali pengali. Menunggu terlalu lama, hilang semua.",
+        "dice": "Ini taruhanmu: yang kamu pertaruhkan dalam satu lemparan. Dadu memilih angka 0 sampai 100; kamu menang kalau jatuh di sisi hijau. Mulai kecil saja, kamu masih baru.",
+        "hilo": "Ini taruhanmu. Tebak apakah kartu berikutnya lebih tinggi atau lebih rendah; setiap tebakan benar menaikkan hadiahmu. Cairkan kapan saja.",
+        "mines": "Ini taruhanmu. Bom bersembunyi di bawah beberapa petak; setiap petak aman yang kamu buka menaikkan hadiahmu. Cairkan sebelum kena bom.",
+        "plinko": "Ini taruhanmu untuk satu bola. Bola memantul di antara pin dan jatuh ke sebuah pengali. Pinggiran bayar paling besar tapi paling jarang kena.",
+        "slots": "Ini taruhanmu: harga satu putaran. Tombol minus dan plus membaginya dua atau menggandakannya. Jajarkan simbol yang sama untuk menang."
+      },
+      "caseLine": "Mana yang paling kamu suka? Pilih kotak untuk dibuka. Aku suka Dogs Case.",
+      "caseWait": "Menunggu kamu memilih",
+      "continue": "Lanjutkan tur",
+      "decline": "Aku cari tahu sendiri",
+      "doneEven": "Impas? Membosankan, tapi aman. Setiap taruhan tetap memberimu XP, dan makin tinggi levelmu, makin banyak saldo yang kamu dapat dari toplesku.",
+      "doneLose": "Kalah? Semua orang pernah. Setiap taruhan tetap memberimu XP, dan makin tinggi levelmu, makin banyak saldo yang kamu dapat dari toplesku.",
+      "doneOut": "Sekarang pergilah. Kamu bisa bermain bebas, atau mengikuti misi.",
+      "doneTitle": "Tur selesai",
+      "doneWin": "Menang? Keberuntungan pemula, jelas. Setiap taruhan juga memberimu XP, dan makin tinggi levelmu, makin banyak saldo yang kamu dapat dari toplesku.",
+      "drop": {
+        "1": "{{item}}, kelangkaan {{rarity}}. Tidak istimewa. Sekarang sudah di gudangmu, kamu bisa menyimpannya atau menjualnya.",
+        "2": "{{item}}, kelangkaan {{rarity}}. Lumayan untuk percobaan pertama. Sekarang sudah di gudangmu, kamu bisa menyimpannya atau menjualnya.",
+        "3": "{{item}}, kelangkaan {{rarity}}, di percobaan pertama? Beruntung. Sekarang sudah di gudangmu, kamu bisa menyimpannya atau menjualnya.",
+        "4": "{{item}}, kelangkaan {{rarity}}, di kotak pertamamu? ...Aku tidak iri. Sekarang sudah di gudangmu, kamu bisa menyimpannya atau menjualnya.",
+        "5": "{{item}}. {{rarity}}. Di kotak PERTAMAMU. Kamu tahu sudah berapa lama aku... lupakan. Sekarang sudah di gudangmu, kamu bisa menyimpannya atau menjualnya. Jangan berani-berani menjualnya."
+      },
+      "end": "Akhiri tur",
+      "endAnyTime": "Kamu bisa mengakhiri tur di langkah mana pun.",
+      "games": {
+        "blackjack": "kalahkan bandar",
+        "coinflip": "pilih satu sisi",
+        "crash": "cairkan tepat waktu",
+        "dice": "di atas atau di bawah",
+        "hilo": "lebih tinggi atau rendah",
+        "mines": "hindari bom",
+        "plinko": "jatuhkan bola",
+        "slots": "putar dan cocokkan"
+      },
+      "gamesLine": "Membuka kotak bisa cepat jadi mahal, dan toplesku tidak akan cukup. Game bagus untuk mendapat lebih banyak K₽, jadi pilih satu untuk dimainkan sekarang.",
+      "gamesNote": "Setiap taruhan memberimu XP, apa pun pilihanmu.",
+      "later": "Nanti",
+      "next": "Lanjut",
+      "openLine": "Pilihan bagus. Tombol itu membukanya. Tekan, aku mau lihat kamu dapat apa.",
+      "openMeLine": "Itu aku, di pojok bawah. Klik aku dan aku akan terbuka.",
+      "openMeWait": "Menunggu kamu membukaku",
+      "openTooDear": "Seleranya bagus, dompetnya tidak. Yang itu lebih mahal dari saldomu. Pilih yang lebih murah.",
+      "openWait": "Menunggu kamu membuka",
+      "pickAnother": "Pilih kotak lain",
+      "playLine": "Itu tombolnya. Tekan kalau sudah siap. Menang atau kalah, aku mau lihat.",
+      "playWait": "Menunggu kamu main",
+      "playWatching": "Ayo, aku mengawasi.",
+      "pokes": {
+        "0": "Klik toplesnya, bukan aku.",
+        "1": "Kamu harus klik DI toplesnya.",
+        "2": "Aku bukan toples. Toplesnya ada di kotak kuning.",
+        "3": "Kamu tidak lihat kotaknya? Nih, coba sekarang.",
+        "4": "Kamu mengejekku?",
+        "5": "Padahal aku sudah berusaha baik... sepertinya kamu tidak pantas dibaiki.",
+        "6": "Menurutmu ini lucu?",
+        "7": "Aku bisa saja pergi dan tidak pernah memberimu saldo untuk bermain.",
+        "8": "Dan itu buruk untukmu.",
+        "9": "Jadi tolong klik toplesnya.",
+        "10": "Tolong?",
+        "11": "Klik toplesnya, dasar brengsek bodoh.",
+        "12": "...",
+        "13": "...?",
+        "14": "Hentikan.",
+        "15": "Berhenti mengklikku.",
+        "16": "...",
+        "17": "Aku tahu aku sangat bisa diklik, tapi...",
+        "18": "Tapi tolong, klik saja toplesnya.",
+        "19": "Aku janji tidak akan hilang kalau kamu klik toplesnya.",
+        "20": "Toplesnya tidak akan pecah, klik saja.",
+        "21": "Kenapa kamu mempersulit ini?",
+        "22": "Tolong, klik toplesnya.",
+        "23": "...",
+        "24": "Kamu tidak mau main?",
+        "25": "Ayolah, minigame-nya lebih seru dari ini.",
+        "26": "Akan kutunjukkan semuanya. Setelah kamu klik toplesnya.",
+        "27": "...",
+        "28": "Ini toples sialan yang memberimu uang, kenapa tidak kamu klik??",
+        "29": "Begini...",
+        "30": "Waktu kecil, aku selalu bermimpi punya toples penuh uang.",
+        "31": "Akhirnya aku punya. Sekarang aku ingin berbagi kebahagiaan ini dengan semua orang.",
+        "32": "Maukah kamu mewujudkan keinginanku? Klik toplesnya.",
+        "33": "...",
+        "34": "Klik aku kalau kamu suka mencium laki-laki.",
+        "35": "Tunggu, serius?"
+      },
+      "potLine": "Kamu butuh K₽ untuk bermain di sini, jadi akan kuberi sedikit. Ayo, ambil. Klik toplesnya.",
+      "potTaken": "Bagus. Jangan khawatir, toplesnya terisi sendiri. Sekitar 8 menit lagi akan penuh lagi, jadi kembali ke sini kalau butuh saldo tambahan. Sekarang ayo habiskan sedikit K₽.",
+      "potWait": "Menunggu klikmu",
+      "rangeLine": "Dan bar ini yang menentukan. Geser pegangannya untuk mengubah rentang menangmu: makin banyak hijau makin sering menang, tapi tiap kemenangan membayar lebih sedikit. Tombol Roll Over membalik sisi yang menang.",
+      "rollLine": "Mulai berputar. Lihat gulungannya.",
+      "rollWait": "Berputar",
+      "showMissions": "Tunjukkan misiku",
+      "start": "Ajak aku keliling",
+      "stepOf": "Langkah {{n}} dari 3",
+      "titleCase": "Satu kotak",
+      "titleGame": "Satu game",
+      "titlePot": "Toples",
+      "welcomeBackBody": "Namaku Daisu. Aku yang akan mengurus bonusmu, jadi mari akur. Aku tahu kamu sudah tahu cara bermain, tapi... mau kutunjukkan sekeliling?",
+      "welcomeBackTitle": "Halo, {{name}}.",
+      "welcomeBody": "Senang bertemu denganmu, {{name}}. Kamu kelihatan bingung, jadi aku punya tawaran: tur singkat untuk belajar cara bermain. Satu menit, mungkin dua, kalau kamu bisa mengikuti.",
+      "welcomeTitle": "Oh? Wajah baru."
+    },
+    "roadmap": {
+      "chapter": "Bab {{n}}",
+      "chapterDone": "Bab {{n}} selesai",
+      "chapterDoneLine": "Oke. Ternyata kamu tidak separah itu. Ini yang kumau darimu selanjutnya.",
+      "chapters": {
+        "1": "Langkah pertama",
+        "2": "Mulai terbiasa",
+        "3": "Kembali lagi",
+        "4": "Pelanggan tetap",
+        "5": "Veteran"
+      },
+      "claim": "Ambil",
+      "claimed": "Sudah diambil",
+      "finishedLine": "Kamu sudah melakukan semua yang kuminta. Nanti kupikirkan lagi. Jangan keenakan.",
+      "finishedTitle": "Semua bab selesai",
+      "gotIt": "Paham",
+      "help": "Bantuan",
+      "letsGo": "Ayo",
+      "locked": "Selesaikan misi sebelumnya untuk membuka",
+      "missions": {
+        "r1-bonus": {
+          "desc": "Mainkan game tempat bonusku berada. Sekarang di {{game}}.",
+          "help": "Setiap kamu mengambil dari toplesku, aku tambahkan sedikit ekstra yang hanya berlaku di satu game. Sekarang ada di {{game}}. Bertaruh di sana sekali dan bonusnya membayar lebih dulu dari dompetmu.",
+          "title": "Pakai bonus dari Daisu"
+        },
+        "r1-full-pot": {
+          "desc": "Tunggu sampai toplesku penuh, baru ambil. Toples penuh bayar 25% lebih banyak.",
+          "help": "Sabar. Toplesku terisi dalam 8 menit dan bilahnya menunjukkan sejauh mana. Ambil hanya saat tertulis Penuh, dan kamu dapat seluruh toples plus bonus toples penuh.",
+          "title": "Ambil toples penuh"
+        },
+        "r1-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Level datang dari bertaruh, apa pun hasilnya. Dan makin tinggi levelmu, makin besar toplesku, jadi untung dua kali.",
+          "title": "Capai level {{target}}"
+        },
+        "r1-pin": {
+          "desc": "Sematkan karakter milikmu di profil. Semua yang berkunjung bisa melihatnya.",
+          "help": "Buka gudangmu dan tekan hati pada karakter yang paling kamu suka. Hanya bisa satu, dan hanya itu yang dihitung di papan Top Fan.",
+          "title": "Sematkan karakter"
+        },
+        "r2-games": {
+          "desc": "Bertaruh di {{target}} game berbeda. Sekali per game cukup.",
+          "help": "Crash, slot, dadu, blackjack, terserah. Satu taruhan di masing-masing {{target}} game berbeda sudah cukup, siapa tahu kamu menemukan favorit.",
+          "title": "Mainkan {{target}} game berbeda"
+        },
+        "r2-gift": {
+          "desc": "Putar bansos harian dariku sekali. Gratis, setiap hari.",
+          "help": "Sekali sehari aku punya hadiah untukmu: putar dan ambil hadiahnya. Buka dari kartuku saat menyala.",
+          "title": "Putar bansos harian"
+        },
+        "r2-level": {
+          "desc": "Terus bertaruh. Setiap taruhan memberi XP.",
+          "help": "Sama seperti tadi, cuma lebih banyak. Level {{target}} juga membuat toplesku lebih besar, jadi jangan malas.",
+          "title": "Capai level {{target}}"
+        },
+        "r2-sell": {
+          "desc": "Jual kembali barang yang kamu menangkan untuk K₽.",
+          "help": "Apa pun yang keluar dari kotak bisa dijual kembali jadi K₽. Buka gudangmu, pilih barang, lalu jual. Simpan yang kamu suka.",
+          "title": "Jual barang"
+        },
+        "r3-cases": {
+          "desc": "Buka {{target}} kotak, kotak apa saja.",
+          "help": "Yang murah dihitung sama dengan yang mahal, dan membuka beberapa sekaligus dihitung satu per satu.",
+          "title": "Buka {{target}} kotak"
+        },
+        "r3-collection": {
+          "desc": "Buka salah satu koleksi kotakmu.",
+          "help": "Setiap kotak punya koleksi: semua barang yang bisa keluar darinya. Dapatkan Buku Koleksi di tokoku, lalu buka satu dari tab Koleksi di profilmu dan lihat apa yang masih kurang.",
+          "title": "Lihat sebuah koleksi"
+        },
+        "r3-market": {
+          "desc": "Beli atau jual barang di pasar.",
+          "help": "Pasar tempat para pemain berdagang satu sama lain. Dapatkan Lisensi Pedagang di tokoku, lalu beli barang yang kamu mau, atau pasang barangmu dan tunggu pembeli.",
+          "title": "Berdagang di pasar"
+        },
+        "r3-streak": {
+          "desc": "Putar bansos harian {{target}} hari berturut-turut.",
+          "help": "Datang tiap hari dan putar. Lewat sehari, beruntunnya mulai lagi, dan makin panjang beruntunnya, makin bagus hadiahnya.",
+          "title": "Beruntun {{target}} hari bansos"
+        },
+        "r4-collection": {
+          "desc": "Miliki semua barang di koleksi satu kotak.",
+          "help": "Pilih satu kotak dan kumpulkan semua yang bisa keluar darinya, dari membuka atau membeli di pasar. Langsung dihitung begitu semuanya lengkap.",
+          "title": "Lengkapi sebuah koleksi"
+        },
+        "r4-level": {
+          "desc": "Terus bertaruh. Setiap taruhan memberi XP.",
+          "help": "Kamu sudah tahu caranya. Level {{target}}. Ayo.",
+          "title": "Capai level {{target}}"
+        },
+        "r4-stake": {
+          "desc": "Taruhkan total {{target}} K₽, di mana saja.",
+          "help": "Setiap taruhan dihitung: game, kotak, adu gacor, dan prediksi. Terkumpulnya lebih cepat dari yang kamu kira.",
+          "title": "Taruhkan {{target}} K₽"
+        },
+        "r4-streak": {
+          "desc": "Putar bansos harian {{target}} hari berturut-turut.",
+          "help": "Seminggu penuh, setiap hari. Aku tahu kalau kamu melewatkan satu.",
+          "title": "Beruntun {{target}} hari bansos"
+        },
+        "r5-battle": {
+          "desc": "Menangkan adu gacor melawan pemain lain.",
+          "help": "Di adu gacor semua orang membuka kotak yang sama dan total terbaik membawa pulang semuanya. Buat atau ikut satu di halaman Adu gacor.",
+          "title": "Menangkan adu gacor"
+        },
+        "r5-level": {
+          "desc": "Terus bertaruh. Setiap taruhan memberi XP.",
+          "help": "Level {{target}}. Kebanyakan orang tidak pernah sampai sini. Buktikan kamu bukan kebanyakan orang.",
+          "title": "Capai level {{target}}"
+        },
+        "r5-stake": {
+          "desc": "Taruhkan total {{target}} K₽, di mana saja.",
+          "help": "Setengah juta. Kamu bukan pemula lagi, jadi jangan bertingkah seperti pemula.",
+          "title": "Taruhkan {{target}} K₽"
+        },
+        "r5-top-fan": {
+          "desc": "Jadi penggemar teratas karakter yang kamu sematkan.",
+          "help": "Papan Top Fan mengurutkan pemain berdasarkan berapa banyak salinan karakter sematan yang mereka punya. Sematkan satu, punya paling banyak, dan mahkotanya milikmu.",
+          "title": "Jadi Top Fan"
+        }
+      },
+      "progress": "{{done}} dari {{total}} selesai"
+    },
+    "achievements": {
+      "count": "{{done}} dari {{total}} pencapaian terbuka",
+      "ready": "{{n}} siap diambil",
+      "tab": "Pencapaian",
+      "unlocked": "Pencapaian terbuka"
+    },
+    "help": {
+      "battle": {
+        "line": "Pilih kotak di bawah, lalu tombol ini memulai adu gacor. Semua orang membuka kotak yang sama dan total terbaik membawa pulang semuanya."
+      },
+      "bonus": {
+        "play": "Sekarang main satu ronde. Taruhan berapa pun dihitung, dan bonusnya membayar lebih dulu.",
+        "strip": "Itu bonusku, tepat di atas taruhanmu, lengkap dengan jamnya. Taruhan di sini memakainya lebih dulu dari dompetmu.",
+        "take": "Sekarang tidak ada bonus. Ambil dari toplesku dan sedikit ekstra mendarat di {{game}}.",
+        "takeWait": "Menunggu kamu mengambil"
+      },
+      "cases": {
+        "line": "Kotak apa pun dihitung, murah atau mahal. Pilih satu dan buka."
+      },
+      "chat": {
+        "line": "Ketik di sini dan semua orang bisa lihat. Bersikap baiklah, atau setidaknya lucu."
+      },
+      "collection": {
+        "complete": "Bilahnya menunjukkan berapa banyak yang kamu punya dari setiap koleksi. Lengkapi satu sampai penuh dan lencananya milikmu.",
+        "line": "Setiap kotak punya koleksi. Buka satu untuk melihat apa yang kamu punya dan apa yang masih kurang.",
+        "wait": "Menunggu kamu membuka satu"
+      },
+      "eyebrow": "Bantuan · {{mission}}",
+      "fans": {
+        "line": "Tab ini menunjukkan setiap karakter yang kamu punya dan seberapa jauh kamu dari jadi Top Fan-nya. Sematkan yang paling dekat."
+      },
+      "games": {
+        "line": "Pilih game, yang mana saja. Nanti kutunjukkan tempat taruhannya dan tombol untuk bermain."
+      },
+      "gift": {
+        "later": "Kamu sudah memutar hari ini. Jamnya menunjukkan kapan yang berikutnya siap. Lewatkan, dan beruntunnya mulai dari awal.",
+        "pick": "Pilih koleksi. Bansosnya berupa kotak dari koleksi itu, dan makin panjang beruntunmu, makin bagus hadiahnya.",
+        "spin": "Sekarang putar. Lalu kembali besok dan putar lagi, atau beruntunnya mulai dari awal.",
+        "wait": "Menunggu putaran"
+      },
+      "market": {
+        "line": "Semua yang dijual pemain ada di sini. Buka barang untuk membelinya atau mengajukan penawaran, dan barangmu sendiri juga bisa dipasang dari halaman ini."
+      },
+      "pin": {
+        "done": "Tersemat. Sekarang semua yang membuka profilmu bisa melihatnya. Seleramu lumayan juga.",
+        "empty": "Belum ada yang bisa disematkan. Buka kotak dulu, lalu kembali untuk memilih favoritmu.",
+        "line": "Lihat hati-hatinya? Klik hati pada karakter yang paling kamu suka. Semua yang mengunjungi profilmu bisa melihat pilihanmu, jadi pilih baik-baik.",
+        "linePhone": "Lihat hati-hatinya? Ketuk hati pada karakter yang paling kamu suka. Semua yang mengunjungi profilmu bisa melihat pilihanmu, jadi pilih baik-baik.",
+        "wait": "Menunggu hatinya"
+      },
+      "pot": {
+        "line": "Ini toplesku. Bilahnya terisi dalam 8 menit, dan toples penuh membayar bonus toples penuh sebagai tambahan. Ambil lebih awal dan kamu cuma dapat isinya saat itu."
+      },
+      "predictions": {
+        "line": "Setiap kartu adalah sebuah pasar. Buka satu, pilih hasil, dan beli saham; saham itu membayar kalau hasilnya terjadi, dan kamu bisa menjualnya sebelum itu."
+      },
+      "sell": {
+        "done": "Terjual. K₽-nya sudah kembali ke dompetmu. Tuh kan? Gampang.",
+        "empty": "Belum ada yang bisa dijual. Buka kotak dulu.",
+        "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
+        "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
+        "wait": "Menunggu penjualan"
+      },
+      "showMe": "Tunjukkan",
+      "stop": "Berhenti membantu"
+    },
+    "shop": {
+      "after": "Saldomu setelahnya",
+      "buy": "Beli",
+      "buyFor": "Beli seharga {{amount}}",
+      "failed": "Gagal membeli. Coba lagi.",
+      "items": {
+        "chatPass": {
+          "about": "Membuatmu bisa mengirim pesan di obrolan situs. Untuk membaca tidak pernah perlu pass.",
+          "getIt": "Dapatkan pass-nya",
+          "kept": "tetap dimiliki berkat riwayat obrolanmu",
+          "lockedBody": "Level {{level}} · {{price}} di toko Daisu",
+          "lockedTitle": "Bicara butuh Pass Obrolan",
+          "name": "Pass Obrolan",
+          "opened": "Sekarang kamu bisa bicara. Coba bilang sesuatu yang menarik. Mau kutunjukkan tempatnya?",
+          "pitch": "Bayar supaya bisa bicara. Ada juga yang mau bayar supaya kamu diam.",
+          "what": "Bicara di obrolan situs. Membaca selalu gratis."
+        },
+        "collectionBook": {
+          "about": "Membuka tab Koleksi: setiap kotak yang kamu koleksi, apa yang masih kurang, dan cara cepat menjual duplikat. Melengkapi satu koleksi penuh memberi lencananya.",
+          "getIt": "Dapatkan di toko Daisu",
+          "kept": "tetap dimiliki berkat lencana koleksimu",
+          "lockedBody": "Buku Koleksi mencatat setiap kotak yang kamu koleksi, menunjukkan apa yang masih kurang, dan menjual duplikatmu sekaligus.",
+          "lockedTitle": "Koleksi terkunci",
+          "name": "Buku Koleksi",
+          "opened": "Sudah milikmu. Tab Koleksi sekarang terbuka. Mau kutunjukkan isinya? Halamannya banyak.",
+          "pitch": "Satu buku utuh untuk koleksimu. Jangan menangis waktu lihat betapa kosongnya.",
+          "what": "Membuka tab Koleksi: setiap kotak yang kamu koleksi, apa yang kurang, dan cara cepat menjual duplikat."
+        },
+        "predictionPass": {
+          "about": "Membuka prediksi: beli saham tentang apa yang akan terjadi, lalu jual saat harganya bergerak menguntungkanmu.",
+          "getIt": "Dapatkan di toko Daisu",
+          "kept": "tetap dimiliki berkat riwayat prediksimu",
+          "lockedBody": "Dengan Pass Prediksi kamu bisa membeli saham tentang apa yang akan terjadi dan menjualnya saat harganya bergerak.",
+          "lockedTitle": "Prediksi terkunci",
+          "name": "Pass Prediksi",
+          "opened": "Prediksi sudah terbuka. Mau kutunjukkan cara kerja sebuah pasar?",
+          "pitch": "Bertaruh pada masa depan. Dewasa sekali kamu.",
+          "what": "Beli saham tentang apa yang akan terjadi dan jual saat harganya bergerak."
+        },
+        "tradersLicense": {
+          "about": "Membuatmu bisa membeli dari pemain lain, memasang pesanan beli, dan memasang barangmu sendiri di pasar.",
+          "getIt": "Dapatkan lisensinya",
+          "kept": "tetap dimiliki berkat riwayat dagangmu",
+          "lockedBody": "Kamu boleh melihat-lihat sepuasnya. Lisensinya {{price}} mulai level {{level}}, di toko Daisu.",
+          "lockedTitle": "Jual beli butuh Lisensi Pedagang",
+          "name": "Lisensi Pedagang",
+          "opened": "Sudah berlisensi. Beli, pasang, buat pesanan, pasar sepenuhnya milikmu. Mau kutunjukkan?",
+          "pitch": "Dokumen resmi supaya kamu bisa tawar-menawar dengan orang asing. Jangan sampai ditipu. Eh, ditipu juga boleh, lucu.",
+          "what": "Beli dari pemain lain dan pasang barangmu sendiri di pasar."
+        }
+      },
+      "level": "Level {{n}}",
+      "locked": "Terkunci",
+      "needs": "Butuh",
+      "notNow": "Nanti saja",
+      "price": "Harga",
+      "short": "Kurang {{amount}}",
+      "subtitle": "Barang-barang yang membuka sisa tempat ini.",
+      "tab": "Toko",
+      "title": "Toko Daisu",
+      "unlocked": "Terbuka",
+      "yours": "Milikmu"
+    }
   },
   "dice": {
     "dice": "Dadu",
@@ -828,7 +1428,7 @@
     "game": "PERMAINAN",
     "houseEdge": "KEUNGGULAN BANDAR",
     "edgeVaries": "bervariasi",
-    "notScored": "Upgrade mempertaruhkan item dan bukan KP, jadi tidak menghasilkan poin. Transaksi pasar dan bonus 8 menit bukan taruhan dan tidak pernah dihitung.",
+    "notScored": "Upgrade mempertaruhkan item dan bukan K₽, jadi tidak menghasilkan poin. Transaksi pasar dan bonus 8 menit bukan taruhan dan tidak pernah dihitung.",
     "resultTitle": "KAMU FINIS #{{rank}} KEMARIN",
     "resultPoints": "{{points}} poin",
     "resultPaid": "Dibayarkan ke saldomu saat papan direset tengah malam.",
@@ -952,7 +1552,8 @@
     "games": "Games",
     "gettingStarted": "Bersiaplah",
     "missionComplete": "Tugas beres",
-    "missionsArePrivate": "Tugas ini rahasia."
+    "missionsArePrivate": "Tugas ini rahasia.",
+    "secret": "Rahasia"
   },
   "nav": {
     "adClosedEarlyNo": "Iklan ditutup lebih awal, tidak ada hadiah.",
