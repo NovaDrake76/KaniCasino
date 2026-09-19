@@ -1738,6 +1738,8 @@
     "joined": "Vous y etes",
     "logIn": "connectez-vous",
     "needLevel": "Atteignez le niveau {{level}} pour rejoindre la pluie.",
+    "openChat": "Ouvrir le chat",
+    "soonToast": "Au moins K₽{{amount}} tombent dans le chat dans {{minutes}} min.",
     "title": "Pluie",
     "won": "La pluie vous a donne K₽{{amount}}"
   },

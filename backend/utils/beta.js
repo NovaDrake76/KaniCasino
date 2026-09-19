@@ -1,6 +1,6 @@
 // features a few accounts see first. a flag lives on the user until the feature opens to
 // everyone, which is one env switch rather than a data migration.
-const FLAGS = ["daisu"];
+const FLAGS = ["daisu", "rainWarning"];
 
 const openToAll = (flag) => process.env[`BETA_OPEN_${flag.toUpperCase()}`] === "1";
 
