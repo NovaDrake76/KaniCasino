@@ -4,6 +4,7 @@ import MainButton from "../../components/MainButton";
 import { toast } from "react-toastify";
 import { IMarketItem } from "../../components/Types";
 import i18n from "../../i18n";
+import { play } from "../../services/sound/sound";
 
 interface Props {
   item: IMarketItem;
@@ -24,6 +25,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
     setLoading(true);
     try {
       await buyItem(item._id as string);
+      play("ui.purchase");
       setRefresh && setRefresh(true);
       // the balance comes back over the socket, so it stays in step with the server
       toast.success(i18n.t("market.purchaseSuccessful"));

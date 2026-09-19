@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCase } from "../../services/cases/CaseServices";
 import Title from "../../components/Title";
@@ -21,9 +21,13 @@ import { emitCaseRevealed } from "../../components/daisu/tour/tourEvents";
 import { applyMeta } from "../../seo/meta";
 import { caseMeta } from "../../seo/caseMeta";
 import i18n from "../../i18n";
+import { play } from "../../services/sound/sound";
+import { scheduleReelTicks, revealSoundFor } from "../../services/sound/reel";
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
+  const stopTicks = useRef<(() => void) | null>(null);
+  useEffect(() => () => stopTicks.current?.(), []);
   const [loading, setLoading] = useState<boolean>(true);
   const [started, setStarted] = useState<boolean>(false);
   const [openedItems, setOpenedItems] = useState<BasicItem[]>([]);
@@ -98,11 +102,15 @@ const CasePage = () => {
 
     setTimeout(() => {
       setStarted(true);
+      // the roulette runs `spin 7.1s cubic-bezier(0.1, 0, 0.2, 1)` over ~36 slots
+      stopTicks.current = scheduleReelTicks(7100, 36, "case.tick");
     }, 500);
 
     setTimeout(() => {
       setStarted(false);
       setShowPrize(true);
+      play("case.stop");
+      play(revealSoundFor(items.map((i) => Number(i.rarity))));
       emitCaseRevealed(items);
     }, 7500);
 
@@ -146,6 +154,7 @@ const CasePage = () => {
     }
 
     setLoadingButton(true);
+    play("case.open");
 
     let items: BasicItem[] = [];
     try {

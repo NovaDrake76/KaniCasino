@@ -32,6 +32,7 @@ const environment = import.meta.env.VITE_NODE_ENV || "";
 import { User } from './components/Types'
 import i18n from "./i18n";
 import { SessionStatsProvider } from "./stats/SessionStatsContext";
+import { play, sound } from "./services/sound/sound";
 
 interface userDataSocketProps {
   walletBalance: number;
@@ -109,12 +110,15 @@ function App() {
 
   const userDataSocket = () => {
     socket.on("userDataUpdated", (payload: userDataSocketProps) => {
-      setUserData(prevUserData => prevUserData ? {
-        ...prevUserData,
-        walletBalance: payload.walletBalance,
-        xp: payload.xp,
-        level: payload.level
-      } : null);
+      setUserData(prevUserData => {
+        if (prevUserData && typeof payload.level === "number" && payload.level > prevUserData.level) play("ui.levelup");
+        return prevUserData ? {
+          ...prevUserData,
+          walletBalance: payload.walletBalance,
+          xp: payload.xp,
+          level: payload.level
+        } : null;
+      });
       // a balance change usually means an action just resolved: check for completions
       checkMissions(true);
     });
@@ -173,6 +177,7 @@ function App() {
 
   useEffect(() => {
     socket.on("newNotification", (notification) => {
+      play("ui.notify");
       setNotification(notification);
     });
 
@@ -180,6 +185,19 @@ function App() {
       socket.off("newNotification");
     };
   }, [socket]);
+
+  // every toast on the site gets a sound here, so the call sites need no edits; a toast that
+  // follows a sound of its own (a purchase, a claim) keeps quiet, and loading toasts always do
+  useEffect(() => {
+    const unsubscribe = toast.onChange((t) => {
+      if (t.status !== "added") return;
+      if (t.type === "error") play("ui.error");
+      else if (sound.playedRecently(300)) return;
+      else if (t.type === "success") play("ui.confirm");
+      else if (t.type === "info" || t.type === "warning") play("ui.notify");
+    });
+    return unsubscribe;
+  }, []);
 
   // the tunnel watchdog re-rolls cloudflared on a far-region stall, which briefly drops the
   // socket; show a sticky toast (announced or on an unexpected drop) and clear it on reconnect

@@ -30,6 +30,7 @@ import LinkDiscord from "./pages/Discord/LinkDiscord";
 import ArcadeHome from "./pages/Arcade/ArcadeHome";
 import DailyHalo from "./pages/Arcade/DailyHalo";
 
+import { useSoundPreload } from "./services/sound/preload";
 const defaultRoutes = (
   <>
     <Route path="/" element={<Home />} />
@@ -66,6 +67,7 @@ const defaultRoutes = (
 );
 
 const AppRoutes = () => {
+  useSoundPreload();
   return (
     <Routes>
       {defaultRoutes}

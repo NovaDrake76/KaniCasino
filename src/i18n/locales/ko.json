@@ -1755,10 +1755,17 @@
     "nicknameHint": "2~30자. 30일에 한 번 변경할 수 있습니다.",
     "nicknameLocked": "{{date}}부터 다시 변경할 수 있습니다.",
     "nicknameSaved": "닉네임이 변경되었습니다",
+    "playTestSound": "테스트 소리 재생",
     "saveFailed": "저장하지 못했습니다. 다시 시도해 주세요",
     "saveNickname": "닉네임 저장",
+    "sound": "소리",
+    "soundEffects": "효과음",
+    "soundHint": "클릭, 베팅, 승리, 릴 소리. 페이지에서 처음 클릭한 뒤부터 재생됩니다.",
     "title": "설정",
-    "updates": "새 케이스와 게임 소식"
+    "updates": "새 케이스와 게임 소식",
+    "volume": "음량",
+    "volumeDown": "작게",
+    "volumeUp": "크게"
   },
   "slot": {
     "bar": "바",

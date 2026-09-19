@@ -1755,10 +1755,17 @@
     "nicknameHint": "2 bis 30 Zeichen. Alle 30 Tage einmal aenderbar.",
     "nicknameLocked": "Du kannst ihn am {{date}} wieder aendern.",
     "nicknameSaved": "Spitzname aktualisiert",
+    "playTestSound": "Testton abspielen",
     "saveFailed": "Speichern fehlgeschlagen, versuch es erneut",
     "saveNickname": "Spitzname speichern",
+    "sound": "Ton",
+    "soundEffects": "Soundeffekte",
+    "soundHint": "Klicks, Einsätze, Gewinne und die Walzen. Der Ton startet nach deinem ersten Klick auf der Seite.",
     "title": "Einstellungen",
-    "updates": "Neues zu Kisten und Spielen"
+    "updates": "Neues zu Kisten und Spielen",
+    "volume": "Lautstärke",
+    "volumeDown": "Leiser",
+    "volumeUp": "Lauter"
   },
   "slot": {
     "bar": "Balken",
