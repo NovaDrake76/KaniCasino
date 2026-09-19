@@ -51,9 +51,8 @@ const CHAPTERS = [
       { key: "r5-stake", goal: "staked", target: 500000, reward: 15000 },
     ],
   },
-  // from here the chapters are the long game: each level target is a long stretch of play on the
-  // xp curve, and the other three missions of a chapter stay reachable in weeks so there is always
-  // something to claim while the level comes
+  // from here the chapters are the long game: each level target is a long stretch of play on the xp curve,
+  // and the other three missions of a chapter stay reachable in weeks, so there is always something to claim
   {
     chapter: 6,
     bonus: 40000,
