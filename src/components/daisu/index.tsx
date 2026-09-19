@@ -32,10 +32,12 @@ const DaisuDock = () => {
           buying={service.buying}
           onBuy={service.buyItem}
           onClose={service.closePick}
-          onShowMe={service.showItem}
+          onShowMe={service.pickedItem.kind === "unlock" ? service.showItem : undefined}
         />
       )}
-      {service.unlocked && <UnlockedCard unlock={service.unlocked} onShowMe={service.showUnlocked} onLater={service.closeUnlocked} />}
+      {service.unlockedItem && (
+        <UnlockedCard item={service.unlockedItem} onShowMe={service.unlockedItem.kind === "unlock" ? service.showUnlocked : undefined} onLater={service.closeUnlocked} />
+      )}
     </>
   );
 };

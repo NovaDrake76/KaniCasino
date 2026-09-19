@@ -785,10 +785,15 @@
       "chapterDoneLine": "Tá. Você não é um caso perdido, afinal. Agora é isso que eu quero de você.",
       "chapters": {
         "1": "Primeiros passos",
+        "10": "Favorito da Daisu",
         "2": "Pegando o jeito",
         "3": "Voltando sempre",
         "4": "Frequentador",
-        "5": "Veterano"
+        "5": "Veterano",
+        "6": "De casa",
+        "7": "Apostador de peso",
+        "8": "Pilar",
+        "9": "Lenda"
       },
       "claim": "Resgatar",
       "claimed": "Resgatada",
@@ -898,6 +903,106 @@
           "desc": "Seja o maior fã do personagem que você fixou.",
           "help": "O ranking de Top Fã ordena os jogadores por quantas cópias do personagem fixado eles têm. Fixe um, tenha mais que todo mundo e a coroa é sua.",
           "title": "Vire Top Fã"
+        },
+        "r6-days": {
+          "desc": "Faça uma aposta em {{target}} dias diferentes. Não precisam ser seguidos.",
+          "help": "Qualquer aposta no dia conta o dia. Quatorze deles. Estou contando, e não tenho pressa.",
+          "title": "Jogue em {{target}} dias diferentes"
+        },
+        "r6-full-pots": {
+          "desc": "Espere meu pote encher até o fim, depois pegue. {{target}} vezes.",
+          "help": "Pote cheio paga 25% a mais do que pegar cedo. Paciência é a vantagem mais barata deste site.",
+          "title": "Pegue {{target}} potes cheios"
+        },
+        "r6-collections": {
+          "desc": "Tenha todos os itens da coleção de {{target}} caixas diferentes.",
+          "help": "Três caixas, tudo que elas podem dar. Abrindo ou no mercado, não me importa como. A aba Coleções mostra o que falta.",
+          "title": "Complete {{target}} coleções"
+        },
+        "r6-level": {
+          "desc": "Toda aposta dá XP, ganhando ou perdendo.",
+          "help": "Quarenta. A maioria nunca chega lá. Prove que você não é a maioria.",
+          "title": "Chegue ao nível {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Aposte K₽ {{target}} no total, em qualquer coisa.",
+          "help": "Cinco milhões. Espalhado em meses ou numa noite louca, pra mim dá no mesmo.",
+          "title": "Aposte K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Receba um único pagamento de K₽ {{target}} ou mais em qualquer jogo.",
+          "help": "Uma rodada, um pagamento, seis dígitos. Crash e plinko são os suspeitos de sempre. Não faça nenhuma besteira.",
+          "title": "Ganhe K₽ {{target}} numa rodada"
+        },
+        "r7-market": {
+          "desc": "Compre ou venda {{target}} itens no mercado.",
+          "help": "Compras, vendas e ordens atendidas, tudo conta. Quem tem licença de comerciante usa.",
+          "title": "Negocie {{target}} vezes no mercado"
+        },
+        "r7-level": {
+          "desc": "Toda aposta dá XP, ganhando ou perdendo.",
+          "help": "Cinquenta. Metade do caminho até o topo, e os degraus só ficam mais altos.",
+          "title": "Chegue ao nível {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Esteja no chat quando a chuva cair, {{target}} vezes.",
+          "help": "A cada meia hora uma parte do que o site apostou cai pra quem entrou na chuva no chat. Entre, e esteja lá quando cair. Dez dessas.",
+          "title": "Pegue {{target}} chuvas"
+        },
+        "r8-battles": {
+          "desc": "Vença outros jogadores em {{target}} batalhas de caixas.",
+          "help": "Mesmas caixas, maior total leva. Dez vitórias exigem sorte e presença. Principalmente presença.",
+          "title": "Vença {{target}} batalhas de caixas"
+        },
+        "r8-streak": {
+          "desc": "Gire o presente diário {{target}} dias seguidos.",
+          "help": "Um mês inteiro sem perder nenhum. Ponha um alarme se precisar. Eu nunca contaria pra ninguém.",
+          "title": "Uma sequência de {{target}} dias de presente"
+        },
+        "r8-level": {
+          "desc": "Toda aposta dá XP, ganhando ou perdendo.",
+          "help": "Sessenta. Só um punhado de jogadores já chegou aqui. Bem-vindo, se conseguir.",
+          "title": "Chegue ao nível {{target}}"
+        },
+        "r9-days": {
+          "desc": "Faça uma aposta em {{target}} dias diferentes.",
+          "help": "Sessenta dias com aposta. Dois meses aparecendo. Agora você é de casa, gostando ou não.",
+          "title": "Jogue em {{target}} dias diferentes"
+        },
+        "r9-cases": {
+          "desc": "Abra {{target}} caixas, qualquer caixa.",
+          "help": "Mil caixas. As baratas contam igual, e abrir várias conta cada uma. Os drops vão dar uma história.",
+          "title": "Abra {{target}} caixas"
+        },
+        "r9-collections": {
+          "desc": "Tenha todos os itens da coleção de {{target}} caixas diferentes.",
+          "help": "Dez coleções completas. Isso é um museu, não um hobby.",
+          "title": "Complete {{target}} coleções"
+        },
+        "r9-level": {
+          "desc": "Toda aposta dá XP, ganhando ou perdendo.",
+          "help": "Setenta e cinco. Parei de esperar alguém aqui em cima. Me surpreenda.",
+          "title": "Chegue ao nível {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Aposte K₽ {{target}} no total, em qualquer coisa.",
+          "help": "Cem milhões. Eu sei. É essa a ideia.",
+          "title": "Aposte K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Convide {{target}} amigos que cheguem ao nível 10.",
+          "help": "Seu link de afiliado está no seu perfil. Um amigo conta quando chega ao nível 10, então traga gente que vai ficar, não turista.",
+          "title": "Traga {{target}} amigos até o nível 10"
+        },
+        "r10-predictions": {
+          "desc": "Compre ou venda cotas em {{target}} previsões.",
+          "help": "Os mercados de previsão na página Previsões. Cada compra ou venda conta uma. Vinte e cinco e talvez você até aprenda alguma coisa.",
+          "title": "Faça {{target}} negociações em previsões"
+        },
+        "r10-level": {
+          "desc": "Toda aposta dá XP, ganhando ou perdendo.",
+          "help": "Cem. Ninguém conseguiu. Se você conseguir, eu vou ser a primeira a saber, e vou dizer.",
+          "title": "Chegue ao nível {{target}}"
         }
       },
       "progress": "{{done}} de {{total}} feitas"
@@ -973,20 +1078,23 @@
     },
     "shop": {
       "after": "Seu saldo depois",
+      "boost": {
+        "about": "Toda aposta sua rende {{pct}}% a mais de XP, em cima do que você já tem. Os impulsos se somam e nunca acabam.",
+        "opened": "Já está na mesa. Toda aposta daqui em diante rende {{pct}}% a mais.",
+        "what": "+{{pct}}% de XP em toda aposta, pra sempre."
+      },
       "buyFor": "Comprar por {{amount}}",
+      "charm": {
+        "about": "Toda aposta sua em {{game}} rende {{pct}}% a mais de XP, em cima dos outros impulsos. Só {{game}}, e nunca acaba.",
+        "cases": "Caixas",
+        "name": "Amuleto de {{game}}",
+        "opened": "Equipado. Sua próxima aposta em {{game}} já rende mais. Pode ir.",
+        "pitch": "Você joga {{game}} de qualquer jeito. Melhor ser pago duas vezes por isso.",
+        "what": "+{{pct}}% de XP em toda aposta de {{game}}, pra sempre."
+      },
+      "collapse": "Ocultar nomes",
+      "expand": "Mostrar nomes",
       "failed": "Não deu pra comprar. Tente de novo.",
-      "level": "Nível {{n}}",
-      "needs": "Requer",
-      "notNow": "Agora não",
-      "price": "Preço",
-      "short": "Faltam {{amount}}",
-      "soon": "Compre um item pra descobrir o que vem depois.",
-      "tipBuy": "{{price}} · nível {{n}} · clique pra comprar",
-      "tipLevel": "Precisa do nível {{n}} · você está no nível {{level}}",
-      "tipShort": "{{price}} · faltam {{amount}}",
-      "title": "Loja da Daisu",
-      "unlocked": "Desbloqueado",
-      "yours": "Seu",
       "items": {
         "affiliateCard": {
           "about": "Abre a aba Afiliados: escolha seu código de convite, compartilhe seu link e ganhe K₽ quando quem você convidou se cadastrar, chegar ao nível 10 e apostar.",
@@ -1056,8 +1164,118 @@
           "opened": "Licenciado. Comprar, anunciar, criar ordens, o mercado é todo seu. Quer que eu te mostre?",
           "pitch": "Papelada oficial pra você pechinchar com estranhos. Não caia em golpe. Na verdade, caia. É engraçado.",
           "what": "Compre de outros jogadores e anuncie seus itens no mercado."
+        },
+        "goldenTicket": {
+          "about": "Sempre que você pega do pote, o extra que cai como bônus num jogo é 15% da retirada em vez de 10%. Pote cheio, retirada cedo, todas elas, pra sempre.",
+          "name": "Bilhete Dourado",
+          "opened": "Feito. Sua próxima retirada já vem com o bônus maior. Quer ver o pote?",
+          "pitch": "Mais dinheiro grátis em cima do dinheiro grátis. Sou generosa demais.",
+          "what": "Toda retirada do meu pote adiciona 15% como bônus de jogo em vez de 10%, pra sempre."
+        },
+        "rainCoat": {
+          "about": "Quando a chuva cai no chat, o pote é dividido por nível. Com a capa sua parte conta 1,5x mais do que contaria sem ela. O limite por jogador continua valendo.",
+          "name": "Capa de Chuva",
+          "opened": "Está vestida. Na próxima chuva, a fatia maior é sua. Quer ver onde ela cai?",
+          "pitch": "Ela te mantém seco. Mentira, te deixa mais molhado. Aqui chuva é dinheiro.",
+          "what": "Sua parte de toda chuva no chat pesa 1,5x, pra sempre."
+        },
+        "luckyPencil": {
+          "name": "Lápis da Sorte",
+          "pitch": "Mordido na ponta. É aí que fica a sorte."
+        },
+        "pocketNotebook": {
+          "name": "Caderninho de Bolso",
+          "pitch": "Anote suas perdas. Constrói caráter."
+        },
+        "readingLamp": {
+          "name": "Luminária de Leitura",
+          "pitch": "Pra você ver quanto está perdendo. Com clareza."
+        },
+        "coffeeMug": {
+          "name": "Caneca de Café",
+          "pitch": "Mais uma rodada. É o que a caneca diz. Sempre."
+        },
+        "abacus": {
+          "name": "Ábaco",
+          "pitch": "Eu conto mais rápido do que você perde. Por pouco."
+        },
+        "fortuneCat": {
+          "name": "Gato da Sorte",
+          "pitch": "Ele acena. Ninguém sabe pra quem. Continue apostando."
+        },
+        "studyDesk": {
+          "name": "Mesa de Estudos",
+          "pitch": "Uma mesa de verdade. Agora dá pra perder dinheiro sentado direito."
+        },
+        "metronome": {
+          "name": "Metrônomo",
+          "pitch": "Tique. Aposta. Taque. Aposta. Ele dá o ritmo, eu faço a conta."
+        },
+        "hourglass": {
+          "name": "Ampulheta",
+          "pitch": "Tempo é dinheiro. Isso faz os dois passarem mais rápido."
+        },
+        "globe": {
+          "name": "Globo",
+          "pitch": "Gira ele. Onde parar, lá também se aposta."
+        },
+        "telescope": {
+          "name": "Telescópio",
+          "pitch": "Pra olhar o nível 100. Ainda está bem longe."
+        },
+        "goldCat": {
+          "name": "Gato Dourado",
+          "pitch": "O mesmo gato, mas dourado. Acena com mais força."
+        },
+        "libraryCard": {
+          "name": "Carteirinha da Biblioteca",
+          "pitch": "Você leu todas as regras deste site. Dá pra notar."
+        },
+        "compass": {
+          "name": "Bússola",
+          "pitch": "Sempre aponta pra próxima aposta. Deve estar quebrada."
+        },
+        "crystalSkull": {
+          "name": "Caveira de Cristal",
+          "pitch": "Ela sabe como sua sessão termina. Não vai contar."
+        },
+        "daisuDiary": {
+          "name": "Diário da Daisu",
+          "pitch": "Não leia. Tá, leia. A página 12 é sobre você."
+        },
+        "starChart": {
+          "name": "Carta Celeste",
+          "pitch": "As estrelas dizem que você vai ganhar. Dizem isso pra todo mundo."
+        },
+        "goldenAbacus": {
+          "name": "Ábaco Dourado",
+          "pitch": "Pra contar números com mais zeros. Os seus, ultimamente."
+        },
+        "observatory": {
+          "name": "Observatório",
+          "pitch": "Dá pra ver o nível 100 daqui. Quase."
+        },
+        "philosopherStone": {
+          "name": "Pedra Filosofal",
+          "pitch": "Transforma apostas em XP. Que é o que sempre fez, só que mais rápido."
         }
-      }
+      },
+      "level": "Nível {{n}}",
+      "needs": "Requer",
+      "notNow": "Agora não",
+      "price": "Preço",
+      "short": "Faltam {{amount}}",
+      "showAll": "Mostrar todos os itens",
+      "showLess": "Recolher a prateleira",
+      "soon": "Compre um item pra descobrir o que vem depois.",
+      "tipBuy": "{{price}} · nível {{n}} · clique pra comprar",
+      "tipLevel": "Precisa do nível {{n}} · você está no nível {{level}}",
+      "tipShort": "{{price}} · faltam {{amount}}",
+      "title": "Loja da Daisu",
+      "unlocked": "Desbloqueado",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Seus itens · {{n}}",
+      "yours": "Seu"
     },
     "ticket": {
       "yours": "Seu bônus",
@@ -1725,9 +1943,11 @@
     "requestSent": "Pedido enviado",
     "serviceMessagesAboutYour": "Mensagens de serviço sobre sua conta, como avisos de segurança e de política, são enviadas independentemente desta opção.",
     "somethingWentWrong": "Algo deu errado",
-    "toEvery1kSpent": "A cada 1K₽ gastos, você ganha 5 XP.",
+    "toEvery1kSpent": "Cada K₽ 1 apostado dá 5 XP, ganhando ou perdendo. Os impulsos da loja da Daisu somam a isso.",
     "updatesTurnedOff": "Novidades desativadas",
     "weAreNotSending": "Não estamos enviando para o seu endereço porque um e-mail anterior voltou ou foi marcado como spam. Fale com a gente se achar que está errado.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "Dos impulsos da loja da Daisu",
     "youWillGetUpdates": "Você vai receber novidades sobre caixas e jogos"
   },
   "rain": {

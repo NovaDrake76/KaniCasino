@@ -785,10 +785,15 @@
       "chapterDoneLine": "Fine. You're not hopeless after all. Here's what I want from you next.",
       "chapters": {
         "1": "First steps",
+        "10": "Daisu's favourite",
         "2": "Settling in",
         "3": "Coming back",
         "4": "Regular",
-        "5": "Veteran"
+        "5": "Veteran",
+        "6": "Fixture",
+        "7": "High roller",
+        "8": "Pillar",
+        "9": "Legend"
       },
       "claim": "Claim",
       "claimed": "Claimed",
@@ -898,6 +903,106 @@
           "desc": "Be the top fan of the character you pinned.",
           "help": "The Top Fan boards rank players by how many copies of their pinned character they own. Pin one, own the most, and the crown is yours.",
           "title": "Become a Top Fan"
+        },
+        "r6-days": {
+          "desc": "Place a bet on {{target}} different days. They don't have to be in a row.",
+          "help": "Any bet on a day counts the day. Fourteen of them. I'm counting, and I'm not in a hurry.",
+          "title": "Play on {{target}} different days"
+        },
+        "r6-full-pots": {
+          "desc": "Wait for my jar to fill all the way, then take it. {{target}} times.",
+          "help": "Full pots pay 25% more than grabbing early. Patience is the cheapest edge on this site.",
+          "title": "Take {{target}} full pots"
+        },
+        "r6-collections": {
+          "desc": "Own every item of {{target}} different cases' collections.",
+          "help": "Three cases, everything they can drop. Openings or the market, I don't care how. The Collections tab shows what's missing.",
+          "title": "Complete {{target}} collections"
+        },
+        "r6-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Forty. Most people never see it. Prove you're not most people.",
+          "title": "Reach level {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Bet K₽ {{target}} in total, on anything.",
+          "help": "Five million. Spread over months or one wild night, it's the same to me.",
+          "title": "Bet K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Take a single payout of K₽ {{target}} or more from any game.",
+          "help": "One round, one payout, six figures. Crash and plinko are the usual suspects. Don't do anything stupid.",
+          "title": "Win K₽ {{target}} in one round"
+        },
+        "r7-market": {
+          "desc": "Buy or sell {{target}} items on the marketplace.",
+          "help": "Buys, sales and filled orders all count. A trader has a license and uses it.",
+          "title": "Trade {{target}} times on the market"
+        },
+        "r7-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Fifty. Halfway to the top of the ladder, and the steps only get taller.",
+          "title": "Reach level {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Be in the chat when the rain falls, {{target}} times.",
+          "help": "Every half hour a share of what the site bet falls on whoever joined the rain in the chat. Join, then be there when it drops. Ten of those.",
+          "title": "Catch {{target}} rains"
+        },
+        "r8-battles": {
+          "desc": "Beat other players in {{target}} case battles.",
+          "help": "Same cases, best total wins. Ten wins takes luck and showing up. Mostly showing up.",
+          "title": "Win {{target}} case battles"
+        },
+        "r8-streak": {
+          "desc": "Spin the daily gift {{target}} days in a row.",
+          "help": "A whole month without missing one. Set an alarm if you must. I'd never tell anyone.",
+          "title": "A {{target}}-day gift streak"
+        },
+        "r8-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Sixty. A handful of players have ever been here. Welcome, if you make it.",
+          "title": "Reach level {{target}}"
+        },
+        "r9-days": {
+          "desc": "Place a bet on {{target}} different days.",
+          "help": "Sixty days with a bet in them. Two months of showing up. You're a fixture now, whether you like it or not.",
+          "title": "Play on {{target}} different days"
+        },
+        "r9-cases": {
+          "desc": "Open {{target}} cases, any cases.",
+          "help": "A thousand cases. Cheap ones count the same, and a multi-open counts each one. The drops will be a story.",
+          "title": "Open {{target}} cases"
+        },
+        "r9-collections": {
+          "desc": "Own every item of {{target}} different cases' collections.",
+          "help": "Ten complete collections. That's a museum, not a hobby.",
+          "title": "Complete {{target}} collections"
+        },
+        "r9-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Seventy-five. I stopped expecting anyone up here. Surprise me.",
+          "title": "Reach level {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Bet K₽ {{target}} in total, on anything.",
+          "help": "A hundred million. I know. That's the point.",
+          "title": "Bet K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Invite {{target}} friends who reach level 10.",
+          "help": "Your affiliate link is on your profile. A friend counts once they hit level 10, so bring people who'll stay, not tourists.",
+          "title": "Bring {{target}} friends to level 10"
+        },
+        "r10-predictions": {
+          "desc": "Buy or sell shares on {{target}} predictions.",
+          "help": "The prediction markets on the Predictions page. Every buy or sell counts as one. Twenty-five and you might even learn something.",
+          "title": "Make {{target}} prediction trades"
+        },
+        "r10-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "One hundred. Nobody has done it. If you do, I'll be the first to know, and I'll say so.",
+          "title": "Reach level {{target}}"
         }
       },
       "progress": "{{done}} of {{total}} done"
@@ -973,20 +1078,23 @@
     },
     "shop": {
       "after": "Your balance after",
+      "boost": {
+        "about": "Every bet you place earns {{pct}}% more XP, on top of whatever else you hold. Boosts add up, and they never run out.",
+        "opened": "It's on the desk now. Every bet from here earns {{pct}}% more.",
+        "what": "+{{pct}}% XP on every bet, for good."
+      },
       "buyFor": "Buy for {{amount}}",
+      "charm": {
+        "about": "Every bet you place on {{game}} earns {{pct}}% more XP, on top of your other boosts. Only {{game}}, and it never runs out.",
+        "cases": "Cases",
+        "name": "{{game}} Charm",
+        "opened": "Worn. Your next {{game}} bet already earns more. Off you go.",
+        "pitch": "You play {{game}} anyway. Might as well get paid twice for it.",
+        "what": "+{{pct}}% XP on every {{game}} bet, for good."
+      },
+      "collapse": "Hide names",
+      "expand": "Show names",
       "failed": "Could not buy that. Try again.",
-      "level": "Level {{n}}",
-      "needs": "Needs",
-      "notNow": "Not now",
-      "price": "Price",
-      "short": "{{amount}} short",
-      "soon": "Buy an item to find out what comes next.",
-      "tipBuy": "{{price}} · level {{n}} · click to buy",
-      "tipLevel": "Needs level {{n}} · you are level {{level}}",
-      "tipShort": "{{price}} · you need {{amount}} more",
-      "title": "Daisu's shop",
-      "unlocked": "Unlocked",
-      "yours": "Yours",
       "items": {
         "affiliateCard": {
           "about": "Opens the Affiliates tab: pick your invite code, share your link, and earn K₽ when the players you invite sign up, reach level 10 and place bets.",
@@ -1056,8 +1164,118 @@
           "opened": "Licensed. Buy, list, place orders, the marketplace is all yours. Want me to show you around it?",
           "pitch": "Official paperwork, so you can haggle with strangers. Don't get scammed. Actually, do. It's funny.",
           "what": "Buy from other players and list your own items on the marketplace."
+        },
+        "goldenTicket": {
+          "about": "Whenever you take from the jar, the extra that lands as a bonus on a game is 15% of the take instead of 10%. Full pots, early takes, all of them, forever.",
+          "name": "Golden Ticket",
+          "opened": "Done. Your next take already comes with the bigger bonus. Want to see the jar?",
+          "pitch": "More free money on top of the free money. I'm too generous.",
+          "what": "Every take from my jar adds 15% as a game bonus instead of 10%, for good."
+        },
+        "rainCoat": {
+          "about": "When the rain falls in the chat, the pool is split by level. With the coat your share counts 1.5x as much as it would without it. The per-player cap still applies.",
+          "name": "Rain Coat",
+          "opened": "You're wearing it. Next rain, you get the bigger slice. Want to see where it falls?",
+          "pitch": "It keeps you dry. That's a lie, it makes you wetter. Rain is money here.",
+          "what": "Your share of every rain in the chat weighs 1.5x, for good."
+        },
+        "luckyPencil": {
+          "name": "Lucky Pencil",
+          "pitch": "Chewed at the end. That's where the luck is."
+        },
+        "pocketNotebook": {
+          "name": "Pocket Notebook",
+          "pitch": "Write your losses down. It builds character."
+        },
+        "readingLamp": {
+          "name": "Reading Lamp",
+          "pitch": "So you can see how much you're losing. Clearly."
+        },
+        "coffeeMug": {
+          "name": "Coffee Mug",
+          "pitch": "One more round. That's what the mug says. Every time."
+        },
+        "abacus": {
+          "name": "Abacus",
+          "pitch": "I count faster than you lose. Barely."
+        },
+        "fortuneCat": {
+          "name": "Fortune Cat",
+          "pitch": "It waves. Nobody knows at whom. Keep betting."
+        },
+        "studyDesk": {
+          "name": "Study Desk",
+          "pitch": "A proper desk. Now you can lose money sitting up straight."
+        },
+        "metronome": {
+          "name": "Metronome",
+          "pitch": "Tick. Bet. Tock. Bet. It sets the pace, I keep the count."
+        },
+        "hourglass": {
+          "name": "Hourglass",
+          "pitch": "Time is money. This makes both go faster."
+        },
+        "globe": {
+          "name": "Globe",
+          "pitch": "Spin it. Wherever it stops, they gamble there too."
+        },
+        "telescope": {
+          "name": "Telescope",
+          "pitch": "For looking at level 100. It's still very far away."
+        },
+        "goldCat": {
+          "name": "Gold Cat",
+          "pitch": "The same cat, but gold. It waves harder."
+        },
+        "libraryCard": {
+          "name": "Library Card",
+          "pitch": "You've read every rule on this site. It shows."
+        },
+        "compass": {
+          "name": "Compass",
+          "pitch": "It always points at the next bet. Broken, probably."
+        },
+        "crystalSkull": {
+          "name": "Crystal Skull",
+          "pitch": "It knows how your session ends. It's not telling."
+        },
+        "daisuDiary": {
+          "name": "Daisu's Diary",
+          "pitch": "Don't read it. Fine, read it. Page 12 is about you."
+        },
+        "starChart": {
+          "name": "Star Chart",
+          "pitch": "The stars say you'll win. The stars say that to everyone."
+        },
+        "goldenAbacus": {
+          "name": "Golden Abacus",
+          "pitch": "For counting numbers with more zeros. Yours, lately."
+        },
+        "observatory": {
+          "name": "Observatory",
+          "pitch": "Level 100 is visible from here. Just about."
+        },
+        "philosopherStone": {
+          "name": "Philosopher's Stone",
+          "pitch": "It turns bets into XP. Which is what it always did, but faster."
         }
-      }
+      },
+      "level": "Level {{n}}",
+      "needs": "Needs",
+      "notNow": "Not now",
+      "price": "Price",
+      "short": "{{amount}} short",
+      "showAll": "Show every item",
+      "showLess": "Fold the shelf",
+      "soon": "Buy an item to find out what comes next.",
+      "tipBuy": "{{price}} · level {{n}} · click to buy",
+      "tipLevel": "Needs level {{n}} · you are level {{level}}",
+      "tipShort": "{{price}} · you need {{amount}} more",
+      "title": "Daisu's shop",
+      "unlocked": "Unlocked",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Your items · {{n}}",
+      "yours": "Yours"
     },
     "ticket": {
       "yours": "Your bonus",
@@ -1725,9 +1943,11 @@
     "requestSent": "Request sent",
     "serviceMessagesAboutYour": "Service messages about your account, such as security and policy notices, are sent whatever this is set to.",
     "somethingWentWrong": "Something went wrong",
-    "toEvery1kSpent": "To every 1K₽ spent, you get 5 XP.",
+    "toEvery1kSpent": "Every K₽ 1 you bet gives 5 XP, win or lose. Boosts from Daisu's shop add to it.",
     "updatesTurnedOff": "Updates turned off",
     "weAreNotSending": "We are not sending to your address because a previous email bounced or was reported as spam. Contact us if you think that is wrong.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "From the boosts in Daisu's shop",
     "youWillGetUpdates": "You will get updates about new cases and games"
   },
   "rain": {

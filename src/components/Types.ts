@@ -34,6 +34,8 @@ export interface User {
     onboarding?: { status: "offered" | "active" | "skipped" | "done"; step: string | null; returning?: boolean } | null;
     // what daisu's shop has opened for an account in her beta; absent for everyone else
     unlocks?: UnlockKey[];
+    // the xp multipliers her boosts and charms add up to
+    xpBoost?: { all?: number; [game: string]: number | undefined };
 
 }
 
