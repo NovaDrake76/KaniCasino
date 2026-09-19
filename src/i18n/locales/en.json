@@ -361,8 +361,13 @@
     "minBet": "Min bet is {{amount}}",
     "notEnoughMoney": "Not enough money",
     "placeTheBetValue": "Place the bet value",
+    "purple": "Purple",
+    "purplePays": "Purple pays {{mult}}x and lands {{chance}}% of the time",
+    "sidesPay": "Heads and tails pay {{mult}}x",
     "tails": "Tails",
-    "totalBets": "Total Bets"
+    "totalBets": "Total Bets",
+    "winPays": "Win pays {{mult}}x",
+    "youWouldWin": "You'd win {{amount}} K₽"
   },
   "collections": {
     "all": "All",

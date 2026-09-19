@@ -361,8 +361,13 @@
     "minBet": "Minimal {{amount}}",
     "notEnoughMoney": "Ga cukup muwani",
     "placeTheBetValue": "Masukin nilai taruhan",
+    "purple": "Ungu",
+    "purplePays": "Ungu dibayar {{mult}}x dan muncul {{chance}}% dari waktu",
+    "sidesPay": "Kepala dan ekor dibayar {{mult}}x",
     "tails": "Ijo Sanae",
-    "totalBets": "Total Taruhan"
+    "totalBets": "Total Taruhan",
+    "winPays": "Menang dibayar {{mult}}x",
+    "youWouldWin": "Kamu akan menang {{amount}} K₽"
   },
   "collections": {
     "all": "Semua",

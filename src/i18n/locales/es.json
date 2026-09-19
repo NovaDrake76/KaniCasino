@@ -361,8 +361,13 @@
     "minBet": "La apuesta mínima es {{amount}}",
     "notEnoughMoney": "Saldo insuficiente",
     "placeTheBetValue": "Indica el importe de la apuesta",
+    "purple": "Morado",
+    "purplePays": "Morado paga {{mult}}x y sale el {{chance}}% de las veces",
+    "sidesPay": "Cara y cruz pagan {{mult}}x",
     "tails": "Cruz",
-    "totalBets": "Apuestas totales"
+    "totalBets": "Apuestas totales",
+    "winPays": "Ganar paga {{mult}}x",
+    "youWouldWin": "Ganarías {{amount}} K₽"
   },
   "collections": {
     "all": "Todos",
