@@ -1,7 +1,5 @@
-// daisu's shop. an unlock opens a feature for accounts in her beta, a perk changes a rule for its holder, a
-// boost adds to the xp every bet earns and a charm adds to it on one game. every price is a sink: it goes to
-// the mint and buys nothing but the item. levels and prices climb like stairs, each item about what a player
-// of that level has, so the next one is always just out of reach
+// daisu's shop: an unlock opens a feature, a boost adds to the xp every bet earns, a charm adds to it on one game. every price is a sink to the mint
+// levels and prices climb like stairs, each item about what a player of that level has, so the next one is always just out of reach
 const CHARM_XP = 0.25;
 const CHARM_GAMES = ["dice", "crash", "slots", "plinko", "blackjack", "mines", "hilo", "coinflip", "cases", "battles"];
 

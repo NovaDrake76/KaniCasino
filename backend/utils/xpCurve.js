@@ -1,6 +1,5 @@
-// the level ladder. a bet earns XP_PER_KP per K₽ staked, times the account's boost, and a level is
-// reached at a total of xp. the ladder is an anchor table: K₽ wagered to reach a level, unboosted,
-// log-linear between anchors and continued at the last slope past the end, so each anchor is a knob
+// the level ladder: a bet earns XP_PER_KP per K₽ staked times the account's boost, and a level is reached at a total of xp
+// the ladder is an anchor table of K₽ wagered per level, log-linear between anchors and continued at the last slope, so each anchor is a knob
 const XP_PER_KP = 5;
 const ANCHORS = [
   [1, 40],
