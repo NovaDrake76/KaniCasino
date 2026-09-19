@@ -1755,10 +1755,17 @@
     "nicknameHint": "De 2 a 30 caracteres. Puedes cambiarlo una vez cada 30 dias.",
     "nicknameLocked": "Puedes cambiarlo de nuevo el {{date}}.",
     "nicknameSaved": "Apodo actualizado",
+    "playTestSound": "Reproducir un sonido de prueba",
     "saveFailed": "No se pudo guardar, inténtalo de nuevo",
     "saveNickname": "Guardar apodo",
+    "sound": "Sonido",
+    "soundEffects": "Efectos de sonido",
+    "soundHint": "Clics, apuestas, premios y las ruletas. El sonido empieza tras tu primer clic en la página.",
     "title": "Ajustes",
-    "updates": "Novedades sobre cajas y juegos"
+    "updates": "Novedades sobre cajas y juegos",
+    "volume": "Volumen",
+    "volumeDown": "Más bajo",
+    "volumeUp": "Más alto"
   },
   "slot": {
     "bar": "barra",
