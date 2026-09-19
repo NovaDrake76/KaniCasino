@@ -8,22 +8,27 @@ const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("../util
 const { potClaimLimiter } = require("../middleware/rateLimit");
 const roadmap = require("../utils/roadmap");
 const shop = require("../utils/shop");
+const { GOLDEN_TICKET_SHARE, QUICK_JAR_CYCLE_MS } = require("../utils/shopCatalog");
 
 const gate = [authMiddleware.isAuthenticated, beta.requireFlag("daisu")];
 
+// two of her shop's perks change the pot itself: the quick jar fills faster, the golden ticket adds more
+const cycleOf = (user) => (shop.holds(user, "quickJar") ? QUICK_JAR_CYCLE_MS : pot.CYCLE_MS);
+const shareOf = (user) => (shop.holds(user, "goldenTicket") ? GOLDEN_TICKET_SHARE : pot.CREDIT_SHARE);
+
 // everything the dock needs to draw the pot and tick it locally until the next take
 const statusOf = (user, now = new Date()) => {
-  const fill = pot.fillAt(user.nextBonus, now);
+  const fill = pot.fillAt(user.nextBonus, now, cycleOf(user));
   const index = user.potPickIndex || 0;
   return {
     fill,
     full: user.bonusAmount,
     amount: pot.payout(user.bonusAmount, fill),
     fullAt: new Date(user.nextBonus).toISOString(),
-    cycleMs: pot.CYCLE_MS,
+    cycleMs: cycleOf(user),
     clickRate: pot.CLICK_RATE,
     fullBonus: pot.FULL_BONUS,
-    creditShare: pot.CREDIT_SHARE,
+    creditShare: shareOf(user),
     pick: pot.pickAt(index),
     nextPick: pot.pickAt(index + 1),
     pickProgress: user.bonusAmount > 0 ? Math.min(1, (user.potCycleClaimed || 0) / user.bonusAmount) : 0,
@@ -63,21 +68,22 @@ router.post("/tour", ...gate, async (req, res) => {
 router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
   try {
     const now = new Date();
-    const fill = pot.fillAt(req.user.nextBonus, now);
+    const cycle = cycleOf(req.user);
+    const fill = pot.fillAt(req.user.nextBonus, now, cycle);
     const amount = pot.payout(req.user.bonusAmount, fill);
     if (amount < pot.MIN_CLAIM) {
       return res.status(400).json({
         message: "The pot is empty",
         reason: "empty",
         fill,
-        readyAt: pot.readyAt(req.user.nextBonus, req.user.bonusAmount).toISOString(),
+        readyAt: pot.readyAt(req.user.nextBonus, req.user.bonusAmount, cycle).toISOString(),
       });
     }
 
-    const credit = pot.creditOf(amount);
+    const credit = pot.creditOf(amount, shareOf(req.user));
     const pick = pot.pickAt(req.user.potPickIndex);
     const advanced = pot.advancePick(req.user.potPickIndex, req.user.potCycleClaimed, amount, req.user.bonusAmount);
-    const nextBonus = new Date(now.getTime() + pot.CYCLE_MS);
+    const nextBonus = new Date(now.getTime() + cycle);
     // bonuses nobody played in time go back to the mint with this take
     const expired = pot.expiredCredits(req.user, now);
 

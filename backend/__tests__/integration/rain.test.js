@@ -226,6 +226,13 @@ describe("how the pool is divided", () => {
     expect(shares[0].amount).toBe(shares[1].amount);
   });
 
+  it("weighs a rain coat holder half again as much as an equal without one", () => {
+    const coat = { _id: "coat", level: 20, betaFlags: ["daisu"], unlocks: [{ key: "rainCoat", via: "bought" }] };
+    const shares = rain.splitPool(1000, [coat, person("b", 20)]);
+    expect(shares[0].amount).toBe(600);
+    expect(shares[1].amount).toBe(400);
+  });
+
   it("pays nobody out of a pool below the floor", () => {
     expect(rain.splitPool(rain.MIN_POOL - 1, [person("a", 50)])).toEqual([]);
   });

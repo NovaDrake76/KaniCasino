@@ -349,3 +349,39 @@ describe("a bonus running out", () => {
     expect(res.body.status.bonuses.map((b) => b.game)).toEqual(["dice", "mines"]);
   });
 });
+
+describe("the pot with her perks", () => {
+  const holding = (keys, fields = {}) => makeUser({ unlocks: keys.map((key) => ({ key, via: "bought", at: new Date() })), ...fields });
+
+  it("adds fifteen percent of a take for a golden ticket holder", async () => {
+    const user = await holding(["goldenTicket"], { level: 0, bonusAmount: 1000, nextBonus: fillingFor(60) });
+
+    expect((await status(user)).body.creditShare).toBe(0.15);
+    const res = await claim(user);
+    expect(res.body.amount).toBe(1000);
+    expect(res.body.credit).toBe(150);
+  });
+
+  it("fills a quick jar in six minutes, and restarts it on six", async () => {
+    const user = await holding(["quickJar"], { level: 0, bonusAmount: 1000, nextBonus: new Date(Date.now() + minutes(3)) });
+
+    // three minutes from full on a six minute cycle is half way; on eight it would be less
+    const before = (await status(user)).body;
+    expect(before.cycleMs).toBe(6 * 60000);
+    expect(before.fill).toBeCloseTo(0.5, 1);
+
+    const res = await claim(user);
+    expect(res.status).toBe(200);
+    const after = await User.findById(user._id).lean();
+    const left = new Date(after.nextBonus).getTime() - Date.now();
+    expect(left).toBeGreaterThan(minutes(5.5));
+    expect(left).toBeLessThan(minutes(6.5));
+  });
+
+  it("changes nothing for an account without them", async () => {
+    const user = await makeUser({ level: 0, bonusAmount: 1000, nextBonus: fillingFor(60) });
+    const res = await claim(user);
+    expect(res.body.credit).toBe(100);
+    expect(res.body.status.cycleMs).toBe(pot.CYCLE_MS);
+  });
+});

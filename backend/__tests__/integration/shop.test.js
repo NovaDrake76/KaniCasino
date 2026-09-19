@@ -52,7 +52,7 @@ describe("daisu's shop", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.items.map((i) => i.key)).toEqual(["chatPass", "tradersLicense", "collectionBook"]);
-    expect(res.body.hidden).toBe(4);
+    expect(res.body.hidden).toBe(9);
     expect(item(res.body, "chatPass")).toMatchObject({ price: 1000, level: 10, owned: false, via: null });
     expect(res.body).toMatchObject({ walletBalance: 10000, level: 12 });
     expect((await shopOf(await makeUser({ betaFlags: [] }))).status).toBe(403);
@@ -96,7 +96,7 @@ describe("daisu's shop", () => {
 
     const first = await buy(user, "chatPass");
     expect(first.body.shop.items.map((i) => i.key)).toEqual(["chatPass", "tradersLicense", "collectionBook", "affiliateCard"]);
-    expect(first.body.shop.hidden).toBe(3);
+    expect(first.body.shop.hidden).toBe(8);
 
     // out of order is fine: what is held never takes one of the three places ahead
     const third = await buy(user, "collectionBook");
@@ -105,10 +105,26 @@ describe("daisu's shop", () => {
     for (const key of ["tradersLicense", "affiliateCard", "predictionPass", "giftCharm", "merchantSeal"]) {
       expect((await buy(user, key)).body.bought).toBe(true);
     }
+    // the seven first items held, and the next three of the long game showing after them
     const all = await shopOf(await User.findById(user._id));
-    expect(all.body.items).toHaveLength(7);
-    expect(all.body.hidden).toBe(0);
+    expect(all.body.items.map((i) => i.key).slice(7)).toEqual(["goldenTicket", "rainCoat", "patronBadge"]);
+    expect(all.body.hidden).toBe(2);
     expect(all.body.walletBalance).toBe(500000 - 1000 - 3000 - 6000 - 10000 - 15000 - 40000 - 150000);
+  });
+
+  it("wears a trophy item as a badge the moment it is bought", async () => {
+    const user = await makeUser({ walletBalance: 20000000, level: 100 });
+    for (const key of ["chatPass", "tradersLicense", "collectionBook", "affiliateCard", "predictionPass", "giftCharm", "merchantSeal", "goldenTicket", "rainCoat"]) {
+      expect((await buy(user, key)).body.bought).toBe(true);
+    }
+
+    expect((await buy(user, "patronBadge")).body.bought).toBe(true);
+    expect((await buy(user, "quickJar")).body.bought).toBe(true);
+    expect((await buy(user, "daisuCrown")).body.bought).toBe(true);
+
+    const after = await User.findById(user._id).lean();
+    expect(after.badges.map((b) => b.key)).toEqual(["patron", "crown"]);
+    expect(after.walletBalance).toBe(20000000 - 225000 - 400000 - 800000 - 1500000 - 3000000 - 10000000);
   });
 
   it("keeps an affiliate who already set a code, and asks everyone else in her beta for the card", async () => {

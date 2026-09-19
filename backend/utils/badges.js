@@ -10,11 +10,14 @@ const { CATALOG } = require("./missionsCatalog");
 const TOP_FAN = "topFan";
 const CONTRIBUTOR = "contributor";
 const CONNECTED = "connected";
+// bought in daisu's shop, never granted or earned any other way
+const PATRON = "patron";
+const CROWN = "crown";
 
 // what an admin may hand out. everything else is earned by playing, and handing one of
 // those over would let the backoffice fake a standing the sweep is about to overwrite.
 const GRANTABLE = [CONTRIBUTOR];
-const KEYS = [TOP_FAN, CONTRIBUTOR, CONNECTED];
+const KEYS = [TOP_FAN, CONTRIBUTOR, CONNECTED, PATRON, CROWN];
 // one badge per case category, keyed off a slug of its name so a new category earns one
 // without a code change
 const COLLECTION = "collection:";
@@ -23,7 +26,7 @@ const slugify = (category) =>
   String(category).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 // stored notifications are english everywhere else in the codebase, so these are too
-const TITLES = { [CONTRIBUTOR]: "Contributor", [CONNECTED]: "Connected" };
+const TITLES = { [CONTRIBUTOR]: "Contributor", [CONNECTED]: "Connected", [PATRON]: "Patron", [CROWN]: "Crown" };
 
 const SOCIAL_KEYS = CATALOG.filter((m) => m.metric === "social" && m.active !== false).map((m) => m.key);
 
@@ -263,4 +266,7 @@ module.exports = {
   awardConnected,
   sweepConnected,  grant,
   revoke,
+  award,
+  PATRON,
+  CROWN,
 };

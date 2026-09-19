@@ -26,10 +26,11 @@ const GAME_OF_BET = {
 // the same size the navbar button paid at this level
 const fullAmount = (level) => Math.floor(200 * (1 + 0.1 * (level || 0)));
 
-// how full the pot is right now, from when the current cycle started
-const fillAt = (nextBonus, now = new Date()) => {
-  const startedAt = new Date(nextBonus).getTime() - CYCLE_MS;
-  const fill = (now.getTime() - startedAt) / CYCLE_MS;
+// how full the pot is right now, from when the current cycle started. the cycle is the account's own:
+// the quick jar from daisu's shop fills in less than the eight minutes everyone else waits
+const fillAt = (nextBonus, now = new Date(), cycle = CYCLE_MS) => {
+  const startedAt = new Date(nextBonus).getTime() - cycle;
+  const fill = (now.getTime() - startedAt) / cycle;
   return Math.max(0, Math.min(1, fill));
 };
 
@@ -38,13 +39,13 @@ const fillAt = (nextBonus, now = new Date()) => {
 const payout = (full, fill) => Math.floor(full * fill * (CLICK_RATE + (1 - CLICK_RATE) * fill));
 
 // kept to the cent so a small click still leaves something on the pick
-const creditOf = (amount) => Math.round(amount * CREDIT_SHARE * 100) / 100;
+const creditOf = (amount, share = CREDIT_SHARE) => Math.round(amount * share * 100) / 100;
 
 // when a click would first find MIN_CLAIM in the jar, from the start of the cycle
-const readyAt = (nextBonus, full) => {
-  const startedAt = new Date(nextBonus).getTime() - CYCLE_MS;
+const readyAt = (nextBonus, full, cycle = CYCLE_MS) => {
+  const startedAt = new Date(nextBonus).getTime() - cycle;
   const fill = full > 0 ? Math.min(1, MIN_CLAIM / (full * CLICK_RATE)) : 1;
-  return new Date(startedAt + CYCLE_MS * fill);
+  return new Date(startedAt + cycle * fill);
 };
 
 const pickAt = (index) => PICKS[(((index || 0) % PICKS.length) + PICKS.length) % PICKS.length];

@@ -193,11 +193,17 @@
     "contributorHint": "A participé à la construction de KaniCasino.",
     "contributorHow": "Attribué à la main pour avoir aidé à construire KaniCasino : art, traductions, code, idées.",
     "couldNotSave": "Impossible d'enregistrer ce choix",
+    "crown": "Couronne",
+    "crownHint": "Possède la Couronne de Daisu, le dernier objet de son étagère.",
+    "crownHow": "Achète la Couronne de Daisu dans sa boutique au niveau 100.",
     "grant": "Attribuer un badge",
     "locked": "NON OBTENU",
     "noneTheirs": "Pas encore de badge.",
     "noneYours": "Vous n'avez pas encore de badge.",
     "note": "Qu'a-t-il fait ?",
+    "patron": "Mécène",
+    "patronHint": "A acheté le Badge de Mécène dans la boutique de Daisu.",
+    "patronHow": "Achète le Badge de Mécène dans la boutique de Daisu au niveau 60.",
     "revoke": "Retirer",
     "seeAll": "Voir tous les badges",
     "shelfTitle": "Badges",
@@ -785,10 +791,15 @@
       "chapterDoneLine": "Bon. Tu n'es pas un cas désespéré, finalement. Voilà ce que je veux de toi maintenant.",
       "chapters": {
         "1": "Premiers pas",
+        "10": "Le préféré de Daisu",
         "2": "On s'installe",
         "3": "Le retour",
         "4": "Habitué",
-        "5": "Vétéran"
+        "5": "Vétéran",
+        "6": "Habitué",
+        "7": "Gros joueur",
+        "8": "Pilier",
+        "9": "Légende"
       },
       "claim": "Récupérer",
       "claimed": "Récupérée",
@@ -898,6 +909,106 @@
           "desc": "Sois le plus grand fan du personnage que tu as épinglé.",
           "help": "Les classements Top Fan rangent les joueurs selon le nombre d'exemplaires de leur personnage épinglé. Épingles-en un, possèdes-en le plus et la couronne est à toi.",
           "title": "Deviens Top Fan"
+        },
+        "r6-days": {
+          "desc": "Place une mise {{target}} jours différents. Pas forcément d'affilée.",
+          "help": "Une mise dans la journée compte la journée. Quatorze. Je compte, et je ne suis pas pressée.",
+          "title": "Joue {{target}} jours différents"
+        },
+        "r6-full-pots": {
+          "desc": "Attends que mon pot soit plein, puis prends-le. {{target}} fois.",
+          "help": "Un pot plein paie 25% de plus qu'une prise anticipée. La patience est l'avantage le moins cher du site.",
+          "title": "Prends {{target}} pots pleins"
+        },
+        "r6-collections": {
+          "desc": "Possède tous les objets de la collection de {{target}} caisses différentes.",
+          "help": "Trois caisses, tout ce qu'elles peuvent donner. Ouvertures ou marché, peu m'importe. L'onglet Collections montre ce qui manque.",
+          "title": "Complète {{target}} collections"
+        },
+        "r6-level": {
+          "desc": "Chaque mise rapporte de l'XP, gagnée ou perdue.",
+          "help": "Quarante. La plupart n'y arrivent jamais. Prouve que tu n'es pas la plupart.",
+          "title": "Atteins le niveau {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Mise K₽ {{target}} au total, sur n'importe quoi.",
+          "help": "Cinq millions. Étalés sur des mois ou en une nuit folle, pour moi c'est pareil.",
+          "title": "Mise K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Encaisse un seul gain de K₽ {{target}} ou plus dans n'importe quel jeu.",
+          "help": "Une manche, un gain, six chiffres. Crash et plinko sont les suspects habituels. Ne fais rien de stupide.",
+          "title": "Gagne K₽ {{target}} en une manche"
+        },
+        "r7-market": {
+          "desc": "Achète ou vends {{target}} objets sur le marché.",
+          "help": "Achats, ventes et ordres exécutés, tout compte. Un marchand a une licence et s'en sert.",
+          "title": "Échange {{target}} fois sur le marché"
+        },
+        "r7-level": {
+          "desc": "Chaque mise rapporte de l'XP, gagnée ou perdue.",
+          "help": "Cinquante. À mi-chemin du sommet, et les marches ne font que grandir.",
+          "title": "Atteins le niveau {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Sois dans le chat quand la pluie tombe, {{target}} fois.",
+          "help": "Toutes les demi-heures, une part de ce que le site a misé tombe sur ceux qui ont rejoint la pluie dans le chat. Rejoins, puis sois là quand ça tombe. Dix fois.",
+          "title": "Attrape {{target}} pluies"
+        },
+        "r8-battles": {
+          "desc": "Bats d'autres joueurs dans {{target}} batailles de caisses.",
+          "help": "Mêmes caisses, le meilleur total gagne. Dix victoires demandent de la chance et de la présence. Surtout de la présence.",
+          "title": "Gagne {{target}} batailles de caisses"
+        },
+        "r8-streak": {
+          "desc": "Fais tourner le cadeau quotidien {{target}} jours d'affilée.",
+          "help": "Un mois entier sans en rater un. Mets une alarme s'il le faut. Je ne le dirais à personne.",
+          "title": "Une série de {{target}} jours de cadeau"
+        },
+        "r8-level": {
+          "desc": "Chaque mise rapporte de l'XP, gagnée ou perdue.",
+          "help": "Soixante. Une poignée de joueurs sont déjà passés par là. Bienvenue, si tu y arrives.",
+          "title": "Atteins le niveau {{target}}"
+        },
+        "r9-days": {
+          "desc": "Place une mise {{target}} jours différents.",
+          "help": "Soixante jours avec une mise. Deux mois de présence. Tu fais partie des meubles maintenant, que ça te plaise ou non.",
+          "title": "Joue {{target}} jours différents"
+        },
+        "r9-cases": {
+          "desc": "Ouvre {{target}} caisses, n'importe lesquelles.",
+          "help": "Mille caisses. Les pas chères comptent autant, et une ouverture multiple compte chacune. Les drops feront une belle histoire.",
+          "title": "Ouvre {{target}} caisses"
+        },
+        "r9-collections": {
+          "desc": "Possède tous les objets de la collection de {{target}} caisses différentes.",
+          "help": "Dix collections complètes. C'est un musée, pas un passe-temps.",
+          "title": "Complète {{target}} collections"
+        },
+        "r9-level": {
+          "desc": "Chaque mise rapporte de l'XP, gagnée ou perdue.",
+          "help": "Soixante-quinze. J'ai arrêté d'attendre quelqu'un ici. Surprends-moi.",
+          "title": "Atteins le niveau {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Mise K₽ {{target}} au total, sur n'importe quoi.",
+          "help": "Cent millions. Je sais. C'est le but.",
+          "title": "Mise K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Invite {{target}} amis qui atteignent le niveau 10.",
+          "help": "Ton lien d'affilié est sur ton profil. Un ami compte une fois au niveau 10, alors amène des gens qui restent, pas des touristes.",
+          "title": "Amène {{target}} amis au niveau 10"
+        },
+        "r10-predictions": {
+          "desc": "Achète ou vends des parts sur {{target}} prédictions.",
+          "help": "Les marchés de prédiction sur la page Prédictions. Chaque achat ou vente compte pour un. Vingt-cinq et tu apprendras peut-être quelque chose.",
+          "title": "Fais {{target}} échanges sur les prédictions"
+        },
+        "r10-level": {
+          "desc": "Chaque mise rapporte de l'XP, gagnée ou perdue.",
+          "help": "Cent. Personne ne l'a fait. Si tu y arrives, je serai la première au courant, et je le dirai.",
+          "title": "Atteins le niveau {{target}}"
         }
       },
       "progress": "{{done}} sur {{total}} faites"
@@ -969,6 +1080,9 @@
         "line": "Survole un objet et appuie sur son bouton de vente. Il redevient des K₽ tout de suite, alors choisis-en un qui ne te manquera pas.",
         "linePhone": "Touche un objet et vends un exemplaire. Il redevient des K₽ tout de suite, alors choisis-en un qui ne te manquera pas.",
         "wait": "J'attends une vente"
+      },
+      "badges": {
+        "line": "Tes badges sont ici. Choisis celui que tu veux porter et tout le site le voit à côté de ton nom."
       }
     },
     "shop": {
@@ -1056,6 +1170,41 @@
           "opened": "Licence en poche. Acheter, vendre, passer des ordres, le marché est à toi. Je te le fais visiter ?",
           "pitch": "De la paperasse officielle pour marchander avec des inconnus. Ne te fais pas arnaquer. Enfin, si, c'est drôle.",
           "what": "Achète à d'autres joueurs et mets tes objets en vente sur le marché."
+        },
+        "goldenTicket": {
+          "about": "À chaque prise dans le pot, l'extra qui tombe en bonus sur un jeu vaut 15% de la prise au lieu de 10%. Pots pleins, prises anticipées, toutes, pour toujours.",
+          "name": "Ticket d'Or",
+          "opened": "C'est fait. Ta prochaine prise vient déjà avec le bonus plus gros. Tu veux voir le pot ?",
+          "pitch": "Encore de l'argent gratuit par-dessus l'argent gratuit. Je suis trop généreuse.",
+          "what": "Chaque prise dans mon pot ajoute 15% en bonus de jeu au lieu de 10%, pour de bon."
+        },
+        "rainCoat": {
+          "about": "Quand la pluie tombe dans le chat, la cagnotte est partagée selon le niveau. Avec l'imperméable ta part compte 1,5x plus que sans. Le plafond par joueur s'applique toujours.",
+          "name": "Imperméable",
+          "opened": "Tu le portes. À la prochaine pluie, la plus grosse part est pour toi. Tu veux voir où elle tombe ?",
+          "pitch": "Ça te garde au sec. Faux, ça te mouille plus. Ici la pluie, c'est de l'argent.",
+          "what": "Ta part de chaque pluie dans le chat pèse 1,5x, pour de bon."
+        },
+        "patronBadge": {
+          "about": "Un badge qui dit que tu m'as fait vivre. Porte-le sur ton profil, dans le chat, sur les classements. Il ne fait rien d'autre, et il n'en a pas besoin.",
+          "name": "Badge de Mécène",
+          "opened": "À toi. Choisis-le sur ton profil pour le porter. Tu veux aller le mettre ?",
+          "pitch": "C'est un badge. C'est cher. Les deux sont liés.",
+          "what": "Un badge de Mécène, porté sur ton profil et partout où ton nom apparaît."
+        },
+        "quickJar": {
+          "about": "Le pot se remplit en six minutes au lieu de huit, à chaque cycle, pour toujours. Même taille, mêmes règles, un tiers plus souvent.",
+          "name": "Pot Rapide",
+          "opened": "C'est actif. Le pot se remplit déjà plus vite. Tu veux le voir ?",
+          "pitch": "Le même pot, plus vite. Je le regrette déjà.",
+          "what": "Mon pot se remplit en 6 minutes au lieu de 8, pour de bon."
+        },
+        "daisuCrown": {
+          "about": "Le dernier objet de mon étagère. Un badge Couronne à porter partout où ton nom apparaît, et mon respect, qui vaut plus et ne coûte rien de plus.",
+          "name": "Couronne de Daisu",
+          "opened": "Bon. C'est toi. Porte-la sur ton profil et ne sois pas bizarre avec ça. Tu veux la voir ?",
+          "pitch": "Dix millions. Si tu lis ça, tu as déjà décidé.",
+          "what": "Le badge Couronne, la chose la plus rare du site."
         }
       }
     },

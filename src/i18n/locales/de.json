@@ -193,11 +193,17 @@
     "contributorHint": "Hat beim Aufbau von KaniCasino geholfen.",
     "contributorHow": "Von Hand verliehen für Hilfe beim Aufbau von KaniCasino: Kunst, Übersetzungen, Code, Ideen.",
     "couldNotSave": "Diese Wahl konnte nicht gespeichert werden",
+    "crown": "Krone",
+    "crownHint": "Besitzt Daisus Krone, das letzte Stück in ihrem Regal.",
+    "crownHow": "Kauf Daisus Krone ab Level 100 in ihrem Laden.",
     "grant": "Abzeichen verleihen",
     "locked": "NICHT ERHALTEN",
     "noneTheirs": "Noch keine Abzeichen.",
     "noneYours": "Du hast noch keine Abzeichen.",
     "note": "Was hat die Person getan?",
+    "patron": "Gönner",
+    "patronHint": "Hat das Gönner-Abzeichen in Daisus Laden gekauft.",
+    "patronHow": "Kauf das Gönner-Abzeichen ab Level 60 in Daisus Laden.",
     "revoke": "Entziehen",
     "seeAll": "Alle Abzeichen ansehen",
     "shelfTitle": "Abzeichen",
@@ -785,10 +791,15 @@
       "chapterDoneLine": "Na gut. Du bist doch kein hoffnungsloser Fall. Das will ich als Nächstes von dir.",
       "chapters": {
         "1": "Erste Schritte",
+        "10": "Daisus Liebling",
         "2": "Eingewöhnen",
         "3": "Wiederkommen",
         "4": "Stammgast",
-        "5": "Veteran"
+        "5": "Veteran",
+        "6": "Stammgast",
+        "7": "High Roller",
+        "8": "Säule",
+        "9": "Legende"
       },
       "claim": "Abholen",
       "claimed": "Abgeholt",
@@ -898,6 +909,106 @@
           "desc": "Sei der größte Fan des Charakters, den du gepinnt hast.",
           "help": "Die Top-Fan-Ranglisten ordnen Spieler danach, wie viele Exemplare ihres gepinnten Charakters sie besitzen. Pinne einen, besitze die meisten, und die Krone gehört dir.",
           "title": "Werde Top-Fan"
+        },
+        "r6-days": {
+          "desc": "Setze an {{target}} verschiedenen Tagen. Sie müssen nicht hintereinander liegen.",
+          "help": "Ein Einsatz an einem Tag zählt den Tag. Vierzehn davon. Ich zähle mit, und ich habe es nicht eilig.",
+          "title": "Spiele an {{target}} verschiedenen Tagen"
+        },
+        "r6-full-pots": {
+          "desc": "Warte, bis mein Topf ganz voll ist, dann nimm ihn. {{target}} Mal.",
+          "help": "Ein voller Topf zahlt 25% mehr als ein früher Griff. Geduld ist der billigste Vorteil auf dieser Seite.",
+          "title": "Nimm {{target}} volle Töpfe"
+        },
+        "r6-collections": {
+          "desc": "Besitze jedes Item aus der Sammlung von {{target}} verschiedenen Kisten.",
+          "help": "Drei Kisten, alles, was sie ausspucken können. Öffnen oder Markt, egal wie. Der Tab Sammlungen zeigt, was fehlt.",
+          "title": "Vervollständige {{target}} Sammlungen"
+        },
+        "r6-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Vierzig. Die meisten sehen das nie. Beweis, dass du nicht die meisten bist.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Setze insgesamt K₽ {{target}}, egal worauf.",
+          "help": "Fünf Millionen. Über Monate verteilt oder in einer wilden Nacht, mir egal.",
+          "title": "Setze K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Kassiere eine einzelne Auszahlung von K₽ {{target}} oder mehr in irgendeinem Spiel.",
+          "help": "Eine Runde, eine Auszahlung, sechs Stellen. Crash und Plinko sind die üblichen Verdächtigen. Mach nichts Dummes.",
+          "title": "Gewinne K₽ {{target}} in einer Runde"
+        },
+        "r7-market": {
+          "desc": "Kaufe oder verkaufe {{target}} Items auf dem Marktplatz.",
+          "help": "Käufe, Verkäufe und erfüllte Aufträge zählen alle. Ein Händler hat eine Lizenz und nutzt sie.",
+          "title": "Handle {{target}} Mal auf dem Markt"
+        },
+        "r7-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Fünfzig. Halb oben auf der Leiter, und die Stufen werden nur höher.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Sei im Chat, wenn der Regen fällt, {{target}} Mal.",
+          "help": "Jede halbe Stunde fällt ein Teil dessen, was die Seite gesetzt hat, auf alle, die im Chat beim Regen dabei sind. Mach mit, dann sei da, wenn er fällt. Zehn davon.",
+          "title": "Fang {{target}} Regen"
+        },
+        "r8-battles": {
+          "desc": "Schlage andere Spieler in {{target}} Kistenkämpfen.",
+          "help": "Gleiche Kisten, die beste Summe gewinnt. Zehn Siege brauchen Glück und Anwesenheit. Vor allem Anwesenheit.",
+          "title": "Gewinne {{target}} Kistenkämpfe"
+        },
+        "r8-streak": {
+          "desc": "Drehe das tägliche Geschenk {{target}} Tage hintereinander.",
+          "help": "Ein ganzer Monat ohne einen auszulassen. Stell dir einen Wecker, wenn es sein muss. Ich würde es nie jemandem erzählen.",
+          "title": "Eine {{target}}-Tage-Geschenkserie"
+        },
+        "r8-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Sechzig. Nur eine Handvoll Spieler war je hier. Willkommen, falls du es schaffst.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r9-days": {
+          "desc": "Setze an {{target}} verschiedenen Tagen.",
+          "help": "Sechzig Tage mit einem Einsatz. Zwei Monate Anwesenheit. Du gehörst jetzt zum Inventar, ob es dir gefällt oder nicht.",
+          "title": "Spiele an {{target}} verschiedenen Tagen"
+        },
+        "r9-cases": {
+          "desc": "Öffne {{target}} Kisten, egal welche.",
+          "help": "Tausend Kisten. Billige zählen genauso, und ein Mehrfachöffnen zählt jede einzeln. Die Drops werden eine Geschichte.",
+          "title": "Öffne {{target}} Kisten"
+        },
+        "r9-collections": {
+          "desc": "Besitze jedes Item aus der Sammlung von {{target}} verschiedenen Kisten.",
+          "help": "Zehn vollständige Sammlungen. Das ist ein Museum, kein Hobby.",
+          "title": "Vervollständige {{target}} Sammlungen"
+        },
+        "r9-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Fünfundsiebzig. Ich habe aufgehört, hier oben jemanden zu erwarten. Überrasch mich.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Setze insgesamt K₽ {{target}}, egal worauf.",
+          "help": "Hundert Millionen. Ich weiß. Das ist der Punkt.",
+          "title": "Setze K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Lade {{target}} Freunde ein, die Level 10 erreichen.",
+          "help": "Dein Affiliate-Link steht in deinem Profil. Ein Freund zählt ab Level 10, also bring Leute, die bleiben, keine Touristen.",
+          "title": "Bring {{target}} Freunde auf Level 10"
+        },
+        "r10-predictions": {
+          "desc": "Kaufe oder verkaufe Anteile bei {{target}} Vorhersagen.",
+          "help": "Die Vorhersagemärkte auf der Seite Vorhersagen. Jeder Kauf oder Verkauf zählt einmal. Fünfundzwanzig, und vielleicht lernst du sogar etwas.",
+          "title": "Mach {{target}} Vorhersage-Trades"
+        },
+        "r10-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Hundert. Niemand hat es geschafft. Wenn du es tust, erfahre ich es als Erste, und ich werde es sagen.",
+          "title": "Erreiche Level {{target}}"
         }
       },
       "progress": "{{done}} von {{total}} erledigt"
@@ -969,6 +1080,9 @@
         "line": "Fahr mit der Maus über ein Item und drück seinen Verkaufen-Knopf. Es wird sofort wieder zu K₽, also nimm eins, das dir nicht fehlen wird.",
         "linePhone": "Tipp auf ein Item und verkauf ein Exemplar. Es wird sofort wieder zu K₽, also nimm eins, das dir nicht fehlen wird.",
         "wait": "Warte auf einen Verkauf"
+      },
+      "badges": {
+        "line": "Hier wohnen deine Abzeichen. Wähl das, das du tragen willst, und die ganze Seite sieht es neben deinem Namen."
       }
     },
     "shop": {
@@ -1056,6 +1170,41 @@
           "opened": "Lizenziert. Kaufen, einstellen, Aufträge erteilen, der Marktplatz gehört dir. Soll ich dich herumführen?",
           "pitch": "Offizieller Papierkram, damit du mit Fremden feilschen kannst. Lass dich nicht abzocken. Na ja, doch, das ist lustig.",
           "what": "Kauf von anderen Spielern und stell deine eigenen Items auf dem Marktplatz ein."
+        },
+        "goldenTicket": {
+          "about": "Bei jedem Griff in den Topf beträgt das Extra, das als Bonus auf ein Spiel landet, 15% statt 10%. Volle Töpfe, frühe Griffe, alle, für immer.",
+          "name": "Goldenes Ticket",
+          "opened": "Erledigt. Dein nächster Griff kommt schon mit dem größeren Bonus. Willst du den Topf sehen?",
+          "pitch": "Noch mehr Gratisgeld auf das Gratisgeld. Ich bin zu großzügig.",
+          "what": "Jeder Griff in meinen Topf legt 15% statt 10% als Spielbonus drauf, für immer."
+        },
+        "rainCoat": {
+          "about": "Wenn der Regen im Chat fällt, wird der Pool nach Level geteilt. Mit dem Mantel zählt dein Anteil 1,5x so viel wie ohne. Die Obergrenze pro Spieler gilt weiter.",
+          "name": "Regenmantel",
+          "opened": "Du trägst ihn. Beim nächsten Regen bekommst du das größere Stück. Willst du sehen, wo er fällt?",
+          "pitch": "Hält dich trocken. Gelogen, macht dich nasser. Regen ist hier Geld.",
+          "what": "Dein Anteil an jedem Regen im Chat wiegt 1,5x, für immer."
+        },
+        "patronBadge": {
+          "about": "Ein Abzeichen, das sagt, dass du mich im Geschäft gehalten hast. Trag es im Profil, im Chat, auf den Ranglisten. Es tut sonst nichts, und das muss es auch nicht.",
+          "name": "Gönner-Abzeichen",
+          "opened": "Gehört dir. Wähl es in deinem Profil, um es zu tragen. Willst du es anlegen gehen?",
+          "pitch": "Es ist ein Abzeichen. Es ist teuer. Die beiden Tatsachen hängen zusammen.",
+          "what": "Ein Gönner-Abzeichen, getragen auf deinem Profil und überall, wo dein Name steht."
+        },
+        "quickJar": {
+          "about": "Der Topf ist in sechs statt acht Minuten voll, jeden Zyklus, für immer. Gleiche Größe, gleiche Regeln, ein Drittel öfter.",
+          "name": "Schneller Topf",
+          "opened": "Aktiv. Der Topf füllt sich schon schneller. Willst du zusehen?",
+          "pitch": "Gleicher Topf, schneller. Ich bereue es jetzt schon.",
+          "what": "Mein Topf füllt sich in 6 Minuten statt 8, für immer."
+        },
+        "daisuCrown": {
+          "about": "Das letzte Stück in meinem Regal. Ein Kronen-Abzeichen, überall zu tragen, wo dein Name steht, und meinen Respekt, der mehr wert ist und nichts extra kostet.",
+          "name": "Daisus Krone",
+          "opened": "Na gut. Du bist es. Trag sie im Profil und mach kein Theater darum. Willst du sie sehen?",
+          "pitch": "Zehn Millionen. Wenn du das liest, hast du dich schon entschieden.",
+          "what": "Das Kronen-Abzeichen, das Seltenste auf der Seite."
         }
       }
     },

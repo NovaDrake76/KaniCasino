@@ -40,7 +40,7 @@ const BadgeShelf: React.FC<BadgeShelfProps> = ({ badges, selectedBadge, isSameUs
   };
 
   return (
-    <div className="mt-5 flex flex-col gap-2">
+    <div className="mt-5 flex flex-col gap-2" data-tour="badge-shelf">
       <div className="flex items-center gap-3">
         <p className="text-[10px] font-extrabold tracking-[0.16em] text-[#625F7E]">
           {i18n.t("badge.shelfTitle").toUpperCase()}

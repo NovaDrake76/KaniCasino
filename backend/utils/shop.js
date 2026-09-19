@@ -4,6 +4,7 @@ const ChatMessage = require("../models/ChatMessage");
 const Marketplace = require("../models/Marketplace");
 const PredictionTrade = require("../models/PredictionTrade");
 const beta = require("./beta");
+const badges = require("./badges");
 const { ITEMS, itemOf, REVEAL_AHEAD } = require("./shopCatalog");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("./economy");
 const { getIo } = require("./realtime");
@@ -22,6 +23,11 @@ const EVIDENCE = {
   affiliateCard: async (user) => !!user.referralCode,
   giftCharm: async () => false,
   merchantSeal: async () => false,
+  goldenTicket: async () => false,
+  rainCoat: async () => false,
+  patronBadge: async () => false,
+  quickJar: async () => false,
+  daisuCrown: async () => false,
   predictionPass: async (user) => !!(await PredictionTrade.exists({ userId: user._id })),
 };
 
@@ -128,6 +134,8 @@ async function buy(user, key) {
 
   const io = getIo();
   if (io) io.to(String(user._id)).emit("userDataUpdated", { walletBalance: updated.walletBalance });
+  // a trophy item is worn as a badge, awarded the moment it is bought
+  if (item.badge) await badges.award(user._id, item.badge, io).catch((e) => console.error("shop badge:", e));
   return {
     code: 200,
     body: { bought: true, key, walletBalance: updated.walletBalance, unlocks: keysOf(updated.unlocks), shop: await viewFor(updated) },

@@ -8,6 +8,11 @@ const ART: Record<string, PixelIconName> = {
   affiliateCard: "letter",
   giftCharm: "clover",
   merchantSeal: "seal",
+  goldenTicket: "goldticket",
+  rainCoat: "umbrella",
+  patronBadge: "shield",
+  quickJar: "hourglass",
+  daisuCrown: "tiara",
 };
 
 // one picture per item; sizes are rounded to a multiple of 16 so the pixels stay square

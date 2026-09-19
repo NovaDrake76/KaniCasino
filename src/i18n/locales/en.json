@@ -193,11 +193,17 @@
     "contributorHint": "Helped build KaniCasino.",
     "contributorHow": "Given by hand for helping build KaniCasino: art, translations, code, ideas.",
     "couldNotSave": "Could not save that choice",
+    "crown": "Crown",
+    "crownHint": "Holds Daisu's Crown, the last item on her shelf.",
+    "crownHow": "Buy Daisu's Crown in her shop at level 100.",
     "grant": "Grant badge",
     "locked": "NOT EARNED",
     "noneTheirs": "No badges yet.",
     "noneYours": "You have no badges yet.",
     "note": "What did they do?",
+    "patron": "Patron",
+    "patronHint": "Bought the Patron Badge in Daisu's shop.",
+    "patronHow": "Buy the Patron Badge in Daisu's shop at level 60.",
     "revoke": "Revoke",
     "seeAll": "See all badges",
     "shelfTitle": "Badges",
@@ -785,10 +791,15 @@
       "chapterDoneLine": "Fine. You're not hopeless after all. Here's what I want from you next.",
       "chapters": {
         "1": "First steps",
+        "10": "Daisu's favourite",
         "2": "Settling in",
         "3": "Coming back",
         "4": "Regular",
-        "5": "Veteran"
+        "5": "Veteran",
+        "6": "Fixture",
+        "7": "High roller",
+        "8": "Pillar",
+        "9": "Legend"
       },
       "claim": "Claim",
       "claimed": "Claimed",
@@ -898,6 +909,106 @@
           "desc": "Be the top fan of the character you pinned.",
           "help": "The Top Fan boards rank players by how many copies of their pinned character they own. Pin one, own the most, and the crown is yours.",
           "title": "Become a Top Fan"
+        },
+        "r6-days": {
+          "desc": "Place a bet on {{target}} different days. They don't have to be in a row.",
+          "help": "Any bet on a day counts the day. Fourteen of them. I'm counting, and I'm not in a hurry.",
+          "title": "Play on {{target}} different days"
+        },
+        "r6-full-pots": {
+          "desc": "Wait for my jar to fill all the way, then take it. {{target}} times.",
+          "help": "Full pots pay 25% more than grabbing early. Patience is the cheapest edge on this site.",
+          "title": "Take {{target}} full pots"
+        },
+        "r6-collections": {
+          "desc": "Own every item of {{target}} different cases' collections.",
+          "help": "Three cases, everything they can drop. Openings or the market, I don't care how. The Collections tab shows what's missing.",
+          "title": "Complete {{target}} collections"
+        },
+        "r6-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Forty. Most people never see it. Prove you're not most people.",
+          "title": "Reach level {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Bet K₽ {{target}} in total, on anything.",
+          "help": "Five million. Spread over months or one wild night, it's the same to me.",
+          "title": "Bet K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Take a single payout of K₽ {{target}} or more from any game.",
+          "help": "One round, one payout, six figures. Crash and plinko are the usual suspects. Don't do anything stupid.",
+          "title": "Win K₽ {{target}} in one round"
+        },
+        "r7-market": {
+          "desc": "Buy or sell {{target}} items on the marketplace.",
+          "help": "Buys, sales and filled orders all count. A trader has a license and uses it.",
+          "title": "Trade {{target}} times on the market"
+        },
+        "r7-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Fifty. Halfway to the top of the ladder, and the steps only get taller.",
+          "title": "Reach level {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Be in the chat when the rain falls, {{target}} times.",
+          "help": "Every half hour a share of what the site bet falls on whoever joined the rain in the chat. Join, then be there when it drops. Ten of those.",
+          "title": "Catch {{target}} rains"
+        },
+        "r8-battles": {
+          "desc": "Beat other players in {{target}} case battles.",
+          "help": "Same cases, best total wins. Ten wins takes luck and showing up. Mostly showing up.",
+          "title": "Win {{target}} case battles"
+        },
+        "r8-streak": {
+          "desc": "Spin the daily gift {{target}} days in a row.",
+          "help": "A whole month without missing one. Set an alarm if you must. I'd never tell anyone.",
+          "title": "A {{target}}-day gift streak"
+        },
+        "r8-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Sixty. A handful of players have ever been here. Welcome, if you make it.",
+          "title": "Reach level {{target}}"
+        },
+        "r9-days": {
+          "desc": "Place a bet on {{target}} different days.",
+          "help": "Sixty days with a bet in them. Two months of showing up. You're a fixture now, whether you like it or not.",
+          "title": "Play on {{target}} different days"
+        },
+        "r9-cases": {
+          "desc": "Open {{target}} cases, any cases.",
+          "help": "A thousand cases. Cheap ones count the same, and a multi-open counts each one. The drops will be a story.",
+          "title": "Open {{target}} cases"
+        },
+        "r9-collections": {
+          "desc": "Own every item of {{target}} different cases' collections.",
+          "help": "Ten complete collections. That's a museum, not a hobby.",
+          "title": "Complete {{target}} collections"
+        },
+        "r9-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "Seventy-five. I stopped expecting anyone up here. Surprise me.",
+          "title": "Reach level {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Bet K₽ {{target}} in total, on anything.",
+          "help": "A hundred million. I know. That's the point.",
+          "title": "Bet K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Invite {{target}} friends who reach level 10.",
+          "help": "Your affiliate link is on your profile. A friend counts once they hit level 10, so bring people who'll stay, not tourists.",
+          "title": "Bring {{target}} friends to level 10"
+        },
+        "r10-predictions": {
+          "desc": "Buy or sell shares on {{target}} predictions.",
+          "help": "The prediction markets on the Predictions page. Every buy or sell counts as one. Twenty-five and you might even learn something.",
+          "title": "Make {{target}} prediction trades"
+        },
+        "r10-level": {
+          "desc": "Every bet earns XP, win or lose.",
+          "help": "One hundred. Nobody has done it. If you do, I'll be the first to know, and I'll say so.",
+          "title": "Reach level {{target}}"
         }
       },
       "progress": "{{done}} of {{total}} done"
@@ -969,6 +1080,9 @@
         "line": "Hover an item and press its sell button. It turns back into K₽ right away, so pick one you won't miss.",
         "linePhone": "Tap an item and sell a copy. It turns back into K₽ right away, so pick one you won't miss.",
         "wait": "Waiting for a sale"
+      },
+      "badges": {
+        "line": "Your badges live here. Pick the one you want to wear and everyone on the site sees it next to your name."
       }
     },
     "shop": {
@@ -1056,6 +1170,41 @@
           "opened": "Licensed. Buy, list, place orders, the marketplace is all yours. Want me to show you around it?",
           "pitch": "Official paperwork, so you can haggle with strangers. Don't get scammed. Actually, do. It's funny.",
           "what": "Buy from other players and list your own items on the marketplace."
+        },
+        "goldenTicket": {
+          "about": "Whenever you take from the jar, the extra that lands as a bonus on a game is 15% of the take instead of 10%. Full pots, early takes, all of them, forever.",
+          "name": "Golden Ticket",
+          "opened": "Done. Your next take already comes with the bigger bonus. Want to see the jar?",
+          "pitch": "More free money on top of the free money. I'm too generous.",
+          "what": "Every take from my jar adds 15% as a game bonus instead of 10%, for good."
+        },
+        "rainCoat": {
+          "about": "When the rain falls in the chat, the pool is split by level. With the coat your share counts 1.5x as much as it would without it. The per-player cap still applies.",
+          "name": "Rain Coat",
+          "opened": "You're wearing it. Next rain, you get the bigger slice. Want to see where it falls?",
+          "pitch": "It keeps you dry. That's a lie, it makes you wetter. Rain is money here.",
+          "what": "Your share of every rain in the chat weighs 1.5x, for good."
+        },
+        "patronBadge": {
+          "about": "A badge that says you kept me in business. Wear it on your profile, in the chat, on the boards. It does nothing else, and it doesn't need to.",
+          "name": "Patron Badge",
+          "opened": "Yours. Pick it on your profile to wear it. Want to go put it on?",
+          "pitch": "It's a badge. It's expensive. Those two facts are related.",
+          "what": "A Patron badge, worn on your profile and everywhere your name shows."
+        },
+        "quickJar": {
+          "about": "The jar fills to full in six minutes instead of eight, every cycle, forever. Same size pot, same rules, a third more often.",
+          "name": "Quick Jar",
+          "opened": "It's on. The jar is already filling faster. Want to watch it?",
+          "pitch": "Same jar, faster. I resent it already.",
+          "what": "My jar fills in 6 minutes instead of 8, for good."
+        },
+        "daisuCrown": {
+          "about": "The last item on my shelf. A Crown badge to wear anywhere your name shows, and my respect, which is worth more and costs nothing extra.",
+          "name": "Daisu's Crown",
+          "opened": "Fine. You're the one. Wear it on your profile and don't be weird about it. Want to see it?",
+          "pitch": "Ten million. If you're reading this, you've already decided.",
+          "what": "The Crown badge, the rarest thing on the site."
         }
       }
     },

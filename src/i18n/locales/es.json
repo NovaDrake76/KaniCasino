@@ -193,11 +193,17 @@
     "contributorHint": "Ayudó a construir KaniCasino.",
     "contributorHow": "Concedida a mano por ayudar a construir KaniCasino: arte, traducciones, código, ideas.",
     "couldNotSave": "No se pudo guardar esa elección",
+    "crown": "Corona",
+    "crownHint": "Tiene la Corona de Daisu, el último objeto de su estante.",
+    "crownHow": "Compra la Corona de Daisu en su tienda al nivel 100.",
     "grant": "Conceder insignia",
     "locked": "NO CONSEGUIDA",
     "noneTheirs": "Aún sin insignias.",
     "noneYours": "Aún no tienes insignias.",
     "note": "¿Qué hizo?",
+    "patron": "Mecenas",
+    "patronHint": "Compró la Insignia de Mecenas en la tienda de Daisu.",
+    "patronHow": "Compra la Insignia de Mecenas en la tienda de Daisu al nivel 60.",
     "revoke": "Retirar",
     "seeAll": "Ver todas las insignias",
     "shelfTitle": "Insignias",
@@ -785,10 +791,15 @@
       "chapterDoneLine": "Bien. Al final no eres un caso perdido. Esto es lo que quiero de ti ahora.",
       "chapters": {
         "1": "Primeros pasos",
+        "10": "Favorito de Daisu",
         "2": "Tomándole el gusto",
         "3": "De vuelta",
         "4": "Habitual",
-        "5": "Veterano"
+        "5": "Veterano",
+        "6": "De la casa",
+        "7": "Apostador fuerte",
+        "8": "Pilar",
+        "9": "Leyenda"
       },
       "claim": "Cobrar",
       "claimed": "Cobrada",
@@ -898,6 +909,106 @@
           "desc": "Sé el mayor fan del personaje que fijaste.",
           "help": "Los rankings de Top Fan ordenan a los jugadores por cuántas copias tienen de su personaje fijado. Fija uno, ten más que nadie y la corona es tuya.",
           "title": "Hazte Top Fan"
+        },
+        "r6-days": {
+          "desc": "Haz una apuesta en {{target}} días distintos. No hace falta que sean seguidos.",
+          "help": "Cualquier apuesta en un día cuenta el día. Catorce. Estoy contando, y no tengo prisa.",
+          "title": "Juega en {{target}} días distintos"
+        },
+        "r6-full-pots": {
+          "desc": "Espera a que mi bote se llene del todo y tómalo. {{target}} veces.",
+          "help": "El bote lleno paga un 25% más que cogerlo antes. La paciencia es la ventaja más barata de este sitio.",
+          "title": "Toma {{target}} botes llenos"
+        },
+        "r6-collections": {
+          "desc": "Ten todos los objetos de la colección de {{target}} cajas distintas.",
+          "help": "Tres cajas, todo lo que pueden soltar. Abriendo o en el mercado, me da igual cómo. La pestaña Colecciones muestra lo que falta.",
+          "title": "Completa {{target}} colecciones"
+        },
+        "r6-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Cuarenta. La mayoría nunca lo ve. Demuestra que no eres la mayoría.",
+          "title": "Llega al nivel {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Apuesta K₽ {{target}} en total, en lo que sea.",
+          "help": "Cinco millones. Repartidos en meses o en una noche loca, me da igual.",
+          "title": "Apuesta K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Cobra un solo pago de K₽ {{target}} o más en cualquier juego.",
+          "help": "Una ronda, un pago, seis cifras. Crash y plinko son los sospechosos habituales. No hagas ninguna tontería.",
+          "title": "Gana K₽ {{target}} en una ronda"
+        },
+        "r7-market": {
+          "desc": "Compra o vende {{target}} objetos en el mercado.",
+          "help": "Compras, ventas y órdenes atendidas, todo cuenta. Un comerciante tiene licencia y la usa.",
+          "title": "Comercia {{target}} veces en el mercado"
+        },
+        "r7-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Cincuenta. A mitad de camino a la cima, y los escalones solo se hacen más altos.",
+          "title": "Llega al nivel {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Está en el chat cuando caiga la lluvia, {{target}} veces.",
+          "help": "Cada media hora una parte de lo que el sitio apostó cae sobre quien se unió a la lluvia en el chat. Únete y está ahí cuando caiga. Diez de esas.",
+          "title": "Atrapa {{target}} lluvias"
+        },
+        "r8-battles": {
+          "desc": "Vence a otros jugadores en {{target}} batallas de cajas.",
+          "help": "Mismas cajas, gana el mejor total. Diez victorias requieren suerte y presencia. Sobre todo presencia.",
+          "title": "Gana {{target}} batallas de cajas"
+        },
+        "r8-streak": {
+          "desc": "Gira el regalo diario {{target}} días seguidos.",
+          "help": "Un mes entero sin fallar ni uno. Pon una alarma si hace falta. Nunca se lo diría a nadie.",
+          "title": "Una racha de regalo de {{target}} días"
+        },
+        "r8-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Sesenta. Solo un puñado de jugadores ha llegado aquí. Bienvenido, si lo logras.",
+          "title": "Llega al nivel {{target}}"
+        },
+        "r9-days": {
+          "desc": "Haz una apuesta en {{target}} días distintos.",
+          "help": "Sesenta días con apuesta. Dos meses apareciendo. Ya eres de la casa, te guste o no.",
+          "title": "Juega en {{target}} días distintos"
+        },
+        "r9-cases": {
+          "desc": "Abre {{target}} cajas, las que sean.",
+          "help": "Mil cajas. Las baratas cuentan igual, y abrir varias cuenta cada una. Los drops serán toda una historia.",
+          "title": "Abre {{target}} cajas"
+        },
+        "r9-collections": {
+          "desc": "Ten todos los objetos de la colección de {{target}} cajas distintas.",
+          "help": "Diez colecciones completas. Eso es un museo, no un hobby.",
+          "title": "Completa {{target}} colecciones"
+        },
+        "r9-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Setenta y cinco. Dejé de esperar a nadie aquí arriba. Sorpréndeme.",
+          "title": "Llega al nivel {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Apuesta K₽ {{target}} en total, en lo que sea.",
+          "help": "Cien millones. Lo sé. Esa es la idea.",
+          "title": "Apuesta K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Invita a {{target}} amigos que lleguen al nivel 10.",
+          "help": "Tu enlace de afiliado está en tu perfil. Un amigo cuenta cuando llega al nivel 10, así que trae gente que se quede, no turistas.",
+          "title": "Trae a {{target}} amigos hasta el nivel 10"
+        },
+        "r10-predictions": {
+          "desc": "Compra o vende participaciones en {{target}} predicciones.",
+          "help": "Los mercados de predicción en la página Predicciones. Cada compra o venta cuenta una. Veinticinco y puede que hasta aprendas algo.",
+          "title": "Haz {{target}} operaciones en predicciones"
+        },
+        "r10-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Cien. Nadie lo ha logrado. Si lo haces, seré la primera en saberlo, y lo diré.",
+          "title": "Llega al nivel {{target}}"
         }
       },
       "progress": "{{done}} de {{total}} hechas"
@@ -969,6 +1080,9 @@
         "line": "Pasa el ratón por un objeto y pulsa su botón de vender. Vuelve como K₽ al instante, así que elige uno que no vayas a echar de menos.",
         "linePhone": "Toca un objeto y vende una copia. Vuelve como K₽ al instante, así que elige uno que no vayas a echar de menos.",
         "wait": "Esperando una venta"
+      },
+      "badges": {
+        "line": "Tus insignias viven aquí. Elige la que quieras llevar y todo el sitio la ve junto a tu nombre."
       }
     },
     "shop": {
@@ -1056,6 +1170,41 @@
           "opened": "Con licencia. Comprar, publicar, poner órdenes, el mercado es todo tuyo. ¿Te lo enseño?",
           "pitch": "Papeleo oficial para regatear con desconocidos. Que no te estafen. Bueno, sí, que es divertido.",
           "what": "Compra a otros jugadores y publica tus objetos en el mercado."
+        },
+        "goldenTicket": {
+          "about": "Siempre que tomas del bote, el extra que cae como bono en un juego es el 15% de la toma en vez del 10%. Botes llenos, tomas tempranas, todas, para siempre.",
+          "name": "Boleto Dorado",
+          "opened": "Hecho. Tu próxima toma ya viene con el bono mayor. ¿Quieres ver el bote?",
+          "pitch": "Más dinero gratis encima del dinero gratis. Soy demasiado generosa.",
+          "what": "Cada toma de mi bote añade un 15% como bono de juego en vez de un 10%, para siempre."
+        },
+        "rainCoat": {
+          "about": "Cuando la lluvia cae en el chat, el bote se reparte por nivel. Con el impermeable tu parte cuenta 1,5x más de lo que contaría sin él. El límite por jugador sigue aplicando.",
+          "name": "Impermeable",
+          "opened": "Ya lo llevas puesto. En la próxima lluvia, la porción mayor es tuya. ¿Quieres ver dónde cae?",
+          "pitch": "Te mantiene seco. Mentira, te moja más. Aquí la lluvia es dinero.",
+          "what": "Tu parte de cada lluvia en el chat pesa 1,5x, para siempre."
+        },
+        "patronBadge": {
+          "about": "Una insignia que dice que me mantuviste en el negocio. Llévala en el perfil, en el chat, en los rankings. No hace nada más, y no le hace falta.",
+          "name": "Insignia de Mecenas",
+          "opened": "Es tuya. Elígela en tu perfil para llevarla. ¿Quieres ir a ponértela?",
+          "pitch": "Es una insignia. Es cara. Esas dos cosas están relacionadas.",
+          "what": "Una insignia de Mecenas, llevada en tu perfil y en todos los sitios donde aparece tu nombre."
+        },
+        "quickJar": {
+          "about": "El bote se llena en seis minutos en vez de ocho, cada ciclo, para siempre. Mismo tamaño, mismas reglas, un tercio más a menudo.",
+          "name": "Bote Rápido",
+          "opened": "Activado. El bote ya se llena más rápido. ¿Quieres verlo?",
+          "pitch": "El mismo bote, más rápido. Ya me arrepiento.",
+          "what": "Mi bote se llena en 6 minutos en vez de 8, para siempre."
+        },
+        "daisuCrown": {
+          "about": "El último objeto de mi estante. Una insignia Corona para llevar donde aparezca tu nombre, y mi respeto, que vale más y no cuesta nada extra.",
+          "name": "Corona de Daisu",
+          "opened": "Vale. Eres tú. Llévala en tu perfil y no te pongas raro con eso. ¿Quieres verla?",
+          "pitch": "Diez millones. Si estás leyendo esto, ya lo has decidido.",
+          "what": "La insignia Corona, lo más raro del sitio."
         }
       }
     },

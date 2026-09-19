@@ -1,7 +1,7 @@
 import api from "../api";
 
 // a collection badge is keyed off its category slug, so the set is open-ended
-export type BadgeKey = "topFan" | "contributor" | "connected" | `collection:${string}`;
+export type BadgeKey = "topFan" | "contributor" | "connected" | "patron" | "crown" | `collection:${string}`;
 
 export const COLLECTION_PREFIX = "collection:";
 export const isCollectionBadge = (key: string) => key.startsWith(COLLECTION_PREFIX);

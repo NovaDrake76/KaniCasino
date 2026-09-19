@@ -193,11 +193,17 @@
     "contributorHint": "Ikut membangun KaniCasino.",
     "contributorHow": "Diberikan langsung karena ikut membangun KaniCasino: gambar, terjemahan, kode, ide.",
     "couldNotSave": "Tidak bisa menyimpan pilihan itu",
+    "crown": "Mahkota",
+    "crownHint": "Memegang Mahkota Daisu, item terakhir di raknya.",
+    "crownHow": "Beli Mahkota Daisu di tokonya pada level 100.",
     "grant": "Beri lencana",
     "locked": "BELUM DIDAPAT",
     "noneTheirs": "Belum ada lencana.",
     "noneYours": "Kamu belum punya lencana.",
     "note": "Apa yang dia lakukan?",
+    "patron": "Patron",
+    "patronHint": "Membeli Lencana Patron di toko Daisu.",
+    "patronHow": "Beli Lencana Patron di toko Daisu pada level 60.",
     "revoke": "Cabut",
     "seeAll": "Lihat semua lencana",
     "shelfTitle": "Lencana",
@@ -785,10 +791,15 @@
       "chapterDoneLine": "Oke. Ternyata kamu tidak separah itu. Ini yang kumau darimu selanjutnya.",
       "chapters": {
         "1": "Langkah pertama",
+        "10": "Kesayangan Daisu",
         "2": "Mulai terbiasa",
         "3": "Kembali lagi",
         "4": "Pelanggan tetap",
-        "5": "Veteran"
+        "5": "Veteran",
+        "6": "Langganan",
+        "7": "Pemain besar",
+        "8": "Pilar",
+        "9": "Legenda"
       },
       "claim": "Ambil",
       "claimed": "Sudah diambil",
@@ -898,6 +909,106 @@
           "desc": "Jadi penggemar teratas karakter yang kamu sematkan.",
           "help": "Papan Top Fan mengurutkan pemain berdasarkan berapa banyak salinan karakter sematan yang mereka punya. Sematkan satu, punya paling banyak, dan mahkotanya milikmu.",
           "title": "Jadi Top Fan"
+        },
+        "r6-days": {
+          "desc": "Pasang taruhan di {{target}} hari berbeda. Tidak harus berturut-turut.",
+          "help": "Taruhan apa pun di satu hari menghitung hari itu. Empat belas. Aku menghitung, dan aku tidak buru-buru.",
+          "title": "Main di {{target}} hari berbeda"
+        },
+        "r6-full-pots": {
+          "desc": "Tunggu toplesku penuh, lalu ambil. {{target}} kali.",
+          "help": "Toples penuh membayar 25% lebih banyak daripada mengambil lebih awal. Kesabaran adalah keunggulan termurah di situs ini.",
+          "title": "Ambil {{target}} toples penuh"
+        },
+        "r6-collections": {
+          "desc": "Miliki semua item dari koleksi {{target}} kotak berbeda.",
+          "help": "Tiga kotak, semua yang bisa keluar darinya. Buka atau beli di pasar, terserah. Tab Koleksi menunjukkan yang kurang.",
+          "title": "Lengkapi {{target}} koleksi"
+        },
+        "r6-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Empat puluh. Kebanyakan orang tidak pernah sampai. Buktikan kamu bukan kebanyakan orang.",
+          "title": "Capai level {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Bertaruh total K₽ {{target}}, di apa saja.",
+          "help": "Lima juta. Dicicil berbulan-bulan atau satu malam gila, bagiku sama saja.",
+          "title": "Bertaruh K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Terima satu pembayaran K₽ {{target}} atau lebih dari permainan mana pun.",
+          "help": "Satu ronde, satu pembayaran, enam digit. Crash dan plinko tersangka biasanya. Jangan berbuat bodoh.",
+          "title": "Menang K₽ {{target}} dalam satu ronde"
+        },
+        "r7-market": {
+          "desc": "Beli atau jual {{target}} item di pasar.",
+          "help": "Pembelian, penjualan, dan pesanan yang terpenuhi semua dihitung. Pedagang punya lisensi dan memakainya.",
+          "title": "Bertransaksi {{target}} kali di pasar"
+        },
+        "r7-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Lima puluh. Setengah jalan ke puncak, dan anak tangganya makin tinggi saja.",
+          "title": "Capai level {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Ada di chat saat hujan turun, {{target}} kali.",
+          "help": "Setiap setengah jam sebagian dari taruhan situs turun ke siapa pun yang ikut hujan di chat. Ikut, lalu ada di sana saat turun. Sepuluh kali.",
+          "title": "Tangkap {{target}} hujan"
+        },
+        "r8-battles": {
+          "desc": "Kalahkan pemain lain di {{target}} pertarungan kotak.",
+          "help": "Kotak yang sama, total tertinggi menang. Sepuluh kemenangan butuh keberuntungan dan kehadiran. Terutama kehadiran.",
+          "title": "Menangkan {{target}} pertarungan kotak"
+        },
+        "r8-streak": {
+          "desc": "Putar hadiah harian {{target}} hari berturut-turut.",
+          "help": "Sebulan penuh tanpa melewatkan satu pun. Pasang alarm kalau perlu. Aku tidak akan bilang siapa-siapa.",
+          "title": "Rentetan hadiah {{target}} hari"
+        },
+        "r8-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Enam puluh. Hanya segelintir pemain yang pernah sampai sini. Selamat datang, kalau kamu berhasil.",
+          "title": "Capai level {{target}}"
+        },
+        "r9-days": {
+          "desc": "Pasang taruhan di {{target}} hari berbeda.",
+          "help": "Enam puluh hari dengan taruhan. Dua bulan hadir. Kamu sudah jadi langganan, suka atau tidak.",
+          "title": "Main di {{target}} hari berbeda"
+        },
+        "r9-cases": {
+          "desc": "Buka {{target}} kotak, kotak apa saja.",
+          "help": "Seribu kotak. Yang murah dihitung sama, dan buka banyak dihitung satu per satu. Drop-nya bakal jadi cerita.",
+          "title": "Buka {{target}} kotak"
+        },
+        "r9-collections": {
+          "desc": "Miliki semua item dari koleksi {{target}} kotak berbeda.",
+          "help": "Sepuluh koleksi lengkap. Itu museum, bukan hobi.",
+          "title": "Lengkapi {{target}} koleksi"
+        },
+        "r9-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Tujuh puluh lima. Aku sudah berhenti mengharapkan siapa pun di atas sini. Kejutkan aku.",
+          "title": "Capai level {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Bertaruh total K₽ {{target}}, di apa saja.",
+          "help": "Seratus juta. Aku tahu. Itulah intinya.",
+          "title": "Bertaruh K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Undang {{target}} teman yang mencapai level 10.",
+          "help": "Tautan afiliasimu ada di profil. Teman dihitung setelah mencapai level 10, jadi bawa orang yang akan tinggal, bukan turis.",
+          "title": "Bawa {{target}} teman ke level 10"
+        },
+        "r10-predictions": {
+          "desc": "Beli atau jual saham di {{target}} prediksi.",
+          "help": "Pasar prediksi di halaman Prediksi. Setiap beli atau jual dihitung satu. Dua puluh lima dan mungkin kamu malah belajar sesuatu.",
+          "title": "Lakukan {{target}} transaksi prediksi"
+        },
+        "r10-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Seratus. Belum ada yang berhasil. Kalau kamu bisa, aku yang pertama tahu, dan aku akan bilang.",
+          "title": "Capai level {{target}}"
         }
       },
       "progress": "{{done}} dari {{total}} selesai"
@@ -969,6 +1080,9 @@
         "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "wait": "Menunggu penjualan"
+      },
+      "badges": {
+        "line": "Lencanamu ada di sini. Pilih yang mau dipakai dan semua orang di situs melihatnya di samping namamu."
       }
     },
     "shop": {
@@ -1056,6 +1170,41 @@
           "opened": "Sudah berlisensi. Beli, pasang, buat pesanan, pasar sepenuhnya milikmu. Mau kutunjukkan?",
           "pitch": "Dokumen resmi supaya kamu bisa tawar-menawar dengan orang asing. Jangan sampai ditipu. Eh, ditipu juga boleh, lucu.",
           "what": "Beli dari pemain lain dan pasang barangmu sendiri di pasar."
+        },
+        "goldenTicket": {
+          "about": "Setiap kali kamu mengambil dari toples, tambahan yang jatuh sebagai bonus di permainan adalah 15% dari ambilan, bukan 10%. Toples penuh, ambilan awal, semuanya, selamanya.",
+          "name": "Tiket Emas",
+          "opened": "Selesai. Ambilan berikutnya sudah dapat bonus yang lebih besar. Mau lihat toplesnya?",
+          "pitch": "Uang gratis tambahan di atas uang gratis. Aku terlalu murah hati.",
+          "what": "Setiap ambilan dari toplesku menambah 15% sebagai bonus permainan, bukan 10%, selamanya."
+        },
+        "rainCoat": {
+          "about": "Saat hujan turun di chat, kolamnya dibagi berdasarkan level. Dengan jas hujan, bagianmu dihitung 1,5x lipat dibanding tanpa jas. Batas per pemain tetap berlaku.",
+          "name": "Jas Hujan",
+          "opened": "Sudah kamu pakai. Hujan berikutnya, potongan lebih besar jadi milikmu. Mau lihat di mana turunnya?",
+          "pitch": "Membuatmu tetap kering. Bohong, membuatmu lebih basah. Di sini hujan adalah uang.",
+          "what": "Bagianmu dari setiap hujan di chat berbobot 1,5x, selamanya."
+        },
+        "patronBadge": {
+          "about": "Lencana yang bilang kamu menjaga bisnisku tetap jalan. Pakai di profil, di chat, di papan peringkat. Tidak berbuat apa-apa lagi, dan memang tidak perlu.",
+          "name": "Lencana Patron",
+          "opened": "Milikmu. Pilih di profil untuk memakainya. Mau pergi memakainya?",
+          "pitch": "Ini lencana. Ini mahal. Dua fakta itu berhubungan.",
+          "what": "Lencana Patron, dipakai di profilmu dan di mana pun namamu muncul."
+        },
+        "quickJar": {
+          "about": "Toples penuh dalam enam menit, bukan delapan, setiap siklus, selamanya. Ukuran sama, aturan sama, sepertiga lebih sering.",
+          "name": "Toples Cepat",
+          "opened": "Aktif. Toplesnya sudah terisi lebih cepat. Mau lihat?",
+          "pitch": "Toples yang sama, lebih cepat. Aku sudah menyesalinya.",
+          "what": "Toplesku penuh dalam 6 menit, bukan 8, selamanya."
+        },
+        "daisuCrown": {
+          "about": "Item terakhir di rakku. Lencana Mahkota untuk dipakai di mana pun namamu muncul, dan rasa hormatku, yang lebih berharga dan tidak ada biaya tambahan.",
+          "name": "Mahkota Daisu",
+          "opened": "Baiklah. Kamu orangnya. Pakai di profil dan jangan aneh-aneh soal itu. Mau lihat?",
+          "pitch": "Sepuluh juta. Kalau kamu membaca ini, kamu sudah memutuskan.",
+          "what": "Lencana Mahkota, benda paling langka di situs ini."
         }
       }
     },

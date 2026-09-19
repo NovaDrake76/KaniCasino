@@ -1,6 +1,18 @@
 import api from "../api";
 
-export type UnlockKey = "chatPass" | "tradersLicense" | "collectionBook" | "affiliateCard" | "predictionPass" | "giftCharm" | "merchantSeal";
+export type UnlockKey =
+  | "chatPass"
+  | "tradersLicense"
+  | "collectionBook"
+  | "affiliateCard"
+  | "predictionPass"
+  | "giftCharm"
+  | "merchantSeal"
+  | "goldenTicket"
+  | "rainCoat"
+  | "patronBadge"
+  | "quickJar"
+  | "daisuCrown";
 
 export interface ShopItem {
   key: UnlockKey;

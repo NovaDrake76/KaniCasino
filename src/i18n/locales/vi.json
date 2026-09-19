@@ -193,11 +193,17 @@
     "contributorHint": "Đã góp sức xây dựng KaniCasino.",
     "contributorHow": "Trao tay cho người góp sức xây dựng KaniCasino: tranh, bản dịch, mã, ý tưởng.",
     "couldNotSave": "Không thể lưu lựa chọn này",
+    "crown": "Vương miện",
+    "crownHint": "Giữ Vương miện của Daisu, món cuối cùng trên kệ của cô ấy.",
+    "crownHow": "Mua Vương miện của Daisu ở cửa hàng của cô ấy ở cấp 100.",
     "grant": "Trao huy hiệu",
     "locked": "CHƯA ĐẠT",
     "noneTheirs": "Chưa có huy hiệu nào.",
     "noneYours": "Bạn chưa có huy hiệu nào.",
     "note": "Họ đã làm gì?",
+    "patron": "Bảo trợ",
+    "patronHint": "Đã mua Huy hiệu Bảo trợ ở cửa hàng của Daisu.",
+    "patronHow": "Mua Huy hiệu Bảo trợ ở cửa hàng của Daisu ở cấp 60.",
     "revoke": "Thu hồi",
     "seeAll": "Xem tất cả huy hiệu",
     "shelfTitle": "Huy hiệu",
@@ -785,10 +791,15 @@
       "chapterDoneLine": "Được rồi. Hóa ra bạn cũng không đến nỗi vô vọng. Đây là việc tôi muốn bạn làm tiếp.",
       "chapters": {
         "1": "Những bước đầu",
+        "10": "Cưng của Daisu",
         "2": "Dần quen",
         "3": "Quay lại thường xuyên",
         "4": "Khách quen",
-        "5": "Kỳ cựu"
+        "5": "Kỳ cựu",
+        "6": "Khách quen",
+        "7": "Tay chơi lớn",
+        "8": "Trụ cột",
+        "9": "Huyền thoại"
       },
       "claim": "Nhận",
       "claimed": "Đã nhận",
@@ -898,6 +909,106 @@
           "desc": "Làm fan số một của nhân vật bạn đã ghim.",
           "help": "Bảng Fan Số Một xếp người chơi theo số bản sao nhân vật đã ghim mà họ sở hữu. Ghim một nhân vật, sở hữu nhiều nhất và vương miện là của bạn.",
           "title": "Trở thành Fan Số Một"
+        },
+        "r6-days": {
+          "desc": "Đặt cược trong {{target}} ngày khác nhau. Không cần liên tiếp.",
+          "help": "Cược một lần trong ngày là tính ngày đó. Mười bốn ngày. Tôi đang đếm, và không vội.",
+          "title": "Chơi trong {{target}} ngày khác nhau"
+        },
+        "r6-full-pots": {
+          "desc": "Đợi hũ của tôi đầy hẳn rồi lấy. {{target}} lần.",
+          "help": "Hũ đầy trả nhiều hơn 25% so với lấy sớm. Kiên nhẫn là lợi thế rẻ nhất ở đây.",
+          "title": "Lấy {{target}} hũ đầy"
+        },
+        "r6-collections": {
+          "desc": "Sở hữu mọi vật phẩm trong bộ sưu tập của {{target}} hòm khác nhau.",
+          "help": "Ba hòm, mọi thứ chúng có thể rơi ra. Mở hay mua ở chợ, tôi không quan tâm. Tab Bộ sưu tập cho biết còn thiếu gì.",
+          "title": "Hoàn thành {{target}} bộ sưu tập"
+        },
+        "r6-level": {
+          "desc": "Mỗi lần cược đều nhận XP, thắng hay thua.",
+          "help": "Bốn mươi. Hầu hết chẳng bao giờ thấy. Chứng minh bạn không phải hầu hết.",
+          "title": "Đạt cấp {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Cược tổng cộng K₽ {{target}}, vào bất cứ thứ gì.",
+          "help": "Năm triệu. Rải ra vài tháng hay một đêm điên rồ, với tôi như nhau.",
+          "title": "Cược K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Nhận một khoản trả thưởng từ K₽ {{target}} trở lên ở bất kỳ trò nào.",
+          "help": "Một ván, một lần trả, sáu chữ số. Crash và plinko là những kẻ tình nghi quen thuộc. Đừng làm gì ngu ngốc.",
+          "title": "Thắng K₽ {{target}} trong một ván"
+        },
+        "r7-market": {
+          "desc": "Mua hoặc bán {{target}} vật phẩm trên chợ.",
+          "help": "Mua, bán và lệnh khớp đều tính. Thương nhân có giấy phép thì phải dùng.",
+          "title": "Giao dịch {{target}} lần trên chợ"
+        },
+        "r7-level": {
+          "desc": "Mỗi lần cược đều nhận XP, thắng hay thua.",
+          "help": "Năm mươi. Nửa đường lên đỉnh, và bậc thang chỉ ngày càng cao.",
+          "title": "Đạt cấp {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Có mặt trong chat khi mưa rơi, {{target}} lần.",
+          "help": "Mỗi nửa giờ, một phần số tiền cả trang đã cược rơi xuống những ai tham gia mưa trong chat. Tham gia, rồi có mặt lúc mưa rơi. Mười lần như thế.",
+          "title": "Hứng {{target}} cơn mưa"
+        },
+        "r8-battles": {
+          "desc": "Đánh bại người chơi khác trong {{target}} trận đấu hòm.",
+          "help": "Cùng hòm, tổng cao nhất thắng. Mười trận thắng cần may mắn và có mặt. Chủ yếu là có mặt.",
+          "title": "Thắng {{target}} trận đấu hòm"
+        },
+        "r8-streak": {
+          "desc": "Quay quà hằng ngày {{target}} ngày liên tiếp.",
+          "help": "Trọn một tháng không bỏ sót ngày nào. Đặt báo thức nếu cần. Tôi sẽ không kể ai đâu.",
+          "title": "Chuỗi quà {{target}} ngày"
+        },
+        "r8-level": {
+          "desc": "Mỗi lần cược đều nhận XP, thắng hay thua.",
+          "help": "Sáu mươi. Chỉ vài người từng lên đến đây. Chào mừng, nếu bạn làm được.",
+          "title": "Đạt cấp {{target}}"
+        },
+        "r9-days": {
+          "desc": "Đặt cược trong {{target}} ngày khác nhau.",
+          "help": "Sáu mươi ngày có cược. Hai tháng có mặt. Bạn là khách quen rồi, dù muốn hay không.",
+          "title": "Chơi trong {{target}} ngày khác nhau"
+        },
+        "r9-cases": {
+          "desc": "Mở {{target}} hòm, hòm nào cũng được.",
+          "help": "Một nghìn hòm. Hòm rẻ tính như nhau, mở nhiều cùng lúc tính từng hòm. Đồ rơi ra sẽ thành chuyện kể.",
+          "title": "Mở {{target}} hòm"
+        },
+        "r9-collections": {
+          "desc": "Sở hữu mọi vật phẩm trong bộ sưu tập của {{target}} hòm khác nhau.",
+          "help": "Mười bộ sưu tập hoàn chỉnh. Đó là bảo tàng, không phải sở thích.",
+          "title": "Hoàn thành {{target}} bộ sưu tập"
+        },
+        "r9-level": {
+          "desc": "Mỗi lần cược đều nhận XP, thắng hay thua.",
+          "help": "Bảy mươi lăm. Tôi đã thôi mong ai lên tới đây. Làm tôi bất ngờ đi.",
+          "title": "Đạt cấp {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Cược tổng cộng K₽ {{target}}, vào bất cứ thứ gì.",
+          "help": "Một trăm triệu. Tôi biết. Đó chính là ý đồ.",
+          "title": "Cược K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Mời {{target}} người bạn đạt cấp 10.",
+          "help": "Link giới thiệu nằm trên hồ sơ của bạn. Một người bạn được tính khi lên cấp 10, nên hãy đưa người sẽ ở lại, không phải khách du lịch.",
+          "title": "Đưa {{target}} người bạn lên cấp 10"
+        },
+        "r10-predictions": {
+          "desc": "Mua hoặc bán cổ phần trong {{target}} dự đoán.",
+          "help": "Thị trường dự đoán ở trang Dự đoán. Mỗi lần mua hay bán tính một. Hai mươi lăm lần, có khi bạn còn học được gì đó.",
+          "title": "Thực hiện {{target}} giao dịch dự đoán"
+        },
+        "r10-level": {
+          "desc": "Mỗi lần cược đều nhận XP, thắng hay thua.",
+          "help": "Một trăm. Chưa ai làm được. Nếu bạn làm được, tôi sẽ là người đầu tiên biết, và tôi sẽ nói ra.",
+          "title": "Đạt cấp {{target}}"
         }
       },
       "progress": "Xong {{done}}/{{total}}"
@@ -969,6 +1080,9 @@
         "line": "Rê chuột lên một vật phẩm và bấm nút bán của nó. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "linePhone": "Chạm vào một vật phẩm và bán một bản. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "wait": "Đang chờ bạn bán"
+      },
+      "badges": {
+        "line": "Huy hiệu của bạn ở đây. Chọn cái muốn đeo và cả trang sẽ thấy nó cạnh tên bạn."
       }
     },
     "shop": {
@@ -1056,6 +1170,41 @@
           "opened": "Có giấy phép rồi. Mua, đăng bán, đặt lệnh, cả cái chợ là của bạn. Muốn tôi dẫn đi xem không?",
           "pitch": "Giấy tờ chính thức để bạn mặc cả với người lạ. Đừng để bị lừa. À mà cứ bị lừa đi, buồn cười lắm.",
           "what": "Mua từ người chơi khác và đăng bán vật phẩm của bạn ở chợ."
+        },
+        "goldenTicket": {
+          "about": "Mỗi khi bạn lấy từ hũ, phần thêm rơi vào trò chơi làm tiền thưởng là 15% số lấy thay vì 10%. Hũ đầy, lấy sớm, tất cả, mãi mãi.",
+          "name": "Vé Vàng",
+          "opened": "Xong. Lần lấy tới đã có tiền thưởng lớn hơn. Muốn xem hũ không?",
+          "pitch": "Thêm tiền miễn phí chồng lên tiền miễn phí. Tôi hào phóng quá.",
+          "what": "Mỗi lần lấy từ hũ của tôi được cộng thêm 15% tiền thưởng trò chơi thay vì 10%, mãi mãi."
+        },
+        "rainCoat": {
+          "about": "Khi mưa rơi trong chat, quỹ được chia theo cấp. Có áo mưa, phần của bạn tính gấp 1,5 lần so với không có. Mức trần mỗi người vẫn áp dụng.",
+          "name": "Áo Mưa",
+          "opened": "Bạn đang mặc nó. Cơn mưa tới, miếng to hơn là của bạn. Muốn xem nó rơi ở đâu không?",
+          "pitch": "Nó giữ bạn khô ráo. Nói dối đấy, nó làm bạn ướt hơn. Ở đây mưa là tiền.",
+          "what": "Phần của bạn trong mỗi cơn mưa ở chat nặng gấp 1,5 lần, mãi mãi."
+        },
+        "patronBadge": {
+          "about": "Một huy hiệu nói rằng bạn đã nuôi sống tôi. Đeo nó trên hồ sơ, trong chat, trên bảng xếp hạng. Nó không làm gì khác, và không cần phải làm.",
+          "name": "Huy hiệu Bảo trợ",
+          "opened": "Của bạn. Chọn nó trên hồ sơ để đeo. Muốn đi đeo không?",
+          "pitch": "Đó là huy hiệu. Nó đắt. Hai điều này có liên quan.",
+          "what": "Huy hiệu Bảo trợ, đeo trên hồ sơ và mọi nơi tên bạn xuất hiện."
+        },
+        "quickJar": {
+          "about": "Hũ đầy trong sáu phút thay vì tám, mọi chu kỳ, mãi mãi. Cùng cỡ, cùng luật, thường xuyên hơn một phần ba.",
+          "name": "Hũ Nhanh",
+          "opened": "Bật rồi. Hũ đang đầy nhanh hơn. Muốn xem không?",
+          "pitch": "Cùng cái hũ, nhanh hơn. Tôi đã thấy tiếc rồi.",
+          "what": "Hũ của tôi đầy trong 6 phút thay vì 8, mãi mãi."
+        },
+        "daisuCrown": {
+          "about": "Món cuối cùng trên kệ của tôi. Một huy hiệu Vương miện để đeo ở bất cứ đâu tên bạn xuất hiện, và sự tôn trọng của tôi, thứ đáng giá hơn và không tốn thêm gì.",
+          "name": "Vương miện của Daisu",
+          "opened": "Được rồi. Là bạn. Đeo lên hồ sơ và đừng làm quá lên. Muốn xem không?",
+          "pitch": "Mười triệu. Nếu bạn đang đọc dòng này, bạn đã quyết rồi.",
+          "what": "Huy hiệu Vương miện, thứ hiếm nhất trên trang."
         }
       }
     },

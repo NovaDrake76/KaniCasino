@@ -36,6 +36,7 @@ const placeOf = (wizard: Wizard, step: string, userId: string, gamePath: string 
   switch (wizard) {
     case "pin":
     case "sell":
+    case "badges":
       return at(`/profile/${userId}`, onProfile);
     case "collection":
       return at(`/profile/${userId}?tab=collections`, (pathname, search) => onProfile(pathname) && search.includes("tab=collections"));
@@ -346,6 +347,8 @@ const HelpOverlay = () => {
     content = <Guided target="fandom-reach" dim={false} eyebrow={eyebrow} line={t("fans.line")} next={gotIt()} />;
   } else if (step === "affiliates") {
     content = <Guided target="affiliates-code" dim={false} eyebrow={eyebrow} line={t("affiliates.line")} next={gotIt()} />;
+  } else if (step === "badges") {
+    content = <Guided target="badge-shelf" dim={false} eyebrow={eyebrow} line={t("badges.line")} next={gotIt()} />;
   } else if (step === "predictions") {
     content = <Guided target="predictions-list" dim={false} eyebrow={eyebrow} line={t("predictions.line")} next={gotIt()} />;
   } else if (step === "chat") {
