@@ -1738,6 +1738,8 @@
     "joined": "已参与",
     "logIn": "登录",
     "needLevel": "达到 {{level}} 级即可参与红包。",
+    "openChat": "打开聊天",
+    "soonToast": "{{minutes}} 分钟后聊天室将下起至少 K₽{{amount}} 的雨。",
     "title": "红包池",
     "won": "红包给了你 K₽{{amount}}"
   },

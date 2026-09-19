@@ -1738,6 +1738,8 @@
     "joined": "参加中",
     "logIn": "ログイン",
     "needLevel": "レベル{{level}}になるとレインに参加できます。",
+    "openChat": "チャットを開く",
+    "soonToast": "あと{{minutes}}分でチャットに K₽{{amount}} 以上が降ります。",
     "title": "レインプール",
     "won": "レインで K₽{{amount}} を獲得しました"
   },
