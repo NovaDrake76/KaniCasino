@@ -1755,10 +1755,17 @@
     "nicknameHint": "2 sampai 30 karakter. Bisa diubah sekali tiap 30 hari.",
     "nicknameLocked": "Kamu bisa mengubahnya lagi pada {{date}}.",
     "nicknameSaved": "Nama panggilan diperbarui",
+    "playTestSound": "Putar suara uji",
     "saveFailed": "Menyimpan data gagal, coba lagi.",
     "saveNickname": "Simpan nama panggilan",
+    "sound": "Suara",
+    "soundEffects": "Efek suara",
+    "soundHint": "Klik, taruhan, kemenangan, dan gulungan. Suara mulai setelah klik pertamamu di halaman.",
     "title": "Pengaturan",
-    "updates": "Pembaruan konten seperti kotak dan permainan."
+    "updates": "Pembaruan konten seperti kotak dan permainan.",
+    "volume": "Volume",
+    "volumeDown": "Lebih pelan",
+    "volumeUp": "Lebih keras"
   },
   "slot": {
     "bar": "bar",
