@@ -193,17 +193,11 @@
     "contributorHint": "Ha aiutato a costruire KaniCasino.",
     "contributorHow": "Assegnato a mano per aver aiutato a costruire KaniCasino: arte, traduzioni, codice, idee.",
     "couldNotSave": "Impossibile salvare questa scelta",
-    "crown": "Corona",
-    "crownHint": "Possiede la Corona di Daisu, l'ultimo oggetto del suo scaffale.",
-    "crownHow": "Compra la Corona di Daisu nel suo negozio al livello 100.",
     "grant": "Assegna distintivo",
     "locked": "NON OTTENUTO",
     "noneTheirs": "Ancora nessun distintivo.",
     "noneYours": "Non hai ancora distintivi.",
     "note": "Che cosa ha fatto?",
-    "patron": "Mecenate",
-    "patronHint": "Ha comprato il Distintivo di Mecenate nel negozio di Daisu.",
-    "patronHow": "Compra il Distintivo di Mecenate nel negozio di Daisu al livello 60.",
     "revoke": "Rimuovi",
     "seeAll": "Vedi tutti i distintivi",
     "shelfTitle": "Distintivi",
@@ -1080,27 +1074,14 @@
         "line": "Passa il mouse su un oggetto e premi il suo pulsante di vendita. Torna subito in K₽, quindi scegline uno che non ti mancherà.",
         "linePhone": "Tocca un oggetto e vendine una copia. Torna subito in K₽, quindi scegline uno che non ti mancherà.",
         "wait": "Aspetto una vendita"
-      },
-      "badges": {
-        "line": "I tuoi distintivi stanno qui. Scegli quello che vuoi portare e tutto il sito lo vede accanto al tuo nome."
       }
     },
     "shop": {
       "after": "Il tuo saldo dopo",
       "buyFor": "Compra per {{amount}}",
+      "collapse": "Nascondi i nomi",
+      "expand": "Mostra i nomi",
       "failed": "Acquisto non riuscito. Riprova.",
-      "level": "Livello {{n}}",
-      "needs": "Richiede",
-      "notNow": "Non ora",
-      "price": "Prezzo",
-      "short": "Mancano {{amount}}",
-      "soon": "Compra un oggetto per scoprire cosa viene dopo.",
-      "tipBuy": "{{price}} · livello {{n}} · clicca per comprare",
-      "tipLevel": "Serve il livello {{n}} · sei al livello {{level}}",
-      "tipShort": "{{price}} · ti mancano {{amount}}",
-      "title": "Negozio di Daisu",
-      "unlocked": "Sbloccato",
-      "yours": "Tuo",
       "items": {
         "affiliateCard": {
           "about": "Apre la scheda Affiliati: scegli il tuo codice invito, condividi il link e guadagna K₽ quando i tuoi invitati si registrano, arrivano al livello 10 e puntano.",
@@ -1185,27 +1166,123 @@
           "pitch": "Ti tiene asciutto. Bugia, ti bagna di più. Qui la pioggia è denaro.",
           "what": "La tua parte di ogni pioggia in chat pesa 1,5x, per sempre."
         },
-        "patronBadge": {
-          "about": "Un distintivo che dice che mi hai tenuta in affari. Portalo sul profilo, in chat, nelle classifiche. Non fa altro, e non ne ha bisogno.",
-          "name": "Distintivo di Mecenate",
-          "opened": "Tuo. Sceglilo sul profilo per indossarlo. Vuoi andare a metterlo?",
-          "pitch": "È un distintivo. È caro. Le due cose sono collegate.",
-          "what": "Un distintivo di Mecenate, portato sul tuo profilo e ovunque compaia il tuo nome."
+        "luckyPencil": {
+          "name": "Matita Fortunata",
+          "pitch": "Morsicata in punta. È lì che sta la fortuna."
         },
-        "quickJar": {
-          "about": "Il vaso si riempie in sei minuti invece di otto, ogni ciclo, per sempre. Stessa misura, stesse regole, un terzo più spesso.",
-          "name": "Vaso Rapido",
-          "opened": "Attivo. Il vaso si sta già riempiendo più in fretta. Vuoi guardarlo?",
-          "pitch": "Stesso vaso, più veloce. Me ne pento già.",
-          "what": "Il mio vaso si riempie in 6 minuti invece di 8, per sempre."
+        "pocketNotebook": {
+          "name": "Taccuino Tascabile",
+          "pitch": "Scrivi le tue perdite. Forma il carattere."
         },
-        "daisuCrown": {
-          "about": "L'ultimo oggetto sul mio scaffale. Un distintivo Corona da portare ovunque compaia il tuo nome, e il mio rispetto, che vale di più e non costa nulla in più.",
-          "name": "Corona di Daisu",
-          "opened": "Va bene. Sei tu. Portala sul profilo e non fare lo strano. Vuoi vederla?",
-          "pitch": "Dieci milioni. Se stai leggendo questo, hai già deciso.",
-          "what": "Il distintivo Corona, la cosa più rara del sito."
+        "readingLamp": {
+          "name": "Lampada da Lettura",
+          "pitch": "Così vedi quanto stai perdendo. Chiaramente."
+        },
+        "coffeeMug": {
+          "name": "Tazza da Caffè",
+          "pitch": "Un altro giro. Lo dice la tazza. Ogni volta."
+        },
+        "abacus": {
+          "name": "Abaco",
+          "pitch": "Conto più in fretta di quanto tu perda. Di poco."
+        },
+        "fortuneCat": {
+          "name": "Gatto della Fortuna",
+          "pitch": "Saluta. Nessuno sa chi. Continua a puntare."
+        },
+        "studyDesk": {
+          "name": "Scrivania da Studio",
+          "pitch": "Una scrivania vera. Ora puoi perdere soldi seduto composto."
+        },
+        "metronome": {
+          "name": "Metronomo",
+          "pitch": "Tic. Puntata. Tac. Puntata. Dà il ritmo, io tengo il conto."
+        },
+        "hourglass": {
+          "name": "Clessidra",
+          "pitch": "Il tempo è denaro. Questa accelera entrambi."
+        },
+        "globe": {
+          "name": "Mappamondo",
+          "pitch": "Fallo girare. Ovunque si fermi, scommettono anche lì."
+        },
+        "telescope": {
+          "name": "Telescopio",
+          "pitch": "Per guardare il livello 100. È ancora molto lontano."
+        },
+        "goldCat": {
+          "name": "Gatto d'Oro",
+          "pitch": "Lo stesso gatto, ma d'oro. Saluta più forte."
+        },
+        "libraryCard": {
+          "name": "Tessera della Biblioteca",
+          "pitch": "Hai letto ogni regola di questo sito. Si vede."
+        },
+        "compass": {
+          "name": "Bussola",
+          "pitch": "Punta sempre alla prossima puntata. Rotta, probabilmente."
+        },
+        "crystalSkull": {
+          "name": "Teschio di Cristallo",
+          "pitch": "Sa come finisce la tua sessione. Non lo dice."
+        },
+        "daisuDiary": {
+          "name": "Diario di Daisu",
+          "pitch": "Non leggerlo. Va bene, leggilo. Pagina 12 parla di te."
+        },
+        "starChart": {
+          "name": "Carta Stellare",
+          "pitch": "Le stelle dicono che vincerai. Lo dicono a tutti."
+        },
+        "goldenAbacus": {
+          "name": "Abaco d'Oro",
+          "pitch": "Per contare numeri con più zeri. I tuoi, ultimamente."
+        },
+        "observatory": {
+          "name": "Osservatorio",
+          "pitch": "Da qui si vede il livello 100. Quasi."
+        },
+        "philosopherStone": {
+          "name": "Pietra Filosofale",
+          "pitch": "Trasforma le puntate in XP. Quello che ha sempre fatto, ma più in fretta."
         }
+      },
+      "level": "Livello {{n}}",
+      "needs": "Richiede",
+      "notNow": "Non ora",
+      "price": "Prezzo",
+      "rows": {
+        "boost": "Potenziamenti",
+        "charm": "Amuleti",
+        "unlock": "Sblocchi e vantaggi"
+      },
+      "rowsHint": {
+        "boost": "Più XP su ogni puntata",
+        "charm": "+25% XP su un gioco",
+        "unlock": "Funzioni e regole"
+      },
+      "short": "Mancano {{amount}}",
+      "soon": "Compra un oggetto per scoprire cosa viene dopo.",
+      "tipBuy": "{{price}} · livello {{n}} · clicca per comprare",
+      "tipLevel": "Serve il livello {{n}} · sei al livello {{level}}",
+      "tipShort": "{{price}} · ti mancano {{amount}}",
+      "title": "Negozio di Daisu",
+      "unlocked": "Sbloccato",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "I tuoi oggetti · {{n}}",
+      "yours": "Tuo",
+      "boost": {
+        "about": "Ogni puntata rende il {{pct}}% di XP in più, oltre a quello che già possiedi. I potenziamenti si sommano e non finiscono mai.",
+        "opened": "È sulla scrivania. Ogni puntata da qui in poi rende il {{pct}}% in più.",
+        "what": "+{{pct}}% XP su ogni puntata, per sempre."
+      },
+      "charm": {
+        "about": "Ogni puntata a {{game}} rende il {{pct}}% di XP in più, oltre agli altri potenziamenti. Solo {{game}}, e non finisce mai.",
+        "cases": "Casse",
+        "name": "Amuleto di {{game}}",
+        "opened": "Indossato. La tua prossima puntata a {{game}} rende già di più. Vai.",
+        "pitch": "Giochi a {{game}} comunque. Tanto vale farti pagare due volte.",
+        "what": "+{{pct}}% XP su ogni puntata a {{game}}, per sempre."
       }
     },
     "ticket": {
@@ -1874,9 +1951,11 @@
     "requestSent": "Richiesta inviata",
     "serviceMessagesAboutYour": "I messaggi di servizio sul tuo account, come avvisi di sicurezza e di policy, vengono inviati a prescindere da questa impostazione.",
     "somethingWentWrong": "Qualcosa è andato storto",
-    "toEvery1kSpent": "Ogni 1K₽ spesi ti dà 5 XP.",
+    "toEvery1kSpent": "Ogni K₽ 1 puntato dà 5 XP, vinto o perso. I potenziamenti del negozio di Daisu si aggiungono.",
     "updatesTurnedOff": "Novità disattivate",
     "weAreNotSending": "Non stiamo scrivendo al tuo indirizzo perché una e-mail precedente è tornata indietro o è stata segnalata come spam. Scrivici se pensi sia un errore.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "Dai potenziamenti del negozio di Daisu",
     "youWillGetUpdates": "Riceverai novità su casse e giochi"
   },
   "rain": {

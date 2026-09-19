@@ -193,17 +193,11 @@
     "contributorHint": "Helped build KaniCasino.",
     "contributorHow": "Given by hand for helping build KaniCasino: art, translations, code, ideas.",
     "couldNotSave": "Could not save that choice",
-    "crown": "Crown",
-    "crownHint": "Holds Daisu's Crown, the last item on her shelf.",
-    "crownHow": "Buy Daisu's Crown in her shop at level 100.",
     "grant": "Grant badge",
     "locked": "NOT EARNED",
     "noneTheirs": "No badges yet.",
     "noneYours": "You have no badges yet.",
     "note": "What did they do?",
-    "patron": "Patron",
-    "patronHint": "Bought the Patron Badge in Daisu's shop.",
-    "patronHow": "Buy the Patron Badge in Daisu's shop at level 60.",
     "revoke": "Revoke",
     "seeAll": "See all badges",
     "shelfTitle": "Badges",
@@ -1080,27 +1074,14 @@
         "line": "Hover an item and press its sell button. It turns back into K₽ right away, so pick one you won't miss.",
         "linePhone": "Tap an item and sell a copy. It turns back into K₽ right away, so pick one you won't miss.",
         "wait": "Waiting for a sale"
-      },
-      "badges": {
-        "line": "Your badges live here. Pick the one you want to wear and everyone on the site sees it next to your name."
       }
     },
     "shop": {
       "after": "Your balance after",
       "buyFor": "Buy for {{amount}}",
+      "collapse": "Hide names",
+      "expand": "Show names",
       "failed": "Could not buy that. Try again.",
-      "level": "Level {{n}}",
-      "needs": "Needs",
-      "notNow": "Not now",
-      "price": "Price",
-      "short": "{{amount}} short",
-      "soon": "Buy an item to find out what comes next.",
-      "tipBuy": "{{price}} · level {{n}} · click to buy",
-      "tipLevel": "Needs level {{n}} · you are level {{level}}",
-      "tipShort": "{{price}} · you need {{amount}} more",
-      "title": "Daisu's shop",
-      "unlocked": "Unlocked",
-      "yours": "Yours",
       "items": {
         "affiliateCard": {
           "about": "Opens the Affiliates tab: pick your invite code, share your link, and earn K₽ when the players you invite sign up, reach level 10 and place bets.",
@@ -1185,27 +1166,123 @@
           "pitch": "It keeps you dry. That's a lie, it makes you wetter. Rain is money here.",
           "what": "Your share of every rain in the chat weighs 1.5x, for good."
         },
-        "patronBadge": {
-          "about": "A badge that says you kept me in business. Wear it on your profile, in the chat, on the boards. It does nothing else, and it doesn't need to.",
-          "name": "Patron Badge",
-          "opened": "Yours. Pick it on your profile to wear it. Want to go put it on?",
-          "pitch": "It's a badge. It's expensive. Those two facts are related.",
-          "what": "A Patron badge, worn on your profile and everywhere your name shows."
+        "luckyPencil": {
+          "name": "Lucky Pencil",
+          "pitch": "Chewed at the end. That's where the luck is."
         },
-        "quickJar": {
-          "about": "The jar fills to full in six minutes instead of eight, every cycle, forever. Same size pot, same rules, a third more often.",
-          "name": "Quick Jar",
-          "opened": "It's on. The jar is already filling faster. Want to watch it?",
-          "pitch": "Same jar, faster. I resent it already.",
-          "what": "My jar fills in 6 minutes instead of 8, for good."
+        "pocketNotebook": {
+          "name": "Pocket Notebook",
+          "pitch": "Write your losses down. It builds character."
         },
-        "daisuCrown": {
-          "about": "The last item on my shelf. A Crown badge to wear anywhere your name shows, and my respect, which is worth more and costs nothing extra.",
-          "name": "Daisu's Crown",
-          "opened": "Fine. You're the one. Wear it on your profile and don't be weird about it. Want to see it?",
-          "pitch": "Ten million. If you're reading this, you've already decided.",
-          "what": "The Crown badge, the rarest thing on the site."
+        "readingLamp": {
+          "name": "Reading Lamp",
+          "pitch": "So you can see how much you're losing. Clearly."
+        },
+        "coffeeMug": {
+          "name": "Coffee Mug",
+          "pitch": "One more round. That's what the mug says. Every time."
+        },
+        "abacus": {
+          "name": "Abacus",
+          "pitch": "I count faster than you lose. Barely."
+        },
+        "fortuneCat": {
+          "name": "Fortune Cat",
+          "pitch": "It waves. Nobody knows at whom. Keep betting."
+        },
+        "studyDesk": {
+          "name": "Study Desk",
+          "pitch": "A proper desk. Now you can lose money sitting up straight."
+        },
+        "metronome": {
+          "name": "Metronome",
+          "pitch": "Tick. Bet. Tock. Bet. It sets the pace, I keep the count."
+        },
+        "hourglass": {
+          "name": "Hourglass",
+          "pitch": "Time is money. This makes both go faster."
+        },
+        "globe": {
+          "name": "Globe",
+          "pitch": "Spin it. Wherever it stops, they gamble there too."
+        },
+        "telescope": {
+          "name": "Telescope",
+          "pitch": "For looking at level 100. It's still very far away."
+        },
+        "goldCat": {
+          "name": "Gold Cat",
+          "pitch": "The same cat, but gold. It waves harder."
+        },
+        "libraryCard": {
+          "name": "Library Card",
+          "pitch": "You've read every rule on this site. It shows."
+        },
+        "compass": {
+          "name": "Compass",
+          "pitch": "It always points at the next bet. Broken, probably."
+        },
+        "crystalSkull": {
+          "name": "Crystal Skull",
+          "pitch": "It knows how your session ends. It's not telling."
+        },
+        "daisuDiary": {
+          "name": "Daisu's Diary",
+          "pitch": "Don't read it. Fine, read it. Page 12 is about you."
+        },
+        "starChart": {
+          "name": "Star Chart",
+          "pitch": "The stars say you'll win. The stars say that to everyone."
+        },
+        "goldenAbacus": {
+          "name": "Golden Abacus",
+          "pitch": "For counting numbers with more zeros. Yours, lately."
+        },
+        "observatory": {
+          "name": "Observatory",
+          "pitch": "Level 100 is visible from here. Just about."
+        },
+        "philosopherStone": {
+          "name": "Philosopher's Stone",
+          "pitch": "It turns bets into XP. Which is what it always did, but faster."
         }
+      },
+      "level": "Level {{n}}",
+      "needs": "Needs",
+      "notNow": "Not now",
+      "price": "Price",
+      "rows": {
+        "boost": "Boosts",
+        "charm": "Charms",
+        "unlock": "Unlocks and perks"
+      },
+      "rowsHint": {
+        "boost": "More XP on every bet",
+        "charm": "+25% XP on one game",
+        "unlock": "Features and rules"
+      },
+      "short": "{{amount}} short",
+      "soon": "Buy an item to find out what comes next.",
+      "tipBuy": "{{price}} · level {{n}} · click to buy",
+      "tipLevel": "Needs level {{n}} · you are level {{level}}",
+      "tipShort": "{{price}} · you need {{amount}} more",
+      "title": "Daisu's shop",
+      "unlocked": "Unlocked",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Your items · {{n}}",
+      "yours": "Yours",
+      "boost": {
+        "about": "Every bet you place earns {{pct}}% more XP, on top of whatever else you hold. Boosts add up, and they never run out.",
+        "opened": "It's on the desk now. Every bet from here earns {{pct}}% more.",
+        "what": "+{{pct}}% XP on every bet, for good."
+      },
+      "charm": {
+        "about": "Every bet you place on {{game}} earns {{pct}}% more XP, on top of your other boosts. Only {{game}}, and it never runs out.",
+        "cases": "Cases",
+        "name": "{{game}} Charm",
+        "opened": "Worn. Your next {{game}} bet already earns more. Off you go.",
+        "pitch": "You play {{game}} anyway. Might as well get paid twice for it.",
+        "what": "+{{pct}}% XP on every {{game}} bet, for good."
       }
     },
     "ticket": {
@@ -1874,9 +1951,11 @@
     "requestSent": "Request sent",
     "serviceMessagesAboutYour": "Service messages about your account, such as security and policy notices, are sent whatever this is set to.",
     "somethingWentWrong": "Something went wrong",
-    "toEvery1kSpent": "To every 1K₽ spent, you get 5 XP.",
+    "toEvery1kSpent": "Every K₽ 1 you bet gives 5 XP, win or lose. Boosts from Daisu's shop add to it.",
     "updatesTurnedOff": "Updates turned off",
     "weAreNotSending": "We are not sending to your address because a previous email bounced or was reported as spam. Contact us if you think that is wrong.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "From the boosts in Daisu's shop",
     "youWillGetUpdates": "You will get updates about new cases and games"
   },
   "rain": {

@@ -193,17 +193,11 @@
     "contributorHint": "参与了 KaniCasino 的建设。",
     "contributorHow": "手动授予，感谢参与 KaniCasino 的建设：美术、翻译、代码、点子。",
     "couldNotSave": "无法保存该选择",
-    "crown": "王冠",
-    "crownHint": "拥有 Daisu 的王冠，她架子上的最后一件。",
-    "crownHow": "100 级时在 Daisu 的商店购买她的王冠。",
     "grant": "授予徽章",
     "locked": "尚未获得",
     "noneTheirs": "还没有徽章。",
     "noneYours": "你还没有徽章。",
     "note": "他做了什么？",
-    "patron": "赞助人",
-    "patronHint": "在 Daisu 的商店购买了赞助人徽章。",
-    "patronHow": "60 级时在 Daisu 的商店购买赞助人徽章。",
     "revoke": "收回",
     "seeAll": "查看全部徽章",
     "shelfTitle": "徽章",
@@ -1080,27 +1074,14 @@
         "line": "把鼠标移到物品上，按它的出售按钮。马上就会变回 K₽，所以挑一个不会舍不得的。",
         "linePhone": "轻点一件物品，卖掉一件。马上就会变回 K₽，所以挑一个不会舍不得的。",
         "wait": "等你卖出"
-      },
-      "badges": {
-        "line": "你的徽章在这里。选一个戴上，全站的人都会在你名字旁边看到。"
       }
     },
     "shop": {
       "after": "购买后余额",
       "buyFor": "花 {{amount}} 购买",
+      "collapse": "隐藏名称",
+      "expand": "显示名称",
       "failed": "购买失败，再试一次。",
-      "level": "{{n}} 级",
-      "needs": "需要",
-      "notNow": "先不了",
-      "price": "价格",
-      "short": "还差 {{amount}}",
-      "soon": "买下一件物品，就能知道接下来是什么。",
-      "tipBuy": "{{price}} · 等级 {{n}} · 点击购买",
-      "tipLevel": "需要等级 {{n}} · 你现在等级 {{level}}",
-      "tipShort": "{{price}} · 还差 {{amount}}",
-      "title": "Daisu 的商店",
-      "unlocked": "已解锁",
-      "yours": "已拥有",
       "items": {
         "affiliateCard": {
           "about": "开启推广页：选定你的邀请码，分享链接，当你邀请的人注册、达到 10 级以及下注时，你都能拿到 K₽。",
@@ -1185,27 +1166,123 @@
           "pitch": "它让你不淋雨。骗你的，它让你淋得更多。在这里雨就是钱。",
           "what": "你在聊天室每场雨中的份额权重变为 1.5 倍，永久。"
         },
-        "patronBadge": {
-          "about": "一枚说明你让我生意兴隆的徽章。戴在个人资料、聊天室、排行榜上。它没别的功能，也不需要。",
-          "name": "赞助人徽章",
-          "opened": "你的了。在个人资料里选中就能戴上。要去戴上吗？",
-          "pitch": "是徽章。很贵。这两件事有关系。",
-          "what": "一枚赞助人徽章，戴在个人资料和所有显示你名字的地方。"
+        "luckyPencil": {
+          "name": "幸运铅笔",
+          "pitch": "笔尾被咬过。运气就在那儿。"
         },
-        "quickJar": {
-          "about": "罐子六分钟装满而不是八分钟，每个周期，永久。同样大小，同样规则，多三分之一的次数。",
-          "name": "快罐",
-          "opened": "开了。罐子已经装得更快了。想看看吗？",
-          "pitch": "同一个罐子，更快。我已经开始不爽了。",
-          "what": "我的罐子 6 分钟装满而不是 8 分钟，永久。"
+        "pocketNotebook": {
+          "name": "口袋笔记本",
+          "pitch": "把输的记下来。磨练品格。"
         },
-        "daisuCrown": {
-          "about": "我架子上最后一件。一枚王冠徽章，戴在任何显示你名字的地方，外加我的敬意，后者更值钱，且不另收费。",
-          "name": "Daisu 的王冠",
-          "opened": "行吧。就是你了。戴在个人资料上，别显摆得太怪。想看看吗？",
-          "pitch": "一千万。你既然在看这个，就已经决定了。",
-          "what": "王冠徽章，全站最稀有的东西。"
+        "readingLamp": {
+          "name": "阅读灯",
+          "pitch": "好让你看清自己输了多少。清清楚楚。"
+        },
+        "coffeeMug": {
+          "name": "咖啡杯",
+          "pitch": "再来一局。杯子上这么写的。每次都是。"
+        },
+        "abacus": {
+          "name": "算盘",
+          "pitch": "我数得比你输得快。勉强。"
+        },
+        "fortuneCat": {
+          "name": "招财猫",
+          "pitch": "它在招手。没人知道对谁。继续下注。"
+        },
+        "studyDesk": {
+          "name": "书桌",
+          "pitch": "像样的书桌。现在你可以坐直了输钱。"
+        },
+        "metronome": {
+          "name": "节拍器",
+          "pitch": "嘀。下注。嗒。下注。它定节奏，我来数。"
+        },
+        "hourglass": {
+          "name": "沙漏",
+          "pitch": "时间就是金钱。这个让两者都走得更快。"
+        },
+        "globe": {
+          "name": "地球仪",
+          "pitch": "转一下。不管停在哪，那里的人也在赌。"
+        },
+        "telescope": {
+          "name": "望远镜",
+          "pitch": "用来看一百级的。它还很远。"
+        },
+        "goldCat": {
+          "name": "金猫",
+          "pitch": "同一只猫，但是金的。招手更用力。"
+        },
+        "libraryCard": {
+          "name": "借书证",
+          "pitch": "这网站的规则你全读过了。看得出来。"
+        },
+        "compass": {
+          "name": "指南针",
+          "pitch": "它总是指向下一次下注。大概坏了。"
+        },
+        "crystalSkull": {
+          "name": "水晶骷髅",
+          "pitch": "它知道你这局怎么收场。它不说。"
+        },
+        "daisuDiary": {
+          "name": "Daisu 的日记",
+          "pitch": "别看。行吧，看吧。第 12 页写的是你。"
+        },
+        "starChart": {
+          "name": "星图",
+          "pitch": "星星说你会赢。星星对谁都这么说。"
+        },
+        "goldenAbacus": {
+          "name": "金算盘",
+          "pitch": "用来数零更多的数字。最近是你的。"
+        },
+        "observatory": {
+          "name": "天文台",
+          "pitch": "从这里能看到一百级。勉强能。"
+        },
+        "philosopherStone": {
+          "name": "贤者之石",
+          "pitch": "它把下注变成经验。它一直都这样，只是更快了。"
         }
+      },
+      "level": "{{n}} 级",
+      "needs": "需要",
+      "notNow": "先不了",
+      "price": "价格",
+      "rows": {
+        "boost": "加成",
+        "charm": "护符",
+        "unlock": "解锁与特权"
+      },
+      "rowsHint": {
+        "boost": "每次下注更多经验",
+        "charm": "单个游戏经验 +25%",
+        "unlock": "功能与规则"
+      },
+      "short": "还差 {{amount}}",
+      "soon": "买下一件物品，就能知道接下来是什么。",
+      "tipBuy": "{{price}} · 等级 {{n}} · 点击购买",
+      "tipLevel": "需要等级 {{n}} · 你现在等级 {{level}}",
+      "tipShort": "{{price}} · 还差 {{amount}}",
+      "title": "Daisu 的商店",
+      "unlocked": "已解锁",
+      "xpBonus": "经验 +{{pct}}%",
+      "yourItems": "你的物品 · {{n}}",
+      "yours": "已拥有",
+      "boost": {
+        "about": "你每次下注多得 {{pct}}% 经验，叠加在已有的加成之上。加成会累加，且永不失效。",
+        "opened": "已经放在桌上了。从现在起每次下注多 {{pct}}%。",
+        "what": "每次下注经验 +{{pct}}%，永久。"
+      },
+      "charm": {
+        "about": "你在 {{game}} 的每次下注多得 {{pct}}% 经验，叠加在其他加成之上。仅限 {{game}}，永不失效。",
+        "cases": "箱子",
+        "name": "{{game}}护符",
+        "opened": "戴上了。你下次 {{game}} 下注就多赚了。去吧。",
+        "pitch": "反正你都在玩 {{game}}。不如赚两份。",
+        "what": "每次 {{game}} 下注经验 +{{pct}}%，永久。"
       }
     },
     "ticket": {
@@ -1874,9 +1951,11 @@
     "requestSent": "请求已发送",
     "serviceMessagesAboutYour": "与账号相关的服务通知，例如安全和政策提醒，无论此项如何设置都会发送。",
     "somethingWentWrong": "出了点问题",
-    "toEvery1kSpent": "每花费 1K₽ 可获得 5 点经验。",
+    "toEvery1kSpent": "每下注 K₽ 1 得 5 经验，不论输赢。Daisu 商店的加成会额外叠加。",
     "updatesTurnedOff": "已关闭更新通知",
     "weAreNotSending": "我们没有向你的地址发送邮件，因为之前的邮件被退回或被举报为垃圾邮件。如果你认为这有误，请联系我们。",
+    "xpBonus": "经验 +{{pct}}%",
+    "xpBonusFrom": "来自 Daisu 商店的加成",
     "youWillGetUpdates": "你将收到新箱子和新游戏的更新通知"
   },
   "rain": {

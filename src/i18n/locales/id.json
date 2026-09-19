@@ -193,17 +193,11 @@
     "contributorHint": "Ikut membangun KaniCasino.",
     "contributorHow": "Diberikan langsung karena ikut membangun KaniCasino: gambar, terjemahan, kode, ide.",
     "couldNotSave": "Tidak bisa menyimpan pilihan itu",
-    "crown": "Mahkota",
-    "crownHint": "Memegang Mahkota Daisu, item terakhir di raknya.",
-    "crownHow": "Beli Mahkota Daisu di tokonya pada level 100.",
     "grant": "Beri lencana",
     "locked": "BELUM DIDAPAT",
     "noneTheirs": "Belum ada lencana.",
     "noneYours": "Kamu belum punya lencana.",
     "note": "Apa yang dia lakukan?",
-    "patron": "Patron",
-    "patronHint": "Membeli Lencana Patron di toko Daisu.",
-    "patronHow": "Beli Lencana Patron di toko Daisu pada level 60.",
     "revoke": "Cabut",
     "seeAll": "Lihat semua lencana",
     "shelfTitle": "Lencana",
@@ -1080,27 +1074,14 @@
         "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "wait": "Menunggu penjualan"
-      },
-      "badges": {
-        "line": "Lencanamu ada di sini. Pilih yang mau dipakai dan semua orang di situs melihatnya di samping namamu."
       }
     },
     "shop": {
       "after": "Saldomu setelahnya",
       "buyFor": "Beli seharga {{amount}}",
+      "collapse": "Sembunyikan nama",
+      "expand": "Tampilkan nama",
       "failed": "Gagal membeli. Coba lagi.",
-      "level": "Level {{n}}",
-      "needs": "Butuh",
-      "notNow": "Nanti saja",
-      "price": "Harga",
-      "short": "Kurang {{amount}}",
-      "soon": "Beli satu item untuk tahu apa berikutnya.",
-      "tipBuy": "{{price}} · level {{n}} · klik untuk beli",
-      "tipLevel": "Butuh level {{n}} · kamu level {{level}}",
-      "tipShort": "{{price}} · kurang {{amount}}",
-      "title": "Toko Daisu",
-      "unlocked": "Terbuka",
-      "yours": "Milikmu",
       "items": {
         "affiliateCard": {
           "about": "Membuka tab Afiliasi: pilih kode undanganmu, bagikan tautanmu, dan raih K₽ saat orang yang kamu undang mendaftar, mencapai level 10, dan bertaruh.",
@@ -1185,27 +1166,123 @@
           "pitch": "Membuatmu tetap kering. Bohong, membuatmu lebih basah. Di sini hujan adalah uang.",
           "what": "Bagianmu dari setiap hujan di chat berbobot 1,5x, selamanya."
         },
-        "patronBadge": {
-          "about": "Lencana yang bilang kamu menjaga bisnisku tetap jalan. Pakai di profil, di chat, di papan peringkat. Tidak berbuat apa-apa lagi, dan memang tidak perlu.",
-          "name": "Lencana Patron",
-          "opened": "Milikmu. Pilih di profil untuk memakainya. Mau pergi memakainya?",
-          "pitch": "Ini lencana. Ini mahal. Dua fakta itu berhubungan.",
-          "what": "Lencana Patron, dipakai di profilmu dan di mana pun namamu muncul."
+        "luckyPencil": {
+          "name": "Pensil Keberuntungan",
+          "pitch": "Ujungnya bekas gigitan. Di situlah keberuntungannya."
         },
-        "quickJar": {
-          "about": "Toples penuh dalam enam menit, bukan delapan, setiap siklus, selamanya. Ukuran sama, aturan sama, sepertiga lebih sering.",
-          "name": "Toples Cepat",
-          "opened": "Aktif. Toplesnya sudah terisi lebih cepat. Mau lihat?",
-          "pitch": "Toples yang sama, lebih cepat. Aku sudah menyesalinya.",
-          "what": "Toplesku penuh dalam 6 menit, bukan 8, selamanya."
+        "pocketNotebook": {
+          "name": "Buku Saku",
+          "pitch": "Catat kekalahanmu. Membentuk karakter."
         },
-        "daisuCrown": {
-          "about": "Item terakhir di rakku. Lencana Mahkota untuk dipakai di mana pun namamu muncul, dan rasa hormatku, yang lebih berharga dan tidak ada biaya tambahan.",
-          "name": "Mahkota Daisu",
-          "opened": "Baiklah. Kamu orangnya. Pakai di profil dan jangan aneh-aneh soal itu. Mau lihat?",
-          "pitch": "Sepuluh juta. Kalau kamu membaca ini, kamu sudah memutuskan.",
-          "what": "Lencana Mahkota, benda paling langka di situs ini."
+        "readingLamp": {
+          "name": "Lampu Baca",
+          "pitch": "Supaya kamu bisa lihat berapa banyak yang kamu kalah. Dengan jelas."
+        },
+        "coffeeMug": {
+          "name": "Mug Kopi",
+          "pitch": "Satu ronde lagi. Itu kata mugnya. Selalu."
+        },
+        "abacus": {
+          "name": "Sempoa",
+          "pitch": "Aku menghitung lebih cepat dari kekalahanmu. Nyaris."
+        },
+        "fortuneCat": {
+          "name": "Kucing Keberuntungan",
+          "pitch": "Dia melambai. Tidak ada yang tahu ke siapa. Terus bertaruh."
+        },
+        "studyDesk": {
+          "name": "Meja Belajar",
+          "pitch": "Meja yang layak. Sekarang kamu bisa kalah sambil duduk tegak."
+        },
+        "metronome": {
+          "name": "Metronom",
+          "pitch": "Tik. Taruhan. Tok. Taruhan. Dia atur tempo, aku yang hitung."
+        },
+        "hourglass": {
+          "name": "Jam Pasir",
+          "pitch": "Waktu adalah uang. Ini membuat keduanya lebih cepat."
+        },
+        "globe": {
+          "name": "Globus",
+          "pitch": "Putar. Di mana pun berhenti, di sana juga orang bertaruh."
+        },
+        "telescope": {
+          "name": "Teleskop",
+          "pitch": "Untuk melihat level 100. Masih sangat jauh."
+        },
+        "goldCat": {
+          "name": "Kucing Emas",
+          "pitch": "Kucing yang sama, tapi emas. Melambainya lebih kencang."
+        },
+        "libraryCard": {
+          "name": "Kartu Perpustakaan",
+          "pitch": "Kamu sudah baca semua aturan situs ini. Kelihatan."
+        },
+        "compass": {
+          "name": "Kompas",
+          "pitch": "Selalu menunjuk ke taruhan berikutnya. Mungkin rusak."
+        },
+        "crystalSkull": {
+          "name": "Tengkorak Kristal",
+          "pitch": "Dia tahu bagaimana sesimu berakhir. Tidak akan bilang."
+        },
+        "daisuDiary": {
+          "name": "Buku Harian Daisu",
+          "pitch": "Jangan dibaca. Ya sudah, baca. Halaman 12 tentang kamu."
+        },
+        "starChart": {
+          "name": "Peta Bintang",
+          "pitch": "Bintang bilang kamu akan menang. Bintang bilang begitu ke semua orang."
+        },
+        "goldenAbacus": {
+          "name": "Sempoa Emas",
+          "pitch": "Untuk menghitung angka dengan lebih banyak nol. Angkamu, belakangan ini."
+        },
+        "observatory": {
+          "name": "Observatorium",
+          "pitch": "Level 100 terlihat dari sini. Hampir."
+        },
+        "philosopherStone": {
+          "name": "Batu Bertuah",
+          "pitch": "Mengubah taruhan jadi XP. Yang memang selalu dilakukannya, tapi lebih cepat."
         }
+      },
+      "level": "Level {{n}}",
+      "needs": "Butuh",
+      "notNow": "Nanti saja",
+      "price": "Harga",
+      "rows": {
+        "boost": "Booster",
+        "charm": "Jimat",
+        "unlock": "Pembuka dan keuntungan"
+      },
+      "rowsHint": {
+        "boost": "XP lebih banyak di setiap taruhan",
+        "charm": "+25% XP di satu permainan",
+        "unlock": "Fitur dan aturan"
+      },
+      "short": "Kurang {{amount}}",
+      "soon": "Beli satu item untuk tahu apa berikutnya.",
+      "tipBuy": "{{price}} · level {{n}} · klik untuk beli",
+      "tipLevel": "Butuh level {{n}} · kamu level {{level}}",
+      "tipShort": "{{price}} · kurang {{amount}}",
+      "title": "Toko Daisu",
+      "unlocked": "Terbuka",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Itemmu · {{n}}",
+      "yours": "Milikmu",
+      "boost": {
+        "about": "Setiap taruhanmu menghasilkan {{pct}}% XP lebih banyak, di atas yang sudah kamu punya. Booster saling menambah dan tidak pernah habis.",
+        "opened": "Sudah ada di meja. Setiap taruhan mulai sekarang menghasilkan {{pct}}% lebih banyak.",
+        "what": "+{{pct}}% XP di setiap taruhan, selamanya."
+      },
+      "charm": {
+        "about": "Setiap taruhanmu di {{game}} menghasilkan {{pct}}% XP lebih banyak, di atas booster lainnya. Hanya {{game}}, dan tidak pernah habis.",
+        "cases": "Kotak",
+        "name": "Jimat {{game}}",
+        "opened": "Terpasang. Taruhan {{game}} berikutnya sudah menghasilkan lebih. Sana.",
+        "pitch": "Kamu toh main {{game}}. Sekalian dibayar dua kali.",
+        "what": "+{{pct}}% XP di setiap taruhan {{game}}, selamanya."
       }
     },
     "ticket": {
@@ -1874,9 +1951,11 @@
     "requestSent": "Req dikirim",
     "serviceMessagesAboutYour": "Pesan layanan tentang akun Kamu, seperti pemberitahuan keamanan dan kebijakan, akan dikirim terlepas dari pengaturan ini.",
     "somethingWentWrong": "Ada yang salah",
-    "toEvery1kSpent": "Untuk setiap 1K₽ yang dibelanjakan, Kamu mendapatkan 5 XP.",
+    "toEvery1kSpent": "Setiap K₽ 1 yang dipertaruhkan memberi 5 XP, menang atau kalah. Booster dari toko Daisu menambahnya.",
     "updatesTurnedOff": "Pembaruan dimatiin",
     "weAreNotSending": "Kami tidak mengirim email ke alamat Anda karena email sebelumnya gagal terkirim atau dilaporkan sebagai spam. Hubungi kami jika Anda merasa hal itu keliru.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "Dari booster di toko Daisu",
     "youWillGetUpdates": "Anda akan mendapatkan pembaruan tentang gacha dan game baru."
   },
   "rain": {

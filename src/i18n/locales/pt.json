@@ -193,17 +193,11 @@
     "contributorHint": "Ajudou a construir o KaniCasino.",
     "contributorHow": "Concedido à mão por ajudar a construir o KaniCasino: arte, traduções, código, ideias.",
     "couldNotSave": "Não foi possível salvar essa escolha",
-    "crown": "Coroa",
-    "crownHint": "Tem a Coroa da Daisu, o último item da prateleira dela.",
-    "crownHow": "Compre a Coroa da Daisu na loja dela no nível 100.",
     "grant": "Conceder distintivo",
     "locked": "NÃO CONQUISTADO",
     "noneTheirs": "Ainda sem distintivos.",
     "noneYours": "Você ainda não tem distintivos.",
     "note": "O que essa pessoa fez?",
-    "patron": "Patrono",
-    "patronHint": "Comprou a Insígnia de Patrono na loja da Daisu.",
-    "patronHow": "Compre a Insígnia de Patrono na loja da Daisu no nível 60.",
     "revoke": "Remover",
     "seeAll": "Ver todos os distintivos",
     "shelfTitle": "Distintivos",
@@ -1080,27 +1074,14 @@
         "line": "Passe o mouse num item e aperte o botão de vender. Ele vira K₽ na hora, então escolha um que não vai fazer falta.",
         "linePhone": "Toque num item e venda uma cópia. Ele vira K₽ na hora, então escolha um que não vai fazer falta.",
         "wait": "Esperando uma venda"
-      },
-      "badges": {
-        "line": "Suas insígnias ficam aqui. Escolha a que quer usar e todo mundo no site vê ao lado do seu nome."
       }
     },
     "shop": {
       "after": "Seu saldo depois",
       "buyFor": "Comprar por {{amount}}",
+      "collapse": "Ocultar nomes",
+      "expand": "Mostrar nomes",
       "failed": "Não deu pra comprar. Tente de novo.",
-      "level": "Nível {{n}}",
-      "needs": "Requer",
-      "notNow": "Agora não",
-      "price": "Preço",
-      "short": "Faltam {{amount}}",
-      "soon": "Compre um item pra descobrir o que vem depois.",
-      "tipBuy": "{{price}} · nível {{n}} · clique pra comprar",
-      "tipLevel": "Precisa do nível {{n}} · você está no nível {{level}}",
-      "tipShort": "{{price}} · faltam {{amount}}",
-      "title": "Loja da Daisu",
-      "unlocked": "Desbloqueado",
-      "yours": "Seu",
       "items": {
         "affiliateCard": {
           "about": "Abre a aba Afiliados: escolha seu código de convite, compartilhe seu link e ganhe K₽ quando quem você convidou se cadastrar, chegar ao nível 10 e apostar.",
@@ -1185,27 +1166,123 @@
           "pitch": "Ela te mantém seco. Mentira, te deixa mais molhado. Aqui chuva é dinheiro.",
           "what": "Sua parte de toda chuva no chat pesa 1,5x, pra sempre."
         },
-        "patronBadge": {
-          "about": "Uma insígnia que diz que você me manteve no negócio. Use no perfil, no chat, nos rankings. Não faz mais nada, e não precisa.",
-          "name": "Insígnia de Patrono",
-          "opened": "É sua. Escolha no seu perfil pra usar. Quer ir colocar?",
-          "pitch": "É uma insígnia. É cara. Esses dois fatos têm relação.",
-          "what": "Uma insígnia de Patrono, usada no seu perfil e em todo lugar onde seu nome aparece."
+        "luckyPencil": {
+          "name": "Lápis da Sorte",
+          "pitch": "Mordido na ponta. É aí que fica a sorte."
         },
-        "quickJar": {
-          "about": "O pote enche em seis minutos em vez de oito, todo ciclo, pra sempre. Mesmo tamanho, mesmas regras, um terço mais vezes.",
-          "name": "Pote Rápido",
-          "opened": "Ativado. O pote já está enchendo mais rápido. Quer ver?",
-          "pitch": "Mesmo pote, mais rápido. Já estou me arrependendo.",
-          "what": "Meu pote enche em 6 minutos em vez de 8, pra sempre."
+        "pocketNotebook": {
+          "name": "Caderninho de Bolso",
+          "pitch": "Anote suas perdas. Constrói caráter."
         },
-        "daisuCrown": {
-          "about": "O último item da minha prateleira. Uma insígnia Coroa pra usar em qualquer lugar onde seu nome aparece, e meu respeito, que vale mais e não custa nada a mais.",
-          "name": "Coroa da Daisu",
-          "opened": "Tá bom. É você. Use no seu perfil e não fique esquisito com isso. Quer ver?",
-          "pitch": "Dez milhões. Se está lendo isso, já decidiu.",
-          "what": "A insígnia Coroa, a coisa mais rara do site."
+        "readingLamp": {
+          "name": "Luminária de Leitura",
+          "pitch": "Pra você ver quanto está perdendo. Com clareza."
+        },
+        "coffeeMug": {
+          "name": "Caneca de Café",
+          "pitch": "Mais uma rodada. É o que a caneca diz. Sempre."
+        },
+        "abacus": {
+          "name": "Ábaco",
+          "pitch": "Eu conto mais rápido do que você perde. Por pouco."
+        },
+        "fortuneCat": {
+          "name": "Gato da Sorte",
+          "pitch": "Ele acena. Ninguém sabe pra quem. Continue apostando."
+        },
+        "studyDesk": {
+          "name": "Mesa de Estudos",
+          "pitch": "Uma mesa de verdade. Agora dá pra perder dinheiro sentado direito."
+        },
+        "metronome": {
+          "name": "Metrônomo",
+          "pitch": "Tique. Aposta. Taque. Aposta. Ele dá o ritmo, eu faço a conta."
+        },
+        "hourglass": {
+          "name": "Ampulheta",
+          "pitch": "Tempo é dinheiro. Isso faz os dois passarem mais rápido."
+        },
+        "globe": {
+          "name": "Globo",
+          "pitch": "Gira ele. Onde parar, lá também se aposta."
+        },
+        "telescope": {
+          "name": "Telescópio",
+          "pitch": "Pra olhar o nível 100. Ainda está bem longe."
+        },
+        "goldCat": {
+          "name": "Gato Dourado",
+          "pitch": "O mesmo gato, mas dourado. Acena com mais força."
+        },
+        "libraryCard": {
+          "name": "Carteirinha da Biblioteca",
+          "pitch": "Você leu todas as regras deste site. Dá pra notar."
+        },
+        "compass": {
+          "name": "Bússola",
+          "pitch": "Sempre aponta pra próxima aposta. Deve estar quebrada."
+        },
+        "crystalSkull": {
+          "name": "Caveira de Cristal",
+          "pitch": "Ela sabe como sua sessão termina. Não vai contar."
+        },
+        "daisuDiary": {
+          "name": "Diário da Daisu",
+          "pitch": "Não leia. Tá, leia. A página 12 é sobre você."
+        },
+        "starChart": {
+          "name": "Carta Celeste",
+          "pitch": "As estrelas dizem que você vai ganhar. Dizem isso pra todo mundo."
+        },
+        "goldenAbacus": {
+          "name": "Ábaco Dourado",
+          "pitch": "Pra contar números com mais zeros. Os seus, ultimamente."
+        },
+        "observatory": {
+          "name": "Observatório",
+          "pitch": "Dá pra ver o nível 100 daqui. Quase."
+        },
+        "philosopherStone": {
+          "name": "Pedra Filosofal",
+          "pitch": "Transforma apostas em XP. Que é o que sempre fez, só que mais rápido."
         }
+      },
+      "level": "Nível {{n}}",
+      "needs": "Requer",
+      "notNow": "Agora não",
+      "price": "Preço",
+      "rows": {
+        "boost": "Impulsos",
+        "charm": "Amuletos",
+        "unlock": "Desbloqueios e vantagens"
+      },
+      "rowsHint": {
+        "boost": "Mais XP em toda aposta",
+        "charm": "+25% de XP em um jogo",
+        "unlock": "Funções e regras"
+      },
+      "short": "Faltam {{amount}}",
+      "soon": "Compre um item pra descobrir o que vem depois.",
+      "tipBuy": "{{price}} · nível {{n}} · clique pra comprar",
+      "tipLevel": "Precisa do nível {{n}} · você está no nível {{level}}",
+      "tipShort": "{{price}} · faltam {{amount}}",
+      "title": "Loja da Daisu",
+      "unlocked": "Desbloqueado",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Seus itens · {{n}}",
+      "yours": "Seu",
+      "boost": {
+        "about": "Toda aposta sua rende {{pct}}% a mais de XP, em cima do que você já tem. Os impulsos se somam e nunca acabam.",
+        "opened": "Já está na mesa. Toda aposta daqui em diante rende {{pct}}% a mais.",
+        "what": "+{{pct}}% de XP em toda aposta, pra sempre."
+      },
+      "charm": {
+        "about": "Toda aposta sua em {{game}} rende {{pct}}% a mais de XP, em cima dos outros impulsos. Só {{game}}, e nunca acaba.",
+        "cases": "Caixas",
+        "name": "Amuleto de {{game}}",
+        "opened": "Equipado. Sua próxima aposta em {{game}} já rende mais. Pode ir.",
+        "pitch": "Você joga {{game}} de qualquer jeito. Melhor ser pago duas vezes por isso.",
+        "what": "+{{pct}}% de XP em toda aposta de {{game}}, pra sempre."
       }
     },
     "ticket": {
@@ -1874,9 +1951,11 @@
     "requestSent": "Pedido enviado",
     "serviceMessagesAboutYour": "Mensagens de serviço sobre sua conta, como avisos de segurança e de política, são enviadas independentemente desta opção.",
     "somethingWentWrong": "Algo deu errado",
-    "toEvery1kSpent": "A cada 1K₽ gastos, você ganha 5 XP.",
+    "toEvery1kSpent": "Cada K₽ 1 apostado dá 5 XP, ganhando ou perdendo. Os impulsos da loja da Daisu somam a isso.",
     "updatesTurnedOff": "Novidades desativadas",
     "weAreNotSending": "Não estamos enviando para o seu endereço porque um e-mail anterior voltou ou foi marcado como spam. Fale com a gente se achar que está errado.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "Dos impulsos da loja da Daisu",
     "youWillGetUpdates": "Você vai receber novidades sobre caixas e jogos"
   },
   "rain": {

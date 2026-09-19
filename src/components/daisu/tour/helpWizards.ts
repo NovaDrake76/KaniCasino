@@ -12,8 +12,7 @@ export type Wizard =
   | "fans"
   | "predictions"
   | "affiliates"
-  | "chat"
-  | "badges";
+  | "chat";
 
 // how she shows each kind of mission: where it happens and what to point at once there
 const BY_GOAL: Record<string, Wizard> = {
@@ -47,9 +46,6 @@ const BY_GOAL: Record<string, Wizard> = {
   "unlock:merchantSeal": "market",
   "unlock:goldenTicket": "pot",
   "unlock:rainCoat": "chat",
-  "unlock:patronBadge": "badges",
-  "unlock:quickJar": "pot",
-  "unlock:daisuCrown": "badges",
 };
 
 export const wizardFor = (goal: string | null): Wizard | null => (goal && BY_GOAL[goal]) || null;

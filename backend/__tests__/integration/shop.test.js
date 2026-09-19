@@ -11,6 +11,7 @@ const ChatMessage = require("../../models/ChatMessage");
 const chat = require("../../utils/chat");
 const { TX } = require("../../utils/economy");
 const { MINT } = require("../../utils/accounts");
+const { ITEMS } = require("../../utils/shopCatalog");
 
 let app;
 
@@ -51,8 +52,11 @@ describe("daisu's shop", () => {
     const res = await shopOf(user);
 
     expect(res.status).toBe(200);
-    expect(res.body.items.map((i) => i.key)).toEqual(["chatPass", "tradersLicense", "collectionBook"]);
-    expect(res.body.hidden).toBe(9);
+    const keys = res.body.items.map((i) => i.key);
+    expect(keys.filter((k) => !k.endsWith("Charm"))).toEqual(["chatPass", "tradersLicense", "collectionBook", "luckyPencil", "pocketNotebook", "readingLamp"]);
+    expect(keys.filter((k) => k.endsWith("Charm"))).toHaveLength(10);
+    expect(res.body.hidden).toEqual({ unlock: 6, boost: 17 });
+    expect(res.body.xpBoost).toEqual({ all: 1 });
     expect(item(res.body, "chatPass")).toMatchObject({ price: 1000, level: 10, owned: false, via: null });
     expect(res.body).toMatchObject({ walletBalance: 10000, level: 12 });
     expect((await shopOf(await makeUser({ betaFlags: [] }))).status).toBe(403);
@@ -94,37 +98,42 @@ describe("daisu's shop", () => {
 
     expect((await buy(user, "giftCharm")).status).toBe(404);
 
+    const unlocks = (body) => body.items.map((i) => i.key).filter((k) => ITEMS.find((i) => i.key === k).kind === "unlock");
     const first = await buy(user, "chatPass");
-    expect(first.body.shop.items.map((i) => i.key)).toEqual(["chatPass", "tradersLicense", "collectionBook", "affiliateCard"]);
-    expect(first.body.shop.hidden).toBe(8);
+    expect(unlocks(first.body.shop)).toEqual(["chatPass", "tradersLicense", "collectionBook", "affiliateCard"]);
+    expect(first.body.shop.hidden.unlock).toBe(5);
 
     // out of order is fine: what is held never takes one of the three places ahead
     const third = await buy(user, "collectionBook");
-    expect(third.body.shop.items.map((i) => i.key)).toEqual(["chatPass", "tradersLicense", "collectionBook", "affiliateCard", "predictionPass"]);
+    expect(unlocks(third.body.shop)).toEqual(["chatPass", "tradersLicense", "collectionBook", "affiliateCard", "predictionPass"]);
 
     for (const key of ["tradersLicense", "affiliateCard", "predictionPass", "giftCharm", "merchantSeal"]) {
       expect((await buy(user, key)).body.bought).toBe(true);
     }
-    // the seven first items held, and the next three of the long game showing after them
+    // the seven first unlocks held, and the two perks showing after them; the boosts are their own ladder
     const all = await shopOf(await User.findById(user._id));
-    expect(all.body.items.map((i) => i.key).slice(7)).toEqual(["goldenTicket", "rainCoat", "patronBadge"]);
-    expect(all.body.hidden).toBe(2);
+    expect(unlocks(all.body).slice(7)).toEqual(["goldenTicket", "rainCoat"]);
+    expect(all.body.hidden).toEqual({ unlock: 0, boost: 17 });
     expect(all.body.walletBalance).toBe(500000 - 1000 - 3000 - 6000 - 10000 - 15000 - 40000 - 150000);
   });
 
-  it("wears a trophy item as a badge the moment it is bought", async () => {
-    const user = await makeUser({ walletBalance: 20000000, level: 100 });
-    for (const key of ["chatPass", "tradersLicense", "collectionBook", "affiliateCard", "predictionPass", "giftCharm", "merchantSeal", "goldenTicket", "rainCoat"]) {
-      expect((await buy(user, key)).body.bought).toBe(true);
-    }
+  it("adds up the xp boosts and charms it sells, and writes them on the account with each purchase", async () => {
+    const user = await makeUser({ walletBalance: 100000, level: 12 });
 
-    expect((await buy(user, "patronBadge")).body.bought).toBe(true);
-    expect((await buy(user, "quickJar")).body.bought).toBe(true);
-    expect((await buy(user, "daisuCrown")).body.bought).toBe(true);
+    expect((await buy(user, "luckyPencil")).body.xpBoost).toEqual({ all: 1.05 });
+    expect((await buy(user, "readingLamp")).body.xpBoost).toEqual({ all: 1.15 });
+    expect((await buy(user, "diceCharm")).body.xpBoost).toEqual({ all: 1.15, dice: 0.25 });
+    // the ladder shows three boosts past what is held, so the seventh is still hidden
+    expect((await buy(user, "studyDesk")).status).toBe(404);
+    expect((await buy(user, "pocketNotebook")).body.bought).toBe(true);
+    expect((await buy(user, "coffeeMug")).body.bought).toBe(true);
+    const res = await buy(user, "abacus");
+    expect(res.body.xpBoost).toEqual({ all: 1.4, dice: 0.25 });
 
     const after = await User.findById(user._id).lean();
-    expect(after.badges.map((b) => b.key)).toEqual(["patron", "crown"]);
-    expect(after.walletBalance).toBe(20000000 - 225000 - 400000 - 800000 - 1500000 - 3000000 - 10000000);
+    expect(after.xpBoost).toEqual({ all: 1.4, dice: 0.25 });
+    expect(after.walletBalance).toBe(100000 - 300 - 2000 - 5000 - 800 - 4000 - 8000);
+    expect(res.body.shop.items.filter((i) => i.kind === "charm")).toHaveLength(10);
   });
 
   it("keeps an affiliate who already set a code, and asks everyone else in her beta for the card", async () => {

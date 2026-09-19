@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { BsBroadcast, BsHammer, BsBoxSeam, BsAward, BsStars } from "react-icons/bs";
+import { BsBroadcast, BsHammer, BsBoxSeam } from "react-icons/bs";
 import { Badge as BadgeData, BadgeKey, isCollectionBadge } from "../services/badges/BadgeService";
 import { rarityColor, rarityName } from "../utils/rarity";
 import i18n from "../i18n";
@@ -21,7 +21,7 @@ const CARD_W = 240;
 
 // one mark per badge, all the same size and shape. the detail that tells them apart lives
 // in the hover card, because a 18px picture of anything is unreadable in a table row.
-export const BADGE_KEYS: BadgeKey[] = ["topFan", "contributor", "connected", "patron", "crown"];
+export const BADGE_KEYS: BadgeKey[] = ["topFan", "contributor", "connected"];
 
 interface Face {
   from: string;
@@ -61,18 +61,6 @@ const FACE: Record<string, Face> = {
     to: "#3B45AE",
     ink: "#ffffff",
     icon: <BsBroadcast size="68%" />,
-  },
-  patron: {
-    from: "#F0A0B8",
-    to: "#C23A7D",
-    ink: "#3B0A1E",
-    icon: <BsAward size="66%" />,
-  },
-  crown: {
-    from: "#B794FF",
-    to: "#5B35B0",
-    ink: "#1D0B3D",
-    icon: <BsStars size="66%" />,
   },
 };
 

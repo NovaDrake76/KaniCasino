@@ -13,6 +13,7 @@ import { startHelp } from "./tour/helpStore";
 import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import type { UnlockKey } from "../../services/daisu/ShopService";
+import { itemWords } from "./shop/shopCopy";
 import type { BonusView, Face, Line, Pop, Run, Stage } from "./Daisu.types";
 import i18n from "../../i18n";
 
@@ -231,7 +232,7 @@ export const useDaisu = () => {
     userId,
     open: stage === "room",
     onBought: (purchase) => {
-      if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks });
+      if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks, xpBoost: purchase.xpBoost ?? userData.xpBoost });
       pull("happy");
     },
   });
@@ -506,20 +507,21 @@ export const useDaisu = () => {
     startHelp(userId, mission.key, mission.goal, missionWords(mission.key, mission.target, bonusGame.name).title);
   };
   // a purchase ends on what it opened, and she offers to show it on the tour's engine
+  const unlockedItem = (shop.unlocked && shop.shop?.items.find((item) => item.key === shop.unlocked)) || null;
   const showUnlocked = () => {
-    const key = shop.unlocked;
+    const item = unlockedItem;
     shop.closeUnlocked();
-    if (!key || !userId) return;
+    if (!item || !userId) return;
     setStage("bubble");
-    startHelp(userId, `shop:${key}`, `unlock:${key}`, i18n.t(`daisu.shop.items.${key}.name`));
+    startHelp(userId, `shop:${item.key}`, `unlock:${item.key}`, itemWords(item).name);
   };
   // an item already held, picked off her shelf: she folds away and shows where it is used
   const showItem = () => {
-    const key = shop.pickedItem?.key;
+    const item = shop.pickedItem;
     shop.closePick();
-    if (!key || !userId) return;
+    if (!item || !userId) return;
     setStage("bubble");
-    startHelp(userId, `shop:${key}`, `unlock:${key}`, i18n.t(`daisu.shop.items.${key}.name`));
+    startHelp(userId, `shop:${item.key}`, `unlock:${item.key}`, itemWords(item).name);
   };
   const backToPopup = () => setStage("popup");
 
@@ -567,6 +569,7 @@ export const useDaisu = () => {
     buying: shop.buying,
     buyItem: shop.buy,
     unlocked: shop.unlocked,
+    unlockedItem,
     closeUnlocked: shop.closeUnlocked,
     ...missions,
     missionReady,

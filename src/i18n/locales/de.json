@@ -193,17 +193,11 @@
     "contributorHint": "Hat beim Aufbau von KaniCasino geholfen.",
     "contributorHow": "Von Hand verliehen für Hilfe beim Aufbau von KaniCasino: Kunst, Übersetzungen, Code, Ideen.",
     "couldNotSave": "Diese Wahl konnte nicht gespeichert werden",
-    "crown": "Krone",
-    "crownHint": "Besitzt Daisus Krone, das letzte Stück in ihrem Regal.",
-    "crownHow": "Kauf Daisus Krone ab Level 100 in ihrem Laden.",
     "grant": "Abzeichen verleihen",
     "locked": "NICHT ERHALTEN",
     "noneTheirs": "Noch keine Abzeichen.",
     "noneYours": "Du hast noch keine Abzeichen.",
     "note": "Was hat die Person getan?",
-    "patron": "Gönner",
-    "patronHint": "Hat das Gönner-Abzeichen in Daisus Laden gekauft.",
-    "patronHow": "Kauf das Gönner-Abzeichen ab Level 60 in Daisus Laden.",
     "revoke": "Entziehen",
     "seeAll": "Alle Abzeichen ansehen",
     "shelfTitle": "Abzeichen",
@@ -1080,27 +1074,14 @@
         "line": "Fahr mit der Maus über ein Item und drück seinen Verkaufen-Knopf. Es wird sofort wieder zu K₽, also nimm eins, das dir nicht fehlen wird.",
         "linePhone": "Tipp auf ein Item und verkauf ein Exemplar. Es wird sofort wieder zu K₽, also nimm eins, das dir nicht fehlen wird.",
         "wait": "Warte auf einen Verkauf"
-      },
-      "badges": {
-        "line": "Hier wohnen deine Abzeichen. Wähl das, das du tragen willst, und die ganze Seite sieht es neben deinem Namen."
       }
     },
     "shop": {
       "after": "Dein Guthaben danach",
       "buyFor": "Für {{amount}} kaufen",
+      "collapse": "Namen verbergen",
+      "expand": "Namen zeigen",
       "failed": "Kauf fehlgeschlagen. Versuch es noch mal.",
-      "level": "Level {{n}}",
-      "needs": "Benötigt",
-      "notNow": "Nicht jetzt",
-      "price": "Preis",
-      "short": "{{amount}} zu wenig",
-      "soon": "Kauf einen Gegenstand, um zu sehen, was als Nächstes kommt.",
-      "tipBuy": "{{price}} · Level {{n}} · zum Kaufen klicken",
-      "tipLevel": "Braucht Level {{n}} · du bist Level {{level}}",
-      "tipShort": "{{price}} · dir fehlen {{amount}}",
-      "title": "Daisus Laden",
-      "unlocked": "Freigeschaltet",
-      "yours": "Deins",
       "items": {
         "affiliateCard": {
           "about": "Öffnet den Tab Partner: Wähle deinen Einladungscode, teile deinen Link und verdiene K₽, wenn deine Eingeladenen sich anmelden, Level 10 erreichen und wetten.",
@@ -1185,27 +1166,123 @@
           "pitch": "Hält dich trocken. Gelogen, macht dich nasser. Regen ist hier Geld.",
           "what": "Dein Anteil an jedem Regen im Chat wiegt 1,5x, für immer."
         },
-        "patronBadge": {
-          "about": "Ein Abzeichen, das sagt, dass du mich im Geschäft gehalten hast. Trag es im Profil, im Chat, auf den Ranglisten. Es tut sonst nichts, und das muss es auch nicht.",
-          "name": "Gönner-Abzeichen",
-          "opened": "Gehört dir. Wähl es in deinem Profil, um es zu tragen. Willst du es anlegen gehen?",
-          "pitch": "Es ist ein Abzeichen. Es ist teuer. Die beiden Tatsachen hängen zusammen.",
-          "what": "Ein Gönner-Abzeichen, getragen auf deinem Profil und überall, wo dein Name steht."
+        "luckyPencil": {
+          "name": "Glücksstift",
+          "pitch": "Am Ende angekaut. Da sitzt das Glück."
         },
-        "quickJar": {
-          "about": "Der Topf ist in sechs statt acht Minuten voll, jeden Zyklus, für immer. Gleiche Größe, gleiche Regeln, ein Drittel öfter.",
-          "name": "Schneller Topf",
-          "opened": "Aktiv. Der Topf füllt sich schon schneller. Willst du zusehen?",
-          "pitch": "Gleicher Topf, schneller. Ich bereue es jetzt schon.",
-          "what": "Mein Topf füllt sich in 6 Minuten statt 8, für immer."
+        "pocketNotebook": {
+          "name": "Taschennotizbuch",
+          "pitch": "Schreib deine Verluste auf. Das bildet Charakter."
         },
-        "daisuCrown": {
-          "about": "Das letzte Stück in meinem Regal. Ein Kronen-Abzeichen, überall zu tragen, wo dein Name steht, und meinen Respekt, der mehr wert ist und nichts extra kostet.",
-          "name": "Daisus Krone",
-          "opened": "Na gut. Du bist es. Trag sie im Profil und mach kein Theater darum. Willst du sie sehen?",
-          "pitch": "Zehn Millionen. Wenn du das liest, hast du dich schon entschieden.",
-          "what": "Das Kronen-Abzeichen, das Seltenste auf der Seite."
+        "readingLamp": {
+          "name": "Leselampe",
+          "pitch": "Damit du siehst, wie viel du verlierst. Deutlich."
+        },
+        "coffeeMug": {
+          "name": "Kaffeebecher",
+          "pitch": "Noch eine Runde. Das sagt der Becher. Jedes Mal."
+        },
+        "abacus": {
+          "name": "Abakus",
+          "pitch": "Ich zähle schneller, als du verlierst. Knapp."
+        },
+        "fortuneCat": {
+          "name": "Glückskatze",
+          "pitch": "Sie winkt. Niemand weiß, wem. Setz weiter."
+        },
+        "studyDesk": {
+          "name": "Schreibtisch",
+          "pitch": "Ein richtiger Schreibtisch. Jetzt kannst du aufrecht sitzend Geld verlieren."
+        },
+        "metronome": {
+          "name": "Metronom",
+          "pitch": "Tick. Einsatz. Tack. Einsatz. Es gibt den Takt, ich zähle mit."
+        },
+        "hourglass": {
+          "name": "Sanduhr",
+          "pitch": "Zeit ist Geld. Das beschleunigt beides."
+        },
+        "globe": {
+          "name": "Globus",
+          "pitch": "Dreh ihn. Wo er stehen bleibt, wird auch gezockt."
+        },
+        "telescope": {
+          "name": "Teleskop",
+          "pitch": "Um Level 100 anzusehen. Es ist immer noch sehr weit weg."
+        },
+        "goldCat": {
+          "name": "Goldkatze",
+          "pitch": "Dieselbe Katze, nur golden. Sie winkt kräftiger."
+        },
+        "libraryCard": {
+          "name": "Bibliotheksausweis",
+          "pitch": "Du hast jede Regel auf dieser Seite gelesen. Man merkt es."
+        },
+        "compass": {
+          "name": "Kompass",
+          "pitch": "Er zeigt immer auf den nächsten Einsatz. Wahrscheinlich kaputt."
+        },
+        "crystalSkull": {
+          "name": "Kristallschädel",
+          "pitch": "Er weiß, wie deine Session endet. Er verrät es nicht."
+        },
+        "daisuDiary": {
+          "name": "Daisus Tagebuch",
+          "pitch": "Lies es nicht. Na gut, lies es. Seite 12 handelt von dir."
+        },
+        "starChart": {
+          "name": "Sternkarte",
+          "pitch": "Die Sterne sagen, du gewinnst. Das sagen sie allen."
+        },
+        "goldenAbacus": {
+          "name": "Goldener Abakus",
+          "pitch": "Zum Zählen von Zahlen mit mehr Nullen. Deinen, in letzter Zeit."
+        },
+        "observatory": {
+          "name": "Sternwarte",
+          "pitch": "Von hier aus sieht man Level 100. Gerade so."
+        },
+        "philosopherStone": {
+          "name": "Stein der Weisen",
+          "pitch": "Er macht aus Einsätzen XP. Was er immer tat, nur schneller."
         }
+      },
+      "level": "Level {{n}}",
+      "needs": "Benötigt",
+      "notNow": "Nicht jetzt",
+      "price": "Preis",
+      "rows": {
+        "boost": "Boosts",
+        "charm": "Talismane",
+        "unlock": "Freischaltungen und Vorteile"
+      },
+      "rowsHint": {
+        "boost": "Mehr XP bei jedem Einsatz",
+        "charm": "+25% XP in einem Spiel",
+        "unlock": "Funktionen und Regeln"
+      },
+      "short": "{{amount}} zu wenig",
+      "soon": "Kauf einen Gegenstand, um zu sehen, was als Nächstes kommt.",
+      "tipBuy": "{{price}} · Level {{n}} · zum Kaufen klicken",
+      "tipLevel": "Braucht Level {{n}} · du bist Level {{level}}",
+      "tipShort": "{{price}} · dir fehlen {{amount}}",
+      "title": "Daisus Laden",
+      "unlocked": "Freigeschaltet",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Deine Items · {{n}}",
+      "yours": "Deins",
+      "boost": {
+        "about": "Jeder Einsatz bringt {{pct}}% mehr XP, zusätzlich zu allem, was du schon hast. Boosts addieren sich und laufen nie ab.",
+        "opened": "Es liegt jetzt auf dem Schreibtisch. Jeder Einsatz ab hier bringt {{pct}}% mehr.",
+        "what": "+{{pct}}% XP bei jedem Einsatz, für immer."
+      },
+      "charm": {
+        "about": "Jeder Einsatz bei {{game}} bringt {{pct}}% mehr XP, zusätzlich zu deinen anderen Boosts. Nur {{game}}, und es läuft nie ab.",
+        "cases": "Kisten",
+        "name": "{{game}}-Talisman",
+        "opened": "Angelegt. Dein nächster {{game}}-Einsatz bringt schon mehr. Los geht's.",
+        "pitch": "Du spielst {{game}} sowieso. Dann lass dich zweimal dafür bezahlen.",
+        "what": "+{{pct}}% XP bei jedem {{game}}-Einsatz, für immer."
       }
     },
     "ticket": {
@@ -1874,9 +1951,11 @@
     "requestSent": "Anfrage gesendet",
     "serviceMessagesAboutYour": "Service-Nachrichten zu deinem Konto, etwa Sicherheits- und Richtlinienhinweise, gehen unabhängig von dieser Einstellung raus.",
     "somethingWentWrong": "Etwas ist schiefgelaufen",
-    "toEvery1kSpent": "Für je 1K₽ Einsatz bekommst du 5 XP.",
+    "toEvery1kSpent": "Jeder gesetzte K₽ 1 gibt 5 XP, gewonnen oder verloren. Boosts aus Daisus Laden kommen dazu.",
     "updatesTurnedOff": "Neuigkeiten ausgeschaltet",
     "weAreNotSending": "Wir senden nicht an deine Adresse, weil eine frühere E-Mail nicht zugestellt oder als Spam gemeldet wurde. Melde dich, wenn das falsch ist.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "Aus den Boosts in Daisus Laden",
     "youWillGetUpdates": "Du bekommst Neuigkeiten zu Kisten und Spielen"
   },
   "rain": {

@@ -386,6 +386,7 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
       features: beta.featuresOf(req.user),
       onboarding: tourOf(req.user),
       unlocks: beta.has(req.user, "daisu") ? await shop.unlocksOf(req.user) : undefined,
+      xpBoost: req.user.xpBoost || {},
       badges: badges.heldBadges(req.user),
       selectedBadge: req.user.selectedBadge || null,
       badge: badges.wornBadge(req.user),

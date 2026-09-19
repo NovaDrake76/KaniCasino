@@ -87,6 +87,7 @@ const { sweepBoards } = require("./utils/leaderboard");
 const liveFeed = require("./utils/liveFeed");
 const chat = require("./utils/chat");
 const rain = require("./utils/rain");
+const { migrateXpCurve } = require("./scripts/migrateXpCurve");
 const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
@@ -118,6 +119,9 @@ mongoose
   })
   .then(async () => {
     console.log("MongoDB connected");
+    // the ladder changed in september 2026: every account is carried over at its level, once, before it bets
+    const carried = await migrateXpCurve().catch((e) => console.error("xp curve migration:", e));
+    if (carried && carried.ran) console.log(`xp curve: ${carried.touched} accounts carried over`);
     // money writes are only atomic where transactions exist; refuse to run prod without
     const ok = await probeTransactions();
     setTransactionsSupported(ok);

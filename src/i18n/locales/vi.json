@@ -193,17 +193,11 @@
     "contributorHint": "Đã góp sức xây dựng KaniCasino.",
     "contributorHow": "Trao tay cho người góp sức xây dựng KaniCasino: tranh, bản dịch, mã, ý tưởng.",
     "couldNotSave": "Không thể lưu lựa chọn này",
-    "crown": "Vương miện",
-    "crownHint": "Giữ Vương miện của Daisu, món cuối cùng trên kệ của cô ấy.",
-    "crownHow": "Mua Vương miện của Daisu ở cửa hàng của cô ấy ở cấp 100.",
     "grant": "Trao huy hiệu",
     "locked": "CHƯA ĐẠT",
     "noneTheirs": "Chưa có huy hiệu nào.",
     "noneYours": "Bạn chưa có huy hiệu nào.",
     "note": "Họ đã làm gì?",
-    "patron": "Bảo trợ",
-    "patronHint": "Đã mua Huy hiệu Bảo trợ ở cửa hàng của Daisu.",
-    "patronHow": "Mua Huy hiệu Bảo trợ ở cửa hàng của Daisu ở cấp 60.",
     "revoke": "Thu hồi",
     "seeAll": "Xem tất cả huy hiệu",
     "shelfTitle": "Huy hiệu",
@@ -1080,27 +1074,14 @@
         "line": "Rê chuột lên một vật phẩm và bấm nút bán của nó. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "linePhone": "Chạm vào một vật phẩm và bán một bản. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "wait": "Đang chờ bạn bán"
-      },
-      "badges": {
-        "line": "Huy hiệu của bạn ở đây. Chọn cái muốn đeo và cả trang sẽ thấy nó cạnh tên bạn."
       }
     },
     "shop": {
       "after": "Số dư sau khi mua",
       "buyFor": "Mua với {{amount}}",
+      "collapse": "Ẩn tên",
+      "expand": "Hiện tên",
       "failed": "Không mua được. Thử lại nhé.",
-      "level": "Cấp {{n}}",
-      "needs": "Cần",
-      "notNow": "Để sau",
-      "price": "Giá",
-      "short": "Thiếu {{amount}}",
-      "soon": "Mua một món để biết món tiếp theo là gì.",
-      "tipBuy": "{{price}} · cấp {{n}} · bấm để mua",
-      "tipLevel": "Cần cấp {{n}} · bạn đang cấp {{level}}",
-      "tipShort": "{{price}} · còn thiếu {{amount}}",
-      "title": "Cửa hàng của Daisu",
-      "unlocked": "Đã mở khóa",
-      "yours": "Của bạn",
       "items": {
         "affiliateCard": {
           "about": "Mở tab Liên kết: chọn mã mời, chia sẻ liên kết và nhận K₽ khi người bạn mời đăng ký, đạt cấp 10 và đặt cược.",
@@ -1185,27 +1166,123 @@
           "pitch": "Nó giữ bạn khô ráo. Nói dối đấy, nó làm bạn ướt hơn. Ở đây mưa là tiền.",
           "what": "Phần của bạn trong mỗi cơn mưa ở chat nặng gấp 1,5 lần, mãi mãi."
         },
-        "patronBadge": {
-          "about": "Một huy hiệu nói rằng bạn đã nuôi sống tôi. Đeo nó trên hồ sơ, trong chat, trên bảng xếp hạng. Nó không làm gì khác, và không cần phải làm.",
-          "name": "Huy hiệu Bảo trợ",
-          "opened": "Của bạn. Chọn nó trên hồ sơ để đeo. Muốn đi đeo không?",
-          "pitch": "Đó là huy hiệu. Nó đắt. Hai điều này có liên quan.",
-          "what": "Huy hiệu Bảo trợ, đeo trên hồ sơ và mọi nơi tên bạn xuất hiện."
+        "luckyPencil": {
+          "name": "Bút chì May mắn",
+          "pitch": "Đầu bút bị gặm. May mắn nằm ở đó."
         },
-        "quickJar": {
-          "about": "Hũ đầy trong sáu phút thay vì tám, mọi chu kỳ, mãi mãi. Cùng cỡ, cùng luật, thường xuyên hơn một phần ba.",
-          "name": "Hũ Nhanh",
-          "opened": "Bật rồi. Hũ đang đầy nhanh hơn. Muốn xem không?",
-          "pitch": "Cùng cái hũ, nhanh hơn. Tôi đã thấy tiếc rồi.",
-          "what": "Hũ của tôi đầy trong 6 phút thay vì 8, mãi mãi."
+        "pocketNotebook": {
+          "name": "Sổ tay Bỏ túi",
+          "pitch": "Ghi lại những lần thua. Rèn tính cách."
         },
-        "daisuCrown": {
-          "about": "Món cuối cùng trên kệ của tôi. Một huy hiệu Vương miện để đeo ở bất cứ đâu tên bạn xuất hiện, và sự tôn trọng của tôi, thứ đáng giá hơn và không tốn thêm gì.",
-          "name": "Vương miện của Daisu",
-          "opened": "Được rồi. Là bạn. Đeo lên hồ sơ và đừng làm quá lên. Muốn xem không?",
-          "pitch": "Mười triệu. Nếu bạn đang đọc dòng này, bạn đã quyết rồi.",
-          "what": "Huy hiệu Vương miện, thứ hiếm nhất trên trang."
+        "readingLamp": {
+          "name": "Đèn đọc sách",
+          "pitch": "Để bạn thấy mình thua bao nhiêu. Rõ ràng."
+        },
+        "coffeeMug": {
+          "name": "Cốc Cà phê",
+          "pitch": "Một ván nữa. Cái cốc nói thế. Lần nào cũng vậy."
+        },
+        "abacus": {
+          "name": "Bàn tính",
+          "pitch": "Tôi đếm nhanh hơn bạn thua. Suýt soát."
+        },
+        "fortuneCat": {
+          "name": "Mèo Thần tài",
+          "pitch": "Nó vẫy tay. Không ai biết vẫy ai. Cứ cược tiếp."
+        },
+        "studyDesk": {
+          "name": "Bàn học",
+          "pitch": "Một cái bàn tử tế. Giờ bạn có thể ngồi thẳng lưng mà thua tiền."
+        },
+        "metronome": {
+          "name": "Máy đếm nhịp",
+          "pitch": "Tích. Cược. Tắc. Cược. Nó giữ nhịp, tôi đếm."
+        },
+        "hourglass": {
+          "name": "Đồng hồ cát",
+          "pitch": "Thời gian là tiền. Cái này làm cả hai trôi nhanh hơn."
+        },
+        "globe": {
+          "name": "Quả địa cầu",
+          "pitch": "Xoay nó đi. Dừng ở đâu thì ở đó người ta cũng cá cược."
+        },
+        "telescope": {
+          "name": "Kính viễn vọng",
+          "pitch": "Để ngắm cấp 100. Vẫn còn xa lắm."
+        },
+        "goldCat": {
+          "name": "Mèo Vàng",
+          "pitch": "Vẫn con mèo đó, nhưng bằng vàng. Vẫy mạnh hơn."
+        },
+        "libraryCard": {
+          "name": "Thẻ Thư viện",
+          "pitch": "Bạn đã đọc mọi luật trên trang này. Thấy rõ."
+        },
+        "compass": {
+          "name": "La bàn",
+          "pitch": "Nó luôn chỉ về lần cược tiếp theo. Chắc hỏng rồi."
+        },
+        "crystalSkull": {
+          "name": "Đầu lâu Pha lê",
+          "pitch": "Nó biết phiên chơi của bạn kết thúc ra sao. Nhưng không nói."
+        },
+        "daisuDiary": {
+          "name": "Nhật ký của Daisu",
+          "pitch": "Đừng đọc. Thôi được, đọc đi. Trang 12 nói về bạn."
+        },
+        "starChart": {
+          "name": "Bản đồ Sao",
+          "pitch": "Các vì sao nói bạn sẽ thắng. Chúng nói thế với tất cả mọi người."
+        },
+        "goldenAbacus": {
+          "name": "Bàn tính Vàng",
+          "pitch": "Để đếm những con số nhiều số không hơn. Của bạn, dạo này."
+        },
+        "observatory": {
+          "name": "Đài thiên văn",
+          "pitch": "Từ đây thấy được cấp 100. Vừa đủ."
+        },
+        "philosopherStone": {
+          "name": "Hòn đá Phù thủy",
+          "pitch": "Nó biến cược thành XP. Vốn dĩ vẫn thế, nhưng nhanh hơn."
         }
+      },
+      "level": "Cấp {{n}}",
+      "needs": "Cần",
+      "notNow": "Để sau",
+      "price": "Giá",
+      "rows": {
+        "boost": "Tăng cường",
+        "charm": "Bùa",
+        "unlock": "Mở khóa và đặc quyền"
+      },
+      "rowsHint": {
+        "boost": "Thêm XP mỗi lần cược",
+        "charm": "+25% XP ở một trò",
+        "unlock": "Tính năng và luật"
+      },
+      "short": "Thiếu {{amount}}",
+      "soon": "Mua một món để biết món tiếp theo là gì.",
+      "tipBuy": "{{price}} · cấp {{n}} · bấm để mua",
+      "tipLevel": "Cần cấp {{n}} · bạn đang cấp {{level}}",
+      "tipShort": "{{price}} · còn thiếu {{amount}}",
+      "title": "Cửa hàng của Daisu",
+      "unlocked": "Đã mở khóa",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Đồ của bạn · {{n}}",
+      "yours": "Của bạn",
+      "boost": {
+        "about": "Mỗi lần cược nhận thêm {{pct}}% XP, cộng dồn với những gì bạn đã có. Tăng cường cộng dồn và không bao giờ hết.",
+        "opened": "Nó ở trên bàn rồi. Từ giờ mỗi lần cược nhận thêm {{pct}}%.",
+        "what": "+{{pct}}% XP mỗi lần cược, mãi mãi."
+      },
+      "charm": {
+        "about": "Mỗi lần cược {{game}} nhận thêm {{pct}}% XP, cộng dồn với các tăng cường khác. Chỉ {{game}}, và không bao giờ hết.",
+        "cases": "Hòm",
+        "name": "Bùa {{game}}",
+        "opened": "Đã đeo. Lần cược {{game}} tới đã nhận thêm rồi. Đi thôi.",
+        "pitch": "Đằng nào bạn cũng chơi {{game}}. Được trả gấp đôi thì tội gì.",
+        "what": "+{{pct}}% XP mỗi lần cược {{game}}, mãi mãi."
       }
     },
     "ticket": {
@@ -1874,9 +1951,11 @@
     "requestSent": "Đã gửi lời mời",
     "serviceMessagesAboutYour": "Các thông báo dịch vụ về tài khoản, như cảnh báo bảo mật và chính sách, vẫn được gửi bất kể tuỳ chọn này.",
     "somethingWentWrong": "Đã có lỗi xảy ra",
-    "toEvery1kSpent": "Cứ mỗi 1K₽ chi ra, bạn nhận 5 XP.",
+    "toEvery1kSpent": "Mỗi K₽ 1 cược cho 5 XP, thắng hay thua. Tăng cường từ cửa hàng của Daisu cộng thêm.",
     "updatesTurnedOff": "Đã tắt tin cập nhật",
     "weAreNotSending": "Chúng tôi không gửi tới địa chỉ của bạn vì một email trước đó bị trả lại hoặc bị báo là spam. Hãy liên hệ nếu bạn thấy điều này không đúng.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "Từ các tăng cường ở cửa hàng của Daisu",
     "youWillGetUpdates": "Bạn sẽ nhận tin về hòm và trò chơi mới"
   },
   "rain": {

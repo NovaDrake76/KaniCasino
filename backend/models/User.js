@@ -189,6 +189,8 @@ const UserSchema = new mongoose.Schema({
   },
   // daisu's shop: the features an account in her beta has opened, each bought or kept from its history
   unlocks: [{ _id: false, key: String, via: String, at: Date }],
+  // the xp multipliers the unlocks add up to: `all` for every bet, a game key for its charm. rewritten on purchase
+  xpBoost: { type: mongoose.Schema.Types.Mixed, default: {} },
   // when that history was read; it is read once, so a feature never comes or goes on its own afterwards
   unlocksCheckedAt: Date,
   weeklyWinnings: {
