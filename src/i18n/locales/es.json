@@ -1078,7 +1078,20 @@
     },
     "shop": {
       "after": "Tu saldo después",
+      "boost": {
+        "about": "Cada apuesta que haces da un {{pct}}% más de XP, sumado a lo que ya tengas. Los impulsos se suman y nunca se agotan.",
+        "opened": "Ya está en el escritorio. Cada apuesta desde ahora da un {{pct}}% más.",
+        "what": "+{{pct}}% de XP en cada apuesta, para siempre."
+      },
       "buyFor": "Comprar por {{amount}}",
+      "charm": {
+        "about": "Cada apuesta en {{game}} da un {{pct}}% más de XP, sumado a tus otros impulsos. Solo {{game}}, y nunca se agota.",
+        "cases": "Cajas",
+        "name": "Amuleto de {{game}}",
+        "opened": "Puesto. Tu próxima apuesta en {{game}} ya da más. Anda.",
+        "pitch": "Juegas a {{game}} de todos modos. Mejor que te paguen dos veces por ello.",
+        "what": "+{{pct}}% de XP en cada apuesta de {{game}}, para siempre."
+      },
       "collapse": "Ocultar nombres",
       "expand": "Mostrar nombres",
       "failed": "No se pudo comprar. Inténtalo de nuevo.",
@@ -1251,17 +1264,9 @@
       "needs": "Requiere",
       "notNow": "Ahora no",
       "price": "Precio",
-      "rows": {
-        "boost": "Impulsos",
-        "charm": "Amuletos",
-        "unlock": "Desbloqueos y ventajas"
-      },
-      "rowsHint": {
-        "boost": "Más XP en cada apuesta",
-        "charm": "+25% de XP en un juego",
-        "unlock": "Funciones y reglas"
-      },
       "short": "Te faltan {{amount}}",
+      "showAll": "Mostrar todos los objetos",
+      "showLess": "Plegar el estante",
       "soon": "Compra un objeto para descubrir qué viene después.",
       "tipBuy": "{{price}} · nivel {{n}} · clic para comprar",
       "tipLevel": "Necesita nivel {{n}} · eres nivel {{level}}",
@@ -1270,20 +1275,7 @@
       "unlocked": "Desbloqueado",
       "xpBonus": "+{{pct}}% XP",
       "yourItems": "Tus objetos · {{n}}",
-      "yours": "Tuyo",
-      "boost": {
-        "about": "Cada apuesta que haces da un {{pct}}% más de XP, sumado a lo que ya tengas. Los impulsos se suman y nunca se agotan.",
-        "opened": "Ya está en el escritorio. Cada apuesta desde ahora da un {{pct}}% más.",
-        "what": "+{{pct}}% de XP en cada apuesta, para siempre."
-      },
-      "charm": {
-        "about": "Cada apuesta en {{game}} da un {{pct}}% más de XP, sumado a tus otros impulsos. Solo {{game}}, y nunca se agota.",
-        "cases": "Cajas",
-        "name": "Amuleto de {{game}}",
-        "opened": "Puesto. Tu próxima apuesta en {{game}} ya da más. Anda.",
-        "pitch": "Juegas a {{game}} de todos modos. Mejor que te paguen dos veces por ello.",
-        "what": "+{{pct}}% de XP en cada apuesta de {{game}}, para siempre."
-      }
+      "yours": "Tuyo"
     },
     "ticket": {
       "yours": "Tu bono",

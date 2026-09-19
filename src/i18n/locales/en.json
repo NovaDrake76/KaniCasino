@@ -1078,7 +1078,20 @@
     },
     "shop": {
       "after": "Your balance after",
+      "boost": {
+        "about": "Every bet you place earns {{pct}}% more XP, on top of whatever else you hold. Boosts add up, and they never run out.",
+        "opened": "It's on the desk now. Every bet from here earns {{pct}}% more.",
+        "what": "+{{pct}}% XP on every bet, for good."
+      },
       "buyFor": "Buy for {{amount}}",
+      "charm": {
+        "about": "Every bet you place on {{game}} earns {{pct}}% more XP, on top of your other boosts. Only {{game}}, and it never runs out.",
+        "cases": "Cases",
+        "name": "{{game}} Charm",
+        "opened": "Worn. Your next {{game}} bet already earns more. Off you go.",
+        "pitch": "You play {{game}} anyway. Might as well get paid twice for it.",
+        "what": "+{{pct}}% XP on every {{game}} bet, for good."
+      },
       "collapse": "Hide names",
       "expand": "Show names",
       "failed": "Could not buy that. Try again.",
@@ -1251,17 +1264,9 @@
       "needs": "Needs",
       "notNow": "Not now",
       "price": "Price",
-      "rows": {
-        "boost": "Boosts",
-        "charm": "Charms",
-        "unlock": "Unlocks and perks"
-      },
-      "rowsHint": {
-        "boost": "More XP on every bet",
-        "charm": "+25% XP on one game",
-        "unlock": "Features and rules"
-      },
       "short": "{{amount}} short",
+      "showAll": "Show every item",
+      "showLess": "Fold the shelf",
       "soon": "Buy an item to find out what comes next.",
       "tipBuy": "{{price}} · level {{n}} · click to buy",
       "tipLevel": "Needs level {{n}} · you are level {{level}}",
@@ -1270,20 +1275,7 @@
       "unlocked": "Unlocked",
       "xpBonus": "+{{pct}}% XP",
       "yourItems": "Your items · {{n}}",
-      "yours": "Yours",
-      "boost": {
-        "about": "Every bet you place earns {{pct}}% more XP, on top of whatever else you hold. Boosts add up, and they never run out.",
-        "opened": "It's on the desk now. Every bet from here earns {{pct}}% more.",
-        "what": "+{{pct}}% XP on every bet, for good."
-      },
-      "charm": {
-        "about": "Every bet you place on {{game}} earns {{pct}}% more XP, on top of your other boosts. Only {{game}}, and it never runs out.",
-        "cases": "Cases",
-        "name": "{{game}} Charm",
-        "opened": "Worn. Your next {{game}} bet already earns more. Off you go.",
-        "pitch": "You play {{game}} anyway. Might as well get paid twice for it.",
-        "what": "+{{pct}}% XP on every {{game}} bet, for good."
-      }
+      "yours": "Yours"
     },
     "ticket": {
       "yours": "Your bonus",

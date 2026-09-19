@@ -35,9 +35,9 @@ export interface XpBoost {
 }
 
 export interface Shop {
-  // what the shelf shows: everything held, the next few on each ladder and every charm; hidden counts the rest per ladder
+  // what the shelf shows: everything held and the next few in level order; hidden counts the rest
   items: ShopItem[];
-  hidden?: { unlock: number; boost: number };
+  hidden?: number;
   xpBoost?: XpBoost;
   walletBalance: number;
   level: number;

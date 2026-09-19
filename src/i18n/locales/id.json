@@ -1078,7 +1078,20 @@
     },
     "shop": {
       "after": "Saldomu setelahnya",
+      "boost": {
+        "about": "Setiap taruhanmu menghasilkan {{pct}}% XP lebih banyak, di atas yang sudah kamu punya. Booster saling menambah dan tidak pernah habis.",
+        "opened": "Sudah ada di meja. Setiap taruhan mulai sekarang menghasilkan {{pct}}% lebih banyak.",
+        "what": "+{{pct}}% XP di setiap taruhan, selamanya."
+      },
       "buyFor": "Beli seharga {{amount}}",
+      "charm": {
+        "about": "Setiap taruhanmu di {{game}} menghasilkan {{pct}}% XP lebih banyak, di atas booster lainnya. Hanya {{game}}, dan tidak pernah habis.",
+        "cases": "Kotak",
+        "name": "Jimat {{game}}",
+        "opened": "Terpasang. Taruhan {{game}} berikutnya sudah menghasilkan lebih. Sana.",
+        "pitch": "Kamu toh main {{game}}. Sekalian dibayar dua kali.",
+        "what": "+{{pct}}% XP di setiap taruhan {{game}}, selamanya."
+      },
       "collapse": "Sembunyikan nama",
       "expand": "Tampilkan nama",
       "failed": "Gagal membeli. Coba lagi.",
@@ -1251,17 +1264,9 @@
       "needs": "Butuh",
       "notNow": "Nanti saja",
       "price": "Harga",
-      "rows": {
-        "boost": "Booster",
-        "charm": "Jimat",
-        "unlock": "Pembuka dan keuntungan"
-      },
-      "rowsHint": {
-        "boost": "XP lebih banyak di setiap taruhan",
-        "charm": "+25% XP di satu permainan",
-        "unlock": "Fitur dan aturan"
-      },
       "short": "Kurang {{amount}}",
+      "showAll": "Tampilkan semua item",
+      "showLess": "Lipat rak",
       "soon": "Beli satu item untuk tahu apa berikutnya.",
       "tipBuy": "{{price}} · level {{n}} · klik untuk beli",
       "tipLevel": "Butuh level {{n}} · kamu level {{level}}",
@@ -1270,20 +1275,7 @@
       "unlocked": "Terbuka",
       "xpBonus": "+{{pct}}% XP",
       "yourItems": "Itemmu · {{n}}",
-      "yours": "Milikmu",
-      "boost": {
-        "about": "Setiap taruhanmu menghasilkan {{pct}}% XP lebih banyak, di atas yang sudah kamu punya. Booster saling menambah dan tidak pernah habis.",
-        "opened": "Sudah ada di meja. Setiap taruhan mulai sekarang menghasilkan {{pct}}% lebih banyak.",
-        "what": "+{{pct}}% XP di setiap taruhan, selamanya."
-      },
-      "charm": {
-        "about": "Setiap taruhanmu di {{game}} menghasilkan {{pct}}% XP lebih banyak, di atas booster lainnya. Hanya {{game}}, dan tidak pernah habis.",
-        "cases": "Kotak",
-        "name": "Jimat {{game}}",
-        "opened": "Terpasang. Taruhan {{game}} berikutnya sudah menghasilkan lebih. Sana.",
-        "pitch": "Kamu toh main {{game}}. Sekalian dibayar dua kali.",
-        "what": "+{{pct}}% XP di setiap taruhan {{game}}, selamanya."
-      }
+      "yours": "Milikmu"
     },
     "ticket": {
       "yours": "Bonusmu",

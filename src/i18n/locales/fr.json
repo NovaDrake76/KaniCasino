@@ -1078,7 +1078,20 @@
     },
     "shop": {
       "after": "Ton solde après",
+      "boost": {
+        "about": "Chaque mise rapporte {{pct}}% d'XP en plus, par-dessus ce que tu as déjà. Les bonus s'additionnent et ne s'épuisent jamais.",
+        "opened": "C'est sur le bureau. Chaque mise à partir de maintenant rapporte {{pct}}% de plus.",
+        "what": "+{{pct}}% d'XP à chaque mise, pour de bon."
+      },
       "buyFor": "Acheter pour {{amount}}",
+      "charm": {
+        "about": "Chaque mise sur {{game}} rapporte {{pct}}% d'XP en plus, par-dessus tes autres bonus. Seulement {{game}}, et ça ne s'épuise jamais.",
+        "cases": "Caisses",
+        "name": "Porte-bonheur {{game}}",
+        "opened": "Porté. Ta prochaine mise sur {{game}} rapporte déjà plus. File.",
+        "pitch": "Tu joues à {{game}} de toute façon. Autant être payé deux fois pour ça.",
+        "what": "+{{pct}}% d'XP à chaque mise sur {{game}}, pour de bon."
+      },
       "collapse": "Masquer les noms",
       "expand": "Afficher les noms",
       "failed": "Impossible d'acheter ça. Réessaie.",
@@ -1251,17 +1264,9 @@
       "needs": "Requis",
       "notNow": "Pas maintenant",
       "price": "Prix",
-      "rows": {
-        "boost": "Bonus",
-        "charm": "Porte-bonheur",
-        "unlock": "Déblocages et avantages"
-      },
-      "rowsHint": {
-        "boost": "Plus d'XP à chaque mise",
-        "charm": "+25% d'XP sur un jeu",
-        "unlock": "Fonctions et règles"
-      },
       "short": "Il manque {{amount}}",
+      "showAll": "Afficher tous les objets",
+      "showLess": "Replier l'étagère",
       "soon": "Achète un objet pour découvrir la suite.",
       "tipBuy": "{{price}} · niveau {{n}} · clique pour acheter",
       "tipLevel": "Niveau {{n}} requis · tu es niveau {{level}}",
@@ -1270,20 +1275,7 @@
       "unlocked": "Débloqué",
       "xpBonus": "+{{pct}}% XP",
       "yourItems": "Tes objets · {{n}}",
-      "yours": "À toi",
-      "boost": {
-        "about": "Chaque mise rapporte {{pct}}% d'XP en plus, par-dessus ce que tu as déjà. Les bonus s'additionnent et ne s'épuisent jamais.",
-        "opened": "C'est sur le bureau. Chaque mise à partir de maintenant rapporte {{pct}}% de plus.",
-        "what": "+{{pct}}% d'XP à chaque mise, pour de bon."
-      },
-      "charm": {
-        "about": "Chaque mise sur {{game}} rapporte {{pct}}% d'XP en plus, par-dessus tes autres bonus. Seulement {{game}}, et ça ne s'épuise jamais.",
-        "cases": "Caisses",
-        "name": "Porte-bonheur {{game}}",
-        "opened": "Porté. Ta prochaine mise sur {{game}} rapporte déjà plus. File.",
-        "pitch": "Tu joues à {{game}} de toute façon. Autant être payé deux fois pour ça.",
-        "what": "+{{pct}}% d'XP à chaque mise sur {{game}}, pour de bon."
-      }
+      "yours": "À toi"
     },
     "ticket": {
       "yours": "Ton bonus",

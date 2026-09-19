@@ -1078,7 +1078,20 @@
     },
     "shop": {
       "after": "Il tuo saldo dopo",
+      "boost": {
+        "about": "Ogni puntata rende il {{pct}}% di XP in più, oltre a quello che già possiedi. I potenziamenti si sommano e non finiscono mai.",
+        "opened": "È sulla scrivania. Ogni puntata da qui in poi rende il {{pct}}% in più.",
+        "what": "+{{pct}}% XP su ogni puntata, per sempre."
+      },
       "buyFor": "Compra per {{amount}}",
+      "charm": {
+        "about": "Ogni puntata a {{game}} rende il {{pct}}% di XP in più, oltre agli altri potenziamenti. Solo {{game}}, e non finisce mai.",
+        "cases": "Casse",
+        "name": "Amuleto di {{game}}",
+        "opened": "Indossato. La tua prossima puntata a {{game}} rende già di più. Vai.",
+        "pitch": "Giochi a {{game}} comunque. Tanto vale farti pagare due volte.",
+        "what": "+{{pct}}% XP su ogni puntata a {{game}}, per sempre."
+      },
       "collapse": "Nascondi i nomi",
       "expand": "Mostra i nomi",
       "failed": "Acquisto non riuscito. Riprova.",
@@ -1251,17 +1264,9 @@
       "needs": "Richiede",
       "notNow": "Non ora",
       "price": "Prezzo",
-      "rows": {
-        "boost": "Potenziamenti",
-        "charm": "Amuleti",
-        "unlock": "Sblocchi e vantaggi"
-      },
-      "rowsHint": {
-        "boost": "Più XP su ogni puntata",
-        "charm": "+25% XP su un gioco",
-        "unlock": "Funzioni e regole"
-      },
       "short": "Mancano {{amount}}",
+      "showAll": "Mostra tutti gli oggetti",
+      "showLess": "Ripiega lo scaffale",
       "soon": "Compra un oggetto per scoprire cosa viene dopo.",
       "tipBuy": "{{price}} · livello {{n}} · clicca per comprare",
       "tipLevel": "Serve il livello {{n}} · sei al livello {{level}}",
@@ -1270,20 +1275,7 @@
       "unlocked": "Sbloccato",
       "xpBonus": "+{{pct}}% XP",
       "yourItems": "I tuoi oggetti · {{n}}",
-      "yours": "Tuo",
-      "boost": {
-        "about": "Ogni puntata rende il {{pct}}% di XP in più, oltre a quello che già possiedi. I potenziamenti si sommano e non finiscono mai.",
-        "opened": "È sulla scrivania. Ogni puntata da qui in poi rende il {{pct}}% in più.",
-        "what": "+{{pct}}% XP su ogni puntata, per sempre."
-      },
-      "charm": {
-        "about": "Ogni puntata a {{game}} rende il {{pct}}% di XP in più, oltre agli altri potenziamenti. Solo {{game}}, e non finisce mai.",
-        "cases": "Casse",
-        "name": "Amuleto di {{game}}",
-        "opened": "Indossato. La tua prossima puntata a {{game}} rende già di più. Vai.",
-        "pitch": "Giochi a {{game}} comunque. Tanto vale farti pagare due volte.",
-        "what": "+{{pct}}% XP su ogni puntata a {{game}}, per sempre."
-      }
+      "yours": "Tuo"
     },
     "ticket": {
       "yours": "Il tuo bonus",

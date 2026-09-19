@@ -1,13 +1,11 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiLock } from "react-icons/fi";
 import Monetary from "../../Monetary";
-import type { ItemKind, Shop, ShopItem } from "../../../services/daisu/ShopService";
+import type { Shop, ShopItem } from "../../../services/daisu/ShopService";
 import ShopArt from "./ShopArt";
 import PixelIcon from "../PixelIcon";
-import { itemWords } from "./shopCopy";
-import { kp } from "../potMath";
-import { xpBonusPct } from "../../../utils/levelCurve";
+import { itemWords, statusOf, Tip } from "./shopCopy";
 import i18n from "../../../i18n";
 
 interface Props {
@@ -15,33 +13,11 @@ interface Props {
   onPick: (key: string) => void;
 }
 
-// at most this many "?" places stand in for the items still hidden on a ladder, so a row hints at more without saying how much
+// at most this many "?" places stand in for the items still hidden, so the shelf hints at more without saying how much
 const TEASERS = 2;
-const ROWS: ItemKind[] = ["boost", "charm", "unlock"];
+// one row of slots, in pixels, for the shelf folded on a wide screen
+const ROW_PX = 96;
 const t = (key: string, vars?: Record<string, string | number>) => i18n.t(`daisu.shop.${key}`, vars);
-
-const Tip = ({ title, line, status, tone }: { title: string; line: string; status: string; tone: string }) => (
-  <span
-    role="tooltip"
-    className="pointer-events-none absolute left-1/2 top-[calc(100%+8px)] z-raised hidden w-60 -translate-x-1/2 flex-col gap-1 bg-surface-nav px-3.5 py-3 text-left shadow-2xl md:group-hover:flex md:group-focus-visible:flex"
-  >
-    <b className="text-sm text-ink">{title}</b>
-    <span className="text-xs leading-snug text-ink-soft">{line}</span>
-    {status && <span className={`mt-1 text-xs font-bold ${tone}`}>{status}</span>}
-  </span>
-);
-
-const statusOf = (item: ShopItem, shop: Shop) => {
-  const tooLow = !item.owned && shop.level < item.level;
-  const short = !item.owned && shop.walletBalance < item.price;
-  if (item.owned) {
-    const kept = item.via === "history" ? `${t("yours")} · ${t(`items.${item.key}.kept`)}` : t("yours");
-    return { state: "owned", foot: t("yours"), tip: kept, tone: "text-green-400" };
-  }
-  if (tooLow) return { state: "locked", foot: t("level", { n: item.level }), tip: t("tipLevel", { n: item.level, level: shop.level }), tone: "text-accent-amber" };
-  if (short) return { state: "short", foot: kp(item.price), tip: t("tipShort", { price: kp(item.price), amount: kp(item.price - shop.walletBalance) }), tone: "text-ink-muted" };
-  return { state: "open", foot: kp(item.price), tip: t("tipBuy", { price: kp(item.price), n: item.level }), tone: "text-accent-gold" };
-};
 
 const Slot = ({ item, shop, onPick }: { item: ShopItem; shop: Shop; onPick: (key: string) => void }) => {
   const words = itemWords(item);
@@ -57,94 +33,37 @@ const Slot = ({ item, shop, onPick }: { item: ShopItem; shop: Shop; onPick: (key
       <span className={status.state === "locked" ? "opacity-35 grayscale" : ""}>
         <ShopArt item={item.key} game={item.game} size={48} />
       </span>
-      <span className={`flex items-center gap-1 text-[11px] font-extrabold ${status.tone}`}>{status.foot}</span>
+      <span className={`flex items-center gap-1 text-[11px] font-extrabold ${status.tone}`}>
+        {status.state === "locked" && <FiLock aria-hidden />}
+        {status.foot}
+      </span>
       {status.state === "open" && <span aria-hidden className="absolute right-1.5 top-1.5 h-2 w-2 animate-pulse bg-accent-gold" />}
       <Tip title={words.name} line={words.what} status={status.tip} tone={status.tone} />
     </button>
   );
 };
 
-// what is held, small: one wrapping row of pictures with the xp bonus they add up to, names on request
-const OwnedStrip = ({ items, shop, onPick }: { items: ShopItem[]; shop: Shop; onPick: (key: string) => void }) => {
-  const [open, setOpen] = useState(false);
-  const pct = xpBonusPct(shop.xpBoost);
-  return (
-    <div className="flex flex-col gap-2 bg-surface px-3 py-2.5">
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">{t("yourItems", { n: items.length })}</span>
-        <span className="flex items-center gap-2">
-          {pct > 0 && <span className="bg-surface-nav px-2 py-0.5 text-[11px] font-extrabold text-accent-gold">{t("xpBonus", { pct })}</span>}
-          <button
-            type="button"
-            onClick={() => setOpen(!open)}
-            aria-expanded={open}
-            aria-label={t(open ? "collapse" : "expand")}
-            className="flex h-6 w-6 items-center justify-center rounded-none border-none bg-transparent p-0 text-ink-muted hover:border-none hover:text-white focus:outline-none"
-          >
-            {open ? <FiChevronUp /> : <FiChevronDown />}
-          </button>
-        </span>
-      </div>
-      <div className="flex flex-wrap gap-1.5">
-        {items.map((item) => {
-          const words = itemWords(item);
-          const status = statusOf(item, shop);
-          return (
-            <button
-              key={item.key}
-              type="button"
-              onClick={() => onPick(item.key)}
-              aria-label={`${words.name}, ${status.tip}`}
-              data-state="owned"
-              className={`group relative flex shrink-0 items-center gap-1.5 rounded-none border-none bg-surface-nav p-1 hover:border-none hover:bg-surface-hover focus:outline-none focus-visible:bg-surface-hover ${open ? "pr-2" : ""}`}
-            >
-              <ShopArt item={item.key} game={item.game} size={32} />
-              {open && <span className="text-[11px] font-semibold text-ink-soft">{words.name}</span>}
-              <Tip title={words.name} line={words.what} status={status.tip} tone={status.tone} />
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-const Teasers = ({ count }: { count: number }) =>
-  count > 0 ? (
-    <>
-      {Array.from({ length: Math.min(TEASERS, count) }, (_, i) => (
-        <span
-          key={i}
-          className="group relative flex h-[88px] w-[76px] shrink-0 items-center justify-center outline-dashed outline-2 -outline-offset-2 outline-line-strong md:h-24 md:w-[84px]"
-        >
-          <PixelIcon name="mystery" size={32} className="opacity-60" />
-          <Tip title="???" line={t("soon")} status="" tone="" />
-        </span>
-      ))}
-    </>
-  ) : null;
-
-const Row = ({ kind, items, hidden, shop, onPick }: { kind: ItemKind; items: ShopItem[]; hidden: number; shop: Shop; onPick: (key: string) => void }) =>
-  items.length || hidden ? (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-baseline justify-between gap-3">
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">{t(`rows.${kind}`)}</span>
-        <span className="text-[11px] text-ink-faint">{t(`rowsHint.${kind}`)}</span>
-      </div>
-      <div className="flex gap-2.5 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible md:pb-0">
-        {items.map((item) => (
-          <Slot key={item.key} item={item} shop={shop} onPick={onPick} />
-        ))}
-        <Teasers count={hidden} />
-      </div>
-    </div>
-  ) : null;
-
-// her shop: what is held in a strip, then a row for each kind of thing still for sale. a hover says what an item is and a click opens its card
+// her shop as one shelf over the missions: what is still for sale in level order, whatever its kind, and a "?" or two for what
+// buying reveals. on a wide screen the shelf folds to one row and opens only when there is more than a row holds
 const ShopShelf = ({ shop, onPick }: Props) => {
-  const owned = shop ? shop.items.filter((i) => i.owned) : [];
+  const [open, setOpen] = useState(false);
+  const [overflows, setOverflows] = useState(false);
+  const row = useRef<HTMLDivElement | null>(null);
+  const forSale = shop ? shop.items.filter((i) => !i.owned) : [];
+  const teasers = shop ? Math.min(TEASERS, shop.hidden ?? 0) : 0;
+
+  useEffect(() => {
+    const el = row.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const check = () => setOverflows(el.scrollHeight > ROW_PX + 4);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [forSale.length, teasers]);
+
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2.5">
       <div className="flex items-baseline justify-between gap-3">
         <span className="text-xs font-semibold uppercase tracking-wide text-ink-muted">{t("title")}</span>
         {shop && (
@@ -153,25 +72,37 @@ const ShopShelf = ({ shop, onPick }: Props) => {
           </span>
         )}
       </div>
-      {!shop && (
-        <div className="flex gap-2.5">
-          {[0, 1, 2, 3].map((i) => (
-            <Skeleton key={i} width={84} height={96} borderRadius={0} />
+      <div className="flex items-start gap-2">
+        <div
+          ref={row}
+          className={`flex min-w-0 flex-1 gap-2.5 overflow-x-auto pb-1 md:flex-wrap md:overflow-x-visible md:pb-0 ${open ? "" : "md:overflow-y-hidden"}`}
+          style={open ? undefined : { maxHeight: ROW_PX }}
+        >
+          {shop
+            ? forSale.map((item) => <Slot key={item.key} item={item} shop={shop} onPick={onPick} />)
+            : [0, 1, 2, 3].map((i) => <Skeleton key={i} width={84} height={96} borderRadius={0} />)}
+          {Array.from({ length: teasers }, (_, i) => (
+            <span
+              key={i}
+              className="group relative flex h-[88px] w-[76px] shrink-0 items-center justify-center outline-dashed outline-2 -outline-offset-2 outline-line-strong md:h-24 md:w-[84px]"
+            >
+              <PixelIcon name="mystery" size={32} className="opacity-60" />
+              <Tip title="???" line={t("soon")} status="" tone="" />
+            </span>
           ))}
         </div>
-      )}
-      {shop && owned.length > 0 && <OwnedStrip items={owned} shop={shop} onPick={onPick} />}
-      {shop &&
-        ROWS.map((kind) => (
-          <Row
-            key={kind}
-            kind={kind}
-            items={shop.items.filter((i) => i.kind === kind && !i.owned)}
-            hidden={kind === "charm" ? 0 : shop.hidden?.[kind] ?? 0}
-            shop={shop}
-            onPick={onPick}
-          />
-        ))}
+        {overflows && (
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            aria-expanded={open}
+            aria-label={t(open ? "showLess" : "showAll")}
+            className="hidden h-24 w-8 shrink-0 items-center justify-center rounded-none border-none bg-surface p-0 text-ink-muted hover:border-none hover:bg-surface-hover hover:text-white focus:outline-none md:flex"
+          >
+            {open ? <FiChevronUp /> : <FiChevronDown />}
+          </button>
+        )}
+      </div>
     </div>
   );
 };

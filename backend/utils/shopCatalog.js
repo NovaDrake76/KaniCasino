@@ -1,10 +1,15 @@
 // daisu's shop: an unlock opens a feature, a boost adds to the xp every bet earns, a charm adds to it on one game. every price is a sink to the mint
-// levels and prices climb like stairs, each item about what a player of that level has, so the next one is always just out of reach
+// one ladder, in level order whatever the kind: each item about what a player of that level has, so the next one is always just out of reach
 const CHARM_XP = 0.25;
-const CHARM_GAMES = ["dice", "crash", "slots", "plinko", "blackjack", "mines", "hilo", "coinflip", "cases", "battles"];
+// the charms climb the ladder with the rest, the cheap games first
+const CHARMS = [
+  ["dice", 3, 1000], ["slots", 5, 1500], ["coinflip", 7, 2500], ["plinko", 9, 3500], ["crash", 11, 5000],
+  ["mines", 14, 8000], ["hilo", 17, 12000], ["blackjack", 20, 20000], ["cases", 24, 40000], ["battles", 28, 80000],
+];
+const CHARM_GAMES = CHARMS.map(([game]) => game);
 
 const ITEMS = [
-  // unlocks and perks, one ladder in level order
+  // unlocks and perks
   { key: "chatPass", kind: "unlock", price: 1000, level: 10 },
   { key: "tradersLicense", kind: "unlock", price: 3000, level: 10 },
   { key: "collectionBook", kind: "unlock", price: 6000, level: 10 },
@@ -14,7 +19,7 @@ const ITEMS = [
   { key: "merchantSeal", kind: "unlock", price: 150000, level: 30 },
   { key: "goldenTicket", kind: "unlock", price: 400000, level: 40 },
   { key: "rainCoat", kind: "unlock", price: 800000, level: 50 },
-  // the boosts, another ladder: things from her desk, one every few levels
+  // the boosts: things from her desk, one every few levels
   { key: "luckyPencil", kind: "boost", price: 300, level: 2, xp: 0.05 },
   { key: "pocketNotebook", kind: "boost", price: 800, level: 4, xp: 0.05 },
   { key: "readingLamp", kind: "boost", price: 2000, level: 6, xp: 0.1 },
@@ -35,12 +40,12 @@ const ITEMS = [
   { key: "goldenAbacus", kind: "boost", price: 60000000, level: 70, xp: 0.35 },
   { key: "observatory", kind: "boost", price: 150000000, level: 80, xp: 0.4 },
   { key: "philosopherStone", kind: "boost", price: 400000000, level: 90, xp: 0.5 },
-  // the charms, all on the shelf at once: one per game, worn on that game's bets only
-  ...CHARM_GAMES.map((game) => ({ key: `${game}Charm`, kind: "charm", price: 5000, level: 10, xp: CHARM_XP, game })),
-];
+  // the charms: one per game, worn on that game's bets only
+  ...CHARMS.map(([game, level, price]) => ({ key: `${game}Charm`, kind: "charm", price, level, xp: CHARM_XP, game })),
+].sort((a, b) => a.level - b.level || a.price - b.price);
 
-// the two ladders show what is held plus this many of the items after it, in order; the rest stay a mystery until something is bought
-const REVEAL_AHEAD = 3;
+// the shelf shows what is held plus this many of the items after it, in order; the rest stay a mystery until something is bought
+const REVEAL_AHEAD = 8;
 // what the perks are worth: the charm leans the daily gift like the discord boost does, the seal is the fee its holder's
 // sales pay, the ticket's share of a take, the coat's extra weight in a rain
 const GIFT_CHARM_TILT = 0.05;

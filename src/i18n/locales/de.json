@@ -1078,7 +1078,20 @@
     },
     "shop": {
       "after": "Dein Guthaben danach",
+      "boost": {
+        "about": "Jeder Einsatz bringt {{pct}}% mehr XP, zusätzlich zu allem, was du schon hast. Boosts addieren sich und laufen nie ab.",
+        "opened": "Es liegt jetzt auf dem Schreibtisch. Jeder Einsatz ab hier bringt {{pct}}% mehr.",
+        "what": "+{{pct}}% XP bei jedem Einsatz, für immer."
+      },
       "buyFor": "Für {{amount}} kaufen",
+      "charm": {
+        "about": "Jeder Einsatz bei {{game}} bringt {{pct}}% mehr XP, zusätzlich zu deinen anderen Boosts. Nur {{game}}, und es läuft nie ab.",
+        "cases": "Kisten",
+        "name": "{{game}}-Talisman",
+        "opened": "Angelegt. Dein nächster {{game}}-Einsatz bringt schon mehr. Los geht's.",
+        "pitch": "Du spielst {{game}} sowieso. Dann lass dich zweimal dafür bezahlen.",
+        "what": "+{{pct}}% XP bei jedem {{game}}-Einsatz, für immer."
+      },
       "collapse": "Namen verbergen",
       "expand": "Namen zeigen",
       "failed": "Kauf fehlgeschlagen. Versuch es noch mal.",
@@ -1251,17 +1264,9 @@
       "needs": "Benötigt",
       "notNow": "Nicht jetzt",
       "price": "Preis",
-      "rows": {
-        "boost": "Boosts",
-        "charm": "Talismane",
-        "unlock": "Freischaltungen und Vorteile"
-      },
-      "rowsHint": {
-        "boost": "Mehr XP bei jedem Einsatz",
-        "charm": "+25% XP in einem Spiel",
-        "unlock": "Funktionen und Regeln"
-      },
       "short": "{{amount}} zu wenig",
+      "showAll": "Alle Items zeigen",
+      "showLess": "Regal einklappen",
       "soon": "Kauf einen Gegenstand, um zu sehen, was als Nächstes kommt.",
       "tipBuy": "{{price}} · Level {{n}} · zum Kaufen klicken",
       "tipLevel": "Braucht Level {{n}} · du bist Level {{level}}",
@@ -1270,20 +1275,7 @@
       "unlocked": "Freigeschaltet",
       "xpBonus": "+{{pct}}% XP",
       "yourItems": "Deine Items · {{n}}",
-      "yours": "Deins",
-      "boost": {
-        "about": "Jeder Einsatz bringt {{pct}}% mehr XP, zusätzlich zu allem, was du schon hast. Boosts addieren sich und laufen nie ab.",
-        "opened": "Es liegt jetzt auf dem Schreibtisch. Jeder Einsatz ab hier bringt {{pct}}% mehr.",
-        "what": "+{{pct}}% XP bei jedem Einsatz, für immer."
-      },
-      "charm": {
-        "about": "Jeder Einsatz bei {{game}} bringt {{pct}}% mehr XP, zusätzlich zu deinen anderen Boosts. Nur {{game}}, und es läuft nie ab.",
-        "cases": "Kisten",
-        "name": "{{game}}-Talisman",
-        "opened": "Angelegt. Dein nächster {{game}}-Einsatz bringt schon mehr. Los geht's.",
-        "pitch": "Du spielst {{game}} sowieso. Dann lass dich zweimal dafür bezahlen.",
-        "what": "+{{pct}}% XP bei jedem {{game}}-Einsatz, für immer."
-      }
+      "yours": "Deins"
     },
     "ticket": {
       "yours": "Dein Bonus",

@@ -1078,7 +1078,20 @@
     },
     "shop": {
       "after": "Số dư sau khi mua",
+      "boost": {
+        "about": "Mỗi lần cược nhận thêm {{pct}}% XP, cộng dồn với những gì bạn đã có. Tăng cường cộng dồn và không bao giờ hết.",
+        "opened": "Nó ở trên bàn rồi. Từ giờ mỗi lần cược nhận thêm {{pct}}%.",
+        "what": "+{{pct}}% XP mỗi lần cược, mãi mãi."
+      },
       "buyFor": "Mua với {{amount}}",
+      "charm": {
+        "about": "Mỗi lần cược {{game}} nhận thêm {{pct}}% XP, cộng dồn với các tăng cường khác. Chỉ {{game}}, và không bao giờ hết.",
+        "cases": "Hòm",
+        "name": "Bùa {{game}}",
+        "opened": "Đã đeo. Lần cược {{game}} tới đã nhận thêm rồi. Đi thôi.",
+        "pitch": "Đằng nào bạn cũng chơi {{game}}. Được trả gấp đôi thì tội gì.",
+        "what": "+{{pct}}% XP mỗi lần cược {{game}}, mãi mãi."
+      },
       "collapse": "Ẩn tên",
       "expand": "Hiện tên",
       "failed": "Không mua được. Thử lại nhé.",
@@ -1251,17 +1264,9 @@
       "needs": "Cần",
       "notNow": "Để sau",
       "price": "Giá",
-      "rows": {
-        "boost": "Tăng cường",
-        "charm": "Bùa",
-        "unlock": "Mở khóa và đặc quyền"
-      },
-      "rowsHint": {
-        "boost": "Thêm XP mỗi lần cược",
-        "charm": "+25% XP ở một trò",
-        "unlock": "Tính năng và luật"
-      },
       "short": "Thiếu {{amount}}",
+      "showAll": "Hiện mọi vật phẩm",
+      "showLess": "Gập kệ lại",
       "soon": "Mua một món để biết món tiếp theo là gì.",
       "tipBuy": "{{price}} · cấp {{n}} · bấm để mua",
       "tipLevel": "Cần cấp {{n}} · bạn đang cấp {{level}}",
@@ -1270,20 +1275,7 @@
       "unlocked": "Đã mở khóa",
       "xpBonus": "+{{pct}}% XP",
       "yourItems": "Đồ của bạn · {{n}}",
-      "yours": "Của bạn",
-      "boost": {
-        "about": "Mỗi lần cược nhận thêm {{pct}}% XP, cộng dồn với những gì bạn đã có. Tăng cường cộng dồn và không bao giờ hết.",
-        "opened": "Nó ở trên bàn rồi. Từ giờ mỗi lần cược nhận thêm {{pct}}%.",
-        "what": "+{{pct}}% XP mỗi lần cược, mãi mãi."
-      },
-      "charm": {
-        "about": "Mỗi lần cược {{game}} nhận thêm {{pct}}% XP, cộng dồn với các tăng cường khác. Chỉ {{game}}, và không bao giờ hết.",
-        "cases": "Hòm",
-        "name": "Bùa {{game}}",
-        "opened": "Đã đeo. Lần cược {{game}} tới đã nhận thêm rồi. Đi thôi.",
-        "pitch": "Đằng nào bạn cũng chơi {{game}}. Được trả gấp đôi thì tội gì.",
-        "what": "+{{pct}}% XP mỗi lần cược {{game}}, mãi mãi."
-      }
+      "yours": "Của bạn"
     },
     "ticket": {
       "yours": "Thưởng của bạn",

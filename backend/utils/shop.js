@@ -64,19 +64,17 @@ async function lockFor(user, key) {
   return { message: "That needs an item from Daisu's shop", reason: "locked", unlock: key };
 }
 
-// what the shelf shows: on each ladder everything held and the next few items in order, and every charm.
-// the rest are only counted, so buying is how the player finds out what comes next
-const LADDERS = ["unlock", "boost"];
+// what the shelf shows: everything held, and the next few items in order whatever their kind. the rest are only counted, so buying is how the player finds out what comes next
 const revealedFor = (held) => {
   const keys = keysOf(held);
-  const ahead = { unlock: 0, boost: 0 };
-  return ITEMS.filter((item) => item.kind === "charm" || keys.includes(item.key) || ++ahead[item.kind] <= REVEAL_AHEAD);
+  let ahead = 0;
+  return ITEMS.filter((item) => keys.includes(item.key) || ++ahead <= REVEAL_AHEAD);
 };
 
 async function viewFor(user) {
   const held = await heldBy(user);
   const shown = revealedFor(held);
-  const hidden = Object.fromEntries(LADDERS.map((kind) => [kind, ITEMS.filter((i) => i.kind === kind).length - shown.filter((i) => i.kind === kind).length]));
+  const hidden = ITEMS.length - shown.length;
   return {
     items: shown.map((item) => {
       const mine = held.find((u) => u.key === item.key);

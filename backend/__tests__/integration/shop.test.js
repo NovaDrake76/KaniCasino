@@ -39,6 +39,10 @@ const makeUser = (fields = {}) => {
   });
 };
 
+// the first rungs of the ladder held, so the unlocks further up are on the shelf
+const STOCK = ["luckyPencil", "diceCharm", "pocketNotebook", "slotsCharm", "readingLamp"];
+const stocked = (fields = {}) => makeUser({ unlocks: STOCK.map((key) => ({ key, via: "bought", at: new Date() })), ...fields });
+
 const as = (user, req) => req.set("Authorization", `Bearer ${tokenFor(user)}`);
 const shopOf = (user) => as(user, request(app).get("/daisu/shop"));
 const buy = (user, key) => as(user, request(app).post(`/daisu/shop/${key}/buy`));
@@ -52,23 +56,21 @@ describe("daisu's shop", () => {
     const res = await shopOf(user);
 
     expect(res.status).toBe(200);
-    const keys = res.body.items.map((i) => i.key);
-    expect(keys.filter((k) => !k.endsWith("Charm"))).toEqual(["chatPass", "tradersLicense", "collectionBook", "luckyPencil", "pocketNotebook", "readingLamp"]);
-    expect(keys.filter((k) => k.endsWith("Charm"))).toHaveLength(10);
-    expect(res.body.hidden).toEqual({ unlock: 6, boost: 17 });
+    expect(res.body.items.map((i) => i.key)).toEqual(["luckyPencil", "diceCharm", "pocketNotebook", "slotsCharm", "readingLamp", "coinflipCharm", "coffeeMug", "plinkoCharm"]);
+    expect(res.body.hidden).toBe(ITEMS.length - 8);
     expect(res.body.xpBoost).toEqual({ all: 1 });
-    expect(item(res.body, "chatPass")).toMatchObject({ price: 1000, level: 10, owned: false, via: null });
+    expect(item(res.body, "luckyPencil")).toMatchObject({ kind: "boost", price: 300, level: 2, xp: 0.05, owned: false, via: null });
     expect(res.body).toMatchObject({ walletBalance: 10000, level: 12 });
     expect((await shopOf(await makeUser({ betaFlags: [] }))).status).toBe(403);
   });
 
   it("sells an item once: the KP goes to the mint and the feature is the player's", async () => {
-    const user = await makeUser();
+    const user = await stocked();
 
     const res = await buy(user, "tradersLicense");
 
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ bought: true, key: "tradersLicense", walletBalance: 7000, unlocks: ["tradersLicense"] });
+    expect(res.body).toMatchObject({ bought: true, key: "tradersLicense", walletBalance: 7000, unlocks: [...STOCK, "tradersLicense"] });
     expect(item(res.body.shop, "tradersLicense")).toMatchObject({ owned: true, via: "bought" });
     const rows = await Transaction.find({ userId: user._id, type: TX.SHOP_PURCHASE }).lean();
     expect(rows).toHaveLength(1);
@@ -82,7 +84,7 @@ describe("daisu's shop", () => {
   });
 
   it("charges once when several purchases of the same item land together", async () => {
-    const user = await makeUser();
+    const user = await stocked();
 
     const results = await Promise.all([buy(user, "chatPass"), buy(user, "chatPass"), buy(user, "chatPass")]);
 
@@ -93,28 +95,26 @@ describe("daisu's shop", () => {
     expect(await Transaction.countDocuments({ userId: user._id, type: TX.SHOP_PURCHASE })).toBe(1);
   });
 
-  it("shows three items ahead of what is held, reveals one more with each purchase, and will not sell one still hidden", async () => {
+  it("shows eight items ahead of what is held, reveals one more with each purchase, and will not sell one still hidden", async () => {
     const user = await makeUser({ walletBalance: 500000, level: 40 });
+    const keys = (body) => body.items.map((i) => i.key);
 
-    expect((await buy(user, "giftCharm")).status).toBe(404);
+    expect((await buy(user, "chatPass")).status).toBe(404);
 
-    const unlocks = (body) => body.items.map((i) => i.key).filter((k) => ITEMS.find((i) => i.key === k).kind === "unlock");
-    const first = await buy(user, "chatPass");
-    expect(unlocks(first.body.shop)).toEqual(["chatPass", "tradersLicense", "collectionBook", "affiliateCard"]);
-    expect(first.body.shop.hidden.unlock).toBe(5);
+    const first = await buy(user, "luckyPencil");
+    expect(keys(first.body.shop)).toEqual(["luckyPencil", "diceCharm", "pocketNotebook", "slotsCharm", "readingLamp", "coinflipCharm", "coffeeMug", "plinkoCharm", "chatPass"]);
+    expect(first.body.shop.hidden).toBe(ITEMS.length - 9);
 
-    // out of order is fine: what is held never takes one of the three places ahead
-    const third = await buy(user, "collectionBook");
-    expect(unlocks(third.body.shop)).toEqual(["chatPass", "tradersLicense", "collectionBook", "affiliateCard", "predictionPass"]);
+    // out of order is fine: what is held never takes one of the eight places ahead
+    const third = await buy(user, "pocketNotebook");
+    expect(keys(third.body.shop).slice(-2)).toEqual(["chatPass", "tradersLicense"]);
 
-    for (const key of ["tradersLicense", "affiliateCard", "predictionPass", "giftCharm", "merchantSeal"]) {
-      expect((await buy(user, key)).body.bought).toBe(true);
-    }
-    // the seven first unlocks held, and the two perks showing after them; the boosts are their own ladder
-    const all = await shopOf(await User.findById(user._id));
-    expect(unlocks(all.body).slice(7)).toEqual(["goldenTicket", "rainCoat"]);
-    expect(all.body.hidden).toEqual({ unlock: 0, boost: 17 });
-    expect(all.body.walletBalance).toBe(500000 - 1000 - 3000 - 6000 - 10000 - 15000 - 40000 - 150000);
+    // every rung up to the chat pass, then it is on the shelf
+    for (const key of ["diceCharm", "slotsCharm", "readingLamp"]) expect((await buy(user, key)).body.bought).toBe(true);
+    const chat = await buy(user, "chatPass");
+    expect(chat.body.bought).toBe(true);
+    expect(chat.body.shop.hidden).toBe(ITEMS.length - 6 - 8);
+    expect(chat.body.walletBalance).toBe(500000 - 300 - 800 - 1000 - 1500 - 2000 - 1000);
   });
 
   it("adds up the xp boosts and charms it sells, and writes them on the account with each purchase", async () => {
@@ -123,23 +123,23 @@ describe("daisu's shop", () => {
     expect((await buy(user, "luckyPencil")).body.xpBoost).toEqual({ all: 1.05 });
     expect((await buy(user, "readingLamp")).body.xpBoost).toEqual({ all: 1.15 });
     expect((await buy(user, "diceCharm")).body.xpBoost).toEqual({ all: 1.15, dice: 0.25 });
-    // the ladder shows three boosts past what is held, so the seventh is still hidden
-    expect((await buy(user, "studyDesk")).status).toBe(404);
+    // the shelf shows eight rungs past what is held, so the abacus is still hidden
+    expect((await buy(user, "abacus")).status).toBe(404);
     expect((await buy(user, "pocketNotebook")).body.bought).toBe(true);
-    expect((await buy(user, "coffeeMug")).body.bought).toBe(true);
-    const res = await buy(user, "abacus");
-    expect(res.body.xpBoost).toEqual({ all: 1.4, dice: 0.25 });
+    const res = await buy(user, "coffeeMug");
+    expect(res.body.xpBoost).toEqual({ all: 1.3, dice: 0.25 });
 
     const after = await User.findById(user._id).lean();
-    expect(after.xpBoost).toEqual({ all: 1.4, dice: 0.25 });
-    expect(after.walletBalance).toBe(100000 - 300 - 2000 - 5000 - 800 - 4000 - 8000);
-    expect(res.body.shop.items.filter((i) => i.kind === "charm")).toHaveLength(10);
+    expect(after.xpBoost).toEqual({ all: 1.3, dice: 0.25 });
+    expect(after.walletBalance).toBe(100000 - 300 - 2000 - 1000 - 800 - 4000);
+    // the shelf is one ladder: the next eight unheld rungs, whatever their kind
+    expect(res.body.shop.items.filter((i) => !i.owned).map((i) => i.key)).toEqual(["slotsCharm", "coinflipCharm", "plinkoCharm", "chatPass", "tradersLicense", "collectionBook", "affiliateCard", "crashCharm"]);
   });
 
   it("keeps an affiliate who already set a code, and asks everyone else in her beta for the card", async () => {
     const code = (user, value) => as(user, request(app).post("/referrals/code").send({ code: value }));
     const old = await makeUser({ referralCode: "OLDTIMER" });
-    const fresh = await makeUser({ walletBalance: 20000 });
+    const fresh = await stocked({ walletBalance: 20000 });
 
     expect(item((await shopOf(old)).body, "affiliateCard")).toMatchObject({ owned: true, via: "history" });
     const refused = await code(fresh, "FRESHONE");
@@ -153,9 +153,9 @@ describe("daisu's shop", () => {
   });
 
   it("refuses what the level or the wallet cannot cover, and anything it does not sell", async () => {
-    const user = await makeUser({ walletBalance: 300 });
+    const user = await stocked({ walletBalance: 300 });
 
-    expect((await buy(await makeUser({ level: 9 }), "chatPass")).body).toMatchObject({ reason: "level" });
+    expect((await buy(await stocked({ level: 9 }), "chatPass")).body).toMatchObject({ reason: "level" });
     const broke = await buy(user, "chatPass");
     expect(broke.status).toBe(400);
     expect(broke.body.reason).toBe("funds");
@@ -164,7 +164,7 @@ describe("daisu's shop", () => {
   });
 
   it("keeps what an account already used, reading its history only the first time", async () => {
-    const user = await makeUser({ badges: [{ key: "collection:abc", awardedAt: new Date() }] });
+    const user = await stocked({ badges: [{ key: "collection:abc", awardedAt: new Date() }] });
     await Transaction.create({ userId: user._id, type: TX.MARKET_SALE, direction: "credit", amount: 40 });
 
     const first = (await shopOf(user)).body;
@@ -179,10 +179,10 @@ describe("daisu's shop", () => {
   });
 
   it("hands /users/me the unlocks of an account in her beta, and nothing for anyone else", async () => {
-    const user = await makeUser();
+    const user = await stocked();
     await buy(user, "chatPass");
 
-    expect((await as(user, request(app).get("/users/me"))).body.unlocks).toEqual(["chatPass"]);
+    expect((await as(user, request(app).get("/users/me"))).body.unlocks).toEqual([...STOCK, "chatPass"]);
     const outsider = await makeUser({ betaFlags: [] });
     expect((await as(outsider, request(app).get("/users/me"))).body.unlocks).toBeUndefined();
   });
@@ -206,7 +206,7 @@ describe("daisu's shop", () => {
   });
 
   it("sells the chat pass and the license from level 10 only, so a fresh account cannot buy its way into either", async () => {
-    const fresh = await makeUser({ level: 9 });
+    const fresh = await stocked({ level: 9 });
 
     expect((await buy(fresh, "chatPass")).body).toMatchObject({ reason: "level" });
     expect((await buy(fresh, "tradersLicense")).body).toMatchObject({ reason: "level" });
@@ -214,7 +214,7 @@ describe("daisu's shop", () => {
   });
 
   it("lets a licensed trader into the market, where anyone outside the beta still needs the level", async () => {
-    const trader = await makeUser({ level: 10 });
+    const trader = await stocked({ level: 10 });
     await buy(trader, "tradersLicense");
 
     const res = await as(trader, request(app).post(`/marketplace/buy/${someId()}`));
@@ -227,7 +227,7 @@ describe("daisu's shop", () => {
   });
 
   it("needs a chat pass to talk in the beta instead of a level, and keeps chat for anyone who already talked", async () => {
-    const user = await makeUser();
+    const user = await stocked();
 
     expect((await chat.send(user._id, "hello there")).error).toBe("locked");
 
