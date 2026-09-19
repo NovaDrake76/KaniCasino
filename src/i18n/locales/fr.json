@@ -361,8 +361,13 @@
     "minBet": "La mise minimale est de {{amount}}",
     "notEnoughMoney": "Fonds insuffisants",
     "placeTheBetValue": "Indiquez le montant de la mise",
+    "purple": "Violet",
+    "purplePays": "Violet paie {{mult}}x et tombe {{chance}}% du temps",
+    "sidesPay": "Pile et face paient {{mult}}x",
     "tails": "Face",
-    "totalBets": "Total des mises"
+    "totalBets": "Total des mises",
+    "winPays": "Un gain paie {{mult}}x",
+    "youWouldWin": "Vous gagneriez {{amount}} K₽"
   },
   "collections": {
     "all": "Tous",

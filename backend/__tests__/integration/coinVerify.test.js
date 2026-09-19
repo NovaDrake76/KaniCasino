@@ -55,3 +55,25 @@ test("a crash round is not served by the coin flip route", async () => {
   const res = await request(app).get(`/fair/coinflip/${round._id}`);
   expect(res.status).toBe(404);
 });
+
+test("a version 2 round verifies under its own draw, purple included", async () => {
+  const { seeds } = generateChain(3);
+  // walk the chain until a seed lands purple, so the verifier is checked on the new result
+  let seed = seeds[0];
+  for (let i = 0; coinResultFromSeed(seed, 2) !== 2; i++) seed = sha256(`purple-verify-${i}`);
+  const round = await Round.create({
+    game: "coinflip",
+    status: "settled",
+    serverSeed: seed,
+    serverSeedHash: sha256(seed),
+    chainIndex: 0,
+    outcome: { result: 2, winningSide: "purple", version: 2 },
+  });
+  const res = await request(app).get(`/fair/coinflip/${round._id}`);
+
+  expect(res.status).toBe(200);
+  expect(res.body.version).toBe(2);
+  expect(res.body.recomputedResult).toBe(2);
+  expect(res.body.outcomeValid).toBe(true);
+  expect(res.body.commitmentValid).toBe(true);
+});
