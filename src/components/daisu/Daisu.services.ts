@@ -23,6 +23,8 @@ const OPEN_TICK_MS = 250;
 const CLOSED_TICK_MS = 1000;
 // long enough to read a reaction, short enough that she is not stuck grinning
 const FACE_MS = 1800;
+// as long as the hop keyframes run, so a burst of clicks is one hop
+const HOP_MS = 550;
 // a pause this long ends a run of clicks and sends it to the server as one take
 const SETTLE_AFTER_MS = 4000;
 // a run that never pauses still settles this often, so the wallet keeps up
@@ -79,6 +81,7 @@ export const useDaisu = () => {
   const [line, setLine] = useState<Line | null>(null);
   const [expression, setExpression] = useState<Expression>("default");
   const [shaking, setShaking] = useState(false);
+  const [hopping, setHopping] = useState(false);
   const [pops, setPops] = useState<Pop[]>([]);
   const [run, setRun] = useState<Run | null>(null);
   const [settling, setSettling] = useState(false);
@@ -88,6 +91,7 @@ export const useDaisu = () => {
   const lineFace = useRef<Expression>("default");
   const utterance = useRef(0);
   const shakeTimer = useRef<ReturnType<typeof setTimeout>>();
+  const hopTimer = useRef<ReturnType<typeof setTimeout>>();
   const settleTimer = useRef<ReturnType<typeof setTimeout>>();
   const latestTimer = useRef<ReturnType<typeof setTimeout>>();
   const readTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -129,6 +133,14 @@ export const useDaisu = () => {
     setShaking(true);
     if (shakeTimer.current) clearTimeout(shakeTimer.current);
     shakeTimer.current = setTimeout(() => setShaking(false), 450);
+  }, []);
+
+  // taking from the jar makes her hop, which is its own thing: it used to ride on her face
+  // going happy, so every click left her wearing that face as well
+  const hop = useCallback(() => {
+    setHopping(true);
+    if (hopTimer.current) clearTimeout(hopTimer.current);
+    hopTimer.current = setTimeout(() => setHopping(false), HOP_MS);
   }, []);
 
   const addPop = useCallback((amount: number) => {
@@ -241,6 +253,7 @@ export const useDaisu = () => {
     onBought: (purchase) => {
       if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks });
       pull("smug");
+      hop();
     },
   });
   const pickShopItem = useRef(shop.pickItem);
@@ -440,6 +453,7 @@ export const useDaisu = () => {
     () => () => {
       if (faceTimer.current) clearTimeout(faceTimer.current);
       if (shakeTimer.current) clearTimeout(shakeTimer.current);
+      if (hopTimer.current) clearTimeout(hopTimer.current);
       if (runTimer.current) clearTimeout(runTimer.current);
       if (readTimer.current) clearTimeout(readTimer.current);
       if (latestTimer.current) clearTimeout(latestTimer.current);
@@ -475,7 +489,7 @@ export const useDaisu = () => {
         ? { ...r, amount: r.amount + delta, lastClickAt: t }
         : { id: t + Math.random(), amount: delta, state: "open", lastClickAt: t }
     );
-    pull("smug");
+    hop();
     if (!settlingRef.current) scheduleSettle();
   };
 
@@ -558,6 +572,7 @@ export const useDaisu = () => {
     line,
     expression,
     shaking,
+    hopping,
     bonuses,
     bubbleBonus,
     pickName,

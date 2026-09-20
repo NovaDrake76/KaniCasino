@@ -11,6 +11,8 @@ interface Props {
   fill: number;
   expression: Expression;
   shaking?: boolean;
+  // one hop, for a take from the jar
+  hopping?: boolean;
   // head and shoulders only, for the bubble
   bust?: boolean;
   className?: string;
@@ -69,7 +71,7 @@ const mouthNow = (expression: Expression, talking: boolean, frame: number) => {
 
 // daisu holding the jar, drawn as stacked parts: the body, one of five jars, her eyes and
 // her mouth. how full the jar is picks its drawing, so the picture itself is the gauge
-const DaisuArt = ({ fill, expression, shaking, bust, className, onJar, onPoke, pops = [], run, settleMs, jarLabel, pokeLabel, pokeLocked }: Props) => {
+const DaisuArt = ({ fill, expression, shaking, hopping, bust, className, onJar, onPoke, pops = [], run, settleMs, jarLabel, pokeLabel, pokeLocked }: Props) => {
   const level = Math.max(0, Math.min(1, fill));
   const stage = jarStage(level);
   const talking = useTalking();
@@ -95,7 +97,7 @@ const DaisuArt = ({ fill, expression, shaking, bust, className, onJar, onPoke, p
 
   return (
     <div className={`relative select-none ${className || ""}`} style={{ aspectRatio: RATIO }}>
-      <div className={`relative h-full w-full ${expression === "smug" ? "daisu-hop" : "daisu-bob"}`}>
+      <div className={`relative h-full w-full ${hopping ? "daisu-hop" : "daisu-bob"}`}>
         <Layer part="base" />
         {jars.map((i) => (
           <Layer

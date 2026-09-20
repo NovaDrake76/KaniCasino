@@ -33,6 +33,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   line,
   expression,
   shaking,
+  hopping,
   bonuses,
   bonusGame,
   roadmap,
@@ -81,6 +82,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
               fill={fill}
               expression={expression}
               shaking={shaking}
+        hopping={hopping}
               pops={pops}
               run={run}
               settleMs={settleMs}

@@ -34,6 +34,15 @@ describe("the face a line wears", () => {
     expect(missing).toEqual([]);
   });
 
+  // a take from the jar is the player's reward, so she does not gloat over any of it
+  it("never wears the smug face for a take from the jar", () => {
+    for (const group of ["filling", "claimed", "claimedCredit"]) {
+      for (const index of Object.keys(groups[group])) {
+        expect(expressionFor(`daisu.lines.${group}.${index}`)).not.toBe("smug");
+      }
+    }
+  });
+
   it("gives every expression a drawing to rest on and one to talk with", () => {
     for (const look of Object.values(EXPRESSIONS)) {
       expect(look.rest).toBeTruthy();

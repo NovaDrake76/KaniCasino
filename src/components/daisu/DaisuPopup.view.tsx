@@ -33,6 +33,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   line,
   expression,
   shaking,
+  hopping,
   bonuses,
   roadmap,
   giftReady,
@@ -77,6 +78,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
         fill={fill}
         expression={expression}
         shaking={shaking}
+        hopping={hopping}
         pops={pops}
         run={run}
         settleMs={settleMs}
