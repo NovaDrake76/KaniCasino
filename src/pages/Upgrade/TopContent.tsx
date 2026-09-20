@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { upgradeItem } from "../../services/games/GamesServices";
 import React from "react";
 import i18n from "../../i18n";
+import { play } from "../../services/sound/sound";
+import { scheduleReelTicks } from "../../services/sound/reel";
 
 interface Props {
     selectedItems: any[];
@@ -47,6 +49,9 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
         try {
             const response = await upgradeItem(payload.selectedItemIds, payload.targetItemId);
             setSpinning(true);
+            play("upgrade.start");
+            // the upgrade hand settles in 7 s with an ease-out
+            scheduleReelTicks(7000, 40, "case.tick");
             if (response.success) {
                 // stop anywhere in the success chance area
                 setStopAngle(Math.random() * (successRate * 360))
@@ -60,6 +65,7 @@ const TopContent: React.FC<Props> = ({ selectedItems, setSelectedItems, selected
                 setSelectedItems([]);
                 setToggleReload(!toggleReload);
                 setSuccess(response.success)
+                play(response.success ? "upgrade.success" : "upgrade.fail");
                 setFinished(true);
                 setStopAngle(0);
                 // the staked copies are gone, so they clear; the target does not. a player

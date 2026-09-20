@@ -1262,6 +1262,7 @@
     "main": "Principal",
     "provablyFair": "Provably Fair",
     "slot": "Caça-níquel",
+    "sounds": "Sons",
     "support": "Suporte",
     "termsOfPrivacy": "Termos de privacidade",
     "userAgreement": "Termos de uso"
@@ -1757,10 +1758,17 @@
     "nicknameHint": "2 a 30 caracteres. Voce pode mudar uma vez a cada 30 dias.",
     "nicknameLocked": "Voce pode mudar de novo em {{date}}.",
     "nicknameSaved": "Apelido atualizado",
+    "playTestSound": "Tocar um som de teste",
     "saveFailed": "Não foi possível salvar, tente de novo",
     "saveNickname": "Salvar apelido",
+    "sound": "Som",
+    "soundEffects": "Efeitos sonoros",
+    "soundHint": "Cliques, apostas, vitórias e as roletas. O som começa depois do seu primeiro clique na página.",
     "title": "Configurações",
-    "updates": "Novidades sobre caixas e jogos"
+    "updates": "Novidades sobre caixas e jogos",
+    "volume": "Volume",
+    "volumeDown": "Mais baixo",
+    "volumeUp": "Mais alto"
   },
   "slot": {
     "bar": "barra",
