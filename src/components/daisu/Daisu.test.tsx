@@ -33,8 +33,8 @@ vi.mock("../../services/daisu/ShopService", () => ({
   buyShopItem: (...args: unknown[]) => buyShopItem(...args),
 }));
 
-const shopItem = (over: object) => ({ key: "collectionBook", price: 5000, level: 5, owned: false, via: null, ...over });
-const shopOf = (items: object[]) => ({ level: 6, walletBalance: 9000, items });
+const shopItem = (over: object) => ({ key: "collectionBook", kind: "unlock", price: 5000, level: 5, owned: false, via: null, ...over });
+const shopOf = (items: object[]) => ({ level: 6, walletBalance: 9000, items, hidden: 0, xpBoost: { all: 1 } });
 
 const mission = (over: object) => ({
   key: "r1-full-pot",

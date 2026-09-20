@@ -11,7 +11,7 @@ import { User } from '../../components/Types'
 // the card renderer and its display faces are dead weight until someone opens the sheet
 const ShareCard = lazy(() => import("../../components/fanCard/ShareCard"));
 import { canShareCard, cardFromStanding } from "../../components/fanCard/cardData";
-import { levelProgress, xpForLevel } from "../../utils/levelCurve";
+import { levelProgress, xpBonusPct, xpForLevel } from "../../utils/levelCurve";
 import i18n from "../../i18n";
 
 interface UserProps {
@@ -21,7 +21,7 @@ interface UserProps {
 }
 
 const UserInfo: React.FC<UserProps> = ({
-  user: { id, profilePicture, level, username, xp, fixedItem, nextBonus, fanRank, collectionRank, badge, badges, selectedBadge },
+  user: { id, profilePicture, level, username, xp, fixedItem, nextBonus, fanRank, collectionRank, badge, badges, selectedBadge, xpBoost },
   isSameUser,
   setRefresh,
 }) => {
@@ -35,6 +35,7 @@ const UserInfo: React.FC<UserProps> = ({
 
   const nextLevelXp = xpForLevel(level + 1);
   const filled = Math.round(levelProgress(xp, level) * 100);
+  const bonusPct = isSameUser ? xpBonusPct(xpBoost) : 0;
 
 
   return (
@@ -95,12 +96,19 @@ const UserInfo: React.FC<UserProps> = ({
               </span>
               <Tooltip id="my-tooltip" />
 
-              <span
-                className="text-[#3a365a] underline -translate-x-1 cursor-help"
-                data-tooltip-id="my-tooltip"
-                data-tooltip-content={i18n.t("profile.toEvery1kSpent")}
-              >
-                {i18n.t("profile.howXpWorks")}
+              <span className="flex items-center gap-3">
+                {bonusPct > 0 && (
+                  <span className="bg-[#2a2450] px-2 py-0.5 text-[11px] font-extrabold text-accent-gold" title={i18n.t("profile.xpBonusFrom")}>
+                    {i18n.t("profile.xpBonus", { pct: bonusPct })}
+                  </span>
+                )}
+                <span
+                  className="text-[#3a365a] underline -translate-x-1 cursor-help"
+                  data-tooltip-id="my-tooltip"
+                  data-tooltip-content={i18n.t("profile.toEvery1kSpent")}
+                >
+                  {i18n.t("profile.howXpWorks")}
+                </span>
               </span>
             </div>
           </div>

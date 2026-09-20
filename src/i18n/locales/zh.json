@@ -361,8 +361,13 @@
     "minBet": "最低投注为 {{amount}}",
     "notEnoughMoney": "余额不足",
     "placeTheBetValue": "请输入投注金额",
+    "purple": "紫色",
+    "purplePays": "紫色赔 {{mult}} 倍，出现概率 {{chance}}%",
+    "sidesPay": "正面和反面赔 {{mult}} 倍",
     "tails": "反面",
-    "totalBets": "总投注"
+    "totalBets": "总投注",
+    "winPays": "赢了赔 {{mult}} 倍",
+    "youWouldWin": "赢了得 {{amount}} K₽"
   },
   "collections": {
     "all": "全部",
@@ -785,10 +790,15 @@
       "chapterDoneLine": "行吧。你也不是无药可救嘛。接下来我要你做这些。",
       "chapters": {
         "1": "第一步",
+        "10": "Daisu 的最爱",
         "2": "渐入佳境",
         "3": "常回来看看",
         "4": "老顾客",
-        "5": "老手"
+        "5": "老手",
+        "6": "常客",
+        "7": "豪客",
+        "8": "支柱",
+        "9": "传奇"
       },
       "claim": "领取",
       "claimed": "已领取",
@@ -898,6 +908,106 @@
           "desc": "成为你置顶角色的头号粉丝。",
           "help": "头号粉丝排行榜按玩家拥有的置顶角色数量排名。置顶一个，拥有的比谁都多，王冠就是你的。",
           "title": "成为头号粉丝"
+        },
+        "r6-days": {
+          "desc": "在 {{target}} 个不同的日子下注。不必连续。",
+          "help": "一天里下过注就算一天。十四天。我在数着，不过不急。",
+          "title": "在 {{target}} 个不同的日子游戏"
+        },
+        "r6-full-pots": {
+          "desc": "等我的罐子装满再拿。{{target}} 次。",
+          "help": "满罐比提前拿多付 25%。耐心是这个网站上最便宜的优势。",
+          "title": "取走 {{target}} 次满罐"
+        },
+        "r6-collections": {
+          "desc": "集齐 {{target}} 个不同箱子的全部收藏。",
+          "help": "三个箱子，能开出的全部。开箱还是市场买，我不管。收藏页会显示还缺什么。",
+          "title": "集齐 {{target}} 套收藏"
+        },
+        "r6-level": {
+          "desc": "每次下注都得经验，不论输赢。",
+          "help": "四十级。大多数人从没见过。证明你不是大多数人。",
+          "title": "达到 {{target}} 级"
+        },
+        "r7-stake": {
+          "desc": "总共下注 K₽ {{target}}，玩什么都行。",
+          "help": "五百万。摊在几个月里还是疯狂一夜，对我来说都一样。",
+          "title": "下注 K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "在任意游戏中单次赢得 K₽ {{target}} 或更多。",
+          "help": "一局，一次派彩，六位数。Crash 和弹珠台是老熟人了。别干傻事。",
+          "title": "单局赢得 K₽ {{target}}"
+        },
+        "r7-market": {
+          "desc": "在市场买入或卖出 {{target}} 件物品。",
+          "help": "买入、卖出和成交的订单都算。商人有执照就该用。",
+          "title": "在市场交易 {{target}} 次"
+        },
+        "r7-level": {
+          "desc": "每次下注都得经验，不论输赢。",
+          "help": "五十级。到顶端的一半，台阶只会越来越高。",
+          "title": "达到 {{target}} 级"
+        },
+        "r8-rain": {
+          "desc": "下雨时待在聊天室，{{target}} 次。",
+          "help": "每半小时，全站下注的一部分会落到聊天室里加入雨的人身上。加入，然后在落下时在场。十次。",
+          "title": "接住 {{target}} 场雨"
+        },
+        "r8-battles": {
+          "desc": "在 {{target}} 场开箱对战中击败其他玩家。",
+          "help": "同样的箱子，总值最高者胜。十胜需要运气和出勤。主要是出勤。",
+          "title": "赢得 {{target}} 场开箱对战"
+        },
+        "r8-streak": {
+          "desc": "连续 {{target}} 天转每日礼物。",
+          "help": "整整一个月一次不落。实在不行就定个闹钟。我不会告诉别人的。",
+          "title": "礼物连续 {{target}} 天"
+        },
+        "r8-level": {
+          "desc": "每次下注都得经验，不论输赢。",
+          "help": "六十级。到过这里的玩家屈指可数。如果你做到了，欢迎。",
+          "title": "达到 {{target}} 级"
+        },
+        "r9-days": {
+          "desc": "在 {{target}} 个不同的日子下注。",
+          "help": "六十个有下注的日子。两个月的出勤。不管你愿不愿意，你已经是常客了。",
+          "title": "在 {{target}} 个不同的日子游戏"
+        },
+        "r9-cases": {
+          "desc": "开 {{target}} 个箱子，什么箱子都行。",
+          "help": "一千个箱子。便宜的一样算，连开的每个都算。掉落会是个故事。",
+          "title": "开 {{target}} 个箱子"
+        },
+        "r9-collections": {
+          "desc": "集齐 {{target}} 个不同箱子的全部收藏。",
+          "help": "十套完整收藏。那是博物馆，不是爱好。",
+          "title": "集齐 {{target}} 套收藏"
+        },
+        "r9-level": {
+          "desc": "每次下注都得经验，不论输赢。",
+          "help": "七十五级。我已经不指望有人上来了。让我惊讶一下。",
+          "title": "达到 {{target}} 级"
+        },
+        "r10-stake": {
+          "desc": "总共下注 K₽ {{target}}，玩什么都行。",
+          "help": "一亿。我知道。这就是重点。",
+          "title": "下注 K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "邀请 {{target}} 位达到 10 级的朋友。",
+          "help": "你的推广链接在个人资料里。朋友到 10 级才算数，所以带会留下的人，别带游客。",
+          "title": "带 {{target}} 位朋友到 10 级"
+        },
+        "r10-predictions": {
+          "desc": "在预测市场买入或卖出 {{target}} 次。",
+          "help": "预测页面的预测市场。每次买入或卖出算一次。二十五次，你说不定还能学到点什么。",
+          "title": "进行 {{target}} 次预测交易"
+        },
+        "r10-level": {
+          "desc": "每次下注都得经验，不论输赢。",
+          "help": "一百级。没人做到过。如果你做到了，我会第一个知道，而且我会说出来。",
+          "title": "达到 {{target}} 级"
         }
       },
       "progress": "已完成 {{done}}/{{total}}"
@@ -973,20 +1083,23 @@
     },
     "shop": {
       "after": "购买后余额",
+      "boost": {
+        "about": "你每次下注多得 {{pct}}% 经验，叠加在已有的加成之上。加成会累加，且永不失效。",
+        "opened": "已经放在桌上了。从现在起每次下注多 {{pct}}%。",
+        "what": "每次下注经验 +{{pct}}%，永久。"
+      },
       "buyFor": "花 {{amount}} 购买",
+      "charm": {
+        "about": "你在 {{game}} 的每次下注多得 {{pct}}% 经验，叠加在其他加成之上。仅限 {{game}}，永不失效。",
+        "cases": "箱子",
+        "name": "{{game}}护符",
+        "opened": "戴上了。你下次 {{game}} 下注就多赚了。去吧。",
+        "pitch": "反正你都在玩 {{game}}。不如赚两份。",
+        "what": "每次 {{game}} 下注经验 +{{pct}}%，永久。"
+      },
+      "collapse": "隐藏名称",
+      "expand": "显示名称",
       "failed": "购买失败，再试一次。",
-      "level": "{{n}} 级",
-      "needs": "需要",
-      "notNow": "先不了",
-      "price": "价格",
-      "short": "还差 {{amount}}",
-      "soon": "买下一件物品，就能知道接下来是什么。",
-      "tipBuy": "{{price}} · 等级 {{n}} · 点击购买",
-      "tipLevel": "需要等级 {{n}} · 你现在等级 {{level}}",
-      "tipShort": "{{price}} · 还差 {{amount}}",
-      "title": "Daisu 的商店",
-      "unlocked": "已解锁",
-      "yours": "已拥有",
       "items": {
         "affiliateCard": {
           "about": "开启推广页：选定你的邀请码，分享链接，当你邀请的人注册、达到 10 级以及下注时，你都能拿到 K₽。",
@@ -1056,8 +1169,118 @@
           "opened": "拿到许可证了。买、卖、挂单，市场全归你了。要我带你看看吗？",
           "pitch": "跟陌生人讨价还价用的正式文件。别被骗了。算了，被骗也行，挺好笑的。",
           "what": "向其他玩家购买，也能在市场上架你自己的物品。"
+        },
+        "goldenTicket": {
+          "about": "每次从罐子拿钱，落到某个游戏里的额外奖励是所拿金额的 15% 而不是 10%。满罐、提前拿，全都算，永久。",
+          "name": "金票",
+          "opened": "好了。你下次拿钱就带着更大的奖励了。想看看罐子吗？",
+          "pitch": "免费的钱上再加免费的钱。我太大方了。",
+          "what": "每次从我的罐子里拿钱，额外的游戏奖励从 10% 变成 15%，永久。"
+        },
+        "rainCoat": {
+          "about": "聊天室下雨时，奖池按等级分配。穿上雨衣，你的份额按无雨衣时的 1.5 倍计算。每人上限仍然有效。",
+          "name": "雨衣",
+          "opened": "你穿上了。下一场雨，大块的归你。想看看雨落在哪吗？",
+          "pitch": "它让你不淋雨。骗你的，它让你淋得更多。在这里雨就是钱。",
+          "what": "你在聊天室每场雨中的份额权重变为 1.5 倍，永久。"
+        },
+        "luckyPencil": {
+          "name": "幸运铅笔",
+          "pitch": "笔尾被咬过。运气就在那儿。"
+        },
+        "pocketNotebook": {
+          "name": "口袋笔记本",
+          "pitch": "把输的记下来。磨练品格。"
+        },
+        "readingLamp": {
+          "name": "阅读灯",
+          "pitch": "好让你看清自己输了多少。清清楚楚。"
+        },
+        "coffeeMug": {
+          "name": "咖啡杯",
+          "pitch": "再来一局。杯子上这么写的。每次都是。"
+        },
+        "abacus": {
+          "name": "算盘",
+          "pitch": "我数得比你输得快。勉强。"
+        },
+        "fortuneCat": {
+          "name": "招财猫",
+          "pitch": "它在招手。没人知道对谁。继续下注。"
+        },
+        "studyDesk": {
+          "name": "书桌",
+          "pitch": "像样的书桌。现在你可以坐直了输钱。"
+        },
+        "metronome": {
+          "name": "节拍器",
+          "pitch": "嘀。下注。嗒。下注。它定节奏，我来数。"
+        },
+        "hourglass": {
+          "name": "沙漏",
+          "pitch": "时间就是金钱。这个让两者都走得更快。"
+        },
+        "globe": {
+          "name": "地球仪",
+          "pitch": "转一下。不管停在哪，那里的人也在赌。"
+        },
+        "telescope": {
+          "name": "望远镜",
+          "pitch": "用来看一百级的。它还很远。"
+        },
+        "goldCat": {
+          "name": "金猫",
+          "pitch": "同一只猫，但是金的。招手更用力。"
+        },
+        "libraryCard": {
+          "name": "借书证",
+          "pitch": "这网站的规则你全读过了。看得出来。"
+        },
+        "compass": {
+          "name": "指南针",
+          "pitch": "它总是指向下一次下注。大概坏了。"
+        },
+        "crystalSkull": {
+          "name": "水晶骷髅",
+          "pitch": "它知道你这局怎么收场。它不说。"
+        },
+        "daisuDiary": {
+          "name": "Daisu 的日记",
+          "pitch": "别看。行吧，看吧。第 12 页写的是你。"
+        },
+        "starChart": {
+          "name": "星图",
+          "pitch": "星星说你会赢。星星对谁都这么说。"
+        },
+        "goldenAbacus": {
+          "name": "金算盘",
+          "pitch": "用来数零更多的数字。最近是你的。"
+        },
+        "observatory": {
+          "name": "天文台",
+          "pitch": "从这里能看到一百级。勉强能。"
+        },
+        "philosopherStone": {
+          "name": "贤者之石",
+          "pitch": "它把下注变成经验。它一直都这样，只是更快了。"
         }
-      }
+      },
+      "level": "{{n}} 级",
+      "needs": "需要",
+      "notNow": "先不了",
+      "price": "价格",
+      "short": "还差 {{amount}}",
+      "showAll": "显示所有物品",
+      "showLess": "收起货架",
+      "soon": "买下一件物品，就能知道接下来是什么。",
+      "tipBuy": "{{price}} · 等级 {{n}} · 点击购买",
+      "tipLevel": "需要等级 {{n}} · 你现在等级 {{level}}",
+      "tipShort": "{{price}} · 还差 {{amount}}",
+      "title": "Daisu 的商店",
+      "unlocked": "已解锁",
+      "xpBonus": "经验 +{{pct}}%",
+      "yourItems": "你的物品 · {{n}}",
+      "yours": "已拥有"
     },
     "ticket": {
       "yours": "你的奖励",
@@ -1262,6 +1485,7 @@
     "main": "主要",
     "provablyFair": "Provably Fair",
     "slot": "老虎机",
+    "sounds": "声音",
     "support": "支持",
     "termsOfPrivacy": "隐私条款",
     "userAgreement": "用户协议"
@@ -1725,9 +1949,11 @@
     "requestSent": "请求已发送",
     "serviceMessagesAboutYour": "与账号相关的服务通知，例如安全和政策提醒，无论此项如何设置都会发送。",
     "somethingWentWrong": "出了点问题",
-    "toEvery1kSpent": "每花费 1K₽ 可获得 5 点经验。",
+    "toEvery1kSpent": "每下注 K₽ 1 得 5 经验，不论输赢。Daisu 商店的加成会额外叠加。",
     "updatesTurnedOff": "已关闭更新通知",
     "weAreNotSending": "我们没有向你的地址发送邮件，因为之前的邮件被退回或被举报为垃圾邮件。如果你认为这有误，请联系我们。",
+    "xpBonus": "经验 +{{pct}}%",
+    "xpBonusFrom": "来自 Daisu 商店的加成",
     "youWillGetUpdates": "你将收到新箱子和新游戏的更新通知"
   },
   "rain": {
@@ -1738,6 +1964,8 @@
     "joined": "已参与",
     "logIn": "登录",
     "needLevel": "达到 {{level}} 级即可参与红包。",
+    "openChat": "打开聊天",
+    "soonToast": "{{minutes}} 分钟后聊天室将下起至少 K₽{{amount}} 的雨。",
     "title": "红包池",
     "won": "红包给了你 K₽{{amount}}"
   },
@@ -1755,10 +1983,17 @@
     "nicknameHint": "2 到 30 个字符。每 30 天可以修改一次。",
     "nicknameLocked": "你可以在 {{date}} 再次修改。",
     "nicknameSaved": "昵称已更新",
+    "playTestSound": "播放测试音",
     "saveFailed": "保存失败，请重试",
     "saveNickname": "保存昵称",
+    "sound": "声音",
+    "soundEffects": "音效",
+    "soundHint": "点击、下注、获胜和转轮的声音。在页面上首次点击后开始播放。",
     "title": "设置",
-    "updates": "新箱子与新游戏的更新通知"
+    "updates": "新箱子与新游戏的更新通知",
+    "volume": "音量",
+    "volumeDown": "调低",
+    "volumeUp": "调高"
   },
   "slot": {
     "bar": "横条",

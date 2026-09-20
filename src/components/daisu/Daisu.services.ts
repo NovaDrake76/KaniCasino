@@ -13,9 +13,11 @@ import { startHelp } from "./tour/helpStore";
 import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import type { UnlockKey } from "../../services/daisu/ShopService";
+import { itemWords } from "./shop/shopCopy";
 import type { BonusView, Expression, Line, Pop, Run, Stage } from "./Daisu.types";
 import { expressionFor } from "./daisuFace";
 import i18n from "../../i18n";
+import { play } from "../../services/sound/sound";
 
 const STAGE_KEY = "kani.daisuStage";
 // the jar moves visibly at four frames a second; the bubble only needs the number
@@ -251,7 +253,7 @@ export const useDaisu = () => {
     userId,
     open: stage === "room",
     onBought: (purchase) => {
-      if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks });
+      if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks, xpBoost: purchase.xpBoost ?? userData.xpBoost });
       pull("smug");
       hop();
     },
@@ -402,6 +404,7 @@ export const useDaisu = () => {
       setLastClickFill(0);
       if (userData) toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
       endRun("sent", res.amount);
+      play("daisu.take_sent");
       // said once the run has settled, so a burst of clicks gets one line: teasing for a pot taken early, thanks for a full one.
       // the game her next bonus moves to is never announced: this take's bonus is still on the old one, and naming another game beside its ticket reads as a mistake
       if (res.fill < 1) {
@@ -421,6 +424,7 @@ export const useDaisu = () => {
         setRun(null);
       } else {
         endRun("failed");
+        play("daisu.take_failed");
         shake();
         say(reason === "empty" ? "empty" : "failed");
       }
@@ -472,6 +476,7 @@ export const useDaisu = () => {
       shake();
       // mid-run the jar is only catching up between fast clicks, which is not worth a complaint
       if (run && (run.state === "open" || run.state === "sending")) return;
+      play("daisu.empty");
       pull("sharp");
       if (Date.now() - lastEmptyLineAt.current > EMPTY_LINE_EVERY_MS) {
         lastEmptyLineAt.current = Date.now();
@@ -482,6 +487,8 @@ export const useDaisu = () => {
     }
     setLastClickFill(fill);
     const t = Date.now();
+    // the cookie-clicker sound: short, pitch-varied, throttled, so a fast run reads as coins
+    play("daisu.jar");
     addPop(delta);
     emitJarTaken();
     setRun((r) =>
@@ -506,6 +513,7 @@ export const useDaisu = () => {
     if (t - pokes.current.at > POKE_WINDOW_MS) pokes.current.count = 0;
     pokes.current = { count: pokes.current.count + 1, at: t };
     const mood = pokeMood(pokes.current.count);
+    play("daisu.poke");
     say(mood);
   };
 
@@ -524,20 +532,21 @@ export const useDaisu = () => {
     startHelp(userId, mission.key, mission.goal, missionWords(mission.key, mission.target, bonusGame.name).title);
   };
   // a purchase ends on what it opened, and she offers to show it on the tour's engine
+  const unlockedItem = (shop.unlocked && shop.shop?.items.find((item) => item.key === shop.unlocked)) || null;
   const showUnlocked = () => {
-    const key = shop.unlocked;
+    const item = unlockedItem;
     shop.closeUnlocked();
-    if (!key || !userId) return;
+    if (!item || !userId) return;
     setStage("bubble");
-    startHelp(userId, `shop:${key}`, `unlock:${key}`, i18n.t(`daisu.shop.items.${key}.name`));
+    startHelp(userId, `shop:${item.key}`, `unlock:${item.key}`, itemWords(item).name);
   };
   // an item already held, picked off her shelf: she folds away and shows where it is used
   const showItem = () => {
-    const key = shop.pickedItem?.key;
+    const item = shop.pickedItem;
     shop.closePick();
-    if (!key || !userId) return;
+    if (!item || !userId) return;
     setStage("bubble");
-    startHelp(userId, `shop:${key}`, `unlock:${key}`, i18n.t(`daisu.shop.items.${key}.name`));
+    startHelp(userId, `shop:${item.key}`, `unlock:${item.key}`, itemWords(item).name);
   };
   const backToPopup = () => setStage("popup");
 
@@ -586,6 +595,7 @@ export const useDaisu = () => {
     buying: shop.buying,
     buyItem: shop.buy,
     unlocked: shop.unlocked,
+    unlockedItem,
     closeUnlocked: shop.closeUnlocked,
     ...missions,
     missionReady,

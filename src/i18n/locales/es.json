@@ -361,8 +361,13 @@
     "minBet": "La apuesta mínima es {{amount}}",
     "notEnoughMoney": "Saldo insuficiente",
     "placeTheBetValue": "Indica el importe de la apuesta",
+    "purple": "Morado",
+    "purplePays": "Morado paga {{mult}}x y sale el {{chance}}% de las veces",
+    "sidesPay": "Cara y cruz pagan {{mult}}x",
     "tails": "Cruz",
-    "totalBets": "Apuestas totales"
+    "totalBets": "Apuestas totales",
+    "winPays": "Ganar paga {{mult}}x",
+    "youWouldWin": "Ganarías {{amount}} K₽"
   },
   "collections": {
     "all": "Todos",
@@ -785,10 +790,15 @@
       "chapterDoneLine": "Bien. Al final no eres un caso perdido. Esto es lo que quiero de ti ahora.",
       "chapters": {
         "1": "Primeros pasos",
+        "10": "Favorito de Daisu",
         "2": "Tomándole el gusto",
         "3": "De vuelta",
         "4": "Habitual",
-        "5": "Veterano"
+        "5": "Veterano",
+        "6": "De la casa",
+        "7": "Apostador fuerte",
+        "8": "Pilar",
+        "9": "Leyenda"
       },
       "claim": "Cobrar",
       "claimed": "Cobrada",
@@ -898,6 +908,106 @@
           "desc": "Sé el mayor fan del personaje que fijaste.",
           "help": "Los rankings de Top Fan ordenan a los jugadores por cuántas copias tienen de su personaje fijado. Fija uno, ten más que nadie y la corona es tuya.",
           "title": "Hazte Top Fan"
+        },
+        "r6-days": {
+          "desc": "Haz una apuesta en {{target}} días distintos. No hace falta que sean seguidos.",
+          "help": "Cualquier apuesta en un día cuenta el día. Catorce. Estoy contando, y no tengo prisa.",
+          "title": "Juega en {{target}} días distintos"
+        },
+        "r6-full-pots": {
+          "desc": "Espera a que mi bote se llene del todo y tómalo. {{target}} veces.",
+          "help": "El bote lleno paga un 25% más que cogerlo antes. La paciencia es la ventaja más barata de este sitio.",
+          "title": "Toma {{target}} botes llenos"
+        },
+        "r6-collections": {
+          "desc": "Ten todos los objetos de la colección de {{target}} cajas distintas.",
+          "help": "Tres cajas, todo lo que pueden soltar. Abriendo o en el mercado, me da igual cómo. La pestaña Colecciones muestra lo que falta.",
+          "title": "Completa {{target}} colecciones"
+        },
+        "r6-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Cuarenta. La mayoría nunca lo ve. Demuestra que no eres la mayoría.",
+          "title": "Llega al nivel {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Apuesta K₽ {{target}} en total, en lo que sea.",
+          "help": "Cinco millones. Repartidos en meses o en una noche loca, me da igual.",
+          "title": "Apuesta K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Cobra un solo pago de K₽ {{target}} o más en cualquier juego.",
+          "help": "Una ronda, un pago, seis cifras. Crash y plinko son los sospechosos habituales. No hagas ninguna tontería.",
+          "title": "Gana K₽ {{target}} en una ronda"
+        },
+        "r7-market": {
+          "desc": "Compra o vende {{target}} objetos en el mercado.",
+          "help": "Compras, ventas y órdenes atendidas, todo cuenta. Un comerciante tiene licencia y la usa.",
+          "title": "Comercia {{target}} veces en el mercado"
+        },
+        "r7-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Cincuenta. A mitad de camino a la cima, y los escalones solo se hacen más altos.",
+          "title": "Llega al nivel {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Está en el chat cuando caiga la lluvia, {{target}} veces.",
+          "help": "Cada media hora una parte de lo que el sitio apostó cae sobre quien se unió a la lluvia en el chat. Únete y está ahí cuando caiga. Diez de esas.",
+          "title": "Atrapa {{target}} lluvias"
+        },
+        "r8-battles": {
+          "desc": "Vence a otros jugadores en {{target}} batallas de cajas.",
+          "help": "Mismas cajas, gana el mejor total. Diez victorias requieren suerte y presencia. Sobre todo presencia.",
+          "title": "Gana {{target}} batallas de cajas"
+        },
+        "r8-streak": {
+          "desc": "Gira el regalo diario {{target}} días seguidos.",
+          "help": "Un mes entero sin fallar ni uno. Pon una alarma si hace falta. Nunca se lo diría a nadie.",
+          "title": "Una racha de regalo de {{target}} días"
+        },
+        "r8-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Sesenta. Solo un puñado de jugadores ha llegado aquí. Bienvenido, si lo logras.",
+          "title": "Llega al nivel {{target}}"
+        },
+        "r9-days": {
+          "desc": "Haz una apuesta en {{target}} días distintos.",
+          "help": "Sesenta días con apuesta. Dos meses apareciendo. Ya eres de la casa, te guste o no.",
+          "title": "Juega en {{target}} días distintos"
+        },
+        "r9-cases": {
+          "desc": "Abre {{target}} cajas, las que sean.",
+          "help": "Mil cajas. Las baratas cuentan igual, y abrir varias cuenta cada una. Los drops serán toda una historia.",
+          "title": "Abre {{target}} cajas"
+        },
+        "r9-collections": {
+          "desc": "Ten todos los objetos de la colección de {{target}} cajas distintas.",
+          "help": "Diez colecciones completas. Eso es un museo, no un hobby.",
+          "title": "Completa {{target}} colecciones"
+        },
+        "r9-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Setenta y cinco. Dejé de esperar a nadie aquí arriba. Sorpréndeme.",
+          "title": "Llega al nivel {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Apuesta K₽ {{target}} en total, en lo que sea.",
+          "help": "Cien millones. Lo sé. Esa es la idea.",
+          "title": "Apuesta K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Invita a {{target}} amigos que lleguen al nivel 10.",
+          "help": "Tu enlace de afiliado está en tu perfil. Un amigo cuenta cuando llega al nivel 10, así que trae gente que se quede, no turistas.",
+          "title": "Trae a {{target}} amigos hasta el nivel 10"
+        },
+        "r10-predictions": {
+          "desc": "Compra o vende participaciones en {{target}} predicciones.",
+          "help": "Los mercados de predicción en la página Predicciones. Cada compra o venta cuenta una. Veinticinco y puede que hasta aprendas algo.",
+          "title": "Haz {{target}} operaciones en predicciones"
+        },
+        "r10-level": {
+          "desc": "Cada apuesta da XP, ganes o pierdas.",
+          "help": "Cien. Nadie lo ha logrado. Si lo haces, seré la primera en saberlo, y lo diré.",
+          "title": "Llega al nivel {{target}}"
         }
       },
       "progress": "{{done}} de {{total}} hechas"
@@ -973,20 +1083,23 @@
     },
     "shop": {
       "after": "Tu saldo después",
+      "boost": {
+        "about": "Cada apuesta que haces da un {{pct}}% más de XP, sumado a lo que ya tengas. Los impulsos se suman y nunca se agotan.",
+        "opened": "Ya está en el escritorio. Cada apuesta desde ahora da un {{pct}}% más.",
+        "what": "+{{pct}}% de XP en cada apuesta, para siempre."
+      },
       "buyFor": "Comprar por {{amount}}",
+      "charm": {
+        "about": "Cada apuesta en {{game}} da un {{pct}}% más de XP, sumado a tus otros impulsos. Solo {{game}}, y nunca se agota.",
+        "cases": "Cajas",
+        "name": "Amuleto de {{game}}",
+        "opened": "Puesto. Tu próxima apuesta en {{game}} ya da más. Anda.",
+        "pitch": "Juegas a {{game}} de todos modos. Mejor que te paguen dos veces por ello.",
+        "what": "+{{pct}}% de XP en cada apuesta de {{game}}, para siempre."
+      },
+      "collapse": "Ocultar nombres",
+      "expand": "Mostrar nombres",
       "failed": "No se pudo comprar. Inténtalo de nuevo.",
-      "level": "Nivel {{n}}",
-      "needs": "Requiere",
-      "notNow": "Ahora no",
-      "price": "Precio",
-      "short": "Te faltan {{amount}}",
-      "soon": "Compra un objeto para descubrir qué viene después.",
-      "tipBuy": "{{price}} · nivel {{n}} · clic para comprar",
-      "tipLevel": "Necesita nivel {{n}} · eres nivel {{level}}",
-      "tipShort": "{{price}} · te faltan {{amount}}",
-      "title": "Tienda de Daisu",
-      "unlocked": "Desbloqueado",
-      "yours": "Tuyo",
       "items": {
         "affiliateCard": {
           "about": "Abre la pestaña Afiliados: elige tu código de invitación, comparte tu enlace y gana K₽ cuando tus invitados se registren, lleguen al nivel 10 y apuesten.",
@@ -1056,8 +1169,118 @@
           "opened": "Con licencia. Comprar, publicar, poner órdenes, el mercado es todo tuyo. ¿Te lo enseño?",
           "pitch": "Papeleo oficial para regatear con desconocidos. Que no te estafen. Bueno, sí, que es divertido.",
           "what": "Compra a otros jugadores y publica tus objetos en el mercado."
+        },
+        "goldenTicket": {
+          "about": "Siempre que tomas del bote, el extra que cae como bono en un juego es el 15% de la toma en vez del 10%. Botes llenos, tomas tempranas, todas, para siempre.",
+          "name": "Boleto Dorado",
+          "opened": "Hecho. Tu próxima toma ya viene con el bono mayor. ¿Quieres ver el bote?",
+          "pitch": "Más dinero gratis encima del dinero gratis. Soy demasiado generosa.",
+          "what": "Cada toma de mi bote añade un 15% como bono de juego en vez de un 10%, para siempre."
+        },
+        "rainCoat": {
+          "about": "Cuando la lluvia cae en el chat, el bote se reparte por nivel. Con el impermeable tu parte cuenta 1,5x más de lo que contaría sin él. El límite por jugador sigue aplicando.",
+          "name": "Impermeable",
+          "opened": "Ya lo llevas puesto. En la próxima lluvia, la porción mayor es tuya. ¿Quieres ver dónde cae?",
+          "pitch": "Te mantiene seco. Mentira, te moja más. Aquí la lluvia es dinero.",
+          "what": "Tu parte de cada lluvia en el chat pesa 1,5x, para siempre."
+        },
+        "luckyPencil": {
+          "name": "Lápiz de la Suerte",
+          "pitch": "Mordido en la punta. Ahí está la suerte."
+        },
+        "pocketNotebook": {
+          "name": "Libreta de Bolsillo",
+          "pitch": "Anota tus pérdidas. Forja el carácter."
+        },
+        "readingLamp": {
+          "name": "Lámpara de Lectura",
+          "pitch": "Para que veas cuánto pierdes. Con claridad."
+        },
+        "coffeeMug": {
+          "name": "Taza de Café",
+          "pitch": "Una ronda más. Eso dice la taza. Siempre."
+        },
+        "abacus": {
+          "name": "Ábaco",
+          "pitch": "Cuento más rápido de lo que pierdes. Por poco."
+        },
+        "fortuneCat": {
+          "name": "Gato de la Fortuna",
+          "pitch": "Saluda. Nadie sabe a quién. Sigue apostando."
+        },
+        "studyDesk": {
+          "name": "Escritorio de Estudio",
+          "pitch": "Un escritorio de verdad. Ahora puedes perder dinero bien sentado."
+        },
+        "metronome": {
+          "name": "Metrónomo",
+          "pitch": "Tic. Apuesta. Tac. Apuesta. Marca el ritmo, yo llevo la cuenta."
+        },
+        "hourglass": {
+          "name": "Reloj de Arena",
+          "pitch": "El tiempo es oro. Esto hace que ambos vayan más rápido."
+        },
+        "globe": {
+          "name": "Globo Terráqueo",
+          "pitch": "Gíralo. Donde pare, allí también apuestan."
+        },
+        "telescope": {
+          "name": "Telescopio",
+          "pitch": "Para mirar el nivel 100. Sigue estando muy lejos."
+        },
+        "goldCat": {
+          "name": "Gato Dorado",
+          "pitch": "El mismo gato, pero dorado. Saluda con más fuerza."
+        },
+        "libraryCard": {
+          "name": "Carnet de Biblioteca",
+          "pitch": "Has leído todas las reglas del sitio. Se nota."
+        },
+        "compass": {
+          "name": "Brújula",
+          "pitch": "Siempre apunta a la próxima apuesta. Estará rota."
+        },
+        "crystalSkull": {
+          "name": "Calavera de Cristal",
+          "pitch": "Sabe cómo acaba tu sesión. No lo dirá."
+        },
+        "daisuDiary": {
+          "name": "Diario de Daisu",
+          "pitch": "No lo leas. Vale, léelo. La página 12 es sobre ti."
+        },
+        "starChart": {
+          "name": "Carta Estelar",
+          "pitch": "Las estrellas dicen que ganarás. Se lo dicen a todo el mundo."
+        },
+        "goldenAbacus": {
+          "name": "Ábaco Dorado",
+          "pitch": "Para contar números con más ceros. Los tuyos, últimamente."
+        },
+        "observatory": {
+          "name": "Observatorio",
+          "pitch": "Desde aquí se ve el nivel 100. Casi."
+        },
+        "philosopherStone": {
+          "name": "Piedra Filosofal",
+          "pitch": "Convierte apuestas en XP. Lo que siempre hizo, pero más rápido."
         }
-      }
+      },
+      "level": "Nivel {{n}}",
+      "needs": "Requiere",
+      "notNow": "Ahora no",
+      "price": "Precio",
+      "short": "Te faltan {{amount}}",
+      "showAll": "Mostrar todos los objetos",
+      "showLess": "Plegar el estante",
+      "soon": "Compra un objeto para descubrir qué viene después.",
+      "tipBuy": "{{price}} · nivel {{n}} · clic para comprar",
+      "tipLevel": "Necesita nivel {{n}} · eres nivel {{level}}",
+      "tipShort": "{{price}} · te faltan {{amount}}",
+      "title": "Tienda de Daisu",
+      "unlocked": "Desbloqueado",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Tus objetos · {{n}}",
+      "yours": "Tuyo"
     },
     "ticket": {
       "yours": "Tu bono",
@@ -1262,6 +1485,7 @@
     "main": "Principal",
     "provablyFair": "Provably Fair",
     "slot": "Tragaperras",
+    "sounds": "Sonidos",
     "support": "Soporte",
     "termsOfPrivacy": "Términos de privacidad",
     "userAgreement": "Términos de uso"
@@ -1725,9 +1949,11 @@
     "requestSent": "Solicitud enviada",
     "serviceMessagesAboutYour": "Los mensajes de servicio sobre tu cuenta, como avisos de seguridad y de políticas, se envían con independencia de esta opción.",
     "somethingWentWrong": "Algo ha salido mal",
-    "toEvery1kSpent": "Por cada 1K₽ gastados, ganas 5 XP.",
+    "toEvery1kSpent": "Cada K₽ 1 apostado da 5 XP, ganes o pierdas. Los impulsos de la tienda de Daisu se suman.",
     "updatesTurnedOff": "Novedades desactivadas",
     "weAreNotSending": "No estamos enviando a tu dirección porque un correo anterior rebotó o se marcó como spam. Escríbenos si crees que es un error.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "De los impulsos de la tienda de Daisu",
     "youWillGetUpdates": "Recibirás novedades sobre cajas y juegos"
   },
   "rain": {
@@ -1738,6 +1964,8 @@
     "joined": "Estas dentro",
     "logIn": "inicia sesion",
     "needLevel": "Llega al nivel {{level}} para entrar en la lluvia.",
+    "openChat": "Abrir el chat",
+    "soonToast": "Al menos K₽{{amount}} caen en el chat en {{minutes}} min.",
     "title": "Lluvia",
     "won": "La lluvia te dio K₽{{amount}}"
   },
@@ -1755,10 +1983,17 @@
     "nicknameHint": "De 2 a 30 caracteres. Puedes cambiarlo una vez cada 30 dias.",
     "nicknameLocked": "Puedes cambiarlo de nuevo el {{date}}.",
     "nicknameSaved": "Apodo actualizado",
+    "playTestSound": "Reproducir un sonido de prueba",
     "saveFailed": "No se pudo guardar, inténtalo de nuevo",
     "saveNickname": "Guardar apodo",
+    "sound": "Sonido",
+    "soundEffects": "Efectos de sonido",
+    "soundHint": "Clics, apuestas, premios y las ruletas. El sonido empieza tras tu primer clic en la página.",
     "title": "Ajustes",
-    "updates": "Novedades sobre cajas y juegos"
+    "updates": "Novedades sobre cajas y juegos",
+    "volume": "Volumen",
+    "volumeDown": "Más bajo",
+    "volumeUp": "Más alto"
   },
   "slot": {
     "bar": "barra",

@@ -4,7 +4,7 @@ const ChatMessage = require("../models/ChatMessage");
 const Marketplace = require("../models/Marketplace");
 const PredictionTrade = require("../models/PredictionTrade");
 const beta = require("./beta");
-const { ITEMS, itemOf, REVEAL_AHEAD } = require("./shopCatalog");
+const { ITEMS, itemOf, boostsOf, REVEAL_AHEAD } = require("./shopCatalog");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("./economy");
 const { getIo } = require("./realtime");
 
@@ -22,8 +22,12 @@ const EVIDENCE = {
   affiliateCard: async (user) => !!user.referralCode,
   giftCharm: async () => false,
   merchantSeal: async () => false,
+  goldenTicket: async () => false,
+  rainCoat: async () => false,
   predictionPass: async (user) => !!(await PredictionTrade.exists({ userId: user._id })),
 };
+// a boost or a charm is new, so nobody held one before the shop
+const evidenceOf = (item) => EVIDENCE[item.key] || (async () => false);
 
 const keysOf = (entries) => (entries || []).map((u) => u.key);
 
@@ -32,7 +36,7 @@ const keysOf = (entries) => (entries || []).map((u) => u.key);
 async function heldBy(user) {
   if (user.unlocksCheckedAt) return user.unlocks || [];
   const held = keysOf(user.unlocks);
-  const hits = await Promise.all(ITEMS.map((item) => (held.includes(item.key) ? false : EVIDENCE[item.key](user))));
+  const hits = await Promise.all(ITEMS.map((item) => (held.includes(item.key) ? false : evidenceOf(item)(user))));
   const at = new Date();
   const kept = ITEMS.filter((item, i) => hits[i]).map((item) => ({ key: item.key, via: "history", at }));
   const res = await User.updateOne(
@@ -60,7 +64,7 @@ async function lockFor(user, key) {
   return { message: "That needs an item from Daisu's shop", reason: "locked", unlock: key };
 }
 
-// what the shelf shows: everything held, and the next few items in order. the rest are only counted, so buying is how the player finds out what comes next
+// what the shelf shows: everything held, and the next few items in order whatever their kind. the rest are only counted, so buying is how the player finds out what comes next
 const revealedFor = (held) => {
   const keys = keysOf(held);
   let ahead = 0;
@@ -70,12 +74,14 @@ const revealedFor = (held) => {
 async function viewFor(user) {
   const held = await heldBy(user);
   const shown = revealedFor(held);
+  const hidden = ITEMS.length - shown.length;
   return {
     items: shown.map((item) => {
       const mine = held.find((u) => u.key === item.key);
       return { ...item, owned: !!mine, via: mine ? mine.via : null };
     }),
-    hidden: ITEMS.length - shown.length,
+    hidden,
+    xpBoost: boostsOf(keysOf(held)),
     walletBalance: user.walletBalance,
     level: user.level || 0,
   };
@@ -101,9 +107,10 @@ async function buy(user, key) {
     // one write takes the KP and grants the unlock, guarded on the balance, the level and not already
     // owning it, so two purchases landing together charge once
     updated = await runAtomic(async (session) => {
+      // the xp multipliers are rewritten from what is held plus this, in the same write
       const u = await User.findOneAndUpdate(
         { _id: user._id, walletBalance: { $gte: item.price }, level: { $gte: item.level }, "unlocks.key": { $ne: key } },
-        { $inc: { walletBalance: -item.price }, $push: { unlocks: { key, via: "bought", at } } },
+        { $inc: { walletBalance: -item.price }, $push: { unlocks: { key, via: "bought", at } }, $set: { xpBoost: boostsOf([...keysOf(held), key]) } },
         { new: true, projection: WITHOUT_INVENTORY, session }
       );
       if (!u) return null;
@@ -130,7 +137,7 @@ async function buy(user, key) {
   if (io) io.to(String(user._id)).emit("userDataUpdated", { walletBalance: updated.walletBalance });
   return {
     code: 200,
-    body: { bought: true, key, walletBalance: updated.walletBalance, unlocks: keysOf(updated.unlocks), shop: await viewFor(updated) },
+    body: { bought: true, key, walletBalance: updated.walletBalance, unlocks: keysOf(updated.unlocks), xpBoost: updated.xpBoost || {}, shop: await viewFor(updated) },
   };
 }
 

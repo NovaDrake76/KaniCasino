@@ -29,11 +29,13 @@ export interface User {
         rank: number;
     };
     // betas this account is in, as the server sees them
-    features?: { daisu?: boolean };
+    features?: { daisu?: boolean; rainWarning?: boolean };
     // daisu's first-login tour, null for accounts from before it or an offer that lapsed
     onboarding?: { status: "offered" | "active" | "skipped" | "done"; step: string | null; returning?: boolean } | null;
     // what daisu's shop has opened for an account in her beta; absent for everyone else
     unlocks?: UnlockKey[];
+    // the xp multipliers her boosts and charms add up to
+    xpBoost?: { all?: number; [game: string]: number | undefined };
 
 }
 

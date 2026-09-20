@@ -3,11 +3,11 @@ const { calculateLevelFromXp, calculateXPForLevel } = require("../../utils/econo
 describe("level calculation", () => {
   test("level is 0 below the first threshold", () => {
     expect(calculateLevelFromXp(0)).toBe(0);
-    expect(calculateLevelFromXp(999)).toBe(0);
+    expect(calculateLevelFromXp(calculateXPForLevel(1) - 1)).toBe(0);
   });
 
   test("known boundaries", () => {
-    expect(calculateLevelFromXp(calculateXPForLevel(1))).toBe(1); // 1000
+    expect(calculateLevelFromXp(calculateXPForLevel(1))).toBe(1);
     expect(calculateLevelFromXp(calculateXPForLevel(1) - 1)).toBe(0);
     expect(calculateLevelFromXp(calculateXPForLevel(2))).toBe(2);
   });

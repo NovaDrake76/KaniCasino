@@ -7,6 +7,7 @@ import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
 import RoadmapPanel from "./roadmap/RoadmapPanel";
 import ShopShelf from "./shop/ShopShelf";
+import OwnedItems from "./shop/OwnedItems";
 import YourBonus from "./YourBonus";
 import type { DaisuViewProps } from "./Daisu.types";
 import i18n from "../../i18n";
@@ -106,6 +107,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
             />
           </div>
           <YourBonus bonuses={bonuses} pick={bonusGame} sharePct={creditSharePct} onGo={closeToBubble} />
+          <OwnedItems shop={shop} onPick={pickItem} />
         </section>
 
         <section className="flex min-w-0 flex-col gap-4">
