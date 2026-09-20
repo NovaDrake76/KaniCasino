@@ -6,8 +6,8 @@ export const scheduleReelTicks = (durationMs: number, slots: number, event: Soun
   const timers: number[] = [];
   for (let k = 1; k <= slots; k++) {
     const t = durationMs * (1 - Math.cbrt(1 - k / slots));
-    // pitch drifts down as the reel slows, with a little wander so no two ticks are identical
-    const rate = (1.08 - 0.16 * (k / slots)) * (0.97 + Math.random() * 0.06);
+    // pitch drifts down as the reel slows
+    const rate = 1.08 - 0.16 * (k / slots);
     timers.push(window.setTimeout(() => play(event, { rate: [rate, rate], throttleMs: 0 }), t));
   }
   return () => timers.forEach((id) => window.clearTimeout(id));
