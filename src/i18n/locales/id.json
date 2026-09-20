@@ -790,10 +790,15 @@
       "chapterDoneLine": "Oke. Ternyata kamu tidak separah itu. Ini yang kumau darimu selanjutnya.",
       "chapters": {
         "1": "Langkah pertama",
+        "10": "Kesayangan Daisu",
         "2": "Mulai terbiasa",
         "3": "Kembali lagi",
         "4": "Pelanggan tetap",
-        "5": "Veteran"
+        "5": "Veteran",
+        "6": "Langganan",
+        "7": "Pemain besar",
+        "8": "Pilar",
+        "9": "Legenda"
       },
       "claim": "Ambil",
       "claimed": "Sudah diambil",
@@ -903,6 +908,106 @@
           "desc": "Jadi penggemar teratas karakter yang kamu sematkan.",
           "help": "Papan Top Fan mengurutkan pemain berdasarkan berapa banyak salinan karakter sematan yang mereka punya. Sematkan satu, punya paling banyak, dan mahkotanya milikmu.",
           "title": "Jadi Top Fan"
+        },
+        "r6-days": {
+          "desc": "Pasang taruhan di {{target}} hari berbeda. Tidak harus berturut-turut.",
+          "help": "Taruhan apa pun di satu hari menghitung hari itu. Empat belas. Aku menghitung, dan aku tidak buru-buru.",
+          "title": "Main di {{target}} hari berbeda"
+        },
+        "r6-full-pots": {
+          "desc": "Tunggu toplesku penuh, lalu ambil. {{target}} kali.",
+          "help": "Toples penuh membayar 25% lebih banyak daripada mengambil lebih awal. Kesabaran adalah keunggulan termurah di situs ini.",
+          "title": "Ambil {{target}} toples penuh"
+        },
+        "r6-collections": {
+          "desc": "Miliki semua item dari koleksi {{target}} kotak berbeda.",
+          "help": "Tiga kotak, semua yang bisa keluar darinya. Buka atau beli di pasar, terserah. Tab Koleksi menunjukkan yang kurang.",
+          "title": "Lengkapi {{target}} koleksi"
+        },
+        "r6-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Empat puluh. Kebanyakan orang tidak pernah sampai. Buktikan kamu bukan kebanyakan orang.",
+          "title": "Capai level {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Bertaruh total K₽ {{target}}, di apa saja.",
+          "help": "Lima juta. Dicicil berbulan-bulan atau satu malam gila, bagiku sama saja.",
+          "title": "Bertaruh K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Terima satu pembayaran K₽ {{target}} atau lebih dari permainan mana pun.",
+          "help": "Satu ronde, satu pembayaran, enam digit. Crash dan plinko tersangka biasanya. Jangan berbuat bodoh.",
+          "title": "Menang K₽ {{target}} dalam satu ronde"
+        },
+        "r7-market": {
+          "desc": "Beli atau jual {{target}} item di pasar.",
+          "help": "Pembelian, penjualan, dan pesanan yang terpenuhi semua dihitung. Pedagang punya lisensi dan memakainya.",
+          "title": "Bertransaksi {{target}} kali di pasar"
+        },
+        "r7-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Lima puluh. Setengah jalan ke puncak, dan anak tangganya makin tinggi saja.",
+          "title": "Capai level {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Ada di chat saat hujan turun, {{target}} kali.",
+          "help": "Setiap setengah jam sebagian dari taruhan situs turun ke siapa pun yang ikut hujan di chat. Ikut, lalu ada di sana saat turun. Sepuluh kali.",
+          "title": "Tangkap {{target}} hujan"
+        },
+        "r8-battles": {
+          "desc": "Kalahkan pemain lain di {{target}} pertarungan kotak.",
+          "help": "Kotak yang sama, total tertinggi menang. Sepuluh kemenangan butuh keberuntungan dan kehadiran. Terutama kehadiran.",
+          "title": "Menangkan {{target}} pertarungan kotak"
+        },
+        "r8-streak": {
+          "desc": "Putar hadiah harian {{target}} hari berturut-turut.",
+          "help": "Sebulan penuh tanpa melewatkan satu pun. Pasang alarm kalau perlu. Aku tidak akan bilang siapa-siapa.",
+          "title": "Rentetan hadiah {{target}} hari"
+        },
+        "r8-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Enam puluh. Hanya segelintir pemain yang pernah sampai sini. Selamat datang, kalau kamu berhasil.",
+          "title": "Capai level {{target}}"
+        },
+        "r9-days": {
+          "desc": "Pasang taruhan di {{target}} hari berbeda.",
+          "help": "Enam puluh hari dengan taruhan. Dua bulan hadir. Kamu sudah jadi langganan, suka atau tidak.",
+          "title": "Main di {{target}} hari berbeda"
+        },
+        "r9-cases": {
+          "desc": "Buka {{target}} kotak, kotak apa saja.",
+          "help": "Seribu kotak. Yang murah dihitung sama, dan buka banyak dihitung satu per satu. Drop-nya bakal jadi cerita.",
+          "title": "Buka {{target}} kotak"
+        },
+        "r9-collections": {
+          "desc": "Miliki semua item dari koleksi {{target}} kotak berbeda.",
+          "help": "Sepuluh koleksi lengkap. Itu museum, bukan hobi.",
+          "title": "Lengkapi {{target}} koleksi"
+        },
+        "r9-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Tujuh puluh lima. Aku sudah berhenti mengharapkan siapa pun di atas sini. Kejutkan aku.",
+          "title": "Capai level {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Bertaruh total K₽ {{target}}, di apa saja.",
+          "help": "Seratus juta. Aku tahu. Itulah intinya.",
+          "title": "Bertaruh K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Undang {{target}} teman yang mencapai level 10.",
+          "help": "Tautan afiliasimu ada di profil. Teman dihitung setelah mencapai level 10, jadi bawa orang yang akan tinggal, bukan turis.",
+          "title": "Bawa {{target}} teman ke level 10"
+        },
+        "r10-predictions": {
+          "desc": "Beli atau jual saham di {{target}} prediksi.",
+          "help": "Pasar prediksi di halaman Prediksi. Setiap beli atau jual dihitung satu. Dua puluh lima dan mungkin kamu malah belajar sesuatu.",
+          "title": "Lakukan {{target}} transaksi prediksi"
+        },
+        "r10-level": {
+          "desc": "Setiap taruhan memberi XP, menang atau kalah.",
+          "help": "Seratus. Belum ada yang berhasil. Kalau kamu bisa, aku yang pertama tahu, dan aku akan bilang.",
+          "title": "Capai level {{target}}"
         }
       },
       "progress": "{{done}} dari {{total}} selesai"
@@ -978,20 +1083,23 @@
     },
     "shop": {
       "after": "Saldomu setelahnya",
+      "boost": {
+        "about": "Setiap taruhanmu menghasilkan {{pct}}% XP lebih banyak, di atas yang sudah kamu punya. Booster saling menambah dan tidak pernah habis.",
+        "opened": "Sudah ada di meja. Setiap taruhan mulai sekarang menghasilkan {{pct}}% lebih banyak.",
+        "what": "+{{pct}}% XP di setiap taruhan, selamanya."
+      },
       "buyFor": "Beli seharga {{amount}}",
+      "charm": {
+        "about": "Setiap taruhanmu di {{game}} menghasilkan {{pct}}% XP lebih banyak, di atas booster lainnya. Hanya {{game}}, dan tidak pernah habis.",
+        "cases": "Kotak",
+        "name": "Jimat {{game}}",
+        "opened": "Terpasang. Taruhan {{game}} berikutnya sudah menghasilkan lebih. Sana.",
+        "pitch": "Kamu toh main {{game}}. Sekalian dibayar dua kali.",
+        "what": "+{{pct}}% XP di setiap taruhan {{game}}, selamanya."
+      },
+      "collapse": "Sembunyikan nama",
+      "expand": "Tampilkan nama",
       "failed": "Gagal membeli. Coba lagi.",
-      "level": "Level {{n}}",
-      "needs": "Butuh",
-      "notNow": "Nanti saja",
-      "price": "Harga",
-      "short": "Kurang {{amount}}",
-      "soon": "Beli satu item untuk tahu apa berikutnya.",
-      "tipBuy": "{{price}} · level {{n}} · klik untuk beli",
-      "tipLevel": "Butuh level {{n}} · kamu level {{level}}",
-      "tipShort": "{{price}} · kurang {{amount}}",
-      "title": "Toko Daisu",
-      "unlocked": "Terbuka",
-      "yours": "Milikmu",
       "items": {
         "affiliateCard": {
           "about": "Membuka tab Afiliasi: pilih kode undanganmu, bagikan tautanmu, dan raih K₽ saat orang yang kamu undang mendaftar, mencapai level 10, dan bertaruh.",
@@ -1061,8 +1169,118 @@
           "opened": "Sudah berlisensi. Beli, pasang, buat pesanan, pasar sepenuhnya milikmu. Mau kutunjukkan?",
           "pitch": "Dokumen resmi supaya kamu bisa tawar-menawar dengan orang asing. Jangan sampai ditipu. Eh, ditipu juga boleh, lucu.",
           "what": "Beli dari pemain lain dan pasang barangmu sendiri di pasar."
+        },
+        "goldenTicket": {
+          "about": "Setiap kali kamu mengambil dari toples, tambahan yang jatuh sebagai bonus di permainan adalah 15% dari ambilan, bukan 10%. Toples penuh, ambilan awal, semuanya, selamanya.",
+          "name": "Tiket Emas",
+          "opened": "Selesai. Ambilan berikutnya sudah dapat bonus yang lebih besar. Mau lihat toplesnya?",
+          "pitch": "Uang gratis tambahan di atas uang gratis. Aku terlalu murah hati.",
+          "what": "Setiap ambilan dari toplesku menambah 15% sebagai bonus permainan, bukan 10%, selamanya."
+        },
+        "rainCoat": {
+          "about": "Saat hujan turun di chat, kolamnya dibagi berdasarkan level. Dengan jas hujan, bagianmu dihitung 1,5x lipat dibanding tanpa jas. Batas per pemain tetap berlaku.",
+          "name": "Jas Hujan",
+          "opened": "Sudah kamu pakai. Hujan berikutnya, potongan lebih besar jadi milikmu. Mau lihat di mana turunnya?",
+          "pitch": "Membuatmu tetap kering. Bohong, membuatmu lebih basah. Di sini hujan adalah uang.",
+          "what": "Bagianmu dari setiap hujan di chat berbobot 1,5x, selamanya."
+        },
+        "luckyPencil": {
+          "name": "Pensil Keberuntungan",
+          "pitch": "Ujungnya bekas gigitan. Di situlah keberuntungannya."
+        },
+        "pocketNotebook": {
+          "name": "Buku Saku",
+          "pitch": "Catat kekalahanmu. Membentuk karakter."
+        },
+        "readingLamp": {
+          "name": "Lampu Baca",
+          "pitch": "Supaya kamu bisa lihat berapa banyak yang kamu kalah. Dengan jelas."
+        },
+        "coffeeMug": {
+          "name": "Mug Kopi",
+          "pitch": "Satu ronde lagi. Itu kata mugnya. Selalu."
+        },
+        "abacus": {
+          "name": "Sempoa",
+          "pitch": "Aku menghitung lebih cepat dari kekalahanmu. Nyaris."
+        },
+        "fortuneCat": {
+          "name": "Kucing Keberuntungan",
+          "pitch": "Dia melambai. Tidak ada yang tahu ke siapa. Terus bertaruh."
+        },
+        "studyDesk": {
+          "name": "Meja Belajar",
+          "pitch": "Meja yang layak. Sekarang kamu bisa kalah sambil duduk tegak."
+        },
+        "metronome": {
+          "name": "Metronom",
+          "pitch": "Tik. Taruhan. Tok. Taruhan. Dia atur tempo, aku yang hitung."
+        },
+        "hourglass": {
+          "name": "Jam Pasir",
+          "pitch": "Waktu adalah uang. Ini membuat keduanya lebih cepat."
+        },
+        "globe": {
+          "name": "Globus",
+          "pitch": "Putar. Di mana pun berhenti, di sana juga orang bertaruh."
+        },
+        "telescope": {
+          "name": "Teleskop",
+          "pitch": "Untuk melihat level 100. Masih sangat jauh."
+        },
+        "goldCat": {
+          "name": "Kucing Emas",
+          "pitch": "Kucing yang sama, tapi emas. Melambainya lebih kencang."
+        },
+        "libraryCard": {
+          "name": "Kartu Perpustakaan",
+          "pitch": "Kamu sudah baca semua aturan situs ini. Kelihatan."
+        },
+        "compass": {
+          "name": "Kompas",
+          "pitch": "Selalu menunjuk ke taruhan berikutnya. Mungkin rusak."
+        },
+        "crystalSkull": {
+          "name": "Tengkorak Kristal",
+          "pitch": "Dia tahu bagaimana sesimu berakhir. Tidak akan bilang."
+        },
+        "daisuDiary": {
+          "name": "Buku Harian Daisu",
+          "pitch": "Jangan dibaca. Ya sudah, baca. Halaman 12 tentang kamu."
+        },
+        "starChart": {
+          "name": "Peta Bintang",
+          "pitch": "Bintang bilang kamu akan menang. Bintang bilang begitu ke semua orang."
+        },
+        "goldenAbacus": {
+          "name": "Sempoa Emas",
+          "pitch": "Untuk menghitung angka dengan lebih banyak nol. Angkamu, belakangan ini."
+        },
+        "observatory": {
+          "name": "Observatorium",
+          "pitch": "Level 100 terlihat dari sini. Hampir."
+        },
+        "philosopherStone": {
+          "name": "Batu Bertuah",
+          "pitch": "Mengubah taruhan jadi XP. Yang memang selalu dilakukannya, tapi lebih cepat."
         }
-      }
+      },
+      "level": "Level {{n}}",
+      "needs": "Butuh",
+      "notNow": "Nanti saja",
+      "price": "Harga",
+      "short": "Kurang {{amount}}",
+      "showAll": "Tampilkan semua item",
+      "showLess": "Lipat rak",
+      "soon": "Beli satu item untuk tahu apa berikutnya.",
+      "tipBuy": "{{price}} · level {{n}} · klik untuk beli",
+      "tipLevel": "Butuh level {{n}} · kamu level {{level}}",
+      "tipShort": "{{price}} · kurang {{amount}}",
+      "title": "Toko Daisu",
+      "unlocked": "Terbuka",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Itemmu · {{n}}",
+      "yours": "Milikmu"
     },
     "ticket": {
       "yours": "Bonusmu",
@@ -1731,9 +1949,11 @@
     "requestSent": "Req dikirim",
     "serviceMessagesAboutYour": "Pesan layanan tentang akun Kamu, seperti pemberitahuan keamanan dan kebijakan, akan dikirim terlepas dari pengaturan ini.",
     "somethingWentWrong": "Ada yang salah",
-    "toEvery1kSpent": "Untuk setiap 1K₽ yang dibelanjakan, Kamu mendapatkan 5 XP.",
+    "toEvery1kSpent": "Setiap K₽ 1 yang dipertaruhkan memberi 5 XP, menang atau kalah. Booster dari toko Daisu menambahnya.",
     "updatesTurnedOff": "Pembaruan dimatiin",
     "weAreNotSending": "Kami tidak mengirim email ke alamat Anda karena email sebelumnya gagal terkirim atau dilaporkan sebagai spam. Hubungi kami jika Anda merasa hal itu keliru.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "Dari booster di toko Daisu",
     "youWillGetUpdates": "Anda akan mendapatkan pembaruan tentang gacha dan game baru."
   },
   "rain": {

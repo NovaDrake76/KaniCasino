@@ -37,8 +37,8 @@ const fillAt = (nextBonus, now = new Date()) => {
 // (CLICK_RATE + (1 - CLICK_RATE) * fill) times the full rate, which never exceeds one
 const payout = (full, fill) => Math.floor(full * fill * (CLICK_RATE + (1 - CLICK_RATE) * fill));
 
-// kept to the cent so a small click still leaves something on the pick
-const creditOf = (amount) => Math.round(amount * CREDIT_SHARE * 100) / 100;
+// kept to the cent so a small click still leaves something on the pick; the share is the account's own (the golden ticket raises it)
+const creditOf = (amount, share = CREDIT_SHARE) => Math.round(amount * share * 100) / 100;
 
 // when a click would first find MIN_CLAIM in the jar, from the start of the cycle
 const readyAt = (nextBonus, full) => {

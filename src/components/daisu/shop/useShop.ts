@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { buyShopItem, ShopPurchase, UnlockKey } from "../../../services/daisu/ShopService";
+import { buyShopItem, ShopPurchase } from "../../../services/daisu/ShopService";
 import { loadShop, setShop, useShopState } from "./shopStore";
 import i18n from "../../../i18n";
 
@@ -15,9 +15,9 @@ interface Args {
 // her shop: read when its tab opens, one item picked to look at, and a purchase that ends on what it opened
 export const useShop = ({ live, userId, open, onBought }: Args) => {
   const shop = useShopState();
-  const [picked, setPicked] = useState<UnlockKey | null>(null);
+  const [picked, setPicked] = useState<string | null>(null);
   const [buying, setBuying] = useState(false);
-  const [unlocked, setUnlocked] = useState<UnlockKey | null>(null);
+  const [unlocked, setUnlocked] = useState<string | null>(null);
 
   // an account never sees the shop of whoever was signed in before
   useEffect(() => {
@@ -30,7 +30,7 @@ export const useShop = ({ live, userId, open, onBought }: Args) => {
     if (live && open) loadShop(true);
   }, [live, open]);
 
-  const pickItem = (key: UnlockKey) => {
+  const pickItem = (key: string) => {
     setPicked(key);
     if (live) loadShop();
   };

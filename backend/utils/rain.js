@@ -6,6 +6,8 @@ const badges = require("./badges");
 const { creditUser, TX } = require("./economy");
 const { HOUSE } = require("./accounts");
 const { VISIBLE } = require("./visibility");
+const shop = require("./shop");
+const { RAIN_COAT_WEIGHT } = require("./shopCatalog");
 
 // the rain. every half hour a share of what the site wagered is split between whoever was
 // in the chat for it. it is rakeback, the same as the daily board: the pool comes out of
@@ -134,7 +136,8 @@ async function join(userId) {
 // that joiner the cap and carries the rest rather than handing them a fortune.
 function splitPool(pool, people) {
   if (!(pool >= MIN_POOL) || !people.length) return [];
-  const weights = people.map((person) => weightFor(person.level));
+  // the rain coat from daisu's shop makes its holder's share heavier, level for level
+  const weights = people.map((person) => weightFor(person.level) * (shop.holds(person, "rainCoat") ? RAIN_COAT_WEIGHT : 1));
   const total = weights.reduce((a, b) => a + b, 0);
   return people
     .map((person, i) => ({
@@ -154,9 +157,9 @@ async function settle(now = new Date()) {
   const pool = await poolFor(round);
   const joiners = round.joiners.map(String);
 
-  // levels only, and only for the people in this round, which is tens of documents
+  // levels and shop perks only, and only for the people in this round, which is tens of documents
   const people = joiners.length
-    ? await User.find({ _id: { $in: joiners } }).select("level").lean()
+    ? await User.find({ _id: { $in: joiners } }).select("level betaFlags unlocks").lean()
     : [];
   const shares = splitPool(pool, people);
   const paidOut = shares.reduce((sum, share) => sum + share.amount, 0);
