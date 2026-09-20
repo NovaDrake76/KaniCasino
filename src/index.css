@@ -119,6 +119,32 @@
   }
 }
 
+/* the stage a case section sits on: a faint dot grid that fades out at the section's
+   edges, a glow behind the shelf, and a big outlined ordinal in the gutter */
+.stage-dots {
+  background-image: radial-gradient(rgba(201, 198, 222, 0.16) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+  -webkit-mask-image: radial-gradient(70% 80% at 50% 45%, #000 20%, transparent 100%);
+  mask-image: radial-gradient(70% 80% at 50% 45%, #000 20%, transparent 100%);
+}
+
+.stage-glow {
+  background: radial-gradient(55% 60% at 50% 0%, rgba(79, 70, 229, 0.18), transparent 70%);
+}
+
+.stage-ordinal {
+  font-weight: 800;
+  font-size: 150px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(201, 198, 222, 0.14);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  user-select: none;
+}
+
 .animate-bounce-up-fade {
   animation: bounce-up-fade 0.5s ease-out forwards;
 }

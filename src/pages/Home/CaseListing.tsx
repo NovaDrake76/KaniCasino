@@ -15,6 +15,8 @@ interface CaseListingProps {
   sectionId?: string;
   // only the first section sits near the fold; the rest lazy-load their art
   eager?: boolean;
+  // the section's number on the page, drawn large in the gutter and small by the header
+  ordinal?: number;
 }
 
 // the placeholder mirrors a real card: same w-64, same h-32/md:h-64 art box, same text
@@ -35,7 +37,8 @@ const CaseSkeleton = () => (
 
 const collapseKey = (name: string) => `caseSection:${name}`;
 
-const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loading, collapsible, sectionId, eager }) => {
+const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loading, collapsible, sectionId, eager, ordinal }) => {
+  const number = ordinal ? String(ordinal).padStart(2, "0") : null;
   const { userData } = useContext(UserContext);
   // on a phone daisu's tour points at a single case, so it is one the player can afford
   const affordable = loading || !userData ? -1 : cases.findIndex((c: any) => c.price <= userData.walletBalance);
@@ -58,7 +61,12 @@ const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loa
   };
 
   return (
-    <section id={sectionId} className="w-full flex flex-col py-6 items-center scroll-mt-16" key={name}>
+    <section id={sectionId} className="relative isolate w-full flex flex-col py-6 items-center scroll-mt-16" key={name}>
+      <div aria-hidden className="stage-glow absolute inset-0 -z-10" />
+      <div aria-hidden className="stage-dots absolute inset-0 -z-10" />
+      {number && !collapsed && (
+        <span aria-hidden className="stage-ordinal absolute left-3 top-1/2 -z-10 hidden -translate-y-1/2 2xl:block">{number}</span>
+      )}
       <div className="flex flex-col w-full max-w-[1600px] px-4">
         <div className="flex items-center justify-between gap-4 pb-3 border-b border-line">
           <div className="flex items-center gap-3">
@@ -75,15 +83,20 @@ const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loa
               </>
             )}
           </div>
-          {collapsible && !loading && (
-            <button
-              onClick={toggle}
-              className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-muted hover:text-white transition-colors"
-            >
-              {collapsed ? "Show" : "Hide"}
-              {collapsed ? <AiOutlineDown /> : <AiOutlineUp />}
-            </button>
-          )}
+          <div className="flex items-center gap-5">
+            {collapsible && !loading && (
+              <button
+                onClick={toggle}
+                className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-ink-muted hover:text-white transition-colors"
+              >
+                {collapsed ? "Show" : "Hide"}
+                {collapsed ? <AiOutlineDown /> : <AiOutlineUp />}
+              </button>
+            )}
+            {number && !loading && (
+              <span aria-hidden className="text-sm font-extrabold tracking-[0.2em] text-ink-faint">{number}</span>
+            )}
+          </div>
         </div>
         {description && !collapsed && (
           <div className="text-sm text-ink-muted pt-3">{description}</div>

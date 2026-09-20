@@ -192,6 +192,7 @@ const Home = () => {
               cases={mostOpened}
               sectionId={TOP_CASES_ID}
               eager
+              ordinal={1}
             />
           )
         )}
@@ -205,13 +206,14 @@ const Home = () => {
         {loading ? (
           <CaseListing name="Cases" loading cases={[]} />
         ) : (
-          groups.map((group) => (
+          groups.map((group, index) => (
             <CaseListing
               key={group.category}
               name={`${group.category} Cases`}
               cases={group.cases}
               sectionId={group.id}
               collapsible
+              ordinal={index + (mostOpened.length > 0 ? 2 : 1)}
             />
           ))
         )}
