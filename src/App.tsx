@@ -24,6 +24,8 @@ import TourOverlay from "./components/daisu/tour/TourOverlay";
 import HelpOverlay from "./components/daisu/tour/HelpOverlay";
 import ChatDock, { ChatToggle, useChatDock } from "./components/chat/ChatDock";
 import { pushDrop } from "./components/header/liveDrop";
+import { onRainSoon } from "./services/chat/RainService";
+import { toastRainSoon } from "./components/chat/rainSoonToast";
 
 const Header = lazy(() => import("./components/header/index"));
 const AppRoutes = lazy(() => import("./Routes"));
@@ -174,6 +176,16 @@ function App() {
       checkMissions(false);
     }
   }, [socket, userData]);
+
+  // the rain warning goes to everyone online; the flag decides who acts on it until launch
+  const rainWarning = !!userData?.features?.rainWarning;
+  useEffect(() => {
+    if (!rainWarning) return;
+    return onRainSoon(({ pool, endsAt }) => {
+      const minutes = Math.max(1, Math.round((new Date(endsAt).getTime() - Date.now()) / 60000));
+      toastRainSoon(pool, minutes);
+    });
+  }, [rainWarning]);
 
   useEffect(() => {
     socket.on("newNotification", (notification) => {

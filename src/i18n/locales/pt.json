@@ -1739,6 +1739,8 @@
     "joined": "Voce esta dentro",
     "logIn": "entre",
     "needLevel": "Chegue ao nivel {{level}} para entrar na chuva.",
+    "openChat": "Abrir o chat",
+    "soonToast": "Pelo menos K₽{{amount}} caem no chat em {{minutes}} min.",
     "title": "Chuva",
     "won": "A chuva te deu K₽{{amount}}"
   },

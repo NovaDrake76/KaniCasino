@@ -1739,6 +1739,8 @@
     "joined": "You are in",
     "logIn": "log in",
     "needLevel": "Reach level {{level}} to join the rain.",
+    "openChat": "Open the chat",
+    "soonToast": "At least K₽{{amount}} falls in the chat in {{minutes}} min.",
     "title": "Rain pool",
     "won": "The rain gave you K₽{{amount}}"
   },

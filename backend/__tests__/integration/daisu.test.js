@@ -66,7 +66,7 @@ describe("who gets in", () => {
 
     const res = await request(app).get("/users/me").set("Authorization", `Bearer ${tokenFor(user)}`);
 
-    expect(res.body.features).toEqual({ daisu: true });
+    expect(res.body.features).toEqual({ daisu: true, rainWarning: false });
   });
 
   it("lets an admin put someone in and take them out", async () => {

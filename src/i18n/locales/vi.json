@@ -1739,6 +1739,8 @@
     "joined": "Ban da tham gia",
     "logIn": "dang nhap",
     "needLevel": "Dat cap {{level}} de tham gia con mua.",
+    "openChat": "Mở chat",
+    "soonToast": "Ít nhất K₽{{amount}} sẽ rơi trong chat sau {{minutes}} phút.",
     "title": "Quy mua",
     "won": "Con mua tang ban K₽{{amount}}"
   },

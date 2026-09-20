@@ -1739,6 +1739,8 @@
     "joined": "Kamu ikut",
     "logIn": "masuk",
     "needLevel": "Capai level {{level}} untuk ikut hujan.",
+    "openChat": "Buka chat",
+    "soonToast": "Setidaknya K₽{{amount}} turun di chat dalam {{minutes}} menit.",
     "title": "Kolam hujan",
     "won": "Hujan memberimu K₽{{amount}}"
   },

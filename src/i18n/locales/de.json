@@ -1739,6 +1739,8 @@
     "joined": "Du bist dabei",
     "logIn": "anmelden",
     "needLevel": "Erreiche Level {{level}}, um beim Regen mitzumachen.",
+    "openChat": "Chat öffnen",
+    "soonToast": "Mindestens K₽{{amount}} fallen in {{minutes}} Min. im Chat.",
     "title": "Regen",
     "won": "Der Regen gab dir K₽{{amount}}"
   },
