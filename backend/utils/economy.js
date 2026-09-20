@@ -4,8 +4,7 @@ const Transaction = require("../models/Transaction");
 const { COUNTERPARTY_FOR_TYPE, MINT } = require("./accounts");
 const { GAME_OF_BET, creditHeld, creditLive } = require("./pot");
 
-const BASE_XP = 1000; // xp required for the first level
-const GROWTH_RATE = 1.25; // growth rate for each level
+const { xpForLevel, levelFromXp, XP_GAME_OF_BET, xpGain, xpGainExpr } = require("./xpCurve");
 
 // canonical transaction types, so every ledger write uses the same labels
 const TX = {
@@ -65,18 +64,9 @@ const TX = {
 // every KP put at risk on a game; missions and referral commission both count these
 const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.PLINKO_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN, TX.PREDICTION_BUY];
 
-function calculateXPForLevel(level) {
-  return Math.floor(BASE_XP * Math.pow(GROWTH_RATE, level - 1));
-}
-
-// level is fully derived from xp, so this is idempotent and safe to recompute
-function calculateLevelFromXp(xp) {
-  let level = 0;
-  while (xp >= calculateXPForLevel(level + 1)) {
-    level += 1;
-  }
-  return level;
-}
+// the ladder lives in xpCurve.js; these names are what the rest of the code calls
+const calculateXPForLevel = xpForLevel;
+const calculateLevelFromXp = levelFromXp;
 
 // whether the connected mongo supports multi-document transactions, probed at boot.
 // production is Atlas (a replica set) and always does; a standalone dev mongod does not.
@@ -205,10 +195,13 @@ async function ledgerSupply() {
 // returning it made a single bet a twenty-second write on a 100 KB/s link.
 const WITHOUT_INVENTORY = { inventory: 0 };
 
-async function takeStake(userId, cost, inc, session) {
+// the xp a stake earns is multiplied by the account's boosts inside the write, so a purchase counts from the next bet
+async function takeStake(userId, cost, game, awardXp, session) {
+  const set = { walletBalance: { $subtract: ["$walletBalance", cost] } };
+  if (awardXp) set.xp = { $add: [{ $ifNull: ["$xp", 0] }, xpGainExpr(cost, game)] };
   const user = await User.findOneAndUpdate(
     { _id: userId, walletBalance: { $gte: cost } },
-    { $inc: inc },
+    [{ $set: set }],
     { new: true, projection: WITHOUT_INVENTORY, session }
   );
   return { user, drawn: 0 };
@@ -227,7 +220,7 @@ async function takeStakeWithCredit(userId, cost, game, awardXp, session) {
     walletBalance: { $subtract: ["$walletBalance", { $subtract: [cost, drawn] }] },
     [path]: { $subtract: [stored, drawn] },
   };
-  if (awardXp) set.xp = { $add: [{ $ifNull: ["$xp", 0] }, cost * 5] };
+  if (awardXp) set.xp = { $add: [{ $ifNull: ["$xp", 0] }, xpGainExpr(cost, game)] };
   const user = await User.findOneAndUpdate(
     { _id: userId, $expr: { $gte: [{ $add: ["$walletBalance", credit] }, cost] } },
     [{ $set: set }],
@@ -237,7 +230,7 @@ async function takeStakeWithCredit(userId, cost, game, awardXp, session) {
   const held = creditHeld(user, game);
   const taken = Math.min(creditLive(user, game, now), cost);
   user.walletBalance -= cost - taken;
-  if (awardXp) user.xp = (user.xp || 0) + cost * 5;
+  if (awardXp) user.xp = (user.xp || 0) + xpGain(cost, game, user.xpBoost);
   user.gameCredits = { ...(user.gameCredits || {}), [game]: held - taken };
   return { user, drawn: taken };
 }
@@ -245,20 +238,17 @@ async function takeStakeWithCredit(userId, cost, game, awardXp, session) {
 // debit `cost` if the balance covers it, with its ledger row in the same transaction:
 // a failed row rolls the charge back and returns null, like insufficient funds
 async function chargeUser(userId, cost, { awardXp = true, type, meta, counterparty, session } = {}) {
-  const inc = awardXp
-    ? { walletBalance: -cost, xp: cost * 5 }
-    : { walletBalance: -cost };
-
   const body = async (s) => {
     const game = GAME_OF_BET[type];
     const { user, drawn } = game
       ? await takeStakeWithCredit(userId, cost, game, awardXp, s)
-      : await takeStake(userId, cost, inc, s);
+      : await takeStake(userId, cost, XP_GAME_OF_BET[type] || null, awardXp, s);
     if (!user) return null;
 
+    // a level only ever goes up: the ladder can change under an account, its standing cannot
     if (awardXp) {
       const newLevel = calculateLevelFromXp(user.xp);
-      if (newLevel !== user.level) {
+      if (newLevel > (user.level || 0)) {
         user.level = newLevel;
         await User.updateOne({ _id: userId }, { $set: { level: newLevel } }, { session: s });
       }
@@ -335,7 +325,7 @@ async function awardXp(userId, xpAmount) {
   if (!user) return null;
 
   const newLevel = calculateLevelFromXp(user.xp);
-  if (newLevel !== user.level) {
+  if (newLevel > (user.level || 0)) {
     user.level = newLevel;
     await User.updateOne({ _id: userId }, { $set: { level: newLevel } });
     require("./referrals").maybePayReferralMilestone(userId, newLevel).catch(() => {});

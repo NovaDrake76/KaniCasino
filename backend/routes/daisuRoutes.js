@@ -8,8 +8,12 @@ const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("../util
 const { potClaimLimiter } = require("../middleware/rateLimit");
 const roadmap = require("../utils/roadmap");
 const shop = require("../utils/shop");
+const { GOLDEN_TICKET_SHARE } = require("../utils/shopCatalog");
 
 const gate = [authMiddleware.isAuthenticated, beta.requireFlag("daisu")];
+
+// the golden ticket from her shop makes every take add more to the pick
+const shareOf = (user) => (shop.holds(user, "goldenTicket") ? GOLDEN_TICKET_SHARE : pot.CREDIT_SHARE);
 
 // everything the dock needs to draw the pot and tick it locally until the next take
 const statusOf = (user, now = new Date()) => {
@@ -23,7 +27,7 @@ const statusOf = (user, now = new Date()) => {
     cycleMs: pot.CYCLE_MS,
     clickRate: pot.CLICK_RATE,
     fullBonus: pot.FULL_BONUS,
-    creditShare: pot.CREDIT_SHARE,
+    creditShare: shareOf(user),
     pick: pot.pickAt(index),
     nextPick: pot.pickAt(index + 1),
     pickProgress: user.bonusAmount > 0 ? Math.min(1, (user.potCycleClaimed || 0) / user.bonusAmount) : 0,
@@ -74,7 +78,7 @@ router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
       });
     }
 
-    const credit = pot.creditOf(amount);
+    const credit = pot.creditOf(amount, shareOf(req.user));
     const pick = pot.pickAt(req.user.potPickIndex);
     const advanced = pot.advancePick(req.user.potPickIndex, req.user.potCycleClaimed, amount, req.user.bonusAmount);
     const nextBonus = new Date(now.getTime() + pot.CYCLE_MS);

@@ -1,5 +1,7 @@
+import { useEffect, useRef } from "react";
 import { IoMdClose } from "react-icons/io";
 import i18n from "../i18n";
+import { play } from "../services/sound/sound";
 
 interface ModalProps {
   children: JSX.Element;
@@ -9,6 +11,15 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ children, open, setOpen, width = "600px" }) => {
+  // open/close sounds; the ref skips the very first render so a modal that mounts
+  // closed stays silent
+  const wasOpen = useRef(open);
+  useEffect(() => {
+    if (open === wasOpen.current) return;
+    wasOpen.current = open;
+    play(open ? "ui.open" : "ui.close");
+  }, [open]);
+
   if (!open) return null;
 
   /* function to close when clicking outside modal */

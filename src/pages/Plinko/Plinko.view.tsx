@@ -34,6 +34,7 @@ import { PlinkoBall, PlinkoViewProps } from "./Plinko.types";
 import i18n from "../../i18n";
 import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
 import GameBar from "../../components/game/GameBar";
+import { play } from "../../services/sound/sound";
 
 const PEG_ROWS = pegRows();
 
@@ -78,7 +79,11 @@ const FallingBall = memo(({ ball, onSettle }: { ball: PlinkoBall; onSettle: (bal
   // pulse each peg right as the ball reaches it
   useEffect(() => {
     const timers = frames.hits.map((h) =>
-      setTimeout(() => pulsePegElement(h.row, h.index), h.t * DROP_DURATION_S * 1000)
+      setTimeout(() => {
+        pulsePegElement(h.row, h.index);
+        // throttled in events.ts, so twelve balls in flight do not become a drum roll
+        play("plinko.peg");
+      }, h.t * DROP_DURATION_S * 1000)
     );
     return () => timers.forEach(clearTimeout);
   }, [frames]);

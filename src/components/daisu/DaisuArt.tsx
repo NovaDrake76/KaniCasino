@@ -1,12 +1,18 @@
+import { useEffect, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Monetary from "../Monetary";
-import type { Face, Pop, Run } from "./Daisu.types";
+import { ART_HEIGHT, ART_WIDTH, JAR } from "./daisuParts";
+import { EXPRESSIONS, jarStage, type Expression } from "./daisuFace";
+import { useTalking } from "./speechStore";
+import type { Pop, Run } from "./Daisu.types";
 
 interface Props {
   // how full the jar is, 0 to 1
   fill: number;
-  face: Face;
+  expression: Expression;
   shaking?: boolean;
+  // one hop, for a take from the jar
+  hopping?: boolean;
   // head and shoulders only, for the bubble
   bust?: boolean;
   className?: string;
@@ -21,18 +27,12 @@ interface Props {
   pokeLocked?: boolean;
 }
 
-// one drawing per face; a face without its own drawing falls back to idle, so new art
-// can land one expression at a time
-const SPRITES: Partial<Record<Face, string>> = {
-  idle: "/images/daisu/idle.webp",
-};
+const PART = (name: string) => `/images/daisu/parts/${name}.webp`;
 const BUST = "/images/daisu/bust.webp";
-const RATIO = "519 / 684";
+const RATIO = `${ART_WIDTH} / ${ART_HEIGHT}`;
 
-// where the jar and the coins inside it sit on the drawing, as a share of its box.
-// measured off the sketch; a new drawing that moves the jar changes these two lines
-const GLASS = { left: 31.8, top: 52.9, width: 32.8, height: 22.2 };
-const COINS = { left: 34.3, top: 56.1, width: 27.7, height: 17.5 };
+// how long the mouth holds each shape while she talks
+const FLAP_MS = 110;
 
 const RUN_COLOR: Record<Run["state"], string> = {
   open: "text-accent-gold",
@@ -48,27 +48,72 @@ const runMotion = (state: Run["state"]) => {
   return { animate: { opacity: 1, y: 0, x: 0 }, transition: { duration: 0.15 } };
 };
 
-const box = (r: typeof GLASS) => ({
-  left: `${r.left}%`,
-  top: `${r.top}%`,
-  width: `${r.width}%`,
-  height: `${r.height}%`,
-});
+const Layer = ({ part, hidden, className, style }: { part: string; hidden?: boolean; className?: string; style?: CSSProperties }) => (
+  <img
+    src={PART(part)}
+    alt=""
+    draggable={false}
+    aria-hidden
+    style={style}
+    className={`pointer-events-none absolute inset-0 h-full w-full object-contain ${hidden ? "invisible" : ""} ${className || ""}`}
+  />
+);
 
-// daisu holding the jar. the coins in the drawing are covered from the top by as much
-// of the jar as has been taken, so the picture itself is the gauge
-const DaisuArt = ({ fill, face, shaking, bust, className, onJar, onPoke, pops = [], run, settleMs, jarLabel, pokeLabel, pokeLocked }: Props) => {
+// the jar shakes and glows about its own middle, not the middle of the drawing it sits in
+const JAR_PIVOT = { transformOrigin: `${JAR.left + JAR.width / 2}% ${JAR.top + JAR.height / 2}%` };
+
+// the mouth she is wearing this frame: closed, then one of her expression's open shapes
+const mouthNow = (expression: Expression, talking: boolean, frame: number) => {
+  const look = EXPRESSIONS[expression];
+  if (!talking || frame % 2 === 0) return look.rest;
+  return look.talk[Math.floor(frame / 2) % look.talk.length];
+};
+
+// daisu holding the jar, drawn as stacked parts: the body, one of five jars, her eyes and
+// her mouth. how full the jar is picks its drawing, so the picture itself is the gauge
+const DaisuArt = ({ fill, expression, shaking, hopping, bust, className, onJar, onPoke, pops = [], run, settleMs, jarLabel, pokeLabel, pokeLocked }: Props) => {
   const level = Math.max(0, Math.min(1, fill));
-  const src = bust ? BUST : SPRITES[face] || SPRITES.idle;
+  const stage = jarStage(level);
+  const talking = useTalking();
+  const [frame, setFrame] = useState(0);
+
+  useEffect(() => {
+    if (!talking) {
+      setFrame(0);
+      return;
+    }
+    const timer = window.setInterval(() => setFrame((f) => f + 1), FLAP_MS);
+    return () => window.clearInterval(timer);
+  }, [talking]);
 
   if (bust) {
-    return <img src={src} alt="" draggable={false} className={className} />;
+    return <img src={BUST} alt="" draggable={false} className={className} />;
   }
+
+  const look = EXPRESSIONS[expression];
+  const mouth = mouthNow(expression, talking, frame);
+  // the next jar is mounted unseen, so the drawing never blinks as the pot fills past a quarter
+  const jars = [...new Set([stage, Math.min(4, stage + 1)])];
 
   return (
     <div className={`relative select-none ${className || ""}`} style={{ aspectRatio: RATIO }}>
-      <div className={`h-full w-full ${face === "happy" ? "daisu-hop" : "daisu-bob"}`}>
-        <img src={src} alt="" draggable={false} className="h-full w-full object-contain" />
+      <div className={`relative h-full w-full ${hopping ? "daisu-hop" : "daisu-bob"}`}>
+        <Layer part="base" />
+        {jars.map((i) => (
+          <Layer
+            key={i}
+            part={`jar-${i}`}
+            hidden={i !== stage}
+            style={JAR_PIVOT}
+            className={`${shaking ? "daisu-shake" : ""} ${level >= 1 ? "daisu-glow" : ""}`}
+          />
+        ))}
+        {(["default", "smug", "sharp"] as const).map((eyes) => (
+          <Layer key={eyes} part={`eyes-${eyes}`} hidden={eyes !== look.eyes} />
+        ))}
+        {(["closed", "open", "smug"] as const).map((shape) => (
+          <Layer key={shape} part={`mouth-${shape}`} hidden={shape !== mouth} />
+        ))}
         <button
           type="button"
           onClick={onPoke}
@@ -81,23 +126,9 @@ const DaisuArt = ({ fill, face, shaking, bust, className, onJar, onPoke, pops = 
           onClick={onJar}
           aria-label={jarLabel}
           data-tour="daisu-jar"
-          style={box(GLASS)}
-          className={`absolute cursor-pointer border-none bg-transparent p-0 hover:border-none focus:outline-none ${
-            shaking ? "daisu-shake" : ""
-          } ${level >= 1 ? "daisu-glow" : ""}`}
-        >
-          <span
-            aria-hidden
-            className="daisu-coins pointer-events-none absolute"
-            style={{
-              left: `${((COINS.left - GLASS.left) / GLASS.width) * 100}%`,
-              top: `${((COINS.top - GLASS.top) / GLASS.height) * 100}%`,
-              width: `${(COINS.width / GLASS.width) * 100}%`,
-              height: `${(COINS.height / GLASS.height) * 100}%`,
-              background: `linear-gradient(to bottom, rgba(20, 18, 37, 0.92) ${(1 - level) * 100}%, transparent ${(1 - level) * 100}%)`,
-            }}
-          />
-        </button>
+          style={{ left: `${JAR.left}%`, top: `${JAR.top}%`, width: `${JAR.width}%`, height: `${JAR.height}%` }}
+          className="absolute cursor-pointer border-none bg-transparent p-0 hover:border-none focus:outline-none"
+        />
       </div>
       <AnimatePresence>
         {pops.map((p) => (
@@ -108,13 +139,13 @@ const DaisuArt = ({ fill, face, shaking, bust, className, onJar, onPoke, pops = 
             exit={{ opacity: 0 }}
             transition={{ duration: 1.1, times: [0, 0.1, 0.7, 1] }}
             className="pointer-events-none absolute w-40 text-center text-lg font-extrabold text-accent-gold drop-shadow"
-            style={{ top: `${GLASS.top}%`, left: `calc(50% - 5rem + ${p.x}px)` }}
+            style={{ top: `${JAR.top}%`, left: `calc(50% - 5rem + ${p.x}px)` }}
           >
             +<Monetary value={p.amount} />
           </motion.span>
         ))}
       </AnimatePresence>
-      <div className="pointer-events-none absolute inset-x-0 flex justify-center" style={{ top: `${GLASS.top + GLASS.height + 2}%` }}>
+      <div className="pointer-events-none absolute inset-x-0 flex justify-center" style={{ top: `${JAR.top + JAR.height + 2}%` }}>
         <AnimatePresence>
           {run && (
             <motion.div

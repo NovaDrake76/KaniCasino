@@ -19,6 +19,7 @@ import { setPotStatus } from "../daisu/potStore";
 import { kp } from "../daisu/potMath";
 import { emitJarTaken } from "../daisu/tour/tourEvents";
 import i18n from "../../i18n";
+import { play } from "../../services/sound/sound";
 
 interface IBonus {
   bonusDate: string;
@@ -75,6 +76,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
     setLoadingBonus(true);
     try {
       const res = await claimBonus();
+      play("ui.bonus");
       toogleUserFlow(false);
       setBonusAvailable(false);
       toast.success(res.message, { theme: "dark" });
@@ -92,6 +94,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
     setLoadingBonus(true);
     try {
       const res = await claimPot();
+      play("ui.bonus");
       setPotStatus(res.status);
       toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
       emitJarTaken();
@@ -106,6 +109,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
   const finishAd = async (token: string) => {
     try {
       const res = await claimAdReward(token);
+      play("ui.bonus");
       toast.success(`+${res.claimed} K₽ for watching`, { theme: "dark" });
       toogleUserData({ ...userData, walletBalance: res.walletBalance });
       setAdStatus((s) => (s ? { ...s, remainingToday: res.remainingToday } : s));

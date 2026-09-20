@@ -126,7 +126,7 @@ const Welcome = ({ name, returning, onStart, onDecline }: { name: string; return
           <FiX />
         </button>
         <div className="hidden w-[220px] shrink-0 items-end justify-center bg-surface-nav px-2.5 pt-5 md:flex">
-          <img src="/images/daisu/idle.webp" alt="" className="block h-[290px] w-auto" />
+          <img src="/images/daisu/idle.webp" alt="" className="block h-[290px] w-full object-contain object-bottom" />
         </div>
         <div className="flex flex-col gap-4 px-5 pb-6 pt-5 md:px-8 md:pb-7 md:pt-8">
           <div className="flex items-end gap-3.5">

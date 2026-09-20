@@ -5,8 +5,10 @@ import i18n from "../../i18n";
 
 interface GameHistory {
     gameState: any;
-    type: string;
+    type: "heads" | "tails" | "purple";
 }
+
+const DOT = { heads: "bg-red-500", tails: "bg-green-500", purple: "bg-violet-600" };
 
 const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
     const [betsInfo, setBetsInfo] = useState<any>(null);
@@ -16,7 +18,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
 
     useEffect(() => {
         if (gameState) {
-            const tempBetsInfo = type === "Heads" ? gameState.heads : gameState.tails;
+            const tempBetsInfo = gameState[type] || { players: {}, bets: {} };
             setBetsInfo(tempBetsInfo);
 
             let totalBets = 0;
@@ -25,7 +27,7 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
             }
             setTotalBets(totalBets);
         }
-    }, [gameState]);
+    }, [gameState, type]);
 
     const handleMouseEnter = (playerId: string) => {
         if (hoverTimeoutRef.current) {
@@ -47,8 +49,8 @@ const LiveBets: React.FC<GameHistory> = ({ gameState, type }) => {
     return (
         <div className="flex flex-col p-4 bg-[#212031] rounded w-72 h-min ">
             <div className="flex pb-4 items-center justify-between w-full">
-                <span className="font-bold">{type}</span>
-                <div className={`${type === "Heads" ? "bg-red-500" : "bg-green-500"} w-6 h-6 rounded-full`} />
+                <span className="font-bold">{i18n.t(`coin.${type}`)}</span>
+                <div className={`${DOT[type]} w-6 h-6 rounded-full`} />
             </div>
             <div className="flex border-t border-gray-700 flex-col ">
                 <div className="flex items-center justify-between py-4">

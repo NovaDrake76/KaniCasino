@@ -10,6 +10,7 @@ const Transaction = require("../../models/Transaction");
 const rain = require("../../utils/rain");
 const { TX } = require("../../utils/economy");
 const { HOUSE } = require("../../utils/accounts");
+const realtime = require("../../utils/realtime");
 
 beforeAll(setupDb);
 afterEach(async () => {
@@ -226,6 +227,13 @@ describe("how the pool is divided", () => {
     expect(shares[0].amount).toBe(shares[1].amount);
   });
 
+  it("weighs a rain coat holder half again as much as an equal without one", () => {
+    const coat = { _id: "coat", level: 20, betaFlags: ["daisu"], unlocks: [{ key: "rainCoat", via: "bought" }] };
+    const shares = rain.splitPool(1000, [coat, person("b", 20)]);
+    expect(shares[0].amount).toBe(600);
+    expect(shares[1].amount).toBe(400);
+  });
+
   it("pays nobody out of a pool below the floor", () => {
     expect(rain.splitPool(rain.MIN_POOL - 1, [person("a", 50)])).toEqual([]);
   });
@@ -335,5 +343,54 @@ describe("a round that could not pay", () => {
 
   it("tells the panel the floor, so it can say what it is waiting for", async () => {
     expect((await rain.state(null)).minPool).toBe(rain.MIN_POOL);
+  });
+});
+
+describe("the warning that it is about to rain", () => {
+  const fakeIo = () => {
+    const io = { emitted: [], emit: (event, payload) => io.emitted.push({ event, payload }), to: () => io, in: () => io };
+    realtime.setIo(io);
+    return io;
+  };
+  afterEach(() => realtime.setIo(null));
+
+  // a round about to end, with a pool worth falling
+  const soonRound = async (pool) => {
+    const u = await makeUser();
+    const round = await rain.currentRound();
+    const endsAt = new Date(Date.now() + 60 * 1000);
+    await RainRound.updateOne({ _id: round._id }, { $set: { startsAt: new Date(endsAt.getTime() - rain.INTERVAL_MS), endsAt } });
+    await wager(u._id, pool / rain.RATE, new Date(endsAt.getTime() - 1000));
+    rain.resetCache();
+    return round;
+  };
+
+  it("tells everyone once, with the pool, inside the last two minutes", async () => {
+    const io = fakeIo();
+    const round = await soonRound(1000);
+
+    expect(await rain.warnIfSoon()).toBe(true);
+    expect(await rain.warnIfSoon()).toBe(false);
+    expect(io.emitted).toHaveLength(1);
+    expect(io.emitted[0].event).toBe("rain:soon");
+    expect(io.emitted[0].payload).toMatchObject({ roundId: String(round._id), pool: 1000 });
+  });
+
+  it("stays quiet while the drop is further off", async () => {
+    const io = fakeIo();
+    const u = await makeUser();
+    await rain.currentRound();
+    await wager(u._id, 1000 / rain.RATE);
+
+    expect(await rain.warnIfSoon()).toBe(false);
+    expect(io.emitted).toHaveLength(0);
+  });
+
+  it("stays quiet about a pool that will not fall", async () => {
+    const io = fakeIo();
+    await soonRound(rain.MIN_POOL - 20);
+
+    expect(await rain.warnIfSoon()).toBe(false);
+    expect(io.emitted).toHaveLength(0);
   });
 });

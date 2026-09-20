@@ -161,9 +161,11 @@ router.get("/coinflip/:roundId", async (req, res) => {
     };
     if (!revealed) return res.json(view);
 
-    const recomputed = coinResultFromSeed(round.serverSeed);
+    const version = (round.outcome && round.outcome.version) || 1;
+    const recomputed = coinResultFromSeed(round.serverSeed, version);
     res.json({
       ...view,
+      version,
       serverSeed: round.serverSeed,
       result: round.outcome && round.outcome.result,
       recomputedResult: recomputed,

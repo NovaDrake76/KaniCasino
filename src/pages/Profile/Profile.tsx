@@ -209,7 +209,7 @@ const Profile = () => {
           user && (
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <UserInfo
-                user={user}
+                user={isSameUser ? { ...user, xpBoost: userData?.xpBoost } : user}
                 isSameUser={isSameUser}
                 setRefresh={refreshUser}
               />
