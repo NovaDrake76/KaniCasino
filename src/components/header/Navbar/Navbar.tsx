@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import UserContext from "../../../UserContext";
 import MainButton from "../../MainButton";
@@ -13,6 +13,8 @@ import RightContent from "./RightContent";
 import { useTranslation } from "react-i18next";
 import GiftTag from "../GiftTag";
 import GamesMenu from "./GamesMenu";
+import NavItem from "./NavItem";
+import { isCurrent } from "../navActive";
 import { NavLink } from "../gameLinks";
 import useGiftReady from "../useGiftReady";
 import { showDaisu } from "../../daisu/tour/tourEvents";
@@ -32,6 +34,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
   const { isLogged, toggleLogin, toogleUserData, userData, openUserFlow, toogleUserFlow } = useContext(UserContext);
   const giftReady = useGiftReady();
   const { i18n: translator } = useTranslation();
+  const { pathname, search } = useLocation();
 
   const linksRef = useRef<HTMLDivElement | null>(null);
 
@@ -185,21 +188,8 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
                 className="flex min-w-0 flex-1 items-center gap-4 2xl:gap-6 ml-4 xl:ml-8"
               >
                 <GamesMenu />
-                {links.map((link, index) => (<Link
-                  to={link.path}
-                  key={index}
-                  title={link.name}
-                  onClick={link.onClick}
-                  className="flex shrink-0 items-center gap-2 font-normal text-xs 2xl:text-sm cursor-pointer "
-                >
-                  <span className="text-[#625F7E] hover:text-gray-200 transition-all ">
-                    {link.icon}
-                  </span>
-                  <span className="nav-label whitespace-nowrap text-white hover:text-gray-200 transition-all ">
-                    {link.name}
-                  </span>
-                  {link.badge}
-                </Link>
+                {links.map((link, index) => (
+                  <NavItem key={index} link={link} active={isCurrent(pathname, search, link.path)} />
                 ))}
               </div>
             }

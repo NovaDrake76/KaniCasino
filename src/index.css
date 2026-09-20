@@ -556,6 +556,16 @@ button:focus-visible {
 }
 
 /* the navbar drops its link labels when the row runs out of room for them */
+/* the navbar's you-are-here, lit from the bar's bottom edge: the accent for the page you
+   are on, a colourless version on hover */
+.nav-flare {
+  background: linear-gradient(to top, rgba(79, 70, 229, 0.42), transparent 74%);
+}
+
+.nav-flare-soft {
+  background: linear-gradient(to top, rgba(201, 198, 222, 0.13), transparent 74%);
+}
+
 .nav-icons-only .nav-label {
   display: none;
 }
