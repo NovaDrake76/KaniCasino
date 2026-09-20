@@ -20,13 +20,21 @@
 
     (function () {
       var started = false;
+      // analytics only on the live site, and only for real browsers. localhost (vite dev
+      // and the playwright preview server), preview deploys and tunnels were all firing the
+      // production tag: in aug-sep 2026 that was ~90% of "users" in GA4. navigator.webdriver
+      // is set by playwright/puppeteer/selenium-driven browsers.
+      var host = location.hostname;
+      var liveSite = host === 'kanicasino.com' || host === 'www.kanicasino.com';
+      var automation = !!navigator.webdriver || /HeadlessChrome|bot|crawl|spider/i.test(navigator.userAgent);
+      var analyticsOn = liveSite && !automation;
       function start() {
         if (started) return;
         started = true;
         [
-          'https://www.googletagmanager.com/gtag/js?id=G-QMWHYXJ6YE',
+          analyticsOn ? 'https://www.googletagmanager.com/gtag/js?id=G-QMWHYXJ6YE' : null,
           'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8052282199595049'
-        ].forEach(function (src) {
+        ].filter(Boolean).forEach(function (src) {
           var s = document.createElement('script');
           s.src = src;
           s.async = true;
