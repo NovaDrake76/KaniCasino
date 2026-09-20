@@ -34,7 +34,9 @@
     "slots.stop": [],
     "slots.win": [],
     "case.open": [],
-    "case.tick": [],
+    "case.tick": [
+      "case-tick.wav"
+    ],
     "case.stop": [],
     "case.reveal.common": [],
     "case.reveal.rare": [],
