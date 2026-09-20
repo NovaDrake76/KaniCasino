@@ -1,6 +1,6 @@
 const Round = require("../models/Round");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
-const { coinResultFromSeed } = require("../utils/coinMath");
+const { coinResultFromSeed, PURPLE_CHANCE, PURPLE_RESULT } = require("../utils/coinMath");
 const { consumeNextSeed } = require("../utils/gameChain");
 const { sha256 } = require("../utils/hashChain");
 const liveFeed = require("../utils/liveFeed");
@@ -13,15 +13,29 @@ const liveFeed = require("../utils/liveFeed");
 const COINFLIP_RTP = 0.97;
 const winPayout = (bet) => Math.floor(bet * 2 * COINFLIP_RTP);
 
+// version 2 adds a purple side that lands PURPLE_CHANCE of the time and carries the whole edge,
+// like the green on a roulette wheel: heads and tails pay a flat 2x (a 97% return at 48.5%),
+// purple pays this (a 96% return at 3%). opened by COINFLIP_PURPLE=1, read when a round opens
+const PURPLE_MULTIPLIER = 32;
+const SIDES = ["heads", "tails", "purple"];
+const sideOf = (result) => SIDES[result];
+const purpleOn = () => process.env.COINFLIP_PURPLE === "1";
+const payoutFor = (bet, side, version = 1) => {
+  if (version < 2) return winPayout(bet);
+  return Math.floor(bet * (side === "purple" ? PURPLE_MULTIPLIER : 2));
+};
+
 // a table minimum, for the reason real tables have one: the payout is whole KP, and no
 // integer pays 3% on a 1 KP stake (1 is 50%, 2 is 0%), so below a floor the rounding is
 // the edge. at 10 the worst case is 5% and by 50 it is exactly 3%.
 const MIN_BET = 10;
 const MAX_BET = 1000000;
 
-const freshState = () => ({
+const freshState = (version = 1) => ({
   heads: { players: {}, bets: {} },
   tails: { players: {}, bets: {} },
+  purple: { players: {}, bets: {} },
+  version,
   serverSeed: null, // the round's seed, secret until the flip is revealed
   serverSeedHash: null, // its commitment, public from betting open
   result: null, // decided by the seed at betting open, revealed with the flip
@@ -32,6 +46,10 @@ const freshState = () => ({
 const publicCoinState = (state) => ({
   heads: state.heads,
   tails: state.tails,
+  purple: state.purple,
+  version: state.version,
+  purpleOn: state.version >= 2,
+  pays: state.version >= 2 ? { side: 2, purple: PURPLE_MULTIPLIER, purpleChance: PURPLE_CHANCE } : { side: 2 * COINFLIP_RTP },
   serverSeedHash: state.serverSeedHash,
 });
 
@@ -55,6 +73,9 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000, drai
   let settling = null;
 
   io.on("connection", (socket) => {
+    // a player arriving mid-round sees the bets already placed and whether the purple side is open
+    socket.emit("coinFlip:gameState", publicCoinState(gameState));
+
     socket.on("coinFlip:bet", async (bet, choice, callback) => {
       // the client used to get no answer at all when a bet was refused
       const reply = (result) => {
@@ -66,22 +87,20 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000, drai
         if (!userId) return reply({ error: "You must be logged in to bet" });
         if (!bettingOpen || !round) return reply({ error: "Betting is closed for this round" });
 
-        if (choice !== 0 && choice !== 1) return reply({ error: "Pick heads or tails" });
+        const sides = gameState.version >= 2 ? 3 : 2;
+        if (!Number.isInteger(choice) || choice < 0 || choice >= sides) {
+          return reply({ error: sides === 3 ? "Pick heads, tails or purple" : "Pick heads or tails" });
+        }
         if (!Number.isInteger(bet) || bet < MIN_BET || bet > MAX_BET) {
           return reply({ error: `Bet between ${MIN_BET} and ${MAX_BET} KP` });
         }
 
-        const side = choice === 0 ? "heads" : "tails";
-        const other = choice === 0 ? "tails" : "heads";
+        const side = sideOf(choice);
 
         // one bet per round, on a single side. pendingBets covers the window while
         // the charge is in flight: without it, two emits in the same tick both pass
         // this guard and the player ends up backing heads and tails at once
-        if (
-          gameState[side].bets[userId] ||
-          gameState[other].bets[userId] ||
-          pendingBets.has(userId)
-        ) {
+        if (SIDES.some((s) => gameState[s].bets[userId]) || pendingBets.has(userId)) {
           return reply({ error: "You already have a bet this round" });
         }
 
@@ -134,13 +153,13 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000, drai
   });
 
   const calculatePayout = async (result, running) => {
-    const winningSide = result === 0 ? "heads" : "tails";
+    const winningSide = sideOf(result);
     const roundId = running ? String(running._id) : null;
 
     for (const userId in gameState[winningSide].bets) {
       try {
         const betAmount = gameState[winningSide].bets[userId];
-        const payout = winPayout(betAmount);
+        const payout = payoutFor(betAmount, winningSide, gameState.version);
         const updatedUser = await creditUser(userId, payout, payout - betAmount, {
           type: TX.COINFLIP_WIN,
           meta: { betAmount, payout, side: winningSide, roundId },
@@ -172,15 +191,14 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000, drai
   // taking money the server would have no way to give back.
   const openBetting = async () => {
     if (stopped) return;
-    gameState = freshState();
+    gameState = freshState(purpleOn() ? 2 : 1);
     try {
       // the seed fixes the flip before any bet: players see its commitment now and the
       // seed at round end, so the result was decided in advance and cannot be steered
       const { seed, chainId, index } = await consumeNextSeed("coinflip");
       gameState.serverSeed = seed;
       gameState.serverSeedHash = sha256(seed);
-      gameState.result = coinResultFromSeed(seed);
-      const winningSide = gameState.result === 0 ? "heads" : "tails";
+      gameState.result = coinResultFromSeed(seed, gameState.version);
       round = await Round.create({
         game: "coinflip",
         status: "betting",
@@ -188,7 +206,7 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000, drai
         serverSeedHash: gameState.serverSeedHash,
         chainId,
         chainIndex: index,
-        outcome: { result: gameState.result, winningSide },
+        outcome: { result: gameState.result, winningSide: sideOf(gameState.result), version: gameState.version },
       });
       if (stopped) return;
       bettingOpen = true;
@@ -268,5 +286,8 @@ const coinFlip = (io, { bettingMs = 14000, revealMs = 5000, retryMs = 2000, drai
 module.exports = coinFlip;
 // exposed for unit testing
 module.exports.winPayout = winPayout;
+module.exports.payoutFor = payoutFor;
 module.exports.COINFLIP_RTP = COINFLIP_RTP;
+module.exports.PURPLE_MULTIPLIER = PURPLE_MULTIPLIER;
+module.exports.PURPLE_RESULT = PURPLE_RESULT;
 module.exports.MIN_BET = MIN_BET;

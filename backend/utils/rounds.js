@@ -115,7 +115,7 @@ async function settleInterruptedCoinFlip(round, io = noopIo, payoutFor) {
     const userId = String(stake.userId);
     if (settled.has(userId)) continue;
     settled.add(userId);
-    const payout = payoutFor(stake.amount);
+    const payout = payoutFor(stake.amount, winningSide, claimed.outcome && claimed.outcome.version);
     const user = await creditUser(stake.userId, payout, payout - stake.amount, {
       type: types.paid,
       meta: { roundId: String(claimed._id), betAmount: stake.amount, payout, side: winningSide },

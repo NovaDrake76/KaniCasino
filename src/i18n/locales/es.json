@@ -361,8 +361,13 @@
     "minBet": "La apuesta mínima es {{amount}}",
     "notEnoughMoney": "Saldo insuficiente",
     "placeTheBetValue": "Indica el importe de la apuesta",
+    "purple": "Morado",
+    "purplePays": "Morado paga {{mult}}x y sale el {{chance}}% de las veces",
+    "sidesPay": "Cara y cruz pagan {{mult}}x",
     "tails": "Cruz",
-    "totalBets": "Apuestas totales"
+    "totalBets": "Apuestas totales",
+    "winPays": "Ganar paga {{mult}}x",
+    "youWouldWin": "Ganarías {{amount}} K₽"
   },
   "collections": {
     "all": "Todos",
@@ -1480,6 +1485,7 @@
     "main": "Principal",
     "provablyFair": "Provably Fair",
     "slot": "Tragaperras",
+    "sounds": "Sonidos",
     "support": "Soporte",
     "termsOfPrivacy": "Términos de privacidad",
     "userAgreement": "Términos de uso"
@@ -1958,6 +1964,8 @@
     "joined": "Estas dentro",
     "logIn": "inicia sesion",
     "needLevel": "Llega al nivel {{level}} para entrar en la lluvia.",
+    "openChat": "Abrir el chat",
+    "soonToast": "Al menos K₽{{amount}} caen en el chat en {{minutes}} min.",
     "title": "Lluvia",
     "won": "La lluvia te dio K₽{{amount}}"
   },
@@ -1975,10 +1983,17 @@
     "nicknameHint": "De 2 a 30 caracteres. Puedes cambiarlo una vez cada 30 dias.",
     "nicknameLocked": "Puedes cambiarlo de nuevo el {{date}}.",
     "nicknameSaved": "Apodo actualizado",
+    "playTestSound": "Reproducir un sonido de prueba",
     "saveFailed": "No se pudo guardar, inténtalo de nuevo",
     "saveNickname": "Guardar apodo",
+    "sound": "Sonido",
+    "soundEffects": "Efectos de sonido",
+    "soundHint": "Clics, apuestas, premios y las ruletas. El sonido empieza tras tu primer clic en la página.",
     "title": "Ajustes",
-    "updates": "Novedades sobre cajas y juegos"
+    "updates": "Novedades sobre cajas y juegos",
+    "volume": "Volumen",
+    "volumeDown": "Más bajo",
+    "volumeUp": "Más alto"
   },
   "slot": {
     "bar": "barra",

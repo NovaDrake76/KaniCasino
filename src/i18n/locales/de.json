@@ -361,8 +361,13 @@
     "minBet": "Der Mindesteinsatz ist {{amount}}",
     "notEnoughMoney": "Nicht genug Guthaben",
     "placeTheBetValue": "Einsatz eingeben",
+    "purple": "Lila",
+    "purplePays": "Lila zahlt {{mult}}x und fällt in {{chance}}% der Würfe",
+    "sidesPay": "Kopf und Zahl zahlen {{mult}}x",
     "tails": "Zahl",
-    "totalBets": "Einsätze gesamt"
+    "totalBets": "Einsätze gesamt",
+    "winPays": "Ein Gewinn zahlt {{mult}}x",
+    "youWouldWin": "Du würdest {{amount}} K₽ gewinnen"
   },
   "collections": {
     "all": "Alle",
@@ -1480,6 +1485,7 @@
     "main": "Allgemein",
     "provablyFair": "Provably Fair",
     "slot": "Slot",
+    "sounds": "Töne",
     "support": "Support",
     "termsOfPrivacy": "Datenschutzbestimmungen",
     "userAgreement": "Nutzungsbedingungen"
@@ -1958,6 +1964,8 @@
     "joined": "Du bist dabei",
     "logIn": "anmelden",
     "needLevel": "Erreiche Level {{level}}, um beim Regen mitzumachen.",
+    "openChat": "Chat öffnen",
+    "soonToast": "Mindestens K₽{{amount}} fallen in {{minutes}} Min. im Chat.",
     "title": "Regen",
     "won": "Der Regen gab dir K₽{{amount}}"
   },
@@ -1975,10 +1983,17 @@
     "nicknameHint": "2 bis 30 Zeichen. Alle 30 Tage einmal aenderbar.",
     "nicknameLocked": "Du kannst ihn am {{date}} wieder aendern.",
     "nicknameSaved": "Spitzname aktualisiert",
+    "playTestSound": "Testton abspielen",
     "saveFailed": "Speichern fehlgeschlagen, versuch es erneut",
     "saveNickname": "Spitzname speichern",
+    "sound": "Ton",
+    "soundEffects": "Soundeffekte",
+    "soundHint": "Klicks, Einsätze, Gewinne und die Walzen. Der Ton startet nach deinem ersten Klick auf der Seite.",
     "title": "Einstellungen",
-    "updates": "Neues zu Kisten und Spielen"
+    "updates": "Neues zu Kisten und Spielen",
+    "volume": "Lautstärke",
+    "volumeDown": "Leiser",
+    "volumeUp": "Lauter"
   },
   "slot": {
     "bar": "Balken",

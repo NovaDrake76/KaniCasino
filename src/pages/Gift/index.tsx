@@ -8,6 +8,7 @@ import GiftView from "./Gift.view";
 import type { BasicItem } from "../../components/Types";
 import type { GiftCategory, GiftStage, GiftState, SpinResult } from "./Gift.types";
 import i18n from "../../i18n";
+import { play } from "../../services/sound/sound";
 
 // the reel animation the shared Roulette runs, so the prize lands with it rather than before
 const REEL_MS = 7100;
@@ -70,7 +71,10 @@ const Gift = () => {
       setLandedTopSlot(res.topSlot.multiplier);
       setStage("spinning");
       setSpinning(true);
+      play("game.bet");
       setTimeout(() => {
+        play("gift.stop");
+        play("gift.claim");
         setResult(res);
         setState(res.state);
         setStage("won");

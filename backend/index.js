@@ -198,7 +198,7 @@ app.use("/leaderboard", leaderboardRoutes);
 // resumes a give-back loop that died holding a stale lease, so it never touches the
 // rounds the running game loops are still playing.
 const sweepRounds = ({ boot = false } = {}) => {
-  recoverStuckRounds(io, coinFlip.winPayout, { boot }).catch((e) => console.log(e));
+  recoverStuckRounds(io, coinFlip.payoutFor, { boot }).catch((e) => console.log(e));
   completeStuckBattles(io, { boot }).catch((e) => console.log(e));
   sweepBlackjackHands(io).catch((e) => console.log(e));
   sweepMinesGames(io).catch((e) => console.log(e));
@@ -234,7 +234,7 @@ const shutdown = async (signal) => {
   console.log(`${signal}: closing betting and settling the live rounds`);
   try {
     await Promise.all([stopCrash(), stopCoinFlip()]);
-    await recoverStuckRounds(io, coinFlip.winPayout, { boot: true });
+    await recoverStuckRounds(io, coinFlip.payoutFor, { boot: true });
   } catch (e) {
     console.log("shutdown settle did not finish, the boot sweep will:", e);
   }

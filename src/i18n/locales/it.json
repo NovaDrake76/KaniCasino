@@ -361,8 +361,13 @@
     "minBet": "La puntata minima è {{amount}}",
     "notEnoughMoney": "Fondi insufficienti",
     "placeTheBetValue": "Inserisci l'importo della puntata",
+    "purple": "Viola",
+    "purplePays": "Viola paga {{mult}}x ed esce il {{chance}}% delle volte",
+    "sidesPay": "Testa e croce pagano {{mult}}x",
     "tails": "Croce",
-    "totalBets": "Puntate totali"
+    "totalBets": "Puntate totali",
+    "winPays": "Una vincita paga {{mult}}x",
+    "youWouldWin": "Vinceresti {{amount}} K₽"
   },
   "collections": {
     "all": "Tutti",
@@ -1480,6 +1485,7 @@
     "main": "Principale",
     "provablyFair": "Provably Fair",
     "slot": "Slot",
+    "sounds": "Suoni",
     "support": "Assistenza",
     "termsOfPrivacy": "Informativa sulla privacy",
     "userAgreement": "Termini di servizio"
@@ -1958,6 +1964,8 @@
     "joined": "Sei dentro",
     "logIn": "accedi",
     "needLevel": "Raggiungi il livello {{level}} per entrare nella pioggia.",
+    "openChat": "Apri la chat",
+    "soonToast": "Almeno K₽{{amount}} cadono in chat tra {{minutes}} min.",
     "title": "Pioggia",
     "won": "La pioggia ti ha dato K₽{{amount}}"
   },
@@ -1975,10 +1983,17 @@
     "nicknameHint": "Da 2 a 30 caratteri. Puoi cambiarlo una volta ogni 30 giorni.",
     "nicknameLocked": "Potrai cambiarlo di nuovo il {{date}}.",
     "nicknameSaved": "Soprannome aggiornato",
+    "playTestSound": "Riproduci un suono di prova",
     "saveFailed": "Non è stato possibile salvare, riprova",
     "saveNickname": "Salva soprannome",
+    "sound": "Audio",
+    "soundEffects": "Effetti sonori",
+    "soundHint": "Clic, puntate, vincite e i rulli. L'audio parte dopo il tuo primo clic sulla pagina.",
     "title": "Impostazioni",
-    "updates": "Novità su casse e giochi"
+    "updates": "Novità su casse e giochi",
+    "volume": "Volume",
+    "volumeDown": "Più piano",
+    "volumeUp": "Più forte"
   },
   "slot": {
     "bar": "barra",

@@ -361,8 +361,13 @@
     "minBet": "最低投注为 {{amount}}",
     "notEnoughMoney": "余额不足",
     "placeTheBetValue": "请输入投注金额",
+    "purple": "紫色",
+    "purplePays": "紫色赔 {{mult}} 倍，出现概率 {{chance}}%",
+    "sidesPay": "正面和反面赔 {{mult}} 倍",
     "tails": "反面",
-    "totalBets": "总投注"
+    "totalBets": "总投注",
+    "winPays": "赢了赔 {{mult}} 倍",
+    "youWouldWin": "赢了得 {{amount}} K₽"
   },
   "collections": {
     "all": "全部",
@@ -1480,6 +1485,7 @@
     "main": "主要",
     "provablyFair": "Provably Fair",
     "slot": "老虎机",
+    "sounds": "声音",
     "support": "支持",
     "termsOfPrivacy": "隐私条款",
     "userAgreement": "用户协议"
@@ -1958,6 +1964,8 @@
     "joined": "已参与",
     "logIn": "登录",
     "needLevel": "达到 {{level}} 级即可参与红包。",
+    "openChat": "打开聊天",
+    "soonToast": "{{minutes}} 分钟后聊天室将下起至少 K₽{{amount}} 的雨。",
     "title": "红包池",
     "won": "红包给了你 K₽{{amount}}"
   },
@@ -1975,10 +1983,17 @@
     "nicknameHint": "2 到 30 个字符。每 30 天可以修改一次。",
     "nicknameLocked": "你可以在 {{date}} 再次修改。",
     "nicknameSaved": "昵称已更新",
+    "playTestSound": "播放测试音",
     "saveFailed": "保存失败，请重试",
     "saveNickname": "保存昵称",
+    "sound": "声音",
+    "soundEffects": "音效",
+    "soundHint": "点击、下注、获胜和转轮的声音。在页面上首次点击后开始播放。",
     "title": "设置",
-    "updates": "新箱子与新游戏的更新通知"
+    "updates": "新箱子与新游戏的更新通知",
+    "volume": "音量",
+    "volumeDown": "调低",
+    "volumeUp": "调高"
   },
   "slot": {
     "bar": "横条",

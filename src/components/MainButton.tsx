@@ -1,4 +1,5 @@
 import { TailSpin } from "react-loader-spinner";
+import { play } from "../services/sound/sound";
 
 interface MainButton {
   text: string | JSX.Element;
@@ -45,7 +46,10 @@ const MainButton: React.FC<MainButton> = ({
       text-white font-medium ${disabled ? "opacity-50 cursor-not-allowed" : pulseClass} ${
         textSize ? textSize : "md:text-lg"
       }`}
-      onClick={onClick}
+      onClick={() => {
+        if (!disabled && !loading) play("ui.click");
+        onClick();
+      }}
       disabled={disabled}
       type={submit ? "submit" : "button"}
     >

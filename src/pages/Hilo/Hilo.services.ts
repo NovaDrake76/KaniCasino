@@ -13,6 +13,7 @@ import { MAX_BET, MIN_BET } from "./hiloCards";
 import { HiloGameState } from "./Hilo.types";
 import i18n from "../../i18n";
 import { useSessionStats } from "../../stats/SessionStatsContext";
+import { play } from "../../services/sound/sound";
 
 const DEFAULT_BET = 10;
 const HISTORY_SIZE = 10;
@@ -54,12 +55,13 @@ export const useHiloServices = () => {
     );
   };
 
-  const run = async (fn: () => Promise<HiloGameState>, guard = true): Promise<void> => {
+  const run = async (fn: () => Promise<HiloGameState>, guard = true, after?: (next: HiloGameState) => void): Promise<void> => {
     if (guard && busy) return;
     setBusy(true);
     try {
       const next = await fn();
       setGame(next);
+      after?.(next);
       if (next.status !== "active" && next.status !== "voided") recordEnd(next);
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Something went wrong", { theme: "dark" });
@@ -71,21 +73,35 @@ export const useHiloServices = () => {
   const start = () => {
     if (userData == null) return toogleUserFlow(true);
     if (userData.walletBalance < betValue) return toast.error(i18n.t("blackjack.insufficientFunds"), { theme: "dark" });
-    run(() => startHilo(betValue));
+    play("game.bet");
+    run(() => startHilo(betValue), true, () => play("cards.deal"));
   };
   const guess = (direction: "hi" | "lo") => {
     if (!gameRef.current || gameRef.current.status !== "active") return;
-    run(() => guessHilo(direction));
+    run(() => guessHilo(direction), true, (next) => {
+      play("cards.flip");
+      if (next.status === "active") play("hilo.correct");
+      else if (next.status === "busted") {
+        play("hilo.wrong");
+        play("game.lose");
+      } else if (next.status === "cashed") {
+        play("game.cashout");
+        play("game.win");
+      }
+    });
   };
   const skip = () => {
     const g = gameRef.current;
     if (!g || g.status !== "active" || !g.canSkip) return;
-    run(() => skipHilo());
+    run(() => skipHilo(), true, () => play("cards.deal"));
   };
   const cashout = () => {
     const g = gameRef.current;
     if (!g || g.status !== "active" || !g.canCashout) return;
-    run(() => cashoutHilo());
+    run(() => cashoutHilo(), true, () => {
+      play("game.cashout");
+      play("game.win");
+    });
   };
 
   return {
