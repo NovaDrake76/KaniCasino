@@ -170,6 +170,13 @@
     "signIn": "Đăng nhập",
     "signUp": "Đăng ký"
   },
+  "avatarMenu": {
+    "open": "Menu tài khoản",
+    "viewProfile": "Xem hồ sơ",
+    "level": "Cấp {{n}}",
+    "toNext": "{{n}} XP nữa đến cấp {{level}}",
+    "logOut": "Đăng xuất"
+  },
   "badge": {
     "allCount": "Bạn có {{held}} trên {{total}}",
     "allTitle": "Tất cả huy hiệu",

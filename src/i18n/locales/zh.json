@@ -170,6 +170,13 @@
     "signIn": "登录",
     "signUp": "注册"
   },
+  "avatarMenu": {
+    "open": "账户菜单",
+    "viewProfile": "查看资料",
+    "level": "等级 {{n}}",
+    "toNext": "距离 {{level}} 级还需 {{n}} XP",
+    "logOut": "退出登录"
+  },
   "badge": {
     "allCount": "你已拥有 {{total}} 中的 {{held}} 个",
     "allTitle": "全部徽章",
