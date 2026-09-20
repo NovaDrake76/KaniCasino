@@ -361,8 +361,13 @@
     "minBet": "Der Mindesteinsatz ist {{amount}}",
     "notEnoughMoney": "Nicht genug Guthaben",
     "placeTheBetValue": "Einsatz eingeben",
+    "purple": "Lila",
+    "purplePays": "Lila zahlt {{mult}}x und fällt in {{chance}}% der Würfe",
+    "sidesPay": "Kopf und Zahl zahlen {{mult}}x",
     "tails": "Zahl",
-    "totalBets": "Einsätze gesamt"
+    "totalBets": "Einsätze gesamt",
+    "winPays": "Ein Gewinn zahlt {{mult}}x",
+    "youWouldWin": "Du würdest {{amount}} K₽ gewinnen"
   },
   "collections": {
     "all": "Alle",

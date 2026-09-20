@@ -361,8 +361,13 @@
     "minBet": "A aposta mínima é {{amount}}",
     "notEnoughMoney": "Saldo insuficiente",
     "placeTheBetValue": "Informe o valor da aposta",
+    "purple": "Roxo",
+    "purplePays": "Roxo paga {{mult}}x e cai {{chance}}% das vezes",
+    "sidesPay": "Cara e coroa pagam {{mult}}x",
     "tails": "Coroa",
-    "totalBets": "Total de apostas"
+    "totalBets": "Total de apostas",
+    "winPays": "Vitória paga {{mult}}x",
+    "youWouldWin": "Você ganharia {{amount}} K₽"
   },
   "collections": {
     "all": "Todos",

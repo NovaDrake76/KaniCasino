@@ -361,8 +361,13 @@
     "minBet": "最低投注为 {{amount}}",
     "notEnoughMoney": "余额不足",
     "placeTheBetValue": "请输入投注金额",
+    "purple": "紫色",
+    "purplePays": "紫色赔 {{mult}} 倍，出现概率 {{chance}}%",
+    "sidesPay": "正面和反面赔 {{mult}} 倍",
     "tails": "反面",
-    "totalBets": "总投注"
+    "totalBets": "总投注",
+    "winPays": "赢了赔 {{mult}} 倍",
+    "youWouldWin": "赢了得 {{amount}} K₽"
   },
   "collections": {
     "all": "全部",

@@ -16,10 +16,14 @@ import { play } from "../../services/sound/sound";
 const socket = SocketConnection.getInstance();
 
 // mirrors backend/games/coinFlip.js: a win pays 1.94x, and the minimum exists because
-// the payout is whole KP, so below it the rounding would be the house edge
+// the payout is whole KP, so below it the rounding would be the house edge. with the purple
+// side open the server sends the table instead: a colour pays 2x and purple its own multiplier
 const WIN_MULTIPLIER = 1.94;
 const MIN_BET = 10;
 const MAX_BET = 1000000;
+const SIDES = ["heads", "tails", "purple"] as const;
+const EMPTY_SIDE = () => ({ players: {}, bets: {}, choices: {} });
+const emptyState = () => ({ heads: EMPTY_SIDE(), tails: EMPTY_SIDE(), purple: EMPTY_SIDE() });
 
 interface GameHistory {
   result: number;
@@ -35,19 +39,11 @@ const CoinFlip = () => {
   const [gameEnded, setGameEnded] = useState(false);
   const [countDown, setCountDown] = useState(0);
   const [userGambled, setUserGambled] = useState(false);
-  const [gameState, setGameState] = useState<any>({
-    heads: {
-      players: {},
-      bets: {},
-      choices: {},
-    },
-    tails: {
-      players: {},
-      bets: {},
-      choices: {},
-    }
-  });
+  const [gameState, setGameState] = useState<any>(emptyState());
   const { isLogged, userData, toogleUserFlow } = useContext(UserContext);
+  const purpleOn = !!gameState?.purpleOn;
+  const pays = gameState?.pays || { side: WIN_MULTIPLIER };
+  const multiplierOf = (side: number | null) => (side === 2 ? pays.purple || 0 : pays.side || WIN_MULTIPLIER);
 
   // seed the history from past rounds so the page is not blank on entry. the endpoint
   // returns newest first, so it is reversed into the oldest-first order the row appends to.
@@ -102,7 +98,7 @@ const CoinFlip = () => {
       if (placedRef.current) {
         const { wagered, side } = placedRef.current;
         play(result === side ? "game.win" : "game.lose");
-        emitGameResult({ game: "coinflip", wagered, payout: result === side ? Math.floor(wagered * WIN_MULTIPLIER) : 0 });
+        emitGameResult({ game: "coinflip", wagered, payout: result === side ? Math.floor(wagered * multiplierOf(side)) : 0 });
         placedRef.current = null;
       }
 
@@ -111,18 +107,7 @@ const CoinFlip = () => {
         setHistory((prevHistory) => [...prevHistory, { result }]);
         setGameEnded(true);
         setCountDown(11.4);
-        setGameState({
-          heads: {
-            players: {},
-            bets: {},
-            choices: {},
-          },
-          tails: {
-            players: {},
-            bets: {},
-            choices: {},
-          }
-        });
+        setGameState((prev: any) => ({ ...emptyState(), purpleOn: prev?.purpleOn, pays: prev?.pays, version: prev?.version }));
       }, 1200);
 
       setUserGambled(false);
@@ -186,24 +171,34 @@ const CoinFlip = () => {
               {
                 [{
                   name: i18n.t("coin.heads"),
-                  color: "red",
+                  className: "bg-red-500",
                   id: 0
                 }, {
                   name: i18n.t("coin.tails"),
-                  color: "green",
+                  className: "bg-green-500",
                   id: 1
                 }
                 ].map((e) => (
                   <button
                     key={e.id}
                     onClick={() => setChoice(e.id)}
-                    className={`p-2 border rounded w-1/2 bg-${e.color}-500 ${choice === e.id && "bg-opacity-30"}`}
+                    className={`p-2 border rounded w-1/2 ${e.className} ${choice === e.id && "bg-opacity-30"}`}
                   >
                     {e.name}
                   </button>
                 ))
               }
-            </div></div>
+            </div>
+            {purpleOn && (
+              <button
+                onClick={() => setChoice(2)}
+                className={`relative flex w-full items-center justify-between rounded border border-violet-400/60 bg-violet-600 p-2 ${choice === 2 ? "bg-opacity-30" : ""}`}
+              >
+                <span>{i18n.t("coin.purple")}</span>
+                <span className="rounded bg-black/30 px-2 py-0.5 text-xs font-bold text-violet-100">{pays.purple}x</span>
+              </button>
+            )}
+          </div>
           <div className="w-full mt-4">
             <GameButton
               tour="play-button"
@@ -225,10 +220,17 @@ const CoinFlip = () => {
             </GameButton>
           </div>
           {/* the payout is not 2x, so it says so rather than leaving it to be inferred */}
-          <div className="flex justify-between text-xs text-[#84819a] pt-2">
-            <span>Win pays {WIN_MULTIPLIER}x</span>
-            {bet >= MIN_BET && bet <= MAX_BET && (
-              <span>You'd win {Math.floor(bet * WIN_MULTIPLIER).toLocaleString()} K₽</span>
+          <div className="flex w-full flex-col gap-1 text-xs text-[#84819a] pt-2">
+            <div className="flex justify-between gap-3">
+              <span>{purpleOn ? i18n.t("coin.sidesPay", { mult: pays.side }) : i18n.t("coin.winPays", { mult: WIN_MULTIPLIER })}</span>
+              {bet >= MIN_BET && bet <= MAX_BET && (
+                <span>{i18n.t("coin.youWouldWin", { amount: Math.floor(bet * multiplierOf(choice)).toLocaleString() })}</span>
+              )}
+            </div>
+            {purpleOn && (
+              <span className="text-violet-300">
+                {i18n.t("coin.purplePays", { mult: pays.purple, chance: Math.round((pays.purpleChance || 0) * 100) })}
+              </span>
             )}
           </div>
         </div>
@@ -242,7 +244,7 @@ const CoinFlip = () => {
                   </span>
                 </div>
               }
-              <Coin spinning={spinning} result={result} />
+              <Coin spinning={spinning} result={result} purple={purpleOn} />
             </div>
           </div>
           <div className="flex w-full p-4 flex-col">
@@ -251,7 +253,7 @@ const CoinFlip = () => {
               {history.map((e, i) => (
                 <motion.div
                   key={i}
-                  className={`min-w-[24px] min-h-[24px] rounded-full ${e.result === 0 ? "bg-red-500" : "bg-green-500"}`}
+                  className={`min-w-[24px] min-h-[24px] rounded-full ${e.result === 0 ? "bg-red-500" : e.result === 2 ? "bg-violet-600" : "bg-green-500"}`}
                   initial={i === history.length - 1 ? { opacity: 0, x: 30 } : {}} // If this is the newest result, initialize animation state
                   animate={i === history.length - 1 ? { opacity: 1, x: 0 } : {}} // If this is the newest result, set final animation state
                   transition={{ ease: "easeOut", duration: 1 }}
@@ -263,8 +265,8 @@ const CoinFlip = () => {
       </div>
       <div className="flex gap-8 flex-col lg:flex-row">
         {gameState &&
-          ["Heads", "Tails"].map((e, i) => (
-            <LiveBets gameState={gameState} type={e} key={i} />
+          SIDES.slice(0, purpleOn ? 3 : 2).map((side) => (
+            <LiveBets gameState={gameState} type={side} key={side} />
           ))
         }
       </div>

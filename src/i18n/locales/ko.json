@@ -361,8 +361,13 @@
     "minBet": "최소 베팅은 {{amount}}입니다",
     "notEnoughMoney": "잔액이 부족합니다",
     "placeTheBetValue": "베팅 금액을 입력하세요",
+    "purple": "보라",
+    "purplePays": "보라는 {{mult}}배, {{chance}}% 확률로 나옵니다",
+    "sidesPay": "앞면과 뒷면은 {{mult}}배",
     "tails": "뒷면",
-    "totalBets": "총 베팅"
+    "totalBets": "총 베팅",
+    "winPays": "승리 시 {{mult}}배",
+    "youWouldWin": "이기면 {{amount}} K₽"
   },
   "collections": {
     "all": "전체",

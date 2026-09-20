@@ -361,8 +361,13 @@
     "minBet": "La puntata minima è {{amount}}",
     "notEnoughMoney": "Fondi insufficienti",
     "placeTheBetValue": "Inserisci l'importo della puntata",
+    "purple": "Viola",
+    "purplePays": "Viola paga {{mult}}x ed esce il {{chance}}% delle volte",
+    "sidesPay": "Testa e croce pagano {{mult}}x",
     "tails": "Croce",
-    "totalBets": "Puntate totali"
+    "totalBets": "Puntate totali",
+    "winPays": "Una vincita paga {{mult}}x",
+    "youWouldWin": "Vinceresti {{amount}} K₽"
   },
   "collections": {
     "all": "Tutti",

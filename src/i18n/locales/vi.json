@@ -361,8 +361,13 @@
     "minBet": "Cược tối thiểu là {{amount}}",
     "notEnoughMoney": "Không đủ số dư",
     "placeTheBetValue": "Nhập số tiền cược",
+    "purple": "Tím",
+    "purplePays": "Tím trả {{mult}}x và rơi {{chance}}% số lần",
+    "sidesPay": "Sấp và ngửa trả {{mult}}x",
     "tails": "Sấp",
-    "totalBets": "Tổng cược"
+    "totalBets": "Tổng cược",
+    "winPays": "Thắng trả {{mult}}x",
+    "youWouldWin": "Bạn sẽ thắng {{amount}} K₽"
   },
   "collections": {
     "all": "Tất cả",
