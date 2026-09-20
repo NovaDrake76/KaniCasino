@@ -849,6 +849,11 @@
           "help": "Toda caixa tem uma coleção: todos os itens que ela pode dar. Pegue o Livro de Coleções na minha loja, abra uma pela aba Coleções do seu perfil e veja o que está faltando.",
           "title": "Veja uma coleção"
         },
+        "r3-discord": {
+          "desc": "Conecte sua conta do Discord para ganhar presentes diários melhores.",
+          "help": "Conecte pelas Configurações no seu perfil e fique no servidor do KaniCasino. Enquanto você estiver nele, meu presente diário puxa mais para os prêmios raros.",
+          "title": "Conecte seu Discord"
+        },
         "r3-market": {
           "desc": "Compre ou venda um item no mercado.",
           "help": "O mercado é onde os jogadores negociam entre si. Pegue a Licença de Comerciante na minha loja e depois compre algo que você quer ou anuncie um item seu e espere um comprador.",

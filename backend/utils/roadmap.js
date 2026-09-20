@@ -89,6 +89,7 @@ async function progressOf(user, roadmap, chapter, now = new Date()) {
     switch (mission.goal) {
       case "level": return user.level || 0;
       case "pinned": return user.fixedItem && user.fixedItem.name ? 1 : 0;
+      case "discordLinked": return user.discordId && user.discordInGuild === true ? 1 : 0;
       case "giftStreak": return liveStreak(user.giftStreak, user.giftLastAt, now) || 0;
       case "topFan": return user.fanRank && user.fanRank.rank === 1 ? 1 : 0;
       case "collectionsCompleted": return casesDone;

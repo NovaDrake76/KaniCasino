@@ -26,6 +26,7 @@ const CHAPTERS = [
     bonus: 4000,
     missions: [
       { key: "r3-streak", goal: "giftStreak", target: 3, reward: 1500 },
+      { key: "r3-discord", goal: "discordLinked", target: 1, reward: 1000 },
       { key: "r3-market", goal: "marketTrades", target: 1, reward: 1500 },
       { key: "r3-collection", goal: "collectionVisits", target: 1, reward: 1000 },
       { key: "r3-cases", goal: "casesOpened", target: 25, reward: 2000 },

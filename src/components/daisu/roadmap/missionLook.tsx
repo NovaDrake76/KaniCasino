@@ -17,6 +17,7 @@ const ICONS: Record<RoadmapGoal, PixelIconName> = {
   staked: "coins",
   battlesWon: "swords",
   topFan: "crown",
+  discordLinked: "chat",
 };
 
 // a mission's picture: the game's own art when it is about one game, a pixel icon otherwise

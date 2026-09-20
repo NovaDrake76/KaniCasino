@@ -3,6 +3,7 @@ import { FiCheck, FiHelpCircle } from "react-icons/fi";
 import Monetary from "../../Monetary";
 import type { RoadmapMission } from "../../../services/daisu/RoadmapService";
 import { MissionProgress, MissionTile } from "./missionLook";
+import { wizardFor } from "../tour/helpWizards";
 import i18n from "../../../i18n";
 
 interface Props {
@@ -82,7 +83,7 @@ const MissionRow = ({ mission, words, art, claiming, helpOpen, onClaim, onHelp, 
         <div className="flex flex-col gap-3">
           <p className="m-0 text-sm leading-relaxed text-ink-soft">{words.help}</p>
           <div className="flex gap-2">
-            {onShowMe && (
+            {onShowMe && wizardFor(mission.goal) && (
               <button
                 type="button"
                 onClick={() => onShowMe(mission.key)}

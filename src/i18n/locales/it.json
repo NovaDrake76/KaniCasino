@@ -849,6 +849,11 @@
           "help": "Ogni cassa ha una collezione: tutti gli oggetti che può dare. Prendi il Libro delle collezioni nel mio negozio, aprine una dalla scheda Collezioni del tuo profilo e guarda cosa ti manca.",
           "title": "Sfoglia una collezione"
         },
+        "r3-discord": {
+          "desc": "Collega il tuo account Discord per regali giornalieri migliori.",
+          "help": "Collegalo dalle Impostazioni del tuo profilo e resta nel server KaniCasino. Finché ci sei, il mio regalo giornaliero pende verso i premi più rari.",
+          "title": "Collega il tuo Discord"
+        },
         "r3-market": {
           "desc": "Compra o vendi un oggetto al mercato.",
           "help": "Il mercato è dove i giocatori commerciano tra loro. Prendi la Licenza da commerciante nel mio negozio, poi compra qualcosa che vuoi o metti in vendita un tuo oggetto e aspetta un compratore.",

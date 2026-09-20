@@ -849,6 +849,11 @@
           "help": "Jede Kiste hat eine Sammlung: alle Items, die sie droppen kann. Hol dir das Sammelbuch in meinem Laden, öffne eine im Tab Sammlungen in deinem Profil und sieh nach, was dir fehlt.",
           "title": "Sieh dir eine Sammlung an"
         },
+        "r3-discord": {
+          "desc": "Verknüpfe dein Discord-Konto für bessere tägliche Geschenke.",
+          "help": "Verknüpfe es in den Einstellungen deines Profils und bleib auf dem KaniCasino-Server. Solange du drin bist, neigt mein tägliches Geschenk zu den selteneren Preisen.",
+          "title": "Verknüpfe dein Discord"
+        },
         "r3-market": {
           "desc": "Kauf oder verkauf ein Item auf dem Markt.",
           "help": "Auf dem Markt handeln Spieler untereinander. Hol dir die Händlerlizenz in meinem Laden, dann kauf etwas, das du willst, oder stell eins deiner Items ein und warte auf einen Käufer.",
