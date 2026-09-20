@@ -80,3 +80,38 @@ describe("her shop shelf", () => {
     expect((screen.getByRole("button", { name: /buy for/i }) as HTMLButtonElement).disabled).toBe(true);
   });
 });
+
+// the shelf is read once when its tab opens, and the jar sits beside it: a take raises the
+// wallet without another read, and a player who can now afford something must be able to buy it
+describe("what the shelf prices against", () => {
+  const load = vi.fn();
+  vi.mock("./shopStore", async (orig) => ({
+    ...(await orig<Record<string, unknown>>()),
+    loadShop: () => load(),
+    useShopState: () => shop(50, [item({ key: "chatPass", price: 9000 })]),
+  }));
+
+  it("follows the wallet the player is holding, not the one the shop was read with", async () => {
+    const { useShop } = await import("./useShop");
+    let seen: number | undefined;
+    const Probe = ({ wallet }: { wallet: number }) => {
+      seen = useShop({ live: false, open: false, walletBalance: wallet, onBought: () => undefined }).shop?.walletBalance;
+      return null;
+    };
+    const { rerender } = render(<Probe wallet={6240} />);
+    expect(seen).toBe(6240);
+    rerender(<Probe wallet={41000} />);
+    expect(seen).toBe(41000);
+  });
+
+  it("falls back to the shop's own copy when the wallet is not known yet", async () => {
+    const { useShop } = await import("./useShop");
+    let seen: number | undefined;
+    const Probe = () => {
+      seen = useShop({ live: false, open: false, onBought: () => undefined }).shop?.walletBalance;
+      return null;
+    };
+    render(<Probe />);
+    expect(seen).toBe(6240);
+  });
+});

@@ -9,12 +9,18 @@ interface Args {
   userId?: string;
   // her room is open on the shop tab
   open: boolean;
+  // what the player holds right now, which the socket keeps current
+  walletBalance?: number;
+  level?: number;
   onBought: (purchase: ShopPurchase) => void;
 }
 
 // her shop: read when its tab opens, one item picked to look at, and a purchase that ends on what it opened
-export const useShop = ({ live, userId, open, onBought }: Args) => {
-  const shop = useShopState();
+export const useShop = ({ live, userId, open, walletBalance, level, onBought }: Args) => {
+  const held = useShopState();
+  // the shop is read once when its tab opens, so its own copy of the wallet goes stale the
+  // moment the jar is taken beside it. price against what the player is actually holding
+  const shop = held && { ...held, walletBalance: walletBalance ?? held.walletBalance, level: level ?? held.level };
   const [picked, setPicked] = useState<string | null>(null);
   const [buying, setBuying] = useState(false);
   const [unlocked, setUnlocked] = useState<string | null>(null);
