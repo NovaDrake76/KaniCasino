@@ -1,13 +1,13 @@
 export type Expression = "default" | "smug" | "sharp";
 type Eyes = "default" | "smug" | "sharp";
-type Mouth = "closed" | "open" | "wide";
+type Mouth = "closed" | "open" | "smug";
 
 // one drawing set per expression: the eyes she wears, the mouth she rests on, and the
 // mouths a line flaps through while she says it. the closed mouth is drawn turned down, so
-// under smug's lowered lids it reads as a pout; smug rests a little open instead
+// under smug's lowered lids it read as a pout; smug keeps its own mouth at rest
 export const EXPRESSIONS: Record<Expression, { eyes: Eyes; rest: Mouth; talk: Mouth[] }> = {
   default: { eyes: "default", rest: "closed", talk: ["open"] },
-  smug: { eyes: "smug", rest: "open", talk: ["wide"] },
+  smug: { eyes: "smug", rest: "smug", talk: ["open"] },
   sharp: { eyes: "sharp", rest: "closed", talk: ["open"] },
 };
 

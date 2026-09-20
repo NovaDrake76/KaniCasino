@@ -42,7 +42,7 @@ LAYERS = {
     "eyes-sharp": "olhos/olhos_3_sharp.png",
     "mouth-closed": "bocas/boca_3_default.png",
     "mouth-open": "bocas/boca_2_open.png",
-    "mouth-wide": "bocas/boca_1_open_smug.png",
+    "mouth-smug": "bocas/boca_1_open_smug.png",
     "jar-0": "jarro/jarro_0_vazio.png",
     "jar-1": "jarro/jarro_1_um_quarto.png",
     "jar-2": "jarro/jarro_2_2_quartos.png",

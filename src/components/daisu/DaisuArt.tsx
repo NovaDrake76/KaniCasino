@@ -109,7 +109,7 @@ const DaisuArt = ({ fill, expression, shaking, bust, className, onJar, onPoke, p
         {(["default", "smug", "sharp"] as const).map((eyes) => (
           <Layer key={eyes} part={`eyes-${eyes}`} hidden={eyes !== look.eyes} />
         ))}
-        {(["closed", "open", "wide"] as const).map((shape) => (
+        {(["closed", "open", "smug"] as const).map((shape) => (
           <Layer key={shape} part={`mouth-${shape}`} hidden={shape !== mouth} />
         ))}
         <button
