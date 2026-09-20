@@ -87,6 +87,7 @@ const { sweepBoards } = require("./utils/leaderboard");
 const liveFeed = require("./utils/liveFeed");
 const chat = require("./utils/chat");
 const rain = require("./utils/rain");
+const { migrateXpCurve } = require("./scripts/migrateXpCurve");
 const { probeTransactions, setTransactionsSupported } = require("./utils/economy");
 const userRoutes = require("./routes/userRoutes");
 const caseRoutes = require("./routes/caseRoutes");
@@ -118,6 +119,9 @@ mongoose
   })
   .then(async () => {
     console.log("MongoDB connected");
+    // the ladder changed in september 2026: every account is carried over at its level, once, before it bets
+    const carried = await migrateXpCurve().catch((e) => console.error("xp curve migration:", e));
+    if (carried && carried.ran) console.log(`xp curve: ${carried.touched} accounts carried over`);
     // money writes are only atomic where transactions exist; refuse to run prod without
     const ok = await probeTransactions();
     setTransactionsSupported(ok);
@@ -194,7 +198,7 @@ app.use("/leaderboard", leaderboardRoutes);
 // resumes a give-back loop that died holding a stale lease, so it never touches the
 // rounds the running game loops are still playing.
 const sweepRounds = ({ boot = false } = {}) => {
-  recoverStuckRounds(io, coinFlip.winPayout, { boot }).catch((e) => console.log(e));
+  recoverStuckRounds(io, coinFlip.payoutFor, { boot }).catch((e) => console.log(e));
   completeStuckBattles(io, { boot }).catch((e) => console.log(e));
   sweepBlackjackHands(io).catch((e) => console.log(e));
   sweepMinesGames(io).catch((e) => console.log(e));
@@ -230,7 +234,7 @@ const shutdown = async (signal) => {
   console.log(`${signal}: closing betting and settling the live rounds`);
   try {
     await Promise.all([stopCrash(), stopCoinFlip()]);
-    await recoverStuckRounds(io, coinFlip.winPayout, { boot: true });
+    await recoverStuckRounds(io, coinFlip.payoutFor, { boot: true });
   } catch (e) {
     console.log("shutdown settle did not finish, the boot sweep will:", e);
   }

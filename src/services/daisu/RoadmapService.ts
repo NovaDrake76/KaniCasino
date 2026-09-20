@@ -19,7 +19,12 @@ export type RoadmapGoal =
   | "staked"
   | "battlesWon"
   | "topFan"
-  | "discordLinked";
+  | "discordLinked"
+  | "daysPlayed"
+  | "bigWin"
+  | "rainsCaught"
+  | "referrals"
+  | "predictions";
 
 export interface RoadmapMission {
   key: string;

@@ -6,7 +6,7 @@ import DaisuArt from "./DaisuArt";
 import type { DaisuViewProps } from "./Daisu.types";
 import i18n from "../../i18n";
 
-const DaisuBubbleView: React.FC<DaisuViewProps> = ({ openPopup, inJar, fill, face, attention, bubbleGift, bubbleBonus }) => {
+const DaisuBubbleView: React.FC<DaisuViewProps> = ({ openPopup, inJar, fill, expression, attention, bubbleGift, bubbleBonus }) => {
   const hurry = !!bubbleBonus?.expiring;
 
   return (
@@ -20,7 +20,7 @@ const DaisuBubbleView: React.FC<DaisuViewProps> = ({ openPopup, inJar, fill, fac
       className="fixed bottom-4 right-4 z-sticky flex items-center gap-2 border-none bg-surface py-1 pl-1 pr-3 text-left shadow-lg hover:border-none hover:bg-surface-hover"
     >
       <span className="relative flex h-12 w-12 items-end justify-center overflow-hidden">
-        <DaisuArt bust fill={fill} face={face} className="h-12 w-12 object-contain object-top" />
+        <DaisuArt bust fill={fill} expression={expression} className="h-12 w-12 object-contain object-top" />
         {(attention || hurry) && (
           <span className="absolute right-0 top-0 flex h-2.5 w-2.5">
             <span className={`absolute inset-0 animate-ping opacity-70 ${hurry ? "bg-accent-amber" : "bg-accent-gold"}`} />

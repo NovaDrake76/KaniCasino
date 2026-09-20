@@ -1,7 +1,7 @@
 import type { PickGame } from "../../services/daisu/DaisuService";
 import type { useDaisu } from "./Daisu.services";
 
-export type Face = "idle" | "happy" | "surprised" | "sad";
+export type { Expression } from "./daisuFace";
 
 // the bubble in the corner, the card she talks from, and her room with everything in it
 export type Stage = "bubble" | "popup" | "room";
@@ -10,6 +10,8 @@ export type Stage = "bubble" | "popup" | "room";
 export interface Line {
   key: string;
   vars?: Record<string, string | number>;
+  // counts her utterances, so saying the same line twice types itself out twice
+  id?: number;
 }
 
 // one click on the jar, floating up as a number, a little off center so a fast run fans out

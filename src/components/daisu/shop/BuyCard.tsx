@@ -5,6 +5,7 @@ import { FiCheck } from "react-icons/fi";
 import Monetary from "../../Monetary";
 import type { ShopItem } from "../../../services/daisu/ShopService";
 import ShopArt from "./ShopArt";
+import { itemWords } from "./shopCopy";
 import { kp } from "../potMath";
 import i18n from "../../../i18n";
 import TypedText from "../TypedText";
@@ -34,21 +35,22 @@ const BuyCard = ({ item, walletBalance, level, buying, onBuy, onClose, onShowMe 
   const after = walletBalance - item.price;
   const short = after < 0;
   const tooLow = level < item.level;
-  const name = t(`items.${item.key}.name`);
+  const words = itemWords(item);
+  const name = words.name;
 
   return createPortal(
     <div className="fixed inset-0 z-[70] flex items-end justify-center text-white md:items-center" style={{ background: "rgba(9, 7, 20, 0.78)" }}>
       <div role="dialog" aria-label={name} className="flex max-h-full w-full flex-col gap-4 overflow-y-auto bg-surface p-5 shadow-2xl md:w-[460px] md:gap-[18px] md:p-7">
         <div className="flex items-center gap-4 md:gap-[18px]">
           <span className="flex h-20 w-20 shrink-0 items-center justify-center bg-surface-nav md:h-24 md:w-24">
-            <ShopArt item={item.key} size={56} />
+            <ShopArt item={item.key} game={item.game} size={56} />
           </span>
           <div className="flex min-w-0 flex-col gap-1.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">{t("title")}</span>
             <span className="text-[22px] font-extrabold leading-tight md:text-2xl">{name}</span>
           </div>
         </div>
-        <p className="m-0 text-sm leading-relaxed text-ink-soft">{t(`items.${item.key}.about`)}</p>
+        <p className="m-0 text-sm leading-relaxed text-ink-soft">{words.about}</p>
         {item.owned ? (
           <span className="flex items-center gap-2 bg-surface-nav px-3.5 py-2.5 text-[13px] font-bold text-green-400">
             <FiCheck aria-hidden /> {t("yours")}
@@ -71,7 +73,7 @@ const BuyCard = ({ item, walletBalance, level, buying, onBuy, onClose, onShowMe 
         )}
         <div className="flex items-start gap-3 bg-surface-nav p-3">
           <img src="/images/daisu/bust.webp" alt="" className="h-10 w-10 shrink-0 object-contain object-top" />
-          <p className="m-0 text-[13px] leading-normal text-ink-soft"><TypedText text={t(`items.${item.key}.${item.owned ? "opened" : "pitch"}`)} /></p>
+          <p className="m-0 text-[13px] leading-normal text-ink-soft"><TypedText text={item.owned ? words.opened : words.pitch} /></p>
         </div>
         <div className="flex flex-col gap-2">
           {item.owned ? (

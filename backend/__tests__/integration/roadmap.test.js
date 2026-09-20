@@ -10,6 +10,8 @@ const MissionState = require("../../models/MissionState");
 const { TX } = require("../../utils/economy");
 const Item = require("../../models/Item");
 const Case = require("../../models/Case");
+const PredictionTrade = require("../../models/PredictionTrade");
+const mongoose = require("mongoose");
 
 let app;
 
@@ -56,7 +58,7 @@ describe("daisu's missions", () => {
     const res = await roadmapOf(user);
 
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ chapter: 1, chapters: 5, finished: false, bonus: 1000 });
+    expect(res.body).toMatchObject({ chapter: 1, chapters: 10, finished: false, bonus: 1000 });
     expect(res.body.missions.map((m) => m.key)).toEqual(["r1-full-pot", "r1-pin", "r1-bonus", "r1-level"]);
     expect(res.body.next.chapter).toBe(2);
     expect(res.body.next.missions).toHaveLength(4);
@@ -201,9 +203,45 @@ describe("daisu's missions", () => {
 
   it("has nothing left after the last chapter", async () => {
     const user = await makeUser();
-    await openChapter(user, 6);
+    await openChapter(user, 11);
 
-    expect((await roadmapOf(user)).body).toMatchObject({ chapter: 6, finished: true, missions: [], next: null });
+    expect((await roadmapOf(user)).body).toMatchObject({ chapter: 11, finished: true, missions: [], next: null });
+  });
+
+  it("counts the long game's goals: days played, the biggest win, rains caught, friends brought, predictions", async () => {
+    const user = await makeUser({ level: 41 });
+    await openChapter(user, 6, { msAgo: 5 * 864e5 });
+    const day = (n) => new Date(Date.now() - n * 864e5);
+    await row(user._id, TX.DICE_BET, { createdAt: day(1) });
+    await row(user._id, TX.DICE_BET, { createdAt: day(1) });
+    await row(user._id, TX.SLOT_BET, { createdAt: day(2) });
+    await row(user._id, TX.CRASH_BET, { createdAt: day(4) });
+    // a stake from before the chapter opened is not a day played in it
+    await row(user._id, TX.CRASH_BET, { createdAt: day(9) });
+    expect(mission((await roadmapOf(user)).body, "r6-days")).toMatchObject({ current: 3, complete: false });
+
+    await openChapter(user, 7);
+    await row(user._id, TX.DICE_WIN, { direction: "credit", amount: 40000 });
+    await row(user._id, TX.CRASH_CASHOUT, { direction: "credit", amount: 120000 });
+    await row(user._id, TX.MARKET_SALE, { direction: "credit", amount: 500000 });
+    const seven = (await roadmapOf(user)).body;
+    expect(mission(seven, "r7-big-win")).toMatchObject({ current: 100000, complete: true });
+
+    await openChapter(user, 8);
+    await row(user._id, TX.RAIN_PAYOUT, { direction: "credit", amount: 30 });
+    await row(user._id, TX.RAIN_PAYOUT, { direction: "credit", amount: 12 });
+    expect(mission((await roadmapOf(user)).body, "r8-rain").current).toBe(2);
+
+    await openChapter(user, 10);
+    await makeUser({ referredBy: user._id, referralMilestonePaid: true });
+    await makeUser({ referredBy: user._id, referralMilestonePaid: true });
+    await makeUser({ referredBy: user._id });
+    await PredictionTrade.create({
+      userId: user._id, predictionId: new mongoose.Types.ObjectId(), outcomeKey: "yes", action: "buy", shares: 1, avgPriceBps: 5000, amount: 10,
+    });
+    const ten = (await roadmapOf(user)).body;
+    expect(mission(ten, "r10-referrals").current).toBe(2);
+    expect(mission(ten, "r10-predictions").current).toBe(1);
   });
 
   it("stays behind the beta flag", async () => {

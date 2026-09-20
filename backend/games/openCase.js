@@ -3,6 +3,7 @@ const Case = require("../models/Case");
 const badges = require("../utils/badges");
 const realtime = require("../utils/realtime");
 const { calculateLevelFromXp, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = require("../utils/economy");
+const { xpGain } = require("../utils/xpCurve");
 const referrals = require("../utils/referrals");
 const fandom = require("../utils/fandom");
 const { addUniqueInfoToItem, toInventoryEntry } = require("../utils/caseOpening");
@@ -84,8 +85,9 @@ async function openCase({ user, caseId, quantity, grantId = null, source = null 
   // rolls the charge back, so the player is never charged without a record
   const updatedUser = await runAtomic(async (session) => {
     const filter = { _id: user._id, walletBalance: { $gte: cost } };
+    // the push keeps this off a pipeline, so the boost is applied from the caller's own document
     const update = {
-      $inc: { walletBalance: -cost, xp: cost * 5 },
+      $inc: { walletBalance: -cost, xp: xpGain(cost, "cases", user.xpBoost) },
       $push: { inventory: { $each: winningItems.map(toInventoryEntry) } },
     };
     // the push has just made this inventory bigger; handing it back would cost more
@@ -146,7 +148,7 @@ async function openCase({ user, caseId, quantity, grantId = null, source = null 
   }
 
   const newLevel = calculateLevelFromXp(updatedUser.xp);
-  if (newLevel !== updatedUser.level) {
+  if (newLevel > (updatedUser.level || 0)) {
     updatedUser.level = newLevel;
     await User.updateOne({ _id: user._id }, { $set: { level: newLevel } });
     referrals.maybePayReferralMilestone(user._id, newLevel).catch(() => {});
