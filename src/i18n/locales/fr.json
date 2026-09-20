@@ -1267,6 +1267,7 @@
     "main": "Principal",
     "provablyFair": "Provably Fair",
     "slot": "Machine à sous",
+    "sounds": "Sons",
     "support": "Assistance",
     "termsOfPrivacy": "Politique de confidentialité",
     "userAgreement": "Conditions d'utilisation"
@@ -1743,6 +1744,8 @@
     "joined": "Vous y etes",
     "logIn": "connectez-vous",
     "needLevel": "Atteignez le niveau {{level}} pour rejoindre la pluie.",
+    "openChat": "Ouvrir le chat",
+    "soonToast": "Au moins K₽{{amount}} tombent dans le chat dans {{minutes}} min.",
     "title": "Pluie",
     "won": "La pluie vous a donne K₽{{amount}}"
   },
@@ -1760,10 +1763,17 @@
     "nicknameHint": "De 2 a 30 caracteres. Modifiable une fois tous les 30 jours.",
     "nicknameLocked": "Vous pourrez le modifier a nouveau le {{date}}.",
     "nicknameSaved": "Pseudo mis a jour",
+    "playTestSound": "Jouer un son de test",
     "saveFailed": "Enregistrement impossible, réessayez",
     "saveNickname": "Enregistrer le pseudo",
+    "sound": "Son",
+    "soundEffects": "Effets sonores",
+    "soundHint": "Clics, mises, gains et les rouleaux. Le son démarre après votre premier clic sur la page.",
     "title": "Paramètres",
-    "updates": "Actualités sur les caisses et les jeux"
+    "updates": "Actualités sur les caisses et les jeux",
+    "volume": "Volume",
+    "volumeDown": "Moins fort",
+    "volumeUp": "Plus fort"
   },
   "slot": {
     "bar": "barre",

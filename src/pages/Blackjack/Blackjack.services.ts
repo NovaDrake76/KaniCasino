@@ -14,6 +14,8 @@ import {
 import { BlackjackHandState, BlackjackHistoryEntry, BlackjackPhase } from "./Blackjack.types";
 import i18n from "../../i18n";
 import { useSessionStats } from "../../stats/SessionStatsContext";
+import { play } from "../../services/sound/sound";
+import { outcomeSound } from "../../services/sound/cards";
 
 const DEFAULT_BET = 10;
 export const MIN_BET = 1;
@@ -83,6 +85,7 @@ export const useBlackjackServices = () => {
     if (instantRef.current) {
       setRevealStep(total);
       setPhase("settled");
+      play(outcomeSound(settled));
       pushHistory(settled);
       return;
     }
@@ -92,11 +95,14 @@ export const useBlackjackServices = () => {
     const advance = () => {
       step += 1;
       setRevealStep(step);
+      // the hole card flips, then each extra dealer card slides in
+      play(step === 2 ? "cards.flip" : "cards.deal");
       if (step < total) {
         revealTimer.current = setTimeout(advance, DEALER_DRAW_MS);
       } else {
         revealTimer.current = setTimeout(() => {
           setPhase("settled");
+          play(outcomeSound(settled));
           pushHistory(settled);
         }, RESULT_MS);
       }
@@ -150,7 +156,10 @@ export const useBlackjackServices = () => {
     try {
       setLastBet(amount);
       setBetInput(String(amount));
+      play("game.bet");
       const res = await dealBlackjack(amount);
+      // four cards land, staggered like PlayingCard's entrance
+      [0, 140, 280, 420].forEach((ms) => window.setTimeout(() => play("cards.deal"), ms));
       applyResponse(res);
     } catch (error: any) {
       if (error?.response?.status === 409) await refresh();
@@ -173,10 +182,20 @@ export const useBlackjackServices = () => {
     }
   };
 
-  const hit = () => act(hitBlackjack);
+  const hit = () => {
+    play("cards.deal");
+    return act(hitBlackjack);
+  };
   const stand = () => act(standBlackjack);
-  const double = () => act(doubleBlackjack);
-  const split = () => act(splitBlackjack);
+  const double = () => {
+    play("game.bet");
+    play("cards.deal");
+    return act(doubleBlackjack);
+  };
+  const split = () => {
+    play("cards.flip");
+    return act(splitBlackjack);
+  };
   const insure = (accept: boolean) => act(() => insureBlackjack(accept));
   const rebet = (multiplier = 1) =>
     deal(Math.min(MAX_BET, Math.max(MIN_BET, lastBet * multiplier)));

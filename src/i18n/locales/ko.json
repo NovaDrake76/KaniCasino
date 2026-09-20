@@ -1267,6 +1267,7 @@
     "main": "주요",
     "provablyFair": "Provably Fair",
     "slot": "슬롯",
+    "sounds": "사운드",
     "support": "지원",
     "termsOfPrivacy": "개인정보 약관",
     "userAgreement": "이용약관"
@@ -1743,6 +1744,8 @@
     "joined": "참여 중",
     "logIn": "로그인",
     "needLevel": "레벨 {{level}} 이상부터 레인에 참여할 수 있습니다.",
+    "openChat": "채팅 열기",
+    "soonToast": "{{minutes}}분 뒤 채팅에 K₽{{amount}} 이상이 내립니다.",
     "title": "레인 풀",
     "won": "레인으로 K₽{{amount}}를 받았습니다"
   },
@@ -1760,10 +1763,17 @@
     "nicknameHint": "2~30자. 30일에 한 번 변경할 수 있습니다.",
     "nicknameLocked": "{{date}}부터 다시 변경할 수 있습니다.",
     "nicknameSaved": "닉네임이 변경되었습니다",
+    "playTestSound": "테스트 소리 재생",
     "saveFailed": "저장하지 못했습니다. 다시 시도해 주세요",
     "saveNickname": "닉네임 저장",
+    "sound": "소리",
+    "soundEffects": "효과음",
+    "soundHint": "클릭, 베팅, 승리, 릴 소리. 페이지에서 처음 클릭한 뒤부터 재생됩니다.",
     "title": "설정",
-    "updates": "새 케이스와 게임 소식"
+    "updates": "새 케이스와 게임 소식",
+    "volume": "음량",
+    "volumeDown": "작게",
+    "volumeUp": "크게"
   },
   "slot": {
     "bar": "바",

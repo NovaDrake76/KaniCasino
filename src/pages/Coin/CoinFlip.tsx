@@ -11,6 +11,7 @@ import BetAmount from "../../components/game/BetAmount";
 import { getCoinFlipHistory } from "../../services/games/GamesServices";
 import { emitGameResult } from "../../components/daisu/tour/tourEvents";
 import i18n from "../../i18n";
+import { play } from "../../services/sound/sound";
 
 const socket = SocketConnection.getInstance();
 
@@ -68,6 +69,7 @@ const CoinFlip = () => {
     setUserGambled(true);
     setBetAux(bet);
     placedRef.current = { wagered: bet, side: choice };
+    play("game.bet");
 
     // the server has the final word: a refused bet used to leave the ui claiming
     // the player was in the round
@@ -83,6 +85,7 @@ const CoinFlip = () => {
   useEffect(() => {
     const startListener = () => {
       setResult(null);
+      play("coin.flip");
       setSpinning(true); // Start spinning when the game starts
       setCountDown(0); // Reset the countdown
       setGameEnded(false); // The game has started
@@ -91,8 +94,10 @@ const CoinFlip = () => {
     const resultListener = (result: number) => {
       setResult(result);
       setSpinning(false);
+      play("coin.land");
       if (placedRef.current) {
         const { wagered, side } = placedRef.current;
+        play(result === side ? "game.win" : "game.lose");
         emitGameResult({ game: "coinflip", wagered, payout: result === side ? Math.floor(wagered * multiplierOf(side)) : 0 });
         placedRef.current = null;
       }

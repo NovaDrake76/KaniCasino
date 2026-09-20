@@ -1267,6 +1267,7 @@
     "main": "メイン",
     "provablyFair": "Provably Fair",
     "slot": "スロット",
+    "sounds": "サウンド",
     "support": "サポート",
     "termsOfPrivacy": "プライバシー規約",
     "userAgreement": "利用規約"
@@ -1743,6 +1744,8 @@
     "joined": "参加中",
     "logIn": "ログイン",
     "needLevel": "レベル{{level}}になるとレインに参加できます。",
+    "openChat": "チャットを開く",
+    "soonToast": "あと{{minutes}}分でチャットに K₽{{amount}} 以上が降ります。",
     "title": "レインプール",
     "won": "レインで K₽{{amount}} を獲得しました"
   },
@@ -1760,10 +1763,17 @@
     "nicknameHint": "2〜30文字。30日に1回変更できます。",
     "nicknameLocked": "{{date}} からまた変更できます。",
     "nicknameSaved": "ニックネームを更新しました",
+    "playTestSound": "テスト音を再生",
     "saveFailed": "保存できませんでした。もう一度お試しください",
     "saveNickname": "ニックネームを保存",
+    "sound": "サウンド",
+    "soundEffects": "効果音",
+    "soundHint": "クリック、ベット、勝利、リールの音。ページで最初にクリックしてから鳴り始めます。",
     "title": "設定",
-    "updates": "新しいケースやゲームのお知らせ"
+    "updates": "新しいケースやゲームのお知らせ",
+    "volume": "音量",
+    "volumeDown": "小さく",
+    "volumeUp": "大きく"
   },
   "slot": {
     "bar": "バー",
