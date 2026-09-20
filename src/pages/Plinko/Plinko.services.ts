@@ -8,6 +8,7 @@ import { DropOutcome, autoStep, outcomeFor } from "./autoRun";
 import { PlinkoBall, PlinkoDropResult } from "./Plinko.types";
 import i18n from "../../i18n";
 import { useSessionStats } from "../../stats/SessionStatsContext";
+import { play } from "../../services/sound/sound";
 
 const DEFAULT_BET = 10;
 const HISTORY_SIZE = 8;
@@ -147,6 +148,7 @@ export const usePlinkoServices = () => {
   const canDrop = balls.length + pendingDrops < MAX_IN_FLIGHT;
   const drop = () => {
     if (!canDrop) return;
+    play("plinko.drop");
     fireDrop();
   };
 
@@ -158,6 +160,8 @@ export const usePlinkoServices = () => {
     // the server answered while the ball was still falling; the tally waits for the bin,
     // otherwise the panel spoils the drop the player is watching
     track({ game: "plinko", wagered: ball.betAmount, payout: ball.payout || 0 });
+    const mult = Number(ball.multiplier) || 0;
+    play(mult >= 5 ? "plinko.land.high" : mult >= 1 ? "plinko.land.mid" : "plinko.land.low");
     hitSeq.current += 1;
     setBalls((prev) => prev.filter((b) => b.key !== ball.key));
     setLastHit({ bin: ball.bin, seq: hitSeq.current });

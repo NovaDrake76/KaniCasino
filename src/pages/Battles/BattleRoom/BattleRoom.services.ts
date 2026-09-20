@@ -26,6 +26,8 @@ import {
   WinnerBanner,
 } from "./BattleRoom.types";
 import i18n from "../../../i18n";
+import { play } from "../../../services/sound/sound";
+import { scheduleReelTicks } from "../../../services/sound/reel";
 
 const REEL_MS = 4200; // must stay under the backend's REVEAL_MS (4500)
 const WINDOW_H = 420; // must match the BattleReel window (ITEM_H * WINDOW_CELLS)
@@ -45,6 +47,7 @@ export const useBattleRoomServices = () => {
   const [tieSpun, setTieSpun] = useState(false);
   const [starting, setStarting] = useState(false);
   const settleTimer = useRef<number | null>(null);
+  const stopTicks = useRef<(() => void) | null>(null);
   const activeCaseRef = useRef<HTMLDivElement | null>(null);
   const socket = getSocket();
   const navigate = useNavigate();
@@ -105,8 +108,13 @@ export const useBattleRoomServices = () => {
         prev ? { ...prev, players: data.players, currentRound: data.round + 1, status: "in_progress" } : prev
       );
       setSpinRound(data.round);
+      if (data.round === 0) play("battle.start");
+      stopTicks.current?.();
+      stopTicks.current = scheduleReelTicks(REEL_MS, 24, "case.tick");
       if (settleTimer.current) window.clearTimeout(settleTimer.current);
       settleTimer.current = window.setTimeout(() => {
+        stopTicks.current?.();
+        play("case.stop");
         setSettledRound(data.round);
         setSpinRound(-1);
       }, REEL_MS);
@@ -136,6 +144,7 @@ export const useBattleRoomServices = () => {
     socket.on("connect", onConnect);
     return () => {
       active = false;
+      stopTicks.current?.();
       if (settleTimer.current) window.clearTimeout(settleTimer.current);
       socket.off("battle:state", onState);
       socket.off("battle:round", onRound);
@@ -328,6 +337,11 @@ export const useBattleRoomServices = () => {
     showCancelled = battle.status === "cancelled";
     showBack = resultShown || battle.status === "cancelled";
   }
+
+  // the winner is derived above once the last reel settles; play it exactly once
+  useEffect(() => {
+    if (myResult) play(myResult === "won" ? "battle.win" : "battle.lose");
+  }, [myResult]);
 
   return {
     loading,

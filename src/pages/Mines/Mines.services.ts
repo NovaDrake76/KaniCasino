@@ -12,6 +12,7 @@ import { MAX_BET, MIN_BET, MIN_MINES, TILES, gemsFor, payoutFor } from "./minesG
 import { MinesGameState } from "./Mines.types";
 import i18n from "../../i18n";
 import { useSessionStats } from "../../stats/SessionStatsContext";
+import { play } from "../../services/sound/sound";
 
 const DEFAULT_BET = 10;
 const DEFAULT_MINES = 3;
@@ -98,6 +99,17 @@ export const useMinesServices = () => {
     try {
       const next: MinesGameState = await revealMines(tile);
       setGame(next);
+      if (next.status === "active") {
+        play("mines.reveal");
+      } else if (next.status === "busted") {
+        play("mines.bomb");
+        play("game.lose");
+      } else if (next.status === "cashed") {
+        // every gem found: the server cashes the board out by itself
+        play("mines.reveal");
+        play("game.cashout");
+        play("game.win");
+      }
       if (next.status !== "active") recordEnd(next);
       return next;
     } catch (error: any) {
@@ -115,6 +127,8 @@ export const useMinesServices = () => {
     try {
       const next: MinesGameState = await cashoutMines();
       setGame(next);
+      play("game.cashout");
+      play("game.win");
       recordEnd(next);
       return next;
     } catch (error: any) {
