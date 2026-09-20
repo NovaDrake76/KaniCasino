@@ -31,7 +31,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   run,
   settleMs,
   line,
-  face,
+  expression,
   shaking,
   bonuses,
   roadmap,
@@ -75,7 +75,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
       {!touring && <SpeechBubble line={line} />}
       <DaisuArt
         fill={fill}
-        face={face}
+        expression={expression}
         shaking={shaking}
         pops={pops}
         run={run}

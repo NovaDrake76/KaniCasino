@@ -31,7 +31,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   run,
   settleMs,
   line,
-  face,
+  expression,
   shaking,
   bonuses,
   bonusGame,
@@ -79,7 +79,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
           <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-center gap-4 md:grid-cols-1">
             <DaisuArt
               fill={fill}
-              face={face}
+              expression={expression}
               shaking={shaking}
               pops={pops}
               run={run}

@@ -13,7 +13,8 @@ import { startHelp } from "./tour/helpStore";
 import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import type { UnlockKey } from "../../services/daisu/ShopService";
-import type { BonusView, Face, Line, Pop, Run, Stage } from "./Daisu.types";
+import type { BonusView, Expression, Line, Pop, Run, Stage } from "./Daisu.types";
+import { expressionFor } from "./daisuFace";
 import i18n from "../../i18n";
 
 const STAGE_KEY = "kani.daisuStage";
@@ -76,7 +77,7 @@ export const useDaisu = () => {
   // where the fill stood at the last click: what is between there and now is in the jar
   const [lastClickFill, setLastClickFill] = useState(0);
   const [line, setLine] = useState<Line | null>(null);
-  const [face, setFace] = useState<Face>("idle");
+  const [expression, setExpression] = useState<Expression>("default");
   const [shaking, setShaking] = useState(false);
   const [pops, setPops] = useState<Pop[]>([]);
   const [run, setRun] = useState<Run | null>(null);
@@ -84,6 +85,8 @@ export const useDaisu = () => {
   const [bubbleGift, setBubbleGift] = useState(false);
 
   const faceTimer = useRef<ReturnType<typeof setTimeout>>();
+  const lineFace = useRef<Expression>("default");
+  const utterance = useRef(0);
   const shakeTimer = useRef<ReturnType<typeof setTimeout>>();
   const settleTimer = useRef<ReturnType<typeof setTimeout>>();
   const latestTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -106,14 +109,20 @@ export const useDaisu = () => {
 
   // her missions load after the first render, so the rank the lines are picked with is read at the moment she speaks
   const rankRef = useRef(0);
+  // every line carries a face, so what she says is what she wears
   const say = useCallback((mood: Mood, vars?: Line["vars"]) => {
-    setLine({ key: lineKey(mood, Math.random(), rankRef.current), vars });
+    const key = lineKey(mood, Math.random(), rankRef.current);
+    setLine({ key, vars, id: ++utterance.current });
+    lineFace.current = expressionFor(key);
+    if (faceTimer.current) clearTimeout(faceTimer.current);
+    setExpression(lineFace.current);
   }, []);
 
-  const pull = useCallback((f: Face) => {
-    setFace(f);
+  // a face for something she does rather than says; it falls back to the line she is on
+  const pull = useCallback((e: Expression) => {
+    setExpression(e);
     if (faceTimer.current) clearTimeout(faceTimer.current);
-    faceTimer.current = setTimeout(() => setFace("idle"), FACE_MS);
+    faceTimer.current = setTimeout(() => setExpression(lineFace.current), FACE_MS);
   }, []);
 
   const shake = useCallback(() => {
@@ -221,7 +230,6 @@ export const useDaisu = () => {
     stage,
     onClaimed: (reward, walletBalance) => {
       if (userData && typeof walletBalance === "number") toogleUserData({ ...userData, walletBalance });
-      pull("happy");
       say("missionDone", { amount: kp(reward) });
     },
   });
@@ -232,7 +240,7 @@ export const useDaisu = () => {
     open: stage === "room",
     onBought: (purchase) => {
       if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks });
-      pull("happy");
+      pull("smug");
     },
   });
   const pickShopItem = useRef(shop.pickItem);
@@ -337,7 +345,6 @@ export const useDaisu = () => {
       if (state === "expiring") say("bonusExpiring", { game: b.name, left: b.clock });
       if (state === "expired") {
         say("bonusExpired", { game: b.name, credit: kp(b.amount) });
-        pull("sad");
       }
     }
     // the tick is what moves a bonus along; the rest is read as it stands
@@ -391,7 +398,6 @@ export const useDaisu = () => {
       } else {
         say("claimed", { amount: kp(res.amount) });
       }
-      pull("happy");
     } catch (err: unknown) {
       const e = err as { response?: { data?: { reason?: string } } };
       const reason = e?.response?.data?.reason;
@@ -403,7 +409,6 @@ export const useDaisu = () => {
       } else {
         endRun("failed");
         shake();
-        pull("sad");
         say(reason === "empty" ? "empty" : "failed");
       }
     } finally {
@@ -453,7 +458,7 @@ export const useDaisu = () => {
       shake();
       // mid-run the jar is only catching up between fast clicks, which is not worth a complaint
       if (run && (run.state === "open" || run.state === "sending")) return;
-      pull("surprised");
+      pull("sharp");
       if (Date.now() - lastEmptyLineAt.current > EMPTY_LINE_EVERY_MS) {
         lastEmptyLineAt.current = Date.now();
         const readyFill = Math.min(1, lastClickFill + (full > 0 ? 1 / (full * 0.8) : 1));
@@ -470,7 +475,7 @@ export const useDaisu = () => {
         ? { ...r, amount: r.amount + delta, lastClickAt: t }
         : { id: t + Math.random(), amount: delta, state: "open", lastClickAt: t }
     );
-    pull("happy");
+    pull("smug");
     if (!settlingRef.current) scheduleSettle();
   };
 
@@ -480,7 +485,7 @@ export const useDaisu = () => {
     if (mode === "locked") return;
     if (mode === "script") {
       emitPoked();
-      pull("surprised");
+      pull("sharp");
       return;
     }
     const t = Date.now();
@@ -488,7 +493,6 @@ export const useDaisu = () => {
     pokes.current = { count: pokes.current.count + 1, at: t };
     const mood = pokeMood(pokes.current.count);
     say(mood);
-    pull(mood === "poke2" ? "happy" : mood === "poke1" ? "sad" : "surprised");
   };
 
   const openPopup = () => setStage("popup");
@@ -552,7 +556,7 @@ export const useDaisu = () => {
     run,
     settleMs: SETTLE_AFTER_MS,
     line,
-    face,
+    expression,
     shaking,
     bonuses,
     bubbleBonus,
