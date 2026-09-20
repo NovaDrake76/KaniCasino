@@ -859,6 +859,11 @@
           "help": "Every case has a collection: all the items it can drop. Get the Collection Book in my shop, then open one from the Collections tab on your profile and see what you're missing.",
           "title": "Look through a collection"
         },
+        "r3-discord": {
+          "desc": "Connect your Discord account for better daily gifts.",
+          "help": "Link it from Settings on your profile, then stay in the KaniCasino server. While you are in it, my daily gift leans toward the rarer prizes.",
+          "title": "Link your Discord"
+        },
         "r3-market": {
           "desc": "Buy or sell an item on the marketplace.",
           "help": "The market is where players trade with each other. Get the Trader's License in my shop, then buy something you want, or list one of your items and wait for a buyer.",

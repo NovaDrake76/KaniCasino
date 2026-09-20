@@ -17,6 +17,7 @@ const ICONS: Record<RoadmapGoal, PixelIconName> = {
   staked: "coins",
   battlesWon: "swords",
   topFan: "crown",
+  discordLinked: "chat",
   daysPlayed: "calendar",
   bigWin: "trophy",
   rainsCaught: "drop",

@@ -859,6 +859,11 @@
           "help": "Chaque caisse a sa collection : tous les objets qu'elle peut donner. Prends le Livre des collections dans ma boutique, ouvre-en une depuis l'onglet Collections de ton profil et regarde ce qui te manque.",
           "title": "Parcours une collection"
         },
+        "r3-discord": {
+          "desc": "Lie ton compte Discord pour de meilleurs cadeaux quotidiens.",
+          "help": "Lie-le depuis les Paramètres de ton profil, puis reste sur le serveur KaniCasino. Tant que tu y es, mon cadeau quotidien penche vers les lots rares.",
+          "title": "Lie ton Discord"
+        },
         "r3-market": {
           "desc": "Achète ou vends un objet sur le marché.",
           "help": "Le marché, c'est là où les joueurs échangent entre eux. Prends la Licence de commerçant dans ma boutique, puis achète ce qui te plaît, ou mets en vente un de tes objets et attends un acheteur.",

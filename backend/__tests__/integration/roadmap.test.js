@@ -64,6 +64,24 @@ describe("daisu's missions", () => {
     expect(res.body.next.missions).toHaveLength(4);
   });
 
+  // the gift's discord boost needs the account linked AND in the server, and the mission
+  // promises that boost, so it must not complete on a link alone
+  it("finishes the discord mission only once the boost is really on", async () => {
+    const cases = [
+      [{}, false],
+      [{ linked: true }, false],
+      [{ linked: true, discordInGuild: false }, false],
+      [{ linked: true, discordInGuild: true }, true],
+    ];
+    for (const [{ linked, ...fields }, want] of cases) {
+      // one account per discord user, so each case brings its own id
+      const user = await makeUser({ ...fields, ...(linked ? { discordId: uniqueSuffix(), discordName: "rin" } : {}) });
+      await openChapter(user, 3);
+      const res = await roadmapOf(user);
+      expect(mission(res.body, "r3-discord")).toMatchObject({ current: want ? 1 : 0, complete: want });
+    }
+  });
+
   it("counts activity only from when the chapter opened", async () => {
     const user = await makeUser();
     await openChapter(user, 1);

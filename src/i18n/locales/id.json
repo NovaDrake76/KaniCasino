@@ -859,6 +859,11 @@
           "help": "Setiap kotak punya koleksi: semua barang yang bisa keluar darinya. Dapatkan Buku Koleksi di tokoku, lalu buka satu dari tab Koleksi di profilmu dan lihat apa yang masih kurang.",
           "title": "Lihat sebuah koleksi"
         },
+        "r3-discord": {
+          "desc": "Hubungkan akun Discord-mu untuk hadiah harian yang lebih baik.",
+          "help": "Hubungkan dari Pengaturan di profilmu, lalu tetap di server KaniCasino. Selama kamu di dalamnya, hadiah harianku lebih condong ke hadiah langka.",
+          "title": "Hubungkan Discord-mu"
+        },
         "r3-market": {
           "desc": "Beli atau jual barang di pasar.",
           "help": "Pasar tempat para pemain berdagang satu sama lain. Dapatkan Lisensi Pedagang di tokoku, lalu beli barang yang kamu mau, atau pasang barangmu dan tunggu pembeli.",

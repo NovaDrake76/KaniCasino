@@ -19,6 +19,7 @@ export type RoadmapGoal =
   | "staked"
   | "battlesWon"
   | "topFan"
+  | "discordLinked"
   | "daysPlayed"
   | "bigWin"
   | "rainsCaught"

@@ -859,6 +859,11 @@
           "help": "Mỗi hòm có một bộ sưu tập: tất cả vật phẩm nó có thể ra. Lấy Sổ sưu tập ở cửa hàng của tôi, rồi mở một bộ từ tab Bộ sưu tập trong hồ sơ và xem bạn còn thiếu gì.",
           "title": "Xem một bộ sưu tập"
         },
+        "r3-discord": {
+          "desc": "Liên kết tài khoản Discord để nhận quà hằng ngày tốt hơn.",
+          "help": "Liên kết trong phần Cài đặt ở hồ sơ của bạn rồi ở lại máy chủ KaniCasino. Khi còn ở trong đó, quà hằng ngày của tôi sẽ nghiêng về những phần thưởng hiếm hơn.",
+          "title": "Liên kết Discord"
+        },
         "r3-market": {
           "desc": "Mua hoặc bán một vật phẩm ở chợ.",
           "help": "Chợ là nơi người chơi giao dịch với nhau. Lấy Giấy phép giao dịch ở cửa hàng của tôi, rồi mua thứ bạn muốn, hoặc đăng bán một vật phẩm của bạn và chờ người mua.",
