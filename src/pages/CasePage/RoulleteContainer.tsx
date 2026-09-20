@@ -58,6 +58,7 @@ const RouletteContainer: React.FC<RouletteContainerProps> = ({ loading, data, st
                                     className={classNames({ "animate-fade-in-down": started })}
                                     key={index}
                                     direction={quantity < 2 ? "horizontal" : "vertical"}
+                                    tick="case.tick"
                                 />
                             ))
 

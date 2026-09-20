@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Transaction = require("../models/Transaction");
 const Battle = require("../models/Battle");
 const MissionState = require("../models/MissionState");
+const User = require("../models/User");
+const PredictionTrade = require("../models/PredictionTrade");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { CHAPTERS, chapterOf } = require("./roadmapCatalog");
 const { liveStreak } = require("./dailyGift");
@@ -10,6 +12,7 @@ const { casesCompletedBy } = require("./collectionCheck");
 
 const GAME_BETS = [TX.SLOT_BET, TX.PLINKO_BET, TX.CRASH_BET, TX.COINFLIP_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET];
 const TRADES = [TX.MARKET_BUY, TX.MARKET_SALE, TX.MARKET_ORDER_FILL];
+const GAME_WINS = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN];
 // the goals read from the ledger, and the row types each one needs
 const LEDGER_TYPES = {
   fullPots: [TX.BONUS],
@@ -19,6 +22,9 @@ const LEDGER_TYPES = {
   marketTrades: TRADES,
   casesOpened: [TX.CASE_OPEN],
   staked: STAKE_TYPES,
+  daysPlayed: STAKE_TYPES,
+  bigWin: GAME_WINS,
+  rainsCaught: [TX.RAIN_PAYOUT],
 };
 // only a page knows it was looked at, so these are the goals a page may report
 const VISIT_GOALS = ["collectionVisits"];
@@ -68,33 +74,42 @@ async function ledgerSince(userId, since, goals) {
         casesOpened: { $sum: { $cond: [{ $eq: ["$type", TX.CASE_OPEN] }, { $ifNull: ["$meta.quantity", 1] }, 0] } },
         staked: { $sum: { $cond: [{ $in: ["$type", STAKE_TYPES] }, "$amount", 0] } },
         games: { $addToSet: { $cond: [{ $in: ["$type", GAME_BETS] }, "$type", null] } },
+        days: { $addToSet: { $cond: [{ $in: ["$type", STAKE_TYPES] }, { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, null] } },
+        bigWin: { $max: { $cond: [{ $in: ["$type", GAME_WINS] }, "$amount", 0] } },
+        rainsCaught: { $sum: { $cond: [{ $eq: ["$type", TX.RAIN_PAYOUT] }, 1, 0] } },
       },
     },
   ]);
   if (!row) return {};
-  return { ...row, gamesTried: row.games.filter(Boolean).length };
+  return { ...row, gamesTried: row.games.filter(Boolean).length, daysPlayed: row.days.filter(Boolean).length };
 }
 
 async function progressOf(user, roadmap, chapter, now = new Date()) {
   const goals = chapter.missions.map((m) => m.goal);
   const since = new Date(roadmap.openedAt);
   const needsCases = chapter.missions.some((m) => m.goal === "collectionsCompleted" && !roadmap.claimed.includes(m.key));
-  const [ledger, battlesWon, casesDone] = await Promise.all([
+  const [ledger, battlesWon, casesDone, referrals, predictions] = await Promise.all([
     ledgerSince(user._id, since, goals),
     goals.includes("battlesWon") ? Battle.countDocuments({ winnerUserIds: user._id, status: "finished", finishedAt: { $gte: since } }) : 0,
     // one case's whole collection, the unit the Collections page shows, counted the moment it is held
     needsCases ? casesCompletedBy(user._id) : 0,
+    // a friend counts once they reach level 10, the same bar the referral milestone pays at
+    goals.includes("referrals") ? User.countDocuments({ referredBy: user._id, referralMilestonePaid: true }) : 0,
+    goals.includes("predictions") ? PredictionTrade.countDocuments({ userId: user._id, createdAt: { $gte: since } }) : 0,
   ]);
   const valueOf = (mission) => {
     switch (mission.goal) {
       case "level": return user.level || 0;
       case "pinned": return user.fixedItem && user.fixedItem.name ? 1 : 0;
+      case "discordLinked": return user.discordId && user.discordInGuild === true ? 1 : 0;
       case "giftStreak": return liveStreak(user.giftStreak, user.giftLastAt, now) || 0;
       case "topFan": return user.fanRank && user.fanRank.rank === 1 ? 1 : 0;
       case "collectionsCompleted": return casesDone;
       case "giftSpins": return user.giftLastAt && new Date(user.giftLastAt) >= since ? 1 : 0;
       case "battlesWon": return battlesWon;
       case "collectionVisits": return roadmap.visited.includes(mission.key) ? 1 : 0;
+      case "referrals": return referrals;
+      case "predictions": return predictions;
       default: return ledger[mission.goal] || 0;
     }
   };

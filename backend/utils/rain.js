@@ -6,6 +6,8 @@ const badges = require("./badges");
 const { creditUser, TX } = require("./economy");
 const { HOUSE } = require("./accounts");
 const { VISIBLE } = require("./visibility");
+const shop = require("./shop");
+const { RAIN_COAT_WEIGHT } = require("./shopCatalog");
 
 // the rain. every half hour a share of what the site wagered is split between whoever was
 // in the chat for it. it is rakeback, the same as the daily board: the pool comes out of
@@ -32,6 +34,8 @@ const weightFor = (level) => 1 + Math.min(Math.max(level || 0, 0), LEVEL_CAP) / 
 // nothing, and this pays out. about 1,490 KP wagered, which is a few bonus claims of real
 // play rather than the minute it takes to make another account.
 const MIN_LEVEL = Number(process.env.RAIN_MIN_LEVEL || 10);
+// how long before the drop everyone online is told it is coming
+const WARN_MS = Number(process.env.RAIN_WARN_MS || 2 * 60 * 1000);
 
 const WAGER_TYPES = [
   TX.CASE_OPEN, TX.SLOT_BET, TX.PLINKO_BET, TX.CRASH_BET, TX.COINFLIP_BET,
@@ -132,7 +136,8 @@ async function join(userId) {
 // that joiner the cap and carries the rest rather than handing them a fortune.
 function splitPool(pool, people) {
   if (!(pool >= MIN_POOL) || !people.length) return [];
-  const weights = people.map((person) => weightFor(person.level));
+  // the rain coat from daisu's shop makes its holder's share heavier, level for level
+  const weights = people.map((person) => weightFor(person.level) * (shop.holds(person, "rainCoat") ? RAIN_COAT_WEIGHT : 1));
   const total = weights.reduce((a, b) => a + b, 0);
   return people
     .map((person, i) => ({
@@ -152,9 +157,9 @@ async function settle(now = new Date()) {
   const pool = await poolFor(round);
   const joiners = round.joiners.map(String);
 
-  // levels only, and only for the people in this round, which is tens of documents
+  // levels and shop perks only, and only for the people in this round, which is tens of documents
   const people = joiners.length
-    ? await User.find({ _id: { $in: joiners } }).select("level").lean()
+    ? await User.find({ _id: { $in: joiners } }).select("level betaFlags unlocks").lean()
     : [];
   const shares = splitPool(pool, people);
   const paidOut = shares.reduce((sum, share) => sum + share.amount, 0);
@@ -232,6 +237,25 @@ async function broadcastPool() {
   io.emit("rain:pool", { roundId: id, pool, endsAt: round.endsAt });
 }
 
+// the warning that a rain is about to fall, once per round, and only for a pool that will actually
+// fall: most windows stay under the floor and roll on, and a warning about those would be noise
+let warned = null;
+
+async function warnIfSoon(now = new Date()) {
+  const io = realtime.getIo();
+  if (!io) return false;
+  const round = await currentRound(now);
+  const id = String(round._id);
+  if (warned === id) return false;
+  const left = round.endsAt.getTime() - now.getTime();
+  if (left <= 0 || left > WARN_MS) return false;
+  const pool = await cachedPool(round);
+  if (pool < MIN_POOL) return false;
+  warned = id;
+  io.emit("rain:soon", { roundId: id, pool, endsAt: round.endsAt });
+  return true;
+}
+
 // checked on a timer rather than scheduled for a fixed instant, so a restart mid-round
 // settles the moment it comes back rather than skipping the round entirely
 function start() {
@@ -239,6 +263,7 @@ function start() {
     try {
       await settle();
       await broadcastPool();
+      await warnIfSoon();
     } catch (err) {
       console.error("rain tick:", err.message);
     }
@@ -252,9 +277,10 @@ function start() {
 function resetCache() {
   cache = { at: 0, roundId: null, pool: 0 };
   announced = { roundId: null, pool: -1 };
+  warned = null;
 }
 
 module.exports = {
-  state, join, settle, start, currentRound, poolFor, splitPool, weightFor, resetCache,
-  INTERVAL_MS, RATE, MIN_POOL, MAX_POOL, MAX_PER_PLAYER, MIN_LEVEL, LEVEL_CAP, WAGER_TYPES,
+  state, join, settle, start, currentRound, poolFor, splitPool, weightFor, resetCache, warnIfSoon,
+  INTERVAL_MS, RATE, MIN_POOL, MAX_POOL, MAX_PER_PLAYER, MIN_LEVEL, LEVEL_CAP, WAGER_TYPES, WARN_MS,
 };

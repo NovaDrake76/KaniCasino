@@ -14,6 +14,17 @@ interface Avatar {
     noLink?: boolean;
 }
 
+// the ring and badge colour of a level, shared with anything else that names a level
+export const levelColor = (level: number) => {
+    if (level >= 100) return '#FFCC00';
+    if (level >= 76) return '#FF0000';
+    if (level >= 51) return '#FF0066';
+    if (level >= 36) return '#FF00FF';
+    if (level >= 21) return '#A100FF';
+    if (level >= 11) return '#0066FF';
+    return '#3b82f6';
+}
+
 const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel = false, noLink = false }) => {
     const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -35,24 +46,6 @@ const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel =
             sizeClasses = 'w-36 h-36 p-1';
             skeletonSize = 144;
             break;
-    }
-
-    const getLevelColor = () => {
-        if (level >= 0 && level <= 10) {
-            return '#3b82f6';
-        } else if (level >= 11 && level <= 20) {
-            return '#0066FF';
-        } else if (level >= 21 && level <= 35) {
-            return '#A100FF';
-        } else if (level >= 36 && level <= 50) {
-            return '#FF00FF';
-        } else if (level >= 51 && level <= 75) {
-            return '#FF0066';
-        } else if (level >= 76 && level <= 99) {
-            return '#FF0000';
-        } else if (level >= 100) {
-            return '#FFCC00';
-        }
     }
 
     let LevelSize, DivPosition;
@@ -95,7 +88,7 @@ const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel =
                     alt={i18n.t("common.avatar")}
                     className={`${sizeClasses} rounded-full object-cover border-2 aspect-square ${loaded ? '' : 'hidden'}`}
                     style={{
-                        borderColor: getLevelColor()
+                        borderColor: levelColor(level)
                     }}
                     onLoad={() => setLoaded(true)}
                 />
@@ -104,7 +97,7 @@ const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel =
                         <div className={`absolute rounded-full text-xs font-semibold min-w-[20px] h-5 flex justify-center items-center text-white
                         ${LevelSize} ${DivPosition}`}
                             style={{
-                                backgroundColor: getLevelColor()
+                                backgroundColor: levelColor(level)
                             }}
                         >
                             {level}

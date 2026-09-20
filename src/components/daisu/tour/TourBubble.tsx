@@ -64,7 +64,7 @@ const TourBubble = ({ rect, eyebrow, line, step, wait, next, endLabel, onEnd, pr
         <div className="flex flex-col gap-1.5">
           <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{eyebrow}</span>
           <p className="m-0 text-sm leading-normal text-ink-soft">
-            <TypedText text={line} />
+            <TypedText voiced text={line} />
           </p>
         </div>
       </div>
