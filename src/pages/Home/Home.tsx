@@ -164,7 +164,8 @@ const Home = () => {
 
   return (
     <div className="w-full flex justify-center">
-      <div className=" flex-col w-full max-w-[1920px] ">
+      <div className="relative isolate flex-col w-full max-w-[1920px]">
+        <div aria-hidden className="stage-field absolute inset-0 -z-10" />
         <Carousel
           autoPlay={true}
           infiniteLoop={true}

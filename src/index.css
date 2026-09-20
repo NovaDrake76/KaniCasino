@@ -119,18 +119,19 @@
   }
 }
 
-/* the stage a case section sits on: a faint dot grid that fades out at the section's
-   edges, a glow behind the shelf, and a big outlined ordinal in the gutter */
-.stage-dots {
-  background-image: radial-gradient(rgba(201, 198, 222, 0.16) 1px, transparent 1.4px);
+/* the dot field runs behind the whole page rather than per section: cut into sections it
+   left a seam everywhere two of them met. it fades in under the banner and out at the foot */
+.stage-field {
+  background-image: radial-gradient(rgba(201, 198, 222, 0.14) 1px, transparent 1.4px);
   background-size: 22px 22px;
   background-position: 11px 11px;
-  -webkit-mask-image: radial-gradient(70% 80% at 50% 45%, #000 20%, transparent 100%);
-  mask-image: radial-gradient(70% 80% at 50% 45%, #000 20%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 320px, #000 calc(100% - 220px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 320px, #000 calc(100% - 220px), transparent 100%);
 }
 
+/* the glow is sized so it is already transparent well inside the section's own edges */
 .stage-glow {
-  background: radial-gradient(55% 60% at 50% 0%, rgba(79, 70, 229, 0.18), transparent 70%);
+  background: radial-gradient(60% 55% at 50% 50%, rgba(79, 70, 229, 0.16), transparent 72%);
 }
 
 .stage-ordinal {
