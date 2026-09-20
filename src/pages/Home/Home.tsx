@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Banner from "./Banner";
 import CaseListing from "./CaseListing";
+import CaseField from "./CaseField";
 import CategoryBar from "./CategoryBar";
 import GameListing from "./GamesListing";
 import Leaderboard from "./Leaderboard";
@@ -164,8 +165,7 @@ const Home = () => {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="relative isolate flex-col w-full max-w-[1920px]">
-        <div aria-hidden className="stage-field absolute inset-0 -z-10" />
+      <div className=" flex-col w-full max-w-[1920px] ">
         <Carousel
           autoPlay={true}
           infiniteLoop={true}
@@ -183,20 +183,22 @@ const Home = () => {
         <CategoryBar sections={sections} loading={loading || mostOpenedLoading} />
 
         {/* the skeleton reserves the row while loading so the sections below do not jump */}
-        {mostOpenedLoading ? (
-          <CaseListing name={i18n.t("home.mostOpenedCases")} loading cases={[]} />
-        ) : (
-          mostOpened.length > 0 && (
-            <CaseListing
-              name={i18n.t("home.mostOpenedCases")}
-              description={i18n.t("home.whatEveryoneIsOpening")}
-              cases={mostOpened}
-              sectionId={TOP_CASES_ID}
-              eager
-              ordinal={1}
-            />
-          )
-        )}
+        <CaseField>
+          {mostOpenedLoading ? (
+            <CaseListing name={i18n.t("home.mostOpenedCases")} loading cases={[]} />
+          ) : (
+            mostOpened.length > 0 && (
+              <CaseListing
+                name={i18n.t("home.mostOpenedCases")}
+                description={i18n.t("home.whatEveryoneIsOpening")}
+                cases={mostOpened}
+                sectionId={TOP_CASES_ID}
+                eager
+                ordinal={1}
+              />
+            )
+          )}
+        </CaseField>
 
         <GameListing name={i18n.t("home.ourGames")} />
 
@@ -204,20 +206,22 @@ const Home = () => {
 
         <TopFanPromo />
 
-        {loading ? (
-          <CaseListing name="Cases" loading cases={[]} />
-        ) : (
-          groups.map((group, index) => (
-            <CaseListing
-              key={group.category}
-              name={`${group.category} Cases`}
-              cases={group.cases}
-              sectionId={group.id}
-              collapsible
-              ordinal={index + (mostOpened.length > 0 ? 2 : 1)}
-            />
-          ))
-        )}
+        <CaseField>
+          {loading ? (
+            <CaseListing name="Cases" loading cases={[]} />
+          ) : (
+            groups.map((group, index) => (
+              <CaseListing
+                key={group.category}
+                name={`${group.category} Cases`}
+                cases={group.cases}
+                sectionId={group.id}
+                collapsible
+                ordinal={index + (mostOpened.length > 0 ? 2 : 1)}
+              />
+            ))
+          )}
+        </CaseField>
       </div>
     </div>
   );

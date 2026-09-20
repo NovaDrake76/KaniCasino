@@ -14,6 +14,9 @@ module.exports = {
         // the boards need their space back well before a screen is properly short: at 900px
         // the page title alone was still pushing the card past the fold
         stage: { raw: "(max-height: 1000px)" },
+        // the case shelf is 1600px wide inside a 1920px page, so only at the very top of
+        // that range is there a gutter big enough for a section's number to sit in
+        wide: "1900px",
       },
 
       // one ordering for everything that can cover something else. the site has had three

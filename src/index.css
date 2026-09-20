@@ -119,14 +119,15 @@
   }
 }
 
-/* the dot field runs behind the whole page rather than per section: cut into sections it
-   left a seam everywhere two of them met. it fades in under the banner and out at the foot */
-.stage-field {
+/* the dot field the case shelves stand on. it covers a whole run of them rather than one
+   shelf, because a field that stopped and restarted left a seam wherever two met, and it
+   fades at both ends so it does not cut against whatever sits above or below the run */
+.case-field {
   background-image: radial-gradient(rgba(201, 198, 222, 0.14) 1px, transparent 1.4px);
   background-size: 22px 22px;
   background-position: 11px 11px;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 320px, #000 calc(100% - 220px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 320px, #000 calc(100% - 220px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 110px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 110px), transparent 100%);
 }
 
 /* the glow is sized so it is already transparent well inside the section's own edges */
@@ -134,6 +135,7 @@
   background: radial-gradient(60% 55% at 50% 50%, rgba(79, 70, 229, 0.16), transparent 72%);
 }
 
+/* CaseListing shows this only on a `wide` screen, where the shelf leaves a gutter for it */
 .stage-ordinal {
   font-weight: 800;
   font-size: 150px;

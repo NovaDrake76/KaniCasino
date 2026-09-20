@@ -64,7 +64,7 @@ const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loa
     <section id={sectionId} className="relative isolate w-full flex flex-col py-6 items-center scroll-mt-16" key={name}>
       <div aria-hidden className="stage-glow absolute inset-0 -z-10" />
       {number && !collapsed && (
-        <span aria-hidden className="stage-ordinal absolute left-3 top-1/2 -z-10 hidden -translate-y-1/2 2xl:block">{number}</span>
+        <span aria-hidden className="stage-ordinal absolute left-3 top-1/2 -z-10 hidden -translate-y-1/2 wide:block">{number}</span>
       )}
       <div className="flex flex-col w-full max-w-[1600px] px-4">
         <div className="flex items-center justify-between gap-4 pb-3 border-b border-line">
