@@ -252,6 +252,8 @@ export const useDaisu = () => {
     live: enabled && !!userId,
     userId,
     open: stage === "room",
+    walletBalance: userData?.walletBalance,
+    level: userData?.level,
     onBought: (purchase) => {
       if (userData) toogleUserData({ ...userData, walletBalance: purchase.walletBalance ?? userData.walletBalance, unlocks: purchase.unlocks, xpBoost: purchase.xpBoost ?? userData.xpBoost });
       pull("smug");

@@ -123,8 +123,8 @@ const Roulette: React.FC<Roulette> = ({ items, openedItem, spin, className, dire
       const crossed = Math.floor((moved + marker + GAP / 2) / pitch);
       if (crossed > last) {
         last = crossed;
-        const rate = 1.08 - 0.16 * Math.min(1, moved / total);
-        play(tick, { rate: [rate, rate], throttleMs: 0 });
+        const rate = 0.92 - 0.17 * Math.min(1, moved / total);
+        play(tick, { rate: [rate, rate] });
       }
       if (moved < total - 0.5) frame = requestAnimationFrame(step);
     };

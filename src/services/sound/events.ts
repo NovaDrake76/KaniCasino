@@ -115,7 +115,7 @@ export const SOUND_DEFAULTS: Partial<Record<SoundEvent, SoundOptions>> = {
   "slots.spin": { volume: 0.35, rate: [0.95, 1.1], throttleMs: 70 },
   "slots.stop": { volume: 0.55, rate: [0.95, 1.05], throttleMs: 60 },
   "slots.win": { volume: 0.6, solo: true },
-  "case.tick": { volume: 0.35, rate: [0.97, 1.05], throttleMs: 24 },
+  "case.tick": { volume: 0.25, rate: [0.97, 1.05], throttleMs: 24 },
   "case.stop": { volume: 0.6 },
   "case.reveal.epic": { volume: 0.65, solo: true },
   "case.reveal.legendary": { volume: 0.75, solo: true },
