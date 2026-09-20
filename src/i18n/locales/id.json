@@ -170,6 +170,13 @@
     "signIn": "Masuk (member lama)",
     "signUp": "Daftar (member baru)"
   },
+  "avatarMenu": {
+    "open": "Menu akun",
+    "viewProfile": "Lihat profil",
+    "level": "Level {{n}}",
+    "toNext": "{{n}} XP menuju level {{level}}",
+    "logOut": "Keluar"
+  },
   "badge": {
     "allCount": "Kamu punya {{held}} dari {{total}}",
     "allTitle": "Semua lencana",

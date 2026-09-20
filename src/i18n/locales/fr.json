@@ -170,6 +170,13 @@
     "signIn": "Se connecter",
     "signUp": "S'inscrire"
   },
+  "avatarMenu": {
+    "open": "Menu du compte",
+    "viewProfile": "Voir le profil",
+    "level": "Niveau {{n}}",
+    "toNext": "{{n}} XP avant le niveau {{level}}",
+    "logOut": "Se déconnecter"
+  },
   "badge": {
     "allCount": "Vous en avez {{held}} sur {{total}}",
     "allTitle": "Tous les badges",

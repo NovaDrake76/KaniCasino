@@ -170,6 +170,13 @@
     "signIn": "Anmelden",
     "signUp": "Registrieren"
   },
+  "avatarMenu": {
+    "open": "Kontomenü",
+    "viewProfile": "Profil ansehen",
+    "level": "Level {{n}}",
+    "toNext": "{{n}} XP bis Level {{level}}",
+    "logOut": "Abmelden"
+  },
   "badge": {
     "allCount": "Du hast {{held}} von {{total}}",
     "allTitle": "Alle Abzeichen",

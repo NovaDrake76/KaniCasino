@@ -170,6 +170,13 @@
     "signIn": "ログイン",
     "signUp": "新規登録"
   },
+  "avatarMenu": {
+    "open": "アカウントメニュー",
+    "viewProfile": "プロフィールを見る",
+    "level": "レベル {{n}}",
+    "toNext": "レベル {{level}} まで {{n}} XP",
+    "logOut": "ログアウト"
+  },
   "badge": {
     "allCount": "{{total}} 中 {{held}} 個取得済み",
     "allTitle": "すべてのバッジ",

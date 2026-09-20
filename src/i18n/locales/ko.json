@@ -170,6 +170,13 @@
     "signIn": "로그인",
     "signUp": "회원가입"
   },
+  "avatarMenu": {
+    "open": "계정 메뉴",
+    "viewProfile": "프로필 보기",
+    "level": "레벨 {{n}}",
+    "toNext": "레벨 {{level}}까지 {{n}} XP",
+    "logOut": "로그아웃"
+  },
   "badge": {
     "allCount": "{{total}}개 중 {{held}}개 보유",
     "allTitle": "모든 뱃지",
