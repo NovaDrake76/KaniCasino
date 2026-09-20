@@ -14,6 +14,7 @@ import GameBar from "../../components/game/GameBar";
 import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
 import LiveBets from "../../components/game/LiveBets";
 import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
+import { play } from "../../services/sound/sound";
 // import { RotatingLines } from "react-loader-spinner";
 
 const renderPlaceholder = () => {
@@ -88,6 +89,16 @@ const Slots = () => {
         setIsSpinning(true)
         setOpenBigWin(false);
         setTotalWins(0);
+        play("game.bet");
+        // the reels run 2.0 / 2.4 / 2.8 s (SlotColumn.calculateDelay): a tick while they turn,
+        // a thunk as each stops
+        const spinTicker = window.setInterval(() => play("slots.spin"), 90);
+        const reelStops = [2000, 2400, 2800].map((ms) => window.setTimeout(() => play("slots.stop"), ms));
+        window.setTimeout(() => window.clearInterval(spinTicker), 2800);
+        const stopSpinSounds = () => {
+          window.clearInterval(spinTicker);
+          reelStops.forEach((t) => window.clearTimeout(t));
+        };
 
         try {
             const response = await spinSlots(betAmount);
@@ -109,8 +120,12 @@ const Slots = () => {
                 setIsSpinning(false);
                 // only once the reels have stopped, or the panel reads out the spin early
                 track({ game: "slots", wagered: betAmount, payout: response.totalPayout || 0 });
+                // the big-win overlay brings its own jingle (bigwin.mp3 above)
+                if (response.totalPayout >= betAmount * 8) return;
+                play(response.totalPayout > 0 ? "slots.win" : "game.lose");
             }, 3000);
         } catch (e: any) {
+            stopSpinSounds();
             console.error(e.response?.data.message || "Error spinning slots");
             toast.error(e.response?.data.message || i18n.t("slot.errorSpinningSlots"));
             setIsSpinning(false);

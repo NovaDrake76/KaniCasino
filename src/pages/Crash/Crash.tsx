@@ -10,6 +10,7 @@ import LiveBets from "./LiveBets";
 import GameContainer from "./GameContainer";
 import SideMenu from "./SideMenu";
 import { emitGameResult } from "../../components/daisu/tour/tourEvents";
+import { play } from "../../services/sound/sound";
 
 const socket = SocketConnection.getInstance();
 
@@ -58,6 +59,7 @@ const CrashGame = () => {
     setUserGambled(true);
     setUserCashedOut(false);
     stakeRef.current = { wagered: payload.amount, payout: 0 };
+    play("game.bet");
 
     // the server has the final word: a refused bet used to leave the ui claiming
     // the player was in the round
@@ -117,6 +119,8 @@ const CrashGame = () => {
   useEffect(() => {
     const cashoutSuccessListener = (data: any) => {
       if (stakeRef.current) stakeRef.current.payout = Number(data.payout) || 0;
+      play("crash.cashout");
+      play("game.win");
       setUserMultiplier(data.multiplier);
       setUserCashedOut(true);
       setDisableButton(false); // Ensure the button is enabled after a successful cashout
@@ -188,6 +192,7 @@ const CrashGame = () => {
 
   useEffect(() => {
     const startListener = () => {
+      play("crash.start");
       setMultiplier(1.0);
       setCrashPoint(null);
       setGameStarted(true);
@@ -199,7 +204,10 @@ const CrashGame = () => {
 
     const resultListener = (crashPoint: number) => {
       setCrashPoint(crashPoint);
+      play("crash.crash");
       if (stakeRef.current) {
+        // a stake still riding at the crash is the loss; a cashed-out one already played its win
+        if (!stakeRef.current.payout) play("game.lose");
         emitGameResult({ game: "crash", ...stakeRef.current });
         stakeRef.current = null;
       }
@@ -236,6 +244,9 @@ const CrashGame = () => {
 
   useEffect(() => {
     const multiplierListener = (multiplier: number) => {
+      // a tick that climbs in pitch with the multiplier; throttled in events.ts
+      const rate = Math.min(2.2, 0.9 + Math.log2(Math.max(1, multiplier)) * 0.35);
+      play("crash.tick", { rate: [rate, rate] });
       setMultiplier(multiplier);
     };
 

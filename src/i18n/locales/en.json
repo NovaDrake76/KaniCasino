@@ -1262,6 +1262,7 @@
     "main": "Main",
     "provablyFair": "Provably Fair",
     "slot": "Slot",
+    "sounds": "Sounds",
     "support": "Support",
     "termsOfPrivacy": "Terms of Privacy",
     "userAgreement": "User Agreement"
@@ -1755,10 +1756,17 @@
     "nicknameHint": "2 to 30 characters. You can change it once every 30 days.",
     "nicknameLocked": "You can change it again on {{date}}.",
     "nicknameSaved": "Nickname updated",
+    "playTestSound": "Play a test sound",
     "saveFailed": "Could not save that, try again",
     "saveNickname": "Save nickname",
+    "sound": "Sound",
+    "soundEffects": "Sound effects",
+    "soundHint": "Clicks, bets, wins and the reels. Sounds start after your first click on the page.",
     "title": "Settings",
-    "updates": "Updates about new cases and games"
+    "updates": "Updates about new cases and games",
+    "volume": "Volume",
+    "volumeDown": "Quieter",
+    "volumeUp": "Louder"
   },
   "slot": {
     "bar": "bar",

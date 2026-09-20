@@ -1262,6 +1262,7 @@
     "main": "Chính",
     "provablyFair": "Provably Fair",
     "slot": "Máy quay",
+    "sounds": "Âm thanh",
     "support": "Hỗ trợ",
     "termsOfPrivacy": "Điều khoản riêng tư",
     "userAgreement": "Thoả thuận người dùng"
@@ -1755,10 +1756,17 @@
     "nicknameHint": "Tu 2 den 30 ky tu. Ban co the doi 30 ngay mot lan.",
     "nicknameLocked": "Ban co the doi lai vao {{date}}.",
     "nicknameSaved": "Da cap nhat biet danh",
+    "playTestSound": "Phát âm thanh thử",
     "saveFailed": "Không lưu được, hãy thử lại",
     "saveNickname": "Luu biet danh",
+    "sound": "Âm thanh",
+    "soundEffects": "Hiệu ứng âm thanh",
+    "soundHint": "Tiếng bấm, cược, thắng và các cuộn quay. Âm thanh bắt đầu sau lần bấm đầu tiên của bạn trên trang.",
     "title": "Cài đặt",
-    "updates": "Tin mới về hòm và trò chơi"
+    "updates": "Tin mới về hòm và trò chơi",
+    "volume": "Âm lượng",
+    "volumeDown": "Nhỏ hơn",
+    "volumeUp": "Lớn hơn"
   },
   "slot": {
     "bar": "thanh",
