@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { FiChevronDown } from "react-icons/fi";
 import { gameLinks } from "../gameLinks";
+import NavFlare from "./NavFlare";
 import i18n from "../../../i18n";
 
 const GAP = 12;
@@ -55,15 +56,20 @@ const GamesMenu = () => {
         ref={trigger}
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
-        className="flex shrink-0 items-center gap-2 border-0 bg-transparent p-0 text-xs font-normal outline-none 2xl:text-sm"
+        className="group relative flex shrink-0 items-center gap-2 border-0 bg-transparent p-0 text-xs font-normal focus:outline-none 2xl:text-sm"
       >
-        <span className={`transition-all ${here || open ? "text-gray-200" : "text-[#625F7E]"}`}>
+        <NavFlare active={here} lit={open} />
+        <span className={`relative transition-colors ${here ? "text-white" : "text-[#625F7E] group-hover:text-gray-200"}`}>
           <IoGameControllerOutline className="text-2xl" />
         </span>
-        <span className="nav-label whitespace-nowrap text-white transition-all hover:text-gray-200">
+        <span
+          className={`nav-label relative whitespace-nowrap transition-colors ${
+            here ? "text-white" : "text-ink-soft group-hover:text-white"
+          }`}
+        >
           {i18n.t("nav.games")}
         </span>
-        <FiChevronDown className={`text-[#625F7E] transition-transform ${open ? "rotate-180" : ""}`} />
+        <FiChevronDown className={`relative text-[#625F7E] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open &&
