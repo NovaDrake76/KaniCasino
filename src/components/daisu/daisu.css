@@ -28,17 +28,12 @@
   80% { transform: rotate(2deg); }
 }
 
-.daisu-coins {
-  transition: background 0.5s ease;
-}
-
 .daisu-glow {
   animation: daisu-glow 1.6s ease-in-out infinite;
-  border-radius: 12%;
 }
 @keyframes daisu-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
-  50% { box-shadow: 0 0 22px 6px rgba(255, 204, 0, 0.35); }
+  0%, 100% { filter: drop-shadow(0 0 1px rgba(255, 204, 0, 0.35)); }
+  50% { filter: drop-shadow(0 0 9px rgba(255, 204, 0, 0.95)); }
 }
 
 .daisu-fill {

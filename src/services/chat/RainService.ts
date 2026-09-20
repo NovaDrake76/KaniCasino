@@ -62,6 +62,12 @@ export const onRainSettled = (fn: (p: RainSettled) => void) => {
   return () => void socket().off("rain:settled", fn);
 };
 
+// two minutes before a rain that will actually fall, so a player who is not in the chat can get in
+export const onRainSoon = (fn: (p: { roundId: string; pool: number; endsAt: string }) => void) => {
+  socket().on("rain:soon", fn);
+  return () => void socket().off("rain:soon", fn);
+};
+
 export const onRainWon = (fn: (p: { amount: number }) => void) => {
   socket().on("rain:won", fn);
   return () => void socket().off("rain:won", fn);

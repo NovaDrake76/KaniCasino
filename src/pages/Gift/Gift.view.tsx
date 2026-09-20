@@ -11,6 +11,7 @@ import StreakLadder from "./StreakLadder";
 import LevelRungs from "./LevelRungs";
 import type { GiftViewProps, TopSlotRung } from "./Gift.types";
 import i18n from "../../i18n";
+import { play } from "../../services/sound/sound";
 
 const useTick = () => {
   const [, set] = useState(0);
@@ -67,6 +68,7 @@ const useTopSlotCursor = (count: number, spinning: boolean, target: number | nul
     let timer: ReturnType<typeof setTimeout>;
     const tick = () => {
       setCursor(topSlotAt(from, step, count));
+      play("gift.spin", { throttleMs: 0 });
       if (step >= TOP_SLOT_TICKS) return;
       step += 1;
       timer = setTimeout(tick, stepDelay(step));

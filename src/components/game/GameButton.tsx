@@ -1,3 +1,5 @@
+import { play } from "../../services/sound/sound";
+
 interface GameButtonProps {
   children: React.ReactNode;
   onClick: () => void;
@@ -18,7 +20,10 @@ const variants = {
 
 const GameButton: React.FC<GameButtonProps> = ({ children, onClick, disabled, variant = "primary", tour }) => (
   <button
-    onClick={onClick}
+    onClick={() => {
+      play("ui.click");
+      onClick();
+    }}
     disabled={disabled}
     data-tour={tour}
     className={`w-full min-h-[46px] px-3 rounded font-bold transition-colors disabled:opacity-40 ${variants[variant]}`}

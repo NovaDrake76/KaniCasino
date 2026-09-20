@@ -66,7 +66,7 @@ describe("who gets in", () => {
 
     const res = await request(app).get("/users/me").set("Authorization", `Bearer ${tokenFor(user)}`);
 
-    expect(res.body.features).toEqual({ daisu: true });
+    expect(res.body.features).toEqual({ daisu: true, rainWarning: false });
   });
 
   it("lets an admin put someone in and take them out", async () => {
@@ -347,5 +347,25 @@ describe("a bonus running out", () => {
     ]);
     expect(String(burned[0].counterparty)).toBe(String(MINT));
     expect(res.body.status.bonuses.map((b) => b.game)).toEqual(["dice", "mines"]);
+  });
+});
+
+describe("the pot with her perks", () => {
+  const holding = (keys, fields = {}) => makeUser({ unlocks: keys.map((key) => ({ key, via: "bought", at: new Date() })), ...fields });
+
+  it("adds fifteen percent of a take for a golden ticket holder", async () => {
+    const user = await holding(["goldenTicket"], { level: 0, bonusAmount: 1000, nextBonus: fillingFor(60) });
+
+    expect((await status(user)).body.creditShare).toBe(0.15);
+    const res = await claim(user);
+    expect(res.body.amount).toBe(1000);
+    expect(res.body.credit).toBe(150);
+  });
+
+  it("changes nothing for an account without them", async () => {
+    const user = await makeUser({ level: 0, bonusAmount: 1000, nextBonus: fillingFor(60) });
+    const res = await claim(user);
+    expect(res.body.credit).toBe(100);
+    expect(res.body.status.cycleMs).toBe(pot.CYCLE_MS);
   });
 });

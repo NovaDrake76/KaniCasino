@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react"
-import Avatar from "../../Avatar";
+import AvatarMenu from "./AvatarMenu";
 import { FaRegBell } from "react-icons/fa";
 import { FaRegBellSlash } from "react-icons/fa";
 import ClaimBonus from "../ClaimBonus";
-import { IoMdExit } from "react-icons/io";
 import { BiWallet } from "react-icons/bi";
 import Monetary from "../../Monetary";
 import { User } from '../../../components/Types';
@@ -74,13 +73,7 @@ const RightContent: React.FC<RightContentProps> = ({ loading, userData, openNoti
 
                 }
             </div>
-            <Avatar image={userData?.profilePicture} loading={loading} id={userData?.id} size={isMobile ? "small" : "medium"} level={userData?.level} showLevel={true} />
-            <div
-                className="text-[#625F7E] font-normal text-lg cursor-pointer hover:text-gray-200 transition-all "
-                onClick={Logout}
-            >
-                <IoMdExit className="text-2xl" />
-            </div>
+            <AvatarMenu userData={userData} loading={loading} size={isMobile ? "small" : "medium"} logout={Logout} />
         </div>
     )
 }

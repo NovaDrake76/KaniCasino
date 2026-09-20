@@ -170,6 +170,13 @@
     "signIn": "Anmelden",
     "signUp": "Registrieren"
   },
+  "avatarMenu": {
+    "open": "Kontomenü",
+    "viewProfile": "Profil ansehen",
+    "level": "Level {{n}}",
+    "toNext": "{{n}} XP bis Level {{level}}",
+    "logOut": "Abmelden"
+  },
   "badge": {
     "allCount": "Du hast {{held}} von {{total}}",
     "allTitle": "Alle Abzeichen",
@@ -361,8 +368,13 @@
     "minBet": "Der Mindesteinsatz ist {{amount}}",
     "notEnoughMoney": "Nicht genug Guthaben",
     "placeTheBetValue": "Einsatz eingeben",
+    "purple": "Lila",
+    "purplePays": "Lila zahlt {{mult}}x und fällt in {{chance}}% der Würfe",
+    "sidesPay": "Kopf und Zahl zahlen {{mult}}x",
     "tails": "Zahl",
-    "totalBets": "Einsätze gesamt"
+    "totalBets": "Einsätze gesamt",
+    "winPays": "Ein Gewinn zahlt {{mult}}x",
+    "youWouldWin": "Du würdest {{amount}} K₽ gewinnen"
   },
   "collections": {
     "all": "Alle",
@@ -785,10 +797,15 @@
       "chapterDoneLine": "Na gut. Du bist doch kein hoffnungsloser Fall. Das will ich als Nächstes von dir.",
       "chapters": {
         "1": "Erste Schritte",
+        "10": "Daisus Liebling",
         "2": "Eingewöhnen",
         "3": "Wiederkommen",
         "4": "Stammgast",
-        "5": "Veteran"
+        "5": "Veteran",
+        "6": "Stammgast",
+        "7": "High Roller",
+        "8": "Säule",
+        "9": "Legende"
       },
       "claim": "Abholen",
       "claimed": "Abgeholt",
@@ -849,6 +866,11 @@
           "help": "Jede Kiste hat eine Sammlung: alle Items, die sie droppen kann. Hol dir das Sammelbuch in meinem Laden, öffne eine im Tab Sammlungen in deinem Profil und sieh nach, was dir fehlt.",
           "title": "Sieh dir eine Sammlung an"
         },
+        "r3-discord": {
+          "desc": "Verknüpfe dein Discord-Konto für bessere tägliche Geschenke.",
+          "help": "Verknüpfe es in den Einstellungen deines Profils und bleib auf dem KaniCasino-Server. Solange du drin bist, neigt mein tägliches Geschenk zu den selteneren Preisen.",
+          "title": "Verknüpfe dein Discord"
+        },
         "r3-market": {
           "desc": "Kauf oder verkauf ein Item auf dem Markt.",
           "help": "Auf dem Markt handeln Spieler untereinander. Hol dir die Händlerlizenz in meinem Laden, dann kauf etwas, das du willst, oder stell eins deiner Items ein und warte auf einen Käufer.",
@@ -898,6 +920,106 @@
           "desc": "Sei der größte Fan des Charakters, den du gepinnt hast.",
           "help": "Die Top-Fan-Ranglisten ordnen Spieler danach, wie viele Exemplare ihres gepinnten Charakters sie besitzen. Pinne einen, besitze die meisten, und die Krone gehört dir.",
           "title": "Werde Top-Fan"
+        },
+        "r6-days": {
+          "desc": "Setze an {{target}} verschiedenen Tagen. Sie müssen nicht hintereinander liegen.",
+          "help": "Ein Einsatz an einem Tag zählt den Tag. Vierzehn davon. Ich zähle mit, und ich habe es nicht eilig.",
+          "title": "Spiele an {{target}} verschiedenen Tagen"
+        },
+        "r6-full-pots": {
+          "desc": "Warte, bis mein Topf ganz voll ist, dann nimm ihn. {{target}} Mal.",
+          "help": "Ein voller Topf zahlt 25% mehr als ein früher Griff. Geduld ist der billigste Vorteil auf dieser Seite.",
+          "title": "Nimm {{target}} volle Töpfe"
+        },
+        "r6-collections": {
+          "desc": "Besitze jedes Item aus der Sammlung von {{target}} verschiedenen Kisten.",
+          "help": "Drei Kisten, alles, was sie ausspucken können. Öffnen oder Markt, egal wie. Der Tab Sammlungen zeigt, was fehlt.",
+          "title": "Vervollständige {{target}} Sammlungen"
+        },
+        "r6-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Vierzig. Die meisten sehen das nie. Beweis, dass du nicht die meisten bist.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r7-stake": {
+          "desc": "Setze insgesamt K₽ {{target}}, egal worauf.",
+          "help": "Fünf Millionen. Über Monate verteilt oder in einer wilden Nacht, mir egal.",
+          "title": "Setze K₽ {{target}}"
+        },
+        "r7-big-win": {
+          "desc": "Kassiere eine einzelne Auszahlung von K₽ {{target}} oder mehr in irgendeinem Spiel.",
+          "help": "Eine Runde, eine Auszahlung, sechs Stellen. Crash und Plinko sind die üblichen Verdächtigen. Mach nichts Dummes.",
+          "title": "Gewinne K₽ {{target}} in einer Runde"
+        },
+        "r7-market": {
+          "desc": "Kaufe oder verkaufe {{target}} Items auf dem Marktplatz.",
+          "help": "Käufe, Verkäufe und erfüllte Aufträge zählen alle. Ein Händler hat eine Lizenz und nutzt sie.",
+          "title": "Handle {{target}} Mal auf dem Markt"
+        },
+        "r7-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Fünfzig. Halb oben auf der Leiter, und die Stufen werden nur höher.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r8-rain": {
+          "desc": "Sei im Chat, wenn der Regen fällt, {{target}} Mal.",
+          "help": "Jede halbe Stunde fällt ein Teil dessen, was die Seite gesetzt hat, auf alle, die im Chat beim Regen dabei sind. Mach mit, dann sei da, wenn er fällt. Zehn davon.",
+          "title": "Fang {{target}} Regen"
+        },
+        "r8-battles": {
+          "desc": "Schlage andere Spieler in {{target}} Kistenkämpfen.",
+          "help": "Gleiche Kisten, die beste Summe gewinnt. Zehn Siege brauchen Glück und Anwesenheit. Vor allem Anwesenheit.",
+          "title": "Gewinne {{target}} Kistenkämpfe"
+        },
+        "r8-streak": {
+          "desc": "Drehe das tägliche Geschenk {{target}} Tage hintereinander.",
+          "help": "Ein ganzer Monat ohne einen auszulassen. Stell dir einen Wecker, wenn es sein muss. Ich würde es nie jemandem erzählen.",
+          "title": "Eine {{target}}-Tage-Geschenkserie"
+        },
+        "r8-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Sechzig. Nur eine Handvoll Spieler war je hier. Willkommen, falls du es schaffst.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r9-days": {
+          "desc": "Setze an {{target}} verschiedenen Tagen.",
+          "help": "Sechzig Tage mit einem Einsatz. Zwei Monate Anwesenheit. Du gehörst jetzt zum Inventar, ob es dir gefällt oder nicht.",
+          "title": "Spiele an {{target}} verschiedenen Tagen"
+        },
+        "r9-cases": {
+          "desc": "Öffne {{target}} Kisten, egal welche.",
+          "help": "Tausend Kisten. Billige zählen genauso, und ein Mehrfachöffnen zählt jede einzeln. Die Drops werden eine Geschichte.",
+          "title": "Öffne {{target}} Kisten"
+        },
+        "r9-collections": {
+          "desc": "Besitze jedes Item aus der Sammlung von {{target}} verschiedenen Kisten.",
+          "help": "Zehn vollständige Sammlungen. Das ist ein Museum, kein Hobby.",
+          "title": "Vervollständige {{target}} Sammlungen"
+        },
+        "r9-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Fünfundsiebzig. Ich habe aufgehört, hier oben jemanden zu erwarten. Überrasch mich.",
+          "title": "Erreiche Level {{target}}"
+        },
+        "r10-stake": {
+          "desc": "Setze insgesamt K₽ {{target}}, egal worauf.",
+          "help": "Hundert Millionen. Ich weiß. Das ist der Punkt.",
+          "title": "Setze K₽ {{target}}"
+        },
+        "r10-referrals": {
+          "desc": "Lade {{target}} Freunde ein, die Level 10 erreichen.",
+          "help": "Dein Affiliate-Link steht in deinem Profil. Ein Freund zählt ab Level 10, also bring Leute, die bleiben, keine Touristen.",
+          "title": "Bring {{target}} Freunde auf Level 10"
+        },
+        "r10-predictions": {
+          "desc": "Kaufe oder verkaufe Anteile bei {{target}} Vorhersagen.",
+          "help": "Die Vorhersagemärkte auf der Seite Vorhersagen. Jeder Kauf oder Verkauf zählt einmal. Fünfundzwanzig, und vielleicht lernst du sogar etwas.",
+          "title": "Mach {{target}} Vorhersage-Trades"
+        },
+        "r10-level": {
+          "desc": "Jeder Einsatz bringt XP, gewonnen oder verloren.",
+          "help": "Hundert. Niemand hat es geschafft. Wenn du es tust, erfahre ich es als Erste, und ich werde es sagen.",
+          "title": "Erreiche Level {{target}}"
         }
       },
       "progress": "{{done}} von {{total}} erledigt"
@@ -973,20 +1095,23 @@
     },
     "shop": {
       "after": "Dein Guthaben danach",
+      "boost": {
+        "about": "Jeder Einsatz bringt {{pct}}% mehr XP, zusätzlich zu allem, was du schon hast. Boosts addieren sich und laufen nie ab.",
+        "opened": "Es liegt jetzt auf dem Schreibtisch. Jeder Einsatz ab hier bringt {{pct}}% mehr.",
+        "what": "+{{pct}}% XP bei jedem Einsatz, für immer."
+      },
       "buyFor": "Für {{amount}} kaufen",
+      "charm": {
+        "about": "Jeder Einsatz bei {{game}} bringt {{pct}}% mehr XP, zusätzlich zu deinen anderen Boosts. Nur {{game}}, und es läuft nie ab.",
+        "cases": "Kisten",
+        "name": "{{game}}-Talisman",
+        "opened": "Angelegt. Dein nächster {{game}}-Einsatz bringt schon mehr. Los geht's.",
+        "pitch": "Du spielst {{game}} sowieso. Dann lass dich zweimal dafür bezahlen.",
+        "what": "+{{pct}}% XP bei jedem {{game}}-Einsatz, für immer."
+      },
+      "collapse": "Namen verbergen",
+      "expand": "Namen zeigen",
       "failed": "Kauf fehlgeschlagen. Versuch es noch mal.",
-      "level": "Level {{n}}",
-      "needs": "Benötigt",
-      "notNow": "Nicht jetzt",
-      "price": "Preis",
-      "short": "{{amount}} zu wenig",
-      "soon": "Kauf einen Gegenstand, um zu sehen, was als Nächstes kommt.",
-      "tipBuy": "{{price}} · Level {{n}} · zum Kaufen klicken",
-      "tipLevel": "Braucht Level {{n}} · du bist Level {{level}}",
-      "tipShort": "{{price}} · dir fehlen {{amount}}",
-      "title": "Daisus Laden",
-      "unlocked": "Freigeschaltet",
-      "yours": "Deins",
       "items": {
         "affiliateCard": {
           "about": "Öffnet den Tab Partner: Wähle deinen Einladungscode, teile deinen Link und verdiene K₽, wenn deine Eingeladenen sich anmelden, Level 10 erreichen und wetten.",
@@ -1056,8 +1181,118 @@
           "opened": "Lizenziert. Kaufen, einstellen, Aufträge erteilen, der Marktplatz gehört dir. Soll ich dich herumführen?",
           "pitch": "Offizieller Papierkram, damit du mit Fremden feilschen kannst. Lass dich nicht abzocken. Na ja, doch, das ist lustig.",
           "what": "Kauf von anderen Spielern und stell deine eigenen Items auf dem Marktplatz ein."
+        },
+        "goldenTicket": {
+          "about": "Bei jedem Griff in den Topf beträgt das Extra, das als Bonus auf ein Spiel landet, 15% statt 10%. Volle Töpfe, frühe Griffe, alle, für immer.",
+          "name": "Goldenes Ticket",
+          "opened": "Erledigt. Dein nächster Griff kommt schon mit dem größeren Bonus. Willst du den Topf sehen?",
+          "pitch": "Noch mehr Gratisgeld auf das Gratisgeld. Ich bin zu großzügig.",
+          "what": "Jeder Griff in meinen Topf legt 15% statt 10% als Spielbonus drauf, für immer."
+        },
+        "rainCoat": {
+          "about": "Wenn der Regen im Chat fällt, wird der Pool nach Level geteilt. Mit dem Mantel zählt dein Anteil 1,5x so viel wie ohne. Die Obergrenze pro Spieler gilt weiter.",
+          "name": "Regenmantel",
+          "opened": "Du trägst ihn. Beim nächsten Regen bekommst du das größere Stück. Willst du sehen, wo er fällt?",
+          "pitch": "Hält dich trocken. Gelogen, macht dich nasser. Regen ist hier Geld.",
+          "what": "Dein Anteil an jedem Regen im Chat wiegt 1,5x, für immer."
+        },
+        "luckyPencil": {
+          "name": "Glücksstift",
+          "pitch": "Am Ende angekaut. Da sitzt das Glück."
+        },
+        "pocketNotebook": {
+          "name": "Taschennotizbuch",
+          "pitch": "Schreib deine Verluste auf. Das bildet Charakter."
+        },
+        "readingLamp": {
+          "name": "Leselampe",
+          "pitch": "Damit du siehst, wie viel du verlierst. Deutlich."
+        },
+        "coffeeMug": {
+          "name": "Kaffeebecher",
+          "pitch": "Noch eine Runde. Das sagt der Becher. Jedes Mal."
+        },
+        "abacus": {
+          "name": "Abakus",
+          "pitch": "Ich zähle schneller, als du verlierst. Knapp."
+        },
+        "fortuneCat": {
+          "name": "Glückskatze",
+          "pitch": "Sie winkt. Niemand weiß, wem. Setz weiter."
+        },
+        "studyDesk": {
+          "name": "Schreibtisch",
+          "pitch": "Ein richtiger Schreibtisch. Jetzt kannst du aufrecht sitzend Geld verlieren."
+        },
+        "metronome": {
+          "name": "Metronom",
+          "pitch": "Tick. Einsatz. Tack. Einsatz. Es gibt den Takt, ich zähle mit."
+        },
+        "hourglass": {
+          "name": "Sanduhr",
+          "pitch": "Zeit ist Geld. Das beschleunigt beides."
+        },
+        "globe": {
+          "name": "Globus",
+          "pitch": "Dreh ihn. Wo er stehen bleibt, wird auch gezockt."
+        },
+        "telescope": {
+          "name": "Teleskop",
+          "pitch": "Um Level 100 anzusehen. Es ist immer noch sehr weit weg."
+        },
+        "goldCat": {
+          "name": "Goldkatze",
+          "pitch": "Dieselbe Katze, nur golden. Sie winkt kräftiger."
+        },
+        "libraryCard": {
+          "name": "Bibliotheksausweis",
+          "pitch": "Du hast jede Regel auf dieser Seite gelesen. Man merkt es."
+        },
+        "compass": {
+          "name": "Kompass",
+          "pitch": "Er zeigt immer auf den nächsten Einsatz. Wahrscheinlich kaputt."
+        },
+        "crystalSkull": {
+          "name": "Kristallschädel",
+          "pitch": "Er weiß, wie deine Session endet. Er verrät es nicht."
+        },
+        "daisuDiary": {
+          "name": "Daisus Tagebuch",
+          "pitch": "Lies es nicht. Na gut, lies es. Seite 12 handelt von dir."
+        },
+        "starChart": {
+          "name": "Sternkarte",
+          "pitch": "Die Sterne sagen, du gewinnst. Das sagen sie allen."
+        },
+        "goldenAbacus": {
+          "name": "Goldener Abakus",
+          "pitch": "Zum Zählen von Zahlen mit mehr Nullen. Deinen, in letzter Zeit."
+        },
+        "observatory": {
+          "name": "Sternwarte",
+          "pitch": "Von hier aus sieht man Level 100. Gerade so."
+        },
+        "philosopherStone": {
+          "name": "Stein der Weisen",
+          "pitch": "Er macht aus Einsätzen XP. Was er immer tat, nur schneller."
         }
-      }
+      },
+      "level": "Level {{n}}",
+      "needs": "Benötigt",
+      "notNow": "Nicht jetzt",
+      "price": "Preis",
+      "short": "{{amount}} zu wenig",
+      "showAll": "Alle Items zeigen",
+      "showLess": "Regal einklappen",
+      "soon": "Kauf einen Gegenstand, um zu sehen, was als Nächstes kommt.",
+      "tipBuy": "{{price}} · Level {{n}} · zum Kaufen klicken",
+      "tipLevel": "Braucht Level {{n}} · du bist Level {{level}}",
+      "tipShort": "{{price}} · dir fehlen {{amount}}",
+      "title": "Daisus Laden",
+      "unlocked": "Freigeschaltet",
+      "xpBonus": "+{{pct}}% XP",
+      "yourItems": "Deine Items · {{n}}",
+      "yours": "Deins"
     },
     "ticket": {
       "yours": "Dein Bonus",
@@ -1262,6 +1497,7 @@
     "main": "Allgemein",
     "provablyFair": "Provably Fair",
     "slot": "Slot",
+    "sounds": "Töne",
     "support": "Support",
     "termsOfPrivacy": "Datenschutzbestimmungen",
     "userAgreement": "Nutzungsbedingungen"
@@ -1725,9 +1961,11 @@
     "requestSent": "Anfrage gesendet",
     "serviceMessagesAboutYour": "Service-Nachrichten zu deinem Konto, etwa Sicherheits- und Richtlinienhinweise, gehen unabhängig von dieser Einstellung raus.",
     "somethingWentWrong": "Etwas ist schiefgelaufen",
-    "toEvery1kSpent": "Für je 1K₽ Einsatz bekommst du 5 XP.",
+    "toEvery1kSpent": "Jeder gesetzte K₽ 1 gibt 5 XP, gewonnen oder verloren. Boosts aus Daisus Laden kommen dazu.",
     "updatesTurnedOff": "Neuigkeiten ausgeschaltet",
     "weAreNotSending": "Wir senden nicht an deine Adresse, weil eine frühere E-Mail nicht zugestellt oder als Spam gemeldet wurde. Melde dich, wenn das falsch ist.",
+    "xpBonus": "+{{pct}}% XP",
+    "xpBonusFrom": "Aus den Boosts in Daisus Laden",
     "youWillGetUpdates": "Du bekommst Neuigkeiten zu Kisten und Spielen"
   },
   "rain": {
@@ -1738,6 +1976,8 @@
     "joined": "Du bist dabei",
     "logIn": "anmelden",
     "needLevel": "Erreiche Level {{level}}, um beim Regen mitzumachen.",
+    "openChat": "Chat öffnen",
+    "soonToast": "Mindestens K₽{{amount}} fallen in {{minutes}} Min. im Chat.",
     "title": "Regen",
     "won": "Der Regen gab dir K₽{{amount}}"
   },
@@ -1755,10 +1995,17 @@
     "nicknameHint": "2 bis 30 Zeichen. Alle 30 Tage einmal aenderbar.",
     "nicknameLocked": "Du kannst ihn am {{date}} wieder aendern.",
     "nicknameSaved": "Spitzname aktualisiert",
+    "playTestSound": "Testton abspielen",
     "saveFailed": "Speichern fehlgeschlagen, versuch es erneut",
     "saveNickname": "Spitzname speichern",
+    "sound": "Ton",
+    "soundEffects": "Soundeffekte",
+    "soundHint": "Klicks, Einsätze, Gewinne und die Walzen. Der Ton startet nach deinem ersten Klick auf der Seite.",
     "title": "Einstellungen",
-    "updates": "Neues zu Kisten und Spielen"
+    "updates": "Neues zu Kisten und Spielen",
+    "volume": "Lautstärke",
+    "volumeDown": "Leiser",
+    "volumeUp": "Lauter"
   },
   "slot": {
     "bar": "Balken",

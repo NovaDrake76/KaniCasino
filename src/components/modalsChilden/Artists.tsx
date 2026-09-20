@@ -63,6 +63,13 @@ const Assets = () => {
                 </p>
                 
             </div>
+
+            <div className="mb-4 flex flex-col gap-2">
+                <span className="text-xl font-bold mb-2">{i18n.t("footer.sounds")}</span>
+                <p className="text-md">
+                    Sound effects are from the Universal UI Soundpack by Nathan Gibson, used under CC BY 4.0: <a href="https://nathangibson.myportfolio.com" target="_blank" rel="noreferrer" className="text-blue-500">nathangibson.myportfolio.com</a>.
+                </p>
+            </div>
         </div>
     );
 };

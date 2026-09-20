@@ -1,5 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import UserContext from "../../UserContext";
+import { play } from "../../services/sound/sound";
 import {
   ChatMessage,
   onHistory,
@@ -27,9 +28,10 @@ export const useChat = (open: boolean) => {
       setMessages(rows.slice(-KEEP));
       setLoaded(true);
     });
-    const offMessage = onMessage((m) =>
-      setMessages((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m].slice(-KEEP)))
-    );
+    const offMessage = onMessage((m) => {
+      if (m.userId !== userData?.id) play("ui.chat");
+      setMessages((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m].slice(-KEEP)));
+    });
     const offRemoved = onRemoved(({ id }) => setMessages((prev) => prev.filter((m) => m.id !== id)));
     return () => {
       offHistory();
