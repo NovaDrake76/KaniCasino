@@ -94,7 +94,7 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
                             <Monetary value={Math.floor(userData?.walletBalance)} />
                         </div>
 
-                        <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} />
+                        <ClaimBonus bonusDate={userData?.nextBonus} userData={userData} potMode={!!userData?.features?.daisu} onOpen={closeSidebar} />
                     </div>
                     <div className="flex flex-col space-y-4 mt-6">
                         {links.map((link, index) => (

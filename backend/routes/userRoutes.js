@@ -841,6 +841,11 @@ router.put(
 );
 
 router.post('/claimBonus', authMiddleware.isAuthenticated, async (req, res) => {
+  // for a daisu account the pot is the bonus and the two share nextBonus, so a claim here paid the old amount and emptied
+  // her jar without her; the bar opens her card now, so only a stale page or a direct call still lands here
+  if (beta.has(req.user, "daisu")) {
+    return res.status(409).json({ message: "Your bonus is in Daisu's jar now", reason: "pot" });
+  }
   try {
     const currentTime = new Date();
     const currentBonus = req.user.bonusAmount;

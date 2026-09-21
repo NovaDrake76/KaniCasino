@@ -14,25 +14,24 @@ import {
   abandonAdWatch,
   AdRewardStatus,
 } from "../../services/rewards/AdRewardServices";
-import { claimPot } from "../../services/daisu/DaisuService";
-import { setPotStatus } from "../daisu/potStore";
-import { kp } from "../daisu/potMath";
-import { emitJarTaken } from "../daisu/tour/tourEvents";
+import { showDaisu } from "../daisu/tour/tourEvents";
 import i18n from "../../i18n";
 import { play } from "../../services/sound/sound";
 
 interface IBonus {
   bonusDate: string;
   userData: User;
-  // the pot in the corner is the bonus now: the button takes whatever is in her jar, straight to the wallet
+  // the pot is the bonus now, and it lives in her jar: the button opens her card rather than claiming past her
   potMode?: boolean;
+  // the phone's sidebar covers the page, so it closes itself before her card opens
+  onOpen?: () => void;
 }
 
 // one button, three states: while the bonus is on cooldown it shows the countdown; when it
 // is due it becomes Claim Bonus; and if the player has a rewarded ad left, the cooldown
 // state instead offers the ad (+KP) alongside the countdown. the ad is always optional: when
 // the countdown reaches zero the bonus takes over and any un-watched ad offer just goes away.
-const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) => {
+const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false, onOpen }) => {
   const [bonusAvailable, setBonusAvailable] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
   const [loadingBonus, setLoadingBonus] = useState(false);
@@ -90,22 +89,11 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
     }
   };
 
-  // her jar in the dock still takes what has gathered at any time; this button is the simple
-  // path, so it waits for the full pot and its +25% rather than spending it a coin at a time
-  const claimFromPot = async () => {
-    setLoadingBonus(true);
-    try {
-      const res = await claimPot();
-      play("ui.bonus");
-      setPotStatus(res.status);
-      toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
-      emitJarTaken();
-      toast.success(`+${kp(res.amount)}`, { theme: "dark" });
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || i18n.t("daisu.couldNotClaim"), { theme: "dark" });
-    } finally {
-      setLoadingBonus(false);
-    }
+  // a claim from the bar used to skip her entirely, so every player who never opened her card never met her.
+  // it opens her card now, full pot or not; the jar there is where the pot is taken
+  const openHerCard = () => {
+    onOpen?.();
+    showDaisu("popup");
   };
 
   const finishAd = async (token: string) => {
@@ -174,9 +162,8 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
     <>
       {potMode ? (
         <MainButton
-          onClick={claimFromPot}
+          onClick={openHerCard}
           pulse={bonusAvailable}
-          disabled={loadingBonus || !bonusAvailable}
           text={
             <span className="flex items-center gap-2 whitespace-nowrap">
               <img src="/images/daisu/bust.webp" alt="" className="-my-1 h-8 w-8 object-contain object-top" />
