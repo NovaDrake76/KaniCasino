@@ -61,6 +61,27 @@ describe("the avatar menu", () => {
     expect(screen.getByRole("button", { name: /sair/i })).toBeTruthy();
   });
 
+  // the card is where sound lives now, so it has to move the same setting the settings page does
+  it("turns the sound off and back on from the card", async () => {
+    const { sound } = await import("../../../../services/sound/sound");
+    draw();
+    fireEvent.click(trigger());
+    const before = sound.getPrefs().muted;
+    fireEvent.click(screen.getByRole("button", { name: /sound effects/i }));
+    expect(sound.getPrefs().muted).toBe(!before);
+    fireEvent.click(screen.getByRole("button", { name: /sound effects/i }));
+    expect(sound.getPrefs().muted).toBe(before);
+  });
+
+  it("sets the volume from the card's slider", async () => {
+    const { sound } = await import("../../../../services/sound/sound");
+    draw();
+    fireEvent.click(trigger());
+    const slider = screen.getByRole("slider", { name: /volume/i });
+    fireEvent.change(slider, { target: { value: "40" } });
+    expect(Math.round(sound.getPrefs().volume * 100)).toBe(40);
+  });
+
   it("closes on escape", () => {
     draw();
     fireEvent.click(trigger());
