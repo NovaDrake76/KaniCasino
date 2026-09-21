@@ -47,7 +47,7 @@ describe("the navbar bonus button in daisu's beta", () => {
     const taken = vi.fn();
     window.addEventListener(JAR_TAKEN_EVENT, taken);
     claimPot.mockResolvedValue({ amount: 400, walletBalance: 410, nextBonus: "2030-01-01T00:00:00.000Z", status: {} });
-    draw(new Date(Date.now() + 125000).toISOString());
+    draw(new Date(Date.now() - 1000).toISOString());
 
     fireEvent.click(screen.getByRole("button", { name: /claim bonus/i }));
 
@@ -57,9 +57,19 @@ describe("the navbar bonus button in daisu's beta", () => {
     window.removeEventListener(JAR_TAKEN_EVENT, taken);
   });
 
+  // taking a coin at a time is what her jar in the dock is for; the bar waits for the whole pot
+  it("stays locked with the time left on it until the pot is full", async () => {
+    draw(new Date(Date.now() + 125000).toISOString());
+    const button = await screen.findByRole("button", { name: /next bonus in/i });
+    expect(button.hasAttribute("disabled")).toBe(true);
+    expect(button.textContent).toMatch(/Next bonus in \d\d:\d\d/);
+    fireEvent.click(button);
+    expect(claimPot).not.toHaveBeenCalled();
+  });
+
   it("leaves the wallet alone when the jar is empty", async () => {
     claimPot.mockRejectedValue({ response: { data: { message: "The pot is empty" } } });
-    draw(new Date(Date.now() + 480000).toISOString());
+    draw(new Date(Date.now() - 1000).toISOString());
 
     fireEvent.click(screen.getByRole("button", { name: /claim bonus/i }));
 

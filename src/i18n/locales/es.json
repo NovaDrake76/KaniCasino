@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "Reclamar +{{amount}} K₽",
     "adPlaceholder": "Espacio de prueba",
-    "claim": "Reclamar bono"
+    "claim": "Reclamar bono",
+    "nextIn": "Próximo bono en {{time}}"
   },
   "casePage": {
     "addToBattle": "Añadir a una batalla",

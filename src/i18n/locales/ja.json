@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "+{{amount}} K₽ を受け取る",
     "adPlaceholder": "テスト用の枠",
-    "claim": "ボーナスを受け取る"
+    "claim": "ボーナスを受け取る",
+    "nextIn": "次のボーナスまで {{time}}"
   },
   "casePage": {
     "addToBattle": "バトルに追加",
