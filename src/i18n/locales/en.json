@@ -370,13 +370,10 @@
     "notEnoughMoney": "Not enough money",
     "placeTheBetValue": "Place the bet value",
     "purple": "Purple",
-    "purpleNewBody": "Purple lands {{chance}}% of the time and pays {{mult}}x. Heads and tails still pay {{side}}x.",
+    "purpleNewBody": "Purple lands {{chance}}% of the time and pays {{mult}}x.",
     "purpleNewTitle": "The coin has a third side",
-    "purplePays": "Purple pays {{mult}}x and lands {{chance}}% of the time",
-    "sidesPay": "Heads and tails pay {{mult}}x",
     "tails": "Tails",
     "totalBets": "Total Bets",
-    "winPays": "Win pays {{mult}}x",
     "youWouldWin": "You'd win {{amount}} K₽"
   },
   "collections": {

@@ -370,13 +370,10 @@
     "notEnoughMoney": "Saldo insuficiente",
     "placeTheBetValue": "Informe o valor da aposta",
     "purple": "Roxo",
-    "purpleNewBody": "Roxo sai {{chance}}% das vezes e paga {{mult}}x. Cara e coroa continuam pagando {{side}}x.",
+    "purpleNewBody": "Roxo sai {{chance}}% das vezes e paga {{mult}}x.",
     "purpleNewTitle": "A moeda tem um terceiro lado",
-    "purplePays": "Roxo paga {{mult}}x e cai {{chance}}% das vezes",
-    "sidesPay": "Cara e coroa pagam {{mult}}x",
     "tails": "Coroa",
     "totalBets": "Total de apostas",
-    "winPays": "Vitória paga {{mult}}x",
     "youWouldWin": "Você ganharia {{amount}} K₽"
   },
   "collections": {

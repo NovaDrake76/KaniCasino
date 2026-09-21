@@ -370,13 +370,10 @@
     "notEnoughMoney": "Ga cukup muwani",
     "placeTheBetValue": "Masukin nilai taruhan",
     "purple": "Ungu",
-    "purpleNewBody": "Ungu muncul {{chance}}% dan membayar {{mult}}x. Kepala dan ekor tetap membayar {{side}}x.",
+    "purpleNewBody": "Ungu muncul {{chance}}% dan membayar {{mult}}x.",
     "purpleNewTitle": "Koin ini punya sisi ketiga",
-    "purplePays": "Ungu dibayar {{mult}}x dan muncul {{chance}}% dari waktu",
-    "sidesPay": "Kepala dan ekor dibayar {{mult}}x",
     "tails": "Ijo Sanae",
     "totalBets": "Total Taruhan",
-    "winPays": "Menang dibayar {{mult}}x",
     "youWouldWin": "Kamu akan menang {{amount}} K₽"
   },
   "collections": {

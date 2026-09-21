@@ -370,13 +370,10 @@
     "notEnoughMoney": "Nicht genug Guthaben",
     "placeTheBetValue": "Einsatz eingeben",
     "purple": "Lila",
-    "purpleNewBody": "Lila fällt in {{chance}}% der Fälle und zahlt {{mult}}x. Kopf und Zahl zahlen weiterhin {{side}}x.",
+    "purpleNewBody": "Lila fällt in {{chance}}% der Fälle und zahlt {{mult}}x.",
     "purpleNewTitle": "Die Münze hat eine dritte Seite",
-    "purplePays": "Lila zahlt {{mult}}x und fällt in {{chance}}% der Würfe",
-    "sidesPay": "Kopf und Zahl zahlen {{mult}}x",
     "tails": "Zahl",
     "totalBets": "Einsätze gesamt",
-    "winPays": "Ein Gewinn zahlt {{mult}}x",
     "youWouldWin": "Du würdest {{amount}} K₽ gewinnen"
   },
   "collections": {
