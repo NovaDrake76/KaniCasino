@@ -370,13 +370,10 @@
     "notEnoughMoney": "Không đủ số dư",
     "placeTheBetValue": "Nhập số tiền cược",
     "purple": "Tím",
-    "purpleNewBody": "Màu tím ra {{chance}}% số lần và trả {{mult}}x. Mặt ngửa và mặt sấp vẫn trả {{side}}x.",
+    "purpleNewBody": "Màu tím ra {{chance}}% số lần và trả {{mult}}x.",
     "purpleNewTitle": "Đồng xu có mặt thứ ba",
-    "purplePays": "Tím trả {{mult}}x và rơi {{chance}}% số lần",
-    "sidesPay": "Sấp và ngửa trả {{mult}}x",
     "tails": "Sấp",
     "totalBets": "Tổng cược",
-    "winPays": "Thắng trả {{mult}}x",
     "youWouldWin": "Bạn sẽ thắng {{amount}} K₽"
   },
   "collections": {

@@ -42,6 +42,8 @@ const CoinFlip = () => {
   const [userGambled, setUserGambled] = useState(false);
   const [gameState, setGameState] = useState<any>(emptyState());
   const { isLogged, userData, toogleUserFlow } = useContext(UserContext);
+  // the round the server sent carries a version; until one lands the page knows neither the payouts nor whether purple is on
+  const loaded = gameState?.version !== undefined;
   const purpleOn = !!gameState?.purpleOn;
   const pays = gameState?.pays || { side: WIN_MULTIPLIER };
   const multiplierOf = (side: number | null) => (side === 2 ? pays.purple || 0 : pays.side || WIN_MULTIPLIER);
@@ -157,7 +159,7 @@ const CoinFlip = () => {
     <div className="w-full flex flex-col items-center justify-center gap-12">
       <div className="flex w-full max-w-[800px] bg-[#212031] rounded flex-col xl:w-[1140px] xl:max-w-none xl:flex-row">
         <div className="w-full min-w-0 xl:w-[340px] xl:shrink-0 flex flex-col items-center gap-4 border-b xl:border-b-0 xl:border-r border-gray-700 py-4 px-6">
-          {purpleOn && <PurpleNote chance={pays.purpleChance || 0} purple={pays.purple || 0} side={pays.side || WIN_MULTIPLIER} />}
+          {purpleOn && <PurpleNote chance={pays.purpleChance || 0} purple={pays.purple || 0} />}
           <div className="w-full">
             <BetAmount
               value={bet === 0 ? "" : String(bet)}
@@ -184,20 +186,21 @@ const CoinFlip = () => {
                   <button
                     key={e.id}
                     onClick={() => setChoice(e.id)}
-                    className={`p-2 border rounded w-1/2 ${e.className} ${choice === e.id && "bg-opacity-30"}`}
+                    className={`flex w-1/2 items-center justify-between rounded border p-2 ${e.className} ${choice === e.id ? "bg-opacity-30" : ""}`}
                   >
-                    {e.name}
+                    <span>{e.name}</span>
+                    <span className={`rounded bg-black/30 px-2 py-0.5 text-xs font-bold text-white/90 ${loaded ? "" : "invisible"}`}>{loaded ? `${pays.side}x` : ""}</span>
                   </button>
                 ))
               }
             </div>
-            {purpleOn && (
+            {(purpleOn || !loaded) && (
               <button
                 onClick={() => setChoice(2)}
-                className={`relative flex w-full items-center justify-between rounded border border-violet-400/60 bg-violet-600 p-2 ${choice === 2 ? "bg-opacity-30" : ""}`}
+                className={`relative flex w-full items-center justify-between rounded border border-violet-400/60 bg-violet-600 p-2 ${choice === 2 ? "bg-opacity-30" : ""} ${loaded ? "" : "invisible"}`}
               >
                 <span>{i18n.t("coin.purple")}</span>
-                <span className="rounded bg-black/30 px-2 py-0.5 text-xs font-bold text-violet-100">{pays.purple}x</span>
+                <span className="rounded bg-black/30 px-2 py-0.5 text-xs font-bold text-violet-100">{loaded ? `${pays.purple}x` : ""}</span>
               </button>
             )}
           </div>
@@ -221,18 +224,9 @@ const CoinFlip = () => {
               }
             </GameButton>
           </div>
-          {/* the payout is not 2x, so it says so rather than leaving it to be inferred */}
-          <div className="flex w-full flex-col gap-1 text-xs text-[#84819a] pt-2">
-            <div className="flex justify-between gap-3">
-              <span>{purpleOn ? i18n.t("coin.sidesPay", { mult: pays.side }) : i18n.t("coin.winPays", { mult: WIN_MULTIPLIER })}</span>
-              {bet >= MIN_BET && bet <= MAX_BET && (
-                <span>{i18n.t("coin.youWouldWin", { amount: Math.floor(bet * multiplierOf(choice)).toLocaleString() })}</span>
-              )}
-            </div>
-            {purpleOn && (
-              <span className="text-violet-300">
-                {i18n.t("coin.purplePays", { mult: pays.purple, chance: Math.round((pays.purpleChance || 0) * 100) })}
-              </span>
+          <div className="min-h-6 w-full pt-2 text-xs text-[#84819a]">
+            {bet >= MIN_BET && bet <= MAX_BET && (
+              <span>{i18n.t("coin.youWouldWin", { amount: Math.floor(bet * multiplierOf(choice)).toLocaleString() })}</span>
             )}
           </div>
         </div>
@@ -267,7 +261,7 @@ const CoinFlip = () => {
       </div>
       <div className="flex gap-8 flex-col lg:flex-row">
         {gameState &&
-          SIDES.slice(0, purpleOn ? 3 : 2).map((side) => (
+          SIDES.slice(0, purpleOn || !loaded ? 3 : 2).map((side) => (
             <LiveBets gameState={gameState} type={side} key={side} />
           ))
         }
