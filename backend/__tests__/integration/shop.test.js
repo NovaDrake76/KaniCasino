@@ -9,6 +9,7 @@ const User = require("../../models/User");
 const Transaction = require("../../models/Transaction");
 const ChatMessage = require("../../models/ChatMessage");
 const chat = require("../../utils/chat");
+const realtime = require("../../utils/realtime");
 const { TX } = require("../../utils/economy");
 const { MINT } = require("../../utils/accounts");
 const { ITEMS } = require("../../utils/shopCatalog");
@@ -22,6 +23,7 @@ beforeAll(async () => {
 afterEach(async () => {
   await clearDb();
   chat.reset();
+  realtime.setIo(null);
 });
 afterAll(teardownDb);
 
@@ -81,6 +83,17 @@ describe("daisu's shop", () => {
 
     expect(again.body).toMatchObject({ bought: false, alreadyOwned: true });
     expect((await User.findById(user._id).lean()).walletBalance).toBe(7000);
+  });
+
+  // the site takes level and xp off this push too, and a push without them used to lock the rest of the shelf
+  it("pushes the level and xp with the new balance after a purchase", async () => {
+    const pushed = [];
+    realtime.setIo({ to: (room) => ({ emit: (event, payload) => pushed.push({ room, event, payload }) }) });
+    const user = await stocked({ xp: 4321 });
+
+    await buy(user, "chatPass");
+
+    expect(pushed).toEqual([{ room: String(user._id), event: "userDataUpdated", payload: { walletBalance: 9000, xp: 4321, level: 12 } }]);
   });
 
   it("charges once when several purchases of the same item land together", async () => {
