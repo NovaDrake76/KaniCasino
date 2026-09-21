@@ -165,6 +165,25 @@ describe("claimBonus", () => {
     expect([r1, r2].filter((r) => r.status === 200)).toHaveLength(1);
     expect((await User.findById(u._id)).walletBalance).toBe(200);
   });
+
+  // the pot and this bonus share nextBonus, so a claim here would have paid the old amount and emptied her jar
+  test("turns a daisu account away to her jar, touching nothing", async () => {
+    const due = new Date(Date.now() - 1000);
+    const u = await makeUser({ walletBalance: 0, bonusAmount: 200, nextBonus: due, betaFlags: ["daisu"] });
+    const res = await request(app).post(`/users/claimBonus`).set(...auth(u));
+    expect(res.status).toBe(409);
+    expect(res.body.reason).toBe("pot");
+    const after = await User.findById(u._id);
+    expect(after.walletBalance).toBe(0);
+    expect(after.nextBonus.getTime()).toBe(due.getTime());
+  });
+
+  test("still pays an account outside her", async () => {
+    const u = await makeUser({ walletBalance: 0, bonusAmount: 200, nextBonus: new Date(Date.now() - 1000) });
+    const res = await request(app).post(`/users/claimBonus`).set(...auth(u));
+    expect(res.status).toBe(200);
+    expect((await User.findById(u._id)).walletBalance).toBe(200);
+  });
 });
 
 describe("openCase", () => {
