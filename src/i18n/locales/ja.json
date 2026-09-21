@@ -370,13 +370,10 @@
     "notEnoughMoney": "残高が足りません",
     "placeTheBetValue": "ベット額を入力してください",
     "purple": "パープル",
-    "purpleNewBody": "紫は {{chance}}% で出て、{{mult}} 倍です。表と裏はこれまで通り {{side}} 倍。",
+    "purpleNewBody": "紫は {{chance}}% で出て、{{mult}} 倍です。",
     "purpleNewTitle": "コインに三つ目の面",
-    "purplePays": "パープルは {{mult}} 倍、出る確率は {{chance}}%",
-    "sidesPay": "表と裏は {{mult}} 倍",
     "tails": "裏",
     "totalBets": "合計ベット",
-    "winPays": "勝利で {{mult}} 倍",
     "youWouldWin": "勝てば {{amount}} K₽"
   },
   "collections": {

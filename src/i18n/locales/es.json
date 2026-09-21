@@ -370,13 +370,10 @@
     "notEnoughMoney": "Saldo insuficiente",
     "placeTheBetValue": "Indica el importe de la apuesta",
     "purple": "Morado",
-    "purpleNewBody": "El morado sale el {{chance}}% de las veces y paga {{mult}}x. Cara y cruz siguen pagando {{side}}x.",
+    "purpleNewBody": "El morado sale el {{chance}}% de las veces y paga {{mult}}x.",
     "purpleNewTitle": "La moneda tiene un tercer lado",
-    "purplePays": "Morado paga {{mult}}x y sale el {{chance}}% de las veces",
-    "sidesPay": "Cara y cruz pagan {{mult}}x",
     "tails": "Cruz",
     "totalBets": "Apuestas totales",
-    "winPays": "Ganar paga {{mult}}x",
     "youWouldWin": "Ganarías {{amount}} K₽"
   },
   "collections": {

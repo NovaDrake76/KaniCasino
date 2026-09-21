@@ -8,12 +8,11 @@ interface Props {
   // read off the round the server sent, so the note can never quote odds the game is not running
   chance: number;
   purple: number;
-  side: number;
 }
 
 // the coin grew a third side, so it is introduced once rather than left to be discovered
 // by losing to it. storage can be blocked; then it shows each visit, which is harmless
-const PurpleNote = ({ chance, purple, side }: Props) => {
+const PurpleNote = ({ chance, purple }: Props) => {
   const [open, setOpen] = useState<boolean>(() => {
     try {
       return !localStorage.getItem(SEEN_KEY);
@@ -39,7 +38,7 @@ const PurpleNote = ({ chance, purple, side }: Props) => {
       <div className="flex flex-col gap-1 pr-6">
         <span className="text-sm font-bold text-violet-100">{i18n.t("coin.purpleNewTitle")}</span>
         <span className="text-xs leading-relaxed text-ink-soft">
-          {i18n.t("coin.purpleNewBody", { chance: Math.round(chance * 100), mult: purple, side })}
+          {i18n.t("coin.purpleNewBody", { chance: Math.round(chance * 100), mult: purple })}
         </span>
       </div>
       <button

@@ -370,13 +370,10 @@
     "notEnoughMoney": "余额不足",
     "placeTheBetValue": "请输入投注金额",
     "purple": "紫色",
-    "purpleNewBody": "紫色有 {{chance}}% 的机会出现，赔 {{mult}} 倍。正面和反面仍然赔 {{side}} 倍。",
+    "purpleNewBody": "紫色有 {{chance}}% 的机会出现，赔 {{mult}} 倍。",
     "purpleNewTitle": "硬币多了第三面",
-    "purplePays": "紫色赔 {{mult}} 倍，出现概率 {{chance}}%",
-    "sidesPay": "正面和反面赔 {{mult}} 倍",
     "tails": "反面",
     "totalBets": "总投注",
-    "winPays": "赢了赔 {{mult}} 倍",
     "youWouldWin": "赢了得 {{amount}} K₽"
   },
   "collections": {
