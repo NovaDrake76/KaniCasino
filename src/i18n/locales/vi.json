@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "Nhận +{{amount}} K₽",
     "adPlaceholder": "Chỗ thử nghiệm",
-    "claim": "Nhận thưởng"
+    "claim": "Nhận thưởng",
+    "nextIn": "Thưởng tiếp theo sau {{time}}"
   },
   "casePage": {
     "addToBattle": "Thêm vào trận đấu",

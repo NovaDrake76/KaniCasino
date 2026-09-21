@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "+{{amount}} K₽ 받기",
     "adPlaceholder": "테스트 자리",
-    "claim": "보너스 받기"
+    "claim": "보너스 받기",
+    "nextIn": "다음 보너스까지 {{time}}"
   },
   "casePage": {
     "addToBattle": "배틀에 추가",

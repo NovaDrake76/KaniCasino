@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "+{{amount}} K₽ abholen",
     "adPlaceholder": "Testplatzhalter",
-    "claim": "Bonus abholen"
+    "claim": "Bonus abholen",
+    "nextIn": "Nächster Bonus in {{time}}"
   },
   "casePage": {
     "addToBattle": "Zum Battle hinzufügen",

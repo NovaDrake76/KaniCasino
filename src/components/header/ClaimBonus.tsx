@@ -90,6 +90,8 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
     }
   };
 
+  // her jar in the dock still takes what has gathered at any time; this button is the simple
+  // path, so it waits for the full pot and its +25% rather than spending it a coin at a time
   const claimFromPot = async () => {
     setLoadingBonus(true);
     try {
@@ -174,11 +176,11 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
         <MainButton
           onClick={claimFromPot}
           pulse={bonusAvailable}
-          disabled={loadingBonus}
+          disabled={loadingBonus || !bonusAvailable}
           text={
             <span className="flex items-center gap-2 whitespace-nowrap">
               <img src="/images/daisu/bust.webp" alt="" className="-my-1 h-8 w-8 object-contain object-top" />
-              {i18n.t("bonus.claim")}
+              {bonusAvailable ? i18n.t("bonus.claim") : i18n.t("bonus.nextIn", { time: timeLeft })}
             </span>
           }
         />
@@ -200,7 +202,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
         <MainButton
           onClick={() => undefined}
           disabled
-          text={<span className="text-sm">Next bonus in {timeLeft}</span>}
+          text={<span className="text-sm">{i18n.t("bonus.nextIn", { time: timeLeft })}</span>}
         />
       )}
 

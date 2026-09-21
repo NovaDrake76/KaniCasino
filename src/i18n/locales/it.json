@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "Riscuoti +{{amount}} K₽",
     "adPlaceholder": "Spazio di prova",
-    "claim": "Riscuoti bonus"
+    "claim": "Riscuoti bonus",
+    "nextIn": "Prossimo bonus tra {{time}}"
   },
   "casePage": {
     "addToBattle": "Aggiungi a una battaglia",

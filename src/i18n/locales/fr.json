@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "Récupérer +{{amount}} K₽",
     "adPlaceholder": "Espace de test",
-    "claim": "Récupérer le bonus"
+    "claim": "Récupérer le bonus",
+    "nextIn": "Prochain bonus dans {{time}}"
   },
   "casePage": {
     "addToBattle": "Ajouter à une bataille",
