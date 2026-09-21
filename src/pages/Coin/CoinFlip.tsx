@@ -6,6 +6,7 @@ import Coin from "./Coin"
 import { motion } from "framer-motion";
 import UserContext from "../../UserContext";
 import LiveBets from "./LiveBets";
+import PurpleNote from "./PurpleNote";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
 import { getCoinFlipHistory } from "../../services/games/GamesServices";
@@ -156,6 +157,7 @@ const CoinFlip = () => {
     <div className="w-full flex flex-col items-center justify-center gap-12">
       <div className="flex w-full max-w-[800px] bg-[#212031] rounded flex-col xl:w-[1140px] xl:max-w-none xl:flex-row">
         <div className="w-full min-w-0 xl:w-[340px] xl:shrink-0 flex flex-col items-center gap-4 border-b xl:border-b-0 xl:border-r border-gray-700 py-4 px-6">
+          {purpleOn && <PurpleNote chance={pays.purpleChance || 0} purple={pays.purple || 0} side={pays.side || WIN_MULTIPLIER} />}
           <div className="w-full">
             <BetAmount
               value={bet === 0 ? "" : String(bet)}
