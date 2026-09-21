@@ -4,8 +4,10 @@ import ClaimBonus from "./ClaimBonus";
 import UserContext from "../../UserContext";
 import { JAR_TAKEN_EVENT } from "../daisu/tour/tourEvents";
 
+// vitest lets a mock factory close over a name starting with "mock"
+let mockAdStatus: Record<string, unknown> = { enabled: false, remainingToday: 0 };
 vi.mock("../../services/rewards/AdRewardServices", () => ({
-  getAdRewardStatus: () => Promise.resolve({ enabled: false, remainingToday: 0 }),
+  getAdRewardStatus: () => Promise.resolve(mockAdStatus),
   startAdWatch: vi.fn(),
   claimAdReward: vi.fn(),
   showRewardedAd: vi.fn(),
@@ -30,6 +32,15 @@ describe("the navbar bonus button in daisu's beta", () => {
   beforeEach(() => {
     claimPot.mockReset();
     toogleUserData.mockReset();
+    mockAdStatus = { enabled: false, remainingToday: 0 };
+  });
+
+  // her jar is the bonus in pot mode, so the bar carries that and nothing beside it
+  it("carries only her button, even with an ad reward going", async () => {
+    mockAdStatus = { enabled: true, remainingToday: 3, amount: 50, provider: "adsense" };
+    draw(new Date(Date.now() - 1000).toISOString());
+    await waitFor(() => expect(screen.getAllByRole("button")).toHaveLength(1));
+    expect(screen.getByRole("button").textContent).toContain("Claim Bonus");
   });
 
   it("takes what is in her jar straight to the wallet", async () => {

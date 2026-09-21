@@ -164,37 +164,24 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false }) 
     setWatchToken(null);
   };
 
-  // the offer only stands in while the bonus is cooling down and an ad is left today
-  const adOffered = (potMode || !bonusAvailable) && !!adStatus && adStatus.enabled && adStatus.remainingToday > 0;
+  // the offer only stands in while the bonus is cooling down and an ad is left today. daisu's
+  // jar is the bonus in pot mode, and it is the only button the bar carries
+  const adOffered = !potMode && !bonusAvailable && !!adStatus && adStatus.enabled && adStatus.remainingToday > 0;
 
   return (
     <>
       {potMode ? (
-        <div className="flex items-center gap-2">
-          <MainButton
-            onClick={claimFromPot}
-            pulse={bonusAvailable}
-            disabled={loadingBonus}
-            text={
-              <span className="flex items-center gap-2 whitespace-nowrap">
-                <img src="/images/daisu/bust.webp" alt="" className="-my-1 h-8 w-8 object-contain object-top" />
-                {i18n.t("bonus.claim")}
-              </span>
-            }
-          />
-          {adOffered && (
-            <MainButton
-              onClick={beginAd}
-              disabled={adBusy}
-              text={
-                <span className="flex items-center gap-2 whitespace-nowrap">
-                  <BiMoviePlay className="text-lg" />
-                  <span className="font-bold">+{adStatus?.amount}</span>
-                </span>
-              }
-            />
-          )}
-        </div>
+        <MainButton
+          onClick={claimFromPot}
+          pulse={bonusAvailable}
+          disabled={loadingBonus}
+          text={
+            <span className="flex items-center gap-2 whitespace-nowrap">
+              <img src="/images/daisu/bust.webp" alt="" className="-my-1 h-8 w-8 object-contain object-top" />
+              {i18n.t("bonus.claim")}
+            </span>
+          }
+        />
       ) : bonusAvailable ? (
         <MainButton text={i18n.t("bonus.claim")} onClick={claimUserBonus} pulse disabled={loadingBonus} />
       ) : adOffered ? (

@@ -10,9 +10,9 @@ const SEEN_KEY = "kani.onboardingSeen";
 
 const steps = () => [
   {
-    image: "/images/coinHeads.webp",
+    image: "/images/daisu/bust.webp",
     title: i18n.t("common.startWithFreeCoins"),
-    text: i18n.t("common.startWithFreeCoinsBody", { button: i18n.t("bonus.claim") }),
+    text: i18n.t("common.startWithFreeCoinsBody"),
   },
   {
     image: "/images/boo.webp",
