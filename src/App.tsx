@@ -37,9 +37,9 @@ import { SessionStatsProvider } from "./stats/SessionStatsContext";
 import { play, sound } from "./services/sound/sound";
 
 interface userDataSocketProps {
-  walletBalance: number;
-  xp: number;
-  level: number;
+  walletBalance?: number;
+  xp?: number;
+  level?: number;
 }
 
 function App() {
@@ -114,11 +114,12 @@ function App() {
     socket.on("userDataUpdated", (payload: userDataSocketProps) => {
       setUserData(prevUserData => {
         if (prevUserData && typeof payload.level === "number" && payload.level > prevUserData.level) play("ui.levelup");
+        // a push that leaves a field out must not blank it: a missing level locked every shop item until the next game
         return prevUserData ? {
           ...prevUserData,
-          walletBalance: payload.walletBalance,
-          xp: payload.xp,
-          level: payload.level
+          walletBalance: payload.walletBalance ?? prevUserData.walletBalance,
+          xp: payload.xp ?? prevUserData.xp,
+          level: payload.level ?? prevUserData.level
         } : null;
       });
       // a balance change usually means an action just resolved: check for completions

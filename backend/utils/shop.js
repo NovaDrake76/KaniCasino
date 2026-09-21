@@ -134,7 +134,7 @@ async function buy(user, key) {
   }
 
   const io = getIo();
-  if (io) io.to(String(user._id)).emit("userDataUpdated", { walletBalance: updated.walletBalance });
+  if (io) io.to(String(user._id)).emit("userDataUpdated", { walletBalance: updated.walletBalance, xp: updated.xp, level: updated.level });
   return {
     code: 200,
     body: { bought: true, key, walletBalance: updated.walletBalance, unlocks: keysOf(updated.unlocks), xpBoost: updated.xpBoost || {}, shop: await viewFor(updated) },
