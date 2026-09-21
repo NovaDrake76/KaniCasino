@@ -6,6 +6,7 @@ import { IoMdExit } from "react-icons/io";
 import Avatar, { levelColor } from "../../../Avatar";
 import Flag from "../../../Flag";
 import { AvatarMenuViewProps } from "./AvatarMenu.types";
+import SoundRow from "./SoundRow";
 
 const fmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 
@@ -91,6 +92,7 @@ const AvatarMenuView = ({
                 ))}
               </div>
             )}
+            <SoundRow />
             <Link to={settingsPath} className={row}>
               <FiSettings className="text-lg text-ink-faint" />
               <span className="flex-1">{t("settings.title")}</span>
