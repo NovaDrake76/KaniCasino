@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "Claim +{{amount}} K₽",
     "adPlaceholder": "Test placeholder",
-    "claim": "Claim Bonus"
+    "claim": "Claim Bonus",
+    "nextIn": "Next bonus in {{time}}"
   },
   "casePage": {
     "addToBattle": "Add to battle",

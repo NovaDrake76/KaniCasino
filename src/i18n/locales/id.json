@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "Klaim +{{amount}} K₽",
     "adPlaceholder": "Nyoba placeholder",
-    "claim": "Klaim Tambahan"
+    "claim": "Klaim Tambahan",
+    "nextIn": "Bonus berikutnya dalam {{time}}"
   },
   "casePage": {
     "addToBattle": "Add ke adu",

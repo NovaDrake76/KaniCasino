@@ -308,7 +308,8 @@
   "bonus": {
     "adClaim": "领取 +{{amount}} K₽",
     "adPlaceholder": "测试占位",
-    "claim": "领取奖励"
+    "claim": "领取奖励",
+    "nextIn": "下一份奖励还有 {{time}}"
   },
   "casePage": {
     "addToBattle": "加入对战",
