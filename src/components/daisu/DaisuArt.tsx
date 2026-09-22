@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Monetary from "../Monetary";
 import { ART_HEIGHT, ART_WIDTH, JAR } from "./daisuParts";
+import { PART } from "./daisuArtFiles";
 import { EXPRESSIONS, jarStage, type Expression } from "./daisuFace";
 import { useTalking } from "./speechStore";
 import type { Pop, Run } from "./Daisu.types";
@@ -27,7 +28,6 @@ interface Props {
   pokeLocked?: boolean;
 }
 
-const PART = (name: string) => `/images/daisu/parts/${name}.webp`;
 const BUST = "/images/daisu/bust.webp";
 const RATIO = `${ART_WIDTH} / ${ART_HEIGHT}`;
 
@@ -54,6 +54,7 @@ const Layer = ({ part, hidden, className, style }: { part: string; hidden?: bool
     alt=""
     draggable={false}
     aria-hidden
+    decoding="async"
     style={style}
     className={`pointer-events-none absolute inset-0 h-full w-full object-contain ${hidden ? "invisible" : ""} ${className || ""}`}
   />

@@ -388,6 +388,19 @@ describe("daisu in the corner", () => {
     expect(await screen.findByText(/daisu has a gift for you/i)).toBeTruthy();
   });
 
+  // on the tour's pot step the gold gift row sat under the jar she was pointing at, and players followed it out of the tour
+  it("keeps her gift off the card while her tour runs, and offers it once the tour ends", async () => {
+    giftReady = true;
+    act(() => syncTour("quiet-2", { status: "active", step: "pot" }));
+    draw();
+    await screen.findByText(/full pot bonus/i);
+    expect(screen.queryByText(/daisu has a gift for you/i)).toBeNull();
+
+    act(() => endTour());
+    expect(await screen.findByText(/daisu has a gift for you/i)).toBeTruthy();
+    act(() => syncTour(null, null));
+  });
+
   it("counts her missions on her card, opens them in her room, and the last claim of a chapter shows what comes next", async () => {
     getRoadmap.mockResolvedValue(
       roadmap([
