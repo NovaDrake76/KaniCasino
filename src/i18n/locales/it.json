@@ -1275,6 +1275,16 @@
         "philosopherStone": {
           "name": "Pietra Filosofale",
           "pitch": "Trasforma le puntate in XP. Quello che ha sempre fatto, ma più in fretta."
+        },
+        "spyglass": {
+          "about": "Apre la striscia delle puntate dal vivo sotto ogni gioco: le ultime puntate del sito mentre arrivano, chi le ha fatte e quanto hanno pagato.",
+          "getIt": "Prendi il Cannocchiale",
+          "lockedBody": "Livello {{level}} · {{price}} nel negozio di Daisu",
+          "lockedTitle": "Le puntate dal vivo richiedono un Cannocchiale",
+          "name": "Cannocchiale",
+          "opened": "Ecco. Ora vedi cosa combinano gli altri. Ti mostro dove?",
+          "pitch": "A tutti piace guardare gli altri perdere. Ora puoi farlo comodamente.",
+          "what": "Guarda le puntate dal vivo sotto ogni gioco: chi gioca, quanto punta, quanto ha pagato."
         }
       },
       "level": "Livello {{n}}",

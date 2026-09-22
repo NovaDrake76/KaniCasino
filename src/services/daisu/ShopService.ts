@@ -2,6 +2,7 @@ import api from "../api";
 
 // the features her shop opens; the boosts and charms have no gate of their own, so they are not here
 export type UnlockKey =
+  | "spyglass"
   | "chatPass"
   | "tradersLicense"
   | "collectionBook"

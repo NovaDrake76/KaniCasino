@@ -1275,6 +1275,16 @@
         "philosopherStone": {
           "name": "Pierre Philosophale",
           "pitch": "Elle change les mises en XP. Ce qu'elle a toujours fait, mais plus vite."
+        },
+        "spyglass": {
+          "about": "Ouvre la bande des paris en direct sous chaque jeu : les derniers paris du site au moment où ils tombent, qui les a faits et combien ils ont payé.",
+          "getIt": "Obtenir la Longue-vue",
+          "lockedBody": "Niveau {{level}} · {{price}} dans la boutique de Daisu",
+          "lockedTitle": "Les paris en direct demandent une Longue-vue",
+          "name": "Longue-vue",
+          "opened": "Voilà. Maintenant tu vois ce que font les autres. Je te montre où ?",
+          "pitch": "Tout le monde aime regarder les autres perdre. Maintenant tu peux le faire confortablement.",
+          "what": "Vois les paris en direct sous chaque jeu : qui joue, combien il mise, combien ça a payé."
         }
       },
       "level": "Niveau {{n}}",

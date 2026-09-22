@@ -1275,6 +1275,16 @@
         "philosopherStone": {
           "name": "Pedra Filosofal",
           "pitch": "Transforma apostas em XP. Que é o que sempre fez, só que mais rápido."
+        },
+        "spyglass": {
+          "about": "Abre a faixa de apostas ao vivo embaixo de cada jogo: as últimas apostas do site na hora em que acontecem, quem fez e quanto pagou.",
+          "getIt": "Pegar a Luneta",
+          "lockedBody": "Nível {{level}} · {{price}} na loja da Daisu",
+          "lockedTitle": "As apostas ao vivo exigem uma Luneta",
+          "name": "Luneta",
+          "opened": "Pronto. Agora você vê o que todo mundo anda fazendo. Quer que eu mostre onde?",
+          "pitch": "Todo mundo gosta de ver os outros perdendo. Agora dá pra fazer isso com conforto.",
+          "what": "Veja as apostas ao vivo embaixo de cada jogo: quem está jogando, quanto apostou, quanto pagou."
         }
       },
       "level": "Nível {{n}}",

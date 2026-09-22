@@ -10,6 +10,7 @@ const CHARM_GAMES = CHARMS.map(([game]) => game);
 
 const ITEMS = [
   // unlocks and perks
+  { key: "spyglass", kind: "unlock", price: 500, level: 3 },
   { key: "chatPass", kind: "unlock", price: 1000, level: 10 },
   { key: "tradersLicense", kind: "unlock", price: 3000, level: 10 },
   { key: "collectionBook", kind: "unlock", price: 6000, level: 10 },

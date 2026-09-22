@@ -1275,6 +1275,16 @@
         "philosopherStone": {
           "name": "Philosopher's Stone",
           "pitch": "It turns bets into XP. Which is what it always did, but faster."
+        },
+        "spyglass": {
+          "about": "Opens the live bets strip under every game: the last bets on the site as they land, who made them, and what they paid.",
+          "getIt": "Get the Spyglass",
+          "lockedBody": "Level {{level}} · {{price}} in Daisu's shop",
+          "lockedTitle": "Live bets need a Spyglass",
+          "name": "Spyglass",
+          "opened": "There. Now you can see what everyone else is up to. Want me to show you where?",
+          "pitch": "Everyone likes watching other people lose. Now you can do it in comfort.",
+          "what": "See the live bets under every game: who is playing, what they bet, what it paid."
         }
       },
       "level": "Level {{n}}",

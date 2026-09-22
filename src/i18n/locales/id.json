@@ -1275,6 +1275,16 @@
         "philosopherStone": {
           "name": "Batu Bertuah",
           "pitch": "Mengubah taruhan jadi XP. Yang memang selalu dilakukannya, tapi lebih cepat."
+        },
+        "spyglass": {
+          "about": "Membuka baris taruhan langsung di bawah setiap game: taruhan terakhir di situs saat terjadi, siapa yang memasang, dan berapa bayarannya.",
+          "getIt": "Dapatkan Teropong",
+          "lockedBody": "Level {{level}} · {{price}} di toko Daisu",
+          "lockedTitle": "Taruhan langsung butuh Teropong",
+          "name": "Teropong",
+          "opened": "Nah. Sekarang kamu bisa lihat apa yang dilakukan orang lain. Mau kutunjukkan tempatnya?",
+          "pitch": "Semua orang suka menonton orang lain kalah. Sekarang kamu bisa melakukannya dengan nyaman.",
+          "what": "Lihat taruhan langsung di bawah setiap game: siapa yang main, berapa taruhannya, berapa bayarannya."
         }
       },
       "level": "Level {{n}}",
