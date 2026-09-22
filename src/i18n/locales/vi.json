@@ -1275,6 +1275,16 @@
         "philosopherStone": {
           "name": "Hòn đá Phù thủy",
           "pitch": "Nó biến cược thành XP. Vốn dĩ vẫn thế, nhưng nhanh hơn."
+        },
+        "spyglass": {
+          "about": "Mở dải cược trực tiếp dưới mỗi trò chơi: những lần cược mới nhất trên trang ngay khi diễn ra, ai đặt và trả bao nhiêu.",
+          "getIt": "Lấy Ống nhòm",
+          "lockedBody": "Cấp {{level}} · {{price}} ở cửa hàng của Daisu",
+          "lockedTitle": "Cược trực tiếp cần Ống nhòm",
+          "name": "Ống nhòm",
+          "opened": "Đó. Giờ bạn thấy mọi người đang làm gì rồi. Muốn tôi chỉ chỗ không?",
+          "pitch": "Ai cũng thích xem người khác thua. Giờ bạn có thể xem thoải mái.",
+          "what": "Xem cược trực tiếp dưới mỗi trò chơi: ai đang chơi, cược bao nhiêu, trả bao nhiêu."
         }
       },
       "level": "Cấp {{n}}",

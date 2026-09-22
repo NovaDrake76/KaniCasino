@@ -1275,6 +1275,16 @@
         "philosopherStone": {
           "name": "Stein der Weisen",
           "pitch": "Er macht aus Einsätzen XP. Was er immer tat, nur schneller."
+        },
+        "spyglass": {
+          "about": "Öffnet die Leiste mit den Live-Wetten unter jedem Spiel: die letzten Wetten der Seite, sobald sie fallen, wer sie gemacht hat und was sie gebracht haben.",
+          "getIt": "Hol dir das Fernrohr",
+          "lockedBody": "Level {{level}} · {{price}} in Daisus Laden",
+          "lockedTitle": "Live-Wetten brauchen ein Fernrohr",
+          "name": "Fernrohr",
+          "opened": "Da. Jetzt siehst du, was alle anderen treiben. Soll ich dir zeigen, wo?",
+          "pitch": "Alle sehen gern zu, wie andere verlieren. Jetzt kannst du es bequem tun.",
+          "what": "Sieh die Live-Wetten unter jedem Spiel: wer spielt, was gesetzt wurde, was es gebracht hat."
         }
       },
       "level": "Level {{n}}",

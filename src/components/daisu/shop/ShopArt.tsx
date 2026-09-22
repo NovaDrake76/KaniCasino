@@ -1,6 +1,7 @@
 import PixelIcon, { PixelIconName } from "../PixelIcon";
 
 const ART: Record<string, PixelIconName> = {
+  spyglass: "lens",
   collectionBook: "book",
   tradersLicense: "scroll",
   chatPass: "chat",

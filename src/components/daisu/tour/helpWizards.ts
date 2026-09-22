@@ -37,6 +37,7 @@ const BY_GOAL: Record<string, Wizard> = {
   referrals: "affiliates",
   predictions: "predictions",
   // what an item from her shop opened, shown right after it is bought
+  "unlock:spyglass": "games",
   "unlock:collectionBook": "collection",
   "unlock:tradersLicense": "market",
   "unlock:predictionPass": "predictions",

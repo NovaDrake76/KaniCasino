@@ -58,7 +58,7 @@ describe("daisu's shop", () => {
     const res = await shopOf(user);
 
     expect(res.status).toBe(200);
-    expect(res.body.items.map((i) => i.key)).toEqual(["luckyPencil", "diceCharm", "pocketNotebook", "slotsCharm", "readingLamp", "coinflipCharm", "coffeeMug", "plinkoCharm"]);
+    expect(res.body.items.map((i) => i.key)).toEqual(["luckyPencil", "spyglass", "diceCharm", "pocketNotebook", "slotsCharm", "readingLamp", "coinflipCharm", "coffeeMug"]);
     expect(res.body.hidden).toBe(ITEMS.length - 8);
     expect(res.body.xpBoost).toEqual({ all: 1 });
     expect(item(res.body, "luckyPencil")).toMatchObject({ kind: "boost", price: 300, level: 2, xp: 0.05, owned: false, via: null });
@@ -115,12 +115,12 @@ describe("daisu's shop", () => {
     expect((await buy(user, "chatPass")).status).toBe(404);
 
     const first = await buy(user, "luckyPencil");
-    expect(keys(first.body.shop)).toEqual(["luckyPencil", "diceCharm", "pocketNotebook", "slotsCharm", "readingLamp", "coinflipCharm", "coffeeMug", "plinkoCharm", "chatPass"]);
+    expect(keys(first.body.shop)).toEqual(["luckyPencil", "spyglass", "diceCharm", "pocketNotebook", "slotsCharm", "readingLamp", "coinflipCharm", "coffeeMug", "plinkoCharm"]);
     expect(first.body.shop.hidden).toBe(ITEMS.length - 9);
 
     // out of order is fine: what is held never takes one of the eight places ahead
     const third = await buy(user, "pocketNotebook");
-    expect(keys(third.body.shop).slice(-2)).toEqual(["chatPass", "tradersLicense"]);
+    expect(keys(third.body.shop).slice(-2)).toEqual(["plinkoCharm", "chatPass"]);
 
     // every rung up to the chat pass, then it is on the shelf
     for (const key of ["diceCharm", "slotsCharm", "readingLamp"]) expect((await buy(user, key)).body.bought).toBe(true);
@@ -146,7 +146,7 @@ describe("daisu's shop", () => {
     expect(after.xpBoost).toEqual({ all: 1.3, dice: 0.25 });
     expect(after.walletBalance).toBe(100000 - 300 - 2000 - 1000 - 800 - 4000);
     // the shelf is one ladder: the next eight unheld rungs, whatever their kind
-    expect(res.body.shop.items.filter((i) => !i.owned).map((i) => i.key)).toEqual(["slotsCharm", "coinflipCharm", "plinkoCharm", "chatPass", "tradersLicense", "collectionBook", "affiliateCard", "crashCharm"]);
+    expect(res.body.shop.items.filter((i) => !i.owned).map((i) => i.key)).toEqual(["spyglass", "slotsCharm", "coinflipCharm", "plinkoCharm", "chatPass", "tradersLicense", "collectionBook", "affiliateCard"]);
   });
 
   it("keeps an affiliate who already set a code, and asks everyone else in her beta for the card", async () => {

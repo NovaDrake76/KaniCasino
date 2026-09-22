@@ -1275,6 +1275,16 @@
         "philosopherStone": {
           "name": "Piedra Filosofal",
           "pitch": "Convierte apuestas en XP. Lo que siempre hizo, pero más rápido."
+        },
+        "spyglass": {
+          "about": "Abre la franja de apuestas en vivo debajo de cada juego: las últimas apuestas del sitio según ocurren, quién las hizo y cuánto pagaron.",
+          "getIt": "Consigue el Catalejo",
+          "lockedBody": "Nivel {{level}} · {{price}} en la tienda de Daisu",
+          "lockedTitle": "Las apuestas en vivo requieren un Catalejo",
+          "name": "Catalejo",
+          "opened": "Listo. Ahora ves lo que hacen los demás. ¿Te enseño dónde?",
+          "pitch": "A todos les gusta ver perder a los demás. Ahora puedes hacerlo cómodamente.",
+          "what": "Mira las apuestas en vivo debajo de cada juego: quién juega, cuánto apuesta y cuánto pagó."
         }
       },
       "level": "Nivel {{n}}",

@@ -20,6 +20,8 @@ const EVIDENCE = {
   chatPass: async (user) => !!(await ChatMessage.exists({ userId: user._id })),
   // a code already set is an affiliate already at work; the charm and the seal are new perks, so nobody held them before
   affiliateCard: async (user) => !!user.referralCode,
+  // the live bets strip left no trace of who looked at it, so nobody is kept
+  spyglass: async () => false,
   giftCharm: async () => false,
   merchantSeal: async () => false,
   goldenTicket: async () => false,
