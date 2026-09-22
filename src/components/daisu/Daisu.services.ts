@@ -12,6 +12,7 @@ import { missionWords } from "./roadmap/missionCopy";
 import { startHelp } from "./tour/helpStore";
 import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
+import { preloadDaisuArt } from "./daisuArtFiles";
 import type { UnlockKey } from "../../services/daisu/ShopService";
 import { itemWords } from "./shop/shopCopy";
 import type { BonusView, Expression, Line, Pop, Run, Stage } from "./Daisu.types";
@@ -75,6 +76,10 @@ export const useDaisu = () => {
   const pokeLocked = tour.pokeMode === "locked";
   // while her tour runs, the tour is the only one talking
   const touring = tour.status === "offered" || tour.status === "active";
+
+  useEffect(() => {
+    if (enabled) preloadDaisuArt();
+  }, [enabled]);
 
   const [stage, setStage] = useState<Stage>(readStage);
   const [now, setNow] = useState(() => Date.now());
@@ -229,14 +234,15 @@ export const useDaisu = () => {
     };
   }, [stage]);
 
+  // the gift stays out of sight while her tour runs: it outshone the jar the tour was pointing at, and players left for it
   useEffect(() => {
-    if (!enabled || stage !== "bubble" || !gift.canSpin) {
+    if (!enabled || stage !== "bubble" || !gift.canSpin || touring) {
       setBubbleGift(false);
       return;
     }
     const t = setInterval(() => setBubbleGift((g) => !g), BUBBLE_SWAP_MS);
     return () => clearInterval(t);
-  }, [enabled, stage, gift.canSpin]);
+  }, [enabled, stage, gift.canSpin, touring]);
 
   const missions = useRoadmap({
     enabled,

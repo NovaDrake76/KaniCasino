@@ -107,7 +107,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
         .map((b) => (
           <BonusTicket key={b.key} bonus={b} small />
         ))}
-      {giftReady && (
+      {giftReady && !touring && (
         <Link
           to="/gift"
           onClick={closeToBubble}
