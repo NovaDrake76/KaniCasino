@@ -6,7 +6,7 @@ const User = require("../models/User");
 const PredictionTrade = require("../models/PredictionTrade");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { CHAPTERS, chapterOf } = require("./roadmapCatalog");
-const { liveStreak } = require("./dailyGift");
+const { liveStreak, dayIndex } = require("./dailyGift");
 const { getIo } = require("./realtime");
 const { casesCompletedBy } = require("./collectionCheck");
 
@@ -105,7 +105,8 @@ async function progressOf(user, roadmap, chapter, now = new Date()) {
       case "giftStreak": return liveStreak(user.giftStreak, user.giftLastAt, now) || 0;
       case "topFan": return user.fanRank && user.fanRank.rank === 1 ? 1 : 0;
       case "collectionsCompleted": return casesDone;
-      case "giftSpins": return user.giftLastAt && new Date(user.giftLastAt) >= since ? 1 : 0;
+      // the gift is once a day, so a spin earlier on the day the chapter opened counts: most players spin it just before chapter two opens
+      case "giftSpins": return user.giftLastAt && dayIndex(user.giftLastAt) >= dayIndex(since) ? 1 : 0;
       case "battlesWon": return battlesWon;
       case "collectionVisits": return roadmap.visited.includes(mission.key) ? 1 : 0;
       case "referrals": return referrals;
