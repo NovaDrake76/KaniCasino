@@ -4,6 +4,8 @@ import ShopArt from "./ShopArt";
 import { loadShop, useShopState } from "./shopStore";
 import { openDaisuShop } from "../tour/tourEvents";
 import { kp } from "../potMath";
+import { track } from "../../../services/usage/usage";
+import { useSeen } from "../../../services/usage/useSeen";
 import i18n from "../../../i18n";
 
 interface Props {
@@ -23,8 +25,11 @@ const LockedBanner = ({ unlock, compact = false }: Props) => {
     loadShop();
   }, []);
 
+  const seen = useSeen<HTMLDivElement>(() => track("locked_view", { unlock }));
+
   return (
     <div
+      ref={seen}
       className={`flex flex-col gap-3.5 p-4 ${compact ? "" : "md:flex-row md:items-center md:gap-[18px] md:px-5 md:py-[18px]"}`}
       style={{ background: "linear-gradient(rgba(255, 204, 0, 0.07), rgba(255, 204, 0, 0.07)), #212031" }}
     >

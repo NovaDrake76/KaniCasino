@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { saveTour, TourStatus, TourStep } from "../../../services/daisu/DaisuService";
+import { track } from "../../../services/usage/usage";
 import type { GameResult, RevealedItem } from "./tourEvents";
 
 export interface TourState {
@@ -29,7 +30,9 @@ const publish = (next: Partial<TourState>) => {
 };
 
 // best-effort: the tour carries on in this tab even when a save does not land
+// the server keeps only where the tour stopped; the usage record keeps when each step was reached, so the slow ones show
 const persist = (status: TourStatus, step?: TourStep) => {
+  track("tour_step", { step: step || status });
   saveTour(status, step).catch(() => undefined);
 };
 

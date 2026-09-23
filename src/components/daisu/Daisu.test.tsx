@@ -7,7 +7,7 @@ import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
 import type { PotStatus } from "../../services/daisu/DaisuService";
 import { endHelp, helpState } from "./tour/helpStore";
-import { DAISU_POKED_EVENT, openDaisuShop } from "./tour/tourEvents";
+import { DAISU_POKED_EVENT, openDaisuShop, showDaisu } from "./tour/tourEvents";
 import { endTour, setPokeMode, syncTour } from "./tour/tourStore";
 
 const getPotStatus = vi.fn();
@@ -25,6 +25,9 @@ vi.mock("../../services/daisu/RoadmapService", () => ({
   getRoadmap: (...args: unknown[]) => getRoadmap(...args),
   claimRoadmapMission: (...args: unknown[]) => claimRoadmapMission(...args),
 }));
+
+const track = vi.fn();
+vi.mock("../../services/usage/usage", () => ({ track: (...args: unknown[]) => track(...args) }));
 
 const getShop = vi.fn();
 const buyShopItem = vi.fn();
@@ -122,6 +125,7 @@ describe("daisu in the corner", () => {
     window.localStorage.clear();
     window.localStorage.setItem("kani.daisuStage", "popup");
     giftReady = false;
+    track.mockClear();
     toogleUserData.mockReset();
     getRoadmap.mockReset().mockResolvedValue(roadmap([]));
     claimRoadmapMission.mockReset();
@@ -508,6 +512,42 @@ describe("daisu in the corner", () => {
 
     expect(await screen.findByRole("dialog", { name: "Chat Pass" })).toBeTruthy();
     expect(screen.getByRole("dialog", { name: /daisu's room/i })).toBeTruthy();
+  });
+
+  // the usage record is how we learn whether players find her room at all, and by which door
+  it("records how her card and her room are reached and left, and how long she was up", async () => {
+    window.localStorage.setItem("kani.daisuStage", "bubble");
+    draw();
+
+    fireEvent.click(await screen.findByLabelText("Open Daisu"));
+    await screen.findByLabelText("Daisu", { selector: "section" });
+    expect(track).toHaveBeenCalledWith("daisu_open", expect.objectContaining({ via: "bubble", showing: "jar" }));
+
+    fireEvent.click(screen.getByRole("button", { name: /visit daisu's room/i }));
+    await screen.findByRole("dialog", { name: /daisu's room/i });
+    expect(track).toHaveBeenCalledWith("daisu_room", { via: "card_visit", from: "popup", item: undefined });
+
+    fireEvent.click(screen.getByLabelText("Close"));
+    await screen.findByLabelText("Open Daisu");
+    expect(track).toHaveBeenLastCalledWith("daisu_close", { via: "close", from: "room", secs: expect.any(Number) });
+  });
+
+  it("records what moved her from outside the dock, and the item a locked page sent the player for", async () => {
+    getShop.mockResolvedValue(shopOf([shopItem({ key: "chatPass", price: 500 })]));
+    draw(true, { walletBalance: 9000, level: 6, unlocks: [] });
+    await screen.findByLabelText("Daisu", { selector: "section" });
+
+    act(() => showDaisu("room", "nav_missions"));
+    await screen.findByRole("dialog", { name: /daisu's room/i });
+    expect(track).toHaveBeenCalledWith("daisu_room", { via: "nav_missions", from: "popup", item: undefined });
+
+    act(() => showDaisu("bubble", "tour"));
+    await screen.findByLabelText("Open Daisu");
+    act(() => openDaisuShop("chatPass"));
+    await screen.findByRole("dialog", { name: "Chat Pass" });
+    expect(track).toHaveBeenCalledWith("daisu_close", expect.objectContaining({ via: "tour", from: "room" }));
+    expect(track).toHaveBeenCalledWith("daisu_room", { via: "shop_link", from: "bubble", item: "chatPass" });
+    expect(track).toHaveBeenCalledWith("shop_item", expect.objectContaining({ item: "chatPass", via: "shop_link" }));
   });
 
   it("starts folded into her bubble on a first visit", async () => {

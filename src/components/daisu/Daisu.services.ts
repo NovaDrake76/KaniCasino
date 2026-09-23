@@ -13,6 +13,7 @@ import { startHelp } from "./tour/helpStore";
 import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import { preloadDaisuArt } from "./daisuArtFiles";
+import { track } from "../../services/usage/usage";
 import type { UnlockKey } from "../../services/daisu/ShopService";
 import { itemWords } from "./shop/shopCopy";
 import type { BonusView, Expression, Line, Pop, Run, Stage } from "./Daisu.types";
@@ -44,6 +45,14 @@ const BUBBLE_SWAP_MS = 4000;
 const POP_MS = 1200;
 // a sent or failed run stays under the jar this long, then fades out
 const RUN_RESULT_MS = 1600;
+
+// what asked her to move, for the usage record: the button, and what the bubble showed when it was clicked
+interface Move {
+  via: string;
+  showing?: string;
+  attention?: boolean;
+  item?: string;
+}
 
 // she starts folded into her bubble, so a first login meets her welcome alone and not her card beside it. the room is never restored.
 const readStage = (): Stage => {
@@ -93,6 +102,15 @@ export const useDaisu = () => {
   const [run, setRun] = useState<Run | null>(null);
   const [settling, setSettling] = useState(false);
   const [bubbleGift, setBubbleGift] = useState(false);
+
+  // what asked her to move last, and since when she has been up, for the usage record of each move
+  const cause = useRef<Move>({ via: "page" });
+  const shownSince = useRef<number | null>(null);
+  const lastStage = useRef<Stage>(stage);
+  const move = useCallback((next: Stage, via: string, extra: Omit<Move, "via"> = {}) => {
+    cause.current = { via, ...extra };
+    setStage(next);
+  }, []);
 
   const faceTimer = useRef<ReturnType<typeof setTimeout>>();
   const lineFace = useRef<Expression>("default");
@@ -208,16 +226,34 @@ export const useDaisu = () => {
     if (stage === "bubble") greeted.current = false;
   }, [stage]);
 
-  // the tour moves her between stages from outside the dock
+  // every open of her card or her room, and every fold back with how long she was up, recorded with what asked for it
+  useEffect(() => {
+    const from = lastStage.current;
+    lastStage.current = stage;
+    const { via, ...extra } = cause.current;
+    cause.current = { via: "page" };
+    if (stage === "bubble") {
+      const secs = shownSince.current === null ? undefined : Math.round((Date.now() - shownSince.current) / 1000);
+      shownSince.current = null;
+      if (enabled && from !== stage) track("daisu_close", { via, from, secs });
+      return;
+    }
+    if (shownSince.current === null) shownSince.current = Date.now();
+    if (!enabled || from === stage) return;
+    if (stage === "room") track("daisu_room", { via, from, item: extra.item });
+    else if (from === "bubble") track("daisu_open", { via, showing: extra.showing, attention: extra.attention });
+  }, [stage, enabled]);
+
+  // the tour, the navbar and the pages move her between stages from outside the dock
   useEffect(() => {
     const onStage = (e: Event) => {
       const next = (e as CustomEvent<Stage>).detail;
       if (next !== "bubble" && next !== "popup" && next !== "room") return;
-      setStage(next);
+      move(next, (e as CustomEvent<Stage> & { via?: string }).via || "page");
     };
     window.addEventListener(DAISU_STAGE_EVENT, onStage);
     return () => window.removeEventListener(DAISU_STAGE_EVENT, onStage);
-  }, []);
+  }, [move]);
 
   // her room covers the page, so the page must not scroll under it
   useEffect(() => {
@@ -273,12 +309,12 @@ export const useDaisu = () => {
   useEffect(() => {
     const onShop = (e: Event) => {
       const key = (e as CustomEvent<UnlockKey | undefined>).detail;
-      setStage("room");
-      if (key) pickShopItem.current(key);
+      move("room", "shop_link", key ? { item: key } : {});
+      if (key) pickShopItem.current(key, "shop_link");
     };
     window.addEventListener(SHOP_OPEN_EVENT, onShop);
     return () => window.removeEventListener(SHOP_OPEN_EVENT, onShop);
-  }, []);
+  }, [move]);
 
   const cycleMs = status?.cycleMs ?? 8 * 60000;
   const full = status?.full ?? 0;
@@ -525,18 +561,26 @@ export const useDaisu = () => {
     say(mood);
   };
 
-  const openPopup = () => setStage("popup");
-  const closeToBubble = () => setStage("bubble");
+  const openPopup = () =>
+    move("popup", "bubble", { showing: bubbleGift ? "gift" : bubbleBonus ? "bonus" : "jar", attention: attention || !!bubbleBonus?.expiring });
+  const closeToBubble = () => move("bubble", "close");
+  // the card has two ways into her room, and which one players find is part of what the record is for
   const openRoom = () => {
-    setStage("room");
+    move("room", "card_visit");
     say("room");
   };
+  const openMissions = () => {
+    move("room", "card_missions");
+    say("room");
+  };
+  const openGift = () => move("bubble", "gift");
+  const playBonus = () => move("bubble", "bonus_game");
   // she folds away and shows the player around the page the mission needs
   const showMe = (key: string) => {
     const mission = missions.roadmap?.missions.find((m) => m.key === key);
     if (!mission || !userId) return;
     missions.showHelp(null);
-    setStage("bubble");
+    move("bubble", "show_me");
     startHelp(userId, mission.key, mission.goal, missionWords(mission.key, mission.target, bonusGame.name).title);
   };
   // a purchase ends on what it opened, and she offers to show it on the tour's engine
@@ -545,7 +589,7 @@ export const useDaisu = () => {
     const item = unlockedItem;
     shop.closeUnlocked();
     if (!item || !userId) return;
-    setStage("bubble");
+    move("bubble", "show_me");
     startHelp(userId, `shop:${item.key}`, `unlock:${item.key}`, itemWords(item).name);
   };
   // an item already held, picked off her shelf: she folds away and shows where it is used
@@ -553,7 +597,7 @@ export const useDaisu = () => {
     const item = shop.pickedItem;
     shop.closePick();
     if (!item || !userId) return;
-    setStage("bubble");
+    move("bubble", "show_me");
     startHelp(userId, `shop:${item.key}`, `unlock:${item.key}`, itemWords(item).name);
   };
   const backToPopup = () => setStage("popup");
@@ -564,6 +608,9 @@ export const useDaisu = () => {
     openPopup,
     closeToBubble,
     openRoom,
+    openMissions,
+    openGift,
+    playBonus,
     showMe,
     showUnlocked,
     showItem,

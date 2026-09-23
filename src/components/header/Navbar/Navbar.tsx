@@ -106,7 +106,7 @@ const Navbar: React.FC<Navbar> = ({ openNotifications, setOpenNotifications, ope
       onClick: userData?.features?.daisu
         ? (e: React.MouseEvent) => {
             e.preventDefault();
-            showDaisu("room");
+            showDaisu("room", "nav_missions");
           }
         : undefined,
     }] : []),

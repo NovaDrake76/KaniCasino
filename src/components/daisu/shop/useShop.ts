@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { buyShopItem, ShopPurchase } from "../../../services/daisu/ShopService";
 import { loadShop, setShop, useShopState } from "./shopStore";
+import { statusOf } from "./shopCopy";
+import { track } from "../../../services/usage/usage";
 import i18n from "../../../i18n";
 
 interface Args {
@@ -36,7 +38,10 @@ export const useShop = ({ live, userId, open, walletBalance, level, onBought }: 
     if (live && open) loadShop(true);
   }, [live, open]);
 
-  const pickItem = (key: string) => {
+  // the state is what the slot said when it was clicked: an item looked at and not bought is read against it
+  const pickItem = (key: string, via = "shelf") => {
+    const item = shop?.items.find((i) => i.key === key);
+    track("shop_item", { item: key, via, state: item && shop ? statusOf(item, shop).state : "unknown" });
     setPicked(key);
     if (live) loadShop();
   };
@@ -53,7 +58,8 @@ export const useShop = ({ live, userId, open, walletBalance, level, onBought }: 
         setUnlocked(res.key);
       }
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { message?: string } } };
+      const e = err as { response?: { status?: number; data?: { message?: string; reason?: string } } };
+      track("shop_buy_failed", { item: picked, status: e?.response?.status ?? 0, reason: e?.response?.data?.reason });
       toast.error(e?.response?.data?.message || i18n.t("daisu.shop.failed"), { theme: "dark" });
       loadShop(true);
     } finally {

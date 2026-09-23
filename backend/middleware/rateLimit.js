@@ -161,6 +161,9 @@ const marketWriteLimiter = perUser(30, "Too many marketplace writes, slow down a
 // clicks once they pause for four seconds, about fifteen a minute at the very most
 const potClaimLimiter = perUser(30, "Too many takes, slow down a little.", 60 * 1000);
 
+// the page sends a batch every half minute at most, plus one as a tab closes
+const usageLimiter = perUser(20, "Too many usage batches.", 60 * 1000);
+
 module.exports = {
   artLimiter,
   loginLimiter,
@@ -178,4 +181,5 @@ module.exports = {
   marketBuyLimiter,
   marketWriteLimiter,
   potClaimLimiter,
+  usageLimiter,
 };

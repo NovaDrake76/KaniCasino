@@ -38,7 +38,7 @@ function showMissionToast(m: PendingMission, targetPath: string | undefined, don
     ? i18n.t(`daisu.roadmap.missions.${m.key}.title`, { target: (m.target ?? 0).toLocaleString("en-US") })
     : m.title;
   // her missions are claimed in her room, the rest wherever the link points
-  const open = m.roadmap ? () => showDaisu("room") : targetPath ? () => navigateTo(targetPath) : undefined;
+  const open = m.roadmap ? () => showDaisu("room", "mission_toast") : targetPath ? () => navigateTo(targetPath) : undefined;
   toast(
     <div className={`flex items-center gap-3 ${open ? "cursor-pointer" : ""}`}>
       <GiTrophyCup className="text-3xl text-accent-gold shrink-0" />

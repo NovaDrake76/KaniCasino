@@ -22,12 +22,14 @@ export interface GameResult {
   payout: number;
 }
 
-const emit = (name: string, detail?: unknown) => window.dispatchEvent(new CustomEvent(name, { detail }));
+// `via` rides on the event beside its detail, so a listener that only wants the detail never sees it
+const emit = (name: string, detail?: unknown, via?: string) => window.dispatchEvent(Object.assign(new CustomEvent(name, { detail }), { via }));
 
 export const emitJarTaken = () => emit(JAR_TAKEN_EVENT);
 export const emitCaseRevealed = (items: RevealedItem[]) => emit(CASE_REVEALED_EVENT, { items });
 export const emitGameResult = (result: GameResult) => emit(GAME_RESULT_EVENT, result);
-export const showDaisu = (stage: "bubble" | "popup" | "room") => emit(DAISU_STAGE_EVENT, stage);
+// `via` names what asked, for the usage record of the move
+export const showDaisu = (stage: "bubble" | "popup" | "room", via = "page") => emit(DAISU_STAGE_EVENT, stage, via);
 export const emitItemPinned = () => emit(ITEM_PINNED_EVENT);
 export const emitItemSold = () => emit(ITEM_SOLD_EVENT);
 // her room on the shop, on one item's card when a key is given

@@ -173,13 +173,13 @@ const HelpOverlay = () => {
         navigate(GAME_PATHS[bonus.game]);
       } else {
         helpTo("take");
-        showDaisu("popup");
+        showDaisu("popup", "help");
       }
       return;
     }
     helpTo(wizard);
     if (wizard === "pot") {
-      showDaisu("popup");
+      showDaisu("popup", "help");
       return;
     }
     if (wizard === "chat") {
@@ -195,7 +195,7 @@ const HelpOverlay = () => {
     if (step !== "take") return;
     const bonus = liveBonus(status);
     if (!bonus) return;
-    showDaisu("bubble");
+    showDaisu("bubble", "help");
     helpTo("strip", { game: bonus.game });
     navigate(GAME_PATHS[bonus.game]);
   }, [step, status, navigate]);

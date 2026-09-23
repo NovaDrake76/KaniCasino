@@ -3,6 +3,8 @@ import ShopArt from "./ShopArt";
 import { loadShop, useShopState } from "./shopStore";
 import { openDaisuShop } from "../tour/tourEvents";
 import { kp } from "../potMath";
+import { track } from "../../../services/usage/usage";
+import { useSeen } from "../../../services/usage/useSeen";
 import i18n from "../../../i18n";
 
 const t = (key: string, vars?: Record<string, string | number>) => i18n.t(`daisu.shop.items.chatPass.${key}`, vars);
@@ -16,8 +18,10 @@ const LockedChat = () => {
     loadShop();
   }, []);
 
+  const seen = useSeen<HTMLDivElement>(() => track("locked_view", { unlock: "chatPass" }));
+
   return (
-    <div className="flex flex-col gap-2.5 border-t border-line bg-surface-nav px-3 py-3.5">
+    <div ref={seen} className="flex flex-col gap-2.5 border-t border-line bg-surface-nav px-3 py-3.5">
       <div className="flex items-center gap-2.5">
         <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center bg-surface">
           <ShopArt item="chatPass" size={20} />

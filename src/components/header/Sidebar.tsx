@@ -53,7 +53,7 @@ const Sidebar: React.FC<Sidebar> = ({ closeSidebar }) => {
             onClick: userData?.features?.daisu
                 ? (e: React.MouseEvent) => {
                     e.preventDefault();
-                    showDaisu("room");
+                    showDaisu("room", "nav_missions");
                 }
                 : undefined,
         }] : []),

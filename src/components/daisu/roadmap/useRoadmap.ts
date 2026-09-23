@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { claimRoadmapMission, getRoadmap, Roadmap, ROADMAP_CHANGED_EVENT } from "../../../services/daisu/RoadmapService";
 import type { Stage } from "../Daisu.types";
+import { track } from "../../../services/usage/usage";
 import i18n from "../../../i18n";
 
 interface Args {
@@ -57,7 +58,8 @@ export const useRoadmap = ({ enabled, userId, stage, onClaimed }: Args) => {
         if (res.chapterDone) setChapterDone(res.chapterDone);
       }
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { message?: string } } };
+      const e = err as { response?: { status?: number; data?: { message?: string } } };
+      track("mission_claim_failed", { mission: key, status: e?.response?.status ?? 0 });
       toast.error(e?.response?.data?.message || i18n.t("missions.couldNotClaimReward"), { theme: "dark" });
       load();
     } finally {
@@ -70,7 +72,10 @@ export const useRoadmap = ({ enabled, userId, stage, onClaimed }: Args) => {
     claimingMission: claiming,
     claimMission,
     helpKey,
-    toggleHelp: (key: string) => setHelpKey((open) => (open === key ? null : key)),
+    toggleHelp: (key: string) => {
+      if (helpKey !== key) track("mission_help", { mission: key });
+      setHelpKey((open) => (open === key ? null : key));
+    },
     showHelp: setHelpKey,
     chapterDone,
     closeChapterDone: () => setChapterDone(null),

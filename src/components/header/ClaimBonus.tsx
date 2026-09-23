@@ -93,7 +93,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false, on
   // it opens her card now, full pot or not; the jar there is where the pot is taken
   const openHerCard = () => {
     onOpen?.();
-    showDaisu("popup");
+    showDaisu("popup", "bonus_button");
   };
 
   const finishAd = async (token: string) => {

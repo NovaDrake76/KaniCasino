@@ -16,7 +16,7 @@ const TermsOfPrivacy = () => {
     return (
         <div className="flex flex-col text-sm">
             <span className="font-bold text-lg mb-1">Privacy Policy</span>
-            <span className="mb-1 italic">Last updated: 25 August 2026</span>
+            <span className="mb-1 italic">Last updated: 23 September 2026</span>
             <span className="mb-4 text-ink-muted">
                 KaniCasino ("we") is an independent project run from Brazil, and is the controller
                 of the personal data described below. This policy explains what we
@@ -68,6 +68,13 @@ const TermsOfPrivacy = () => {
                     Messages you send us, and whether our emails to you were delivered, bounced or
                     reported as spam.
                 </Row>
+                <Row label="2.6 How you use Daisu's features">
+                    When you are signed in, we record which of Daisu's panels you open and what you
+                    do in them: opening her card, her room or her shop, looking at an item, asking
+                    what a mission means, and the steps of her tour. Each record carries your
+                    account, the page you were on and the time. It stays with us and is never sent
+                    to an analytics or advertising provider.
+                </Row>
             </Section>
 
             <Section title="3. Why we use it, and our legal basis">
@@ -89,6 +96,11 @@ const TermsOfPrivacy = () => {
                     News about new cases, games and features. We send these only if you switch them
                     on in your profile settings. Legal basis: your consent (Art. 7, I), which you
                     can withdraw at any time.
+                </Row>
+                <Row label="3.5 To improve the design">
+                    Reading the records in 2.6 in aggregate to see which parts of Daisu players
+                    find, use or give up on, so we can fix what gets in the way. Legal basis: our
+                    legitimate interest in a site that works for the people using it (Art. 7, IX).
                 </Row>
             </Section>
 
@@ -144,6 +156,9 @@ const TermsOfPrivacy = () => {
                     Kept while the account exists so balances and provably-fair verification stay
                     meaningful. Some game round records are deleted automatically after a short
                     period.
+                </Row>
+                <Row label="Records of how you use Daisu's features">
+                    Deleted automatically 180 days after they are made.
                 </Row>
                 <Row label="Discord link data">
                     While the link exists. Unlinking deletes your Discord ID, username and the list
