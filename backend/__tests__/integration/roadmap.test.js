@@ -8,6 +8,7 @@ const User = require("../../models/User");
 const Transaction = require("../../models/Transaction");
 const MissionState = require("../../models/MissionState");
 const { TX } = require("../../utils/economy");
+const { dayIndex, RESET_HOUR_UTC } = require("../../utils/dailyGift");
 const Item = require("../../models/Item");
 const Case = require("../../models/Case");
 const PredictionTrade = require("../../models/PredictionTrade");
@@ -92,6 +93,18 @@ describe("daisu's missions", () => {
     await row(user._id, TX.BONUS, { direction: "credit", meta: { fill: 1 } });
 
     expect(mission((await roadmapOf(user)).body, "r1-full-pot").complete).toBe(true);
+  });
+
+  // players spin the gift and then finish chapter one minutes later, and the mission used to make them wait a day for a spin they had just done
+  it("counts a gift spin from earlier on the gift day the chapter opened, and not one from the day before", async () => {
+    const dayStart = new Date(dayIndex(Date.now()) * 86400000 + RESET_HOUR_UTC * 3600000);
+    const opened = new Date(dayStart.getTime() + 2000);
+    const sameDay = await makeUser({ giftLastAt: new Date(dayStart.getTime() + 1000) });
+    const dayBefore = await makeUser({ giftLastAt: new Date(dayStart.getTime() - 1000) });
+    for (const user of [sameDay, dayBefore]) await openChapter(user, 2, { msAgo: Date.now() - opened.getTime() });
+
+    expect(mission((await roadmapOf(sameDay)).body, "r2-gift")).toMatchObject({ complete: true, claimable: true });
+    expect(mission((await roadmapOf(dayBefore)).body, "r2-gift").complete).toBe(false);
   });
 
   it("reads a state goal off the account as it stands, however long ago it was reached", async () => {
