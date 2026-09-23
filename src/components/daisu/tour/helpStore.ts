@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { track } from "../../../services/usage/usage";
 
 export interface HelpState {
   owner: string | null;
@@ -22,12 +23,23 @@ const publish = (next: HelpState) => {
   listeners.forEach((fn) => fn(state));
 };
 
-export const startHelp = (owner: string, mission: string, goal: string, title: string) =>
+// the step a walkthrough ends on says whether the player saw it through or walked away, and where; one replaced by another ends too
+const recordEnd = () => {
+  if (state.goal) track("help_end", { goal: state.goal, step: state.step || "start" });
+};
+
+export const startHelp = (owner: string, mission: string, goal: string, title: string) => {
+  recordEnd();
+  track("help_start", { goal, mission });
   publish({ ...EMPTY, owner, mission, goal, title });
+};
 
 export const helpTo = (step: string, extra: Partial<HelpState> = {}) => publish({ ...state, ...extra, step });
 
-export const endHelp = () => publish(EMPTY);
+export const endHelp = () => {
+  recordEnd();
+  publish(EMPTY);
+};
 
 export const helpState = () => state;
 

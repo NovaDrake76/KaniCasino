@@ -274,16 +274,16 @@ const TourOverlay = () => {
   const stepTitle = (n: number, title: string) => `${t("stepOf", { n })} · ${title}`;
   const name = String(userData?.username || "").trim().split(/\s+/)[0];
   const start = () => {
-    showDaisu("bubble");
+    showDaisu("bubble", "tour");
     startTour();
   };
   const toCases = () => {
-    showDaisu("bubble");
+    showDaisu("bubble", "tour");
     goTo("case");
     navigate("/");
   };
   const pick = (g: TourGameInfo) => {
-    showDaisu("bubble");
+    showDaisu("bubble", "tour");
     goTo("bet", { game: g.key });
     navigate(g.path);
   };
@@ -369,7 +369,7 @@ const TourOverlay = () => {
         tour={tour}
         onMissions={() => {
           finishTour();
-          showDaisu("room");
+          showDaisu("room", "tour");
         }}
         onLater={finishTour}
       />

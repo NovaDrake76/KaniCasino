@@ -15,6 +15,8 @@ import i18n from "../../i18n";
 const DaisuRoomView: React.FC<DaisuViewProps> = ({
   backToPopup,
   closeToBubble,
+  openGift,
+  playBonus,
   fill,
   inJar,
   full,
@@ -106,7 +108,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
               big
             />
           </div>
-          <YourBonus bonuses={bonuses} pick={bonusGame} sharePct={creditSharePct} onGo={closeToBubble} />
+          <YourBonus bonuses={bonuses} pick={bonusGame} sharePct={creditSharePct} onGo={playBonus} />
           <OwnedItems shop={shop} onPick={pickItem} />
         </section>
 
@@ -114,7 +116,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
           {giftReady && (
             <Link
               to="/gift"
-              onClick={closeToBubble}
+              onClick={openGift}
               className="flex items-center justify-between bg-accent-gold px-4 py-3 text-sm font-bold text-[#2a2100] hover:bg-accent-amber hover:text-[#2a2100]"
             >
               <span className="flex items-center gap-2">

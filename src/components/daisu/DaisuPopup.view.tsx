@@ -15,6 +15,8 @@ const spring = { type: "spring", stiffness: 420, damping: 32 } as const;
 const DaisuPopupView: React.FC<DaisuViewProps> = ({
   closeToBubble,
   openRoom,
+  openMissions,
+  openGift,
   fill,
   inJar,
   full,
@@ -110,7 +112,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
       {giftReady && !touring && (
         <Link
           to="/gift"
-          onClick={closeToBubble}
+          onClick={openGift}
           className="flex items-center justify-between bg-accent-gold px-3 py-2 text-sm font-bold text-[#2a2100] hover:bg-accent-amber hover:text-[#2a2100]"
         >
           <span className="flex items-center gap-2">
@@ -122,7 +124,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
       {roadmap && !roadmap.finished && (
         <button
           type="button"
-          onClick={openRoom}
+          onClick={openMissions}
           className="flex w-full items-center justify-between gap-2 border-none bg-transparent px-0 py-1 text-left text-xs font-semibold text-ink-soft hover:border-none hover:text-ink focus:outline-none"
         >
           <span className="flex items-center gap-2">
