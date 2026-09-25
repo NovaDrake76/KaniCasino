@@ -227,9 +227,18 @@ router.post("/link/complete", isAuthenticated, async (req, res) => {
       return res.status(409).json({ message: "This account is already linked to a Discord user. Change it from the settings tab on your profile." });
     }
 
+    // someone already in the server would otherwise wait for the bot's next full member sync
+    const member = await inHomeGuild(pending.discordId);
     const done = await User.updateOne(
       { _id: req.user._id, discordId: { $exists: false } },
-      { $set: { discordId: pending.discordId, discordName: pending.discordName, discordLinkedAt: new Date() } }
+      {
+        $set: {
+          discordId: pending.discordId,
+          discordName: pending.discordName,
+          discordLinkedAt: new Date(),
+          ...(member === null ? {} : { discordInGuild: member, discordGuildSyncedAt: new Date() }),
+        },
+      }
     );
     if (!done.modifiedCount) return res.status(409).json({ message: "This account is already linked. Change it from the settings tab on your profile." });
     await DiscordLink.deleteOne({ code });
@@ -249,7 +258,17 @@ router.delete("/link", isAuthenticated, async (req, res) => {
   try {
     await User.updateOne(
       { _id: req.user._id },
-      { $unset: { discordId: "", discordName: "", discordLinkedAt: "", discordGuilds: "" } }
+      // the membership flag goes too: left behind, it would pay the next account linked the gift boost
+      {
+        $unset: {
+          discordId: "",
+          discordName: "",
+          discordLinkedAt: "",
+          discordGuilds: "",
+          discordInGuild: "",
+          discordGuildSyncedAt: "",
+        },
+      }
     );
     res.json({ ok: true });
   } catch (err) {
@@ -330,6 +349,24 @@ async function joinHomeGuild(discordId, accessToken) {
     // 201 seated them, 204 says they were already in
     if (r.status === 201 || r.status === 204) return true;
     return null;
+  } catch {
+    return null;
+  }
+}
+
+// whether a discord account is in the home server now. null means discord was not asked or
+// gave no clear answer, so nothing is written and the bot's own events stay the truth.
+async function inHomeGuild(discordId) {
+  if (!HOME_GUILD_ID || !process.env.DISCORD_BOT_TOKEN) return null;
+  try {
+    const r = await fetch(`${DISCORD_API}/guilds/${HOME_GUILD_ID}/members/${discordId}`, {
+      headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (r.ok) return true;
+    // 10007 is "unknown member"; any other 404, like an unknown server, proves nothing
+    const body = r.status === 404 ? await r.json().catch(() => ({})) : {};
+    return body.code === 10007 ? false : null;
   } catch {
     return null;
   }

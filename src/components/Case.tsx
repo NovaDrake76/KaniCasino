@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { RotatingLines } from "react-loader-spinner";
 import Monetary from "./Monetary";
+import i18n from "../i18n";
 
 interface CaseProps {
   id: string;
@@ -10,9 +11,10 @@ interface CaseProps {
   // above the fold: fetch it eagerly and let it jump the queue, since the first of
   // these is the largest thing on the homepage
   priority?: boolean;
+  isNew?: boolean;
 }
 
-const Case: React.FC<CaseProps> = ({ id, title, image, price, priority }) => {
+const Case: React.FC<CaseProps> = ({ id, title, image, price, priority, isNew }) => {
   const [hover, setHover] = useState<boolean>(false);
   const [loaded, setLoaded] = useState<boolean>(false);
 
@@ -33,6 +35,11 @@ const Case: React.FC<CaseProps> = ({ id, title, image, price, priority }) => {
           intersects the viewport, so the browser never fetches it, onLoad never fires and
           it stays hidden for good. */}
       <div className="relative w-full h-32 md:h-64 flex items-center justify-center">
+        {isNew && (
+          <span className="absolute left-2 top-2 z-10 rounded-full bg-accent-gold px-2 py-1 text-[10px] font-extrabold uppercase leading-none tracking-wider text-black shadow">
+            {i18n.t("home.new")}
+          </span>
+        )}
         {!loaded && (
           <div className="absolute inset-0 flex items-center justify-center">
             <RotatingLines
