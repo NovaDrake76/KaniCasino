@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiChevronLeft, FiFlag } from "react-icons/fi";
 import { FaDiscord, FaGavel, FaTwitter } from "react-icons/fa";
@@ -15,6 +15,8 @@ import i18n from "../../i18n";
 const MAX_LENGTH = 200;
 const X_URL = (import.meta.env.VITE_X_URL as string) || "https://x.com/kani_casino";
 const DISCORD_URL = (import.meta.env.VITE_DISCORD_INVITE as string) || "https://discord.gg/NMdYb2aBZK";
+
+const atEnd = (box: HTMLElement) => box.scrollHeight - box.scrollTop - box.clientHeight < 120;
 
 const stamp = (at: number) => {
   const d = new Date(at);
@@ -72,16 +74,35 @@ const ChatPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
   const [draft, setDraft] = useState("");
   const [reported, setReported] = useState<string | null>(null);
   const [showRules, setShowRules] = useState(false);
-  const foot = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLUListElement>(null);
+  const landed = useRef(false);
+  const pinned = useRef(true);
 
-  // only follow the tail when they are already at it, so reading back is not yanked away
-  useEffect(() => {
+  // the newest message is at the bottom, so the first rows land there; after that the tail is
+  // only followed when they are already at it, so reading back is not yanked away
+  useLayoutEffect(() => {
     const box = list.current;
-    if (!box) return;
-    const atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
-    if (atEnd) foot.current?.scrollIntoView?.({ block: "end" });
-  }, [messages]);
+    if (!open) landed.current = false;
+    if (!open || !box || !messages.length) return;
+    if (!landed.current || atEnd(box)) box.scrollTop = box.scrollHeight;
+    landed.current = true;
+  }, [open, messages]);
+
+  // the rain strip can arrive after the history and shrink the list, as can a phone keyboard
+  useLayoutEffect(() => {
+    const box = list.current;
+    if (!box || typeof ResizeObserver === "undefined") return;
+    const onScroll = () => (pinned.current = atEnd(box));
+    const observer = new ResizeObserver(() => {
+      if (pinned.current) box.scrollTop = box.scrollHeight;
+    });
+    box.addEventListener("scroll", onScroll, { passive: true });
+    observer.observe(box);
+    return () => {
+      box.removeEventListener("scroll", onScroll);
+      observer.disconnect();
+    };
+  }, []);
 
   const notice = useMemo(() => {
     if (!error) return null;
@@ -129,7 +150,6 @@ const ChatPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
         {messages.map((m) => (
           <Message key={m.id} message={m} onReport={flag} />
         ))}
-        <div ref={foot} />
       </ul>
 
       {reported && (
