@@ -76,7 +76,7 @@ async function openCase({ user, caseId, quantity, grantId = null, source = null 
     const rollValue = roll(reserved.serverSeed, reserved.clientSeed, nonce); // 1..TOTAL
     const picked = pickFromRanges(rollValue, rangeTable);
     const sourceItem = caseData.items.find((it) => String(it._id) === String(picked.itemId));
-    const itemWithUniqueId = addUniqueInfoToItem(sourceItem);
+    const itemWithUniqueId = addUniqueInfoToItem(sourceItem, caseData._id);
     winningItems.push(itemWithUniqueId);
     draws.push({ nonce, roll: rollValue, itemId: picked.itemId, uniqueId: itemWithUniqueId.uniqueId });
   }
