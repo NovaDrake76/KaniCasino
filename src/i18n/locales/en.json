@@ -1641,8 +1641,6 @@
     "makeAPrediction": "Make a prediction"
   },
   "home": {
-    "anime": "ANIME",
-    "animeCases": "Anime cases",
     "blackjack": "BLACKJACK",
     "blueArchive": "BLUE ARCHIVE",
     "blueArchiveCases": "Blue Archive cases",
@@ -1664,7 +1662,6 @@
     "name": "Name",
     "new": "New",
     "newCasesThenMostOpened": "New cases first, then what everyone is opening right now.",
-    "oneCaseForEveryYear": "One case for every year from 2016 to 2026.",
     "openTheCasesCollect": "Open the cases, collect the rarest.",
     "ourDiscord": "Our Discord",
     "ourGames": "Our Games",

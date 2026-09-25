@@ -1641,8 +1641,6 @@
     "makeAPrediction": "Buat prediksi"
   },
   "home": {
-    "anime": "ANIME",
-    "animeCases": "Kotak anime",
     "blackjack": "SELIKURAN",
     "blueArchive": "BLUE ARCHIVE",
     "blueArchiveCases": "Gacha Blue Archive",
@@ -1664,7 +1662,6 @@
     "name": "Nama",
     "new": "Baru",
     "newCasesThenMostOpened": "Kotak baru dulu, lalu apa yang sedang dibuka oleh semua orang saat ini.",
-    "oneCaseForEveryYear": "Satu kotak untuk setiap tahun, dari 2016 sampai 2026.",
     "openTheCasesCollect": "Buka kotaknya, koleksikan yang paling langka.",
     "ourDiscord": "Discord kami",
     "ourGames": "Game kami",

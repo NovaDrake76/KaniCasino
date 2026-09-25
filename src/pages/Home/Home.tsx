@@ -68,19 +68,6 @@ const Home = () => {
   const BannerContent: BannerProps[] = [
     {
       left: {
-        image: "/images/banners/anime-plate.webp",
-        title: i18n.t("home.anime"),
-        description: i18n.t("home.oneCaseForEveryYear"),
-        link: "/case/6ab5d8af32243a2ba2e1f9e2",
-      },
-      right: (
-        <div>
-          <img src="/images/banners/anime-lockup.webp" alt={i18n.t("home.animeCases")} />
-        </div>
-      ),
-    },
-    {
-      left: {
         image: "/images/marisaBanner.webp",
         title: i18n.t("home.crashGame"),
         description: i18n.t("home.dontBurnFlyHigh"),

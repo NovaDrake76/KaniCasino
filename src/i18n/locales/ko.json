@@ -1641,8 +1641,6 @@
     "makeAPrediction": "예측해 보세요"
   },
   "home": {
-    "anime": "애니메이션",
-    "animeCases": "애니메이션 케이스",
     "blackjack": "블랙잭",
     "blueArchive": "블루 아카이브",
     "blueArchiveCases": "블루 아카이브 케이스",
@@ -1664,7 +1662,6 @@
     "name": "이름",
     "new": "신규",
     "newCasesThenMostOpened": "새 케이스를 먼저, 그다음은 지금 다들 열고 있는 것.",
-    "oneCaseForEveryYear": "2016년부터 2026년까지, 해마다 하나씩의 케이스.",
     "openTheCasesCollect": "케이스를 열어 가장 희귀한 아이템을 모으세요.",
     "ourDiscord": "공식 디스코드",
     "ourGames": "우리 게임",
