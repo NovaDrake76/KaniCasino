@@ -82,13 +82,13 @@ test("a case section can be hidden and shown again", async ({ page }) => {
   await expect(page.getByText("Starter Case")).toBeVisible();
 });
 
-test("the most opened section renders above the games and category listings", async ({ page }) => {
+test("the recommended section renders above the games and category listings", async ({ page }) => {
   await page.route("**/cases/most-opened**", (route) =>
     route.fulfill({ json: [{ _id: "case9", title: "Hot Case", image: IMG, price: 250, opens: 42 }] })
   );
   await page.goto("/");
 
-  await expect(page.getByText("Most Opened Cases")).toBeVisible();
+  await expect(page.getByText("Recommended Cases")).toBeVisible();
   await expect(page.getByText("Hot Case")).toBeVisible();
 
   const topOf = async (text: string | RegExp) => {
@@ -99,7 +99,7 @@ test("the most opened section renders above the games and category listings", as
   };
 
   const ys = [
-    await topOf("Most Opened Cases"),
+    await topOf("Recommended Cases"),
     await topOf("Our Games"),
     await topOf(/^DAILY LEADERBOARD$/),
     await topOf("Event Cases"),
@@ -117,9 +117,9 @@ test("the most opened section renders above the games and category listings", as
   }
 });
 
-test("the most opened section is absent when nothing has been opened", async ({ page }) => {
+test("the recommended section is absent when nothing has been opened and nothing is pinned", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("Most Opened Cases")).toHaveCount(0);
+  await expect(page.getByText("Recommended Cases")).toHaveCount(0);
 });
 
 test("the category bar lists a chip per shelf and jumps to it", async ({ page }) => {
@@ -150,17 +150,17 @@ test("a case stays clickable after the bar has scrolled to its shelf", async ({ 
   await expect(page).toHaveURL(/\/case\/case2/);
 });
 
-test("the category bar carries the most opened shelf only when it exists", async ({ page }) => {
+test("the category bar carries the recommended shelf only when it exists", async ({ page }) => {
   await page.goto("/");
   const bar = page.getByRole("navigation", { name: "Case categories" });
   await expect(bar.getByRole("button", { name: "Event" })).toBeVisible();
-  await expect(bar.getByRole("button", { name: "Most Opened" })).toHaveCount(0);
+  await expect(bar.getByRole("button", { name: "Recommended" })).toHaveCount(0);
 
   await page.route("**/cases/most-opened**", (route) =>
     route.fulfill({ json: [{ _id: "case9", title: "Hot Case", image: IMG, price: 250, opens: 42 }] })
   );
   await page.goto("/");
-  await expect(bar.getByRole("button", { name: "Most Opened" })).toBeVisible();
+  await expect(bar.getByRole("button", { name: "Recommended" })).toBeVisible();
 });
 
 test("the home page fits a phone with the category bar on it", async ({ page }) => {

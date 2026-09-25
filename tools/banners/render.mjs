@@ -27,6 +27,25 @@ const item = (p) => `${BUCKET}/${p}`;
 
 const BANNERS = [
   {
+    name: "anime",
+    title: "ANIME",
+    sub: "ELEVEN NEW CASES",
+    seed: 31,
+    subjects: [
+      { src: item("cases/anime/cover-class-of-2023.webp"), height: 320, left: 520, z: 2, opacity: 0.92 },
+      { src: item("cases/anime/cover-class-of-2022.webp"), height: 320, left: 940, z: 2, opacity: 0.92 },
+      { src: item("cases/anime/cover-class-of-2016.webp"), height: 410, left: 700, z: 3 },
+    ],
+    theme: {
+      base: "#4A1238", dark: "#14040F", mid: "#B8326E",
+      glow: "rgba(255,120,180,.36)", lift: "rgba(255,160,210,.16)",
+      ring: "rgba(255,190,225,.20)", streak: "rgba(255,225,240,.10)",
+      motif: "#FFD6EA",
+      ink: "#FFFFFF", "ink-shadow": "#6E1440", "glow-text": "rgba(255,120,180,.5)",
+      accent: "#FFD34F",
+    },
+  },
+  {
     name: "blackjack",
     title: "BLACKJACK",
     sub: "BEAT THE DEALER",
