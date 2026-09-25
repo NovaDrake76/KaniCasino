@@ -619,3 +619,52 @@ describe("POST /discord/membership", () => {
     expect(res.status).toBe(403);
   });
 });
+
+// a code is redeemed on the site, where no member event fires, so the site asks discord once
+describe("membership when linking with a code", () => {
+  let realFetch;
+  beforeAll(() => {
+    realFetch = global.fetch;
+    process.env.DISCORD_BOT_TOKEN = "test-bot-token";
+  });
+  afterEach(() => {
+    global.fetch = realFetch;
+  });
+  afterAll(() => {
+    delete process.env.DISCORD_BOT_TOKEN;
+  });
+
+  const discordSays = (status, body = {}) => {
+    global.fetch = jest.fn(async () => ({ ok: status >= 200 && status < 300, status, json: async () => body }));
+  };
+  const flagOf = async (user) => (await User.findById(user._id).select("discordInGuild").lean()).discordInGuild;
+
+  it("pays the boost at once to someone already in the server", async () => {
+    discordSays(200, { user: { id: "1" } });
+    const user = await makeUser();
+    const discordId = oldEnough();
+    await linkUser(user, discordId);
+
+    expect(await flagOf(user)).toBe(true);
+    expect(global.fetch).toHaveBeenCalledWith(
+      `https://discord.com/api/v10/guilds/${GUILD}/members/${discordId}`,
+      expect.anything()
+    );
+  });
+
+  it("records someone discord says is not a member as out", async () => {
+    discordSays(404, { code: 10007, message: "Unknown Member" });
+    const user = await makeUser();
+    await linkUser(user, oldEnough());
+
+    expect(await flagOf(user)).toBe(false);
+  });
+
+  it("writes nothing when discord gives no clear answer", async () => {
+    discordSays(404, { code: 10004, message: "Unknown Guild" });
+    const user = await makeUser();
+    await linkUser(user, oldEnough());
+
+    expect(await flagOf(user)).toBeUndefined();
+  });
+});
