@@ -4,6 +4,7 @@ const Item = require("../models/Item");
 const Case = require("../models/Case");
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const { recomputeCaseValues } = require("../utils/itemValue");
+const { recomputeCasesHolding } = require("../utils/sharedItems");
 const artProxy = require("../utils/artProxy");
 const { artLimiter } = require("../middleware/rateLimit");
 const { mintSlug } = require("../utils/slugs");
@@ -74,8 +75,8 @@ router.put("/:id", isAuthenticated, isAdmin, async (req, res) => {
     const updateItem = await Item.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
-    if (updateItem && updateItem.case) {
-      await recomputeCaseValues(updateItem.case);
+    if (updateItem) {
+      await recomputeCasesHolding(updateItem);
     }
     res.json(updateItem);
   } catch (err) {
@@ -86,10 +87,9 @@ router.put("/:id", isAuthenticated, isAdmin, async (req, res) => {
 router.delete("/:id", isAuthenticated, isAdmin, async (req, res) => {
   try {
     const item = await Item.findByIdAndDelete(req.params.id);
-    if (item && item.case) {
-      // drop the dangling reference and revalue the case
-      await Case.updateOne({ _id: item.case }, { $pull: { items: item._id } });
-      await recomputeCaseValues(item.case);
+    if (item) {
+      // drop the dangling reference from every case that listed it and revalue them
+      await recomputeCasesHolding(item, { pull: true });
     }
     res.json({ message: "Item deleted" });
   } catch (err) {

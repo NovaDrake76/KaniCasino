@@ -28,4 +28,8 @@ describe("case opening", () => {
     expect(a.rarity).toBe("1");
     expect(a.case).toBe("x");
   });
+
+  test("addUniqueInfoToItem reports the case it was drawn from, for an item in several cases", () => {
+    expect(addUniqueInfoToItem(caseData.items[0], "y").case).toBe("y");
+  });
 });

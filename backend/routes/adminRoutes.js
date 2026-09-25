@@ -8,6 +8,7 @@ const User = require("../models/User");
 const Case = require("../models/Case");
 const Item = require("../models/Item");
 const { recomputeCaseValues } = require("../utils/itemValue");
+const { recomputeCasesHolding } = require("../utils/sharedItems");
 const { recordTransaction, runAtomic, TX } = require("../utils/economy");
 const adminStats = require("../utils/adminStats");
 const chat = require("../utils/chat");
@@ -165,9 +166,7 @@ router.put("/items/:id", isAuthenticated, isAdmin, async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    if (updatedItem.case) {
-      await recomputeCaseValues(updatedItem.case);
-    }
+    await recomputeCasesHolding(updatedItem);
     res.json(updatedItem);
   } catch (err) {
     console.error(err.message);
@@ -184,10 +183,7 @@ router.delete("/items/:id", isAuthenticated, isAdmin, async (req, res) => {
       return res.status(404).json({ message: "Item not found" });
     }
 
-    if (deletedItem.case) {
-      await Case.updateOne({ _id: deletedItem.case }, { $pull: { items: deletedItem._id } });
-      await recomputeCaseValues(deletedItem.case);
-    }
+    await recomputeCasesHolding(deletedItem, { pull: true });
     res.json({ message: "Item deleted" });
   } catch (err) {
     console.error(err.message);

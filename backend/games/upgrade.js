@@ -6,6 +6,7 @@ const fandom = require("../utils/fandom");
 const { entriesFor } = require("../utils/inventoryCounts");
 const { rollFloat, TOTAL } = require("../utils/provablyFair");
 const badges = require("../utils/badges");
+const { casesContaining } = require("../utils/sharedItems");
 
 const UPGRADE_ALGO_VERSION = 3; // bump if calculateSuccessRate ever changes
 
@@ -36,11 +37,16 @@ const calculateSuccessRate = (stakedValue, targetValue, targetRarity) => {
   return Math.min((rtp * stakedValue) / targetValue, ceiling);
 };
 
-// Helper function to validate if all items belong to the same case
-const allItemsFromSameCase = (items) => {
-  const caseId = items[0].case;
-  if (!caseId) return false;
-  return items.every((item) => item.case && item.case.toString() === caseId.toString());
+// the stakes and the target must share a case: any case that lists an item counts, and so does its own `case`, which
+// some older items have without a list naming them. returns the shared case, the target's own first, or null
+const sharedCase = async (items) => {
+  const listed = await casesContaining(items.map((item) => item._id));
+  const casesOf = (item) => new Set([...(listed.get(String(item._id)) || []), ...(item.case ? [String(item.case)] : [])]);
+  const [first, ...rest] = items.map(casesOf);
+  const common = [...first].filter((caseId) => rest.every((set) => set.has(caseId)));
+  if (!common.length) return null;
+  const own = items[items.length - 1].case && String(items[items.length - 1].case);
+  return common.includes(own) ? own : common[0];
 };
 
 // "lesser" and "gap" are separate because they are different mistakes and the player is
@@ -90,7 +96,8 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
       }
     }
 
-    if (!allItemsFromSameCase([...selectedItems, targetItem])) {
+    const fromCase = await sharedCase([...selectedItems, targetItem]);
+    if (!fromCase) {
       return { status: 400, message: "All items must be from the same case" };
     }
 
@@ -151,7 +158,7 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
               name: targetItem.name,
               image: targetItem.image,
               rarity: targetItem.rarity,
-              case: targetItem.case,
+              case: fromCase,
               createdAt: new Date(),
               uniqueId: producedUniqueId,
             },
@@ -191,7 +198,8 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
     return {
       status: 200,
       success: isSuccess,
-      item: isSuccess ? targetItem : null,
+      // the feed card shows the case the upgrade happened in, which for a shared item is not always its first
+      item: isSuccess ? { ...targetItem.toObject(), case: fromCase } : null,
       rollId: rec.rollId,
     };
   } catch (error) {

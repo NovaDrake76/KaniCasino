@@ -53,13 +53,15 @@ const getWinningItem = (caseData) => {
   return winningItem;
 };
 
-const addUniqueInfoToItem = (item) => {
+// an item can drop from more than one case, so the case it was just drawn from is passed in; `item.case` is only
+// the first case it came from
+const addUniqueInfoToItem = (item, fromCase) => {
   return {
     _id: item._id,
     name: item.name,
     image: item.image,
     rarity: item.rarity,
-    case: item.case,
+    case: fromCase || item.case,
     baseValue: item.baseValue || 0,
     uniqueId: uuidv4(),
   };

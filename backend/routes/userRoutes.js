@@ -6,6 +6,7 @@ const { check, validationResult } = require("express-validator");
 
 const User = require("../models/User");
 const Item = require("../models/Item");
+const Case = require("../models/Case");
 const fandom = require("../utils/fandom");
 const badges = require("../utils/badges");
 const cardStyles = require("../utils/cardStyles");
@@ -960,7 +961,11 @@ router.get("/inventory/:userId", async (req, res) => {
     if (nameRegex || caseFilter) {
       const catalogQuery = {};
       if (nameRegex) catalogQuery.name = nameRegex;
-      if (caseFilter) catalogQuery.case = caseFilter;
+      if (caseFilter) {
+        // an item can drop from several cases: the case's own list names them all, the item's case only its first
+        const listed = await Case.findById(caseFilter, { items: 1 }).lean();
+        catalogQuery.$or = [{ case: caseFilter }, { _id: { $in: (listed && listed.items) || [] } }];
+      }
       const matches = await Item.find(catalogQuery, { _id: 1 }).lean();
       idFilter = matches.map((m) => m._id);
     }

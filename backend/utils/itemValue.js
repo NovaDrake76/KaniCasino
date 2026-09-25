@@ -58,6 +58,7 @@ async function recomputeCaseValues(caseId) {
   const caseDoc = await Case.findById(caseId).populate("items");
   if (!caseDoc) return;
 
+  // an item shared by several cases keeps whichever value was written last; importCases refuses cases that disagree
   const values = baseValuesForCase(caseDoc);
   const ops = Object.entries(values).map(([id, v]) => ({
     updateOne: { filter: { _id: id }, update: { $set: { baseValue: v } } },
