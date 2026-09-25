@@ -68,7 +68,7 @@ async function prerollBattle(battle) {
       });
       const picked = pickFromRanges(rollValue, rangeTable);
       const sourceItem = caseDoc.items.find((it) => String(it._id) === String(picked.itemId));
-      round.push(addUniqueInfoToItem(sourceItem));
+      round.push(addUniqueInfoToItem(sourceItem, caseDoc._id));
     }
     rolls.push(round);
   }
