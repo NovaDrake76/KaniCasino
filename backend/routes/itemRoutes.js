@@ -5,21 +5,9 @@ const Case = require("../models/Case");
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const { recomputeCaseValues } = require("../utils/itemValue");
 const { recomputeCasesHolding } = require("../utils/sharedItems");
-const { publicCache, TTL } = require("../utils/httpCache");
-const itemCatalog = require("../utils/itemCatalog");
 const artProxy = require("../utils/artProxy");
 const { artLimiter } = require("../middleware/rateLimit");
 const { mintSlug } = require("../utils/slugs");
-
-router.get("/", async (req, res) => {
-  try {
-    const items = await itemCatalog.all();
-    publicCache(res, TTL.itemList);
-    res.json(items);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
 
 // the share card needs the pixels, not just the picture: steam's cdn serves item art
 // without a cors header, so a canvas that drew it straight could never be exported

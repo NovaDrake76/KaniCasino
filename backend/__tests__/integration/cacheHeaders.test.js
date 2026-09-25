@@ -32,11 +32,11 @@ describe("public read cache headers", () => {
     expect(res.headers["cache-control"]).toBe("public, max-age=120");
   });
 
-  test("GET /items is cacheable", async () => {
+  // nothing on the site needs the whole catalogue at once, so nothing hands it out
+  test("GET /items does not return the catalogue", async () => {
     await Item.create({ name: "Card", image: "c.webp", rarity: "1" });
     const res = await request(app).get("/items");
-    expect(res.status).toBe(200);
-    expect(res.headers["cache-control"]).toBe("public, max-age=300");
+    expect(res.status).toBe(404);
   });
 
   test("a personalised read is never cached", async () => {
