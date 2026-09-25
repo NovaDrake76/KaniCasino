@@ -7,6 +7,7 @@ const { uniqueSuffix } = require("./helpers");
 const User = require("../../models/User");
 const EmailSend = require("../../models/EmailSend");
 const policyUpdate = require("../../utils/emails/policyUpdate");
+const policyUpdate12 = require("../../utils/emails/policyUpdate12");
 
 beforeAll(setupDb);
 afterEach(clearDb);
@@ -29,6 +30,38 @@ describe("the policy update template", () => {
     const { subject, text } = policyUpdate.build("x");
     expect(subject).toBeTruthy();
     expect(text.length).toBeGreaterThan(200);
+  });
+});
+
+describe("the 1.2 policy notice", () => {
+  it("greets the person by name, escaping a name that carries markup", () => {
+    const { html, text } = policyUpdate12.build("Nova <b>Drake</b> & co");
+    expect(html).toContain("Hi, Nova &lt;b&gt;Drake&lt;/b&gt; &amp; co!");
+    expect(text).toContain("Hi, Nova <b>Drake</b> & co!");
+  });
+
+  // it goes to people who never opted in to marketing, so it only points at the site and its policies
+  it("links nowhere but the site, the policy and the terms", () => {
+    const { html, text } = policyUpdate12.build("x");
+    const links = [...html.matchAll(/href="([^"]+)"/g)].map((m) => new URL(m[1].replace(/&amp;/g, "&")));
+    expect(links.length).toBe(3);
+    for (const link of links) {
+      expect(link.origin).toBe("https://site.example.com");
+      expect(["/", "/privacy-policy", "/terms"]).toContain(link.pathname);
+      expect(link.searchParams.get("utm_campaign")).toBe("kanicasino-1-2");
+    }
+    expect(text).toContain("https://site.example.com/privacy-policy");
+    expect(text).toContain("https://site.example.com/terms");
+  });
+
+  it("always ships a text part", () => {
+    const { subject, text } = policyUpdate12.build("x");
+    expect(subject).toBeTruthy();
+    expect(text.length).toBeGreaterThan(200);
+  });
+
+  it("goes to the same people as the 1.0 notice", () => {
+    expect(policyUpdate12.audience).toEqual(policyUpdate.audience);
   });
 });
 
