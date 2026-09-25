@@ -44,6 +44,19 @@ const message = (id: string, text: string, over: Partial<ChatMessage> = {}): Cha
   ...over,
 });
 
+// jsdom does no layout, so the list is handed a height to scroll through
+const withLayout = (el: HTMLElement, layout: { height: number; view: number }) => {
+  let top = 0;
+  Object.defineProperties(el, {
+    scrollHeight: { configurable: true, get: () => layout.height },
+    clientHeight: { configurable: true, get: () => layout.view },
+    scrollTop: { configurable: true, get: () => top, set: (v: number) => (top = v) },
+  });
+  return el;
+};
+
+const history = (n: number) => Array.from({ length: n }, (_, i) => message(String(i), `line ${i}`));
+
 const draw = (logged = true, me: Record<string, unknown> = {}) =>
   render(
     <UserContext.Provider value={{ userData: logged ? { id: "me", ...me } : null } as never}>
@@ -79,6 +92,74 @@ describe("the site chat panel", () => {
     act(() => handlers.history?.([message("1", "first"), message("2", "second")] as never));
     const rows = screen.getAllByText(/first|second/);
     expect(rows.map((r) => r.textContent)).toEqual(["first", "second"]);
+  });
+
+  it("opens on the newest message, at the bottom, rather than the oldest", () => {
+    const { container } = draw();
+    const list = withLayout(container.querySelector("ul") as HTMLElement, { height: 2400, view: 500 });
+
+    act(() => handlers.history?.(history(40) as never));
+
+    expect(list.scrollTop).toBe(2400);
+  });
+
+  it("keeps up with a new message for someone reading at the bottom", () => {
+    const { container } = draw();
+    const layout = { height: 2400, view: 500 };
+    const list = withLayout(container.querySelector("ul") as HTMLElement, layout);
+    act(() => handlers.history?.(history(40) as never));
+
+    layout.height = 2460;
+    act(() => handlers.message?.(message("new", "just now") as never));
+
+    expect(list.scrollTop).toBe(2460);
+  });
+
+  it("leaves someone reading back where they are when a message arrives", () => {
+    const { container } = draw();
+    const layout = { height: 2400, view: 500 };
+    const list = withLayout(container.querySelector("ul") as HTMLElement, layout);
+    act(() => handlers.history?.(history(40) as never));
+
+    list.scrollTop = 300;
+    layout.height = 2460;
+    act(() => handlers.message?.(message("new", "just now") as never));
+
+    expect(list.scrollTop).toBe(300);
+  });
+
+  it("stays on the newest message when the list shrinks, unless they scrolled up to read", () => {
+    let resized = () => undefined as void;
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        observe = vi.fn();
+        disconnect = vi.fn();
+        constructor(fn: () => void) {
+          resized = fn;
+        }
+      }
+    );
+    try {
+      const { container } = draw();
+      const layout = { height: 2400, view: 500 };
+      const list = withLayout(container.querySelector("ul") as HTMLElement, layout);
+      act(() => handlers.history?.(history(40) as never));
+
+      // the rain strip turning up above the list after the history did
+      list.scrollTop = 1900;
+      fireEvent.scroll(list);
+      layout.view = 450;
+      resized();
+      expect(list.scrollTop).toBe(2400);
+
+      list.scrollTop = 300;
+      fireEvent.scroll(list);
+      resized();
+      expect(list.scrollTop).toBe(300);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("shows a timestamp, because a quiet room can have an hours old message", () => {
