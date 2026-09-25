@@ -249,7 +249,17 @@ router.delete("/link", isAuthenticated, async (req, res) => {
   try {
     await User.updateOne(
       { _id: req.user._id },
-      { $unset: { discordId: "", discordName: "", discordLinkedAt: "", discordGuilds: "" } }
+      // the membership flag goes too: left behind, it would pay the next account linked the gift boost
+      {
+        $unset: {
+          discordId: "",
+          discordName: "",
+          discordLinkedAt: "",
+          discordGuilds: "",
+          discordInGuild: "",
+          discordGuildSyncedAt: "",
+        },
+      }
     );
     res.json({ ok: true });
   } catch (err) {

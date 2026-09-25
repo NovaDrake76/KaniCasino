@@ -175,6 +175,17 @@ describe("discord bot routes", () => {
       const started = await startLink(discordId);
       expect((await completeLink(other, started.body.code)).status).toBe(200);
     });
+
+    it("forgets server membership on unlink, so the next discord account linked starts without the boost", async () => {
+      const user = await makeUser();
+      await linkUser(user, oldEnough());
+      await User.updateOne({ _id: user._id }, { $set: { discordInGuild: true, discordGuildSyncedAt: new Date() } });
+
+      expect((await auth(request(app).delete("/discord/link"), user)).status).toBe(200);
+      const stored = await User.findById(user._id).select("discordInGuild discordGuildSyncedAt").lean();
+      expect(stored.discordInGuild).toBeUndefined();
+      expect(stored.discordGuildSyncedAt).toBeUndefined();
+    });
   });
 
   describe("showcase", () => {
