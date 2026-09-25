@@ -8,6 +8,8 @@ import Leaderboard from "./Leaderboard";
 import DiscordWidget from "./DiscordWidget";
 import TopFanPromo from "./TopFanPromo";
 import { groupCasesByCategory } from "./groupCases";
+import { recommendedCases } from "./recommendedCases";
+import { isNewCase } from "../../utils/caseAge";
 import {
   getCases,
   getMostOpenedCases,
@@ -19,7 +21,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import i18n from "../../i18n";
 
-// its own namespace, so a category literally called "Most Opened" cannot take the anchor
+// its own namespace, so a category literally called "Recommended" cannot take the anchor
 const TOP_CASES_ID = "top-cases";
 
 const Home = () => {
@@ -51,15 +53,32 @@ const Home = () => {
 
   const groups = useMemo(() => (loading ? [] : groupCasesByCategory(cases)), [cases, loading]);
 
+  const recommended = useMemo(() => recommendedCases(cases, mostOpened), [cases, mostOpened]);
+  // the pins come from the full list, so the row waits for both rather than reshuffling
+  const recommendedLoading = loading || mostOpenedLoading;
+
   const sections = useMemo(
     () => [
-      ...(mostOpened.length > 0 ? [{ id: TOP_CASES_ID, label: i18n.t("home.mostOpened") }] : []),
+      ...(recommended.length > 0 ? [{ id: TOP_CASES_ID, label: i18n.t("home.recommended") }] : []),
       ...groups.map((group) => ({ id: group.id, label: group.category })),
     ],
-    [groups, mostOpened.length]
+    [groups, recommended.length]
   );
 
   const BannerContent: BannerProps[] = [
+    {
+      left: {
+        image: "/images/banners/anime-plate.webp",
+        title: i18n.t("home.anime"),
+        description: i18n.t("home.oneCaseForEveryYear"),
+        link: "/case/6ab5d8af32243a2ba2e1f9e2",
+      },
+      right: (
+        <div>
+          <img src="/images/banners/anime-lockup.webp" alt={i18n.t("home.animeCases")} />
+        </div>
+      ),
+    },
     {
       left: {
         image: "/images/marisaBanner.webp",
@@ -180,18 +199,20 @@ const Home = () => {
             <Banner key={index} left={_item.left} right={_item.right} />
           ))}
         </Carousel>
-        <CategoryBar sections={sections} loading={loading || mostOpenedLoading} />
+        <CategoryBar sections={sections} loading={recommendedLoading} />
 
         {/* the skeleton reserves the row while loading so the sections below do not jump */}
         <CaseField>
-          {mostOpenedLoading ? (
-            <CaseListing name={i18n.t("home.mostOpenedCases")} loading cases={[]} />
+          {recommendedLoading ? (
+            <CaseListing name={i18n.t("home.recommendedCases")} loading cases={[]} />
           ) : (
-            mostOpened.length > 0 && (
+            recommended.length > 0 && (
               <CaseListing
-                name={i18n.t("home.mostOpenedCases")}
-                description={i18n.t("home.whatEveryoneIsOpening")}
-                cases={mostOpened}
+                name={i18n.t("home.recommendedCases")}
+                description={i18n.t(
+                  isNewCase(recommended[0]._id) ? "home.newCasesThenMostOpened" : "home.whatEveryoneIsOpening"
+                )}
+                cases={recommended}
                 sectionId={TOP_CASES_ID}
                 eager
                 ordinal={1}
@@ -217,7 +238,7 @@ const Home = () => {
                 cases={group.cases}
                 sectionId={group.id}
                 collapsible
-                ordinal={index + (mostOpened.length > 0 ? 2 : 1)}
+                ordinal={index + (recommended.length > 0 ? 2 : 1)}
               />
             ))
           )}

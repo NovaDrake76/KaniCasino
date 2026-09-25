@@ -4,6 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
 import Case from "../../components/Case";
 import UserContext from "../../UserContext";
+import { isNewCase } from "../../utils/caseAge";
 
 interface CaseListingProps {
   name: string;
@@ -118,6 +119,7 @@ const CaseListing: React.FC<CaseListingProps> = ({ name, description, cases, loa
                       image={item.image}
                       price={item.price}
                       priority={!!eager && index < 4}
+                      isNew={isNewCase(item._id)}
                     />
                   </Link>
                 ))}
