@@ -1641,8 +1641,6 @@
     "makeAPrediction": "Hãy đưa ra dự đoán"
   },
   "home": {
-    "anime": "ANIME",
-    "animeCases": "Hòm anime",
     "blackjack": "BLACKJACK",
     "blueArchive": "BLUE ARCHIVE",
     "blueArchiveCases": "Hòm Blue Archive",
@@ -1664,7 +1662,6 @@
     "name": "Tên",
     "new": "Mới",
     "newCasesThenMostOpened": "Hòm mới trước, sau đó là những gì mọi người đang mở lúc này.",
-    "oneCaseForEveryYear": "Mỗi năm một hòm, từ 2016 đến 2026.",
     "openTheCasesCollect": "Mở hòm và sưu tầm những món hiếm nhất.",
     "ourDiscord": "Discord của chúng tôi",
     "ourGames": "Trò chơi của chúng tôi",

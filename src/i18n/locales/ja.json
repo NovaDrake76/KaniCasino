@@ -1641,8 +1641,6 @@
     "makeAPrediction": "予想してください"
   },
   "home": {
-    "anime": "アニメ",
-    "animeCases": "アニメのケース",
     "blackjack": "ブラックジャック",
     "blueArchive": "ブルーアーカイブ",
     "blueArchiveCases": "ブルーアーカイブのケース",
@@ -1664,7 +1662,6 @@
     "name": "名前",
     "new": "新着",
     "newCasesThenMostOpened": "まずは新しいケース、それからいまみんなが開けているもの。",
-    "oneCaseForEveryYear": "2016年から2026年まで、1年ごとに1つのケース。",
     "openTheCasesCollect": "ケースを開けて、レアなアイテムを集めよう。",
     "ourDiscord": "公式 Discord",
     "ourGames": "ゲーム一覧",

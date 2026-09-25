@@ -1641,8 +1641,6 @@
     "makeAPrediction": "Triff eine Vorhersage"
   },
   "home": {
-    "anime": "ANIME",
-    "animeCases": "Anime-Kisten",
     "blackjack": "BLACKJACK",
     "blueArchive": "BLUE ARCHIVE",
     "blueArchiveCases": "Blue-Archive-Kisten",
@@ -1664,7 +1662,6 @@
     "name": "Name",
     "new": "Neu",
     "newCasesThenMostOpened": "Zuerst die neuen Kisten, dann das, was gerade alle öffnen.",
-    "oneCaseForEveryYear": "Eine Kiste für jedes Jahr von 2016 bis 2026.",
     "openTheCasesCollect": "Öffne die Kisten und sammle die seltensten.",
     "ourDiscord": "Unser Discord",
     "ourGames": "Unsere Spiele",

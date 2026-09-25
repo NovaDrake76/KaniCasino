@@ -1641,8 +1641,6 @@
     "makeAPrediction": "Faça um palpite"
   },
   "home": {
-    "anime": "ANIME",
-    "animeCases": "Caixas de anime",
     "blackjack": "BLACKJACK",
     "blueArchive": "BLUE ARCHIVE",
     "blueArchiveCases": "Caixas de Blue Archive",
@@ -1664,7 +1662,6 @@
     "name": "Nome",
     "new": "Nova",
     "newCasesThenMostOpened": "Primeiro as caixas novas, depois o que todo mundo está abrindo agora.",
-    "oneCaseForEveryYear": "Uma caixa para cada ano, de 2016 a 2026.",
     "openTheCasesCollect": "Abra as caixas e colecione as mais raras.",
     "ourDiscord": "Nosso Discord",
     "ourGames": "Nossos jogos",

@@ -1641,8 +1641,6 @@
     "makeAPrediction": "做出你的预测"
   },
   "home": {
-    "anime": "动漫",
-    "animeCases": "动漫箱子",
     "blackjack": "21点",
     "blueArchive": "碧蓝档案",
     "blueArchiveCases": "碧蓝档案箱子",
@@ -1664,7 +1662,6 @@
     "name": "名称",
     "new": "新",
     "newCasesThenMostOpened": "先看新箱子，再看大家现在都在开什么。",
-    "oneCaseForEveryYear": "从2016年到2026年，每年一个箱子。",
     "openTheCasesCollect": "打开箱子，收集最稀有的物品。",
     "ourDiscord": "我们的 Discord",
     "ourGames": "我们的游戏",
