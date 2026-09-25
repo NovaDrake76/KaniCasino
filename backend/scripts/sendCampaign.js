@@ -14,7 +14,10 @@ const User = require("../models/User");
 const EmailSend = require("../models/EmailSend");
 const { sendMail } = require("../utils/mailer");
 
-const TEMPLATES = { policyUpdate: require("../utils/emails/policyUpdate") };
+const TEMPLATES = {
+  policyUpdate: require("../utils/emails/policyUpdate"),
+  policyUpdate12: require("../utils/emails/policyUpdate12"),
+};
 
 const arg = (name) => {
   const i = process.argv.indexOf(name);

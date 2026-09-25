@@ -16,7 +16,7 @@ const TermsOfPrivacy = () => {
     return (
         <div className="flex flex-col text-sm">
             <span className="font-bold text-lg mb-1">Privacy Policy</span>
-            <span className="mb-1 italic">Last updated: 23 September 2026</span>
+            <span className="mb-1 italic">Last updated: 25 September 2026</span>
             <span className="mb-4 text-ink-muted">
                 KaniCasino ("we") is an independent project run from Brazil, and is the controller
                 of the personal data described below. This policy explains what we
@@ -27,6 +27,21 @@ const TermsOfPrivacy = () => {
                 <span className="text-blue-500">novadrake77@gmail.com</span> and a person will
                 answer you.
             </span>
+
+            <div className="mb-4 border-l-2 border-accent bg-surface px-3 py-2">
+                <span className="font-semibold block mb-1">What changed since the version of 26 July 2026</span>
+                <ul className="list-disc ml-5 flex flex-col gap-1">
+                    <li>The site chat, and what other players can see of you (2.7 and 7).</li>
+                    <li>
+                        The records of how you use Daisu's features: what they hold, why we keep
+                        them and for how long (2.6, 3.5 and 7).
+                    </li>
+                    <li>
+                        What linking Discord stores, including whether you are in our server, and
+                        the Discord widget on our home page (2.4, 5 and 7).
+                    </li>
+                </ul>
+            </div>
 
             <Section title="1. What KaniCasino is">
                 <span>
@@ -59,10 +74,16 @@ const TermsOfPrivacy = () => {
                     your Discord user ID, your Discord username, and when you linked. We also store
                     the IDs of the Discord servers you have used a bot command in, so a server can
                     have its own leaderboard: that is the server's ID only, never its members, its
-                    channels or its messages. The bot requests only the "identify" scope and the
-                    Guilds gateway intent, so it cannot read messages. The ID of a command you send
-                    is kept for one hour to stop the same command being counted twice, then deleted
-                    automatically. Unlinking from your profile settings removes all of it.
+                    channels or its messages. We also record whether you are a member of the
+                    KaniCasino Discord server, because membership boosts your daily gift: the bot
+                    reads that server's member list to keep this current, and nothing is kept about
+                    members who have not linked an account. Linking from the site asks Discord for
+                    the "identify" and "guilds.join" scopes, the second so we can add you to that
+                    server in the same step. The bot does not request Discord's Message Content
+                    intent, so it cannot read what messages say; it only notices a message that
+                    mentions it, so it can reply. The ID of a command you send is kept for one hour
+                    to stop the same command being counted twice, then deleted automatically.
+                    Unlinking from your profile settings removes all of it.
                 </Row>
                 <Row label="2.5 Communications">
                     Messages you send us, and whether our emails to you were delivered, bounced or
@@ -75,12 +96,18 @@ const TermsOfPrivacy = () => {
                     account, the page you were on and the time. It stays with us and is never sent
                     to an analytics or advertising provider.
                 </Row>
+                <Row label="2.7 Chat, and what other players see">
+                    Messages you post in the site chat are shown to everyone on the site with your
+                    username, profile picture, level and badge, and the same details appear next to
+                    your bets in the live ticker under each game. If someone reports a message, its
+                    text and its author's username are passed to us for review.
+                </Row>
             </Section>
 
             <Section title="3. Why we use it, and our legal basis">
                 <Row label="3.1 To run the service">
-                    Creating and securing your account, saving your progress, running the games and
-                    the marketplace, and keeping the provably-fair records that let you verify any
+                    Creating and securing your account, saving your progress, running the games, the
+                    chat and the marketplace, and keeping the provably-fair records that let you verify any
                     result. Legal basis: performance of a contract with you (LGPD Art. 7, V).
                 </Row>
                 <Row label="3.2 To keep the game fair and secure">
@@ -160,9 +187,14 @@ const TermsOfPrivacy = () => {
                 <Row label="Records of how you use Daisu's features">
                     Deleted automatically 180 days after they are made.
                 </Row>
+                <Row label="Chat messages">
+                    The chat keeps at most its latest 20,000 messages and deletes older ones
+                    automatically as new ones arrive. We can also remove a message sooner.
+                </Row>
                 <Row label="Discord link data">
-                    While the link exists. Unlinking deletes your Discord ID, username and the list
-                    of servers immediately. Command IDs expire on their own within an hour.
+                    While the link exists. Unlinking deletes your Discord ID, username, the list of
+                    servers and the record of whether you are in our server immediately. Command IDs
+                    expire on their own within an hour.
                 </Row>
                 <Row label="Suppressed email addresses">
                     If your address hard-bounces or you report our mail as spam, we keep a record of
