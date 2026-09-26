@@ -251,10 +251,13 @@
     "addAtLeastOne": "Add minimal 1",
     "addBot": "Tambahkan bot",
     "addCase": "Tambahkan {{case}}",
+    "allCategories": "Semua kategori",
     "backToBattles": "Kembali beradu",
     "bakaMode": "Mode Dongo",
     "battleNotFound": "Gaada.",
     "bot": "BOT",
+    "categoryCases_one": "{{count}} kotak",
+    "categoryCases_other": "{{count}} kotak",
     "clear": "Bersihkan",
     "clickCasesBelowTo": "Klik kotak di bawah ini untuk menambahkannya. Klik kotak yang sama lagi untuk menambahkan lebih dari satu kotak.",
     "copyLink": "Salin tautan",
@@ -405,7 +408,19 @@
     "sellOneFor": "Jual satu untuk",
     "thisCannotBeUndone": "Ini tidak bisa dibatalkan.",
     "youOwn": "Anda memiliki ×{{count}}",
-    "yourItemsChangedSince": "Itemmu telah berubah sejak pratinjau. Tinjau pembaruan dan konfirmasi kembali."
+    "yourItemsChangedSince": "Itemmu telah berubah sejak pratinjau. Tinjau pembaruan dan konfirmasi kembali.",
+    "duplicatesWorth": "Duplikat senilai",
+    "duplicateItems_one": "{{count}} item duplikat",
+    "duplicateItems_other": "{{count}} item duplikat",
+    "worth": "senilai",
+    "backToCollections": "Kembali ke koleksi",
+    "collectionsComplete": "{{done}}/{{total}} koleksi selesai",
+    "categoryCollection": "Koleksi {{category}}",
+    "itemsOwned": "{{owned}}/{{total}} item",
+    "keepsOneOfEach": "Menyimpan 1 dari setiap item dan menjual sisanya.",
+    "each": "per item",
+    "selling_one": "Menjual {{count}} item",
+    "selling_other": "Menjual {{count}} item"
   },
   "common": {
     "allRarities": "Semua Kelangkaan",
@@ -1330,6 +1345,7 @@
     "errTaken": "Akun Discord itu milik pemain lain.",
     "errYoung": "Akun Discord itu terlalu baru untuk ditautkan.",
     "failed": "Tautan itu tidak berhasil",
+    "joinedToast": "Discord tertaut, dan kamu sudah masuk server KaniCasino",
     "keepPlaying": "Buka satu case selagi di sini",
     "linkButton": "Tautkan Discord",
     "linkHint": "Tautkan akunmu untuk memakai bot: pamerkan koleksimu dan rebut papan peringkat servermu.",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "Kami tidak mengirim email ke alamat Anda karena email sebelumnya gagal terkirim atau dilaporkan sebagai spam. Hubungi kami jika Anda merasa hal itu keliru.",
     "xpBonus": "+{{pct}}% XP",
     "xpBonusFrom": "Dari booster di toko Daisu",
-    "youWillGetUpdates": "Anda akan mendapatkan pembaruan tentang gacha dan game baru."
+    "youWillGetUpdates": "Anda akan mendapatkan pembaruan tentang gacha dan game baru.",
+    "editDescription": "Edit deskripsi"
   },
   "rain": {
     "aboutTo": "Sebentar lagi hujan",

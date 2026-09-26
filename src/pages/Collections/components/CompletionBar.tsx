@@ -1,3 +1,5 @@
+import i18n from "../../../i18n";
+
 interface Props {
   owned: number;
   total: number;
@@ -10,9 +12,7 @@ const CompletionBar: React.FC<Props> = ({ owned, total, pct, className }) => {
   return (
     <div className={`flex flex-col gap-1 ${className || ""}`}>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-ink-muted">
-          {owned}/{total} items
-        </span>
+        <span className="text-ink-muted">{i18n.t("collections.itemsOwned", { owned, total })}</span>
         <span className={complete ? "text-accent-gold font-semibold" : "text-ink-soft font-semibold"}>
           {pct}%
         </span>

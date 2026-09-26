@@ -1,29 +1,15 @@
-import { useState } from "react";
 import { FaDiscord, FaLock } from "react-icons/fa";
-import { startDiscordOAuth } from "../../services/discord/DiscordLinkService";
+import { useDiscordConnect } from "../../services/discord/useDiscordConnect";
 import BoostCard, { Chip, betterPrizes } from "./BoostCard";
 import { gainOf } from "./Gift.services";
 import type { GiftDiscordBoost } from "./Gift.types";
 import i18n from "../../i18n";
 
-const INVITE = (import.meta.env.VITE_DISCORD_INVITE as string) || "";
-
 // the third lever, and the only one not earned by playing. it states the same kind of
 // number the other two do, because a boost nobody can price is not an offer.
 const DiscordBoost = ({ discord }: { discord: GiftDiscordBoost }) => {
-  const [busy, setBusy] = useState(false);
+  const { connect, busy } = useDiscordConnect();
   const active = discord.linked && discord.inGuild;
-
-  const connect = async () => {
-    setBusy(true);
-    try {
-      window.location.href = await startDiscordOAuth();
-    } catch {
-      // linking not configured, or the session is gone: the invite still gets them there
-      if (INVITE) window.open(INVITE, "_blank", "noopener");
-      setBusy(false);
-    }
-  };
 
   return (
     <BoostCard

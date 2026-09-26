@@ -1013,13 +1013,13 @@ router.get("/inventory/:userId", async (req, res) => {
       pipeline.push({ $match: rarityMatch });
     }
 
-    // only known sort keys: an arbitrary one would be interpolated into the sort
-    // path and blow up the aggregation
+    // only known sort keys: an arbitrary one would be interpolated into the sort path and blow up the aggregation.
+    // each ends on a unique key, or ties reorder between reads and a sell reshuffles the grid or a page repeats an item
     const SORTS = {
-      older: { "inventory.createdAt": 1 },
-      newer: { "inventory.createdAt": -1 },
-      mostRare: { "inventory.rarity": -1 },
-      mostCommon: { "inventory.rarity": 1 },
+      older: { "inventory.createdAt": 1, "inventory.uniqueId": 1 },
+      newer: { "inventory.createdAt": -1, "inventory.uniqueId": 1 },
+      mostRare: { "inventory.rarity": -1, "inventory.createdAt": -1, "inventory.uniqueId": 1 },
+      mostCommon: { "inventory.rarity": 1, "inventory.createdAt": -1, "inventory.uniqueId": 1 },
     };
     let items;
     if (grouped) {
@@ -1042,13 +1042,14 @@ router.get("/inventory/:userId", async (req, res) => {
         // one at a time, so shipping the whole list would be pure payload
         pipeline.push({ $addFields: { uniqueIds: { $slice: ["$uniqueIds", STACK_IDS_LIMIT] } } });
       }
+      // stacks of one rarity fall back on when they were first owned, which selling the newest copy leaves alone
       const GROUPED_SORTS = {
-        older: { oldestAt: 1 },
-        newer: { createdAt: -1 },
-        mostRare: { rarity: -1 },
-        mostCommon: { rarity: 1 },
+        older: { oldestAt: 1, _id: 1 },
+        newer: { createdAt: -1, _id: 1 },
+        mostRare: { rarity: -1, oldestAt: -1, _id: 1 },
+        mostCommon: { rarity: 1, oldestAt: -1, _id: 1 },
       };
-      pipeline.push({ $sort: (sortBy && GROUPED_SORTS[sortBy]) || { createdAt: -1 } });
+      pipeline.push({ $sort: (sortBy && GROUPED_SORTS[sortBy]) || GROUPED_SORTS.newer });
       pipeline.push({ $skip: (page - 1) * ITEMS_PER_PAGE }, { $limit: ITEMS_PER_PAGE });
       items = await User.aggregate(pipeline);
     } else {

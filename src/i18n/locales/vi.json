@@ -251,10 +251,13 @@
     "addAtLeastOne": "Thêm ít nhất một hòm",
     "addBot": "Thêm bot",
     "addCase": "Thêm {{case}}",
+    "allCategories": "Tất cả danh mục",
     "backToBattles": "Về danh sách trận",
     "bakaMode": "Chế độ baka",
     "battleNotFound": "Không tìm thấy trận đấu.",
     "bot": "BOT",
+    "categoryCases_one": "{{count}} hòm",
+    "categoryCases_other": "{{count}} hòm",
     "clear": "Xoá hết",
     "clickCasesBelowTo": "Bấm vào các hòm bên dưới để thêm. Bấm lại cùng một hòm để thêm nhiều cái.",
     "copyLink": "Sao chép liên kết",
@@ -405,7 +408,19 @@
     "sellOneFor": "Bán một cái với giá",
     "thisCannotBeUndone": "Thao tác này không thể hoàn tác.",
     "youOwn": "Bạn có ×{{count}}",
-    "yourItemsChangedSince": "Vật phẩm của bạn đã thay đổi kể từ lúc xem trước. Hãy kiểm tra lại và xác nhận."
+    "yourItemsChangedSince": "Vật phẩm của bạn đã thay đổi kể từ lúc xem trước. Hãy kiểm tra lại và xác nhận.",
+    "duplicatesWorth": "Vật phẩm trùng trị giá",
+    "duplicateItems_one": "{{count}} vật phẩm trùng",
+    "duplicateItems_other": "{{count}} vật phẩm trùng",
+    "worth": "trị giá",
+    "backToCollections": "Quay lại bộ sưu tập",
+    "collectionsComplete": "Hoàn thành {{done}}/{{total}} bộ sưu tập",
+    "categoryCollection": "Bộ sưu tập {{category}}",
+    "itemsOwned": "{{owned}}/{{total}} vật phẩm",
+    "keepsOneOfEach": "Giữ lại 1 cái mỗi loại và bán phần còn lại.",
+    "each": "mỗi cái",
+    "selling_one": "Đang bán {{count}} vật phẩm",
+    "selling_other": "Đang bán {{count}} vật phẩm"
   },
   "common": {
     "allRarities": "Mọi độ hiếm",
@@ -1330,6 +1345,7 @@
     "errTaken": "Tài khoản Discord đó thuộc về người chơi khác.",
     "errYoung": "Tài khoản Discord đó quá mới để liên kết.",
     "failed": "Liên kết đó không hoạt động",
+    "joinedToast": "Đã liên kết Discord và bạn đã vào máy chủ KaniCasino",
     "keepPlaying": "Mở một hòm đi, tiện thể",
     "linkButton": "Liên kết Discord",
     "linkHint": "Liên kết tài khoản để dùng bot: khoe bộ sưu tập và giành bảng xếp hạng của máy chủ bạn.",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "Chúng tôi không gửi tới địa chỉ của bạn vì một email trước đó bị trả lại hoặc bị báo là spam. Hãy liên hệ nếu bạn thấy điều này không đúng.",
     "xpBonus": "+{{pct}}% XP",
     "xpBonusFrom": "Từ các tăng cường ở cửa hàng của Daisu",
-    "youWillGetUpdates": "Bạn sẽ nhận tin về hòm và trò chơi mới"
+    "youWillGetUpdates": "Bạn sẽ nhận tin về hòm và trò chơi mới",
+    "editDescription": "Chỉnh sửa mô tả"
   },
   "rain": {
     "aboutTo": "Sap mua roi",

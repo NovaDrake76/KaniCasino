@@ -251,10 +251,13 @@
     "addAtLeastOne": "Add at least one case",
     "addBot": "Add bot",
     "addCase": "Add {{case}}",
+    "allCategories": "All categories",
     "backToBattles": "Back to battles",
     "bakaMode": "Baka mode",
     "battleNotFound": "Battle not found.",
     "bot": "BOT",
+    "categoryCases_one": "{{count}} case",
+    "categoryCases_other": "{{count}} cases",
     "clear": "Clear",
     "clickCasesBelowTo": "Click cases below to add them. Click the same case again to add more than one.",
     "copyLink": "Copy link",
@@ -405,7 +408,19 @@
     "sellOneFor": "Sell one for",
     "thisCannotBeUndone": "This cannot be undone.",
     "youOwn": "You own ×{{count}}",
-    "yourItemsChangedSince": "Your items changed since the preview. Review the update and confirm again."
+    "yourItemsChangedSince": "Your items changed since the preview. Review the update and confirm again.",
+    "duplicatesWorth": "Duplicates worth",
+    "duplicateItems_one": "{{count}} duplicate item",
+    "duplicateItems_other": "{{count}} duplicate items",
+    "worth": "worth",
+    "backToCollections": "Back to collections",
+    "collectionsComplete": "{{done}}/{{total}} collections complete",
+    "categoryCollection": "{{category}} Collection",
+    "itemsOwned": "{{owned}}/{{total}} items",
+    "keepsOneOfEach": "Keeps 1 of each item and sells the rest.",
+    "each": "each",
+    "selling_one": "Selling {{count}} item",
+    "selling_other": "Selling {{count}} items"
   },
   "common": {
     "allRarities": "All Rarities",
@@ -1330,6 +1345,7 @@
     "errTaken": "That Discord account belongs to another player.",
     "errYoung": "That Discord account is too new to link.",
     "failed": "That link did not work",
+    "joinedToast": "Discord linked, and you're in the KaniCasino server",
     "keepPlaying": "Open a case while you are here",
     "linkButton": "Link Discord",
     "linkHint": "Link your account to use the bot: show your collection off, and take your server's boards.",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "We are not sending to your address because a previous email bounced or was reported as spam. Contact us if you think that is wrong.",
     "xpBonus": "+{{pct}}% XP",
     "xpBonusFrom": "From the boosts in Daisu's shop",
-    "youWillGetUpdates": "You will get updates about new cases and games"
+    "youWillGetUpdates": "You will get updates about new cases and games",
+    "editDescription": "Edit Description"
   },
   "rain": {
     "aboutTo": "It is about to rain",

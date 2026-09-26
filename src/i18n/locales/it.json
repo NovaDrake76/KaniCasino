@@ -251,10 +251,13 @@
     "addAtLeastOne": "Aggiungi almeno una cassa",
     "addBot": "Aggiungi bot",
     "addCase": "Aggiungi {{case}}",
+    "allCategories": "Tutte le categorie",
     "backToBattles": "Torna alle battaglie",
     "bakaMode": "Modalità baka",
     "battleNotFound": "Battaglia non trovata.",
     "bot": "BOT",
+    "categoryCases_one": "{{count}} cassa",
+    "categoryCases_other": "{{count}} casse",
     "clear": "Svuota",
     "clickCasesBelowTo": "Clicca sulle casse qui sotto per aggiungerle. Clicca di nuovo sulla stessa cassa per aggiungerne più di una.",
     "copyLink": "Copia link",
@@ -405,7 +408,19 @@
     "sellOneFor": "Vendine uno per",
     "thisCannotBeUndone": "Questa azione non è reversibile.",
     "youOwn": "Ne hai ×{{count}}",
-    "yourItemsChangedSince": "I tuoi oggetti sono cambiati dall'anteprima. Controlla l'aggiornamento e conferma di nuovo."
+    "yourItemsChangedSince": "I tuoi oggetti sono cambiati dall'anteprima. Controlla l'aggiornamento e conferma di nuovo.",
+    "duplicatesWorth": "Doppioni per un valore di",
+    "duplicateItems_one": "{{count}} oggetto doppio",
+    "duplicateItems_other": "{{count}} oggetti doppi",
+    "worth": "per un valore di",
+    "backToCollections": "Torna alle collezioni",
+    "collectionsComplete": "{{done}}/{{total}} collezioni completate",
+    "categoryCollection": "Collezione {{category}}",
+    "itemsOwned": "{{owned}}/{{total}} oggetti",
+    "keepsOneOfEach": "Tiene 1 copia di ogni oggetto e vende il resto.",
+    "each": "l'uno",
+    "selling_one": "In vendita: {{count}} oggetto",
+    "selling_other": "In vendita: {{count}} oggetti"
   },
   "common": {
     "allRarities": "Tutte le rarità",
@@ -1330,6 +1345,7 @@
     "errTaken": "Quell'account Discord appartiene a un altro giocatore.",
     "errYoung": "Quell'account Discord è troppo recente per collegarlo.",
     "failed": "Quel link non ha funzionato",
+    "joinedToast": "Discord collegato, e sei nel server di KaniCasino",
     "keepPlaying": "Apri una cassa già che ci sei",
     "linkButton": "Collega Discord",
     "linkHint": "Collega il tuo account per usare il bot: mostra la tua collezione e conquista le classifiche del tuo server.",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "Non stiamo scrivendo al tuo indirizzo perché una e-mail precedente è tornata indietro o è stata segnalata come spam. Scrivici se pensi sia un errore.",
     "xpBonus": "+{{pct}}% XP",
     "xpBonusFrom": "Dai potenziamenti del negozio di Daisu",
-    "youWillGetUpdates": "Riceverai novità su casse e giochi"
+    "youWillGetUpdates": "Riceverai novità su casse e giochi",
+    "editDescription": "Modifica descrizione"
   },
   "rain": {
     "aboutTo": "Sta per piovere",

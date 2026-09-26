@@ -196,6 +196,39 @@ describe("selling a stack", () => {
   });
 });
 
+// a sort that leaves ties open hands them back in a new order on every read, so selling one
+// copy used to reshuffle a grid sorted by rarity
+describe("the order of stacks that tie", () => {
+  const ids = (res) => res.body.items.map((i) => String(i._id));
+
+  it("holds still when a copy of one of them is sold", async () => {
+    const items = [];
+    for (let i = 0; i < 6; i++) items.push(await makeItem({ rarity: "3" }));
+    const user = await makeUserWith(items.flatMap((item, i) => copies(item, 3, i * 60000)));
+    const url = `/users/inventory/${user._id}?grouped=true&sortBy=mostRare`;
+
+    const before = ids(await request(app).get(url));
+    // the most recently owned stack first, since the rest of the key ties
+    expect(before).toEqual(items.map((i) => String(i._id)).reverse());
+
+    await request(app).post("/users/inventory/sell").set(...auth(user)).send({ itemId: before[2], quantity: 1 });
+
+    expect(ids(await request(app).get(url))).toEqual(before);
+    expect(ids(await request(app).get(url.replace("mostRare", "mostCommon")))).toEqual(before);
+  });
+
+  it("ranks by rarity first, then by when the stack was first owned", async () => {
+    const epicOld = await makeItem({ rarity: "3" });
+    const legendary = await makeItem({ rarity: "4" });
+    const epicNew = await makeItem({ rarity: "3" });
+    const user = await makeUserWith([...copies(epicOld, 2, 0), ...copies(legendary, 1, 60000), ...copies(epicNew, 2, 120000)]);
+
+    const res = await request(app).get(`/users/inventory/${user._id}?grouped=true&sortBy=mostRare`);
+
+    expect(ids(res)).toEqual([legendary, epicNew, epicOld].map((i) => String(i._id)));
+  });
+});
+
 // the upgrade screen only offers what the rarity gap allows, so it asks for a set at once
 describe("the rarity filter", () => {
   it("takes a single rarity", async () => {

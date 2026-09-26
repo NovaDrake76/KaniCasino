@@ -251,10 +251,13 @@
     "addAtLeastOne": "至少添加一个箱子",
     "addBot": "添加机器人",
     "addCase": "添加 {{case}}",
+    "allCategories": "全部分类",
     "backToBattles": "返回对战列表",
     "bakaMode": "笨蛋模式",
     "battleNotFound": "未找到对战。",
     "bot": "机器人",
+    "categoryCases_one": "{{count}} 个箱子",
+    "categoryCases_other": "{{count}} 个箱子",
     "clear": "清空",
     "clickCasesBelowTo": "点击下方箱子即可添加。再次点击同一个箱子可添加多个。",
     "copyLink": "复制链接",
@@ -405,7 +408,19 @@
     "sellOneFor": "以此价格出售一件",
     "thisCannotBeUndone": "此操作无法撤销。",
     "youOwn": "你拥有 ×{{count}}",
-    "yourItemsChangedSince": "自预览以来你的物品发生了变化。请确认更新后再试。"
+    "yourItemsChangedSince": "自预览以来你的物品发生了变化。请确认更新后再试。",
+    "duplicatesWorth": "重复物品价值",
+    "duplicateItems_one": "{{count}} 件重复物品",
+    "duplicateItems_other": "{{count}} 件重复物品",
+    "worth": "价值",
+    "backToCollections": "返回收藏册",
+    "collectionsComplete": "已完成 {{done}}/{{total}} 个收藏册",
+    "categoryCollection": "{{category}} 收藏册",
+    "itemsOwned": "{{owned}}/{{total}} 件物品",
+    "keepsOneOfEach": "每件物品保留 1 件，其余全部出售。",
+    "each": "/件",
+    "selling_one": "出售 {{count}} 件物品",
+    "selling_other": "出售 {{count}} 件物品"
   },
   "common": {
     "allRarities": "全部稀有度",
@@ -1330,6 +1345,7 @@
     "errTaken": "那个 Discord 账号属于其他玩家。",
     "errYoung": "那个 Discord 账号太新，无法关联。",
     "failed": "该链接无法使用",
+    "joinedToast": "Discord 已关联，并已加入 KaniCasino 服务器",
     "keepPlaying": "来都来了，开个箱吧",
     "linkButton": "关联 Discord",
     "linkHint": "关联账号即可使用机器人：晒出你的收藏，拿下你所在服务器的榜单。",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "我们没有向你的地址发送邮件，因为之前的邮件被退回或被举报为垃圾邮件。如果你认为这有误，请联系我们。",
     "xpBonus": "经验 +{{pct}}%",
     "xpBonusFrom": "来自 Daisu 商店的加成",
-    "youWillGetUpdates": "你将收到新箱子和新游戏的更新通知"
+    "youWillGetUpdates": "你将收到新箱子和新游戏的更新通知",
+    "editDescription": "编辑简介"
   },
   "rain": {
     "aboutTo": "马上就要下红包了",

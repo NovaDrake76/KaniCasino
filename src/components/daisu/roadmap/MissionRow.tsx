@@ -1,5 +1,7 @@
 import { TailSpin } from "react-loader-spinner";
 import { FiCheck, FiHelpCircle } from "react-icons/fi";
+import { FaDiscord } from "react-icons/fa";
+import { useDiscordConnect } from "../../../services/discord/useDiscordConnect";
 import Monetary from "../../Monetary";
 import type { RoadmapMission } from "../../../services/daisu/RoadmapService";
 import { MissionProgress, MissionTile } from "./missionLook";
@@ -21,6 +23,20 @@ const t = (key: string) => i18n.t(`daisu.roadmap.${key}`);
 // a reward waiting glows gold over the card's own fill
 const GLOW = { background: "linear-gradient(rgba(255, 204, 0, 0.07), rgba(255, 204, 0, 0.07)), #212031" };
 
+const DiscordAction = () => {
+  const { connect, busy } = useDiscordConnect();
+  return (
+    <button
+      type="button"
+      onClick={connect}
+      disabled={busy}
+      className="flex h-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-md border-none bg-[#5865F2] text-sm font-bold text-white hover:border-none hover:bg-[#4752c4] focus:outline-none disabled:opacity-60 md:h-[34px] md:min-w-24 md:px-3 md:text-xs"
+    >
+      <FaDiscord /> {i18n.t("discord.linkButton")}
+    </button>
+  );
+};
+
 const Action = ({ mission, claiming, helpOpen, onClaim, onHelp }: Omit<Props, "words" | "art">) => {
   if (mission.claimed) {
     return (
@@ -41,6 +57,7 @@ const Action = ({ mission, claiming, helpOpen, onClaim, onHelp }: Omit<Props, "w
       </button>
     );
   }
+  if (mission.goal === "discordLinked") return <DiscordAction />;
   return (
     <button
       type="button"

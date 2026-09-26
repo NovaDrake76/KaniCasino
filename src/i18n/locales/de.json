@@ -251,10 +251,13 @@
     "addAtLeastOne": "Füge mindestens eine Kiste hinzu",
     "addBot": "Bot hinzufügen",
     "addCase": "{{case}} hinzufügen",
+    "allCategories": "Alle Kategorien",
     "backToBattles": "Zurück zu den Battles",
     "bakaMode": "Baka-Modus",
     "battleNotFound": "Battle nicht gefunden.",
     "bot": "BOT",
+    "categoryCases_one": "{{count}} Kiste",
+    "categoryCases_other": "{{count}} Kisten",
     "clear": "Leeren",
     "clickCasesBelowTo": "Klicke unten auf die Kisten, um sie hinzuzufügen. Klicke dieselbe Kiste erneut, um mehrere hinzuzufügen.",
     "copyLink": "Link kopieren",
@@ -405,7 +408,19 @@
     "sellOneFor": "Eines verkaufen für",
     "thisCannotBeUndone": "Das lässt sich nicht rückgängig machen.",
     "youOwn": "Du hast ×{{count}}",
-    "yourItemsChangedSince": "Deine Gegenstände haben sich seit der Vorschau geändert. Prüfe die Aktualisierung und bestätige erneut."
+    "yourItemsChangedSince": "Deine Gegenstände haben sich seit der Vorschau geändert. Prüfe die Aktualisierung und bestätige erneut.",
+    "duplicatesWorth": "Duplikate im Wert von",
+    "duplicateItems_one": "{{count}} doppeltes Item",
+    "duplicateItems_other": "{{count}} doppelte Items",
+    "worth": "im Wert von",
+    "backToCollections": "Zurück zu den Sammlungen",
+    "collectionsComplete": "{{done}}/{{total}} Sammlungen vollständig",
+    "categoryCollection": "Sammlung {{category}}",
+    "itemsOwned": "{{owned}}/{{total}} Items",
+    "keepsOneOfEach": "Behält 1 von jedem Item und verkauft den Rest.",
+    "each": "pro Stück",
+    "selling_one": "{{count}} Item wird verkauft",
+    "selling_other": "{{count}} Items werden verkauft"
   },
   "common": {
     "allRarities": "Alle Seltenheiten",
@@ -1330,6 +1345,7 @@
     "errTaken": "Dieses Discord-Konto gehört einem anderen Spieler.",
     "errYoung": "Dieses Discord-Konto ist zu neu zum Verknüpfen.",
     "failed": "Dieser Link hat nicht funktioniert",
+    "joinedToast": "Discord verknüpft, und du bist im KaniCasino-Server",
     "keepPlaying": "Öffne eine Kiste, wenn du schon hier bist",
     "linkButton": "Discord verknüpfen",
     "linkHint": "Verknüpfe dein Konto, um den Bot zu nutzen: zeig deine Sammlung und hol dir die Ranglisten deines Servers.",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "Wir senden nicht an deine Adresse, weil eine frühere E-Mail nicht zugestellt oder als Spam gemeldet wurde. Melde dich, wenn das falsch ist.",
     "xpBonus": "+{{pct}}% XP",
     "xpBonusFrom": "Aus den Boosts in Daisus Laden",
-    "youWillGetUpdates": "Du bekommst Neuigkeiten zu Kisten und Spielen"
+    "youWillGetUpdates": "Du bekommst Neuigkeiten zu Kisten und Spielen",
+    "editDescription": "Beschreibung bearbeiten"
   },
   "rain": {
     "aboutTo": "Gleich regnet es",

@@ -251,10 +251,13 @@
     "addAtLeastOne": "케이스를 하나 이상 추가하세요",
     "addBot": "봇 추가",
     "addCase": "{{case}} 추가",
+    "allCategories": "전체 카테고리",
     "backToBattles": "배틀 목록으로",
     "bakaMode": "바카 모드",
     "battleNotFound": "배틀을 찾을 수 없습니다.",
     "bot": "봇",
+    "categoryCases_one": "케이스 {{count}}개",
+    "categoryCases_other": "케이스 {{count}}개",
     "clear": "비우기",
     "clickCasesBelowTo": "아래 케이스를 클릭하면 추가됩니다. 같은 케이스를 다시 클릭하면 여러 개 담을 수 있습니다.",
     "copyLink": "링크 복사",
@@ -405,7 +408,19 @@
     "sellOneFor": "다음 가격에 1개 판매",
     "thisCannotBeUndone": "이 작업은 되돌릴 수 없습니다.",
     "youOwn": "보유 ×{{count}}",
-    "yourItemsChangedSince": "미리보기 이후 아이템이 변경되었습니다. 변경 내용을 확인하고 다시 진행해 주세요."
+    "yourItemsChangedSince": "미리보기 이후 아이템이 변경되었습니다. 변경 내용을 확인하고 다시 진행해 주세요.",
+    "duplicatesWorth": "중복 아이템 가치",
+    "duplicateItems_one": "중복 아이템 {{count}}개",
+    "duplicateItems_other": "중복 아이템 {{count}}개",
+    "worth": "가치",
+    "backToCollections": "컬렉션으로 돌아가기",
+    "collectionsComplete": "{{done}}/{{total}} 컬렉션 완성",
+    "categoryCollection": "{{category}} 컬렉션",
+    "itemsOwned": "아이템 {{owned}}/{{total}}",
+    "keepsOneOfEach": "아이템마다 1개씩 남기고 나머지를 판매합니다.",
+    "each": "/개",
+    "selling_one": "{{count}}개 판매",
+    "selling_other": "{{count}}개 판매"
   },
   "common": {
     "allRarities": "모든 등급",
@@ -1330,6 +1345,7 @@
     "errTaken": "그 Discord 계정은 다른 플레이어의 것입니다.",
     "errYoung": "그 Discord 계정은 너무 최근에 만들어져 연결할 수 없습니다.",
     "failed": "이 링크는 작동하지 않았습니다",
+    "joinedToast": "Discord 연결 완료, KaniCasino 서버에 참여했어요",
     "keepPlaying": "온 김에 케이스 하나 열어보기",
     "linkButton": "Discord 연결",
     "linkHint": "계정을 연결하면 봇을 쓸 수 있습니다. 컬렉션을 자랑하고 서버 순위를 차지하세요.",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "이전 메일이 반송되었거나 스팸으로 신고되어 해당 주소로 발송하지 않고 있습니다. 잘못된 것 같다면 연락해 주세요.",
     "xpBonus": "XP +{{pct}}%",
     "xpBonusFrom": "다이스의 상점 부스트에서",
-    "youWillGetUpdates": "새 케이스와 게임 소식을 받게 됩니다"
+    "youWillGetUpdates": "새 케이스와 게임 소식을 받게 됩니다",
+    "editDescription": "설명 편집"
   },
   "rain": {
     "aboutTo": "곧 레인이 시작됩니다",

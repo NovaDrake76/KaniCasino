@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FaDiscord } from "react-icons/fa";
 import {
     getDiscordLink,
-    startDiscordOAuth,
     unlinkDiscord,
     DiscordLinkState,
 } from "../../services/discord/DiscordLinkService";
+import { useDiscordConnect } from "../../services/discord/useDiscordConnect";
 import i18n from "../../i18n";
 
 // what the backend redirect can come back saying, and which of those read as a failure
 const OUTCOMES: Record<string, { key: string; ok: boolean }> = {
     linked: { key: "discord.linkedToast", ok: true },
+    joined: { key: "discord.joinedToast", ok: true },
     already: { key: "discord.errAlready", ok: false },
     taken: { key: "discord.errTaken", ok: false },
     young: { key: "discord.errYoung", ok: false },
@@ -23,6 +25,7 @@ const DiscordSettings = () => {
     const [params, setParams] = useSearchParams();
     const [state, setState] = useState<DiscordLinkState | null>(null);
     const [busy, setBusy] = useState(false);
+    const { connect, join, busy: connecting, canJoin } = useDiscordConnect();
 
     useEffect(() => {
         getDiscordLink().then(setState).catch(() => undefined);
@@ -38,16 +41,6 @@ const DiscordSettings = () => {
         setParams(params, { replace: true });
     }, [params, setParams]);
 
-    const link = async () => {
-        setBusy(true);
-        try {
-            window.location.href = await startDiscordOAuth();
-        } catch {
-            toast.error(i18n.t("discord.errFailed"), { theme: "dark" });
-            setBusy(false);
-        }
-    };
-
     const unlink = async () => {
         setBusy(true);
         try {
@@ -61,6 +54,7 @@ const DiscordSettings = () => {
     };
 
     if (!state) return null;
+    const outside = state.linked && !state.inGuild;
 
     return (
         <>
@@ -73,15 +67,38 @@ const DiscordSettings = () => {
                             ? i18n.t("discord.linkedAs", { name: state.discordName || "Discord" })
                             : i18n.t("discord.notLinked")}
                     </span>
-                    <span className="text-sm text-ink-muted">{i18n.t("discord.linkHint")}</span>
+                    <span className="text-sm text-ink-muted">
+                        {outside ? i18n.t("gift.discordJoinBlurb") : i18n.t("discord.linkHint")}
+                    </span>
+                    {!state.linked && <span className="text-sm text-ink-muted">{i18n.t("gift.discordLinkBlurb")}</span>}
                 </div>
-                <button
-                    onClick={state.linked ? unlink : link}
-                    disabled={busy}
-                    className="shrink-0 px-4 h-9 rounded-md border border-line bg-surface-nav font-semibold transition-colors hover:bg-line disabled:opacity-50"
-                >
-                    {state.linked ? i18n.t("discord.unlinkButton") : i18n.t("discord.linkButton")}
-                </button>
+                <div className="flex shrink-0 flex-wrap justify-end gap-2">
+                    {outside && canJoin && (
+                        <button
+                            onClick={join}
+                            className="flex items-center gap-2 px-4 h-9 rounded-md border-none bg-[#5865F2] font-semibold text-white transition-colors hover:border-none hover:bg-[#4752c4]"
+                        >
+                            <FaDiscord /> {i18n.t("gift.discordJoinCta")}
+                        </button>
+                    )}
+                    {state.linked ? (
+                        <button
+                            onClick={unlink}
+                            disabled={busy}
+                            className="px-4 h-9 rounded-md border border-line bg-surface-nav font-semibold transition-colors hover:bg-line disabled:opacity-50"
+                        >
+                            {i18n.t("discord.unlinkButton")}
+                        </button>
+                    ) : (
+                        <button
+                            onClick={connect}
+                            disabled={connecting}
+                            className="flex items-center gap-2 px-4 h-9 rounded-md border-none bg-[#5865F2] font-semibold text-white transition-colors hover:border-none hover:bg-[#4752c4] disabled:opacity-50"
+                        >
+                            <FaDiscord /> {i18n.t("discord.linkButton")}
+                        </button>
+                    )}
+                </div>
             </div>
         </>
     );

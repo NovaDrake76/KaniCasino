@@ -427,6 +427,46 @@ describe("linking from the site", () => {
     expect(stored.discordId).toBeUndefined();
   });
 
+  // the bot lacked Create Invite for a month and every seat was refused without a word, so a refusal is logged now
+  it("still links when discord will not seat them, says linked rather than joined, and logs why", async () => {
+    process.env.DISCORD_BOT_TOKEN = "test-bot-token";
+    const logged = jest.spyOn(console, "error").mockImplementation(() => undefined);
+    try {
+      const user = await makeUser();
+      const discordId = oldEnough();
+      const state = new URL((await start(user)).body.url).searchParams.get("state");
+      global.fetch = jest.fn(async (url, init) => {
+        if (String(url).endsWith("/oauth2/token")) return { ok: true, status: 200, json: async () => ({ access_token: "token" }) };
+        if (init && init.method === "PUT") return { ok: false, status: 403, json: async () => ({ code: 50013, message: "Missing Permissions" }) };
+        return { ok: true, status: 200, json: async () => ({ id: discordId, username: "someone" }) };
+      });
+
+      const res = await callback({ code: "auth-code", state });
+
+      expect(res.headers.location).toContain("discord=linked");
+      const stored = await User.findById(user._id).select("discordId discordInGuild").lean();
+      expect(stored.discordId).toBe(discordId);
+      expect(stored.discordInGuild).toBeUndefined();
+      expect(logged).toHaveBeenCalledWith("discord join refused:", 403, 50013);
+    } finally {
+      logged.mockRestore();
+      delete process.env.DISCORD_BOT_TOKEN;
+    }
+  });
+
+  it("tells settings whether a linked player is in the server", async () => {
+    const user = await makeUser();
+    const me = () => auth(request(app).get("/discord/link/me"), user);
+
+    expect((await me()).body).toMatchObject({ linked: false, inGuild: false });
+
+    await linkUser(user, oldEnough());
+    expect((await me()).body).toMatchObject({ linked: true, inGuild: false });
+
+    await User.updateOne({ _id: user._id }, { $set: { discordInGuild: true } });
+    expect((await me()).body).toMatchObject({ linked: true, inGuild: true });
+  });
+
   it("survives discord refusing the code", async () => {
     const user = await makeUser();
     const state = new URL((await start(user)).body.url).searchParams.get("state");

@@ -251,10 +251,13 @@
     "addAtLeastOne": "Adicione pelo menos uma caixa",
     "addBot": "Adicionar bot",
     "addCase": "Adicionar {{case}}",
+    "allCategories": "Todas as categorias",
     "backToBattles": "Voltar às batalhas",
     "bakaMode": "Modo baka",
     "battleNotFound": "Batalha não encontrada.",
     "bot": "BOT",
+    "categoryCases_one": "{{count}} caixa",
+    "categoryCases_other": "{{count}} caixas",
     "clear": "Limpar",
     "clickCasesBelowTo": "Clique nas caixas abaixo para adicioná-las. Clique na mesma caixa de novo para adicionar mais de uma.",
     "copyLink": "Copiar link",
@@ -405,7 +408,19 @@
     "sellOneFor": "Vender um por",
     "thisCannotBeUndone": "Isso não pode ser desfeito.",
     "youOwn": "Você tem ×{{count}}",
-    "yourItemsChangedSince": "Seus itens mudaram desde a prévia. Revise a atualização e confirme de novo."
+    "yourItemsChangedSince": "Seus itens mudaram desde a prévia. Revise a atualização e confirme de novo.",
+    "duplicatesWorth": "Duplicados valendo",
+    "duplicateItems_one": "{{count}} item duplicado",
+    "duplicateItems_other": "{{count}} itens duplicados",
+    "worth": "valendo",
+    "backToCollections": "Voltar para as coleções",
+    "collectionsComplete": "{{done}}/{{total}} coleções completas",
+    "categoryCollection": "Coleção {{category}}",
+    "itemsOwned": "{{owned}}/{{total}} itens",
+    "keepsOneOfEach": "Mantém 1 de cada item e vende o resto.",
+    "each": "cada",
+    "selling_one": "Vendendo {{count}} item",
+    "selling_other": "Vendendo {{count}} itens"
   },
   "common": {
     "allRarities": "Todas as raridades",
@@ -1330,6 +1345,7 @@
     "errTaken": "Essa conta do Discord pertence a outro jogador.",
     "errYoung": "Essa conta do Discord é nova demais para vincular.",
     "failed": "Esse link não funcionou",
+    "joinedToast": "Discord vinculado, e você já está no servidor do KaniCasino",
     "keepPlaying": "Abra uma caixa já que está por aqui",
     "linkButton": "Vincular Discord",
     "linkHint": "Vincule sua conta para usar o bot: mostre sua coleção e dispute os rankings do seu servidor.",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "Não estamos enviando para o seu endereço porque um e-mail anterior voltou ou foi marcado como spam. Fale com a gente se achar que está errado.",
     "xpBonus": "+{{pct}}% XP",
     "xpBonusFrom": "Dos impulsos da loja da Daisu",
-    "youWillGetUpdates": "Você vai receber novidades sobre caixas e jogos"
+    "youWillGetUpdates": "Você vai receber novidades sobre caixas e jogos",
+    "editDescription": "Editar descrição"
   },
   "rain": {
     "aboutTo": "Vai chover agora",

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { ReactNode } from "react";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import TourOverlay from "./TourOverlay";
 import UserContext from "../../../UserContext";
@@ -51,6 +51,14 @@ const draw = (onboarding: Onboarding, path = "/", page: ReactNode = null, daisu 
 
 const jar = <button data-tour="daisu-jar">jar</button>;
 const where = () => screen.getByTestId("where").textContent;
+type Box = { top: number; left: number; width: number; height: number };
+// jsdom lays nothing out, and a target with no size is one the tour waits for
+const placed = (box: Box) => (el: HTMLElement | null) => {
+  if (!el) return;
+  el.getBoundingClientRect = () => ({ ...box, bottom: box.top + box.height, right: box.left + box.width, x: box.left, y: box.top, toJSON: () => ({}) });
+  el.scrollIntoView = () => undefined;
+};
+const dimPanels = () => [...document.querySelectorAll<HTMLElement>("div")].filter((d) => d.style.background === "rgba(9, 7, 20, 0.5)");
 const stages: string[] = [];
 const onStage = (e: Event) => stages.push((e as CustomEvent<string>).detail);
 const lastSave = () => saveTour.mock.calls[saveTour.mock.calls.length - 1]?.filter((arg: unknown) => arg !== undefined);
@@ -66,6 +74,31 @@ describe("daisu's first-login tour", () => {
   afterEach(() => {
     window.removeEventListener(DAISU_STAGE_EVENT, onStage);
     vi.useRealTimers();
+  });
+
+  // a player who pressed "show me around" and saw nothing: the first step was an outline around a bubble in a corner
+  it("dims the page around what each step points at, so the step is where the eye goes", async () => {
+    draw({ status: "active", step: "pot" }, "/", <button data-tour="daisu-bubble" ref={placed({ top: 700, left: 1200, width: 120, height: 50 })}>Open Daisu</button>);
+
+    await waitFor(() => expect(dimPanels()).toHaveLength(4));
+    expect(screen.getByText(/down in the corner/i)).toBeTruthy();
+  });
+
+  // with only the jar left clear, a player could no longer poke her, and her lines and the secret are in those pokes
+  it("leaves her whole card clear while she asks for the jar, with the outline still on the jar", async () => {
+    draw(
+      { status: "active", step: "pot" },
+      "/",
+      <section data-tour="daisu-card" ref={placed({ top: 400, left: 1000, width: 352, height: 480 })}>
+        <button data-tour="daisu-jar" ref={placed({ top: 600, left: 1100, width: 60, height: 80 })}>jar</button>
+      </section>
+    );
+
+    await waitFor(() => expect(dimPanels()).toHaveLength(4));
+    const [above, below, before, after] = dimPanels();
+    expect([above.style.height, below.style.top, before.style.width, after.style.left]).toEqual(["400px", "880px", "1000px", "1352px"]);
+    const ring = [...document.querySelectorAll<HTMLElement>("div")].find((d) => d.style.outline);
+    expect([ring?.style.top, ring?.style.left]).toEqual(["594px", "1094px"]);
   });
 
   it("stays away from an account the server says nothing about, and from accounts outside the beta", () => {

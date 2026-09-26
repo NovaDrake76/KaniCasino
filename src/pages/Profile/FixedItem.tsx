@@ -112,7 +112,7 @@ const FixItem: React.FC<IfixedItem> = ({ fixedItem, isSameUser, setRefresh }) =>
                                         className="text-center text-xs flex items-center cursor-pointer"
                                         onClick={startEditing}
                                     >
-                                        Edit Description <BiEditAlt />
+                                        {i18n.t("profile.editDescription")} <BiEditAlt />
                                     </span>
                                 )}
 

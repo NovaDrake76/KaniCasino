@@ -36,7 +36,7 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
             <div className="flex items-center justify-between gap-4">
               <span className="text-ink-soft font-semibold">{i18n.t("collections.overallProgress")}</span>
               <span className="text-sm text-ink-muted">
-                {summary.totals.casesComplete}/{summary.totals.cases} collections complete
+                {i18n.t("collections.collectionsComplete", { done: summary.totals.casesComplete, total: summary.totals.cases })}
               </span>
             </div>
             <CompletionBar
@@ -47,10 +47,10 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
             {isOwner && summary.totals.duplicatesValue > 0 && (
               <div className="flex items-center justify-between text-sm pt-1 border-t border-line">
                 <span className="text-ink-muted">
-                  {summary.totals.duplicatesCount} duplicate items
+                  {i18n.t("collections.duplicateItems", { count: summary.totals.duplicatesCount })}
                 </span>
                 <span className="text-accent-gold font-medium">
-                  worth <Monetary value={summary.totals.duplicatesValue} />
+                  {i18n.t("collections.worth")} <Monetary value={summary.totals.duplicatesValue} />
                 </span>
               </div>
             )}
@@ -61,14 +61,14 @@ const CollectionsView: React.FC<CollectionsViewProps> = ({
               <div className="flex items-center justify-between gap-4 pb-3 border-b border-line">
                 <div className="flex items-center gap-3">
                   <h3 className="text-lg md:text-xl font-bold uppercase tracking-wide text-white">
-                    {group.category} Collection
+                    {i18n.t("collections.categoryCollection", { category: group.category })}
                   </h3>
                   <span className="text-xs font-semibold text-ink-muted bg-surface-raised px-2 py-0.5 rounded">
                     {group.complete}/{group.collections.length}
                   </span>
                 </div>
                 <span className="text-sm text-ink-muted">
-                  {group.slotsOwned}/{group.slotsTotal} items
+                  {i18n.t("collections.itemsOwned", { owned: group.slotsOwned, total: group.slotsTotal })}
                 </span>
               </div>
               <div className="w-full flex flex-wrap gap-6 justify-center">

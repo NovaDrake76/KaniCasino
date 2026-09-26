@@ -1,13 +1,76 @@
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineArrowLeft, AiOutlineClose } from "react-icons/ai";
 import Title from "../../../components/Title";
 import Monetary from "../../../components/Monetary";
 import Avatar from "../../../components/Avatar";
-import { BattlesViewProps } from "./Battles.types";
+import { BattlesViewProps, CaseInfo } from "./Battles.types";
+import type { CaseGroup } from "../../Home/groupCases";
 import i18n from "../../../i18n";
+
+const CaseButton = ({ item, count, onAdd }: { item: CaseInfo; count: number; onAdd: (c: CaseInfo) => void }) => (
+  <button
+    onClick={() => onAdd(item)}
+    title={i18n.t("battles.addCase", { case: item.title })}
+    className="relative flex flex-col items-center w-36 rounded-lg bg-[#212031] hover:bg-[#2a2840] p-3 transition-all border-2 border-transparent hover:border-indigo-500"
+  >
+    {count > 0 && (
+      <span className="absolute top-1 right-1 bg-indigo-600 rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center text-xs font-bold">
+        {count}
+      </span>
+    )}
+    <img src={item.image} alt={item.title} className="w-24 h-24 object-cover" />
+    <span className="text-sm font-semibold text-center truncate w-full mt-1">{item.title}</span>
+    <span className="text-green-400 text-sm">
+      <Monetary value={item.price} />
+    </span>
+  </button>
+);
+
+// a whole category as one card, the way the daily gift offers its collections: open it to pick from its cases
+const CategoryCard = ({ group, picked, onOpen }: { group: CaseGroup; picked: number; onOpen: (category: string) => void }) => {
+  const prices = group.cases.map((c) => c.price || 0);
+  const low = Math.min(...prices);
+  const high = Math.max(...prices);
+  return (
+    <button
+      onClick={() => onOpen(group.category)}
+      className="relative flex flex-col gap-3 rounded-lg bg-[#212031] hover:bg-[#2a2840] p-4 text-left transition-all border-2 border-transparent hover:border-indigo-500"
+    >
+      {picked > 0 && (
+        <span className="absolute top-2 right-2 bg-indigo-600 rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center text-xs font-bold">
+          {picked}
+        </span>
+      )}
+      <div className="flex h-20 items-center justify-center -space-x-6">
+        {group.cases.slice(-3).map((c) => (
+          <img key={c._id} src={c.image} alt="" className="h-20 w-20 object-contain" loading="lazy" />
+        ))}
+      </div>
+      <div className="flex flex-col gap-0.5">
+        <span className="font-bold truncate">{group.category}</span>
+        <span className="text-xs text-[#84819a]">{i18n.t("battles.categoryCases", { count: group.cases.length })}</span>
+        <span className="text-xs text-green-400 flex items-center gap-1">
+          <Monetary value={low} />
+          {high > low && (
+            <>
+              {" - "}
+              <Monetary value={high} />
+            </>
+          )}
+        </span>
+      </div>
+    </button>
+  );
+};
 
 const BattlesView: React.FC<BattlesViewProps> = ({
   modes,
-  cases,
+  groups,
+  openCategory,
+  openGroup,
+  closeGroup,
+  shownCases,
+  searching,
+  pickedIn,
   selected,
   mode,
   bakaMode,
@@ -138,41 +201,40 @@ const BattlesView: React.FC<BattlesViewProps> = ({
           className="bg-[#19172D] border border-gray-700 focus:border-indigo-500 outline-none rounded px-3 py-1.5 text-sm w-full sm:w-64 transition-all"
         />
       </div>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {loadingCases ? (
-          <span className="text-[#84819a] py-6">{i18n.t("battles.loadingCases")}</span>
-        ) : cases.length === 0 ? (
-          <span className="text-[#84819a] py-6">
-            {search ? i18n.t("battles.noCasesMatch", { search }) : i18n.t("battles.noCasesAvailable")}
-          </span>
-        ) : (
-          cases.map((c) => (
-            <button
-              key={c._id}
-              onClick={() => addCase(c)}
-              title={i18n.t("battles.addCase", { case: c.title })}
-              className="relative flex flex-col items-center w-36 rounded-lg bg-[#212031] hover:bg-[#2a2840] p-3 transition-all border-2 border-transparent hover:border-indigo-500"
-            >
-              {countOf(c._id) > 0 && (
-                <span className="absolute top-1 right-1 bg-indigo-600 rounded-full min-w-[20px] h-5 px-1 flex items-center justify-center text-xs font-bold">
-                  {countOf(c._id)}
-                </span>
-              )}
-              <img
-                src={c.image}
-                alt={c.title}
-                className="w-24 h-24 object-cover"
-              />
-              <span className="text-sm font-semibold text-center truncate w-full mt-1">
-                {c.title}
-              </span>
-              <span className="text-green-400 text-sm">
-                <Monetary value={c.price} />
-              </span>
-            </button>
-          ))
-        )}
-      </div>
+      {loadingCases ? (
+        <span className="text-[#84819a] py-6 text-center">{i18n.t("battles.loadingCases")}</span>
+      ) : searching || openCategory ? (
+        <div className="flex flex-col gap-3">
+          {!searching && (
+            <div className="flex items-center gap-3 text-sm">
+              <button onClick={closeGroup} className="flex items-center gap-1.5 text-[#84819a] hover:text-white transition-colors">
+                <AiOutlineArrowLeft /> {i18n.t("battles.allCategories")}
+              </button>
+              <span className="text-[#56528b]">/</span>
+              <span className="font-semibold">{openCategory}</span>
+            </div>
+          )}
+          {shownCases.length === 0 ? (
+            <span className="text-[#84819a] py-6 text-center">
+              {searching ? i18n.t("battles.noCasesMatch", { search }) : i18n.t("battles.noCasesAvailable")}
+            </span>
+          ) : (
+            <div className="flex flex-wrap gap-4 justify-center">
+              {shownCases.map((c) => (
+                <CaseButton key={c._id} item={c} count={countOf(c._id)} onAdd={addCase} />
+              ))}
+            </div>
+          )}
+        </div>
+      ) : groups.length === 0 ? (
+        <span className="text-[#84819a] py-6 text-center">{i18n.t("battles.noCasesAvailable")}</span>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {groups.map((g) => (
+            <CategoryCard key={g.id} group={g} picked={pickedIn(g.category)} onOpen={openGroup} />
+          ))}
+        </div>
+      )}
     </div>
 
     <div className="flex flex-col gap-2 w-full max-w-[1100px]">

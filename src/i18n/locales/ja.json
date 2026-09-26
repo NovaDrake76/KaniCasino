@@ -251,10 +251,13 @@
     "addAtLeastOne": "ケースを1つ以上追加してください",
     "addBot": "ボットを追加",
     "addCase": "{{case}} を追加",
+    "allCategories": "すべてのカテゴリ",
     "backToBattles": "バトル一覧に戻る",
     "bakaMode": "バカモード",
     "battleNotFound": "バトルが見つかりません。",
     "bot": "BOT",
+    "categoryCases_one": "{{count}} 個のケース",
+    "categoryCases_other": "{{count}} 個のケース",
     "clear": "クリア",
     "clickCasesBelowTo": "下のケースをクリックすると追加できます。同じケースをもう一度クリックすれば複数追加できます。",
     "copyLink": "リンクをコピー",
@@ -405,7 +408,19 @@
     "sellOneFor": "1個を次の価格で売却",
     "thisCannotBeUndone": "この操作は取り消せません。",
     "youOwn": "所持数 ×{{count}}",
-    "yourItemsChangedSince": "プレビュー後にアイテムが変わりました。内容を確認してもう一度お進みください。"
+    "yourItemsChangedSince": "プレビュー後にアイテムが変わりました。内容を確認してもう一度お進みください。",
+    "duplicatesWorth": "重複アイテムの価値",
+    "duplicateItems_one": "重複アイテム {{count}} 個",
+    "duplicateItems_other": "重複アイテム {{count}} 個",
+    "worth": "価値",
+    "backToCollections": "コレクションに戻る",
+    "collectionsComplete": "{{done}}/{{total}} コレクション完成",
+    "categoryCollection": "{{category}} コレクション",
+    "itemsOwned": "{{owned}}/{{total}} アイテム",
+    "keepsOneOfEach": "各アイテムを1個ずつ残し、残りを売却します。",
+    "each": "/個",
+    "selling_one": "{{count}}個を売却",
+    "selling_other": "{{count}}個を売却"
   },
   "common": {
     "allRarities": "すべてのレアリティ",
@@ -1330,6 +1345,7 @@
     "errTaken": "その Discord アカウントは他のプレイヤーのものです。",
     "errYoung": "その Discord アカウントは新しすぎて連携できません。",
     "failed": "このリンクは使えませんでした",
+    "joinedToast": "Discord を連携し、KaniCasino のサーバーに参加しました",
     "keepPlaying": "せっかくなのでケースを開けてみる",
     "linkButton": "Discord を連携",
     "linkHint": "アカウントを連携するとボットが使えます。コレクションを自慢して、サーバーのランキングを取りに行きましょう。",
@@ -1978,7 +1994,8 @@
     "weAreNotSending": "以前のメールが届かなかった、または迷惑メールとして報告されたため、あなたの宛先への送信を停止しています。心当たりがなければご連絡ください。",
     "xpBonus": "XP +{{pct}}%",
     "xpBonusFrom": "ダイスの店のブーストから",
-    "youWillGetUpdates": "新しいケースやゲームのお知らせが届きます"
+    "youWillGetUpdates": "新しいケースやゲームのお知らせが届きます",
+    "editDescription": "説明を編集"
   },
   "rain": {
     "aboutTo": "まもなくレイン",
