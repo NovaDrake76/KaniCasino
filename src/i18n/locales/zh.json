@@ -405,7 +405,19 @@
     "sellOneFor": "以此价格出售一件",
     "thisCannotBeUndone": "此操作无法撤销。",
     "youOwn": "你拥有 ×{{count}}",
-    "yourItemsChangedSince": "自预览以来你的物品发生了变化。请确认更新后再试。"
+    "yourItemsChangedSince": "自预览以来你的物品发生了变化。请确认更新后再试。",
+    "duplicatesWorth": "重复物品价值",
+    "duplicateItems_one": "{{count}} 件重复物品",
+    "duplicateItems_other": "{{count}} 件重复物品",
+    "worth": "价值",
+    "backToCollections": "返回收藏册",
+    "collectionsComplete": "已完成 {{done}}/{{total}} 个收藏册",
+    "categoryCollection": "{{category}} 收藏册",
+    "itemsOwned": "{{owned}}/{{total}} 件物品",
+    "keepsOneOfEach": "每件物品保留 1 件，其余全部出售。",
+    "each": "/件",
+    "selling_one": "出售 {{count}} 件物品",
+    "selling_other": "出售 {{count}} 件物品"
   },
   "common": {
     "allRarities": "全部稀有度",
@@ -1978,7 +1990,8 @@
     "weAreNotSending": "我们没有向你的地址发送邮件，因为之前的邮件被退回或被举报为垃圾邮件。如果你认为这有误，请联系我们。",
     "xpBonus": "经验 +{{pct}}%",
     "xpBonusFrom": "来自 Daisu 商店的加成",
-    "youWillGetUpdates": "你将收到新箱子和新游戏的更新通知"
+    "youWillGetUpdates": "你将收到新箱子和新游戏的更新通知",
+    "editDescription": "编辑简介"
   },
   "rain": {
     "aboutTo": "马上就要下红包了",

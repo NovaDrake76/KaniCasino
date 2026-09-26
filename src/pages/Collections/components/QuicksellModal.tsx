@@ -27,7 +27,7 @@ const QuicksellModal: React.FC<Props> = ({ open, setOpen, preview, committing, o
           <h3 className="text-lg font-semibold text-ink">{i18n.t("collections.sellDuplicates")}</h3>
         </div>
         <p className="text-sm text-ink-muted">
-          Keeps <span className="text-ink font-medium">1 of each</span> item and sells the rest.{" "}
+          {i18n.t("collections.keepsOneOfEach")}{" "}
           <span className="text-red-400">{i18n.t("collections.thisCannotBeUndone")}</span>
         </p>
 
@@ -54,7 +54,7 @@ const QuicksellModal: React.FC<Props> = ({ open, setOpen, preview, committing, o
                   <div className="flex flex-col min-w-0 flex-1">
                     <span className="text-sm text-ink-soft truncate">{l.name}</span>
                     <span className="text-xs text-ink-muted">
-                      <Monetary value={l.unitSellValue} /> each
+                      <Monetary value={l.unitSellValue} /> {i18n.t("collections.each")}
                     </span>
                   </div>
                   <span className="text-sm font-medium text-ink shrink-0">
@@ -67,29 +67,30 @@ const QuicksellModal: React.FC<Props> = ({ open, setOpen, preview, committing, o
         )}
 
         <div className="flex items-center justify-between pt-2 border-t border-line">
-          <span className="text-sm text-ink-muted">
-            Selling <span className="text-ink font-medium">{totalItems}</span> item
-            {totalItems !== 1 ? "s" : ""}
-          </span>
+          <span className="text-sm text-ink-muted">{i18n.t("collections.selling", { count: totalItems })}</span>
           <span className="text-lg font-semibold text-accent-gold">
             <Monetary value={totalValue} />
           </span>
         </div>
 
         <div className="flex items-center gap-3">
-          <MainButton
-            text={i18n.t("collections.cancel")}
-            onClick={() => setOpen(false)}
-            type="dark"
-            disabled={committing}
-          />
-          <MainButton
-            text={i18n.t(totalItems === 1 ? "collections.sellDuplicatesCount" : "collections.sellDuplicatesCountPlural", { count: totalItems })}
-            onClick={onConfirm}
-            type="danger"
-            loading={committing}
-            disabled={committing || totalItems === 0}
-          />
+          <div className="min-w-[8rem] shrink-0">
+            <MainButton
+              text={i18n.t("collections.cancel")}
+              onClick={() => setOpen(false)}
+              type="dark"
+              disabled={committing}
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <MainButton
+              text={i18n.t(totalItems === 1 ? "collections.sellDuplicatesCount" : "collections.sellDuplicatesCountPlural", { count: totalItems })}
+              onClick={onConfirm}
+              type="danger"
+              loading={committing}
+              disabled={committing || totalItems === 0}
+            />
+          </div>
         </div>
       </div>
     </Modal>

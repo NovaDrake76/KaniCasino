@@ -52,7 +52,7 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
         onClick={onBack}
         className="flex items-center gap-2 text-ink-muted hover:text-ink w-fit"
       >
-        <IoArrowBack /> Back to collections
+        <IoArrowBack /> {i18n.t("collections.backToCollections")}
       </button>
 
       {loading && !detail ? (
@@ -70,7 +70,7 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
                 <h2 className="text-xl font-semibold text-ink">{detail.title}</h2>
                 {isOwner && detail.duplicatesValue > 0 && (
                   <span className="text-sm text-ink-muted">
-                    Duplicates worth{" "}
+                    {i18n.t("collections.duplicatesWorth")}{" "}
                     <span className="text-accent-gold font-medium">
                       <Monetary value={detail.duplicatesValue} />
                     </span>
@@ -84,11 +84,14 @@ const CollectionDetailView: React.FC<CollectionDetailViewProps> = ({
               />
             </div>
             {isOwner && detail.duplicatesValue > 0 && (
-              <div className="w-full md:w-52 shrink-0">
+              <div className="w-full md:w-auto shrink-0">
                 <MainButton
-                  text={<span className="whitespace-nowrap">{i18n.t("collections.quicksellDuplicates")}</span>}
+                  text={
+                    <span className="flex items-center gap-2 whitespace-nowrap px-5">
+                      <MdOutlineSell /> {i18n.t("collections.quicksellDuplicates")}
+                    </span>
+                  }
                   onClick={openQuicksell}
-                  icon={<MdOutlineSell />}
                   type="warning"
                   loading={quicksellLoading}
                   disabled={quicksellLoading}

@@ -405,7 +405,19 @@
     "sellOneFor": "Eines verkaufen für",
     "thisCannotBeUndone": "Das lässt sich nicht rückgängig machen.",
     "youOwn": "Du hast ×{{count}}",
-    "yourItemsChangedSince": "Deine Gegenstände haben sich seit der Vorschau geändert. Prüfe die Aktualisierung und bestätige erneut."
+    "yourItemsChangedSince": "Deine Gegenstände haben sich seit der Vorschau geändert. Prüfe die Aktualisierung und bestätige erneut.",
+    "duplicatesWorth": "Duplikate im Wert von",
+    "duplicateItems_one": "{{count}} doppeltes Item",
+    "duplicateItems_other": "{{count}} doppelte Items",
+    "worth": "im Wert von",
+    "backToCollections": "Zurück zu den Sammlungen",
+    "collectionsComplete": "{{done}}/{{total}} Sammlungen vollständig",
+    "categoryCollection": "Sammlung {{category}}",
+    "itemsOwned": "{{owned}}/{{total}} Items",
+    "keepsOneOfEach": "Behält 1 von jedem Item und verkauft den Rest.",
+    "each": "pro Stück",
+    "selling_one": "{{count}} Item wird verkauft",
+    "selling_other": "{{count}} Items werden verkauft"
   },
   "common": {
     "allRarities": "Alle Seltenheiten",
@@ -1978,7 +1990,8 @@
     "weAreNotSending": "Wir senden nicht an deine Adresse, weil eine frühere E-Mail nicht zugestellt oder als Spam gemeldet wurde. Melde dich, wenn das falsch ist.",
     "xpBonus": "+{{pct}}% XP",
     "xpBonusFrom": "Aus den Boosts in Daisus Laden",
-    "youWillGetUpdates": "Du bekommst Neuigkeiten zu Kisten und Spielen"
+    "youWillGetUpdates": "Du bekommst Neuigkeiten zu Kisten und Spielen",
+    "editDescription": "Beschreibung bearbeiten"
   },
   "rain": {
     "aboutTo": "Gleich regnet es",
