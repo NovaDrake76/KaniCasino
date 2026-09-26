@@ -5,6 +5,7 @@ export interface CaseInfo {
   title: string;
   image: string;
   price: number;
+  category?: string;
 }
 
 export type BattlesViewProps = ReturnType<typeof useBattlesServices>;
