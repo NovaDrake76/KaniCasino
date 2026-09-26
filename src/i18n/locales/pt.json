@@ -405,7 +405,19 @@
     "sellOneFor": "Vender um por",
     "thisCannotBeUndone": "Isso não pode ser desfeito.",
     "youOwn": "Você tem ×{{count}}",
-    "yourItemsChangedSince": "Seus itens mudaram desde a prévia. Revise a atualização e confirme de novo."
+    "yourItemsChangedSince": "Seus itens mudaram desde a prévia. Revise a atualização e confirme de novo.",
+    "duplicatesWorth": "Duplicados valendo",
+    "duplicateItems_one": "{{count}} item duplicado",
+    "duplicateItems_other": "{{count}} itens duplicados",
+    "worth": "valendo",
+    "backToCollections": "Voltar para as coleções",
+    "collectionsComplete": "{{done}}/{{total}} coleções completas",
+    "categoryCollection": "Coleção {{category}}",
+    "itemsOwned": "{{owned}}/{{total}} itens",
+    "keepsOneOfEach": "Mantém 1 de cada item e vende o resto.",
+    "each": "cada",
+    "selling_one": "Vendendo {{count}} item",
+    "selling_other": "Vendendo {{count}} itens"
   },
   "common": {
     "allRarities": "Todas as raridades",
@@ -1978,7 +1990,8 @@
     "weAreNotSending": "Não estamos enviando para o seu endereço porque um e-mail anterior voltou ou foi marcado como spam. Fale com a gente se achar que está errado.",
     "xpBonus": "+{{pct}}% XP",
     "xpBonusFrom": "Dos impulsos da loja da Daisu",
-    "youWillGetUpdates": "Você vai receber novidades sobre caixas e jogos"
+    "youWillGetUpdates": "Você vai receber novidades sobre caixas e jogos",
+    "editDescription": "Editar descrição"
   },
   "rain": {
     "aboutTo": "Vai chover agora",

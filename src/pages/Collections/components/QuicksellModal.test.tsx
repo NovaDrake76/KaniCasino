@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import QuicksellModal from "./QuicksellModal";
 import { QuicksellPreview } from "../../../services/collections/CollectionService";
+import i18n from "../../../i18n";
 
 const preview: QuicksellPreview = {
   caseId: "c1",
@@ -17,6 +18,10 @@ const preview: QuicksellPreview = {
 const noop = vi.fn();
 
 describe("QuicksellModal", () => {
+  afterEach(async () => {
+    await act(() => i18n.changeLanguage("en"));
+  });
+
   it("shows a sell-count badge per line and the running total", () => {
     render(
       <QuicksellModal open preview={preview} committing={false} setOpen={noop} onConfirm={noop} />
@@ -48,5 +53,16 @@ describe("QuicksellModal", () => {
     fireEvent.click(btn!);
     expect(onConfirm).not.toHaveBeenCalled();
     expect(screen.getByText("No duplicates to sell.")).toBeTruthy();
+  });
+
+  // a portuguese player got past the clipped button and found the whole modal in english
+  it("speaks the player's language", async () => {
+    await act(() => i18n.changeLanguage("pt"));
+    render(
+      <QuicksellModal open preview={preview} committing={false} setOpen={noop} onConfirm={noop} />
+    );
+    expect(screen.getByText(/mantém 1 de cada item e vende o resto/i)).toBeTruthy();
+    expect(screen.getByText("Vendendo 5 itens")).toBeTruthy();
+    expect(screen.queryByText(/keeps|selling|\beach\b/i)).toBeNull();
   });
 });

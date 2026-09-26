@@ -405,7 +405,19 @@
     "sellOneFor": "다음 가격에 1개 판매",
     "thisCannotBeUndone": "이 작업은 되돌릴 수 없습니다.",
     "youOwn": "보유 ×{{count}}",
-    "yourItemsChangedSince": "미리보기 이후 아이템이 변경되었습니다. 변경 내용을 확인하고 다시 진행해 주세요."
+    "yourItemsChangedSince": "미리보기 이후 아이템이 변경되었습니다. 변경 내용을 확인하고 다시 진행해 주세요.",
+    "duplicatesWorth": "중복 아이템 가치",
+    "duplicateItems_one": "중복 아이템 {{count}}개",
+    "duplicateItems_other": "중복 아이템 {{count}}개",
+    "worth": "가치",
+    "backToCollections": "컬렉션으로 돌아가기",
+    "collectionsComplete": "{{done}}/{{total}} 컬렉션 완성",
+    "categoryCollection": "{{category}} 컬렉션",
+    "itemsOwned": "아이템 {{owned}}/{{total}}",
+    "keepsOneOfEach": "아이템마다 1개씩 남기고 나머지를 판매합니다.",
+    "each": "/개",
+    "selling_one": "{{count}}개 판매",
+    "selling_other": "{{count}}개 판매"
   },
   "common": {
     "allRarities": "모든 등급",
@@ -1978,7 +1990,8 @@
     "weAreNotSending": "이전 메일이 반송되었거나 스팸으로 신고되어 해당 주소로 발송하지 않고 있습니다. 잘못된 것 같다면 연락해 주세요.",
     "xpBonus": "XP +{{pct}}%",
     "xpBonusFrom": "다이스의 상점 부스트에서",
-    "youWillGetUpdates": "새 케이스와 게임 소식을 받게 됩니다"
+    "youWillGetUpdates": "새 케이스와 게임 소식을 받게 됩니다",
+    "editDescription": "설명 편집"
   },
   "rain": {
     "aboutTo": "곧 레인이 시작됩니다",
