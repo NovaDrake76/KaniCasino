@@ -10,13 +10,14 @@ import Monetary from "../../Monetary";
 import i18n from "../../../i18n";
 import TypedText from "../TypedText";
 
-const DIM = "rgba(9, 7, 20, 0.74)";
+// light enough that the page still reads under it: at three quarters black a player lost where they were
+const DIM = "rgba(9, 7, 20, 0.5)";
 const PAD = 6;
 const t = (key: string) => i18n.t(`daisu.tour.${key}`);
 
-// the outline around what she points at, with the page left in full view around it. bold is for a player who keeps missing it.
-// dimmed, four panels cover everything but the target, so only the target stays clickable
-export const Spotlight = ({ rect, dim = false, bold = false }: { rect: Rect | null; dim?: boolean; bold?: boolean }) => {
+// the outline around what she points at. bold is for a player who keeps missing it. dimmed, four panels cover everything
+// but the hole, the target unless something around it is given, so only that stays clickable: her tour dims, a mission's help does not
+export const Spotlight = ({ rect, hole, dim = false, bold = false }: { rect: Rect | null; hole?: Rect | null; dim?: boolean; bold?: boolean }) => {
   if (!rect) return null;
   const pad = bold ? PAD + 4 : PAD;
   const top = rect.top - pad;
@@ -45,12 +46,13 @@ export const Spotlight = ({ rect, dim = false, bold = false }: { rect: Rect | nu
     </>
   );
   if (!dim) return outline;
+  const open = hole ?? { top, left, width, height };
   return (
     <>
-      <div className="pointer-events-auto fixed inset-x-0 top-0" style={{ height: Math.max(0, top), background: DIM }} />
-      <div className="pointer-events-auto fixed inset-x-0 bottom-0" style={{ top: top + height, background: DIM }} />
-      <div className="pointer-events-auto fixed left-0" style={{ top, height, width: Math.max(0, left), background: DIM }} />
-      <div className="pointer-events-auto fixed right-0" style={{ top, height, left: left + width, background: DIM }} />
+      <div className="pointer-events-auto fixed inset-x-0 top-0" style={{ height: Math.max(0, open.top), background: DIM }} />
+      <div className="pointer-events-auto fixed inset-x-0 bottom-0" style={{ top: open.top + open.height, background: DIM }} />
+      <div className="pointer-events-auto fixed left-0" style={{ top: open.top, height: open.height, width: Math.max(0, open.left), background: DIM }} />
+      <div className="pointer-events-auto fixed right-0" style={{ top: open.top, height: open.height, left: open.left + open.width, background: DIM }} />
       {outline}
     </>
   );
@@ -63,7 +65,8 @@ export const Backdrop = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-// anchor places her words beside something bigger than the target, like her whole card around the jar, so they never cover it
+// anchor is something bigger around the target, like her whole card around the jar: her words go beside it, never over it,
+// and a dim leaves all of it clickable, so she can still be poked while she asks for the jar
 type GuidedProps = Omit<ComponentProps<typeof TourBubble>, "rect"> & { target: string; anchor?: string; dim?: boolean; bold?: boolean };
 
 export const Guided = ({ target, anchor, dim = false, bold = false, ...bubble }: GuidedProps) => {
@@ -71,7 +74,7 @@ export const Guided = ({ target, anchor, dim = false, bold = false, ...bubble }:
   const around = useTarget(anchor ?? null);
   return (
     <>
-      <Spotlight rect={rect} dim={dim} bold={bold} />
+      <Spotlight rect={rect} hole={around.rect} dim={dim} bold={bold} />
       <TourBubble rect={around.rect ?? rect} {...bubble} />
     </>
   );

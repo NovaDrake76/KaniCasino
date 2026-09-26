@@ -41,7 +41,7 @@ const OpenStep = ({ eyebrow, onEnd, onPickAnother }: { eyebrow: string; onEnd: (
   const rect = rolling ? reel.rect || button.rect : button.rect;
   return (
     <>
-      <Spotlight rect={rect} />
+      <Spotlight rect={rect} dim />
       <TourBubble
         rect={rect}
         eyebrow={eyebrow}
@@ -94,13 +94,14 @@ const PotStep = ({ eyebrow, owner, onNext, onEnd }: { eyebrow: string; owner: st
   }, [taken, owner]);
 
   if (!jar.present && !taken) {
-    return <Guided target="daisu-bubble" eyebrow={eyebrow} line={t("openMeLine")} step={1} wait={t("openMeWait")} onEnd={onEnd} />;
+    return <Guided target="daisu-bubble" dim eyebrow={eyebrow} line={t("openMeLine")} step={1} wait={t("openMeWait")} onEnd={onEnd} />;
   }
   const line = taken ? t("potTaken") : pokes ? t(`pokes.${pokes - 1}`) : t("potLine");
   return (
     <Guided
       target={jar.present ? "daisu-jar" : "daisu-bubble"}
       anchor={jar.present ? "daisu-card" : undefined}
+      dim
       bold={!taken && pokes >= BOLD_FROM}
       eyebrow={eyebrow}
       line={line}
@@ -330,6 +331,7 @@ const TourOverlay = () => {
     content = (
       <Guided
         target="case-prize"
+        dim
         eyebrow={stepTitle(2, t("titleCase"))}
         line={dropLine(tour.drop)}
         step={2}
@@ -343,6 +345,7 @@ const TourOverlay = () => {
     content = (
       <Guided
         target="bet-input"
+        dim
         eyebrow={stepTitle(3, i18n.t(game.nameKey))}
         line={t(`bet.${game.key}`)}
         step={3}
@@ -354,6 +357,7 @@ const TourOverlay = () => {
     content = (
       <Guided
         target="dice-range"
+        dim
         eyebrow={stepTitle(3, i18n.t(game.nameKey))}
         line={t("rangeLine")}
         step={3}
