@@ -1342,6 +1342,7 @@
     "errTaken": "Dieses Discord-Konto gehört einem anderen Spieler.",
     "errYoung": "Dieses Discord-Konto ist zu neu zum Verknüpfen.",
     "failed": "Dieser Link hat nicht funktioniert",
+    "joinedToast": "Discord verknüpft, und du bist im KaniCasino-Server",
     "keepPlaying": "Öffne eine Kiste, wenn du schon hier bist",
     "linkButton": "Discord verknüpfen",
     "linkHint": "Verknüpfe dein Konto, um den Bot zu nutzen: zeig deine Sammlung und hol dir die Ranglisten deines Servers.",

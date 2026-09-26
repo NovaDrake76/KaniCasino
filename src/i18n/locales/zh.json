@@ -1342,6 +1342,7 @@
     "errTaken": "那个 Discord 账号属于其他玩家。",
     "errYoung": "那个 Discord 账号太新，无法关联。",
     "failed": "该链接无法使用",
+    "joinedToast": "Discord 已关联，并已加入 KaniCasino 服务器",
     "keepPlaying": "来都来了，开个箱吧",
     "linkButton": "关联 Discord",
     "linkHint": "关联账号即可使用机器人：晒出你的收藏，拿下你所在服务器的榜单。",

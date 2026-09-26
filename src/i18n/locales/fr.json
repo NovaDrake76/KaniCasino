@@ -1342,6 +1342,7 @@
     "errTaken": "Ce compte Discord appartient à un autre joueur.",
     "errYoung": "Ce compte Discord est trop récent pour être associé.",
     "failed": "Ce lien n'a pas fonctionné",
+    "joinedToast": "Discord associé, et tu es sur le serveur KaniCasino",
     "keepPlaying": "Ouvre une caisse tant que tu es là",
     "linkButton": "Associer Discord",
     "linkHint": "Associe ton compte pour utiliser le bot : montre ta collection et prends les classements de ton serveur.",

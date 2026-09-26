@@ -4,6 +4,7 @@ export interface DiscordLinkState {
     linked: boolean;
     discordName: string | null;
     linkedAt: string | null;
+    inGuild?: boolean;
 }
 
 export const completeDiscordLink = async (code: string): Promise<{ username: string; discordName: string | null }> => {

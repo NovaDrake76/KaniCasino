@@ -1,6 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import RoadmapPanel from "./RoadmapPanel";
+
+const startDiscordOAuth = vi.fn(() => new Promise<string>(() => undefined));
+vi.mock("../../../services/discord/DiscordLinkService", () => ({ startDiscordOAuth: () => startDiscordOAuth() }));
 import type { Roadmap, RoadmapMission } from "../../../services/daisu/RoadmapService";
 
 const mission = (over: Partial<RoadmapMission>): RoadmapMission => ({
@@ -99,5 +102,23 @@ describe("her missions tab", () => {
     draw({ chapter: 6, chapters: 5, finished: true, bonus: 0, missions: [], next: null });
 
     expect(screen.getByText(/you did everything i asked/i)).toBeTruthy();
+  });
+  // the mission names the server, so its row links and seats the player itself instead of pointing at settings
+  it("links discord straight from the discord mission", () => {
+    draw(chapterOne([mission({ key: "r3-discord", goal: "discordLinked", reward: 1000 })]));
+
+    fireEvent.click(screen.getByRole("button", { name: /link discord/i }));
+
+    expect(startDiscordOAuth).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("button", { name: /help/i })).toBeNull();
+  });
+
+  it("claims the discord mission like any other once it is done", () => {
+    const { onClaim } = draw(chapterOne([mission({ key: "r3-discord", goal: "discordLinked", reward: 1000, current: 1, complete: true, claimable: true })]));
+
+    fireEvent.click(screen.getByRole("button", { name: /^claim/i }));
+
+    expect(onClaim).toHaveBeenCalledWith("r3-discord");
+    expect(screen.queryByRole("button", { name: /link discord/i })).toBeNull();
   });
 });
