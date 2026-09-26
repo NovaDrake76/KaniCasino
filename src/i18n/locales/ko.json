@@ -1330,6 +1330,7 @@
     "errTaken": "그 Discord 계정은 다른 플레이어의 것입니다.",
     "errYoung": "그 Discord 계정은 너무 최근에 만들어져 연결할 수 없습니다.",
     "failed": "이 링크는 작동하지 않았습니다",
+    "joinedToast": "Discord 연결 완료, KaniCasino 서버에 참여했어요",
     "keepPlaying": "온 김에 케이스 하나 열어보기",
     "linkButton": "Discord 연결",
     "linkHint": "계정을 연결하면 봇을 쓸 수 있습니다. 컬렉션을 자랑하고 서버 순위를 차지하세요.",

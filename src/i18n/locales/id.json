@@ -1330,6 +1330,7 @@
     "errTaken": "Akun Discord itu milik pemain lain.",
     "errYoung": "Akun Discord itu terlalu baru untuk ditautkan.",
     "failed": "Tautan itu tidak berhasil",
+    "joinedToast": "Discord tertaut, dan kamu sudah masuk server KaniCasino",
     "keepPlaying": "Buka satu case selagi di sini",
     "linkButton": "Tautkan Discord",
     "linkHint": "Tautkan akunmu untuk memakai bot: pamerkan koleksimu dan rebut papan peringkat servermu.",

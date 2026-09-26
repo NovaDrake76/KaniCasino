@@ -1330,6 +1330,7 @@
     "errTaken": "その Discord アカウントは他のプレイヤーのものです。",
     "errYoung": "その Discord アカウントは新しすぎて連携できません。",
     "failed": "このリンクは使えませんでした",
+    "joinedToast": "Discord を連携し、KaniCasino のサーバーに参加しました",
     "keepPlaying": "せっかくなのでケースを開けてみる",
     "linkButton": "Discord を連携",
     "linkHint": "アカウントを連携するとボットが使えます。コレクションを自慢して、サーバーのランキングを取りに行きましょう。",

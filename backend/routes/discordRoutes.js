@@ -280,12 +280,14 @@ router.delete("/link", isAuthenticated, async (req, res) => {
 // whether the logged-in player has a discord account attached, for the profile page
 router.get("/link/me", isAuthenticated, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id, { discordName: 1, discordId: 1, discordLinkedAt: 1 }).lean();
+    const user = await User.findById(req.user._id, { discordName: 1, discordId: 1, discordLinkedAt: 1, discordInGuild: 1 }).lean();
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json({
       linked: !!user.discordId,
       discordName: user.discordName || null,
       linkedAt: user.discordLinkedAt || null,
+      // a link that could not seat them leaves them outside the server, and settings offers the way in
+      inGuild: !!user.discordId && user.discordInGuild === true,
     });
   } catch (err) {
     console.error("discord link me:", err.message);
@@ -348,6 +350,9 @@ async function joinHomeGuild(discordId, accessToken) {
     });
     // 201 seated them, 204 says they were already in
     if (r.status === 201 || r.status === 204) return true;
+    // the player only sees a link without the server, so the reason goes to the log: 50013 is the bot missing Create Invite
+    const body = await r.json().catch(() => ({}));
+    console.error("discord join refused:", r.status, body.code || "");
     return null;
   } catch {
     return null;

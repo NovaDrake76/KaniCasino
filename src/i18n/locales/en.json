@@ -1330,6 +1330,7 @@
     "errTaken": "That Discord account belongs to another player.",
     "errYoung": "That Discord account is too new to link.",
     "failed": "That link did not work",
+    "joinedToast": "Discord linked, and you're in the KaniCasino server",
     "keepPlaying": "Open a case while you are here",
     "linkButton": "Link Discord",
     "linkHint": "Link your account to use the bot: show your collection off, and take your server's boards.",

@@ -1330,6 +1330,7 @@
     "errTaken": "Tài khoản Discord đó thuộc về người chơi khác.",
     "errYoung": "Tài khoản Discord đó quá mới để liên kết.",
     "failed": "Liên kết đó không hoạt động",
+    "joinedToast": "Đã liên kết Discord và bạn đã vào máy chủ KaniCasino",
     "keepPlaying": "Mở một hòm đi, tiện thể",
     "linkButton": "Liên kết Discord",
     "linkHint": "Liên kết tài khoản để dùng bot: khoe bộ sưu tập và giành bảng xếp hạng của máy chủ bạn.",
