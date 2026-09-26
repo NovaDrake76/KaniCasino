@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import UserContext from "../../../UserContext";
@@ -12,6 +12,7 @@ import {
   MODES,
 } from "../../../services/battles/BattleService";
 import { CaseInfo } from "./Battles.types";
+import { groupCasesByCategory } from "../../Home/groupCases";
 import i18n from "../../../i18n";
 
 export const useBattlesServices = () => {
@@ -21,6 +22,8 @@ export const useBattlesServices = () => {
   const [mode, setMode] = useState("1v1");
   const [bakaMode, setBakaMode] = useState(false);
   const [search, setSearch] = useState("");
+  // a hundred cases in one grid were hard to find anything in, so the categories come first and one opens at a time
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
   const [loadingCases, setLoadingCases] = useState(true);
   const [waiting, setWaiting] = useState<Battle[]>([]);
   const [creating, setCreating] = useState(false);
@@ -39,7 +42,7 @@ export const useBattlesServices = () => {
         if (c && c._id) {
           setSelected((prev) => [
             ...prev,
-            { _id: c._id, title: c.title, image: c.image, price: c.price },
+            { _id: c._id, title: c.title, image: c.image, price: c.price, category: c.category },
           ]);
         }
       })
@@ -79,6 +82,12 @@ export const useBattlesServices = () => {
     };
   }, []);
 
+  const groups = useMemo(() => groupCasesByCategory(cases), [cases]);
+  const searching = search.trim().length > 0;
+  // a search looks across every category at once
+  const shownCases = searching ? cases : groups.find((g) => g.category === openCategory)?.cases ?? [];
+  const pickedIn = (category: string) => selected.filter((c) => (c.category || "") === category).length;
+
   const entryCost = selected.reduce((s, c) => s + (c.price || 0), 0);
   const countOf = (caseId: string) =>
     selected.filter((c) => c._id === caseId).length;
@@ -112,6 +121,13 @@ export const useBattlesServices = () => {
   return {
     modes: MODES,
     cases,
+    groups,
+    openCategory,
+    openGroup: setOpenCategory,
+    closeGroup: () => setOpenCategory(null),
+    shownCases,
+    searching,
+    pickedIn,
     selected,
     mode,
     bakaMode,
