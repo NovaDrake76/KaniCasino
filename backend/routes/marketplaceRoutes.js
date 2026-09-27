@@ -348,6 +348,28 @@ module.exports = (io) => {
     }
   });
 
+  // my own listings, newest first: a listed copy leaves the inventory, and before this the only
+  // place to see it again was that item's page
+  router.get("/listings/me", isAuthenticated, async (req, res) => {
+    try {
+      const limit = 30;
+      const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
+      const mine = { sellerId: req.user._id };
+      const [total, listings] = await Promise.all([
+        Marketplace.countDocuments(mine),
+        Marketplace.find(mine, { item: 1, uniqueId: 1, price: 1, itemName: 1, itemImage: 1, rarity: 1, createdAt: 1 })
+          .sort({ createdAt: -1, _id: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean(),
+      ]);
+      res.json({ total, totalPages: Math.max(1, Math.ceil(total / limit)), currentPage: page, listings });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // place a buy order: fill instantly from the cheapest listings at or below the bid,
   // then escrow the remainder so a later match can never fail for lack of funds.
   router.post("/orders", isAuthenticated, marketWriteLimiter, async (req, res) => {

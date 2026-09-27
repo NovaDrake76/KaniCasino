@@ -1757,6 +1757,7 @@
     "wins": "Thắng"
   },
   "market": {
+    "allItems": "Tất cả vật phẩm",
     "allRarities": "Mọi độ hiếm",
     "anythingAlreadyListedAt": "Phần nào đang rao bán bằng hoặc thấp hơn giá bạn đặt sẽ được mua ngay (đã chi, không hoàn lại). Chỉ phần chưa khớp mới được giữ làm ký quỹ và hoàn lại nếu bạn huỷ.",
     "bestBuyOrder": "Lệnh mua tốt nhất",
@@ -1774,11 +1775,15 @@
     "couldNotListThe": "Không đăng bán được vật phẩm",
     "couldNotLoadMarket": "Không tải được dữ liệu chợ cho vật phẩm này.",
     "couldNotPlaceThe": "Không đặt được lệnh",
+    "couldNotRemoveListing": "Không thể gỡ tin bán này. Có thể nó vừa được bán.",
     "heldAsEscrowAnd": "Được giữ làm ký quỹ và hoàn lại toàn bộ nếu bạn huỷ. Nhờ vậy lệnh của bạn luôn đủ tiền khi khớp.",
     "houseFloor": "Giá sàn của nhà cái",
     "itemListedForSale": "Đã đăng bán vật phẩm!",
     "lifetime": "Toàn thời gian",
     "listItem": "Đăng bán",
+    "listedCount_one": "{{count}} vật phẩm đang bán",
+    "listedCount_other": "{{count}} vật phẩm đang bán",
+    "listingRemoved": "Đã gỡ tin bán. Vật phẩm đã trở lại kho đồ của bạn.",
     "lowestListing": "Tin bán thấp nhất",
     "marketplace": "Chợ",
     "matchLowest": "Bằng giá thấp nhất",
@@ -1788,6 +1793,7 @@
     "medianSalePrices": "Giá bán trung vị",
     "month": "Tháng",
     "mostListings": "Nhiều tin bán nhất",
+    "myListings": "Tin bán của tôi",
     "noBids": "Chưa có ai đặt mua",
     "noItemsToSell": "Không có vật phẩm để bán.",
     "noListings": "Chưa có tin bán",
@@ -1795,6 +1801,7 @@
     "nobodyIsBiddingOn": "Chưa ai đặt mua vật phẩm này.",
     "nobodyIsSellingThis": "Hiện chưa ai bán vật phẩm này.",
     "noneListed": "Chưa có tin bán",
+    "nothingListedYet": "Hiện bạn không có vật phẩm nào đang bán.",
     "nothingMatchesThoseFilters": "Không có kết quả nào khớp bộ lọc này.",
     "onSaleOnly": "Chỉ hàng đang bán",
     "orderCancelled": "Đã huỷ lệnh, hoàn lại K₽{{amount}}",
@@ -1811,6 +1818,7 @@
     "quantityMustBeBetween": "Số lượng phải nằm trong khoảng 1 đến 20",
     "quickPrice": "Giá nhanh:",
     "recentlyListed": "Đăng bán gần đây",
+    "removeListing": "Gỡ bán",
     "retry": "Thử lại",
     "searchItems": "Tìm vật phẩm",
     "sellAnItem": "Bán một vật phẩm",
@@ -1823,7 +1831,8 @@
     "year": "Năm",
     "youHaveNoBuy": "Bạn không có lệnh mua nào cho vật phẩm này.",
     "youOwnCount": "Bạn có {{count}}",
-    "yourOrders": "Lệnh của bạn"
+    "yourOrders": "Lệnh của bạn",
+    "yourPrice": "Giá của bạn"
   },
   "mines": {
     "boomVerifyRoll": "Bùm! Kiểm chứng roll",

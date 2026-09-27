@@ -1757,6 +1757,7 @@
     "wins": "승"
   },
   "market": {
+    "allItems": "전체 아이템",
     "allRarities": "모든 등급",
     "anythingAlreadyListedAt": "입찰가 이하로 이미 올라와 있는 물량은 즉시 구매됩니다(지출되며 환불되지 않습니다). 체결되지 않은 나머지만 보증금으로 잡혀 있다가 취소 시 환불됩니다.",
     "bestBuyOrder": "최고 매수 주문",
@@ -1774,11 +1775,15 @@
     "couldNotListThe": "아이템을 등록하지 못했습니다",
     "couldNotLoadMarket": "이 아이템의 시세 정보를 불러오지 못했습니다.",
     "couldNotPlaceThe": "주문을 생성하지 못했습니다",
+    "couldNotRemoveListing": "매물을 내리지 못했습니다. 방금 판매되었을 수 있습니다.",
     "heldAsEscrowAnd": "보증금으로 잡아 두었다가 취소하면 전액 환불합니다. 덕분에 주문이 체결될 때 반드시 지급할 수 있습니다.",
     "houseFloor": "하우스 최저가",
     "itemListedForSale": "아이템을 등록했습니다!",
     "lifetime": "전체 기간",
     "listItem": "아이템 등록",
+    "listedCount_one": "{{count}}개 판매 중",
+    "listedCount_other": "{{count}}개 판매 중",
+    "listingRemoved": "매물을 내렸습니다. 아이템이 인벤토리로 돌아왔습니다.",
     "lowestListing": "최저 매물",
     "marketplace": "마켓",
     "matchLowest": "최저가에 맞추기",
@@ -1788,6 +1793,7 @@
     "medianSalePrices": "거래 중앙 가격",
     "month": "월",
     "mostListings": "매물 많은 순",
+    "myListings": "내 매물",
     "noBids": "입찰 없음",
     "noItemsToSell": "판매할 아이템이 없습니다.",
     "noListings": "매물 없음",
@@ -1795,6 +1801,7 @@
     "nobodyIsBiddingOn": "아직 이 아이템에 입찰한 사람이 없습니다.",
     "nobodyIsSellingThis": "지금 이 아이템을 판매하는 사람이 없습니다.",
     "noneListed": "등록된 매물 없음",
+    "nothingListedYet": "현재 판매 중인 아이템이 없습니다.",
     "nothingMatchesThoseFilters": "이 필터에 맞는 결과가 없습니다.",
     "onSaleOnly": "판매 중만 보기",
     "orderCancelled": "주문을 취소했습니다. K₽{{amount}} 환불",
@@ -1811,6 +1818,7 @@
     "quantityMustBeBetween": "수량은 1에서 20 사이여야 합니다",
     "quickPrice": "빠른 가격:",
     "recentlyListed": "최근 등록",
+    "removeListing": "내리기",
     "retry": "다시 시도",
     "searchItems": "아이템 검색",
     "sellAnItem": "아이템 판매",
@@ -1823,7 +1831,8 @@
     "year": "년",
     "youHaveNoBuy": "이 아이템에 대한 매수 주문이 없습니다.",
     "youOwnCount": "보유 {{count}}개",
-    "yourOrders": "내 주문"
+    "yourOrders": "내 주문",
+    "yourPrice": "내 가격"
   },
   "mines": {
     "boomVerifyRoll": "펑! 롤 검증",

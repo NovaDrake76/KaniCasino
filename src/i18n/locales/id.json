@@ -1757,6 +1757,7 @@
     "wins": "Menang"
   },
   "market": {
+    "allItems": "Semua item",
     "allRarities": "Semua kelangkaan",
     "anythingAlreadyListedAt": "Apa pun yang sudah terdaftar dengan harga yang sama atau lebih rendah dari penawaran Anda akan langsung dibeli (dibelanjakan, tidak dapat dikembalikan). Hanya sisa yang belum terpenuhi yang akan ditahan sebagai dana jaminan dan dikembalikan jika Anda membatalkan pesanan.",
     "bestBuyOrder": "Pesanan pembelian terbaik",
@@ -1774,11 +1775,15 @@
     "couldNotListThe": "Barang tidak dapat dicantumkan",
     "couldNotLoadMarket": "Data pasar untuk item ini tidak dapat dimuat.",
     "couldNotPlaceThe": "Tidak dapat melakukan pemesanan",
+    "couldNotRemoveListing": "Daftar tidak bisa ditarik. Mungkin baru saja terjual.",
     "heldAsEscrowAnd": "Uang akan ditahan sebagai jaminan DP dan dikembalikan sepenuhnya jika Kamu membatalkan pesanan. Ini menjamin pesananmu dapat membelinya saat uang tersedia.",
     "houseFloor": "Harga dasar bandar",
     "itemListedForSale": "Barang ini dijual!",
     "lifetime": "Seluruh waktu",
     "listItem": "Daftar item",
+    "listedCount_one": "{{count}} item dijual",
+    "listedCount_other": "{{count}} item dijual",
+    "listingRemoved": "Daftar ditarik. Item sudah kembali ke inventaris Anda.",
     "lowestListing": "Daftar harga terendah",
     "marketplace": "Pasar",
     "matchLowest": "Cocokkan terendah",
@@ -1788,6 +1793,7 @@
     "medianSalePrices": "Median harga jual",
     "month": "Bulan",
     "mostListings": "Paling banyak terdaftar",
+    "myListings": "Daftar saya",
     "noBids": "Tidak ada penawaran",
     "noItemsToSell": "Tidak ada barang yang dijual.",
     "noListings": "Tidak ada daftar",
@@ -1795,6 +1801,7 @@
     "nobodyIsBiddingOn": "Belum ada yang mengajukan penawaran untuk barang ini.",
     "nobodyIsSellingThis": "Saat ini tidak ada yang menjual barang ini.",
     "noneListed": "Tidak ada yang tercantum",
+    "nothingListedYet": "Saat ini Anda tidak menjual apa pun.",
     "nothingMatchesThoseFilters": "Tidak ada yang cocok dengan filter tersebut.",
     "onSaleOnly": "Hanya untuk dijual",
     "orderCancelled": "Pesanan dibatalkan, K₽{{amount}} dikembalikan",
@@ -1811,6 +1818,7 @@
     "quantityMustBeBetween": "Jumlahnya harus antara 1 dan 20",
     "quickPrice": "Dijual cepat:",
     "recentlyListed": "Baru-baru ini terdaftar",
+    "removeListing": "Tarik",
     "retry": "Ulang",
     "searchItems": "Cari item",
     "sellAnItem": "Jual item",
@@ -1823,7 +1831,8 @@
     "year": "Tahun",
     "youHaveNoBuy": "Anda tidak memiliki pesanan pembelian untuk barang ini.",
     "youOwnCount": "Punyamu {{count}}",
-    "yourOrders": "Pesanan Anda"
+    "yourOrders": "Pesanan Anda",
+    "yourPrice": "Harga Anda"
   },
   "mines": {
     "boomVerifyRoll": "Duar! muter cek",
