@@ -7,6 +7,7 @@ import {
   RainState,
   joinRain,
   onRainPool,
+  onRainReconnect,
   onRainSettled,
   onRainState,
   onRainWon,
@@ -37,6 +38,11 @@ const IMMINENT_MS = 60000;
 // whole point: without it the panel shows a countdown, a join button and a figure, and
 // then nothing happens and nobody can tell whether it broke.
 export const isBuilding = (pool: number, minPool: number) => pool < minPool;
+
+// the server settles on a fifteen second tick, so a panel still counting an ended round twenty seconds on
+// missed the fall (a dropped socket, a sleeping tab) and asks again instead of holding the old pool
+const STALE_MS = 20000;
+export const missedTheFall = (endsAt: number, now: number, askedAt: number) => now - endsAt > STALE_MS && now - askedAt > STALE_MS;
 
 // the figure walks to its new value instead of jumping: the pool moves whenever anyone on
 // the site bets, and a number that silently changes is a number nobody notices.
@@ -74,6 +80,7 @@ const RainPool = () => {
   // the device clock can be minutes out; the countdown runs off the server's
   const skew = useRef(0);
   const window_ = useRef({ startsAt: 0, endsAt: 0 });
+  const askedAt = useRef(0);
 
   useEffect(() => {
     const offState = onRainState((next) => {
@@ -88,6 +95,7 @@ const RainPool = () => {
       setState((prev) => (prev && prev.roundId === roundId ? { ...prev, pool } : prev))
     );
     const offSettled = onRainSettled(() => requestRain());
+    const offReconnect = onRainReconnect(() => requestRain());
     const offWon = onRainWon(({ amount }) =>
       toast.success(i18n.t("rain.won", { amount: amount.toLocaleString("en-US") }), { theme: "dark" })
     );
@@ -96,6 +104,7 @@ const RainPool = () => {
       offState();
       offPool();
       offSettled();
+      offReconnect();
       offWon();
     };
   }, [userData?.id]);
@@ -106,6 +115,10 @@ const RainPool = () => {
       const now = Date.now() - skew.current;
       setLeft(splitRemaining(window_.current.endsAt - now));
       setShare(remainingShare(window_.current.endsAt, window_.current.startsAt, now));
+      if (missedTheFall(window_.current.endsAt, now, askedAt.current)) {
+        askedAt.current = now;
+        requestRain();
+      }
     };
     tick();
     const timer = setInterval(tick, 1000);
