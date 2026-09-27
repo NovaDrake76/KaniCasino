@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsShieldFillCheck } from "react-icons/bs";
 import { toast } from "react-toastify";
@@ -8,6 +8,7 @@ import Pagination from "../../components/Pagination";
 import Rarities from "../../components/Rarities";
 import { getItemCopies, sellItems } from "../../services/users/UserServices";
 import { emitItemSold } from "../../components/daisu/tour/tourEvents";
+import UserContext from "../../UserContext";
 import i18n from "../../i18n";
 
 interface Copy {
@@ -31,6 +32,8 @@ const ItemCopiesModal: React.FC<Props> = ({ userId, item, isOwner, open, setOpen
   const [total, setTotal] = useState(item.quantity ?? 0);
   const [loading, setLoading] = useState(true);
   const [sellingId, setSellingId] = useState<string | null>(null);
+  const { userData } = useContext(UserContext);
+  const favorite = isOwner && !!userData?.favoriteItems?.includes(item._id);
 
   const color = Rarities.find((r) => r.id.toString() === item.rarity)?.color || "white";
 
@@ -88,6 +91,7 @@ const ItemCopiesModal: React.FC<Props> = ({ userId, item, isOwner, open, setOpen
                 <Monetary value={item.sellValue} /> each
               </span>
             )}
+            {favorite && <span className="text-xs text-accent-gold">{i18n.t("common.favoriteLocked")}</span>}
           </div>
         </div>
 
@@ -113,7 +117,7 @@ const ItemCopiesModal: React.FC<Props> = ({ userId, item, isOwner, open, setOpen
                   >
                     <BsShieldFillCheck className="text-lg" />
                   </Link>
-                  {isOwner && (
+                  {isOwner && !favorite && (
                     <button
                       onClick={() => sellOne(c.uniqueId)}
                       disabled={sellingId === c.uniqueId}

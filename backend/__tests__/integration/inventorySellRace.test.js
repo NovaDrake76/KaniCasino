@@ -57,7 +57,7 @@ describe("selling copies", () => {
     const user = await scenario(["a"]);
     const res = await sellUniqueIds(user._id, ["ghost"]);
 
-    expect(res).toEqual({ sold: 0, value: 0, walletBalance: 0, removed: [] });
+    expect(res).toEqual({ sold: 0, value: 0, walletBalance: 0, removed: [], kept: 0 });
     expect(await heldBy(user._id)).toEqual(["a"]);
   });
 

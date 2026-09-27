@@ -4,7 +4,7 @@ const Notification = require("../models/Notification");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { isRealMoneyMode } = require("./mode");
 
-// what each side gets when the referee registers
+// what each side gets when the referee registers. the affiliate card's shop copy quotes the referrer's numbers, in every locale
 const REFERRER_SIGNUP_BONUS = 1000;
 const REFEREE_SIGNUP_BONUS = 500;
 // paid to the referrer once, when the referee proves real by reaching this level

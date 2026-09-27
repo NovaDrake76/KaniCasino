@@ -170,6 +170,9 @@ module.exports = (io) => {
       if (!copies.length) {
         return res.status(404).json({ message: "Item not found in inventory" });
       }
+      if ((req.user.favoriteItems || []).some((id) => String(id) === String(copies[0]._id))) {
+        return res.status(409).json({ message: "Unfavorite this item before selling it", code: "favorite" });
+      }
 
       const itemDocument = await Item.findById(copies[0]._id);
       if (!itemDocument) {
@@ -342,6 +345,28 @@ module.exports = (io) => {
     try {
       const orders = await BuyOrder.find({ userId: req.user._id, status: "open" }).sort({ createdAt: -1 });
       res.json({ orders });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // my own listings, newest first: a listed copy leaves the inventory, and before this the only
+  // place to see it again was that item's page
+  router.get("/listings/me", isAuthenticated, async (req, res) => {
+    try {
+      const limit = 30;
+      const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
+      const mine = { sellerId: req.user._id };
+      const [total, listings] = await Promise.all([
+        Marketplace.countDocuments(mine),
+        Marketplace.find(mine, { item: 1, uniqueId: 1, price: 1, itemName: 1, itemImage: 1, rarity: 1, createdAt: 1 })
+          .sort({ createdAt: -1, _id: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean(),
+      ]);
+      res.json({ total, totalPages: Math.max(1, Math.ceil(total / limit)), currentPage: page, listings });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal server error" });

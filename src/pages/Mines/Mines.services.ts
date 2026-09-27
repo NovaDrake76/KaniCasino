@@ -8,7 +8,7 @@ import {
   revealMines,
   startMines,
 } from "../../services/games/GamesServices";
-import { MAX_BET, MIN_BET, MIN_MINES, TILES, gemsFor, payoutFor } from "./minesGrid";
+import { MAX_BET, MIN_BET, MIN_MINES, TILES, gemsFor, nextGemFor, payoutFor } from "./minesGrid";
 import { MinesGameState } from "./Mines.types";
 import i18n from "../../i18n";
 import { useSessionStats } from "../../stats/SessionStatsContext";
@@ -47,6 +47,9 @@ export const useMinesServices = () => {
   const active = game?.status === "active";
   const gems = game?.gems ?? 0;
   const currentPayout = active && gems > 0 ? payoutFor(betValue, mineCount, gems) : 0;
+  const nextGem = nextGemFor(betValue, mineCount, active ? gems : 0);
+  // auto mode turns rounds over every few hundred milliseconds, too fast for a card to be read
+  const cashedOut = mode === "manual" && game?.status === "cashed" ? { multiplier: game.multiplier, payout: game.payout } : null;
 
   // resume an in-progress game so a reload does not strand a live bet
   useEffect(() => {
@@ -216,6 +219,8 @@ export const useMinesServices = () => {
     busy,
     gems,
     currentPayout,
+    nextGem,
+    cashedOut,
     history,
     mode,
     setMode,

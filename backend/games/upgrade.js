@@ -63,7 +63,8 @@ const verifyRarityGap = (selectedItems, targetItem) => {
 
 const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
   try {
-    if (!(await User.exists({ _id: userId }))) {
+    const owner = await User.findById(userId).select("favoriteItems").lean();
+    if (!owner) {
       return { status: 404, message: "User not found" };
     }
 
@@ -78,6 +79,12 @@ const upgradeItems = async (userId, selectedItemIds, targetItemId) => {
 
     if (selectedItems.length === 0) {
       return { status: 400, message: "No items selected" };
+    }
+
+    // a favorite is locked until it is unfavorited, and a lost upgrade would destroy it
+    const favorites = new Set((owner.favoriteItems || []).map(String));
+    if (selectedItems.some((invItem) => favorites.has(String(invItem._id)))) {
+      return { status: 409, message: "Unfavorite this item before upgrading it", code: "favorite" };
     }
 
     // the catalog is the authority on what an item is worth: an inventory entry carries

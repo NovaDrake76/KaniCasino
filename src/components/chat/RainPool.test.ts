@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isBuilding, remainingShare, splitRemaining } from "./RainPool";
+import { isBuilding, missedTheFall, remainingShare, splitRemaining } from "./RainPool";
 
 describe("the bar under the rain pool", () => {
   const start = 1000;
@@ -53,5 +53,18 @@ describe("a pool that is not big enough to fall", () => {
 
   it("treats an empty pool as building, not as ready", () => {
     expect(isBuilding(0, 100)).toBe(true);
+  });
+});
+
+describe("a panel that missed the fall", () => {
+  const endsAt = 1_000_000;
+
+  // it kept the old pool and a countdown stuck at 00:00 until the chat was closed and opened again
+  it("asks for the new round once the old one is well past, and not again straight away", () => {
+    expect(missedTheFall(endsAt, endsAt - 5000, 0)).toBe(false);
+    expect(missedTheFall(endsAt, endsAt + 10000, 0)).toBe(false);
+    expect(missedTheFall(endsAt, endsAt + 25000, 0)).toBe(true);
+    expect(missedTheFall(endsAt, endsAt + 25000, endsAt + 21000)).toBe(false);
+    expect(missedTheFall(endsAt, endsAt + 45000, endsAt + 21000)).toBe(true);
   });
 });

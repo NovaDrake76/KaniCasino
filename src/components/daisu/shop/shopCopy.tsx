@@ -68,10 +68,10 @@ export const statusOf = (item: ShopItem, shop: Shop) => {
   return { state: "open", foot: kp(item.price), tip: t("tipBuy", { price: kp(item.price), n: item.level }), tone: "text-accent-gold" };
 };
 
-export const Tip = ({ title, line, status, tone }: { title: string; line: string; status: string; tone: string }) => (
+export const Tip = ({ title, line, status, tone, above = false }: { title: string; line: string; status: string; tone: string; above?: boolean }) => (
   <span
     role="tooltip"
-    className="pointer-events-none absolute left-1/2 top-[calc(100%+8px)] z-raised hidden w-60 -translate-x-1/2 flex-col gap-1 bg-surface-nav px-3.5 py-3 text-left shadow-2xl md:group-hover:flex md:group-focus-visible:flex"
+    className={`pointer-events-none absolute left-1/2 ${above ? "bottom-[calc(100%+8px)]" : "top-[calc(100%+8px)]"} z-raised hidden w-60 -translate-x-1/2 flex-col gap-1 bg-surface-nav px-3.5 py-3 text-left shadow-2xl md:group-hover:flex md:group-focus-visible:flex`}
   >
     <b className="text-sm text-ink">{title}</b>
     <span className="text-xs leading-snug text-ink-soft">{line}</span>

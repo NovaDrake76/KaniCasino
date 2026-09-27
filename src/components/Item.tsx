@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import Rarities from "./Rarities";
-import { BsHeartFill, BsShieldFillCheck } from "react-icons/bs";
-import { fixItem, sellItems, sellStack } from "../services/users/UserServices";
+import { BsHeartFill, BsShieldFillCheck, BsStar, BsStarFill } from "react-icons/bs";
+import { fixItem, sellItems, sellStack, setFavorite } from "../services/users/UserServices";
 import { RotatingLines } from "react-loader-spinner";
 import { toast } from "react-toastify";
 import UserContext from "../UserContext";
@@ -36,6 +36,21 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinn
   const [selling, setSelling] = useState<boolean>(false);
   const { userData, toogleUserData } = useContext(UserContext);
   const quantity = item.quantity ?? 1;
+  const favorite = !!userData?.favoriteItems?.includes(item._id);
+  const [starring, setStarring] = useState<boolean>(false);
+
+  const toggleFavorite = async () => {
+    if (starring) return;
+    setStarring(true);
+    try {
+      const res = await setFavorite(item._id, !favorite);
+      if (userData) toogleUserData({ ...userData, favoriteItems: res.favoriteItems });
+      toast.success(i18n.t(favorite ? "common.favoriteRemoved" : "common.favoriteAdded", { name: item.name }), { theme: "dark" });
+    } catch {
+      toast.error(i18n.t("common.couldNotFavorite"), { theme: "dark" });
+    }
+    setStarring(false);
+  };
 
   const fixPlayerItem = async (itemId: string) => {
     try {
@@ -111,6 +126,25 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinn
           />
         </div>
         {fixable && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); toggleFavorite(); }}
+            disabled={starring}
+            aria-pressed={favorite}
+            aria-label={i18n.t(favorite ? "common.favoriteRemove" : "common.favoriteAdd")}
+            title={i18n.t(favorite ? "common.favoriteRemove" : "common.favoriteAdd")}
+            className={`absolute left-1 z-20 border-none bg-transparent p-0 transition-all hover:border-none focus:outline-none ${quantity > 1 ? "top-8" : "top-1"} ${
+              favorite ? "" : "opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
+            }`}
+          >
+            {favorite ? (
+              <BsStarFill className="text-2xl text-accent-gold drop-shadow" />
+            ) : (
+              <BsStar className="text-2xl text-ink-soft hover:text-accent-gold transition-all" />
+            )}
+          </button>
+        )}
+        {fixable && (
           <div
             data-tour="item-pin"
             className="absolute top-1 right-1 opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 [.daisu-help-pin_&]:opacity-100 [.daisu-help-pin_&]:translate-y-0 transition-all"
@@ -148,21 +182,27 @@ const Item: React.FC<itemProps> = ({ item, fixable, sellable, setRefresh, onPinn
           transition-all duration-200"
           style={{ borderColor: color }}
         >
-          <button
-            onClick={(e) => { e.stopPropagation(); sellPlayerItem(); }}
-            disabled={selling}
-            className="w-full rounded px-3 py-1.5 text-xs md:text-sm font-semibold bg-[#19172D] hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap"
-          >
-            {selling ? "Selling..." : <span className="flex items-center justify-center gap-1">{i18n.t("common.sell")} <Monetary value={item.sellValue ?? 0} /></span>}
-          </button>
-          {quantity > 1 && (
-            <button
-              onClick={(e) => { e.stopPropagation(); sellPlayerItem(true); }}
-              disabled={selling}
-              className="w-full rounded px-3 py-1.5 text-xs md:text-sm font-semibold bg-[#19172D] hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap"
-            >
-              {selling ? "Selling..." : <span className="flex items-center justify-center gap-1">Sell all {quantity} <Monetary value={(item.sellValue ?? 0) * quantity} /></span>}
-            </button>
+          {favorite ? (
+            <p className="py-1.5 text-center text-xs text-ink-muted">{i18n.t("common.favoriteLocked")}</p>
+          ) : (
+            <>
+              <button
+                onClick={(e) => { e.stopPropagation(); sellPlayerItem(); }}
+                disabled={selling}
+                className="w-full rounded px-3 py-1.5 text-xs md:text-sm font-semibold bg-[#19172D] hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap"
+              >
+                {selling ? "Selling..." : <span className="flex items-center justify-center gap-1">{i18n.t("common.sell")} <Monetary value={item.sellValue ?? 0} /></span>}
+              </button>
+              {quantity > 1 && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); sellPlayerItem(true); }}
+                  disabled={selling}
+                  className="w-full rounded px-3 py-1.5 text-xs md:text-sm font-semibold bg-[#19172D] hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap"
+                >
+                  {selling ? "Selling..." : <span className="flex items-center justify-center gap-1">Sell all {quantity} <Monetary value={(item.sellValue ?? 0) * quantity} /></span>}
+                </button>
+              )}
+            </>
           )}
         </div>
       )}

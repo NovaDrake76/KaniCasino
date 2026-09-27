@@ -7,6 +7,7 @@ import MainButton from "../../components/MainButton";
 import Monetary from "../../components/Monetary";
 import PriceChart from "../../components/PriceChart";
 import { toast } from "react-toastify";
+import { BsStarFill } from "react-icons/bs";
 import Skeleton from "react-loading-skeleton";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/InventoryFilters";
@@ -59,8 +60,9 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [history, setHistory] = useState<ItemHistory | null>(null);
   const [loadingHistory, setLoadingHistory] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [filters, setFilters] = useState({ name: "", rarity: "", sortBy: "", order: "asc" });
+  const [filters, setFilters] = useState<{ name: string; rarity: string; sortBy: string; order: string; minQuantity?: string }>({ name: "", rarity: "", sortBy: "", order: "asc" });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
+  const filtersTouched = useRef(false);
 
   const { userData } = useContext(UserContext);
 
@@ -156,15 +158,19 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     }
   };
 
+  // the first run is the mount; waiting for items instead left every change after an empty result unanswered
   useEffect(() => {
-    if (invItems?.length > 0) {
-      delayDebounceFn.current = setTimeout(() => {
-        getInventoryInfo();
-      }, 1000);
-      return () => {
-        if (delayDebounceFn.current) clearTimeout(delayDebounceFn.current);
-      };
+    if (!filtersTouched.current) {
+      filtersTouched.current = true;
+      return;
     }
+    delayDebounceFn.current = setTimeout(() => {
+      if (page !== 1) setPage(1);
+      else getInventoryInfo();
+    }, 1000);
+    return () => {
+      if (delayDebounceFn.current) clearTimeout(delayDebounceFn.current);
+    };
   }, [filters]);
 
   useEffect(() => {
@@ -209,15 +215,25 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             <div className="flex flex-wrap justify-center gap-3">
               {invItems.map((item, index) => {
                 const isSelected = selectedItem && selectedItem.uniqueId === item.uniqueId;
+                const favorite = !!userData?.favoriteItems?.includes(item._id);
                 return (
                   <div
                     key={item._id + index}
-                    onClick={() => { setSelectedItem(item); setQuantityText("1"); }}
-                    className={`rounded-lg cursor-pointer transition-all p-1 border-2 ${
-                      isSelected ? "border-accent bg-accent/10" : "border-transparent hover:bg-surface"
+                    onClick={() => {
+                      if (favorite) {
+                        toast.info(i18n.t("common.favoriteLocked"), { theme: "dark" });
+                        return;
+                      }
+                      setSelectedItem(item);
+                      setQuantityText("1");
+                    }}
+                    title={favorite ? i18n.t("common.favoriteLocked") : undefined}
+                    className={`relative rounded-lg transition-all p-1 border-2 ${
+                      favorite ? "cursor-not-allowed opacity-50 border-transparent" : `cursor-pointer ${isSelected ? "border-accent bg-accent/10" : "border-transparent hover:bg-surface"}`
                     }`}
                   >
                     <Item item={item} size="small" />
+                    {favorite && <BsStarFill className="absolute top-2 right-2 z-20 text-accent-gold" />}
                   </div>
                 );
               })}

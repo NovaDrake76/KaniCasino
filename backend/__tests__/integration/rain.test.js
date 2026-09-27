@@ -126,6 +126,20 @@ describe("settling", () => {
     expect((await User.findById(b._id)).walletBalance).toBe(expected);
   });
 
+  // the floors used to leave a K₽ or two, and the panel showed it as the new pool right after the fall
+  it("leaves nothing for the next round once it falls, so the pool starts again from zero", async () => {
+    const people = [await makeUser({ level: 10 }), await makeUser({ level: 23 }), await makeUser({ level: 57 })];
+    for (const p of people) await rain.join(p._id);
+    await ripen();
+    await stakeInside(people[0]._id, 42200);
+
+    const result = await rain.settle();
+
+    expect(result.pool).toBe(211);
+    expect(result.paidOut).toBe(211);
+    expect((await rain.currentRound()).carriedIn).toBe(0);
+  });
+
   it("writes a ledger row against the house, not the mint", async () => {
     // it is rakeback like the daily board, so it comes out of the edge rather than
     // printing new KP
@@ -236,6 +250,13 @@ describe("how the pool is divided", () => {
 
   it("pays nobody out of a pool below the floor", () => {
     expect(rain.splitPool(rain.MIN_POOL - 1, [person("a", 50)])).toEqual([]);
+  });
+
+  it("pays out the whole pool when no cap holds any of it back", () => {
+    for (const [pool, levels] of [[211, [10, 23, 57]], [211, [10]], [195, [12, 40]], [5000, [3, 9, 27, 81, 100]]]) {
+      const paid = rain.splitPool(pool, levels.map((level, i) => person(`p${i}`, level))).reduce((sum, s) => sum + s.amount, 0);
+      expect(paid).toBe(pool);
+    }
   });
 
   it("never pays out more than the pool holds", () => {

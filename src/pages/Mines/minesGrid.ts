@@ -22,3 +22,11 @@ export const multiplierFor = (mineCount: number, gems: number) => {
 
 export const payoutFor = (betAmount: number, mineCount: number, gems: number) =>
     Math.min(Math.round(betAmount * multiplierFor(mineCount, gems) * 100) / 100, MAX_PAYOUT);
+
+// what one more gem is worth, or null once every safe tile is out. before a round it is the first gem,
+// so moving the mine count shows straight away what it does to the price
+export const nextGemFor = (betAmount: number, mineCount: number, revealed: number) => {
+    const gems = revealed + 1;
+    if (gems > gemsFor(mineCount)) return null;
+    return { multiplier: multiplierFor(mineCount, gems), payout: payoutFor(betAmount, mineCount, gems) };
+};
