@@ -1129,15 +1129,15 @@
       "failed": "Gagal membeli. Coba lagi.",
       "items": {
         "affiliateCard": {
-          "about": "Membuka tab Afiliasi: pilih kode undanganmu, bagikan tautanmu, dan raih K₽ saat orang yang kamu undang mendaftar, mencapai level 10, dan bertaruh.",
+          "about": "Membuka tab Afiliasi: pilih kode undanganmu dan bagikan tautanmu. Setiap pemain yang mendaftar dengannya memberimu 1.000 K₽, tambahan 10.000 K₽ saat mencapai level 10, dan 1% dari semua taruhannya.",
           "getIt": "Dapatkan di toko Daisu",
           "kept": "dipertahankan dari kode undanganmu",
-          "lockedBody": "Kartu Afiliasi memberimu kode undangan. Setiap orang yang mendaftar dengannya memberimu K₽: saat mendaftar, di level 10, dan sebagian dari taruhannya.",
+          "lockedBody": "Kartu Afiliasi memberimu kode undangan. Setiap orang yang mendaftar dengannya memberimu K₽: 1.000 saat mendaftar, 10.000 di level 10, dan 1% dari semua taruhannya.",
           "lockedTitle": "Afiliasi terkunci",
           "name": "Kartu Afiliasi",
           "opened": "Kamu resmi berbisnis. Pilih kode dan mulai bagikan. Mau kutunjukkan tempatnya?",
           "pitch": "Kamu bawakan aku pelanggan, aku beri kamu bagian. Bisnis sederhana.",
-          "what": "Dapatkan kode undanganmu sendiri dan raih K₽ dari pemain yang kamu ajak."
+          "what": "Kode undanganmu sendiri: 1.000 K₽ per pendaftaran, 10.000 K₽ saat mereka mencapai level 10, dan 1% dari semua taruhan mereka."
         },
         "chatPass": {
           "about": "Membuatmu bisa mengirim pesan di obrolan situs. Untuk membaca tidak pernah perlu pass.",

@@ -1129,15 +1129,15 @@
       "failed": "No se pudo comprar. Inténtalo de nuevo.",
       "items": {
         "affiliateCard": {
-          "about": "Abre la pestaña Afiliados: elige tu código de invitación, comparte tu enlace y gana K₽ cuando tus invitados se registren, lleguen al nivel 10 y apuesten.",
+          "about": "Abre la pestaña Afiliados: elige tu código de invitación y comparte tu enlace. Cada jugador que se registre con él te da 1.000 K₽, 10.000 K₽ más cuando llegue al nivel 10 y el 1% de todo lo que apueste.",
           "getIt": "Consíguela en la tienda de Daisu",
           "kept": "conservado por tu código de invitación",
-          "lockedBody": "La Tarjeta de Afiliado te da un código de invitación. Todo el que se registre con él te paga K₽: al registrarse, al nivel 10 y una parte de lo que apueste.",
+          "lockedBody": "La Tarjeta de Afiliado te da un código de invitación. Todo el que se registre con él te paga K₽: 1.000 al registrarse, 10.000 al nivel 10 y el 1% de todo lo que apueste.",
           "lockedTitle": "Afiliados está bloqueado",
           "name": "Tarjeta de Afiliado",
           "opened": "Ya estás en el negocio. Elige un código y empieza a compartirlo. ¿Te enseño dónde?",
           "pitch": "Tú me traes clientes, yo te pago una parte. Negocio sencillo.",
-          "what": "Consigue tu propio código de invitación y gana K₽ con los jugadores que traigas."
+          "what": "Tu propio código de invitación: 1.000 K₽ por registro, 10.000 K₽ cuando lleguen al nivel 10 y el 1% de todo lo que apuesten."
         },
         "chatPass": {
           "about": "Te deja enviar mensajes en el chat del sitio. Para leerlo nunca hace falta pase.",

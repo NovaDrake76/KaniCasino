@@ -1129,15 +1129,15 @@
       "failed": "Impossible d'acheter ça. Réessaie.",
       "items": {
         "affiliateCard": {
-          "about": "Ouvre l'onglet Affiliés : choisis ton code d'invitation, partage ton lien et gagne des K₽ quand tes invités s'inscrivent, atteignent le niveau 10 et misent.",
+          "about": "Ouvre l'onglet Affiliés : choisis ton code d'invitation et partage ton lien. Chaque joueur qui s'inscrit avec te rapporte 1 000 K₽, puis 10 000 K₽ quand il atteint le niveau 10, et 1 % de tout ce qu'il mise.",
           "getIt": "À prendre dans la boutique de Daisu",
           "kept": "conservé grâce à ton code d'invitation",
-          "lockedBody": "La Carte d'Affilié te donne un code d'invitation. Chaque personne qui s'inscrit avec te rapporte des K₽ : à l'inscription, au niveau 10, et une part de ses mises.",
+          "lockedBody": "La Carte d'Affilié te donne un code d'invitation. Chaque personne qui s'inscrit avec te rapporte des K₽ : 1 000 à l'inscription, 10 000 au niveau 10, et 1 % de tout ce qu'elle mise.",
           "lockedTitle": "Les affiliés sont verrouillés",
           "name": "Carte d'Affilié",
           "opened": "Tu es dans les affaires. Choisis un code et commence à le partager. Je te montre où ?",
           "pitch": "Tu m'amènes des clients, je te verse une part. Simple comme bonjour.",
-          "what": "Obtiens ton propre code d'invitation et gagne des K₽ grâce aux joueurs que tu amènes."
+          "what": "Ton propre code d'invitation : 1 000 K₽ par inscription, 10 000 K₽ au niveau 10 et 1 % de tout ce que misent tes invités."
         },
         "chatPass": {
           "about": "Te permet d'envoyer des messages dans le chat du site. Le lire ne demande jamais de pass.",

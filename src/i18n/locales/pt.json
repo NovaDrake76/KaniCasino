@@ -1129,15 +1129,15 @@
       "failed": "Não deu pra comprar. Tente de novo.",
       "items": {
         "affiliateCard": {
-          "about": "Abre a aba Afiliados: escolha seu código de convite, compartilhe seu link e ganhe K₽ quando quem você convidou se cadastrar, chegar ao nível 10 e apostar.",
+          "about": "Abre a aba Afiliados: escolha seu código de convite e compartilhe seu link. Cada jogador que se cadastrar com ele te rende 1.000 K₽, mais 10.000 K₽ quando chegar ao nível 10, e 1% de tudo o que apostar.",
           "getIt": "Pegue na loja da Daisu",
           "kept": "mantido pelo seu código de convite",
-          "lockedBody": "O Cartão de Afiliado te dá um código de convite. Todo mundo que se cadastrar com ele te rende K₽: no cadastro, no nível 10 e uma parte do que apostarem.",
+          "lockedBody": "O Cartão de Afiliado te dá um código de convite. Todo mundo que se cadastrar com ele te rende K₽: 1.000 no cadastro, 10.000 no nível 10 e 1% de tudo o que apostar.",
           "lockedTitle": "Afiliados está bloqueado",
           "name": "Cartão de Afiliado",
           "opened": "Negócio fechado. Escolhe um código e começa a compartilhar. Quer que eu te mostre onde?",
           "pitch": "Você me traz clientes, eu te pago uma parte. Negócio simples.",
-          "what": "Ganhe seu próprio código de convite e receba K₽ dos jogadores que você trouxer."
+          "what": "Seu próprio código de convite: 1.000 K₽ por cadastro, 10.000 K₽ quando o convidado chegar ao nível 10 e 1% de tudo o que ele apostar."
         },
         "chatPass": {
           "about": "Permite enviar mensagens no chat do site. Ler nunca precisa de passe.",
