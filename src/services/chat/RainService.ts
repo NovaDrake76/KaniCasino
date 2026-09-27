@@ -68,6 +68,12 @@ export const onRainSoon = (fn: (p: { roundId: string; pool: number; endsAt: stri
   return () => void socket().off("rain:soon", fn);
 };
 
+// a panel that was offline when the rain fell never heard rain:settled, so it asks again once it is back
+export const onRainReconnect = (fn: () => void) => {
+  socket().on("connect", fn);
+  return () => void socket().off("connect", fn);
+};
+
 export const onRainWon = (fn: (p: { amount: number }) => void) => {
   socket().on("rain:won", fn);
   return () => void socket().off("rain:won", fn);

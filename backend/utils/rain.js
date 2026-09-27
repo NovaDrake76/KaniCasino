@@ -139,12 +139,18 @@ function splitPool(pool, people) {
   // the rain coat from daisu's shop makes its holder's share heavier, level for level
   const weights = people.map((person) => weightFor(person.level) * (shop.holds(person, "rainCoat") ? RAIN_COAT_WEIGHT : 1));
   const total = weights.reduce((a, b) => a + b, 0);
+  const exact = weights.map((w) => (pool * w) / total);
+  const amounts = exact.map((x) => Math.min(MAX_PER_PLAYER, Math.floor(x)));
+  // rounding every share down left a K₽ or two behind, which rode into the next round and showed as its pool
+  // the moment the rain fell. those go to the biggest remainders, so only what the cap refused still carries
+  const open = amounts.map((a, i) => i).filter((i) => amounts[i] < MAX_PER_PLAYER);
+  const dust = Math.floor(open.reduce((sum, i) => sum + exact[i] - Math.floor(exact[i]), 0) + 1e-6);
+  open
+    .sort((a, b) => exact[b] - Math.floor(exact[b]) - (exact[a] - Math.floor(exact[a])) || a - b)
+    .slice(0, dust)
+    .forEach((i) => (amounts[i] += 1));
   return people
-    .map((person, i) => ({
-      userId: String(person._id),
-      level: person.level || 0,
-      amount: Math.min(MAX_PER_PLAYER, Math.floor((pool * weights[i]) / total)),
-    }))
+    .map((person, i) => ({ userId: String(person._id), level: person.level || 0, amount: amounts[i] }))
     .filter((share) => share.amount > 0);
 }
 
