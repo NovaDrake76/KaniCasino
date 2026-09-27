@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "Boom! Verify roll",
     "gems": "Gems",
     "mines": "Mines",
+    "nextGemPays": "Next gem pays {{multiplier}}×",
     "randomTile": "Random Tile",
     "revealATile": "Reveal a tile",
     "tilesPerRound": "Tiles per round"

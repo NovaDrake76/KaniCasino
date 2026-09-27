@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "펑! 롤 검증",
     "gems": "젬",
     "mines": "마인즈",
+    "nextGemPays": "다음 젬 {{multiplier}}×",
     "randomTile": "무작위 타일",
     "revealATile": "타일을 열어 보세요",
     "tilesPerRound": "라운드당 타일 수"

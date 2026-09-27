@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "Boom! Verificar roll",
     "gems": "Gemas",
     "mines": "Minas",
+    "nextGemPays": "Próxima gema paga {{multiplier}}×",
     "randomTile": "Casa aleatória",
     "revealATile": "Revele uma casa",
     "tilesPerRound": "Casas por rodada"

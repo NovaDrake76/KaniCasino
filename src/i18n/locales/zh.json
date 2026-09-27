@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "踩雷了！验证 roll",
     "gems": "宝石",
     "mines": "扫雷",
+    "nextGemPays": "下一颗宝石 {{multiplier}}×",
     "randomTile": "随机格子",
     "revealATile": "翻开一个格子",
     "tilesPerRound": "每轮格子数"

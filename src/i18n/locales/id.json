@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "Duar! muter cek",
     "gems": "Gems",
     "mines": "Mines",
+    "nextGemPays": "Gem berikutnya membayar {{multiplier}}×",
     "randomTile": "Tile Acak",
     "revealATile": "Ungkap tile",
     "tilesPerRound": "Tiles per ronde"

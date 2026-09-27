@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "ドカン！ ロールを検証",
     "gems": "ジェム",
     "mines": "マインズ",
+    "nextGemPays": "次のジェムで {{multiplier}}×",
     "randomTile": "ランダムなマス",
     "revealATile": "マスをめくってください",
     "tilesPerRound": "1ラウンドのマス数"

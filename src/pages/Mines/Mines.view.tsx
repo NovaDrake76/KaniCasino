@@ -11,6 +11,7 @@ import { MinesViewProps } from "./Mines.types";
 import i18n from "../../i18n";
 import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
 import GameBar from "../../components/game/GameBar";
+import CashoutCard from "./CashoutCard";
 
 const Diamond = () => (
   <svg viewBox="0 0 24 24" className="w-3/5 h-3/5 drop-shadow">
@@ -54,6 +55,8 @@ const MinesView: React.FC<MinesViewProps> = ({
   busy,
   gems,
   currentPayout,
+  nextGem,
+  cashedOut,
   history,
   mode,
   setMode,
@@ -133,6 +136,15 @@ const MinesView: React.FC<MinesViewProps> = ({
             </div>
           </div>
 
+          {nextGem && (
+            <div className="flex items-center justify-between text-xs font-semibold text-ink-muted">
+              <span>{i18n.t("mines.nextGemPays", { multiplier: nextGem.multiplier.toFixed(2) })}</span>
+              <span className="text-accent-gold">
+                <Monetary value={nextGem.payout} showFraction />
+              </span>
+            </div>
+          )}
+
           {mode === "auto" && (
             <div className="flex flex-col gap-2">
               <span className="text-xs font-semibold text-ink-muted">{i18n.t("mines.tilesPerRound")}</span>
@@ -199,7 +211,7 @@ const MinesView: React.FC<MinesViewProps> = ({
             ))}
           </div>
 
-          <div className="grid grid-cols-5 gap-2 sm:gap-3 short:gap-1.5 max-w-[560px] short:max-w-[min(560px,calc(100svh_-_340px))] mx-auto w-full">
+          <div className="relative grid grid-cols-5 gap-2 sm:gap-3 short:gap-1.5 max-w-[560px] short:max-w-[min(560px,calc(100svh_-_340px))] mx-auto w-full">
             {Array.from({ length: TILES }).map((_, tile) => {
               const face = tileFace(tile);
               const clickable = active && !busy && face.kind === "covered" && mode === "manual";
@@ -223,6 +235,7 @@ const MinesView: React.FC<MinesViewProps> = ({
                 </button>
               );
             })}
+            {cashedOut && <CashoutCard multiplier={cashedOut.multiplier} payout={cashedOut.payout} />}
           </div>
       </div>
     </GameLayout>

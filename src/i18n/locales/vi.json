@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "Bùm! Kiểm chứng roll",
     "gems": "Đá quý",
     "mines": "Dò mìn",
+    "nextGemPays": "Đá quý tiếp theo trả {{multiplier}}×",
     "randomTile": "Ô ngẫu nhiên",
     "revealATile": "Hãy mở một ô",
     "tilesPerRound": "Số ô mỗi vòng"
