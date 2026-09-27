@@ -1132,15 +1132,15 @@
       "failed": "Kauf fehlgeschlagen. Versuch es noch mal.",
       "items": {
         "affiliateCard": {
-          "about": "Öffnet den Tab Partner: Wähle deinen Einladungscode, teile deinen Link und verdiene K₽, wenn deine Eingeladenen sich anmelden, Level 10 erreichen und wetten.",
+          "about": "Öffnet den Tab Partner: Wähle deinen Einladungscode und teile deinen Link. Jeder Spieler, der sich damit anmeldet, bringt dir 1.000 K₽, weitere 10.000 K₽, wenn er Level 10 erreicht, und 1 % von allem, was er setzt.",
           "getIt": "Hol sie dir in Daisus Laden",
           "kept": "behalten durch deinen Einladungscode",
-          "lockedBody": "Die Partnerkarte gibt dir einen Einladungscode. Jeder, der sich damit anmeldet, bringt dir K₽: bei der Anmeldung, bei Level 10 und einen Anteil an seinen Einsätzen.",
+          "lockedBody": "Die Partnerkarte gibt dir einen Einladungscode. Jeder, der sich damit anmeldet, bringt dir K₽: 1.000 bei der Anmeldung, 10.000 bei Level 10 und 1 % von allem, was er setzt.",
           "lockedTitle": "Partner ist gesperrt",
           "name": "Partnerkarte",
           "opened": "Du bist im Geschäft. Such dir einen Code aus und teile ihn. Soll ich dir zeigen, wo?",
           "pitch": "Du bringst mir Kunden, ich zahle dir einen Anteil. Einfaches Geschäft.",
-          "what": "Hol dir deinen eigenen Einladungscode und verdiene K₽ an den Spielern, die du bringst."
+          "what": "Dein eigener Einladungscode: 1.000 K₽ pro Anmeldung, 10.000 K₽ bei Level 10 und 1 % von allem, was deine Eingeladenen setzen."
         },
         "chatPass": {
           "about": "Erlaubt dir, im Chat der Seite Nachrichten zu schreiben. Zum Lesen braucht es nie einen Pass.",

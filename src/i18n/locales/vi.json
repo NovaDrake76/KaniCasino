@@ -1132,15 +1132,15 @@
       "failed": "Không mua được. Thử lại nhé.",
       "items": {
         "affiliateCard": {
-          "about": "Mở tab Liên kết: chọn mã mời, chia sẻ liên kết và nhận K₽ khi người bạn mời đăng ký, đạt cấp 10 và đặt cược.",
+          "about": "Mở tab Liên kết: chọn mã mời và chia sẻ liên kết. Mỗi người chơi đăng ký bằng mã đó mang về cho bạn 1.000 K₽, thêm 10.000 K₽ khi họ đạt cấp 10, và 1% mọi khoản họ cược.",
           "getIt": "Lấy ở cửa hàng của Daisu",
           "kept": "giữ lại nhờ mã mời của bạn",
-          "lockedBody": "Thẻ Liên Kết cho bạn một mã mời. Ai đăng ký bằng mã đó đều mang K₽ về cho bạn: khi đăng ký, khi đạt cấp 10, và một phần số tiền họ cược.",
+          "lockedBody": "Thẻ Liên Kết cho bạn một mã mời. Ai đăng ký bằng mã đó đều mang K₽ về cho bạn: 1.000 khi đăng ký, 10.000 khi đạt cấp 10, và 1% mọi khoản họ cược.",
           "lockedTitle": "Liên kết đang bị khóa",
           "name": "Thẻ Liên Kết",
           "opened": "Bạn vào nghề rồi đấy. Chọn một mã và bắt đầu chia sẻ. Muốn tôi chỉ chỗ không?",
           "pitch": "Bạn mang khách đến, tôi chia phần cho bạn. Làm ăn đơn giản.",
-          "what": "Nhận mã mời của riêng bạn và kiếm K₽ từ những người chơi bạn mời về."
+          "what": "Mã mời của riêng bạn: 1.000 K₽ mỗi lượt đăng ký, 10.000 K₽ khi họ đạt cấp 10, và 1% mọi khoản họ cược."
         },
         "chatPass": {
           "about": "Cho phép bạn gửi tin nhắn trong khung chat của trang. Chỉ đọc thì không bao giờ cần vé.",

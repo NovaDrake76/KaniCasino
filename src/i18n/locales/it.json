@@ -1132,15 +1132,15 @@
       "failed": "Acquisto non riuscito. Riprova.",
       "items": {
         "affiliateCard": {
-          "about": "Apre la scheda Affiliati: scegli il tuo codice invito, condividi il link e guadagna K₽ quando i tuoi invitati si registrano, arrivano al livello 10 e puntano.",
+          "about": "Apre la scheda Affiliati: scegli il tuo codice invito e condividi il link. Ogni giocatore che si registra con quello ti fa guadagnare 1.000 K₽, altri 10.000 K₽ quando arriva al livello 10 e l'1% di tutto ciò che punta.",
           "getIt": "Prendila nel negozio di Daisu",
           "kept": "mantenuta grazie al tuo codice invito",
-          "lockedBody": "La Tessera Affiliato ti dà un codice invito. Chiunque si registri con quello ti fa guadagnare K₽: alla registrazione, al livello 10 e una parte delle sue puntate.",
+          "lockedBody": "La Tessera Affiliato ti dà un codice invito. Chiunque si registri con quello ti fa guadagnare K₽: 1.000 alla registrazione, 10.000 al livello 10 e l'1% di tutto ciò che punta.",
           "lockedTitle": "Gli affiliati sono bloccati",
           "name": "Tessera Affiliato",
           "opened": "Sei in affari. Scegli un codice e inizia a condividerlo. Ti faccio vedere dove?",
           "pitch": "Tu mi porti clienti, io ti pago una parte. Affari semplici.",
-          "what": "Ottieni il tuo codice invito e guadagna K₽ dai giocatori che porti."
+          "what": "Il tuo codice invito: 1.000 K₽ per ogni registrazione, 10.000 K₽ al livello 10 e l'1% di tutto ciò che puntano i tuoi invitati."
         },
         "chatPass": {
           "about": "Ti permette di mandare messaggi nella chat del sito. Per leggerla non serve mai un pass.",

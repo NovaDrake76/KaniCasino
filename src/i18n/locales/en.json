@@ -1132,15 +1132,15 @@
       "failed": "Could not buy that. Try again.",
       "items": {
         "affiliateCard": {
-          "about": "Opens the Affiliates tab: pick your invite code, share your link, and earn K₽ when the players you invite sign up, reach level 10 and place bets.",
+          "about": "Opens the Affiliates tab: pick your invite code and share your link. Every player who signs up with it earns you 1,000 K₽, 10,000 K₽ more when they reach level 10, and 1% of everything they bet.",
           "getIt": "Get it in Daisu's shop",
           "kept": "kept from your invite code",
-          "lockedBody": "The Affiliate Card gives you an invite code. Everyone who signs up with it pays you K₽: on signup, at level 10, and a cut of what they bet.",
+          "lockedBody": "The Affiliate Card gives you an invite code. Everyone who signs up with it pays you K₽: 1,000 on signup, 10,000 at level 10, and 1% of everything they bet.",
           "lockedTitle": "Affiliates are locked",
           "name": "Affiliate Card",
           "opened": "You're in business. Pick a code and start sharing it. Want me to show you where?",
           "pitch": "You bring me customers, I pay you a cut. Simple business.",
-          "what": "Get your own invite code and earn K₽ from the players you bring."
+          "what": "Your own invite code: 1,000 K₽ for every signup, 10,000 K₽ when they reach level 10, and 1% of everything they bet."
         },
         "chatPass": {
           "about": "Lets you send messages in the site chat. Reading it never needs a pass.",
