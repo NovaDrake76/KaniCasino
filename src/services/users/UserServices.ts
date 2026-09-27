@@ -121,6 +121,11 @@ export async function sellItems(uniqueIds: string[]) {
     return response.data;
 }
 
+export async function setFavorite(itemId: string, favorite: boolean): Promise<{ favoriteItems: string[] }> {
+    const response = await api.put(`/users/favorites/${itemId}`, { favorite });
+    return response.data;
+}
+
 // sells a whole stack without shipping one id per copy; omit quantity to sell them all
 export async function sellStack(itemId: string, quantity?: number) {
     const response = await api.post(`/users/inventory/sell`, { itemId, quantity });

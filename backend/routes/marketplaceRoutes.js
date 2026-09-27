@@ -170,6 +170,9 @@ module.exports = (io) => {
       if (!copies.length) {
         return res.status(404).json({ message: "Item not found in inventory" });
       }
+      if ((req.user.favoriteItems || []).some((id) => String(id) === String(copies[0]._id))) {
+        return res.status(409).json({ message: "Unfavorite this item before selling it", code: "favorite" });
+      }
 
       const itemDocument = await Item.findById(copies[0]._id);
       if (!itemDocument) {

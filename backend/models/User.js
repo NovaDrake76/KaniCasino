@@ -70,6 +70,8 @@ const UserSchema = new mongoose.Schema({
   // when the current character was pinned, so a tie on a fan board goes to whoever
   // committed first rather than to whichever document mongo happened to return
   fixedAt: Date,
+  // whole items, every copy of each: nothing sells, lists or upgrades them until they are unfavorited
+  favoriteItems: [{ type: mongoose.Schema.Types.ObjectId, ref: "Item" }],
   // rebuilt by the fandom sweep, never written by hand. rank 1 is what earns the badge.
   fanRank: {
     name: String,

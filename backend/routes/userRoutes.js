@@ -382,6 +382,7 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
     res.json({
       id, username, slug: slug || null, profilePicture, xp, level, walletBalance, nextBonus, hasUnreadNotifications,
       isAdmin: !!isAdmin, fanRank, fixedItem,
+      favoriteItems: (req.user.favoriteItems || []).map(String),
       // null when a rename is allowed now, so settings can say when rather than guess
       nameChangeAllowedAt: signup.renameAllowedAt(req.user.usernameChangedAt),
       features: beta.featuresOf(req.user),
@@ -547,16 +548,50 @@ router.post("/inventory/sell", authMiddleware.isAuthenticated, async (req, res) 
     if (!result) {
       return res.status(404).json({ message: "User not found" });
     }
+    // a sell-all over a mix sells the rest and says how many favorites it left; a favorite on its own is refused
+    if (!result.sold && result.kept) {
+      return res.status(409).json({ message: "Unfavorite this item before selling it", code: "favorite" });
+    }
     if (!result.sold) {
       return res.status(404).json({ message: "Items not found in inventory" });
     }
 
     res.json({
-      message: `Sold ${result.sold} item${result.sold > 1 ? "s" : ""} for K₽${result.value}`,
+      message: `Sold ${result.sold} item${result.sold === 1 ? "" : "s"} for K₽${result.value}`,
       sold: result.sold,
       value: result.value,
+      kept: result.kept,
       walletBalance: result.walletBalance,
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// mark or unmark a whole item as a favorite. only something held can be marked, and the list is
+// capped so it stays a handful of ids on the user document
+const MAX_FAVORITES = 500;
+router.put("/favorites/:itemId", authMiddleware.isAuthenticated, async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    if (!ObjectId.isValid(itemId)) {
+      return res.status(400).json({ message: "Invalid item" });
+    }
+    const item = new ObjectId(itemId);
+    const on = req.body.favorite !== false;
+    if (on && !(await User.exists({ _id: req.user._id, "inventory._id": item }))) {
+      return res.status(404).json({ message: "Item not found in inventory" });
+    }
+    const updated = await User.findOneAndUpdate(
+      on ? { _id: req.user._id, [`favoriteItems.${MAX_FAVORITES - 1}`]: { $exists: false } } : { _id: req.user._id },
+      on ? { $addToSet: { favoriteItems: item } } : { $pull: { favoriteItems: item } },
+      { new: true, projection: { favoriteItems: 1 } }
+    );
+    if (!updated) {
+      return res.status(400).json({ message: "Too many favorites" });
+    }
+    res.json({ favoriteItems: (updated.favoriteItems || []).map(String) });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

@@ -36,6 +36,8 @@ export interface User {
     unlocks?: UnlockKey[];
     // the xp multipliers her boosts and charms add up to
     xpBoost?: { all?: number; [game: string]: number | undefined };
+    // item ids whose every copy the bulk sells leave alone
+    favoriteItems?: string[];
 
 }
 

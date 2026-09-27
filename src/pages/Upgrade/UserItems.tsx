@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { MdOutlineNavigateBefore, MdOutlineNavigateNext } from "react-icons/md";
 import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
 import Skeleton from "react-loading-skeleton";
+import { toast } from "react-toastify";
+import { BsStarFill } from "react-icons/bs";
 import Item from "../../components/Item";
 import UserContext from "../../UserContext";
 import { getInventory } from "../../services/users/UserServices";
@@ -201,13 +203,16 @@ const UserItems: React.FC<Inventory> = ({ selectedItems, setSelectedItems, selec
                     inventory.map((item: any, index: number) => {
                         if (item.case) {
                             const picked = selectedCountFor(item);
+                            const favorite = !!userData?.favoriteItems?.includes(item._id);
                             return (
                                 <div
                                     key={index}
-                                    onClick={() => handleItemClick(item)}
-                                    className={`relative cursor-pointer border-2 h-min ${picked ? " border-[#606bc7]" : "border-transparent"}`}
+                                    onClick={() => (favorite ? toast.info(i18n.t("common.favoriteLocked"), { theme: "dark" }) : handleItemClick(item))}
+                                    title={favorite ? i18n.t("common.favoriteLocked") : undefined}
+                                    className={`relative border-2 h-min ${favorite ? "cursor-not-allowed opacity-50 border-transparent" : `cursor-pointer ${picked ? " border-[#606bc7]" : "border-transparent"}`}`}
                                 >
                                     <Item item={item} />
+                                    {favorite && <BsStarFill className="absolute top-2 right-2 z-20 text-accent-gold" />}
                                     {picked > 0 && (
                                         <span className="absolute top-1 right-1 z-20 min-w-[22px] h-[22px] px-1 flex items-center justify-center rounded-full text-xs font-bold bg-[#606bc7] text-white">
                                             {picked}

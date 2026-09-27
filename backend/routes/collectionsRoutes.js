@@ -41,9 +41,9 @@ const STACK_IDS = 500;
 // owns more than one of (and that has a positive sell value), sell all but one. the
 // kept copy is the oldest (createdAt asc, uniqueId asc as a total-order tiebreak) so
 // two runs always agree on which copy survives. extras (owned but no longer in the
-// case) are never swept. returns { lines, plan, totalItems, totalValue }, where plan
-// is the sorted, flat list of uniqueIds to sell.
-function computeQuicksellPlan(inventory, caseDoc) {
+// case) are never swept, and neither is a favorite. returns { lines, plan, totalItems,
+// totalValue }, where plan is the sorted, flat list of uniqueIds to sell.
+function computeQuicksellPlan(inventory, caseDoc, favorites = new Set()) {
   const items = uniqueItems(caseDoc);
   const metaById = new Map(
     items.map((it) => [
@@ -56,7 +56,7 @@ function computeQuicksellPlan(inventory, caseDoc) {
   for (const e of inventory || []) {
     if (!e || !e._id) continue;
     const id = String(e._id);
-    if (!metaById.has(id)) continue; // per-case scope = the case's slots only
+    if (!metaById.has(id) || favorites.has(id)) continue; // the case's slots only, and never a favorite
     if (!byItem.has(id)) byItem.set(id, []);
     byItem.get(id).push(e);
   }
@@ -111,7 +111,10 @@ async function withItems(cases) {
   }));
 }
 
-function caseStats(caseDoc, countById) {
+// the duplicate figures are what quicksell would sell, so a favorite's copies are left out of them too
+const favoritesOf = (user) => new Set(((user && user.favoriteItems) || []).map(String));
+
+function caseStats(caseDoc, countById, favorites = new Set()) {
   const items = uniqueItems(caseDoc);
   const slotsTotal = items.length;
   let slotsOwned = 0;
@@ -123,7 +126,7 @@ function caseStats(caseDoc, countById) {
     const unit = sellValue(it.baseValue);
     const dups = Math.max(owned - 1, 0);
     // count/value only the duplicates quicksell would actually sell (positive value)
-    if (unit > 0) {
+    if (unit > 0 && !favorites.has(String(it._id))) {
       duplicatesCount += dups;
       duplicatesValue += dups * unit;
     }
@@ -145,12 +148,13 @@ router.get("/summary", async (req, res) => {
     if (!isValidId(userId)) {
       return res.status(400).json({ message: "Invalid user id" });
     }
-    const user = await User.findById(userId).select("_id");
+    const user = await User.findById(userId).select("_id favoriteItems");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     const countById = await countsFor(userId);
+    const favorites = favoritesOf(user);
     const cases = await withItems(
       await Case.find({}, { title: 1, image: 1, price: 1, items: 1, category: 1 }).lean()
     );
@@ -161,7 +165,7 @@ router.get("/summary", async (req, res) => {
       image: c.image,
       price: c.price,
       category: c.category || "",
-      ...caseStats(c, countById),
+      ...caseStats(c, countById, favorites),
     }));
 
     const totals = collections.reduce(
@@ -212,7 +216,7 @@ router.post("/quicksell/preview", isAuthenticated, async (req, res) => {
     }
 
     const held = await entriesFor(req.user._id, { itemIds: uniqueItems(caseDoc).map((it) => it._id) });
-    const plan = computeQuicksellPlan(held, caseDoc);
+    const plan = computeQuicksellPlan(held, caseDoc, favoritesOf(req.user));
     res.json({ caseId: String(caseDoc._id), ...plan });
   } catch (err) {
     console.error(err);
@@ -248,7 +252,7 @@ router.post("/quicksell/commit", isAuthenticated, async (req, res) => {
     }
 
     const held = await entriesFor(req.user._id, { itemIds: uniqueItems(caseDoc).map((it) => it._id) });
-    const current = computeQuicksellPlan(held, caseDoc);
+    const current = computeQuicksellPlan(held, caseDoc, favoritesOf(req.user));
     const confirmed = [...new Set(plan.map(String))].sort();
     const canonical = current.plan; // already de-duped + sorted
 
@@ -307,7 +311,7 @@ router.get("/:caseId", async (req, res) => {
     if (!caseDoc) {
       return res.status(404).json({ message: "Collection not found" });
     }
-    const user = await User.findById(userId).select("_id");
+    const user = await User.findById(userId).select("_id favoriteItems");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -315,7 +319,7 @@ router.get("/:caseId", async (req, res) => {
     const items = uniqueItems(caseDoc);
     const caseItemIds = new Set(items.map((it) => String(it._id)));
     const { countById, uniqueIdsById } = await holdingsFor(userId, [...caseItemIds], STACK_IDS);
-    const stats = caseStats(caseDoc, countById);
+    const stats = caseStats(caseDoc, countById, favoritesOf(user));
 
     let rows = items.map((it) => {
       const id = String(it._id);
