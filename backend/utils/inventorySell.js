@@ -18,23 +18,32 @@ const ATTEMPTS = 3;
 // own: the caller chooses the ids. no-double-credit relies on inventory living on
 // a single user document (one $pull is one atomic op).
 //
-// returns { sold, value, walletBalance, removed }, or null if the user is gone.
+// a favorite is never sold, whoever asks: its copies are skipped and counted in `kept`.
+//
+// returns { sold, value, walletBalance, removed, kept }, or null if the user is gone.
 async function sellUniqueIds(userId, ids, extraMeta = {}) {
   const idList = [...new Set((ids || []).map(String))];
   if (!idList.length) {
-    return { sold: 0, value: 0, walletBalance: null, removed: [] };
+    return { sold: 0, value: 0, walletBalance: null, removed: [], kept: 0 };
   }
+
+  const seller = await User.findById(userId).select("favoriteItems").lean();
+  if (!seller) return null;
+  const favorites = new Set((seller.favoriteItems || []).map(String));
 
   // the copies are read scoped and then pulled all-or-nothing, so one going elsewhere in
   // between makes the write miss entirely rather than half-succeed and over-credit
   let removed = [];
+  let kept = 0;
   let before = null;
   for (let attempt = 0; attempt < ATTEMPTS && !before; attempt++) {
-    removed = await entriesFor(userId, { uniqueIds: idList });
+    const held = await entriesFor(userId, { uniqueIds: idList });
+    removed = held.filter((entry) => !favorites.has(String(entry._id)));
+    kept = held.length - removed.length;
     if (!removed.length) {
       const owner = await User.findById(userId).select("walletBalance");
       if (!owner) return null;
-      return { sold: 0, value: 0, walletBalance: owner.walletBalance, removed: [] };
+      return { sold: 0, value: 0, walletBalance: owner.walletBalance, removed: [], kept };
     }
     const present = removed.map((entry) => entry.uniqueId);
     before = await User.findOneAndUpdate(
@@ -46,7 +55,7 @@ async function sellUniqueIds(userId, ids, extraMeta = {}) {
   if (!before) {
     const owner = await User.findById(userId).select("walletBalance");
     if (!owner) return null;
-    return { sold: 0, value: 0, walletBalance: owner.walletBalance, removed: [] };
+    return { sold: 0, value: 0, walletBalance: owner.walletBalance, removed: [], kept };
   }
 
   // authoritative prices from the live catalog, never from a client-sent snapshot
@@ -74,7 +83,7 @@ async function sellUniqueIds(userId, ids, extraMeta = {}) {
   // selling down a pinned character loses the board too, and the profile shows both
   await fandom.touch(userId, itemIds);
 
-  return { sold: removed.length, value, walletBalance, removed };
+  return { sold: removed.length, value, walletBalance, removed, kept };
 }
 
 module.exports = { sellUniqueIds };

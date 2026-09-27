@@ -27,7 +27,7 @@ const QuicksellModal: React.FC<Props> = ({ open, setOpen, preview, committing, o
           <h3 className="text-lg font-semibold text-ink">{i18n.t("collections.sellDuplicates")}</h3>
         </div>
         <p className="text-sm text-ink-muted">
-          {i18n.t("collections.keepsOneOfEach")}{" "}
+          {i18n.t("collections.keepsOneOfEach")} {i18n.t("collections.favoritesNeverQuicksold")}{" "}
           <span className="text-red-400">{i18n.t("collections.thisCannotBeUndone")}</span>
         </p>
 

@@ -116,8 +116,12 @@ const CasePage = () => {
     }, 8000);
   }
 
+  // a favorite that drops stays: the sell-all prices and sells everything else
+  const favorites = new Set<string>(userData?.favoriteItems ?? []);
+  const toSell = openedItems.filter((i) => !favorites.has(i._id));
+
   const sellOpened = async () => {
-    const ids = openedItems.map((i) => i.uniqueId).filter(Boolean);
+    const ids = toSell.map((i) => i.uniqueId).filter(Boolean);
     if (!ids.length || sellingAll || loadingButton) return;
     setSellingAll(true);
     try {
@@ -126,6 +130,9 @@ const CasePage = () => {
         toogleUserData({ ...userData, walletBalance: res.walletBalance });
       }
       toast.success(res.message, { theme: "dark" });
+      if (openedItems.length > toSell.length) {
+        toast.info(i18n.t("casePage.keptFavorites", { count: openedItems.length - toSell.length }), { theme: "dark" });
+      }
       setShowPrize(false);
       setAnimationAux2(false);
       // clear the fly-away too, or the idle case image replays it and holds at opacity 0
@@ -137,7 +144,7 @@ const CasePage = () => {
     setSellingAll(false);
   };
 
-  const openedSellTotal = openedItems.reduce((s, i) => s + (i.sellValue || 0), 0);
+  const openedSellTotal = toSell.reduce((s, i) => s + (i.sellValue || 0), 0);
 
   // the gift covers the open only while it has enough left for the chosen quantity
   const freeNow = !!grant && grant.remaining >= quantity;
@@ -235,7 +242,7 @@ const CasePage = () => {
               disabled={sellingAll}
               className="px-4 py-2 rounded bg-[#281D3F] hover:bg-green-700 font-semibold transition-all disabled:opacity-50"
             >
-              {sellingAll ? "Selling..." : <span className="flex items-center gap-1">Sell {openedItems.length > 1 ? "all " : ""}<Monetary value={openedSellTotal} /></span>}
+              {sellingAll ? "Selling..." : <span className="flex items-center gap-1">Sell {toSell.length > 1 ? "all " : ""}<Monetary value={openedSellTotal} /></span>}
             </button>
           )}
 

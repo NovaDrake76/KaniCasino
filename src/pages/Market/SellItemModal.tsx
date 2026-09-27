@@ -7,6 +7,7 @@ import MainButton from "../../components/MainButton";
 import Monetary from "../../components/Monetary";
 import PriceChart from "../../components/PriceChart";
 import { toast } from "react-toastify";
+import { BsStarFill } from "react-icons/bs";
 import Skeleton from "react-loading-skeleton";
 import Pagination from "../../components/Pagination";
 import Filters from "../../components/InventoryFilters";
@@ -209,15 +210,25 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
             <div className="flex flex-wrap justify-center gap-3">
               {invItems.map((item, index) => {
                 const isSelected = selectedItem && selectedItem.uniqueId === item.uniqueId;
+                const favorite = !!userData?.favoriteItems?.includes(item._id);
                 return (
                   <div
                     key={item._id + index}
-                    onClick={() => { setSelectedItem(item); setQuantityText("1"); }}
-                    className={`rounded-lg cursor-pointer transition-all p-1 border-2 ${
-                      isSelected ? "border-accent bg-accent/10" : "border-transparent hover:bg-surface"
+                    onClick={() => {
+                      if (favorite) {
+                        toast.info(i18n.t("common.favoriteLocked"), { theme: "dark" });
+                        return;
+                      }
+                      setSelectedItem(item);
+                      setQuantityText("1");
+                    }}
+                    title={favorite ? i18n.t("common.favoriteLocked") : undefined}
+                    className={`relative rounded-lg transition-all p-1 border-2 ${
+                      favorite ? "cursor-not-allowed opacity-50 border-transparent" : `cursor-pointer ${isSelected ? "border-accent bg-accent/10" : "border-transparent hover:bg-surface"}`
                     }`}
                   >
                     <Item item={item} size="small" />
+                    {favorite && <BsStarFill className="absolute top-2 right-2 z-20 text-accent-gold" />}
                   </div>
                 );
               })}

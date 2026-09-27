@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GiOpenChest } from "react-icons/gi";
 import { MdOutlineSell, MdStorefront } from "react-icons/md";
@@ -6,6 +7,7 @@ import MainButton from "../../../components/MainButton";
 import Monetary from "../../../components/Monetary";
 import ItemCard from "./ItemCard";
 import { AlbumItem } from "../../../services/collections/CollectionService";
+import UserContext from "../../../UserContext";
 import i18n from "../../../i18n";
 
 interface Props {
@@ -28,11 +30,13 @@ const ItemDetailModal: React.FC<Props> = ({
   onSellOne,
 }) => {
   const navigate = useNavigate();
+  const { userData } = useContext(UserContext);
 
   if (!item) return null;
 
   const locked = item.owned === 0;
-  const canSell = isOwner && item.owned > 0 && item.sellValue > 0 && item.uniqueIds.length > 0;
+  const favorite = isOwner && item.owned > 0 && !!userData?.favoriteItems?.includes(item._id);
+  const canSell = isOwner && !favorite && item.owned > 0 && item.sellValue > 0 && item.uniqueIds.length > 0;
 
   return (
     <Modal open={open} setOpen={setOpen} width="420px">
@@ -61,6 +65,7 @@ const ItemDetailModal: React.FC<Props> = ({
             icon={<MdStorefront />}
             type="info"
           />
+          {favorite && <p className="text-center text-xs text-accent-gold">{i18n.t("common.favoriteLocked")}</p>}
           {canSell && (
             <MainButton
               text={<span className="flex items-center gap-1">{i18n.t("collections.sellOneFor")} <Monetary value={item.sellValue} /></span>}
