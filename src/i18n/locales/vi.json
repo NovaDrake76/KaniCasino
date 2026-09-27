@@ -425,6 +425,7 @@
   "common": {
     "allRarities": "Mọi độ hiếm",
     "andMoreFromThisOpening": "và {{count}} vật phẩm khác từ cùng lần mở",
+    "anyQuantity": "Mọi số lượng",
     "ascending": "Tăng dần",
     "avatar": "ảnh đại diện",
     "balance": "Số dư",
@@ -447,6 +448,7 @@
     "max": "Tối đa",
     "modal": "cửa sổ",
     "mostCommonFirst": "Phổ biến trước",
+    "mostCopiesFirst": "Nhiều bản nhất trước",
     "mostRareFirst": "Hiếm nhất trước",
     "mostRecent": "Mới nhất",
     "noSalesRecordedIn": "Chưa ghi nhận giao dịch nào trong khoảng thời gian này.",
@@ -454,6 +456,7 @@
     "playAndWin": "Chơi và thắng",
     "podium": "bục trao giải",
     "priceHistory": "lịch sử giá",
+    "quantityAtLeast": "Từ {{count}} bản",
     "reconnectingToTheServer": "Đang kết nối lại với máy chủ...",
     "search": "Tìm kiếm",
     "sell": "Bán",

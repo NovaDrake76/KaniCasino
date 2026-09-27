@@ -989,9 +989,13 @@ router.get("/inventory/:userId", async (req, res) => {
     // 1200 pages and 8, and it collapses before the sort rather than after it.
     const grouped = req.query.grouped === "true";
     const withIds = grouped && req.query.withIds === "true";
+    // "hold at least n": a stack is one row, so it only means something grouped
+    const minQuantity = grouped ? Math.floor(Number(req.query.minQuantity)) || 0 : 0;
+    const quantityMatch = minQuantity > 1 ? { $match: { quantity: { $gte: minQuantity } } } : null;
 
     if (grouped) {
-      countPipeline.push({ $group: { _id: "$inventory._id" } });
+      countPipeline.push({ $group: { _id: "$inventory._id", quantity: { $sum: 1 } } });
+      if (quantityMatch) countPipeline.push(quantityMatch);
     }
     countPipeline.push({ $count: "totalItems" });
 
@@ -1037,6 +1041,7 @@ router.get("/inventory/:userId", async (req, res) => {
           ...(withIds ? { uniqueIds: { $push: "$inventory.uniqueId" } } : {}),
         },
       });
+      if (quantityMatch) pipeline.push(quantityMatch);
       if (withIds) {
         // capped: a stack can run to hundreds of copies and no screen picks that many
         // one at a time, so shipping the whole list would be pure payload
@@ -1048,6 +1053,7 @@ router.get("/inventory/:userId", async (req, res) => {
         newer: { createdAt: -1, _id: 1 },
         mostRare: { rarity: -1, oldestAt: -1, _id: 1 },
         mostCommon: { rarity: 1, oldestAt: -1, _id: 1 },
+        mostCopies: { quantity: -1, oldestAt: -1, _id: 1 },
       };
       pipeline.push({ $sort: (sortBy && GROUPED_SORTS[sortBy]) || GROUPED_SORTS.newer });
       pipeline.push({ $skip: (page - 1) * ITEMS_PER_PAGE }, { $limit: ITEMS_PER_PAGE });

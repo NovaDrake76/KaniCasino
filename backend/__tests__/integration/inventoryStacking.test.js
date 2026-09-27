@@ -269,3 +269,37 @@ describe("the rarity filter", () => {
     expect(res.body.totalPages).toBe(0);
   });
 });
+
+describe("filtering by how many copies are held", () => {
+  const ids = (res) => res.body.items.map((i) => String(i._id));
+
+  it("keeps only the stacks of at least that many, and pages count only those", async () => {
+    const five = await makeItem();
+    const two = await makeItem();
+    const one = await makeItem();
+    const user = await makeUserWith([...copies(five, 5), ...copies(two, 2), ...copies(one, 1)]);
+
+    const dupes = await request(app).get(`/users/inventory/${user._id}?grouped=true&minQuantity=2`);
+    expect(dupes.status).toBe(200);
+    expect(ids(dupes).sort()).toEqual([String(five._id), String(two._id)].sort());
+    expect(dupes.body.totalPages).toBe(1);
+
+    const many = await request(app).get(`/users/inventory/${user._id}?grouped=true&minQuantity=5`);
+    expect(ids(many)).toEqual([String(five._id)]);
+
+    const none = await request(app).get(`/users/inventory/${user._id}?grouped=true&minQuantity=10`);
+    expect(none.body.items).toEqual([]);
+    expect(none.body.totalPages).toBe(0);
+  });
+
+  it("sorts the biggest stacks first, and ignores a threshold that is not a number", async () => {
+    const one = await makeItem();
+    const five = await makeItem();
+    const two = await makeItem();
+    const user = await makeUserWith([...copies(one, 1), ...copies(five, 5), ...copies(two, 2)]);
+
+    const res = await request(app).get(`/users/inventory/${user._id}?grouped=true&sortBy=mostCopies&minQuantity=lots`);
+    expect(res.status).toBe(200);
+    expect(ids(res)).toEqual([String(five._id), String(two._id), String(one._id)]);
+  });
+});

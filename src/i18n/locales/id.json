@@ -425,6 +425,7 @@
   "common": {
     "allRarities": "Semua Kelangkaan",
     "andMoreFromThisOpening": "dan {{count}} lagi dari pembukaan yang sama",
+    "anyQuantity": "Semua Jumlah",
     "ascending": "Naik",
     "avatar": "avatar",
     "balance": "Uang",
@@ -447,6 +448,7 @@
     "max": "Maks",
     "modal": "modal",
     "mostCommonFirst": "Yang Paling B aja Terdahulu",
+    "mostCopiesFirst": "Salinan Terbanyak Pertama",
     "mostRareFirst": "Paling Langka Pertama",
     "mostRecent": "Terbaru",
     "noSalesRecordedIn": "Belum ada penjualan yang tercatat pada periode ini.",
@@ -454,6 +456,7 @@
     "playAndWin": "Mainkan dan menangkan",
     "podium": "podium",
     "priceHistory": "Mutasi keuangan",
+    "quantityAtLeast": "{{count}}+ Salinan",
     "reconnectingToTheServer": "Menghubungkan ulang ke server...",
     "search": "Cari",
     "sell": "Jual",

@@ -425,6 +425,7 @@
   "common": {
     "allRarities": "全部稀有度",
     "andMoreFromThisOpening": "以及同一次开箱的另外 {{count}} 件",
+    "anyQuantity": "任意数量",
     "ascending": "升序",
     "avatar": "头像",
     "balance": "余额",
@@ -447,6 +448,7 @@
     "max": "最大",
     "modal": "弹窗",
     "mostCommonFirst": "最普通的优先",
+    "mostCopiesFirst": "数量最多的优先",
     "mostRareFirst": "最稀有的优先",
     "mostRecent": "最新",
     "noSalesRecordedIn": "该时间段内暂无成交记录。",
@@ -454,6 +456,7 @@
     "playAndWin": "玩游戏，赢奖励",
     "podium": "领奖台",
     "priceHistory": "价格走势",
+    "quantityAtLeast": "至少 {{count}} 件",
     "reconnectingToTheServer": "正在重新连接服务器...",
     "search": "搜索",
     "sell": "出售",

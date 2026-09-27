@@ -1,18 +1,23 @@
 import { BsSearch } from 'react-icons/bs';
 import i18n from "../i18n";
 
+// the least copies a stack must have to show; only inventories grouped into stacks send it
+const QUANTITIES = [2, 5, 10, 25];
+
 interface Filters {
     filters: {
         name: string;
         rarity: string;
         sortBy: string;
         order: string;
+        minQuantity?: string;
     };
     setFilters: React.Dispatch<React.SetStateAction<{
         name: string;
         rarity: string;
         sortBy: string;
         order: string;
+        minQuantity?: string;
     }>>;
     onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 
@@ -49,6 +54,18 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             <option value="5">{i18n.t("rarity.5")}</option>
         </select>
 
+        <select
+            value={filters.minQuantity || ""}
+            onChange={(e) => setFilters((prev) => ({ ...prev, minQuantity: e.target.value }))}
+            aria-label={i18n.t("common.anyQuantity")}
+            className="px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+        >
+            <option value="">{i18n.t("common.anyQuantity")}</option>
+            {QUANTITIES.map((n) => (
+                <option key={n} value={String(n)}>{i18n.t("common.quantityAtLeast", { count: n })}</option>
+            ))}
+        </select>
+
         {/* Sort by */}
         <select
             value={filters.sortBy}
@@ -60,6 +77,7 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
             <option value="older">{i18n.t("common.oldestFirst")}</option>
             <option value="mostRare">{i18n.t("common.mostRareFirst")}</option>
             <option value="mostCommon">{i18n.t("common.mostCommonFirst")}</option>
+            <option value="mostCopies">{i18n.t("common.mostCopiesFirst")}</option>
         </select>
 
 
@@ -77,7 +95,7 @@ const InventoryFilters: React.FC<Filters> = ({ filters, setFilters, onKeyPress }
 
         {/* Button to clear all filters */}
         <button
-            onClick={() => setFilters({ name: '', rarity: '', sortBy: '', order: 'asc' })}
+            onClick={() => setFilters({ name: '', rarity: '', sortBy: '', order: 'asc', minQuantity: '' })}
             className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200"
         >
             {i18n.t("common.clearFilters")}
