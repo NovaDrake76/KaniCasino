@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "Bumm! Roll prüfen",
     "gems": "Edelsteine",
     "mines": "Minen",
+    "nextGemPays": "Nächster Edelstein zahlt {{multiplier}}×",
     "randomTile": "Zufälliges Feld",
     "revealATile": "Deck ein Feld auf",
     "tilesPerRound": "Felder pro Runde"

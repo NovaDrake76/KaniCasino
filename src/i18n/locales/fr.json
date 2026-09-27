@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "Boum ! Vérifier le tirage",
     "gems": "Gemmes",
     "mines": "Mines",
+    "nextGemPays": "La prochaine gemme paie {{multiplier}}×",
     "randomTile": "Case au hasard",
     "revealATile": "Révélez une case",
     "tilesPerRound": "Cases par manche"

@@ -1826,6 +1826,7 @@
     "boomVerifyRoll": "¡Boom! Verificar tirada",
     "gems": "Gemas",
     "mines": "Minas",
+    "nextGemPays": "La próxima gema paga {{multiplier}}×",
     "randomTile": "Casilla aleatoria",
     "revealATile": "Descubre una casilla",
     "tilesPerRound": "Casillas por ronda"
