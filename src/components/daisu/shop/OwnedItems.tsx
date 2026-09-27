@@ -13,7 +13,8 @@ interface Props {
 
 const t = (key: string, vars?: Record<string, string | number>) => i18n.t(`daisu.shop.${key}`, vars);
 
-// what is held, small, under her bonus: one wrapping row of pictures with the xp bonus they add up to, names on request
+// what is held, small, under her bonus: one wrapping row of pictures with the xp bonus they add up to, names on request.
+// its tips open upward: the strip ends her room's column, and a tip hanging below it grew the page and flickered a scrollbar
 const OwnedItems = ({ shop, onPick }: Props) => {
   const [open, setOpen] = useState(false);
   const items = shop ? shop.items.filter((i) => i.owned) : [];
@@ -51,7 +52,7 @@ const OwnedItems = ({ shop, onPick }: Props) => {
             >
               <ShopArt item={item.key} game={item.game} size={32} />
               {open && <span className="text-[11px] font-semibold text-ink-soft">{words.name}</span>}
-              <Tip title={words.name} line={words.what} status={status.tip} tone={status.tone} />
+              <Tip title={words.name} line={words.what} status={status.tip} tone={status.tone} above />
             </button>
           );
         })}

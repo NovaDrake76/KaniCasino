@@ -56,6 +56,8 @@ describe("her shop shelf", () => {
     fireEvent.click(screen.getByRole("button", { name: /show names/i }));
     // the name on the strip and in its tooltip
     expect(screen.getAllByText("Lucky Pencil")).toHaveLength(2);
+    // opening below, the tip grew the room and a scrollbar came and went under the cursor
+    expect(screen.getAllByRole("tooltip", { hidden: true })[0].className).toContain("bottom-[calc(100%+8px)]");
   });
 
   it("stands a ? in for the items still hidden, two at most, and none once everything is on the shelf", () => {
