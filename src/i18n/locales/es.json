@@ -425,6 +425,7 @@
   "common": {
     "allRarities": "Todas las rarezas",
     "andMoreFromThisOpening": "y {{count}} más de la misma apertura",
+    "anyQuantity": "Cualquier cantidad",
     "ascending": "Ascendente",
     "avatar": "avatar",
     "balance": "Saldo",
@@ -447,6 +448,7 @@
     "max": "Máx",
     "modal": "ventana",
     "mostCommonFirst": "Más comunes primero",
+    "mostCopiesFirst": "Más copias primero",
     "mostRareFirst": "Más raros primero",
     "mostRecent": "Más recientes",
     "noSalesRecordedIn": "Todavía no hay ventas registradas en este periodo.",
@@ -454,6 +456,7 @@
     "playAndWin": "Juega y gana",
     "podium": "podio",
     "priceHistory": "historial de precios",
+    "quantityAtLeast": "{{count}}+ copias",
     "reconnectingToTheServer": "Reconectando con el servidor...",
     "search": "Buscar",
     "sell": "Vender",

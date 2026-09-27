@@ -59,8 +59,9 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
   const [history, setHistory] = useState<ItemHistory | null>(null);
   const [loadingHistory, setLoadingHistory] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [filters, setFilters] = useState({ name: "", rarity: "", sortBy: "", order: "asc" });
+  const [filters, setFilters] = useState<{ name: string; rarity: string; sortBy: string; order: string; minQuantity?: string }>({ name: "", rarity: "", sortBy: "", order: "asc" });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
+  const filtersTouched = useRef(false);
 
   const { userData } = useContext(UserContext);
 
@@ -156,15 +157,19 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
     }
   };
 
+  // the first run is the mount; waiting for items instead left every change after an empty result unanswered
   useEffect(() => {
-    if (invItems?.length > 0) {
-      delayDebounceFn.current = setTimeout(() => {
-        getInventoryInfo();
-      }, 1000);
-      return () => {
-        if (delayDebounceFn.current) clearTimeout(delayDebounceFn.current);
-      };
+    if (!filtersTouched.current) {
+      filtersTouched.current = true;
+      return;
     }
+    delayDebounceFn.current = setTimeout(() => {
+      if (page !== 1) setPage(1);
+      else getInventoryInfo();
+    }, 1000);
+    return () => {
+      if (delayDebounceFn.current) clearTimeout(delayDebounceFn.current);
+    };
   }, [filters]);
 
   useEffect(() => {

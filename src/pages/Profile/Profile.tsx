@@ -51,13 +51,14 @@ const Profile = () => {
   const [page, setPage] = useState<number>(1);
   const activeTab = resolveTab(searchParams.get("tab"), isSameUser);
   const [seenTabs, setSeenTabs] = useState<string[]>([]);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{ name: string; rarity: string; sortBy: string; order: string; minQuantity?: string }>({
     name: '',
     rarity: '',
     sortBy: 'newer',
     order: 'asc',
   });
   const delayDebounceFn = useRef<NodeJS.Timeout | null>(null);
+  const filtersTouched = useRef(false);
   const navigate = useNavigate();
   const collectionsLocked = useLocked("collectionBook");
   const affiliatesLocked = useLocked("affiliateCard");
@@ -70,17 +71,23 @@ const Profile = () => {
   // known, so whatever a player copies from here carries their name
   const sameProfile = Boolean(user) && (id === canonical || id === resolvedId);
 
+  // the first run is the mount, which the page effect already loads. it used to wait for items instead,
+  // so a filter that matched nothing left every later change unanswered
   useEffect(() => {
-    if (invItems?.length > 0) {
-      delayDebounceFn.current = setTimeout(() => {
-        getInventoryInfo();
-      }, 1000);
-      return () => {
-        if (delayDebounceFn.current) {
-          clearTimeout(delayDebounceFn.current);
-        }
-      };
+    if (!filtersTouched.current) {
+      filtersTouched.current = true;
+      return;
     }
+    delayDebounceFn.current = setTimeout(() => {
+      // a narrower set may not reach the page the player was on, so it starts from the first
+      if (page !== 1) setPage(1);
+      else getInventoryInfo();
+    }, 1000);
+    return () => {
+      if (delayDebounceFn.current) {
+        clearTimeout(delayDebounceFn.current);
+      }
+    };
   }, [filters]);
 
 

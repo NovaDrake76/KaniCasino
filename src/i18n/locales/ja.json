@@ -425,6 +425,7 @@
   "common": {
     "allRarities": "すべてのレアリティ",
     "andMoreFromThisOpening": "同じ開封からさらに{{count}}個",
+    "anyQuantity": "すべての所持数",
     "ascending": "昇順",
     "avatar": "アバター",
     "balance": "残高",
@@ -447,6 +448,7 @@
     "max": "最大",
     "modal": "ウィンドウ",
     "mostCommonFirst": "コモン順",
+    "mostCopiesFirst": "所持数の多い順",
     "mostRareFirst": "レア順",
     "mostRecent": "新着順",
     "noSalesRecordedIn": "この期間の取引はまだ記録されていません。",
@@ -454,6 +456,7 @@
     "playAndWin": "遊んで勝とう",
     "podium": "表彰台",
     "priceHistory": "価格の推移",
+    "quantityAtLeast": "{{count}}個以上",
     "reconnectingToTheServer": "サーバーに再接続しています...",
     "search": "検索",
     "sell": "売却",
