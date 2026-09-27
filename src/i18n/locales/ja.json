@@ -1754,6 +1754,7 @@
     "wins": "勝ち"
   },
   "market": {
+    "allItems": "すべてのアイテム",
     "allRarities": "すべてのレアリティ",
     "anythingAlreadyListedAt": "あなたの提示額以下ですでに出品されている分はその場で購入されます（支払い済みで返金されません）。約定しなかった残りだけが担保として預かられ、キャンセル時に返金されます。",
     "bestBuyOrder": "最高の買い注文",
@@ -1771,11 +1772,15 @@
     "couldNotListThe": "アイテムを出品できませんでした",
     "couldNotLoadMarket": "このアイテムのマーケットデータを読み込めませんでした。",
     "couldNotPlaceThe": "注文を作成できませんでした",
+    "couldNotRemoveListing": "出品を取り下げられませんでした。売れたばかりかもしれません。",
     "heldAsEscrowAnd": "担保として預かり、キャンセル時には全額返金します。これで注文が成立したときに必ず支払えます。",
     "houseFloor": "ハウス価格",
     "itemListedForSale": "アイテムを出品しました！",
     "lifetime": "全期間",
     "listItem": "出品する",
+    "listedCount_one": "{{count}} 件出品中",
+    "listedCount_other": "{{count}} 件出品中",
+    "listingRemoved": "出品を取り下げました。アイテムはインベントリに戻りました。",
     "lowestListing": "最安の出品",
     "marketplace": "マーケット",
     "matchLowest": "最安値に合わせる",
@@ -1785,6 +1790,7 @@
     "medianSalePrices": "取引価格の中央値",
     "month": "月",
     "mostListings": "出品数が多い順",
+    "myListings": "自分の出品",
     "noBids": "入札なし",
     "noItemsToSell": "売却できるアイテムがありません。",
     "noListings": "出品なし",
@@ -1792,6 +1798,7 @@
     "nobodyIsBiddingOn": "このアイテムにはまだ入札がありません。",
     "nobodyIsSellingThis": "現在このアイテムを出品している人はいません。",
     "noneListed": "出品なし",
+    "nothingListedYet": "現在出品中のアイテムはありません。",
     "nothingMatchesThoseFilters": "この条件に合うものはありません。",
     "onSaleOnly": "出品中のみ",
     "orderCancelled": "注文をキャンセルしました。K₽{{amount}} を返金しました",
@@ -1808,6 +1815,7 @@
     "quantityMustBeBetween": "数量は 1 〜 20 の範囲で指定してください",
     "quickPrice": "クイック価格：",
     "recentlyListed": "新着の出品",
+    "removeListing": "取り下げ",
     "retry": "再試行",
     "searchItems": "アイテムを検索",
     "sellAnItem": "アイテムを売る",
@@ -1820,7 +1828,8 @@
     "year": "年",
     "youHaveNoBuy": "このアイテムの買い注文はありません。",
     "youOwnCount": "所持数 {{count}}",
-    "yourOrders": "あなたの注文"
+    "yourOrders": "あなたの注文",
+    "yourPrice": "出品価格"
   },
   "mines": {
     "boomVerifyRoll": "ドカン！ ロールを検証",

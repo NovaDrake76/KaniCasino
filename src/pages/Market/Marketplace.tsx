@@ -2,13 +2,14 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import MarketItem from "./MarketItem";
 import { getItems, getMyOrders, cancelBuyOrder, BuyOrder } from "../../services/market/MarketService";
 import SellItemModal from "./SellItemModal";
+import MyListings from "./MyListings";
 import Skeleton from "react-loading-skeleton";
 import UserContext from "../../UserContext";
 import Pagination from "../../components/Pagination";
 import Monetary from "../../components/Monetary";
 import Filters, { MarketFilters } from "./Filters";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { FiLock } from "react-icons/fi";
 import LockedBanner from "../../components/daisu/shop/LockedBanner";
 import { useLocked } from "../../components/daisu/shop/useLocked";
@@ -26,6 +27,18 @@ interface MarketRow {
   sellValue?: number;
 }
 
+const ViewTab = ({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`px-4 h-9 rounded-md text-sm font-semibold transition-colors ${
+      active ? "bg-accent text-white" : "bg-surface-nav text-ink-muted hover:text-ink"
+    }`}
+  >
+    {children}
+  </button>
+);
+
 interface ItemData {
   totalPages: number;
   currentPage: number;
@@ -39,6 +52,7 @@ const Marketplace: React.FC = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [orders, setOrders] = useState<BuyOrder[]>([]);
+  const [listingsVersion, setListingsVersion] = useState(0);
   const [filters, setFilters] = useState<MarketFilters>({
     name: "",
     rarity: "",
@@ -49,6 +63,8 @@ const Marketplace: React.FC = () => {
 
   const { isLogged } = useContext(UserContext);
   const locked = useLocked("tradersLicense");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const mine = isLogged && searchParams.get("view") === "mine";
 
   // a filter change also resets the page, which would fire a second overlapping
   // request; the sequence guard makes sure only the newest response is rendered
@@ -91,6 +107,7 @@ const Marketplace: React.FC = () => {
     if (refresh) {
       fetchItems();
       fetchOrders();
+      setListingsVersion((v) => v + 1);
       setRefresh(false);
     }
   }, [refresh, fetchItems, fetchOrders]);
@@ -138,7 +155,18 @@ const Marketplace: React.FC = () => {
 
         {locked && <LockedBanner unlock="tradersLicense" />}
 
-        <Filters filters={filters} setFilters={setFilters} />
+        {isLogged && (
+          <div className="flex gap-2">
+            <ViewTab active={!mine} onClick={() => setSearchParams({})}>
+              {i18n.t("market.allItems")}
+            </ViewTab>
+            <ViewTab active={mine} onClick={() => setSearchParams({ view: "mine" })}>
+              {i18n.t("market.myListings")}
+            </ViewTab>
+          </div>
+        )}
+
+        {!mine && <Filters filters={filters} setFilters={setFilters} />}
 
         {/* your open buy orders, so escrowed KP is never invisible */}
         {isLogged && orders.length > 0 && (
@@ -176,7 +204,9 @@ const Marketplace: React.FC = () => {
         {/* the cards are a fixed 200px, so a plain flex-wrap packs them left and leaves the
             leftover width as a gap on the right. an auto-fill grid centres the columns it
             fits, and a short last row still lines up with the ones above it. */}
-        {loading ? (
+        {mine ? (
+          <MyListings key={listingsVersion} onChanged={fetchItems} />
+        ) : loading ? (
           <div className="grid grid-cols-[repeat(auto-fill,200px)] justify-center gap-4">
             {Array(12)
               .fill(0)
@@ -196,7 +226,7 @@ const Marketplace: React.FC = () => {
           </div>
         )}
 
-        {items?.totalPages && items.totalPages > 1 ? (
+        {!mine && items?.totalPages && items.totalPages > 1 ? (
           <div className="flex justify-center">
             <Pagination totalPages={items.totalPages} currentPage={page} setPage={setPage} />
           </div>

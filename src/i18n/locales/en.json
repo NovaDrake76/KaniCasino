@@ -1754,6 +1754,7 @@
     "wins": "Wins"
   },
   "market": {
+    "allItems": "All items",
     "allRarities": "All rarities",
     "anythingAlreadyListedAt": "Anything already listed at or below your bid is bought immediately (spent, not refundable). Only the unfilled rest is held as escrow and refunded if you cancel.",
     "bestBuyOrder": "Best buy order",
@@ -1771,11 +1772,15 @@
     "couldNotListThe": "Could not list the item",
     "couldNotLoadMarket": "Could not load market data for this item.",
     "couldNotPlaceThe": "Could not place the order",
+    "couldNotRemoveListing": "Could not remove that listing. It may have just sold.",
     "heldAsEscrowAnd": "Held as escrow and refunded in full if you cancel. This guarantees your order can pay when it matches.",
     "houseFloor": "House floor",
     "itemListedForSale": "Item listed for sale!",
     "lifetime": "Lifetime",
     "listItem": "List item",
+    "listedCount_one": "{{count}} item listed",
+    "listedCount_other": "{{count}} items listed",
+    "listingRemoved": "Listing removed. The item is back in your inventory.",
     "lowestListing": "Lowest listing",
     "marketplace": "Marketplace",
     "matchLowest": "Match lowest",
@@ -1785,6 +1790,7 @@
     "medianSalePrices": "Median sale prices",
     "month": "Month",
     "mostListings": "Most listings",
+    "myListings": "My listings",
     "noBids": "No bids",
     "noItemsToSell": "No items to sell.",
     "noListings": "No listings",
@@ -1792,6 +1798,7 @@
     "nobodyIsBiddingOn": "Nobody is bidding on this item yet.",
     "nobodyIsSellingThis": "Nobody is selling this item right now.",
     "noneListed": "None listed",
+    "nothingListedYet": "You have nothing listed for sale right now.",
     "nothingMatchesThoseFilters": "Nothing matches those filters.",
     "onSaleOnly": "On sale only",
     "orderCancelled": "Order cancelled, K₽{{amount}} refunded",
@@ -1808,6 +1815,7 @@
     "quantityMustBeBetween": "Quantity must be between 1 and 20",
     "quickPrice": "Quick price:",
     "recentlyListed": "Recently listed",
+    "removeListing": "Remove",
     "retry": "Retry",
     "searchItems": "Search items",
     "sellAnItem": "Sell an item",
@@ -1820,7 +1828,8 @@
     "year": "Year",
     "youHaveNoBuy": "You have no buy orders for this item.",
     "youOwnCount": "You own {{count}}",
-    "yourOrders": "Your orders"
+    "yourOrders": "Your orders",
+    "yourPrice": "Your price"
   },
   "mines": {
     "boomVerifyRoll": "Boom! Verify roll",

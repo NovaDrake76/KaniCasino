@@ -1754,6 +1754,7 @@
     "wins": "Vitórias"
   },
   "market": {
+    "allItems": "Todos os itens",
     "allRarities": "Todas as raridades",
     "anythingAlreadyListedAt": "Tudo o que já estiver anunciado por até o seu lance é comprado na hora (gasto, sem reembolso). Só o restante não preenchido fica como garantia e é devolvido se você cancelar.",
     "bestBuyOrder": "Melhor ordem de compra",
@@ -1771,11 +1772,15 @@
     "couldNotListThe": "Não foi possível anunciar o item",
     "couldNotLoadMarket": "Não foi possível carregar os dados de mercado deste item.",
     "couldNotPlaceThe": "Não foi possível criar a ordem",
+    "couldNotRemoveListing": "Não foi possível remover o anúncio. Ele pode ter acabado de ser vendido.",
     "heldAsEscrowAnd": "Fica retido como garantia e é devolvido integralmente se você cancelar. Isso garante que a ordem consiga pagar quando encontrar par.",
     "houseFloor": "Preço da casa",
     "itemListedForSale": "Item colocado à venda!",
     "lifetime": "Sempre",
     "listItem": "Anunciar item",
+    "listedCount_one": "{{count}} item à venda",
+    "listedCount_other": "{{count}} itens à venda",
+    "listingRemoved": "Anúncio removido. O item voltou para o seu inventário.",
     "lowestListing": "Menor anúncio",
     "marketplace": "Mercado",
     "matchLowest": "Igualar o menor",
@@ -1785,6 +1790,7 @@
     "medianSalePrices": "Preços medianos de venda",
     "month": "Mês",
     "mostListings": "Mais anúncios",
+    "myListings": "Meus anúncios",
     "noBids": "Sem lances",
     "noItemsToSell": "Nenhum item para vender.",
     "noListings": "Sem anúncios",
@@ -1792,6 +1798,7 @@
     "nobodyIsBiddingOn": "Ninguém está dando lance neste item ainda.",
     "nobodyIsSellingThis": "Ninguém está vendendo este item agora.",
     "noneListed": "Nenhum anunciado",
+    "nothingListedYet": "Você não tem nada à venda no momento.",
     "nothingMatchesThoseFilters": "Nada corresponde a esses filtros.",
     "onSaleOnly": "Somente à venda",
     "orderCancelled": "Ordem cancelada, K₽{{amount}} devolvidos",
@@ -1808,6 +1815,7 @@
     "quantityMustBeBetween": "A quantidade deve ficar entre 1 e 20",
     "quickPrice": "Preço rápido:",
     "recentlyListed": "Anunciados recentemente",
+    "removeListing": "Remover",
     "retry": "Tentar de novo",
     "searchItems": "Buscar itens",
     "sellAnItem": "Vender um item",
@@ -1820,7 +1828,8 @@
     "year": "Ano",
     "youHaveNoBuy": "Você não tem ordens de compra para este item.",
     "youOwnCount": "Você tem {{count}}",
-    "yourOrders": "Suas ordens"
+    "yourOrders": "Suas ordens",
+    "yourPrice": "Seu preço"
   },
   "mines": {
     "boomVerifyRoll": "Boom! Verificar roll",

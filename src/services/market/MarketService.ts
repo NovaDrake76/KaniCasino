@@ -35,6 +35,29 @@ export interface BuyOrder {
     createdAt: string;
 }
 
+export interface MyListing {
+    _id: string;
+    item: string;
+    uniqueId: string;
+    price: number;
+    itemName: string;
+    itemImage: string;
+    rarity: string;
+    createdAt: string;
+}
+
+export interface MyListingsPage {
+    total: number;
+    totalPages: number;
+    currentPage: number;
+    listings: MyListing[];
+}
+
+export async function getMyListings(page: number): Promise<MyListingsPage> {
+    const response = await api.get(`/marketplace/listings/me`, { params: { page } });
+    return response.data;
+}
+
 export async function getItems(page: number, filters: any) {
     const { name, rarity, sortBy, order, listedOnly } = filters;
     const response = await api.get(`/marketplace`, {

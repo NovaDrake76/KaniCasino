@@ -407,3 +407,36 @@ test("the browse grid leaves out the description it never renders", async () => 
   expect(row.name).toBe(item.name);
   expect(row).not.toHaveProperty("description");
 });
+
+describe("my listings", () => {
+  test("a seller sees only their own listings, newest first, and taking one down puts the copy back", async () => {
+    const seller = await makeUser();
+    const item = await makeItem();
+    const older = await makeListing(seller, item, 100);
+    await Marketplace.collection.updateOne({ _id: older._id }, { $set: { createdAt: new Date(Date.now() - 60000) } });
+    const newer = await makeListing(seller, item, 150);
+    await makeListing(await makeUser(), item, 90);
+
+    const res = await request(app).get("/marketplace/listings/me").set(...auth(seller));
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(2);
+    expect(res.body.listings.map((l) => l.uniqueId)).toEqual([newer.uniqueId, older.uniqueId]);
+    expect(res.body.listings[0]).toMatchObject({ price: 150, itemName: item.name, itemImage: item.image });
+
+    const removed = await request(app).delete(`/marketplace/${newer.uniqueId}`).set(...auth(seller));
+    expect(removed.status).toBe(200);
+    const after = await request(app).get("/marketplace/listings/me").set(...auth(seller));
+    expect(after.body.listings.map((l) => l.uniqueId)).toEqual([older.uniqueId]);
+    const { inventory } = await User.findById(seller._id, { inventory: 1 }).lean();
+    expect(inventory.map((e) => e.uniqueId)).toContain(newer.uniqueId);
+  });
+
+  test("nobody can take down someone else's listing, and the list needs a login", async () => {
+    const listing = await makeListing(await makeUser(), await makeItem());
+
+    const res = await request(app).delete(`/marketplace/${listing.uniqueId}`).set(...auth(await makeUser()));
+    expect(res.status).toBe(404);
+    expect(await Marketplace.exists({ _id: listing._id })).toBeTruthy();
+    expect((await request(app).get("/marketplace/listings/me")).status).toBe(401);
+  });
+});

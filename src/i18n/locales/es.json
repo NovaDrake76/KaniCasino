@@ -1754,6 +1754,7 @@
     "wins": "Victorias"
   },
   "market": {
+    "allItems": "Todos los objetos",
     "allRarities": "Todas las rarezas",
     "anythingAlreadyListedAt": "Todo lo que ya esté a la venta por tu puja o menos se compra al instante (gastado, sin reembolso). Solo el resto sin cubrir queda retenido y se devuelve si cancelas.",
     "bestBuyOrder": "Mejor orden de compra",
@@ -1771,11 +1772,15 @@
     "couldNotListThe": "No se pudo publicar el objeto",
     "couldNotLoadMarket": "No se pudieron cargar los datos de mercado de este objeto.",
     "couldNotPlaceThe": "No se pudo crear la orden",
+    "couldNotRemoveListing": "No se pudo retirar el anuncio. Puede que se acabe de vender.",
     "heldAsEscrowAnd": "Queda retenido y se devuelve íntegro si cancelas. Así se garantiza que tu orden pueda pagar cuando encuentre pareja.",
     "houseFloor": "Precio de la casa",
     "itemListedForSale": "¡Objeto puesto a la venta!",
     "lifetime": "Histórico",
     "listItem": "Publicar objeto",
+    "listedCount_one": "{{count}} objeto a la venta",
+    "listedCount_other": "{{count}} objetos a la venta",
+    "listingRemoved": "Anuncio retirado. El objeto volvió a tu inventario.",
     "lowestListing": "Anuncio más bajo",
     "marketplace": "Mercado",
     "matchLowest": "Igualar el más bajo",
@@ -1785,6 +1790,7 @@
     "medianSalePrices": "Precios medianos de venta",
     "month": "Mes",
     "mostListings": "Más anuncios",
+    "myListings": "Mis anuncios",
     "noBids": "Sin pujas",
     "noItemsToSell": "No hay objetos para vender.",
     "noListings": "Sin anuncios",
@@ -1792,6 +1798,7 @@
     "nobodyIsBiddingOn": "Todavía nadie puja por este objeto.",
     "nobodyIsSellingThis": "Ahora mismo nadie vende este objeto.",
     "noneListed": "Ninguno publicado",
+    "nothingListedYet": "Ahora mismo no tienes nada a la venta.",
     "nothingMatchesThoseFilters": "Nada coincide con esos filtros.",
     "onSaleOnly": "Solo a la venta",
     "orderCancelled": "Orden cancelada, K₽{{amount}} devueltos",
@@ -1808,6 +1815,7 @@
     "quantityMustBeBetween": "La cantidad debe estar entre 1 y 20",
     "quickPrice": "Precio rápido:",
     "recentlyListed": "Publicados recientemente",
+    "removeListing": "Retirar",
     "retry": "Reintentar",
     "searchItems": "Buscar objetos",
     "sellAnItem": "Vender un objeto",
@@ -1820,7 +1828,8 @@
     "year": "Año",
     "youHaveNoBuy": "No tienes órdenes de compra para este objeto.",
     "youOwnCount": "Tienes {{count}}",
-    "yourOrders": "Tus órdenes"
+    "yourOrders": "Tus órdenes",
+    "yourPrice": "Tu precio"
   },
   "mines": {
     "boomVerifyRoll": "¡Boom! Verificar tirada",

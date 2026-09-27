@@ -1754,6 +1754,7 @@
     "wins": "胜"
   },
   "market": {
+    "allItems": "全部物品",
     "allRarities": "全部稀有度",
     "anythingAlreadyListedAt": "凡是已挂单且价格不高于你出价的部分会立即成交（已花费，不可退还）。只有未成交的剩余部分会作为保证金冻结，取消时全额退还。",
     "bestBuyOrder": "最高买单",
@@ -1771,11 +1772,15 @@
     "couldNotListThe": "无法上架该物品",
     "couldNotLoadMarket": "无法加载该物品的市场数据。",
     "couldNotPlaceThe": "无法创建订单",
+    "couldNotRemoveListing": "无法下架，可能刚刚已售出。",
     "heldAsEscrowAnd": "作为保证金冻结，取消时全额退还。这样你的订单在成交时一定付得出钱。",
     "houseFloor": "系统底价",
     "itemListedForSale": "物品已上架！",
     "lifetime": "全部时间",
     "listItem": "上架物品",
+    "listedCount_one": "{{count}} 件在售",
+    "listedCount_other": "{{count}} 件在售",
+    "listingRemoved": "已下架，物品已回到你的库存。",
     "lowestListing": "最低挂单",
     "marketplace": "市场",
     "matchLowest": "与最低价持平",
@@ -1785,6 +1790,7 @@
     "medianSalePrices": "成交中位价",
     "month": "月",
     "mostListings": "挂单最多",
+    "myListings": "我的挂单",
     "noBids": "暂无出价",
     "noItemsToSell": "没有可出售的物品。",
     "noListings": "暂无挂单",
@@ -1792,6 +1798,7 @@
     "nobodyIsBiddingOn": "目前还没有人对该物品出价。",
     "nobodyIsSellingThis": "目前没有人出售该物品。",
     "noneListed": "暂无挂单",
+    "nothingListedYet": "你目前没有在售的物品。",
     "nothingMatchesThoseFilters": "没有符合这些筛选条件的结果。",
     "onSaleOnly": "仅显示在售",
     "orderCancelled": "订单已取消，退还 K₽{{amount}}",
@@ -1808,6 +1815,7 @@
     "quantityMustBeBetween": "数量必须在 1 到 20 之间",
     "quickPrice": "快捷定价：",
     "recentlyListed": "最近上架",
+    "removeListing": "下架",
     "retry": "重试",
     "searchItems": "搜索物品",
     "sellAnItem": "出售物品",
@@ -1820,7 +1828,8 @@
     "year": "年",
     "youHaveNoBuy": "你没有该物品的买单。",
     "youOwnCount": "你拥有 {{count}} 件",
-    "yourOrders": "你的订单"
+    "yourOrders": "你的订单",
+    "yourPrice": "你的价格"
   },
   "mines": {
     "boomVerifyRoll": "踩雷了！验证 roll",

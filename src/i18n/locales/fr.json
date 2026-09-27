@@ -1754,6 +1754,7 @@
     "wins": "Victoires"
   },
   "market": {
+    "allItems": "Tous les objets",
     "allRarities": "Toutes les raretés",
     "anythingAlreadyListedAt": "Tout ce qui est déjà en vente à votre prix ou en dessous est acheté immédiatement (dépensé, non remboursable). Seul le reste non servi est conservé en garantie et remboursé si vous annulez.",
     "bestBuyOrder": "Meilleur ordre d'achat",
@@ -1771,11 +1772,15 @@
     "couldNotListThe": "Impossible de mettre l'objet en vente",
     "couldNotLoadMarket": "Impossible de charger les données de marché de cet objet.",
     "couldNotPlaceThe": "Impossible de créer l'ordre",
+    "couldNotRemoveListing": "Impossible de retirer cette annonce. Elle vient peut-être d'être vendue.",
     "heldAsEscrowAnd": "Conservé en garantie et intégralement remboursé si vous annulez. Cela garantit que votre ordre pourra payer lorsqu'il trouvera preneur.",
     "houseFloor": "Prix de la maison",
     "itemListedForSale": "Objet mis en vente !",
     "lifetime": "Depuis toujours",
     "listItem": "Mettre en vente",
+    "listedCount_one": "{{count}} objet en vente",
+    "listedCount_other": "{{count}} objets en vente",
+    "listingRemoved": "Annonce retirée. L'objet est de retour dans votre inventaire.",
     "lowestListing": "Annonce la plus basse",
     "marketplace": "Marché",
     "matchLowest": "Aligner sur le plus bas",
@@ -1785,6 +1790,7 @@
     "medianSalePrices": "Prix de vente médians",
     "month": "Mois",
     "mostListings": "Le plus d'annonces",
+    "myListings": "Mes annonces",
     "noBids": "Aucune offre",
     "noItemsToSell": "Aucun objet à vendre.",
     "noListings": "Aucune annonce",
@@ -1792,6 +1798,7 @@
     "nobodyIsBiddingOn": "Personne n'enchérit encore sur cet objet.",
     "nobodyIsSellingThis": "Personne ne vend cet objet pour le moment.",
     "noneListed": "Aucune annonce",
+    "nothingListedYet": "Vous n'avez rien en vente pour le moment.",
     "nothingMatchesThoseFilters": "Rien ne correspond à ces filtres.",
     "onSaleOnly": "En vente uniquement",
     "orderCancelled": "Ordre annulé, K₽{{amount}} remboursés",
@@ -1808,6 +1815,7 @@
     "quantityMustBeBetween": "La quantité doit être comprise entre 1 et 20",
     "quickPrice": "Prix rapide :",
     "recentlyListed": "Mises en vente récentes",
+    "removeListing": "Retirer",
     "retry": "Réessayer",
     "searchItems": "Rechercher des objets",
     "sellAnItem": "Vendre un objet",
@@ -1820,7 +1828,8 @@
     "year": "Année",
     "youHaveNoBuy": "Vous n'avez aucun ordre d'achat pour cet objet.",
     "youOwnCount": "Vous en avez {{count}}",
-    "yourOrders": "Vos ordres"
+    "yourOrders": "Vos ordres",
+    "yourPrice": "Votre prix"
   },
   "mines": {
     "boomVerifyRoll": "Boum ! Vérifier le tirage",

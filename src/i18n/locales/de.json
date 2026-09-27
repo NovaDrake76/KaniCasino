@@ -1754,6 +1754,7 @@
     "wins": "Siege"
   },
   "market": {
+    "allItems": "Alle Gegenstände",
     "allRarities": "Alle Seltenheiten",
     "anythingAlreadyListedAt": "Alles, was schon zu deinem Gebot oder darunter angeboten wird, wird sofort gekauft (ausgegeben, nicht erstattbar). Nur der offene Rest wird als Sicherheit gehalten und bei Stornierung erstattet.",
     "bestBuyOrder": "Beste Kauforder",
@@ -1771,11 +1772,15 @@
     "couldNotListThe": "Gegenstand konnte nicht eingestellt werden",
     "couldNotLoadMarket": "Marktdaten für diesen Gegenstand konnten nicht geladen werden.",
     "couldNotPlaceThe": "Order konnte nicht erstellt werden",
+    "couldNotRemoveListing": "Das Angebot konnte nicht zurückgezogen werden. Vielleicht wurde es gerade verkauft.",
     "heldAsEscrowAnd": "Wird als Sicherheit gehalten und bei Stornierung voll erstattet. So kann deine Order zahlen, sobald sie passt.",
     "houseFloor": "Hauspreis",
     "itemListedForSale": "Gegenstand zum Verkauf eingestellt!",
     "lifetime": "Gesamt",
     "listItem": "Gegenstand einstellen",
+    "listedCount_one": "{{count}} Gegenstand eingestellt",
+    "listedCount_other": "{{count}} Gegenstände eingestellt",
+    "listingRemoved": "Angebot zurückgezogen. Der Gegenstand ist wieder in deinem Inventar.",
     "lowestListing": "Niedrigstes Angebot",
     "marketplace": "Marktplatz",
     "matchLowest": "Niedrigsten treffen",
@@ -1785,6 +1790,7 @@
     "medianSalePrices": "Mediane Verkaufspreise",
     "month": "Monat",
     "mostListings": "Meiste Angebote",
+    "myListings": "Meine Angebote",
     "noBids": "Keine Gebote",
     "noItemsToSell": "Keine Gegenstände zum Verkaufen.",
     "noListings": "Keine Angebote",
@@ -1792,6 +1798,7 @@
     "nobodyIsBiddingOn": "Auf diesen Gegenstand bietet noch niemand.",
     "nobodyIsSellingThis": "Diesen Gegenstand verkauft gerade niemand.",
     "noneListed": "Nichts eingestellt",
+    "nothingListedYet": "Du hast gerade nichts zum Verkauf eingestellt.",
     "nothingMatchesThoseFilters": "Nichts passt zu diesen Filtern.",
     "onSaleOnly": "Nur im Angebot",
     "orderCancelled": "Order storniert, K₽{{amount}} erstattet",
@@ -1808,6 +1815,7 @@
     "quantityMustBeBetween": "Die Menge muss zwischen 1 und 20 liegen",
     "quickPrice": "Schnellpreis:",
     "recentlyListed": "Kürzlich eingestellt",
+    "removeListing": "Zurückziehen",
     "retry": "Erneut versuchen",
     "searchItems": "Gegenstände suchen",
     "sellAnItem": "Gegenstand verkaufen",
@@ -1820,7 +1828,8 @@
     "year": "Jahr",
     "youHaveNoBuy": "Du hast keine Kauforders für diesen Gegenstand.",
     "youOwnCount": "Du hast {{count}}",
-    "yourOrders": "Deine Orders"
+    "yourOrders": "Deine Orders",
+    "yourPrice": "Dein Preis"
   },
   "mines": {
     "boomVerifyRoll": "Bumm! Roll prüfen",
