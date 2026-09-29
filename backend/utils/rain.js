@@ -179,17 +179,19 @@ async function settle(now = new Date()) {
 
   const paid = [];
   for (const share of shares) {
-    try {
-      await creditUser(share.userId, share.amount, 0, {
-        type: TX.RAIN_PAYOUT,
-        counterparty: HOUSE,
-        meta: { roundId: String(round._id), joiners: joiners.length, pool, level: share.level },
-      });
-      paid.push(share);
-    } catch (err) {
-      // one failed credit must not cost everyone else theirs
-      console.error("rain payout:", share.userId, err.message);
-    }
+    // creditUser answers a failure with null rather than throwing. one failed credit must not cost everyone
+    // else theirs, and a share that did not land was not distributed: it rides into the next round
+    const credited = await creditUser(share.userId, share.amount, 0, {
+      type: TX.RAIN_PAYOUT,
+      counterparty: HOUSE,
+      meta: { roundId: String(round._id), joiners: joiners.length, pool, level: share.level },
+    }).catch(() => null);
+    if (credited) paid.push(share);
+    else console.error("rain payout: not credited", share.userId);
+  }
+  const distributed = paid.reduce((sum, share) => sum + share.amount, 0);
+  if (distributed !== paidOut) {
+    await RainRound.updateOne({ _id: round._id }, { $set: { paidOut: distributed } });
   }
 
   resetCache();
@@ -199,7 +201,7 @@ async function settle(now = new Date()) {
     io.emit("rain:settled", {
       roundId: String(round._id),
       pool,
-      paidOut,
+      paidOut: distributed,
       winners: await winnerCards(paid.map((share) => share.userId)),
       next: { roundId: String(next._id), endsAt: next.endsAt, pool: next.carriedIn || 0 },
     });
@@ -210,7 +212,7 @@ async function settle(now = new Date()) {
       });
     }
   }
-  return { pool, paidOut, paid: paid.length };
+  return { pool, paidOut: distributed, paid: paid.length };
 }
 
 // a few names to show in the chat, never the whole list
