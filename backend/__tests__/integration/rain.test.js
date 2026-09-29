@@ -140,6 +140,31 @@ describe("settling", () => {
     expect((await rain.currentRound()).carriedIn).toBe(0);
   });
 
+  // a credit that failed used to count as paid: the player got nothing, heard they had won, and the share was lost
+  it("carries a share that could not be credited into the next round, and does not call it paid", async () => {
+    const a = await makeUser();
+    const b = await makeUser();
+    await rain.join(a._id);
+    await rain.join(b._id);
+    await ripen();
+    await stakeInside(a._id, 200000);
+
+    const failOnce = jest.spyOn(User, "findByIdAndUpdate").mockImplementationOnce(() => Promise.resolve(null));
+    let result;
+    try {
+      result = await rain.settle();
+    } finally {
+      failOnce.mockRestore();
+    }
+
+    expect(result.pool).toBe(1000);
+    expect(result.paidOut).toBe(500);
+    expect(result.paid).toBe(1);
+    const balances = [(await User.findById(a._id)).walletBalance, (await User.findById(b._id)).walletBalance].sort();
+    expect(balances).toEqual([0, 500]);
+    expect((await rain.currentRound()).carriedIn).toBe(500);
+  });
+
   it("writes a ledger row against the house, not the mint", async () => {
     // it is rakeback like the daily board, so it comes out of the edge rather than
     // printing new KP
