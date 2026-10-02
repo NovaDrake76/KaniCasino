@@ -130,7 +130,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   balls,
   history,
   lastHit,
-  chanceBin,
+  chance,
   showChance,
   hideChance,
   settleBall,
@@ -247,7 +247,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
             </>
           );
           return (
-            <g key={k} onMouseEnter={() => showChance(k)} onMouseLeave={hideChance}>
+            <g key={k} onMouseEnter={(e) => showChance(k, e.currentTarget)} onMouseLeave={hideChance}>
               {lastHit && lastHit.bin === k ? (
                 <motion.g
                   key={lastHit.seq}
@@ -280,9 +280,9 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
         {balls.map((ball) => (
           <FallingBall key={ball.key} ball={ball} onSettle={settleBall} />
         ))}
-
-        {chanceBin !== null && <BinChance bin={chanceBin} />}
       </svg>
+
+      {chance && <BinChance {...chance} />}
     </div>
   </GameLayout>
 );
