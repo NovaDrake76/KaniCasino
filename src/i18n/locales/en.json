@@ -1399,7 +1399,7 @@
     "outcome": "Outcome",
     "previousSeedRevealedVerify": "Previous seed revealed, verify it:",
     "roll": "Roll",
-    "rollNotFound": "No roll with that id. Rolls are kept for three days; a seed and nonce you saved still verify.",
+    "rollNotFound": "No roll with that id. Rolls are kept for one day; a seed and nonce you saved still verify.",
     "rotateRevealServerSeed": "Rotate & reveal server seed",
     "serverSeed": "Server seed",
     "serverSeedHash": "Server seed hash",

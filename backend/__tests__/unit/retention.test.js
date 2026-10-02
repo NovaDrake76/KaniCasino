@@ -17,9 +17,9 @@ const ttlOn = (model, field) => {
 };
 
 describe("what the database is allowed to keep", () => {
-  it("lets a roll go after three days", () => {
-    // only the fair page reads one, by id, and nobody has asked for one a week old
-    expect(ttlOn(Roll, "createdAt")).toBe(3 * DAY);
+  it("lets a roll go after a day", () => {
+    // only the fair page reads one, by id; autoplay wrote 61K in a day, so three days was a fifth of the budget
+    expect(ttlOn(Roll, "createdAt")).toBe(1 * DAY);
   });
 
   it("lets a settled round go after a week", () => {
