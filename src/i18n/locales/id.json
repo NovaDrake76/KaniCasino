@@ -1399,7 +1399,7 @@
     "outcome": "Hasil",
     "previousSeedRevealedVerify": "Seed sebelumnya telah terungkap, verifikasi:",
     "roll": "Roll",
-    "rollNotFound": "Tidak ada roll dengan id itu. Roll disimpan selama tiga hari; seed dan nonce yang kamu simpan masih bisa diverifikasi.",
+    "rollNotFound": "Tidak ada roll dengan id itu. Roll disimpan selama satu hari; seed dan nonce yang kamu simpan masih bisa diverifikasi.",
     "rotateRevealServerSeed": "Putar & ungkapkan seed server",
     "serverSeed": "Server seed",
     "serverSeedHash": "Server seed hash",

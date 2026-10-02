@@ -1399,7 +1399,7 @@
     "outcome": "Ergebnis",
     "previousSeedRevealedVerify": "Vorherige Seed offengelegt, prüf sie:",
     "roll": "Roll",
-    "rollNotFound": "Kein Wurf mit dieser ID. Wuerfe werden drei Tage aufbewahrt; ein gespeicherter Seed und Nonce lassen sich weiterhin pruefen.",
+    "rollNotFound": "Kein Wurf mit dieser ID. Wuerfe werden einen Tag aufbewahrt; ein gespeicherter Seed und Nonce lassen sich weiterhin pruefen.",
     "rotateRevealServerSeed": "Server-Seed wechseln und offenlegen",
     "serverSeed": "Server-Seed",
     "serverSeedHash": "Hash des Server-Seeds",

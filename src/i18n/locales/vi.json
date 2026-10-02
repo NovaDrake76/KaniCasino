@@ -1399,7 +1399,7 @@
     "outcome": "Kết quả",
     "previousSeedRevealedVerify": "Seed trước đã được công khai, hãy kiểm chứng:",
     "roll": "Roll",
-    "rollNotFound": "Khong co lan quay nao voi id do. Cac lan quay duoc luu trong ba ngay; seed va nonce ban da luu van xac minh duoc.",
+    "rollNotFound": "Khong co lan quay nao voi id do. Cac lan quay duoc luu trong mot ngay; seed va nonce ban da luu van xac minh duoc.",
     "rotateRevealServerSeed": "Đổi và công khai seed máy chủ",
     "serverSeed": "Seed máy chủ",
     "serverSeedHash": "Hash seed máy chủ",
