@@ -1903,6 +1903,7 @@
   "plinko": {
     "balls": "Số bóng",
     "betRange": "Cược từ 1 đến {{max}} ở mức rủi ro {{risk}}",
+    "landChance": "khả năng rơi vào đây",
     "provablyFairHint": "Mỗi lần thả đều provably fair; bấm vào kết quả để kiểm chứng.",
     "risk": "Mức rủi ro",
     "rollId": "Roll {{id}}"

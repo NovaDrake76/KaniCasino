@@ -1903,6 +1903,7 @@
   "plinko": {
     "balls": "Billes",
     "betRange": "Misez de 1 à {{max}} en risque {{risk}}",
+    "landChance": "chance de tomber ici",
     "provablyFairHint": "Chaque chute est provably fair ; cliquez sur un résultat pour le vérifier.",
     "risk": "Risque",
     "rollId": "Tirage {{id}}"

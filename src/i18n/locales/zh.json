@@ -1903,6 +1903,7 @@
   "plinko": {
     "balls": "小球数",
     "betRange": "在 {{risk}} 风险下投注 1 至 {{max}}",
+    "landChance": "落在这里的概率",
     "provablyFairHint": "每一次掉落都是 provably fair，点击结果即可验证。",
     "risk": "风险",
     "rollId": "Roll {{id}}"

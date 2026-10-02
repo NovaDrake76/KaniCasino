@@ -7,6 +7,7 @@ import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 import ModeToggle from "../../components/game/ModeToggle";
 import OptionRow from "../../components/game/OptionRow";
 import Monetary from "../../components/Monetary";
+import BinChance from "./BinChance";
 import {
   BALL_RADIUS,
   BINS,
@@ -129,6 +130,9 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   balls,
   history,
   lastHit,
+  chanceBin,
+  showChance,
+  hideChance,
   settleBall,
   openRoll,
 }) => (
@@ -242,17 +246,21 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
               </text>
             </>
           );
-          return lastHit && lastHit.bin === k ? (
-            <motion.g
-              key={`${k}-${lastHit.seq}`}
-              initial={{ y: 0 }}
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 0.3 }}
-            >
-              {chip}
-            </motion.g>
-          ) : (
-            <g key={`${k}-static`}>{chip}</g>
+          return (
+            <g key={k} onMouseEnter={() => showChance(k)} onMouseLeave={hideChance}>
+              {lastHit && lastHit.bin === k ? (
+                <motion.g
+                  key={lastHit.seq}
+                  initial={{ y: 0 }}
+                  animate={{ y: [0, 12, 0] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {chip}
+                </motion.g>
+              ) : (
+                chip
+              )}
+            </g>
           );
         })}
 
@@ -272,6 +280,8 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
         {balls.map((ball) => (
           <FallingBall key={ball.key} ball={ball} onSettle={settleBall} />
         ))}
+
+        {chanceBin !== null && <BinChance bin={chanceBin} />}
       </svg>
     </div>
   </GameLayout>

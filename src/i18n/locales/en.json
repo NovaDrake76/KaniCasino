@@ -1903,6 +1903,7 @@
   "plinko": {
     "balls": "Balls",
     "betRange": "Bet 1 to {{max}} on {{risk}} risk",
+    "landChance": "chance to land here",
     "provablyFairHint": "Every drop is provably fair; click a result to verify it.",
     "risk": "Risk",
     "rollId": "Roll {{id}}"

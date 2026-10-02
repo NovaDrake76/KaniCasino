@@ -1903,6 +1903,7 @@
   "plinko": {
     "balls": "ボール数",
     "betRange": "リスク {{risk}} で 1 〜 {{max}} をベット",
+    "landChance": "ここに落ちる確率",
     "provablyFairHint": "どのドロップも provably fair です。結果をクリックすると検証できます。",
     "risk": "リスク",
     "rollId": "ロール {{id}}"

@@ -1903,6 +1903,7 @@
   "plinko": {
     "balls": "Kugeln",
     "betRange": "Setze 1 bis {{max}} bei Risiko {{risk}}",
+    "landChance": "Chance, hier zu landen",
     "provablyFairHint": "Jeder Fall ist provably fair; klicke auf ein Ergebnis, um es zu prüfen.",
     "risk": "Risiko",
     "rollId": "Roll {{id}}"
