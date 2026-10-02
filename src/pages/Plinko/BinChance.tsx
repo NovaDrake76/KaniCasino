@@ -1,35 +1,26 @@
 import i18n from "../../i18n";
-import { BIN_Y, BOARD_W, binCenterX, binChance, formatChance } from "./plinkoBoard";
+import { binChance, formatChance } from "./plinkoBoard";
 
-const MIN_W = 150;
-const H = 80;
-const EDGE = 6;
+const EDGE = 4;
 
-// the chance of the hovered bin, drawn in board units so it sits on its bin at any board size
-const BinChance = ({ bin }: { bin: number }) => {
-  const label = i18n.t("plinko.landChance");
-  const w = Math.max(MIN_W, label.length * 9.4 + 32);
-  const cx = binCenterX(bin);
-  const x = Math.min(Math.max(cx, w / 2 + EDGE), BOARD_W - w / 2 - EDGE);
-  const bottom = BIN_Y - 14;
+// a small chip under the hovered box; x and y are the box's bottom center inside the board's container
+const BinChance = ({ bin, x, y, width }: { bin: number; x: number; y: number; width: number }) => {
+  const text = formatChance(binChance(bin));
+  const half = (text.length * 7 + 16) / 2;
+  const left = Math.min(Math.max(x, half + EDGE), width - half - EDGE);
   return (
-    <g role="tooltip" pointerEvents="none">
-      <defs>
-        <filter id="plinko-chance-shadow" x="-30%" y="-30%" width="160%" height="180%">
-          <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#000000" floodOpacity="0.55" />
-        </filter>
-      </defs>
-      <g filter="url(#plinko-chance-shadow)">
-        <rect x={x - w / 2} y={bottom - H} width={w} height={H} rx={10} fill="#19172D" />
-        <path d={`M ${cx - 10} ${bottom} L ${cx + 10} ${bottom} L ${cx} ${bottom + 11} Z`} fill="#19172D" />
-      </g>
-      <text x={x} y={bottom - H + 38} textAnchor="middle" fontSize={30} fontWeight={800} fill="#FFFFFF">
-        {formatChance(binChance(bin))}
-      </text>
-      <text x={x} y={bottom - 17} textAnchor="middle" fontSize={17} fill="#C9C6DE">
-        {label}
-      </text>
-    </g>
+    <div
+      role="tooltip"
+      aria-label={`${text} ${i18n.t("plinko.landChance")}`}
+      className="pointer-events-none absolute z-raised -translate-x-1/2 whitespace-nowrap bg-surface-nav px-2 py-1 text-xs font-bold tabular-nums text-ink shadow-lg"
+      style={{ left, top: y + 7 }}
+    >
+      <span
+        className="absolute -top-1 h-2 w-2 -translate-x-1/2 rotate-45 bg-surface-nav"
+        style={{ left: `calc(50% + ${x - left}px)` }}
+      />
+      {text}
+    </div>
   );
 };
 
