@@ -1,4 +1,5 @@
 import SocketConnection from "../socket";
+import api from "../api";
 
 export interface ChatBadge {
   key: string;
@@ -49,6 +50,17 @@ export const reportMessage = (id: string, reason?: string): Promise<SendResult> 
       resolve(result || { error: "failed" });
     });
   });
+
+// an admin taking a message down. the server tells every open panel, this one included
+export const removeMessage = async (id: string): Promise<SendResult> => {
+  try {
+    await api.delete(`/admin/chat/${id}`);
+    return { ok: true };
+  } catch (err) {
+    const status = (err as { response?: { status?: number } }).response?.status;
+    return { error: status === 404 ? "gone" : "removeFailed" };
+  }
+};
 
 export const onMessage = (fn: (m: ChatMessage) => void) => {
   socket().on("chat:message", fn);

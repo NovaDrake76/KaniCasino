@@ -342,6 +342,7 @@
       "muted": "你已被禁言几分钟。",
       "noLinks": "聊天中不允许发送链接。",
       "off": "聊天目前已关闭。",
+      "removeFailed": "无法删除这条消息。",
       "slowDown": "稍微慢一点。",
       "slur": "这种内容不能发到聊天。",
       "tooLong": "内容太长了。"
@@ -350,6 +351,7 @@
     "loading": "正在加载聊天",
     "logInToTalk": "登录后即可参与聊天",
     "placeholder": "说点什么",
+    "remove": "删除这条消息",
     "report": "举报这条消息",
     "reported": "已举报，谢谢。",
     "rules": {

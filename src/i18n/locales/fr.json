@@ -342,6 +342,7 @@
       "muted": "Vous etes muet pour quelques minutes.",
       "noLinks": "Les liens ne sont pas autorises dans le chat.",
       "off": "Le chat est desactive pour le moment.",
+      "removeFailed": "Impossible de supprimer ce message.",
       "slowDown": "Doucement.",
       "slur": "Cela ne passera pas dans le chat.",
       "tooLong": "C est trop long."
@@ -350,6 +351,7 @@
     "loading": "Chargement du chat",
     "logInToTalk": "Connectez-vous pour rejoindre le chat",
     "placeholder": "Dites quelque chose",
+    "remove": "Supprimer ce message",
     "report": "Signaler ce message",
     "reported": "Signale. Merci.",
     "rules": {

@@ -6,6 +6,7 @@ import {
   onHistory,
   onMessage,
   onRemoved,
+  removeMessage,
   reportMessage,
   requestHistory,
   sendMessage,
@@ -60,7 +61,25 @@ export const useChat = (open: boolean) => {
 
   const report = useCallback((id: string) => reportMessage(id), []);
 
-  return { messages, loaded, error, sending, send, report, clearError: () => setError(null), me: userData };
+  // a message somebody else already took down is the outcome asked for, so it goes quietly
+  const remove = useCallback(async (id: string) => {
+    const result = await removeMessage(id);
+    if (result.ok || result.error === "gone") setMessages((prev) => prev.filter((m) => m.id !== id));
+    else setError("removeFailed");
+  }, []);
+
+  return {
+    messages,
+    loaded,
+    error,
+    sending,
+    send,
+    report,
+    remove,
+    isAdmin: !!userData?.isAdmin,
+    clearError: () => setError(null),
+    me: userData,
+  };
 };
 
 export default useChat;
