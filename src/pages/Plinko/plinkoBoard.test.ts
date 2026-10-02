@@ -8,7 +8,9 @@ import {
   ROWS,
   ballKeyframes,
   binCenterX,
+  binChance,
   binColor,
+  formatChance,
   pegRows,
 } from "./plinkoBoard";
 
@@ -87,5 +89,24 @@ describe("plinko board geometry", () => {
     for (let k = 0; k < BINS; k++) {
       expect(binColor(k)).toMatch(/^#/);
     }
+  });
+});
+
+describe("the chance of landing in each bin", () => {
+  test("is the binomial share of the 2^16 paths, so the bins add up to one", () => {
+    expect(binChance(0)).toBe(1 / 65536);
+    expect(binChance(ROWS / 2)).toBe(12870 / 65536);
+    const total = Array.from({ length: BINS }, (_, k) => binChance(k)).reduce((a, b) => a + b, 0);
+    expect(total).toBeCloseTo(1, 12);
+  });
+
+  test("is mirrored around the center, like the multipliers", () => {
+    for (let k = 0; k < BINS; k++) expect(binChance(k)).toBe(binChance(ROWS - k));
+  });
+
+  test("reads as a short percentage from the center to the rims", () => {
+    expect(formatChance(binChance(4))).toBe("2.78%");
+    expect(formatChance(binChance(ROWS / 2))).toBe("19.6%");
+    expect(formatChance(binChance(0))).toBe("0.00153%");
   });
 });

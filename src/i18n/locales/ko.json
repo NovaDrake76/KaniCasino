@@ -1903,6 +1903,7 @@
   "plinko": {
     "balls": "공 개수",
     "betRange": "{{risk}} 위험도에서 1부터 {{max}}까지 베팅",
+    "landChance": "여기에 떨어질 확률",
     "provablyFairHint": "모든 낙하는 provably fair 입니다. 결과를 클릭하면 검증할 수 있습니다.",
     "risk": "위험도",
     "rollId": "롤 {{id}}"

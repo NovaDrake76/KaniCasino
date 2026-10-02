@@ -33,6 +33,7 @@ export const usePlinkoServices = () => {
   const [balls, setBalls] = useState<PlinkoBall[]>([]);
   const [history, setHistory] = useState<PlinkoBall[]>([]);
   const [lastHit, setLastHit] = useState<{ bin: number; seq: number } | null>(null);
+  const [chanceBin, setChanceBin] = useState<number | null>(null);
 
   const ballSeq = useRef(0);
   const hitSeq = useRef(0);
@@ -206,6 +207,9 @@ export const usePlinkoServices = () => {
     balls,
     history,
     lastHit,
+    chanceBin,
+    showChance: setChanceBin,
+    hideChance: () => setChanceBin(null),
     settleBall,
     openRoll: (rollId: string) => navigate(`/provably-fair?roll=${rollId}`),
   };

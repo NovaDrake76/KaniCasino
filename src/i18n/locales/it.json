@@ -1903,6 +1903,7 @@
   "plinko": {
     "balls": "Palline",
     "betRange": "Punta da 1 a {{max}} con rischio {{risk}}",
+    "landChance": "probabilità di cadere qui",
     "provablyFairHint": "Ogni caduta è provably fair; clicca su un risultato per verificarlo.",
     "risk": "Rischio",
     "rollId": "Roll {{id}}"

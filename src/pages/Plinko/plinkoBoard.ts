@@ -115,3 +115,13 @@ export const binColor = (bin: number) => BIN_COLORS[Math.abs(bin - ROWS / 2)];
 export const binTextColor = (bin: number) => (Math.abs(bin - ROWS / 2) >= 7 ? "#151225" : "#ffffff");
 
 export const formatMultiplier = (multiplier: number) => `x${multiplier}`;
+
+// every peg is a fair coin, so C(16, k) of the 2^16 paths end in bin k, whatever the risk
+export const binChance = (bin: number) => {
+  let paths = 1;
+  for (let i = 1; i <= bin; i++) paths = (paths * (ROWS - bin + i)) / i;
+  return paths / 2 ** ROWS;
+};
+
+// three significant figures read well from the center to the rims: 19.6%, 2.78%, 0.00153%
+export const formatChance = (chance: number) => `${Number((chance * 100).toPrecision(3))}%`;
