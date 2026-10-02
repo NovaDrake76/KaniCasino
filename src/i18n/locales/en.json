@@ -342,6 +342,7 @@
       "muted": "You are muted for a few minutes.",
       "noLinks": "Links are not allowed in chat.",
       "off": "Chat is off right now.",
+      "removeFailed": "Could not delete that message.",
       "slowDown": "Slow down a moment.",
       "slur": "That is not going in the chat.",
       "tooLong": "That is too long."
@@ -350,6 +351,7 @@
     "loading": "Loading chat",
     "logInToTalk": "Log in to join the chat",
     "placeholder": "Say something",
+    "remove": "Delete this message",
     "report": "Report this message",
     "reported": "Reported. Thanks.",
     "rules": {

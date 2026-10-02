@@ -8,11 +8,13 @@ import type { ChatMessage } from "../../services/chat/ChatService";
 const handlers: Record<string, (p: never) => void> = {};
 const sendMessage = vi.fn();
 const requestHistory = vi.fn();
+const removeMessage = vi.fn();
 
 vi.mock("../../services/chat/ChatService", () => ({
   requestHistory: () => requestHistory(),
   sendMessage: (text: string) => sendMessage(text),
   reportMessage: () => Promise.resolve({ ok: true }),
+  removeMessage: (id: string) => removeMessage(id),
   onHistory: (fn: (p: never) => void) => {
     handlers.history = fn;
     return () => delete handlers.history;
@@ -70,6 +72,7 @@ describe("the site chat panel", () => {
   beforeEach(() => {
     sendMessage.mockReset().mockResolvedValue({ ok: true });
     requestHistory.mockReset();
+    removeMessage.mockReset().mockResolvedValue({ ok: true });
   });
 
   it("asks for history once it is opened, rather than waiting to be pushed it", () => {
@@ -277,6 +280,35 @@ describe("the site chat panel", () => {
 
     expect(hrefs.some((h) => h && h.includes("x.com"))).toBe(true);
     expect(hrefs.some((h) => h && h.includes("discord"))).toBe(true);
+  });
+
+  it("gives a player who is not an admin no way to delete a message", () => {
+    draw();
+    act(() => handlers.history?.([message("1", "first"), message("2", "second")] as never));
+    expect(screen.queryByLabelText("Delete this message")).toBeNull();
+  });
+
+  it("lets an admin delete a message from the panel", async () => {
+    draw(true, { isAdmin: true });
+    act(() => handlers.history?.([message("1", "keep me"), message("2", "regrettable")] as never));
+    expect(screen.getAllByLabelText("Delete this message")).toHaveLength(2);
+
+    fireEvent.click(screen.getAllByLabelText("Delete this message")[1]);
+
+    expect(removeMessage).toHaveBeenCalledWith("2");
+    await waitFor(() => expect(screen.queryByText("regrettable")).toBeNull());
+    expect(screen.getByText("keep me")).toBeTruthy();
+  });
+
+  it("keeps the message and says so when the delete did not go through", async () => {
+    removeMessage.mockResolvedValue({ error: "removeFailed" });
+    draw(true, { isAdmin: true });
+    act(() => handlers.history?.([message("1", "regrettable")] as never));
+
+    fireEvent.click(screen.getByLabelText("Delete this message"));
+
+    expect(await screen.findByText(/Could not delete/)).toBeTruthy();
+    expect(screen.getByText("regrettable")).toBeTruthy();
   });
 
   it("puts the way out on the bar, beside the arrow that brings it back", () => {

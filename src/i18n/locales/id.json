@@ -342,6 +342,7 @@
       "muted": "Kamu dibisukan selama beberapa menit.",
       "noLinks": "Tautan tidak diizinkan di obrolan.",
       "off": "Obrolan sedang dimatikan.",
+      "removeFailed": "Pesan itu tidak bisa dihapus.",
       "slowDown": "Pelan-pelan dulu.",
       "slur": "Itu tidak akan masuk ke obrolan.",
       "tooLong": "Itu terlalu panjang."
@@ -350,6 +351,7 @@
     "loading": "Memuat obrolan",
     "logInToTalk": "Masuk untuk ikut mengobrol",
     "placeholder": "Katakan sesuatu",
+    "remove": "Hapus pesan ini",
     "report": "Laporkan pesan ini",
     "reported": "Dilaporkan. Terima kasih.",
     "rules": {

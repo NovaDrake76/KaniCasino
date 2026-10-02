@@ -342,6 +342,7 @@
       "muted": "Ban bi cam noi trong vai phut.",
       "noLinks": "Khong duoc gui lien ket trong chat.",
       "off": "Chat dang tat.",
+      "removeFailed": "Không xóa được tin nhắn đó.",
       "slowDown": "Cham lai mot chut.",
       "slur": "Noi dung do khong the gui len chat.",
       "tooLong": "Noi dung qua dai."
@@ -350,6 +351,7 @@
     "loading": "Dang tai khung chat",
     "logInToTalk": "Dang nhap de tham gia chat",
     "placeholder": "Noi gi do di",
+    "remove": "Xóa tin nhắn này",
     "report": "Bao cao tin nhan nay",
     "reported": "Da bao cao. Cam on ban.",
     "rules": {

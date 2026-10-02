@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { FiChevronLeft, FiFlag } from "react-icons/fi";
+import { FiChevronLeft, FiFlag, FiTrash2 } from "react-icons/fi";
 import { FaDiscord, FaGavel, FaTwitter } from "react-icons/fa";
 import ChatRules from "./ChatRules";
 import Avatar from "../Avatar";
@@ -29,7 +29,15 @@ const stamp = (at: number) => {
 // composed rather than reusing Player, which lays the avatar and the name out on one row.
 // a chat needs the name and the message stacked beside the avatar, or a long line wraps
 // back underneath the picture and the column stops reading as a conversation.
-const Message = ({ message, onReport }: { message: ChatMessage; onReport: (id: string) => void }) => (
+const Message = ({
+  message,
+  onReport,
+  onRemove,
+}: {
+  message: ChatMessage;
+  onReport: (id: string) => void;
+  onRemove?: (id: string) => void;
+}) => (
   <li className="group flex gap-2.5 px-3 py-2 hover:bg-surface-nav">
     <Link to={`/profile/${message._id}`} className="flex-shrink-0" tabIndex={-1} aria-hidden>
       <Avatar
@@ -62,6 +70,16 @@ const Message = ({ message, onReport }: { message: ChatMessage; onReport: (id: s
         >
           <FiFlag className="text-xs" />
         </button>
+        {onRemove && (
+          <button
+            type="button"
+            onClick={() => onRemove(message.id)}
+            aria-label={i18n.t("chat.remove")}
+            className="flex-shrink-0 p-0 text-ink-faint opacity-0 transition-opacity hover:text-red-400 focus:opacity-100 group-hover:opacity-100"
+          >
+            <FiTrash2 className="text-xs" />
+          </button>
+        )}
       </div>
       <p className="break-words text-[13px] leading-snug text-ink-soft">{message.text}</p>
     </div>
@@ -69,7 +87,7 @@ const Message = ({ message, onReport }: { message: ChatMessage; onReport: (id: s
 );
 
 const ChatPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  const { messages, loaded, error, sending, send, report, clearError, me } = useChat(open);
+  const { messages, loaded, error, sending, send, report, remove, isAdmin, clearError, me } = useChat(open);
   const locked = useLocked("chatPass");
   const [draft, setDraft] = useState("");
   const [reported, setReported] = useState<string | null>(null);
@@ -148,7 +166,7 @@ const ChatPanel = ({ open, onClose }: { open: boolean; onClose: () => void }) =>
           <li className="px-3 py-6 text-center text-xs text-ink-faint">{i18n.t("chat.empty")}</li>
         )}
         {messages.map((m) => (
-          <Message key={m.id} message={m} onReport={flag} />
+          <Message key={m.id} message={m} onReport={flag} onRemove={isAdmin ? remove : undefined} />
         ))}
       </ul>
 

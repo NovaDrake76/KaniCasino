@@ -342,6 +342,7 @@
       "muted": "Du bist fuer ein paar Minuten stummgeschaltet.",
       "noLinks": "Links sind im Chat nicht erlaubt.",
       "off": "Der Chat ist gerade aus.",
+      "removeFailed": "Die Nachricht konnte nicht gelöscht werden.",
       "slowDown": "Nicht so schnell.",
       "slur": "Das kommt nicht in den Chat.",
       "tooLong": "Das ist zu lang."
@@ -350,6 +351,7 @@
     "loading": "Chat wird geladen",
     "logInToTalk": "Melde dich an, um mitzureden",
     "placeholder": "Sag etwas",
+    "remove": "Diese Nachricht löschen",
     "report": "Diese Nachricht melden",
     "reported": "Gemeldet. Danke.",
     "rules": {
