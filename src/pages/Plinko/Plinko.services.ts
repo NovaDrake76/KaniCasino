@@ -33,7 +33,7 @@ export const usePlinkoServices = () => {
   const [balls, setBalls] = useState<PlinkoBall[]>([]);
   const [history, setHistory] = useState<PlinkoBall[]>([]);
   const [lastHit, setLastHit] = useState<{ bin: number; seq: number } | null>(null);
-  const [chanceBin, setChanceBin] = useState<number | null>(null);
+  const [chance, setChance] = useState<{ bin: number; x: number; y: number; width: number } | null>(null);
 
   const ballSeq = useRef(0);
   const hitSeq = useRef(0);
@@ -207,9 +207,16 @@ export const usePlinkoServices = () => {
     balls,
     history,
     lastHit,
-    chanceBin,
-    showChance: setChanceBin,
-    hideChance: () => setChanceBin(null),
+    chance,
+    // the tip hangs under the hovered box, placed from the box's own rectangle so it follows the board at any size
+    showChance: (bin: number, box: Element) => {
+      const board = box.closest("svg")?.parentElement;
+      if (!board) return;
+      const b = box.getBoundingClientRect();
+      const o = board.getBoundingClientRect();
+      setChance({ bin, x: b.left + b.width / 2 - o.left, y: b.bottom - o.top, width: o.width });
+    },
+    hideChance: () => setChance(null),
     settleBall,
     openRoll: (rollId: string) => navigate(`/provably-fair?roll=${rollId}`),
   };
