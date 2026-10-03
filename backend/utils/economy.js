@@ -275,7 +275,7 @@ async function chargeUser(userId, cost, { awardXp = true, type, meta, counterpar
     const user = await runAtomic(body);
     // the level may have crossed the referral milestone; lazy require breaks the cycle
     if (user && awardXp) {
-      require("./referrals").maybePayReferralMilestone(userId, user.level).catch(() => {});
+      require("./referrals").maybePayReferralMilestone(userId, user.level, user).catch(() => {});
     }
     return user;
   } catch (err) {

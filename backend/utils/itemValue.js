@@ -66,6 +66,7 @@ async function recomputeCaseValues(caseId) {
   if (ops.length) {
     await Item.bulkWrite(ops);
     require("./itemCatalog").invalidate(); // bulkWrite fires no model hook
+    require("./memo").forget("cases:");
   }
 
   const { total, rangeTable, configHash, rarityTableVersion } = buildRangeTable(caseDoc);

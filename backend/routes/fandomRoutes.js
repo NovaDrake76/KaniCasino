@@ -7,9 +7,12 @@ const FanBoard = require("../models/FanBoard");
 const CollectorBoard = require("../models/CollectorBoard");
 const fandom = require("../utils/fandom");
 const { countsFor } = require("../utils/inventoryCounts");
+const memo = require("../utils/memo");
 
 const PAGE_SIZE = 24;
 const REACH_KEPT = 12;
+// the boards are rewritten by the sweep and by a pin, and both forget these copies when they do
+const BOARDS_TTL_MS = 60 * 1000;
 
 const publicFan = (fan) =>
   fan && {
@@ -52,17 +55,19 @@ router.get("/", async (req, res) => {
         // closest race first, and a board with nobody chasing sorts behind every real one
         : { gap: 1, fanCount: -1, name: 1 };
 
-    const [boards, total] = await Promise.all([
-      FanBoard.find(filter).sort(order).skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).lean(),
-      FanBoard.countDocuments(filter),
-    ]);
-
-    res.json({
-      boards: boards.map(publicBoard),
-      page,
-      totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
-      total,
+    const body = await memo.remember(`fandom:list:${page}:${sort}:${search}`, BOARDS_TTL_MS, async () => {
+      const [boards, total] = await Promise.all([
+        FanBoard.find(filter).sort(order).skip((page - 1) * PAGE_SIZE).limit(PAGE_SIZE).lean(),
+        FanBoard.countDocuments(filter),
+      ]);
+      return {
+        boards: boards.map(publicBoard),
+        page,
+        totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+        total,
+      };
     });
+    res.json(body);
   } catch (err) {
     console.error("fandom browse:", err.message);
     res.status(500).json({ message: "Could not load the boards" });
@@ -72,20 +77,23 @@ router.get("/", async (req, res) => {
 // the other board: not one character held deep, but how much of the roster you have seen
 router.get("/collectors", async (req, res) => {
   try {
-    const board = await CollectorBoard.findOne({ key: "collection" }).lean();
-    if (!board) return res.json({ characterCount: 0, ranks: [], updatedAt: null });
-    res.json({
-      characterCount: board.characterCount,
-      updatedAt: board.updatedAt,
-      ranks: (board.ranks || []).map((row) => ({
-        userId: row.userId,
-        username: row.username,
-        profilePicture: row.profilePicture,
-        level: row.level,
-        distinct: row.distinct,
-        total: row.total,
-      })),
+    const body = await memo.remember("fandom:collectors", BOARDS_TTL_MS, async () => {
+      const board = await CollectorBoard.findOne({ key: "collection" }).lean();
+      if (!board) return { characterCount: 0, ranks: [], updatedAt: null };
+      return {
+        characterCount: board.characterCount,
+        updatedAt: board.updatedAt,
+        ranks: (board.ranks || []).map((row) => ({
+          userId: row.userId,
+          username: row.username,
+          profilePicture: row.profilePicture,
+          level: row.level,
+          distinct: row.distinct,
+          total: row.total,
+        })),
+      };
     });
+    res.json(body);
   } catch (err) {
     console.error("fandom collectors:", err.message);
     res.status(500).json({ message: "Could not load the collection board" });

@@ -52,6 +52,15 @@ const CaseSchema = new mongoose.Schema({
   ],
 });
 
+// the copies of the public case reads, and the collection sets the badges use, must not outlive a write; registered before the model compiles, or the hooks never run
+const forgetCases = () => {
+  require("../utils/memo").forget("cases:");
+  require("../utils/badges").invalidateCollectionSets();
+};
+for (const hook of ["save", "insertMany", "findOneAndUpdate", "findOneAndDelete", "findOneAndReplace", "updateOne", "updateMany", "deleteOne", "deleteMany"]) {
+  CaseSchema.post(hook, forgetCases);
+}
+
 CaseSchema.index({ slug: 1 }, { unique: true, sparse: true }); // url lookup
 
 module.exports = mongoose.model("Case", CaseSchema);

@@ -16,7 +16,7 @@ const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
 const User = require("../../models/User");
 const Transaction = require("../../models/Transaction");
 const Notification = require("../../models/Notification");
-const { TX, awardXp, calculateXPForLevel } = require("../../utils/economy");
+const { TX, awardXp, calculateXPForLevel, chargeUser } = require("../../utils/economy");
 const { HOUSE, MINT } = require("../../utils/accounts");
 const {
   REFERRER_SIGNUP_BONUS,
@@ -246,6 +246,30 @@ describe("the level milestone", () => {
     );
     expect(paid).toBe(true);
     expect((await User.findById(referee._id)).level).toBeGreaterThanOrEqual(MILESTONE_LEVEL);
+  });
+
+  test("a bet that crosses the level pays it, from the account the bet already holds", async () => {
+    const referrer = await makeUser({ walletBalance: 0 });
+    const referee = await makeUser({ referredBy: referrer._id, xp: calculateXPForLevel(MILESTONE_LEVEL) - 1, level: MILESTONE_LEVEL - 1 });
+
+    await chargeUser(referee._id, 100, { type: TX.DICE_BET });
+
+    const paid = await waitFor(async () =>
+      (await User.findById(referrer._id)).walletBalance === MILESTONE_BONUS
+    );
+    expect(paid).toBe(true);
+  });
+
+  test("a bet by a player nobody referred, or one already paid for, reads nothing more", async () => {
+    const loner = await makeUser({ level: MILESTONE_LEVEL + 5 });
+    const read = jest.spyOn(User, "findOne");
+    try {
+      await maybePayReferralMilestone(loner._id, MILESTONE_LEVEL + 5, { referredBy: null });
+      await maybePayReferralMilestone(loner._id, MILESTONE_LEVEL + 5, { referredBy: loner._id, referralMilestonePaid: true });
+      expect(read).not.toHaveBeenCalled();
+    } finally {
+      read.mockRestore();
+    }
   });
 });
 

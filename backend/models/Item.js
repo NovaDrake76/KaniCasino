@@ -41,7 +41,12 @@ const ItemSchema = new mongoose.Schema({
 // the cached catalog must not outlive a write. registered here because middleware added
 // after a model is compiled never runs, and required lazily so the model carries no
 // load-time dependency on the cache that reads it.
-const invalidateCatalog = () => require("../utils/itemCatalog").invalidate();
+const invalidateCatalog = () => {
+  require("../utils/itemCatalog").invalidate();
+  // a case page carries its items and a collection counts only live ones, so both copies go with them
+  require("../utils/memo").forget("cases:");
+  require("../utils/badges").invalidateCollectionSets();
+};
 const WRITE_HOOKS = [
   "save",
   "insertMany",
