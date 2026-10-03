@@ -9,6 +9,7 @@ const tunnel = require("./utils/tunnel");
 const { socketAuth } = require("./middleware/socketAuth");
 const presence = require("./utils/presence");
 const realtime = require("./utils/realtime");
+const timing = require("./utils/timing");
 
 require("dotenv").config();
 
@@ -22,6 +23,11 @@ app.post("/deploy/github", express.raw({ type: "*/*" }), githubDeployHandler);
 
 // public liveness probe (also bypasses the api-key gate so monitors can hit it)
 app.get("/health", (req, res) => res.json({ status: "ok", uptime: process.uptime() }));
+// the same, with atlas and the origin's own timings, so a monitor far away can tell a slow road from a slow server
+app.get("/health/deep", async (req, res) => res.json(await timing.health()));
+
+// registered after the probes, so only real requests are timed
+app.use(timing.middleware);
 
 // discord redirects the player's browser back here after they approve the link, so it
 // arrives with no api key and no token. it verifies its own signed state instead.
@@ -255,6 +261,7 @@ const port = process.env.PORT || 5000;
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  timing.startSummaries();
 });
 
 // optional auth: a valid token binds socket.userId; anonymous sockets may still
