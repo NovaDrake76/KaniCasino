@@ -8,6 +8,12 @@ const { recomputeCaseValues } = require("../utils/itemValue");
 const { TX } = require("../utils/economy");
 const { publicCache, TTL } = require("../utils/httpCache");
 const { looksLikeId, mintSlug } = require("../utils/slugs");
+const memo = require("../utils/memo");
+
+// how long a copy of a public case read is served before it is read again; a case write forgets it at once
+const LIST_TTL_MS = 30 * 1000;
+const MOST_OPENED_TTL_MS = 5 * 60 * 1000;
+const DETAIL_TTL_MS = 60 * 1000;
 
 router.get("/", async (req, res) => {
   try {
@@ -16,7 +22,8 @@ router.get("/", async (req, res) => {
     const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const filter = q ? { title: { $regex: safe, $options: "i" } } : {};
     // the committed range table is one entry per item and no listing consumer reads it
-    const cases = await Case.find(filter).select('-items -rangeTable');
+    const read = async () => (await Case.find(filter).select('-items -rangeTable')).map((c) => c.toJSON());
+    const cases = q ? await read() : await memo.remember("cases:list", LIST_TTL_MS, read);
     publicCache(res, TTL.caseList);
     res.json(cases);
   } catch (err) {
@@ -48,27 +55,8 @@ router.post("/", isAuthenticated, isAdmin, async (req, res) => {
 router.get("/most-opened", async (req, res) => {
   try {
     const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 5, 1), 20);
-    const rows = await Transaction.aggregate([
-      { $match: { type: TX.CASE_OPEN, "meta.caseId": { $ne: null } } },
-      {
-        $group: {
-          _id: "$meta.caseId",
-          opens: { $sum: { $max: [{ $ifNull: ["$meta.quantity", 1] }, 1] } },
-        },
-      },
-      { $sort: { opens: -1 } },
-      { $limit: limit },
-    ]);
-
-    // a case can be deleted after being opened; drop those rather than render a hole
-    const cases = await Case.find({ _id: { $in: rows.map((r) => r._id) } })
-      .select("-items -rangeTable")
-      .lean();
-    const byId = new Map(cases.map((c) => [String(c._id), c]));
-    const out = rows
-      .filter((r) => byId.has(String(r._id)))
-      .map((r) => ({ ...byId.get(String(r._id)), opens: r.opens }));
-
+    // counted over every opening ever made, so it is read once per window rather than per visitor
+    const out = await memo.remember(`cases:most:${limit}`, MOST_OPENED_TTL_MS, () => mostOpened(limit));
     publicCache(res, TTL.caseList);
     res.json(out);
   } catch (err) {
@@ -76,17 +64,42 @@ router.get("/most-opened", async (req, res) => {
   }
 });
 
+async function mostOpened(limit) {
+  const rows = await Transaction.aggregate([
+    { $match: { type: TX.CASE_OPEN, "meta.caseId": { $ne: null } } },
+    {
+      $group: {
+        _id: "$meta.caseId",
+        opens: { $sum: { $max: [{ $ifNull: ["$meta.quantity", 1] }, 1] } },
+      },
+    },
+    { $sort: { opens: -1 } },
+    { $limit: limit },
+  ]);
+
+  // a case can be deleted after being opened; drop those rather than render a hole
+  const cases = await Case.find({ _id: { $in: rows.map((r) => r._id) } })
+    .select("-items -rangeTable")
+    .lean();
+  const byId = new Map(cases.map((c) => [String(c._id), c]));
+  return rows
+    .filter((r) => byId.has(String(r._id)))
+    .map((r) => ({ ...byId.get(String(r._id)), opens: r.opens }));
+}
+
 router.get("/:id", async (req, res) => {
   try {
     // a case is addressed by slug now; every id ever shared still resolves on this route
-    const caseData = await Case.findOne(
-      looksLikeId(req.params.id) ? { _id: req.params.id } : { slug: String(req.params.id) }
-    )
-      .select("-rangeTable")
-      .populate({
-        path: "items",
-        options: { sort: { rarity: -1 } },
-      });
+    const key = String(req.params.id);
+    const caseData = await memo.remember(`cases:one:${key}`, DETAIL_TTL_MS, async () => {
+      const found = await Case.findOne(looksLikeId(key) ? { _id: key } : { slug: key })
+        .select("-rangeTable")
+        .populate({
+          path: "items",
+          options: { sort: { rarity: -1 } },
+        });
+      return found ? found.toJSON() : null;
+    });
     publicCache(res, TTL.caseDetail);
     res.json(caseData);
   } catch (err) {

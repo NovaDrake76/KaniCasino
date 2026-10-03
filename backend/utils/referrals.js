@@ -88,8 +88,10 @@ async function payReferralBonuses(referee, referrer) {
 
 // pay the level milestone once per referee. the paid flag is the mutex and commits in
 // one transaction with the credit, so a failed payout rolls it back and retries later.
-async function maybePayReferralMilestone(userId, level) {
+async function maybePayReferralMilestone(userId, level, known = null) {
   if (!referralsEnabled() || level < MILESTONE_LEVEL) return;
+  // a bet hands in the account it just charged, so a player nobody referred, or one already paid for, costs no read
+  if (known && (!known.referredBy || known.referralMilestonePaid)) return;
   const referee = await User.findOne(
     { _id: userId, referredBy: { $ne: null }, referralMilestonePaid: { $ne: true } },
     { username: 1, referredBy: 1 }

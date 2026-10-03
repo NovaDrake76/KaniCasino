@@ -12,6 +12,8 @@ const RANKS_KEPT = 50;
 // a board nobody is chasing is not contested; it sorts behind every real race
 const NO_CONTEST = 999999;
 const COLLECTORS_KEPT = 100;
+// a few old accounts still wear a picture inlined as data, tens of KB each; a board row shows the placeholder rather than carrying that through every sweep and every visitor
+const listedPicture = { $cond: [{ $regexMatch: { input: { $ifNull: ["$profilePicture", ""] }, regex: "^data:" } }, null, "$profilePicture"] };
 
 // an item's character is its own name unless it carries one of its own: an alt outfit
 // names the person wearing it, and a character who shares a first name with someone from
@@ -140,7 +142,7 @@ async function sweep() {
   // the roster is read without inventories, so someone who pinned a character and holds
   // none of it still gets their row on the board
   const [people, holdings] = await Promise.all([
-    User.find(visible()).select("username profilePicture level fixedItem fixedAt").lean(),
+    User.aggregate([{ $match: visible() }, { $project: { username: 1, profilePicture: listedPicture, level: 1, fixedItem: 1, fixedAt: 1 } }]),
     countHoldings(),
   ]);
   const held = new Map(holdings.map((row) => [String(row._id), row]));
@@ -288,6 +290,7 @@ async function rebuild() {
     { $unset: { fanRank: "", collectionRank: "", fanStamp: "" } }
   );
 
+  require("./memo").forget("fandom:");
   return { boards: boards.length, players: standings.size, collectors: collectors.length };
 }
 
@@ -300,7 +303,7 @@ async function countRows(character) {
     {
       $project: {
         username: 1,
-        profilePicture: 1,
+        profilePicture: listedPicture,
         level: 1,
         fixedAt: 1,
         count: {
@@ -395,6 +398,7 @@ async function refreshCharacters(names) {
     { $unset: { fanRank: "" } }
   );
 
+  require("./memo").forget("fandom:");
   return { boards: boards.length };
 }
 

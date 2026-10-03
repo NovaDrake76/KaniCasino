@@ -222,7 +222,7 @@ async function sweepCollections(io) {
 // what exists to be earned, for the "all badges" list. the collection ones come from the
 // live categories rather than a hardcoded set.
 async function catalog() {
-  const sets = await collectionSets();
+  const sets = await cachedSets();
   return [
     ...KEYS.map((key) => ({ key, label: null })),
     ...sets.map((set) => ({ key: COLLECTION + set.slug, label: set.label, size: set.ids.size })),

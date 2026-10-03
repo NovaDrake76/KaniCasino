@@ -1,6 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import authInterceptor from './auth/authInterceptor';
 import { getAccessToken, clearTokens } from './auth/authUtils';
+import { hedged } from './hedge';
 
 // const urls = {
 //     dev: 'http://localhost:5000',
@@ -36,5 +37,14 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+// reads go through hedged, so a copy stuck on the way to the server is raced by a fresh one. a caller holding its own signal keeps control of it,
+// and the mission toasts are handed out once per read, so a second copy could take them from the first and the player would never see them.
+const NOT_HEDGED = /^\/missions\/pending\b/;
+const plainGet = api.get.bind(api);
+api.get = function <T = unknown, R = AxiosResponse<T>, D = unknown>(url: string, config?: AxiosRequestConfig<D>): Promise<R> {
+    if (config?.signal || NOT_HEDGED.test(url)) return plainGet<T, R, D>(url, config);
+    return hedged((signal) => plainGet<T, R, D>(url, { ...config, signal }));
+};
 
 export default api;
