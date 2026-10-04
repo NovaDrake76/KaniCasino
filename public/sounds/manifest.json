@@ -62,6 +62,7 @@
     "battle.start": [],
     "battle.win": [],
     "battle.lose": [],
+    "battle.join": ["battle-join.mp3"],
     "gift.spin": [],
     "gift.stop": [],
     "gift.claim": []

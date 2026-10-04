@@ -28,6 +28,7 @@ import {
 import i18n from "../../../i18n";
 import { play } from "../../../services/sound/sound";
 import { scheduleReelTicks } from "../../../services/sound/reel";
+import { humansIn, someoneJoined } from "./joinDing";
 
 const REEL_MS = 4200; // must stay under the backend's REVEAL_MS (4500)
 const WINDOW_H = 420; // must match the BattleReel window (ITEM_H * WINDOW_CELLS)
@@ -49,6 +50,10 @@ export const useBattleRoomServices = () => {
   const settleTimer = useRef<number | null>(null);
   const stopTicks = useRef<(() => void) | null>(null);
   const activeCaseRef = useRef<HTMLDivElement | null>(null);
+  // who was already seated, so the host hears only a new arrival
+  const seated = useRef<string[]>([]);
+  const viewerId = useRef<string | undefined>(userData?.id);
+  viewerId.current = userData?.id;
   const socket = getSocket();
   const navigate = useNavigate();
 
@@ -65,6 +70,7 @@ export const useBattleRoomServices = () => {
       setBattle(b);
       setLoading(false);
       if (!b) return;
+      seated.current = humansIn(b);
       if (b.status === "finished") setSettledRound(b.cases.length - 1);
       else if (b.status === "in_progress") setSettledRound(b.currentRound - 1);
       else setSettledRound(-1);
@@ -96,6 +102,9 @@ export const useBattleRoomServices = () => {
 
     const onState = (b: Battle) => {
       if (b.id !== id) return;
+      // a ding for the host, so a battle left waiting in a background tab is not missed
+      if (someoneJoined(seated.current, b, viewerId.current)) play("battle.join");
+      seated.current = humansIn(b);
       setBattle(b);
       if (b.status === "waiting" || (b.status === "in_progress" && b.currentRound === 0)) {
         setSettledRound(-1);
@@ -128,6 +137,7 @@ export const useBattleRoomServices = () => {
     const onConnect = () => {
       getBattle(id).then((b) => {
         if (!active || !b) return;
+        seated.current = humansIn(b);
         setBattle(b);
         if (settleTimer.current) window.clearTimeout(settleTimer.current);
         setSpinRound(-1);
