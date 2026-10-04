@@ -9,6 +9,8 @@ import { itemWords } from "./shopCopy";
 import { kp } from "../potMath";
 import i18n from "../../../i18n";
 import TypedText from "../TypedText";
+import { lockDate, useVerification } from "../../verify/useVerification";
+import { openVerify } from "../../verify/verifyEvents";
 
 interface Props {
   item: ShopItem;
@@ -35,6 +37,10 @@ const BuyCard = ({ item, walletBalance, level, buying, onBuy, onClose, onShowMe 
   const after = walletBalance - item.price;
   const short = after < 0;
   const tooLow = level < item.level;
+  const verify = useVerification();
+  // from the lock date an item that opens the market cannot be bought unverified; before it the card only warns
+  const needsVerify = !!item.verified && !item.owned && verify.needed;
+  const blocked = needsVerify && verify.enforced;
   const words = itemWords(item);
   const name = words.name;
 
@@ -71,6 +77,16 @@ const BuyCard = ({ item, walletBalance, level, buying, onBuy, onClose, onShowMe 
             </Row>
           </div>
         )}
+        {needsVerify && verify.from && (
+          <button
+            type="button"
+            onClick={openVerify}
+            className="flex flex-col gap-1 rounded-none border-0 bg-surface-nav px-3.5 py-2.5 text-left text-[13px] hover:bg-surface-hover focus:outline-none"
+          >
+            <b className="text-accent-amber">{blocked ? i18n.t("verify.locked.license") : i18n.t("verify.soon.license", { date: lockDate(verify.from) })}</b>
+            <span className="text-ink-muted">{i18n.t("verify.how")}</span>
+          </button>
+        )}
         <div className="flex items-start gap-3 bg-surface-nav p-3">
           <img src="/images/daisu/bust.webp" alt="" className="h-10 w-10 shrink-0 object-contain object-top" />
           <p className="m-0 text-[13px] leading-normal text-ink-soft"><TypedText text={item.owned ? words.opened : words.pitch} /></p>
@@ -90,7 +106,7 @@ const BuyCard = ({ item, walletBalance, level, buying, onBuy, onClose, onShowMe 
             <button
               type="button"
               onClick={onBuy}
-              disabled={buying || short || tooLow}
+              disabled={buying || short || tooLow || blocked}
               className="flex h-12 items-center justify-center rounded-md border-none bg-accent text-sm font-bold text-white hover:border-none hover:bg-accent-light focus:outline-none disabled:opacity-50 md:h-11"
             >
               {buying ? <TailSpin height="18" width="18" color="#ffffff" ariaLabel="buying" /> : t("buyFor", { amount: kp(item.price) })}

@@ -33,7 +33,9 @@
     "user": "Usuario",
     "yourReferralLink": "Tu enlace de referido",
     "yourReferralLinkIs": "Tu enlace de referido está activo",
-    "yourReferrals": "Tus referidos"
+    "yourReferrals": "Tus referidos",
+    "waitingVerification": "Esperando verificación",
+    "verifiedOnly": "Ganas con un amigo cuando su cuenta está verificada con Google, Discord o correo."
   },
   "arcade": {
     "backToCasino": "Volver al casino",
@@ -2091,5 +2093,73 @@
     "upgradeFailed": "Mejora fallida",
     "upgradeSuccess": "Mejora conseguida",
     "wonByUpgrading": "Conseguido con una mejora"
+  },
+  "verify": {
+    "title": "Verifica tu cuenta",
+    "why": "Las cuentas verificadas pueden estar en la clasificación, comerciar en el mercado y unirse a la lluvia. Elige una forma:",
+    "emailOption": "Por correo",
+    "emailBody": "Enviaremos un enlace a {{email}}.",
+    "send": "Enviar el enlace",
+    "sent": "¡Listo! Revisa tu bandeja de entrada en {{email}} y haz clic en el enlace. Funciona durante 24 horas.",
+    "discordOption": "Con Discord",
+    "discordBody": "Vincula tu cuenta de Discord. Cada cuenta de Discord puede verificar una cuenta de KaniCasino.",
+    "discordButton": "Vincular Discord",
+    "googleHint": "Iniciar sesión con Google también verifica tu cuenta, si usa la misma dirección que tu cuenta de Google.",
+    "changeEmail": "¿Dirección equivocada? Cámbiala en Ajustes.",
+    "verified": "Tu cuenta está verificada.",
+    "via": {
+      "google": "con Google",
+      "email": "por correo",
+      "discord": "con Discord"
+    },
+    "button": "Verificar cuenta",
+    "how": "Toma un minuto: confirma tu correo o vincula Discord.",
+    "notRanked": "Sin clasificar: verifica tu cuenta para competir.",
+    "suggestion": "¿Quisiste decir {{email}}?",
+    "locked": {
+      "leaderboard": "Necesitas una cuenta verificada para estar en la clasificación.",
+      "market": "Necesitas una cuenta verificada para comerciar en el mercado.",
+      "rain": "Necesitas una cuenta verificada para unirte a la lluvia.",
+      "license": "La Licencia de Comerciante necesita una cuenta verificada."
+    },
+    "soon": {
+      "leaderboard": "Desde el {{date}}, necesitarás una cuenta verificada para estar en la clasificación.",
+      "market": "Desde el {{date}}, necesitarás una cuenta verificada para comerciar en el mercado.",
+      "rain": "Desde el {{date}}, necesitarás una cuenta verificada para unirte a la lluvia.",
+      "license": "Desde el {{date}}, el mercado que abre necesitará una cuenta verificada."
+    },
+    "errors": {
+      "invalid": "Esa no es una dirección de correo válida.",
+      "noMailServer": "Esa dirección no puede recibir correos. Revisa si hay errores.",
+      "disposable": "Los correos desechables no pueden verificar una cuenta. Usa tu propia dirección.",
+      "taken": "Esa bandeja de entrada ya verificó otra cuenta.",
+      "inUse": "Otra cuenta ya usa esa dirección.",
+      "same": "Esa ya es tu dirección.",
+      "google": "Las cuentas que inician sesión con Google mantienen su dirección de Google.",
+      "password": "Contraseña incorrecta.",
+      "bounced": "Los correos a tu dirección rebotaron. Cámbiala por una que funcione.",
+      "tooSoon": "Espera un minuto antes de pedirlo otra vez (como máximo cinco correos al día).",
+      "expired": "Ese enlace caducó o ya se usó. Pide uno nuevo.",
+      "failed": "Algo salió mal. Inténtalo de nuevo."
+    },
+    "page": {
+      "working": "Verificando tu cuenta...",
+      "done": "¡Tu cuenta está verificada!",
+      "doneBody": "{{email}} está confirmado. Puedes estar en la clasificación, comerciar en el mercado y unirte a la lluvia.",
+      "failed": "No pudimos verificar tu cuenta",
+      "back": "Volver a KaniCasino"
+    },
+    "settings": {
+      "title": "Cuenta",
+      "status": "Verificación",
+      "notVerified": "Aún sin verificar. La clasificación, el mercado y la lluvia necesitan una cuenta verificada desde el {{date}}.",
+      "email": "Dirección de correo",
+      "change": "Cambiar",
+      "newEmail": "Nueva dirección de correo",
+      "password": "Contraseña actual",
+      "sendChange": "Enviar enlace de confirmación",
+      "changeSent": "Enviamos un enlace a {{email}}. Tu dirección cambia cuando hagas clic en él.",
+      "cancel": "Cancelar"
+    }
   }
 }

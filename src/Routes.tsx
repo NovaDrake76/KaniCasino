@@ -15,6 +15,7 @@ import Hilo from "./pages/Hilo";
 import PrivacyPolicy from "./pages/About/PrivacyPolicy"
 import Terms from "./pages/About/Terms"
 import Unsubscribe from "./pages/About/Unsubscribe"
+import VerifyEmail from "./pages/VerifyEmail/VerifyEmail";
 import Gift from "./pages/Gift"
 import ItemPage from "./pages/Market/ItemPage";
 import Battles from "./pages/Battles/Battles";
@@ -59,6 +60,7 @@ const defaultRoutes = (
     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
     <Route path="/terms" element={<Terms />} />
     <Route path="/unsubscribe" element={<Unsubscribe />} />
+    <Route path="/verify-email" element={<VerifyEmail />} />
     <Route path="/gift" element={<Gift />} />
     <Route path="/link/discord" element={<LinkDiscord />} />
     <Route path="/arcade" element={<ArcadeHome />} />

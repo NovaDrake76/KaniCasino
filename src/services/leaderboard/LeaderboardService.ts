@@ -30,6 +30,8 @@ export interface BoardMe {
   // what it would take to reach the last paid place; 0 once they are in it
   toPaidPlace: number;
   prize: number;
+  // from the lock date an unverified account still scores but is not ranked or paid
+  needsVerify?: boolean;
 }
 
 export interface Board {

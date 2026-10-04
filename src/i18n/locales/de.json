@@ -33,7 +33,9 @@
     "user": "Benutzer",
     "yourReferralLink": "Dein Empfehlungslink",
     "yourReferralLinkIs": "Dein Empfehlungslink ist aktiv",
-    "yourReferrals": "Deine Empfehlungen"
+    "yourReferrals": "Deine Empfehlungen",
+    "waitingVerification": "Wartet auf Verifizierung",
+    "verifiedOnly": "Du verdienst an einem Freund, sobald sein Konto mit Google, Discord oder E-Mail verifiziert ist."
   },
   "arcade": {
     "backToCasino": "Zurück zum Casino",
@@ -2091,5 +2093,73 @@
     "upgradeFailed": "Verbesserung fehlgeschlagen",
     "upgradeSuccess": "Verbesserung gelungen",
     "wonByUpgrading": "Durch Upgrade gewonnen"
+  },
+  "verify": {
+    "title": "Verifiziere dein Konto",
+    "why": "Verifizierte Konten können in der Bestenliste stehen, auf dem Markt handeln und beim Regen mitmachen. Wähle einen Weg:",
+    "emailOption": "Per E-Mail",
+    "emailBody": "Wir senden einen Link an {{email}}.",
+    "send": "Link senden",
+    "sent": "Erledigt! Sieh in deinem Postfach unter {{email}} nach und klicke auf den Link. Er funktioniert 24 Stunden lang.",
+    "discordOption": "Mit Discord",
+    "discordBody": "Verknüpfe dein Discord-Konto. Jedes Discord-Konto kann ein KaniCasino-Konto verifizieren.",
+    "discordButton": "Discord verknüpfen",
+    "googleHint": "Die Anmeldung mit Google verifiziert dein Konto ebenfalls, wenn es dieselbe Adresse wie dein Google-Konto nutzt.",
+    "changeEmail": "Falsche Adresse? Ändere sie in den Einstellungen.",
+    "verified": "Dein Konto ist verifiziert.",
+    "via": {
+      "google": "mit Google",
+      "email": "per E-Mail",
+      "discord": "mit Discord"
+    },
+    "button": "Konto verifizieren",
+    "how": "Es dauert eine Minute: Bestätige deine E-Mail oder verknüpfe Discord.",
+    "notRanked": "Nicht gewertet: Verifiziere dein Konto, um mitzumachen.",
+    "suggestion": "Meintest du {{email}}?",
+    "locked": {
+      "leaderboard": "Du brauchst ein verifiziertes Konto, um in der Bestenliste zu stehen.",
+      "market": "Du brauchst ein verifiziertes Konto, um auf dem Markt zu handeln.",
+      "rain": "Du brauchst ein verifiziertes Konto, um beim Regen mitzumachen.",
+      "license": "Die Händlerlizenz braucht ein verifiziertes Konto."
+    },
+    "soon": {
+      "leaderboard": "Ab dem {{date}} brauchst du ein verifiziertes Konto, um in der Bestenliste zu stehen.",
+      "market": "Ab dem {{date}} brauchst du ein verifiziertes Konto, um auf dem Markt zu handeln.",
+      "rain": "Ab dem {{date}} brauchst du ein verifiziertes Konto, um beim Regen mitzumachen.",
+      "license": "Ab dem {{date}} braucht der Markt, den sie öffnet, ein verifiziertes Konto."
+    },
+    "errors": {
+      "invalid": "Das ist keine gültige E-Mail-Adresse.",
+      "noMailServer": "Diese Adresse kann keine E-Mails empfangen. Prüfe sie auf Tippfehler.",
+      "disposable": "Wegwerf-Postfächer können kein Konto verifizieren. Nutze deine eigene Adresse.",
+      "taken": "Dieses Postfach hat schon ein anderes Konto verifiziert.",
+      "inUse": "Ein anderes Konto nutzt diese Adresse bereits.",
+      "same": "Das ist bereits deine Adresse.",
+      "google": "Konten, die sich mit Google anmelden, behalten ihre Google-Adresse.",
+      "password": "Falsches Passwort.",
+      "bounced": "E-Mails an deine Adresse kamen zurück. Ändere sie in eine, die funktioniert.",
+      "tooSoon": "Warte eine Minute, bevor du erneut fragst (höchstens fünf E-Mails pro Tag).",
+      "expired": "Dieser Link ist abgelaufen oder wurde schon benutzt. Fordere einen neuen an.",
+      "failed": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    },
+    "page": {
+      "working": "Dein Konto wird verifiziert...",
+      "done": "Dein Konto ist verifiziert!",
+      "doneBody": "{{email}} ist bestätigt. Du kannst in der Bestenliste stehen, auf dem Markt handeln und beim Regen mitmachen.",
+      "failed": "Wir konnten dein Konto nicht verifizieren",
+      "back": "Zurück zu KaniCasino"
+    },
+    "settings": {
+      "title": "Konto",
+      "status": "Verifizierung",
+      "notVerified": "Noch nicht verifiziert. Bestenliste, Markt und Regen brauchen ab dem {{date}} ein verifiziertes Konto.",
+      "email": "E-Mail-Adresse",
+      "change": "Ändern",
+      "newEmail": "Neue E-Mail-Adresse",
+      "password": "Aktuelles Passwort",
+      "sendChange": "Bestätigungslink senden",
+      "changeSent": "Wir haben einen Link an {{email}} gesendet. Deine Adresse ändert sich, sobald du darauf klickst.",
+      "cancel": "Abbrechen"
+    }
   }
 }

@@ -14,6 +14,8 @@ import {
   requestRain,
 } from "../../services/chat/RainService";
 import i18n from "../../i18n";
+import { openVerify } from "../verify/verifyEvents";
+import { lockDate, useVerification } from "../verify/useVerification";
 
 const pad = (n: number) => String(Math.max(0, Math.floor(n))).padStart(2, "0");
 
@@ -76,6 +78,7 @@ const RainPool = () => {
   const [left, setLeft] = useState("");
   const [share, setShare] = useState(1);
   const [busy, setBusy] = useState(false);
+  const verify = useVerification();
 
   // the device clock can be minutes out; the countdown runs off the server's
   const skew = useRef(0);
@@ -131,6 +134,11 @@ const RainPool = () => {
     setBusy(true);
     const result = await joinRain();
     setBusy(false);
+    if (result && result.error === "verify") {
+      toast.info(i18n.t("verify.locked.rain"), { theme: "dark" });
+      openVerify();
+      return;
+    }
     if (result && result.error) {
       const key = result.error === "level" ? "rain.needLevel" : `chat.errors.${result.error}`;
       toast.error(i18n.t(key, { level: result.minLevel, defaultValue: i18n.t("chat.errors.failed") }), {
@@ -196,6 +204,16 @@ const RainPool = () => {
           <span className="tabular-nums">{i18n.t("rain.in", { time: left })}</span>
         )}
       </div>
+
+      {verify.needed && verify.from && (
+        <button
+          type="button"
+          onClick={openVerify}
+          className="mt-1 block rounded-none border-0 bg-transparent p-0 text-left text-[10px] font-semibold text-accent-amber hover:text-white focus:outline-none"
+        >
+          {verify.enforced ? i18n.t("verify.locked.rain") : i18n.t("verify.soon.rain", { date: lockDate(verify.from) })}
+        </button>
+      )}
 
       {/* the bar drains with the clock, or fills toward the floor while the pool is still
           too small to fall: either way it is showing what has to happen next */}

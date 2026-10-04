@@ -1,4 +1,6 @@
 process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
+// the verified-only commission rule starts in the past here, so a wager made now falls under it
+process.env.REFERRAL_VERIFIED_FROM = "2026-01-01T00:00:00Z";
 
 // the google login path verifies a real token; stand in for google so a fake token
 // resolves to whatever payload the test sets
@@ -26,6 +28,7 @@ const {
   COMMISSION_RATE,
   maybePayReferralMilestone,
 } = require("../../utils/referrals");
+const verification = require("../../utils/verification");
 
 // the level hooks fire and forget, so tests wait for the money to land
 async function waitFor(check, ms = 2000) {
@@ -56,6 +59,9 @@ async function makeUser(overrides = {}) {
     ...overrides,
   });
 }
+
+// a referee the rules count: verified by an emailed link
+const makeVerified = (overrides = {}) => makeUser({ emailVerifiedAt: new Date(), ...overrides });
 
 const auth = (req, user) => req.set("Authorization", `Bearer ${tokenFor(user)}`);
 
@@ -117,7 +123,7 @@ describe("POST /referrals/code", () => {
 });
 
 describe("registering through a referral link", () => {
-  test("the referee gets 500, the referrer 1000, both minted and both notified", async () => {
+  test("the referee gets 500 at once; the referrer's 1000 waits until the referee is verified", async () => {
     const referrer = await makeUser({ referralCode: "FRIEND", walletBalance: 0 });
 
     const res = await registerWith("friend"); // lowercase on purpose
@@ -126,8 +132,16 @@ describe("registering through a referral link", () => {
     const referee = await User.findOne({ referredBy: referrer._id });
     expect(referee).not.toBeNull();
     expect(referee.walletBalance).toBe(200 + REFEREE_SIGNUP_BONUS);
-    expect((await User.findById(referrer._id)).walletBalance).toBe(REFERRER_SIGNUP_BONUS);
+    expect(referee.referralBonusPending).toBe(true);
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+    expect(await Notification.countDocuments({ receiverId: referrer._id, title: "Referral bonus" })).toBe(1);
 
+    await User.updateOne({ _id: referee._id }, { $set: { emailVerifiedAt: new Date() } });
+    await verification.onVerified(referee._id);
+    // a second verification (a discord link on top) pays nothing more
+    await verification.onVerified(referee._id);
+
+    expect((await User.findById(referrer._id)).walletBalance).toBe(REFERRER_SIGNUP_BONUS);
     const rows = await Transaction.find({ type: TX.REFERRAL_BONUS }).lean();
     expect(rows).toHaveLength(2);
     expect(rows.every((r) => r.direction === "credit" && String(r.counterparty) === String(MINT))).toBe(true);
@@ -135,7 +149,37 @@ describe("registering through a referral link", () => {
     expect(byRole).toEqual({ referee: REFEREE_SIGNUP_BONUS, referrer: REFERRER_SIGNUP_BONUS });
 
     expect(await Notification.countDocuments({ receiverId: referee._id, title: "Referral bonus" })).toBe(1);
-    expect(await Notification.countDocuments({ receiverId: referrer._id, title: "Referral bonus" })).toBe(1);
+    expect(await Notification.countDocuments({ receiverId: referrer._id, title: "Referral bonus" })).toBe(2);
+  });
+
+  test("a referee that never verifies earns its referrer nothing", async () => {
+    const referrer = await makeUser({ referralCode: "NEVER", walletBalance: 0 });
+    await registerWith("NEVER");
+    const referee = await User.findOne({ referredBy: referrer._id });
+
+    await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL);
+    await Transaction.create({ userId: referee._id, type: TX.CRASH_BET, direction: "debit", amount: 5000 });
+    const dash = await auth(request(app).get("/referrals/me"), referrer);
+
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+    expect(dash.body.referrals[0].verified).toBe(false);
+    expect(dash.body.referrals[0].commission).toBe(0);
+    expect(dash.body.totals.earned).toBe(0);
+  });
+
+  test("an unverified referee's wagers from before the rule still earn commission", async () => {
+    const me = await makeUser({ referralCode: "OLDTIMER" });
+    const referee = await makeUser({ referredBy: me._id });
+    await wager(referee._id, 3000, new Date("2025-12-31T12:00:00Z"));
+    await wager(referee._id, 5000);
+
+    const before = await auth(request(app).get("/referrals/me"), me);
+    expect(before.body.referrals[0].verified).toBe(false);
+    expect(before.body.referrals[0].commission).toBe(30);
+
+    await User.updateOne({ _id: referee._id }, { $set: { emailVerifiedAt: new Date() } });
+    const after = await auth(request(app).get("/referrals/me"), me);
+    expect(after.body.referrals[0].commission).toBe(80);
   });
 
   test("an unknown code is ignored and the signup still succeeds", async () => {
@@ -206,7 +250,7 @@ describe("google sign-in with a referral code", () => {
 describe("the level milestone", () => {
   test("a referee reaching the level pays the referrer once, with notifications", async () => {
     const referrer = await makeUser({ walletBalance: 0 });
-    const referee = await makeUser({ referredBy: referrer._id });
+    const referee = await makeVerified({ referredBy: referrer._id });
 
     await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL);
 
@@ -219,6 +263,21 @@ describe("the level milestone", () => {
 
     // reaching further levels never pays again
     await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL + 3);
+    expect((await User.findById(referrer._id)).walletBalance).toBe(MILESTONE_BONUS);
+    expect(await Transaction.countDocuments({ type: TX.REFERRAL_MILESTONE })).toBe(1);
+  });
+
+  test("a referee past the level is paid for the moment they verify, once", async () => {
+    const referrer = await makeUser({ walletBalance: 0 });
+    const referee = await makeUser({ referredBy: referrer._id, level: MILESTONE_LEVEL + 2 });
+
+    await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL + 2);
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+
+    await User.updateOne({ _id: referee._id }, { $set: { discordId: `d-${uniqueSuffix()}` } });
+    await verification.onVerified(referee._id);
+    await verification.onVerified(referee._id);
+
     expect((await User.findById(referrer._id)).walletBalance).toBe(MILESTONE_BONUS);
     expect(await Transaction.countDocuments({ type: TX.REFERRAL_MILESTONE })).toBe(1);
   });
@@ -237,7 +296,7 @@ describe("the level milestone", () => {
 
   test("levelling up through play triggers the payout by itself", async () => {
     const referrer = await makeUser({ walletBalance: 0 });
-    const referee = await makeUser({ referredBy: referrer._id });
+    const referee = await makeVerified({ referredBy: referrer._id });
 
     await awardXp(referee._id, calculateXPForLevel(MILESTONE_LEVEL));
 
@@ -250,7 +309,7 @@ describe("the level milestone", () => {
 
   test("a bet that crosses the level pays it, from the account the bet already holds", async () => {
     const referrer = await makeUser({ walletBalance: 0 });
-    const referee = await makeUser({ referredBy: referrer._id, xp: calculateXPForLevel(MILESTONE_LEVEL) - 1, level: MILESTONE_LEVEL - 1 });
+    const referee = await makeVerified({ referredBy: referrer._id, xp: calculateXPForLevel(MILESTONE_LEVEL) - 1, level: MILESTONE_LEVEL - 1 });
 
     await chargeUser(referee._id, 100, { type: TX.DICE_BET });
 
@@ -319,8 +378,8 @@ describe("GET /referrals/me", () => {
 
   test("commission derives from referred wagers only, floored per referee", async () => {
     const me = await makeUser({ referralCode: "MYCODE" });
-    const whale = await makeUser({ referredBy: me._id });
-    const minnow = await makeUser({ referredBy: me._id });
+    const whale = await makeVerified({ referredBy: me._id });
+    const minnow = await makeVerified({ referredBy: me._id });
     const stranger = await makeUser();
 
     await wager(whale._id, 2000);
@@ -368,7 +427,7 @@ describe("POST /referrals/claim", () => {
 
   test("pays out the available commission from the house, exactly once", async () => {
     const me = await makeUser({ walletBalance: 0 });
-    const referee = await makeUser({ referredBy: me._id });
+    const referee = await makeVerified({ referredBy: me._id });
     await wager(referee._id, 1000); // 10 earned
 
     const res = await auth(request(app).post("/referrals/claim"), me);
@@ -389,7 +448,7 @@ describe("POST /referrals/claim", () => {
 
   test("a later claim pays only what was earned since", async () => {
     const me = await makeUser({ walletBalance: 0 });
-    const referee = await makeUser({ referredBy: me._id });
+    const referee = await makeVerified({ referredBy: me._id });
     await wager(referee._id, 1000);
     await auth(request(app).post("/referrals/claim"), me);
 

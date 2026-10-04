@@ -27,6 +27,8 @@ export interface ShopItem {
   owned: boolean;
   // how an owned item came: bought in her shop, or kept from what the account had already done
   via: "bought" | "history" | null;
+  // it opens something that needs a verified account from the lock date, like the market
+  verified?: boolean;
 }
 
 // the account's xp multipliers: `all` for every bet, a game key for its charm

@@ -33,7 +33,9 @@
     "user": "Người dùng",
     "yourReferralLink": "Liên kết giới thiệu của bạn",
     "yourReferralLinkIs": "Liên kết giới thiệu của bạn đã hoạt động",
-    "yourReferrals": "Danh sách giới thiệu của bạn"
+    "yourReferrals": "Danh sách giới thiệu của bạn",
+    "waitingVerification": "Đang chờ xác minh",
+    "verifiedOnly": "Bạn nhận thưởng từ bạn bè khi tài khoản của họ được xác minh bằng Google, Discord hoặc email."
   },
   "arcade": {
     "backToCasino": "Quay lại casino",
@@ -2091,5 +2093,73 @@
     "upgradeFailed": "Nâng cấp thất bại",
     "upgradeSuccess": "Nâng cấp thành công",
     "wonByUpgrading": "Thắng từ nâng cấp"
+  },
+  "verify": {
+    "title": "Xác minh tài khoản của bạn",
+    "why": "Tài khoản đã xác minh có thể lên bảng xếp hạng, giao dịch ở chợ và tham gia mưa. Chọn một cách:",
+    "emailOption": "Qua email",
+    "emailBody": "Chúng tôi sẽ gửi một liên kết đến {{email}}.",
+    "send": "Gửi liên kết",
+    "sent": "Xong! Hãy kiểm tra hộp thư {{email}} và nhấn vào liên kết. Liên kết có hiệu lực trong 24 giờ.",
+    "discordOption": "Với Discord",
+    "discordBody": "Liên kết tài khoản Discord của bạn. Mỗi tài khoản Discord có thể xác minh một tài khoản KaniCasino.",
+    "discordButton": "Liên kết Discord",
+    "googleHint": "Đăng nhập bằng Google cũng xác minh tài khoản của bạn, nếu tài khoản dùng cùng địa chỉ với tài khoản Google.",
+    "changeEmail": "Sai địa chỉ? Hãy đổi trong Cài đặt.",
+    "verified": "Tài khoản của bạn đã được xác minh.",
+    "via": {
+      "google": "bằng Google",
+      "email": "qua email",
+      "discord": "bằng Discord"
+    },
+    "button": "Xác minh tài khoản",
+    "how": "Chỉ mất một phút: xác nhận email hoặc liên kết Discord.",
+    "notRanked": "Chưa được xếp hạng: hãy xác minh tài khoản để thi đấu.",
+    "suggestion": "Có phải bạn muốn nhập {{email}}?",
+    "locked": {
+      "leaderboard": "Bạn cần tài khoản đã xác minh để lên bảng xếp hạng.",
+      "market": "Bạn cần tài khoản đã xác minh để giao dịch ở chợ.",
+      "rain": "Bạn cần tài khoản đã xác minh để tham gia mưa.",
+      "license": "Giấy phép giao dịch cần tài khoản đã xác minh."
+    },
+    "soon": {
+      "leaderboard": "Từ {{date}}, bạn sẽ cần tài khoản đã xác minh để lên bảng xếp hạng.",
+      "market": "Từ {{date}}, bạn sẽ cần tài khoản đã xác minh để giao dịch ở chợ.",
+      "rain": "Từ {{date}}, bạn sẽ cần tài khoản đã xác minh để tham gia mưa.",
+      "license": "Từ {{date}}, khu chợ mà giấy phép này mở sẽ cần tài khoản đã xác minh."
+    },
+    "errors": {
+      "invalid": "Đây không phải là địa chỉ email hợp lệ.",
+      "noMailServer": "Địa chỉ này không nhận được email. Hãy kiểm tra lỗi chính tả.",
+      "disposable": "Hộp thư dùng một lần không thể xác minh tài khoản. Hãy dùng địa chỉ của riêng bạn.",
+      "taken": "Hộp thư này đã xác minh một tài khoản khác.",
+      "inUse": "Một tài khoản khác đã dùng địa chỉ này.",
+      "same": "Đây đã là địa chỉ của bạn.",
+      "google": "Tài khoản đăng nhập bằng Google giữ địa chỉ Google của mình.",
+      "password": "Sai mật khẩu.",
+      "bounced": "Email gửi đến địa chỉ của bạn bị trả lại. Hãy đổi sang địa chỉ dùng được.",
+      "tooSoon": "Hãy đợi một phút rồi thử lại (tối đa năm email mỗi ngày).",
+      "expired": "Liên kết đã hết hạn hoặc đã được dùng. Hãy yêu cầu liên kết mới.",
+      "failed": "Đã xảy ra lỗi. Vui lòng thử lại."
+    },
+    "page": {
+      "working": "Đang xác minh tài khoản của bạn...",
+      "done": "Tài khoản của bạn đã được xác minh!",
+      "doneBody": "{{email}} đã được xác nhận. Bạn có thể lên bảng xếp hạng, giao dịch ở chợ và tham gia mưa.",
+      "failed": "Chúng tôi không thể xác minh tài khoản của bạn",
+      "back": "Quay lại KaniCasino"
+    },
+    "settings": {
+      "title": "Tài khoản",
+      "status": "Xác minh",
+      "notVerified": "Chưa xác minh. Từ {{date}}, bảng xếp hạng, chợ và mưa cần tài khoản đã xác minh.",
+      "email": "Địa chỉ email",
+      "change": "Đổi",
+      "newEmail": "Địa chỉ email mới",
+      "password": "Mật khẩu hiện tại",
+      "sendChange": "Gửi liên kết xác nhận",
+      "changeSent": "Chúng tôi đã gửi liên kết đến {{email}}. Địa chỉ của bạn sẽ đổi khi bạn nhấn vào đó.",
+      "cancel": "Hủy"
+    }
   }
 }

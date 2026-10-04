@@ -21,15 +21,18 @@ const unsubscribeUrl = (user) => `${SITE}/unsubscribe?u=${user._id}&t=${user.uns
 const oneClickUrl = (user) => `${API}/email/unsubscribe?u=${user._id}&t=${user.unsubscribeToken}`;
 
 // "service" is account mail nobody opts out of (password resets, policy notices);
-// "marketing" needs consent and is refused without it.
-async function sendMail({ to, subject, html, text, kind = "service" }) {
+// "marketing" needs consent and is refused without it. `user` is passed when the address
+// is not on the account yet, like the new one a change of email has to prove.
+async function sendMail({ to, subject, html, text, kind = "service", user: known = null }) {
   if (!enabled()) return { skipped: "disabled" };
 
-  const user = await User.findOne({ email: to }).select(
-    "email marketingOptIn emailSuppressed unsubscribeToken"
-  );
+  const user =
+    known ||
+    (await User.findOne({ email: to }).select("email marketingOptIn emailSuppressed unsubscribeToken"));
   if (!user) return { skipped: "unknown recipient" };
-  if (user.emailSuppressed) return { skipped: "suppressed" };
+  // a bounce was recorded against the account's own address, so it says nothing about a new one
+  const sameAddress = String(user.email || "").toLowerCase() === String(to).toLowerCase();
+  if (user.emailSuppressed && sameAddress) return { skipped: "suppressed" };
   if (kind === "marketing" && !user.marketingOptIn) return { skipped: "no consent" };
 
   const unsub = unsubscribeUrl(user);

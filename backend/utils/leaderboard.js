@@ -7,6 +7,7 @@ const { creditUser, TX } = require("./economy");
 const { SCORING_TYPES, pointsExpression } = require("./leaderboardPoints");
 const { VISIBLE } = require("./visibility");
 const memo = require("./memo");
+const verification = require("./verification");
 
 const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
 
@@ -42,12 +43,23 @@ function windowFor(at = new Date()) {
   return { startsAt, endsAt };
 }
 
+// from the lock date a board counts verified accounts only; one that started earlier keeps the rules it ran under
+const eligibleOnly = (startsAt) =>
+  verification.enforced(startsAt)
+    ? [
+        { $lookup: { from: "users", localField: "_id", foreignField: "_id", as: "who", pipeline: [{ $project: verification.VERIFIED_FIELDS }] } },
+        { $match: verification.verifiedFilter("who.") },
+        { $project: { who: 0 } },
+      ]
+    : [];
+
 // every account's points in the window, best first. nothing is incremented on the money
 // path, so a bet cannot be double counted and there is no stored total to drift.
 const scored = (startsAt, endsAt) => [
   { $match: { type: { $in: SCORING_TYPES }, createdAt: { $gte: startsAt, $lt: endsAt } } },
   { $group: { _id: "$userId", points: { $sum: pointsExpression() }, bets: { $sum: 1 } } },
   { $match: { points: { $gt: 0 } } },
+  ...eligibleOnly(startsAt),
   // ties break on the older account, so a redraw never reorders a settled board
   { $sort: { points: -1, _id: 1 } },
 ];
@@ -94,7 +106,7 @@ function live(startsAt, endsAt) {
       { $facet: { board: placed(PAID_PLACES), all: [{ $group: { _id: null, points: { $push: "$points" } } }] } },
     ]);
     return {
-      rows: await padStandings(facets.board, PAID_PLACES),
+      rows: await padStandings(facets.board, PAID_PLACES, { verifiedOnly: verification.enforced(startsAt) }),
       points: facets.all.length ? facets.all[0].points : [],
     };
   });
@@ -108,14 +120,15 @@ const CARD = "username slug profilePicture level fixedItem fanRank selectedBadge
 //
 // they carry no prize on purpose. settlement only pays a standing with points above zero,
 // so printing K₽1,200 beside somebody on nought would be telling them they had won it.
-async function padStandings(rows, limit) {
+async function padStandings(rows, limit, { verifiedOnly = false } = {}) {
   const missing = limit - rows.length;
   if (missing <= 0) return rows;
 
   const taken = rows.map((row) => row._id);
   // the biggest accounts first, so the empty seats read as names rather than as filler.
   // one indexed read of at most nine documents, behind the board's own cache.
-  const idle = await User.find({ _id: { $nin: taken }, ...VISIBLE })
+  // an empty seat says anyone could take it, so once the board needs verification it only offers verified accounts
+  const idle = await User.find({ _id: { $nin: taken }, ...VISIBLE, ...(verifiedOnly ? verification.verifiedFilter() : {}) })
     .sort({ level: -1, _id: 1 })
     .limit(missing)
     .select(CARD)

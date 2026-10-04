@@ -26,6 +26,7 @@ import LockedBanner from "../../components/daisu/shop/LockedBanner";
 import { useLocked } from "../../components/daisu/shop/useLocked";
 import { openDaisuShop } from "../../components/daisu/tour/tourEvents";
 import i18n from "../../i18n";
+import VerifyBanner from "../../components/verify/VerifyBanner";
 
 interface ItemData {
   totalPages: number;
@@ -255,7 +256,7 @@ const ItemPage: React.FC = () => {
           </div>
         </div>
 
-        {locked && <LockedBanner unlock="tradersLicense" />}
+        {locked ? <LockedBanner unlock="tradersLicense" /> : <VerifyBanner feature="market" />}
 
         {/* the numbers a trader actually needs */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

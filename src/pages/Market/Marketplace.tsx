@@ -15,6 +15,7 @@ import LockedBanner from "../../components/daisu/shop/LockedBanner";
 import { useLocked } from "../../components/daisu/shop/useLocked";
 import { openDaisuShop } from "../../components/daisu/tour/tourEvents";
 import i18n from "../../i18n";
+import VerifyBanner from "../../components/verify/VerifyBanner";
 
 interface MarketRow {
   image: string;
@@ -153,7 +154,7 @@ const Marketplace: React.FC = () => {
           )}
         </div>
 
-        {locked && <LockedBanner unlock="tradersLicense" />}
+        {locked ? <LockedBanner unlock="tradersLicense" /> : <VerifyBanner feature="market" />}
 
         {isLogged && (
           <div className="flex gap-2">

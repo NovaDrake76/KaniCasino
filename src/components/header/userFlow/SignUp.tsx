@@ -12,6 +12,7 @@ import {
   validateSignUp,
 } from "../../../services/auth/authRules";
 import Field from "../../Field";
+import { problemOf } from "../../../services/account/AccountService";
 import GoogleProfileStep from "./GoogleProfileStep";
 import MainButton from "../../MainButton";
 import i18n from "../../../i18n";
@@ -27,6 +28,8 @@ const SignUpPage: React.FC = () => {
   const [showReferral, setShowReferral] = useState(!!getPendingReferralCode());
   const [marketingOptIn, setMarketingOptIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // the address the server thinks a typo meant, offered as one tap
+  const [suggestion, setSuggestion] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   // set when google verified somebody who has no account yet: nothing exists on the server
   // until they have picked a name and said whether they want their google picture
@@ -52,6 +55,7 @@ const SignUpPage: React.FC = () => {
 
     setLoading(true);
     setError(null);
+    setSuggestion(null);
     try {
       const response = await register(
         fields.email.trim(),
@@ -64,7 +68,13 @@ const SignUpPage: React.FC = () => {
       clearPendingReferralCode();
       toggleLogin();
     } catch (err) {
-      setError(authError(err, i18n.t("nav.invalidFormatPleaseTry")));
+      const problem = problemOf(err);
+      if (problem.reason === "noMailServer" || problem.reason === "invalid") {
+        setError(i18n.t(`verify.errors.${problem.reason}`));
+        setSuggestion(problem.suggestion);
+      } else {
+        setError(authError(err, i18n.t("nav.invalidFormatPleaseTry")));
+      }
     } finally {
       setLoading(false);
     }
@@ -197,6 +207,19 @@ const SignUpPage: React.FC = () => {
         {error && (
           <p role="alert" className="bg-[#3a1f2a] px-3 py-2 text-xs text-[#ffb4b4]">
             {error}
+            {suggestion && (
+              <button
+                type="button"
+                onClick={() => {
+                  set("email")(suggestion);
+                  setSuggestion(null);
+                  setError(null);
+                }}
+                className="ml-1 rounded-none border-0 bg-transparent p-0 font-semibold text-white underline focus:outline-none"
+              >
+                {i18n.t("verify.suggestion", { email: suggestion })}
+              </button>
+            )}
           </p>
         )}
 

@@ -164,6 +164,18 @@ const potClaimLimiter = perUser(30, "Too many takes, slow down a little.", 60 * 
 // the page sends a batch every half minute at most, plus one as a tab closes
 const usageLimiter = perUser(20, "Too many usage batches.", 60 * 1000);
 
+// verification mail on top of the per-account daily cap: one address cannot work through a pile of accounts
+const verifyMailLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  keyGenerator: clientIp,
+  skip: skipInTests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { message: "Too many verification emails from this address. Try again later.", reason: "tooSoon" },
+});
+
 module.exports = {
   artLimiter,
   loginLimiter,
@@ -182,4 +194,5 @@ module.exports = {
   marketWriteLimiter,
   potClaimLimiter,
   usageLimiter,
+  verifyMailLimiter,
 };

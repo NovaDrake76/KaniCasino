@@ -241,6 +241,18 @@ const UserSchema = new mongoose.Schema({
   },
   emailSuppressedReason: String,
   emailSuppressedAt: Date,
+  // set when the player clicks the link we mailed. google sign-in and a linked discord count as verified too (utils/verification.js)
+  emailVerifiedAt: Date,
+  // the inbox that verification was proved on, gmail dots and +tags folded, so one inbox verifies one account
+  verifiedMailbox: String,
+  // a referrer's signup bonus waits here until the account they brought is verified
+  referralBonusPending: Boolean,
+  // verification emails sent today, so the button cannot be used to flood an inbox
+  verifyMail: {
+    day: String,
+    sent: Number,
+    lastAt: Date,
+  },
 
   // the linked discord account. set only by the bot's link flow, which needs a logged-in
   // session on the site, so a discord id can never claim an account on its own.
@@ -288,5 +300,6 @@ UserSchema.index({ level: -1 }); // the idle seats the daily board fills its emp
 UserSchema.index({ "fixedItem.name": 1 }, { sparse: true }); // fan board recount on pin
 UserSchema.index({ discordId: 1 }, { unique: true, sparse: true }); // bot lookups, one account per discord user
 UserSchema.index({ discordGuilds: 1 }, { sparse: true }); // per-server boards
+UserSchema.index({ verifiedMailbox: 1 }, { unique: true, sparse: true }); // one verified account per inbox
 
 module.exports = User = mongoose.model("User", UserSchema);

@@ -33,7 +33,9 @@
     "user": "User",
     "yourReferralLink": "Your referral link",
     "yourReferralLinkIs": "Your referral link is live",
-    "yourReferrals": "Your referrals"
+    "yourReferrals": "Your referrals",
+    "waitingVerification": "Waiting for verification",
+    "verifiedOnly": "You earn from a friend once their account is verified with Google, Discord or email."
   },
   "arcade": {
     "backToCasino": "Back to the casino",
@@ -2091,5 +2093,73 @@
     "upgradeFailed": "Upgrade Failed",
     "upgradeSuccess": "Upgrade Success",
     "wonByUpgrading": "Won by upgrading"
+  },
+  "verify": {
+    "title": "Verify your account",
+    "why": "Verified accounts can be on the leaderboard, trade on the market and join the rain. Choose one way:",
+    "emailOption": "By email",
+    "emailBody": "We will send a link to {{email}}.",
+    "send": "Send the link",
+    "sent": "Done! Check your inbox at {{email}} and click the link. It works for 24 hours.",
+    "discordOption": "With Discord",
+    "discordBody": "Link your Discord account. Each Discord account can verify one KaniCasino account.",
+    "discordButton": "Link Discord",
+    "googleHint": "Signing in with Google also verifies your account, when it uses the same address as your Google account.",
+    "changeEmail": "Wrong address? Change it in Settings.",
+    "verified": "Your account is verified.",
+    "via": {
+      "google": "with Google",
+      "email": "by email",
+      "discord": "with Discord"
+    },
+    "button": "Verify account",
+    "how": "It takes a minute: confirm your email or link Discord.",
+    "notRanked": "Not ranked: verify your account to compete.",
+    "suggestion": "Did you mean {{email}}?",
+    "locked": {
+      "leaderboard": "You need a verified account to be on the leaderboard.",
+      "market": "You need a verified account to trade on the market.",
+      "rain": "You need a verified account to join the rain.",
+      "license": "The Trader's License needs a verified account."
+    },
+    "soon": {
+      "leaderboard": "From {{date}}, you will need a verified account to be on the leaderboard.",
+      "market": "From {{date}}, you will need a verified account to trade on the market.",
+      "rain": "From {{date}}, you will need a verified account to join the rain.",
+      "license": "From {{date}}, the market this opens will need a verified account."
+    },
+    "errors": {
+      "invalid": "That is not a valid email address.",
+      "noMailServer": "That address cannot receive email. Check it for typos.",
+      "disposable": "Throwaway inboxes cannot verify an account. Use your own address.",
+      "taken": "That inbox already verified another account.",
+      "inUse": "Another account already uses that address.",
+      "same": "That is already your address.",
+      "google": "Accounts that sign in with Google keep their Google address.",
+      "password": "Wrong password.",
+      "bounced": "Emails to your address bounced. Change it to one that works.",
+      "tooSoon": "Wait a minute before asking again (at most five emails a day).",
+      "expired": "That link expired or was already used. Ask for a new one.",
+      "failed": "Something went wrong. Please try again."
+    },
+    "page": {
+      "working": "Verifying your account...",
+      "done": "Your account is verified!",
+      "doneBody": "{{email}} is confirmed. You can be on the leaderboard, trade on the market and join the rain.",
+      "failed": "We could not verify your account",
+      "back": "Back to KaniCasino"
+    },
+    "settings": {
+      "title": "Account",
+      "status": "Verification",
+      "notVerified": "Not verified yet. The leaderboard, the market and the rain need a verified account from {{date}}.",
+      "email": "Email address",
+      "change": "Change",
+      "newEmail": "New email address",
+      "password": "Current password",
+      "sendChange": "Send confirmation link",
+      "changeSent": "We sent a link to {{email}}. Your address changes when you click it.",
+      "cancel": "Cancel"
+    }
   }
 }

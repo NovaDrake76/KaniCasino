@@ -5,6 +5,7 @@ import { loadShop, setShop, useShopState } from "./shopStore";
 import { statusOf } from "./shopCopy";
 import { track } from "../../../services/usage/usage";
 import i18n from "../../../i18n";
+import { handleVerifyLock } from "../../verify/verifyEvents";
 
 interface Args {
   live: boolean;
@@ -60,7 +61,7 @@ export const useShop = ({ live, userId, open, walletBalance, level, onBought }: 
     } catch (err: unknown) {
       const e = err as { response?: { status?: number; data?: { message?: string; reason?: string } } };
       track("shop_buy_failed", { item: picked, status: e?.response?.status ?? 0, reason: e?.response?.data?.reason });
-      toast.error(e?.response?.data?.message || i18n.t("daisu.shop.failed"), { theme: "dark" });
+      if (!handleVerifyLock(err, "license")) toast.error(e?.response?.data?.message || i18n.t("daisu.shop.failed"), { theme: "dark" });
       loadShop(true);
     } finally {
       setBuying(false);

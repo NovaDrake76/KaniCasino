@@ -12,6 +12,7 @@ const DiscordOpen = require("../models/DiscordOpen");
 const { isAuthenticated } = require("../middleware/authMiddleware");
 const { visible } = require("../utils/visibility");
 const badges = require("../utils/badges");
+const verification = require("../utils/verification");
 const { openCase, MAX_PER_OPEN } = require("../games/openCase");
 const { pickFromRanges, TOTAL } = require("../utils/provablyFair");
 const { buildRangeTable } = require("../utils/caseRanges");
@@ -242,6 +243,8 @@ router.post("/link/complete", isAuthenticated, async (req, res) => {
     );
     if (!done.modifiedCount) return res.status(409).json({ message: "This account is already linked. Change it from the settings tab on your profile." });
     await DiscordLink.deleteOne({ code });
+    // one discord account per site account, so a link verifies it
+    await verification.onVerified(req.user._id);
 
     res.json({ username: mine.username, discordName: pending.discordName || null });
   } catch (err) {
@@ -448,6 +451,7 @@ async function oauthCallback(req, res) {
       }
     );
     if (!written.modifiedCount) return done(userId, "already");
+    await verification.onVerified(userId);
     return done(userId, seated ? "joined" : "linked");
   } catch (err) {
     // the unique index is still the last word if two browsers race the same discord account

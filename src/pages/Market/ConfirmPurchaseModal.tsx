@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { IMarketItem } from "../../components/Types";
 import i18n from "../../i18n";
 import { play } from "../../services/sound/sound";
+import { handleVerifyLock } from "../../components/verify/verifyEvents";
 
 interface Props {
   item: IMarketItem;
@@ -30,7 +31,7 @@ const ConfirmPurchaseModal: React.FC<Props> = ({
       // the balance comes back over the socket, so it stays in step with the server
       toast.success(i18n.t("market.purchaseSuccessful"));
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || i18n.t("market.couldNotCompleteThe"));
+      if (!handleVerifyLock(error, "market")) toast.error(error?.response?.data?.message || i18n.t("market.couldNotCompleteThe"));
     } finally {
       setLoading(false);
       onClose();

@@ -3,6 +3,7 @@ import Title from "../../../components/Title";
 import Player from "../../../components/Player";
 import Monetary from "../../../components/Monetary";
 import TopPlayer from "../../../components/TopPlayer";
+import VerifyBanner from "../../../components/verify/VerifyBanner";
 import { BoardStanding } from "../../../services/leaderboard/LeaderboardService";
 import { Countdown, LeaderboardViewProps } from "./Leaderboard.types";
 import i18n from "../../../i18n";
@@ -68,6 +69,7 @@ const YourRow = ({ me, paidPlaces }: { me: NonNullable<LeaderboardViewProps["me"
         <td className="px-6 py-4 whitespace-nowrap">{me.rank ? `#${me.rank}` : "-"}</td>
         <td className="p-4">
             <span className="font-bold">{i18n.t("leaderboard.you")}</span>
+            {me.needsVerify && <span className="block text-xs text-accent-amber">{i18n.t("verify.notRanked")}</span>}
             {/* gated on rank: a player who has not bet today is not "1 point from 10th",
                 they are simply not on the board yet */}
             {me.rank !== null && me.toPaidPlace > 0 && (
@@ -188,6 +190,7 @@ const LeaderboardView = ({
             </div>
 
             <div className="w-full min-w-0 overflow-x-auto lg:col-start-2 lg:row-start-2">
+                <VerifyBanner feature="leaderboard" className="mb-4" />
                 <table className="min-w-full divide-y divide-gray-500">
                     {/* column headings over an empty table say nothing: the message below
                         is the whole content when the board has just reset */}
