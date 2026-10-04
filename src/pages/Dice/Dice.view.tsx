@@ -24,6 +24,7 @@ const DiceView: React.FC<DiceViewProps> = ({
   normalizeBet,
   halveBet,
   doubleBet,
+  maxOutBet,
   target,
   direction,
   controls,
@@ -80,6 +81,7 @@ const DiceView: React.FC<DiceViewProps> = ({
             onBlur={normalizeBet}
             onHalve={halveBet}
             onDouble={doubleBet}
+            onMax={maxOutBet}
             betValue={betValue}
             disabled={autoRunning}
             note={<BonusBetHint game="dice" bet={betValue} />}

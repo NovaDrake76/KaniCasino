@@ -166,6 +166,7 @@ const CoinFlip = () => {
               onChange={(value) => setBet(value === "" ? 0 : Math.min(MAX_BET, Number(value)))}
               onHalve={() => setBet(Math.max(MIN_BET, Math.floor(bet / 2)))}
               onDouble={() => setBet(Math.min(MAX_BET, (bet || MIN_BET) * 2))}
+              onMax={() => setBet(Math.min(MAX_BET, Math.max(MIN_BET, Math.floor(userData?.walletBalance || MIN_BET))))}
               betValue={bet}
             />
           </div>
