@@ -347,7 +347,8 @@
       "removeFailed": "Impossibile eliminare quel messaggio.",
       "slowDown": "Vai piu piano.",
       "slur": "Questo non finisce in chat.",
-      "tooLong": "E troppo lungo."
+      "tooLong": "E troppo lungo.",
+      "limited": "Il tuo account è limitato, quindi non puoi scrivere in chat."
     },
     "hide": "Nascondi chat",
     "loading": "Caricamento della chat",
@@ -2161,5 +2162,16 @@
       "changeSent": "Abbiamo inviato un link a {{email}}. Il tuo indirizzo cambia quando ci clicchi.",
       "cancel": "Annulla"
     }
+  },
+  "limited": {
+    "title": "Il tuo account è limitato",
+    "reason": "Motivo: {{reason}}",
+    "what": "Puoi continuare a giocare, ma finché lo staff non rimuove il limite non puoi commerciare nel mercato, scrivere in chat, partecipare alla pioggia, guadagnare premi per gli inviti né stare in classifica.",
+    "contact": "Se pensi che sia un errore, contattaci su Discord o via email.",
+    "market": "Il tuo account è limitato, quindi non puoi commerciare nel mercato.",
+    "rain": "Il tuo account è limitato, quindi non puoi partecipare alla pioggia.",
+    "license": "Il tuo account è limitato, quindi non puoi comprare la Licenza da commerciante.",
+    "referrals": "Il tuo account è limitato, quindi i premi per gli inviti sono in pausa.",
+    "leaderboard": "Non in classifica: il tuo account è limitato."
   }
 }

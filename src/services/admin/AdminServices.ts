@@ -131,6 +131,49 @@ export const getAdminBigWins = async (days: number | null): Promise<AdminBigWin[
 export const getAdminPlayerDetail = async (id: string, days: number | null): Promise<AdminPlayerDetail> =>
   (await api.get(`/admin/stats/users/${id}`, { params: withDays(days) })).data;
 
+export interface AdminLimit {
+  at: string;
+  reason: string;
+  by: { id: string; username: string | null } | null;
+}
+
+export interface AdminSharedAccount {
+  id: string;
+  username: string;
+  level: number;
+  verified: boolean;
+  limited: boolean;
+  disabled: boolean;
+  lastAt: string;
+}
+
+// a player's standing: how they are verified, whether staff limited them, and who else uses their addresses
+export interface AdminAccount {
+  verification: { verified: boolean; via: "google" | "email" | "discord" | null; email: string | null };
+  limited: AdminLimit | null;
+  disabled: boolean;
+  addresses: number;
+  shared: { hash: string; lastAt: string; accounts: AdminSharedAccount[]; more: number }[];
+}
+
+export interface AdminLimitedRow {
+  id: string;
+  username: string;
+  level: number;
+  limited: AdminLimit;
+}
+
+export const getAdminAccount = async (id: string): Promise<AdminAccount> =>
+  (await api.get(`/admin/users/${id}/account`)).data;
+
+export const limitAccount = async (id: string, reason: string): Promise<{ limited: AdminLimit }> =>
+  (await api.put(`/admin/users/${id}/limit`, { reason })).data;
+
+export const liftLimit = async (id: string): Promise<{ limited: null }> =>
+  (await api.delete(`/admin/users/${id}/limit`)).data;
+
+export const getLimitedAccounts = async (): Promise<AdminLimitedRow[]> => (await api.get("/admin/limits")).data.accounts;
+
 export interface AdminMarket {
   _id: string;
   slug: string;

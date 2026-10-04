@@ -347,7 +347,8 @@
       "removeFailed": "Não foi possível apagar essa mensagem.",
       "slowDown": "Calma um momento.",
       "slur": "Isso nao vai para o chat.",
-      "tooLong": "Isso esta longo demais."
+      "tooLong": "Isso esta longo demais.",
+      "limited": "Sua conta está limitada, então você não pode escrever no chat."
     },
     "hide": "Ocultar chat",
     "loading": "Carregando o chat",
@@ -2161,5 +2162,16 @@
       "changeSent": "Enviamos um link para {{email}}. Seu endereço muda quando você clicar nele.",
       "cancel": "Cancelar"
     }
+  },
+  "limited": {
+    "title": "Sua conta está limitada",
+    "reason": "Motivo: {{reason}}",
+    "what": "Você pode continuar jogando, mas até a equipe remover o limite você não pode negociar no mercado, usar o chat, participar da chuva, ganhar recompensas de indicação nem aparecer no ranking.",
+    "contact": "Se você acha que isso é um engano, fale com a gente no Discord ou por e-mail.",
+    "market": "Sua conta está limitada, então você não pode negociar no mercado.",
+    "rain": "Sua conta está limitada, então você não pode participar da chuva.",
+    "license": "Sua conta está limitada, então você não pode comprar a Licença de Comerciante.",
+    "referrals": "Sua conta está limitada, então as recompensas de indicação estão pausadas.",
+    "leaderboard": "Fora do ranking: sua conta está limitada."
   }
 }

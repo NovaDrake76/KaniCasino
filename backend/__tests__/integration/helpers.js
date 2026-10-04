@@ -22,6 +22,7 @@ const daisuRoutes = require("../../routes/daisuRoutes");
 const arcadeRoutes = require("../../routes/arcadeRoutes");
 const usageRoutes = require("../../routes/usageRoutes");
 const accountRoutes = require("../../routes/accountRoutes");
+const leaderboardRoutes = require("../../routes/leaderboardRoutes");
 
 // no-op socket.io stand-in
 const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
@@ -53,6 +54,7 @@ function makeApp() {
   app.use("/arcade", arcadeRoutes);
   app.use("/usage", usageRoutes);
   app.use("/account", accountRoutes);
+  app.use("/leaderboard", leaderboardRoutes);
   return app;
 }
 

@@ -347,7 +347,8 @@
       "removeFailed": "Không xóa được tin nhắn đó.",
       "slowDown": "Cham lai mot chut.",
       "slur": "Noi dung do khong the gui len chat.",
-      "tooLong": "Noi dung qua dai."
+      "tooLong": "Noi dung qua dai.",
+      "limited": "Tài khoản của bạn bị hạn chế nên không thể chat."
     },
     "hide": "An khung chat",
     "loading": "Dang tai khung chat",
@@ -2161,5 +2162,16 @@
       "changeSent": "Chúng tôi đã gửi liên kết đến {{email}}. Địa chỉ của bạn sẽ đổi khi bạn nhấn vào đó.",
       "cancel": "Hủy"
     }
+  },
+  "limited": {
+    "title": "Tài khoản của bạn bị hạn chế",
+    "reason": "Lý do: {{reason}}",
+    "what": "Bạn vẫn có thể chơi tiếp, nhưng cho đến khi đội ngũ gỡ hạn chế, bạn không thể giao dịch ở chợ, chat, tham gia mưa, nhận thưởng giới thiệu hay lên bảng xếp hạng.",
+    "contact": "Nếu bạn nghĩ đây là nhầm lẫn, hãy liên hệ với chúng tôi qua Discord hoặc email.",
+    "market": "Tài khoản của bạn bị hạn chế nên không thể giao dịch ở chợ.",
+    "rain": "Tài khoản của bạn bị hạn chế nên không thể tham gia mưa.",
+    "license": "Tài khoản của bạn bị hạn chế nên không thể mua Giấy phép giao dịch.",
+    "referrals": "Tài khoản của bạn bị hạn chế nên thưởng giới thiệu đang tạm dừng.",
+    "leaderboard": "Chưa được xếp hạng: tài khoản của bạn bị hạn chế."
   }
 }

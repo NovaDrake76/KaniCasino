@@ -347,7 +347,8 @@
       "removeFailed": "Pesan itu tidak bisa dihapus.",
       "slowDown": "Pelan-pelan dulu.",
       "slur": "Itu tidak akan masuk ke obrolan.",
-      "tooLong": "Itu terlalu panjang."
+      "tooLong": "Itu terlalu panjang.",
+      "limited": "Akun Anda dibatasi, jadi Anda tidak bisa menulis di chat."
     },
     "hide": "Sembunyikan obrolan",
     "loading": "Memuat obrolan",
@@ -2161,5 +2162,16 @@
       "changeSent": "Kami mengirim tautan ke {{email}}. Alamat Anda berubah setelah Anda mengkliknya.",
       "cancel": "Batal"
     }
+  },
+  "limited": {
+    "title": "Akun Anda dibatasi",
+    "reason": "Alasan: {{reason}}",
+    "what": "Anda tetap bisa bermain, tetapi sampai staf mencabut batasannya, Anda tidak bisa berdagang di pasar, menulis di chat, ikut hujan, mendapat hadiah referal, atau masuk papan peringkat.",
+    "contact": "Jika menurut Anda ini keliru, hubungi kami lewat Discord atau email.",
+    "market": "Akun Anda dibatasi, jadi Anda tidak bisa berdagang di pasar.",
+    "rain": "Akun Anda dibatasi, jadi Anda tidak bisa ikut hujan.",
+    "license": "Akun Anda dibatasi, jadi Anda tidak bisa membeli Lisensi Pedagang.",
+    "referrals": "Akun Anda dibatasi, jadi hadiah referal dijeda.",
+    "leaderboard": "Tidak masuk peringkat: akun Anda dibatasi."
   }
 }

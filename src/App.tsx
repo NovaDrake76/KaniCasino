@@ -19,6 +19,8 @@ import BootLoader from "./components/BootLoader";
 import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
 import VerifyModal from "./components/verify/VerifyModal";
+import LimitedBanner from "./components/limited/LimitedBanner";
+import { me } from "./services/auth/auth";
 import GiftPrompt from "./components/header/GiftPrompt";
 import DaisuDock from "./components/daisu";
 import TourOverlay from "./components/daisu/tour/TourOverlay";
@@ -189,6 +191,15 @@ function App() {
     });
   }, [rainWarning]);
 
+  // staff limited or lifted this account: the banner and every gate read it again
+  useEffect(() => {
+    const refresh = () => me().then(setUserData).catch(() => undefined);
+    socket.on("accountUpdated", refresh);
+    return () => {
+      socket.off("accountUpdated", refresh);
+    };
+  }, [socket]);
+
   useEffect(() => {
     socket.on("newNotification", (notification) => {
       play("ui.notify");
@@ -316,6 +327,7 @@ function App() {
                 {/* the navbar keeps the whole width and the rail hangs under it, so only
                     what sits below the bar is shifted across */}
                 <div className="flex w-full min-w-0 flex-col">
+                  <LimitedBanner shift={chat.shift} />
                   <div
                     id={chat.CONTENT_ID}
                     className="flex w-full transition-[padding] duration-200"

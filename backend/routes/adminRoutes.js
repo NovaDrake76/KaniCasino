@@ -12,6 +12,7 @@ const { recomputeCasesHolding } = require("../utils/sharedItems");
 const { recordTransaction, runAtomic, TX } = require("../utils/economy");
 const adminStats = require("../utils/adminStats");
 const chat = require("../utils/chat");
+const limits = require("../utils/limits");
 const { slugify, mintSlug } = require("../utils/slugs");
 
 // the backoffice dashboard: everything is derived from the ledger, ?days= windows it
@@ -434,6 +435,48 @@ router.delete("/chat/:id", isAuthenticated, isAdmin, async (req, res) => {
   const result = await chat.remove(req.params.id);
   if (result.error) return res.status(404).json({ message: "That message is already gone" });
   res.json({ ok: true });
+});
+
+// limited accounts keep playing but cannot trade, chat, join the rain, earn referrals or rank, until staff lift it
+router.get("/limits", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json({ accounts: await limits.list() });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// verification, the limit and the accounts sharing an address, for the player drill-down
+router.get("/users/:id/account", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const account = await limits.accountFor(req.params.id);
+    if (!account) return res.status(404).json({ message: "User not found" });
+    res.json(account);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.put("/users/:id/limit", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const result = await limits.limit(req.params.id, { by: req.user._id, reason: req.body && req.body.reason });
+    res.status(result.code).json(result.body);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.delete("/users/:id/limit", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const result = await limits.lift(req.params.id);
+    res.status(result.code).json(result.body);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 module.exports = router;

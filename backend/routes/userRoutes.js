@@ -19,6 +19,7 @@ const { creditUser, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = requ
 const { findReferrer, payReferralBonuses } = require("../utils/referrals");
 const ledgerDays = require("../utils/ledgerDays");
 const verification = require("../utils/verification");
+const limits = require("../utils/limits");
 const emailCheck = require("../utils/emailCheck");
 const ipSightings = require("../utils/ipSightings");
 const { sellUniqueIds } = require("../utils/inventorySell");
@@ -412,6 +413,7 @@ router.get("/me", authMiddleware.isAuthenticated, async (req, res) => {
       cardStyle: cardStyles.wornStyle(req.user),
       cardStyles: cardStyles.heldStyles(req.user),
       verification: verification.statusOf(req.user),
+      limited: limits.statusOf(req.user),
     });
   } catch (err) {
     console.error(err.message);

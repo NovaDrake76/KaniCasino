@@ -6,7 +6,7 @@ import Monetary from "../../components/Monetary";
 import { placeBuyOrder, MarketStats } from "../../services/market/MarketService";
 import i18n from "../../i18n";
 import { digitsOnly, clampDigits } from "../../utils/digits";
-import { handleVerifyLock } from "../../components/verify/verifyEvents";
+import { handleAccountLock } from "../../components/verify/verifyEvents";
 
 interface Props {
   isOpen: boolean;
@@ -47,7 +47,7 @@ const PlaceBuyOrderModal: React.FC<Props> = ({ isOpen, onClose, item, stats, onP
       onPlaced && onPlaced();
       onClose();
     } catch (err: any) {
-      if (!handleVerifyLock(err, "market")) toast.error(err?.response?.data?.message || i18n.t("market.couldNotPlaceThe"));
+      if (!handleAccountLock(err, "market")) toast.error(err?.response?.data?.message || i18n.t("market.couldNotPlaceThe"));
     } finally {
       setLoading(false);
     }
