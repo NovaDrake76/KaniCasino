@@ -32,6 +32,8 @@ export interface BoardMe {
   prize: number;
   // from the lock date an unverified account still scores but is not ranked or paid
   needsVerify?: boolean;
+  // staff have limited the account: it scores but is not ranked or paid
+  limited?: boolean;
 }
 
 export interface Board {

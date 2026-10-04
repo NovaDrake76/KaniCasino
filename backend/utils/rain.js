@@ -9,6 +9,7 @@ const { VISIBLE } = require("./visibility");
 const shop = require("./shop");
 const { RAIN_COAT_WEIGHT } = require("./shopCatalog");
 const verification = require("./verification");
+const limits = require("./limits");
 
 // the rain. every half hour a share of what the site wagered is split between whoever was
 // in the chat for it. it is rakeback, the same as the daily board: the pool comes out of
@@ -120,9 +121,10 @@ async function state(userId) {
 // joining is idempotent: the guard is in the query, so two clicks cannot enter twice
 async function join(userId) {
   if (!userId) return { error: "auth" };
-  const user = await User.findById(userId).select({ level: 1, disabled: 1, ...verification.VERIFIED_FIELDS }).lean();
+  const user = await User.findById(userId).select({ level: 1, disabled: 1, limited: 1, ...verification.VERIFIED_FIELDS }).lean();
   if (!user) return { error: "auth" };
   if (user.disabled) return { error: "banned" };
+  if (limits.isLimited(user)) return { error: "limited" };
   if ((user.level || 0) < MIN_LEVEL) return { error: "level", minLevel: MIN_LEVEL };
   // from the lock date a share of the pool needs a verified account, so a second account is not a second share
   if (verification.lockFor(user)) return { error: "verify", from: verification.requiredFrom() };
@@ -166,9 +168,10 @@ async function settle(now = new Date()) {
   const pool = await poolFor(round);
   const joiners = round.joiners.map(String);
 
-  // levels and shop perks only, and only for the people in this round, which is tens of documents
+  // levels and shop perks only, and only for the people in this round, which is tens of documents. an account
+  // limited since it joined takes no share
   const people = joiners.length
-    ? await User.find({ _id: { $in: joiners } }).select("level betaFlags unlocks").lean()
+    ? await User.find({ _id: { $in: joiners }, "limited.at": { $exists: false } }).select("level betaFlags unlocks").lean()
     : [];
   const shares = splitPool(pool, people);
   const paidOut = shares.reduce((sum, share) => sum + share.amount, 0);

@@ -253,6 +253,13 @@ const UserSchema = new mongoose.Schema({
     sent: Number,
     lastAt: Date,
   },
+  // set by staff: the account still plays but cannot trade, chat, join the rain, earn referrals or rank until
+  // lifted, which removes the field (utils/limits.js). the reason is shown to the player
+  limited: {
+    at: Date,
+    by: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    reason: String,
+  },
 
   // the linked discord account. set only by the bot's link flow, which needs a logged-in
   // session on the site, so a discord id can never claim an account on its own.
@@ -301,5 +308,6 @@ UserSchema.index({ "fixedItem.name": 1 }, { sparse: true }); // fan board recoun
 UserSchema.index({ discordId: 1 }, { unique: true, sparse: true }); // bot lookups, one account per discord user
 UserSchema.index({ discordGuilds: 1 }, { sparse: true }); // per-server boards
 UserSchema.index({ verifiedMailbox: 1 }, { unique: true, sparse: true }); // one verified account per inbox
+UserSchema.index({ "limited.at": 1 }, { sparse: true }); // the staff list and the leaderboard's exclusions
 
 module.exports = User = mongoose.model("User", UserSchema);

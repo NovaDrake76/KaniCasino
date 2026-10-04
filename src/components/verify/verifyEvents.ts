@@ -8,10 +8,14 @@ export const openVerify = () => window.dispatchEvent(new CustomEvent(VERIFY_OPEN
 
 export type VerifyFeature = "leaderboard" | "market" | "rain" | "license";
 
-// a request the server turned down for want of a verified account: say so and offer the way through
-export const handleVerifyLock = (err: unknown, feature: VerifyFeature): boolean => {
+// a request the server turned down because of the account itself: unverified gets the way through, limited gets why
+export const handleAccountLock = (err: unknown, feature: VerifyFeature | "referrals"): boolean => {
   const reason = (err as { response?: { data?: { reason?: string } } })?.response?.data?.reason;
-  if (reason !== "verify") return false;
+  if (reason === "limited") {
+    toast.error(i18n.t(`limited.${feature}`), { theme: "dark" });
+    return true;
+  }
+  if (reason !== "verify" || feature === "referrals") return false;
   toast.info(i18n.t(`verify.locked.${feature}`), { theme: "dark" });
   openVerify();
   return true;

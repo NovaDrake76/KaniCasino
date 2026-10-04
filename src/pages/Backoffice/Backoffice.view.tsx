@@ -18,6 +18,8 @@ import { Window } from "./Backoffice.services";
 import { Tab, TABS, TAB_LABELS, WINDOWS } from "./Backoffice.tabs";
 import AdminChart from "./AdminChart";
 import PredictionsAdmin from "./PredictionsAdmin";
+import AccountPanel from "./AccountPanel";
+import LimitsAdmin from "./LimitsAdmin";
 import { CHART_AMBER, CHART_INDIGO, fillDays } from "./adminSeries";
 
 interface Props {
@@ -167,11 +169,13 @@ const PlayerDetail = ({
   loading,
   windowText,
   onBack,
+  onOpenPlayer,
 }: {
   player: AdminPlayerDetail | null;
   loading: boolean;
   windowText: string;
   onBack: () => void;
+  onOpenPlayer: (id: string) => void;
 }) => {
   if (loading) {
     return <Skeleton height={420} borderRadius={12} highlightColor="#161427" baseColor="#1c1a31" />;
@@ -215,6 +219,8 @@ const PlayerDetail = ({
       </div>
 
       <BadgeGrant userId={user.id} held={user.badges || []} />
+
+      <AccountPanel userId={user.id} onOpenPlayer={onOpenPlayer} />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard title={`House net on this player (${windowText})`}>
@@ -378,7 +384,7 @@ const BackofficeView: React.FC<Props> = ({
         <TabBar tab={tab} setTab={setTab} />
 
         {playerId ? (
-          <PlayerDetail player={player} loading={playerLoading} windowText={windowText} onBack={closePlayer} />
+          <PlayerDetail player={player} loading={playerLoading} windowText={windowText} onBack={closePlayer} onOpenPlayer={openPlayer} />
         ) : (
           <>
             {tab === "overview" && (
@@ -684,6 +690,11 @@ const BackofficeView: React.FC<Props> = ({
               )}
             </Panel>
               </>
+            )}
+            {tab === "limits" && (
+            <Panel title="Limited accounts">
+              <LimitsAdmin onOpenPlayer={openPlayer} />
+            </Panel>
             )}
             {tab === "predictions" && (
               <>

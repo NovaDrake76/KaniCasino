@@ -347,7 +347,8 @@
       "removeFailed": "Impossible de supprimer ce message.",
       "slowDown": "Doucement.",
       "slur": "Cela ne passera pas dans le chat.",
-      "tooLong": "C est trop long."
+      "tooLong": "C est trop long.",
+      "limited": "Votre compte est limité, vous ne pouvez donc pas écrire dans le chat."
     },
     "hide": "Masquer le chat",
     "loading": "Chargement du chat",
@@ -2161,5 +2162,16 @@
       "changeSent": "Nous avons envoyé un lien à {{email}}. Votre adresse change quand vous cliquez dessus.",
       "cancel": "Annuler"
     }
+  },
+  "limited": {
+    "title": "Votre compte est limité",
+    "reason": "Motif : {{reason}}",
+    "what": "Vous pouvez continuer à jouer, mais tant que l'équipe n'a pas levé la limite, vous ne pouvez pas échanger sur le marché, écrire dans le chat, rejoindre la pluie, gagner des récompenses de parrainage ni figurer au classement.",
+    "contact": "Si vous pensez qu'il s'agit d'une erreur, contactez-nous sur Discord ou par e-mail.",
+    "market": "Votre compte est limité, vous ne pouvez donc pas échanger sur le marché.",
+    "rain": "Votre compte est limité, vous ne pouvez donc pas rejoindre la pluie.",
+    "license": "Votre compte est limité, vous ne pouvez donc pas acheter la Licence de commerçant.",
+    "referrals": "Votre compte est limité, les récompenses de parrainage sont donc en pause.",
+    "leaderboard": "Non classé : votre compte est limité."
   }
 }

@@ -134,6 +134,10 @@ const RainPool = () => {
     setBusy(true);
     const result = await joinRain();
     setBusy(false);
+    if (result && result.error === "limited") {
+      toast.error(i18n.t("limited.rain"), { theme: "dark" });
+      return;
+    }
     if (result && result.error === "verify") {
       toast.info(i18n.t("verify.locked.rain"), { theme: "dark" });
       openVerify();

@@ -5,6 +5,7 @@ const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { isRealMoneyMode } = require("./mode");
 const ledgerDays = require("./ledgerDays");
 const verification = require("./verification");
+const limits = require("./limits");
 
 // what each side gets when the referee registers. the affiliate card's shop copy quotes the referrer's numbers, in every locale
 const REFERRER_SIGNUP_BONUS = 1000;
@@ -19,6 +20,12 @@ const ACTIVE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 // wagers before this utc midnight earn commission from any referee, as they did when they were made; from it only a
 // verified referee's count. a midnight, so a folded ledger day never straddles it.
 const commissionVerifiedFrom = () => new Date(process.env.REFERRAL_VERIFIED_FROM || "2026-10-05T00:00:00Z");
+const NO_CUTOFF = new Date("9999-01-01T00:00:00Z");
+const dayStart = (at) => {
+  const day = new Date(at);
+  day.setUTCHours(0, 0, 0, 0);
+  return day;
+};
 
 // referrals mint marketing KP, which only makes sense while balances are play money
 const referralsEnabled = () => !isRealMoneyMode();
@@ -67,7 +74,7 @@ const findReferrer = (raw) => {
   if (!referralsEnabled()) return null;
   const code = normalizeCode(raw);
   if (!CODE_PATTERN.test(code)) return null;
-  return User.findOne({ referralCode: code }, { _id: 1, username: 1 });
+  return User.findOne({ referralCode: code }, { _id: 1, username: 1, limited: 1 });
 };
 
 // the one-time signup bonuses. issuance (minted), so a failed leg is just a lost gift,
@@ -81,8 +88,10 @@ async function payReferralBonuses(referee, referrer) {
     referee._id, referrer._id, "Referral bonus",
     `Welcome! Signing up with ${referrer.username}'s code paid you K₽${REFEREE_SIGNUP_BONUS}.`
   );
-  // the referrer is paid for an account somebody can vouch for, so an unverified one waits (settleOnVerified)
-  if (verification.isVerified(referee)) {
+  // the referrer is paid for an account somebody can vouch for, so an unverified one waits (settleOnVerified),
+  // and so does a limited referrer, until the limit is lifted (settleAfterLift)
+  const paused = limits.isLimited(referrer);
+  if (verification.isVerified(referee) && !paused) {
     await creditUser(referrer._id, REFERRER_SIGNUP_BONUS, 0, {
       type: TX.REFERRAL_BONUS,
       meta: { role: "referrer", referredUserId: String(referee._id), referredUsername: referee.username },
@@ -96,14 +105,20 @@ async function payReferralBonuses(referee, referrer) {
   await User.updateOne({ _id: referee._id }, { $set: { referralBonusPending: true } });
   await notify(
     referrer._id, referee._id, "Referral bonus",
-    `${referee.username} joined with your code. You get K₽${REFERRER_SIGNUP_BONUS} when they verify their account, and K₽${MILESTONE_BONUS} more if they reach level ${MILESTONE_LEVEL}.`
+    paused
+      ? `${referee.username} joined with your code. Referral rewards are paused while your account is limited.`
+      : `${referee.username} joined with your code. You get K₽${REFERRER_SIGNUP_BONUS} when they verify their account, and K₽${MILESTONE_BONUS} more if they reach level ${MILESTONE_LEVEL}.`
   );
 }
 
-// the referee was just verified: the signup bonus that waited, then the milestone if they are already past it.
-// clearing the pending flag is the mutex and commits with the credit, so it pays once and a failed credit stays owed.
+// the referee was just verified, or a limit was lifted: the signup bonus that waited, then the milestone if they are
+// past it. clearing the pending flag is the mutex and commits with the credit, so it pays once and a failure stays owed.
 async function settleOnVerified(userId) {
   if (!referralsEnabled()) return;
+  const me = await User.findById(userId, { level: 1, referredBy: 1, limited: 1, ...verification.VERIFIED_FIELDS }).lean();
+  if (!me || !me.referredBy || !verification.isVerified(me) || limits.isLimited(me)) return;
+  const referrer = await User.findById(me.referredBy, { limited: 1 }).lean();
+  if (!referrer || limits.isLimited(referrer)) return;
   let waiting = null;
   try {
     waiting = await runAtomic(async (session) => {
@@ -130,8 +145,23 @@ async function settleOnVerified(userId) {
       `${waiting.username} verified their account: +K₽${REFERRER_SIGNUP_BONUS}. If they reach level ${MILESTONE_LEVEL} you earn K₽${MILESTONE_BONUS} more.`
     );
   }
-  const me = await User.findById(userId, { level: 1, referredBy: 1 });
-  if (me && me.referredBy) await maybePayReferralMilestone(userId, me.level || 0);
+  await maybePayReferralMilestone(userId, me.level || 0);
+}
+
+// a lifted limit releases what it held: what this account earns its referrer, and what its own referees earn it
+async function settleAfterLift(userId) {
+  if (!referralsEnabled()) return;
+  await settleOnVerified(userId);
+  const owed = await User.find(
+    {
+      referredBy: userId,
+      $or: [{ referralBonusPending: true }, { level: { $gte: MILESTONE_LEVEL }, referralMilestonePaid: { $ne: true } }],
+    },
+    { _id: 1 }
+  )
+    .limit(500)
+    .lean();
+  for (const referee of owed) await settleOnVerified(referee._id);
 }
 
 // pay the level milestone once per referee. the paid flag is the mutex and commits in
@@ -140,12 +170,20 @@ async function maybePayReferralMilestone(userId, level, known = null) {
   if (!referralsEnabled() || level < MILESTONE_LEVEL) return;
   // a bet hands in the account it just charged, so a player nobody referred, or one already paid for, costs no read
   if (known && (!known.referredBy || known.referralMilestonePaid)) return;
-  // an unverified referee pays nothing yet; verifying settles it (settleOnVerified)
+  // an unverified or limited referee pays nothing yet; verifying or lifting settles it (settleOnVerified)
   const referee = await User.findOne(
-    { _id: userId, referredBy: { $ne: null }, referralMilestonePaid: { $ne: true }, ...verification.verifiedFilter() },
+    {
+      _id: userId,
+      referredBy: { $ne: null },
+      referralMilestonePaid: { $ne: true },
+      "limited.at": { $exists: false },
+      ...verification.verifiedFilter(),
+    },
     { username: 1, referredBy: 1 }
   );
   if (!referee) return;
+  const referrer = await User.findById(referee.referredBy, { username: 1, limited: 1 }).lean();
+  if (!referrer || limits.isLimited(referrer)) return;
 
   try {
     const paid = await runAtomic(async (session) => {
@@ -169,7 +207,6 @@ async function maybePayReferralMilestone(userId, level, known = null) {
     return;
   }
 
-  const referrer = await User.findById(referee.referredBy, { username: 1 });
   await notify(
     referee.referredBy, userId, "Referral milestone",
     `${referee.username} reached level ${MILESTONE_LEVEL}: +K₽${MILESTONE_BONUS}.`
@@ -180,24 +217,42 @@ async function maybePayReferralMilestone(userId, level, known = null) {
   );
 }
 
+// the day each referee's wagers stop earning commission. an unverified one earns on what they wagered before the
+// rule and everything once they verify; a limited one stops on the day of the limit, and what came before stays earned
+function commissionCutoff(referees) {
+  const from = commissionVerifiedFrom();
+  const branches = [];
+  const unverified = [];
+  for (const r of referees) {
+    const verified = verification.isVerified(r);
+    if (limits.isLimited(r)) {
+      const stop = dayStart(r.limited.at);
+      branches.push({ case: { $eq: ["$userId", r._id] }, then: verified || stop < from ? stop : from });
+    } else if (!verified) {
+      unverified.push(r._id);
+    }
+  }
+  if (unverified.length) branches.push({ case: { $in: ["$userId", unverified] }, then: from });
+  return branches.length ? { $switch: { branches, default: NO_CUTOFF } } : NO_CUTOFF;
+}
+
 // per-referee wagered totals from the ledger; commission is derived, never accumulated,
 // so a missed hook can never exist and the numbers always agree with history
 async function refereeStats(userId) {
   const referees = await User.find(
     { referredBy: userId },
-    { username: 1, profilePicture: 1, level: 1, referralMilestonePaid: 1, ...verification.VERIFIED_FIELDS }
+    { username: 1, profilePicture: 1, level: 1, referralMilestonePaid: 1, limited: 1, ...verification.VERIFIED_FIELDS }
   ).lean();
   if (!referees.length) return [];
 
   const ids = referees.map((r) => r._id);
-  const from = commissionVerifiedFrom();
   const agg = await Transaction.aggregate([
     ...(await ledgerDays.stream({ userId: { $in: ids }, type: { $in: STAKE_TYPES } })),
     {
       $group: {
         _id: "$userId",
         wagered: { $sum: "$amount" },
-        earlier: { $sum: { $cond: [{ $lt: ["$day", from] }, "$amount", 0] } },
+        counted: { $sum: { $cond: [{ $lt: ["$day", commissionCutoff(referees)] }, "$amount", 0] } },
         lastAt: { $max: "$last" },
       },
     },
@@ -208,9 +263,7 @@ async function refereeStats(userId) {
   return referees.map((r) => {
     const row = byId.get(String(r._id));
     const wagered = row ? row.wagered : 0;
-    // an unverified referee earns on what they wagered before the rule; everything counts once they verify
     const verified = verification.isVerified(r);
-    const counted = verified ? wagered : row ? row.earlier : 0;
     return {
       id: String(r._id),
       username: r.username,
@@ -220,7 +273,7 @@ async function refereeStats(userId) {
       milestonePaid: !!r.referralMilestonePaid,
       wagered,
       verified,
-      commission: Math.floor(counted * COMMISSION_RATE),
+      commission: Math.floor((row ? row.counted : 0) * COMMISSION_RATE),
       active: !!row && now - new Date(row.lastAt).getTime() < ACTIVE_WINDOW_MS,
     };
   });
@@ -263,8 +316,10 @@ async function getDashboard(userId) {
 // mutex and commits in one transaction with the credit, like a mission claim.
 async function claimCommission(userId) {
   if (!referralsEnabled()) return { code: 403, body: { message: "Referrals are disabled" } };
-  const me = await User.findById(userId, { referralClaimed: 1 });
+  const me = await User.findById(userId, { referralClaimed: 1, limited: 1 });
   if (!me) return { code: 404, body: { message: "User not found" } };
+  const locked = limits.lockFor(me);
+  if (locked) return { code: 403, body: locked };
 
   const earned = earnedFrom(await refereeStats(userId));
   const claimed = me.referralClaimed || 0;
@@ -314,6 +369,7 @@ module.exports = {
   payReferralBonuses,
   maybePayReferralMilestone,
   settleOnVerified,
+  settleAfterLift,
   getDashboard,
   claimCommission,
 };

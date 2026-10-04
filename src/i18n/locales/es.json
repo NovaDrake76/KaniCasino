@@ -347,7 +347,8 @@
       "removeFailed": "No se pudo borrar ese mensaje.",
       "slowDown": "Ve mas despacio.",
       "slur": "Eso no va al chat.",
-      "tooLong": "Eso es demasiado largo."
+      "tooLong": "Eso es demasiado largo.",
+      "limited": "Tu cuenta está limitada, así que no puedes escribir en el chat."
     },
     "hide": "Ocultar chat",
     "loading": "Cargando el chat",
@@ -2161,5 +2162,16 @@
       "changeSent": "Enviamos un enlace a {{email}}. Tu dirección cambia cuando hagas clic en él.",
       "cancel": "Cancelar"
     }
+  },
+  "limited": {
+    "title": "Tu cuenta está limitada",
+    "reason": "Motivo: {{reason}}",
+    "what": "Puedes seguir jugando, pero hasta que el equipo quite el límite no puedes comerciar en el mercado, usar el chat, unirte a la lluvia, ganar recompensas por referidos ni aparecer en la clasificación.",
+    "contact": "Si crees que es un error, contáctanos en Discord o por correo.",
+    "market": "Tu cuenta está limitada, así que no puedes comerciar en el mercado.",
+    "rain": "Tu cuenta está limitada, así que no puedes unirte a la lluvia.",
+    "license": "Tu cuenta está limitada, así que no puedes comprar la Licencia de Comerciante.",
+    "referrals": "Tu cuenta está limitada, así que las recompensas por referidos están en pausa.",
+    "leaderboard": "Sin clasificar: tu cuenta está limitada."
   }
 }

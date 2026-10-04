@@ -1,7 +1,7 @@
 import { FanRank } from "../services/fandom/FandomService";
 import { Badge, BadgeKey } from "../services/badges/BadgeService";
 import type { UnlockKey } from "../services/daisu/ShopService";
-import type { Verification } from "../services/account/AccountService";
+import type { AccountLimit, Verification } from "../services/account/AccountService";
 
 export interface User {
     id: string;
@@ -41,6 +41,8 @@ export interface User {
     favoriteItems?: string[];
     // whether the account is verified, and when the gated features start needing it
     verification?: Verification;
+    // set while staff have the account limited, with the reason the player is shown
+    limited?: AccountLimit | null;
 
 }
 

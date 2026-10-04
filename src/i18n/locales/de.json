@@ -347,7 +347,8 @@
       "removeFailed": "Die Nachricht konnte nicht gelöscht werden.",
       "slowDown": "Nicht so schnell.",
       "slur": "Das kommt nicht in den Chat.",
-      "tooLong": "Das ist zu lang."
+      "tooLong": "Das ist zu lang.",
+      "limited": "Dein Konto ist eingeschränkt, deshalb kannst du nicht im Chat schreiben."
     },
     "hide": "Chat ausblenden",
     "loading": "Chat wird geladen",
@@ -2161,5 +2162,16 @@
       "changeSent": "Wir haben einen Link an {{email}} gesendet. Deine Adresse ändert sich, sobald du darauf klickst.",
       "cancel": "Abbrechen"
     }
+  },
+  "limited": {
+    "title": "Dein Konto ist eingeschränkt",
+    "reason": "Grund: {{reason}}",
+    "what": "Du kannst weiterspielen, aber bis das Team die Einschränkung aufhebt, kannst du nicht auf dem Markt handeln, im Chat schreiben, beim Regen mitmachen, Empfehlungsprämien verdienen oder in der Bestenliste stehen.",
+    "contact": "Wenn du denkst, dass das ein Fehler ist, melde dich bei uns auf Discord oder per E-Mail.",
+    "market": "Dein Konto ist eingeschränkt, deshalb kannst du nicht auf dem Markt handeln.",
+    "rain": "Dein Konto ist eingeschränkt, deshalb kannst du nicht beim Regen mitmachen.",
+    "license": "Dein Konto ist eingeschränkt, deshalb kannst du die Händlerlizenz nicht kaufen.",
+    "referrals": "Dein Konto ist eingeschränkt, deshalb sind Empfehlungsprämien pausiert.",
+    "leaderboard": "Nicht gewertet: Dein Konto ist eingeschränkt."
   }
 }

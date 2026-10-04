@@ -347,7 +347,8 @@
       "removeFailed": "Could not delete that message.",
       "slowDown": "Slow down a moment.",
       "slur": "That is not going in the chat.",
-      "tooLong": "That is too long."
+      "tooLong": "That is too long.",
+      "limited": "Your account is limited, so you cannot post in chat."
     },
     "hide": "Hide chat",
     "loading": "Loading chat",
@@ -2161,5 +2162,16 @@
       "changeSent": "We sent a link to {{email}}. Your address changes when you click it.",
       "cancel": "Cancel"
     }
+  },
+  "limited": {
+    "title": "Your account is limited",
+    "reason": "Reason: {{reason}}",
+    "what": "You can keep playing, but until staff lift the limit you cannot trade on the market, chat, join the rain, earn referral rewards or appear on the leaderboard.",
+    "contact": "If you think this is a mistake, contact us on Discord or by email.",
+    "market": "Your account is limited, so you cannot trade on the market.",
+    "rain": "Your account is limited, so you cannot join the rain.",
+    "license": "Your account is limited, so you cannot buy the Trader's License.",
+    "referrals": "Your account is limited, so referral rewards are paused.",
+    "leaderboard": "Not ranked: your account is limited."
   }
 }

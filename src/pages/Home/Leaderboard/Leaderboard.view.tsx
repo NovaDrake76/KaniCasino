@@ -69,7 +69,11 @@ const YourRow = ({ me, paidPlaces }: { me: NonNullable<LeaderboardViewProps["me"
         <td className="px-6 py-4 whitespace-nowrap">{me.rank ? `#${me.rank}` : "-"}</td>
         <td className="p-4">
             <span className="font-bold">{i18n.t("leaderboard.you")}</span>
-            {me.needsVerify && <span className="block text-xs text-accent-amber">{i18n.t("verify.notRanked")}</span>}
+            {me.limited ? (
+              <span className="block text-xs text-accent-amber">{i18n.t("limited.leaderboard")}</span>
+            ) : (
+              me.needsVerify && <span className="block text-xs text-accent-amber">{i18n.t("verify.notRanked")}</span>
+            )}
             {/* gated on rank: a player who has not bet today is not "1 point from 10th",
                 they are simply not on the board yet */}
             {me.rank !== null && me.toPaidPlace > 0 && (
