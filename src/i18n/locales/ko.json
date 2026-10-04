@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "남은 수량이 없습니다.",
     "noItems": "아이템 없음",
     "noTransactionsYet": "아직 거래 내역이 없습니다.",
+    "historyRetention": "플린코, 주사위, 슬롯 기록은 {{short}}일 후, 다른 게임과 보너스, 상점 판매는 {{long}}일 후 이 목록에서 사라집니다. 미션과 합계에는 계속 반영됩니다.",
     "occasionalEmailWhenSomething": "새로운 것이 나올 때 가끔 메일을 보냅니다. 켜기 전에는 오지 않고, 언제든 중단할 수 있습니다.",
     "requestDeclined": "요청을 거절했습니다",
     "requestSent": "요청을 보냈습니다",

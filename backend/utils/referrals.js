@@ -3,6 +3,7 @@ const Transaction = require("../models/Transaction");
 const Notification = require("../models/Notification");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { isRealMoneyMode } = require("./mode");
+const ledgerDays = require("./ledgerDays");
 
 // what each side gets when the referee registers. the affiliate card's shop copy quotes the referrer's numbers, in every locale
 const REFERRER_SIGNUP_BONUS = 1000;
@@ -142,8 +143,8 @@ async function refereeStats(userId) {
 
   const ids = referees.map((r) => r._id);
   const agg = await Transaction.aggregate([
-    { $match: { userId: { $in: ids }, type: { $in: STAKE_TYPES } } },
-    { $group: { _id: "$userId", wagered: { $sum: "$amount" }, lastAt: { $max: "$createdAt" } } },
+    ...(await ledgerDays.stream({ userId: { $in: ids }, type: { $in: STAKE_TYPES } })),
+    { $group: { _id: "$userId", wagered: { $sum: "$amount" }, lastAt: { $max: "$last" } } },
   ]);
   const byId = new Map(agg.map((row) => [String(row._id), row]));
 

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Transaction = require("../models/Transaction");
+const ledgerDays = require("./ledgerDays");
 const Battle = require("../models/Battle");
 const User = require("../models/User");
 const { countsFor } = require("./inventoryCounts");
@@ -49,35 +50,23 @@ async function getState(userId) {
 async function buildContext(userId, { includeCollections = true, state = null } = {}) {
   const launch = missionsLaunchAt();
   const [txAgg, battlesWon, collectionsCompleted, user, st] = await Promise.all([
-    Transaction.aggregate([
-      { $match: { userId: new mongoose.Types.ObjectId(String(userId)), createdAt: { $gte: launch } } },
-      {
-        $group: {
-          _id: "$type",
-          count: { $sum: 1 },
-          qty: { $sum: { $ifNull: ["$meta.quantity", 0] } },
-          maxAmount: { $max: "$amount" },
-          sumAmount: { $sum: "$amount" },
-          // rows without a side-bet marker: for blackjack this counts hands, not
-          // the extra double/split/insurance charges on the same hand
-          baseCount: {
-            $sum: {
-              $cond: [
-                {
-                  $or: [
-                    { $eq: ["$meta.double", true] },
-                    { $eq: ["$meta.split", true] },
-                    { $eq: ["$meta.insurance", true] },
-                  ],
-                },
-                0,
-                1,
-              ],
-            },
+    ledgerDays.stream({ userId: new mongoose.Types.ObjectId(String(userId)) }, { since: launch }).then((stages) =>
+      Transaction.aggregate([
+        ...stages,
+        {
+          $group: {
+            _id: "$type",
+            count: { $sum: "$count" },
+            qty: { $sum: "$qty" },
+            maxAmount: { $max: "$max" },
+            sumAmount: { $sum: "$amount" },
+            // rows without a side-bet marker: for blackjack this counts hands, not
+            // the extra double/split/insurance charges on the same hand
+            baseCount: { $sum: "$base" },
           },
         },
-      },
-    ]),
+      ])
+    ),
     Battle.countDocuments({ winnerUserIds: userId, status: "finished", finishedAt: { $gte: launch } }),
     // the collections scan is the one heavy read; skip it on frequent hot-path calls
     includeCollections ? collectionsProgress(userId) : Promise.resolve({ done: 0, total: 0 }),

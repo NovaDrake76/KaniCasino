@@ -53,6 +53,7 @@ const BalanceHistory: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [retention, setRetention] = useState<{ shortDays: number; longDays: number } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -62,6 +63,7 @@ const BalanceHistory: React.FC = () => {
         if (!active) return;
         setTransactions(data.transactions || []);
         setTotalPages(data.totalPages || 1);
+        setRetention(data.retention || null);
       })
       .catch((error) => console.log(error))
       .finally(() => {
@@ -111,6 +113,11 @@ const BalanceHistory: React.FC = () => {
         <div className="flex justify-center mt-3">
           <Pagination totalPages={totalPages} currentPage={page} setPage={setPage} />
         </div>
+      )}
+      {retention && !loading && (
+        <p className="text-xs text-[#84819a] text-center mt-2">
+          {i18n.t("profile.historyRetention", { short: retention.shortDays, long: retention.longDays })}
+        </p>
       )}
     </div>
   );

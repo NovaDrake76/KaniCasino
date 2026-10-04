@@ -9,6 +9,7 @@ const { TX } = require("../utils/economy");
 const { publicCache, TTL } = require("../utils/httpCache");
 const { looksLikeId, mintSlug } = require("../utils/slugs");
 const memo = require("../utils/memo");
+const ledgerDays = require("../utils/ledgerDays");
 
 // how long a copy of a public case read is served before it is read again; a case write forgets it at once
 const LIST_TTL_MS = 30 * 1000;
@@ -66,13 +67,9 @@ router.get("/most-opened", async (req, res) => {
 
 async function mostOpened(limit) {
   const rows = await Transaction.aggregate([
-    { $match: { type: TX.CASE_OPEN, "meta.caseId": { $ne: null } } },
-    {
-      $group: {
-        _id: "$meta.caseId",
-        opens: { $sum: { $max: [{ $ifNull: ["$meta.quantity", 1] }, 1] } },
-      },
-    },
+    ...(await ledgerDays.stream({ type: TX.CASE_OPEN })),
+    { $match: { tag: { $ne: null } } },
+    { $group: { _id: "$tag", opens: { $sum: "$units" } } },
     { $sort: { opens: -1 } },
     { $limit: limit },
   ]);

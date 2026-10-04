@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "残りの所持数はありません。",
     "noItems": "アイテムなし",
     "noTransactionsYet": "取引履歴はまだありません。",
+    "historyRetention": "プリンコ・ダイス・スロットの記録は{{short}}日後に、ほかのゲーム・ボーナス・ショップ売却は{{long}}日後にこの一覧から消えます。ミッションと合計には引き続き含まれます。",
     "occasionalEmailWhenSomething": "新しいものが出たときに、ときどきメールを送ります。オンにするまでは届かず、いつでも止められます。",
     "requestDeclined": "リクエストを断りました",
     "requestSent": "リクエストを送りました",

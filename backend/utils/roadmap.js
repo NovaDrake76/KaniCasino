@@ -9,6 +9,7 @@ const { CHAPTERS, chapterOf } = require("./roadmapCatalog");
 const { liveStreak, dayIndex } = require("./dailyGift");
 const { getIo } = require("./realtime");
 const { casesCompletedBy } = require("./collectionCheck");
+const ledgerDays = require("./ledgerDays");
 
 const GAME_BETS = [TX.SLOT_BET, TX.PLINKO_BET, TX.CRASH_BET, TX.COINFLIP_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET];
 const TRADES = [TX.MARKET_BUY, TX.MARKET_SALE, TX.MARKET_ORDER_FILL];
@@ -35,6 +36,7 @@ const normalize = (roadmap = {}) => ({
   claimed: roadmap.claimed || [],
   visited: roadmap.visited || [],
   seeded: roadmap.seeded || 0,
+  head: roadmap.head || null,
 });
 
 // the account's roadmap, opening chapter one the first time anything asks for it
@@ -58,30 +60,40 @@ async function stateOf(userId) {
   return { announced: doc.announced || [], roadmap };
 }
 
-// what the open chapter's ledger goals need, in one pass over the rows since it opened
-async function ledgerSince(userId, since, goals) {
+// what the open chapter's ledger goals need, per row type, over everything since it opened
+async function ledgerSince(userId, since, goals, head = null) {
   const types = [...new Set(goals.flatMap((goal) => LEDGER_TYPES[goal] || []))];
   if (!types.length) return {};
-  const [row] = await Transaction.aggregate([
-    { $match: { userId: new mongoose.Types.ObjectId(String(userId)), createdAt: { $gte: since }, type: { $in: types } } },
-    {
-      $group: {
-        _id: null,
-        fullPots: { $sum: { $cond: [{ $and: [{ $eq: ["$type", TX.BONUS] }, { $gte: ["$meta.fill", 1] }] }, 1, 0] } },
-        bonusSpent: { $sum: { $cond: [{ $and: [{ $in: ["$type", STAKE_TYPES] }, { $gt: ["$meta.credit", 0] }] }, 1, 0] } },
-        itemsSold: { $sum: { $cond: [{ $eq: ["$type", TX.ITEM_SELL] }, 1, 0] } },
-        marketTrades: { $sum: { $cond: [{ $in: ["$type", TRADES] }, 1, 0] } },
-        casesOpened: { $sum: { $cond: [{ $eq: ["$type", TX.CASE_OPEN] }, { $ifNull: ["$meta.quantity", 1] }, 0] } },
-        staked: { $sum: { $cond: [{ $in: ["$type", STAKE_TYPES] }, "$amount", 0] } },
-        games: { $addToSet: { $cond: [{ $in: ["$type", GAME_BETS] }, "$type", null] } },
-        days: { $addToSet: { $cond: [{ $in: ["$type", STAKE_TYPES] }, { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, null] } },
-        bigWin: { $max: { $cond: [{ $in: ["$type", GAME_WINS] }, "$amount", 0] } },
-        rainsCaught: { $sum: { $cond: [{ $eq: ["$type", TX.RAIN_PAYOUT] }, 1, 0] } },
-      },
-    },
+  const opening = ledgerDays.dayStart(since);
+  const through = await ledgerDays.watermark();
+  // once the opening day is folded, its part after the chapter opened comes from the chapter's own record
+  const folded = !!through && opening < through.getTime();
+  const stages = await ledgerDays.stream(
+    { userId: new mongoose.Types.ObjectId(String(userId)), type: { $in: types } },
+    { since: folded ? opening + ledgerDays.DAY : since }
+  );
+  const rows = await Transaction.aggregate([
+    ...stages,
+    { $group: { _id: "$type", ...ledgerDays.SUMS, days: { $addToSet: { $dateToString: { format: "%Y-%m-%d", date: "$day" } } } } },
   ]);
-  if (!row) return {};
-  return { ...row, gamesTried: row.games.filter(Boolean).length, daysPlayed: row.days.filter(Boolean).length };
+  if (folded && head && new Date(head.since).getTime() === new Date(since).getTime()) {
+    const day = new Date(opening).toISOString().slice(0, 10);
+    for (const t of head.types) rows.push({ ...t, _id: t.type, days: [day] });
+  }
+  const of = (list) => rows.filter((r) => list.includes(r._id));
+  const sum = (list, field) => of(list).reduce((s, r) => s + (r[field] || 0), 0);
+  return {
+    fullPots: sum([TX.BONUS], "full"),
+    bonusSpent: sum(STAKE_TYPES, "credit"),
+    itemsSold: sum([TX.ITEM_SELL], "count"),
+    marketTrades: sum(TRADES, "count"),
+    casesOpened: sum([TX.CASE_OPEN], "units"),
+    staked: sum(STAKE_TYPES, "amount"),
+    gamesTried: new Set(of(GAME_BETS).map((r) => r._id)).size,
+    daysPlayed: new Set(of(STAKE_TYPES).flatMap((r) => r.days)).size,
+    bigWin: of(GAME_WINS).reduce((m, r) => Math.max(m, r.max || 0), 0),
+    rainsCaught: sum([TX.RAIN_PAYOUT], "count"),
+  };
 }
 
 async function progressOf(user, roadmap, chapter, now = new Date()) {
@@ -89,7 +101,7 @@ async function progressOf(user, roadmap, chapter, now = new Date()) {
   const since = new Date(roadmap.openedAt);
   const needsCases = chapter.missions.some((m) => m.goal === "collectionsCompleted" && !roadmap.claimed.includes(m.key));
   const [ledger, battlesWon, casesDone, referrals, predictions] = await Promise.all([
-    ledgerSince(user._id, since, goals),
+    ledgerSince(user._id, since, goals, roadmap.head),
     goals.includes("battlesWon") ? Battle.countDocuments({ winnerUserIds: user._id, status: "finished", finishedAt: { $gte: since } }) : 0,
     // one case's whole collection, the unit the Collections page shows, counted the moment it is held
     needsCases ? casesCompletedBy(user._id) : 0,
@@ -264,4 +276,4 @@ async function pendingFor(user) {
   return out;
 }
 
-module.exports = { viewFor, claim, visit, pendingFor };
+module.exports = { viewFor, claim, visit, pendingFor, ledgerSince };
