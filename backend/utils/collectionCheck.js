@@ -5,8 +5,8 @@ const toId = (id) => (id instanceof mongoose.Types.ObjectId ? id : new mongoose.
 
 // the collectible cases, each as the ids of the items it lists that still exist, compared against one player's inventory inside mongo; nothing but the answer comes back.
 // a case can still list a deleted item, so each list is joined against the items that exist, and an inventory with fewer distinct items than minItems stops before the join
-const pipelineFor = (userId, { categories, minItems = 0 }, answer) => {
-  const caseMatch = { collectible: { $ne: false } };
+const pipelineFor = (userId, { categories, minItems = 0, everyCase = false }, answer) => {
+  const caseMatch = everyCase ? {} : { collectible: { $ne: false } };
   if (categories) caseMatch.category = { $in: categories };
   return [
     { $match: { _id: toId(userId) } },
@@ -36,6 +36,16 @@ async function casesCompletedBy(userId) {
   return row ? row.answer : 0;
 }
 
+// every case that lists a live item, collectible or not, as the achievements count them: how many there are and how many the player holds whole
+async function collectionsProgress(userId) {
+  const answer = {
+    done: { $size: { $filter: { input: "$cases", as: "c", cond: { $setIsSubset: ["$$c.ids", "$owned"] } } } },
+    total: { $size: "$cases" },
+  };
+  const [row] = await User.aggregate(pipelineFor(userId, { minItems: 1, everyCase: true }, answer));
+  return row ? row.answer : { done: 0, total: 0 };
+}
+
 // the named categories, each with how many of its cases exist and how many the player holds whole
 async function categoriesHeldBy(userId, categories, minItems) {
   const answer = {
@@ -49,4 +59,4 @@ async function categoriesHeldBy(userId, categories, minItems) {
   return row ? row.answer : [];
 }
 
-module.exports = { casesCompletedBy, categoriesHeldBy };
+module.exports = { casesCompletedBy, categoriesHeldBy, collectionsProgress };
