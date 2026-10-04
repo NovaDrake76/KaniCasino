@@ -2017,7 +2017,7 @@
     "requestSent": "请求已发送",
     "serviceMessagesAboutYour": "与账号相关的服务通知，例如安全和政策提醒，无论此项如何设置都会发送。",
     "somethingWentWrong": "出了点问题",
-    "toEvery1kSpent": "每下注 K₽ 1 得 5 经验，不论输赢。Daisu 商店的加成会额外叠加。",
+    "toEvery1kSpent": "每下注 K₽ 1 得 5 经验，不论输赢；在 Crash 中，低于 2 倍提现得到的更少。Daisu 商店的加成会额外叠加。",
     "updatesTurnedOff": "已关闭更新通知",
     "weAreNotSending": "我们没有向你的地址发送邮件，因为之前的邮件被退回或被举报为垃圾邮件。如果你认为这有误，请联系我们。",
     "xpBonus": "经验 +{{pct}}%",

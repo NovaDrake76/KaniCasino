@@ -1,4 +1,4 @@
-const { multiplierAt, crashPointFromRandom, crashPointFromSeed, normalizeAutoCashout, INSTANT_CRASH_CHANCE } = require("../../utils/crashMath");
+const { multiplierAt, crashPointFromRandom, crashPointFromSeed, normalizeAutoCashout, xpWeight, INSTANT_CRASH_CHANCE } = require("../../utils/crashMath");
 const { sha256 } = require("../../utils/hashChain");
 
 // the OLD, broken derivation: read the outcome straight off sha256(seed). since sha256(seed)
@@ -72,5 +72,26 @@ describe("crash math", () => {
     expect(normalizeAutoCashout(Infinity)).toBe(null);
     expect(normalizeAutoCashout("2")).toBe(null);
     expect(normalizeAutoCashout(null)).toBe(null);
+  });
+});
+
+describe("crash xp", () => {
+  test("a bet that rides to the crash earns its full xp", () => {
+    expect(xpWeight(null)).toBe(1);
+  });
+
+  test("a cash-out earns the share its profit is of the stake, whole from 2x", () => {
+    expect(xpWeight(1.01)).toBeCloseTo(0.01, 10);
+    expect(xpWeight(1.5)).toBeCloseTo(0.5, 10);
+    expect(xpWeight(2)).toBe(1);
+    expect(xpWeight(100)).toBe(1);
+  });
+
+  // the 1.01x farm: what a whole run of bets earns per K₽ against a bet that aims at 2x
+  test("aiming low earns a small fraction of the xp aiming at 2x does", () => {
+    const paidAt = (target) => 0.9603 / target;
+    const perKp = (target) => paidAt(target) * xpWeight(target) + (1 - paidAt(target)) * xpWeight(null);
+    expect(perKp(2)).toBeCloseTo(1, 10);
+    expect(perKp(1.01)).toBeLessThan(0.06);
   });
 });

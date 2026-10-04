@@ -2017,7 +2017,7 @@
     "requestSent": "Richiesta inviata",
     "serviceMessagesAboutYour": "I messaggi di servizio sul tuo account, come avvisi di sicurezza e di policy, vengono inviati a prescindere da questa impostazione.",
     "somethingWentWrong": "Qualcosa è andato storto",
-    "toEvery1kSpent": "Ogni K₽ 1 puntato dà 5 XP, vinto o perso. I potenziamenti del negozio di Daisu si aggiungono.",
+    "toEvery1kSpent": "Ogni K₽ 1 puntato dà 5 XP, vinto o perso; a Crash, un incasso sotto 2x ne dà meno. I potenziamenti del negozio di Daisu si aggiungono.",
     "updatesTurnedOff": "Novità disattivate",
     "weAreNotSending": "Non stiamo scrivendo al tuo indirizzo perché una e-mail precedente è tornata indietro o è stata segnalata come spam. Scrivici se pensi sia un errore.",
     "xpBonus": "+{{pct}}% XP",

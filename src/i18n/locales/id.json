@@ -2017,7 +2017,7 @@
     "requestSent": "Req dikirim",
     "serviceMessagesAboutYour": "Pesan layanan tentang akun Kamu, seperti pemberitahuan keamanan dan kebijakan, akan dikirim terlepas dari pengaturan ini.",
     "somethingWentWrong": "Ada yang salah",
-    "toEvery1kSpent": "Setiap K₽ 1 yang dipertaruhkan memberi 5 XP, menang atau kalah. Booster dari toko Daisu menambahnya.",
+    "toEvery1kSpent": "Setiap K₽ 1 yang dipertaruhkan memberi 5 XP, menang atau kalah; di Crash, pencairan di bawah 2x memberi lebih sedikit. Booster dari toko Daisu menambahnya.",
     "updatesTurnedOff": "Pembaruan dimatiin",
     "weAreNotSending": "Kami tidak mengirim email ke alamat Anda karena email sebelumnya gagal terkirim atau dilaporkan sebagai spam. Hubungi kami jika Anda merasa hal itu keliru.",
     "xpBonus": "+{{pct}}% XP",
