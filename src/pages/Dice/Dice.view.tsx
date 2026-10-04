@@ -72,7 +72,7 @@ const DiceView: React.FC<DiceViewProps> = ({
       }
       panel={
         <>
-          <ModeToggle mode={mode} setMode={setMode} />
+          <ModeToggle mode={mode} setMode={setMode} manualDisabled={autoRunning} autoDisabled={autoRunning} />
 
           <GameBonusStrip game="dice" />
 

@@ -53,12 +53,14 @@ export interface DiceControlState {
 export const controlsFor = (target: number, direction: Direction): DiceControlState => {
     const winCount = winCountFor(target, direction);
     const multiplier = multiplierFor(winCount);
+    // integer math like the server's: a float multiply could floor a cent below what it pays
+    const multiplierBP = Math.round(multiplier * 10000);
     return {
         target,
         direction,
         winCount,
         winChance: winChanceFor(winCount),
         multiplier,
-        payoutOnWin: (bet) => Math.floor(bet * multiplier * 100) / 100,
+        payoutOnWin: (bet) => Math.floor((bet * multiplierBP) / 100) / 100,
     };
 };

@@ -180,7 +180,7 @@ const CrashGame = () => {
       const payout = sync.gamePlayers?.[id as string]?.payout;
       setUserGambled(true);
       setUserCashedOut(payout != null);
-      if (payout != null) setUserMultiplier(payout / stake);
+      if (payout != null) setUserMultiplier(payout);
     };
 
     socket.on("crash:sync", syncListener);
