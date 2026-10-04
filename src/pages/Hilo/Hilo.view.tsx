@@ -46,6 +46,7 @@ const HiloView: React.FC<HiloViewProps> = ({
 
   return (
     <GameLayout
+      game="hilo"
       bar={
         <GameBar>
           <LiveStatsButton />

@@ -178,6 +178,7 @@ const BlackjackView: React.FC<BlackjackViewProps> = ({
 
   return (
     <GameLayout
+      game="blackjack"
       bar={
         <GameBar>
           <LiveStatsButton />

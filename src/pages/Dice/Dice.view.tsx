@@ -57,6 +57,7 @@ const DiceView: React.FC<DiceViewProps> = ({
 
   return (
     <GameLayout
+      game="dice"
       bar={
         <GameBar>
           <LiveStatsButton />

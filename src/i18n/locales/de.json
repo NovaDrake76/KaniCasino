@@ -2161,5 +2161,218 @@
       "changeSent": "Wir haben einen Link an {{email}} gesendet. Deine Adresse ändert sich, sobald du darauf klickst.",
       "cancel": "Abbrechen"
     }
+  },
+  "gameInfo": {
+    "tabs": {
+      "info": "Spielinfo",
+      "totalBets": "Einsätze der Runde"
+    },
+    "round": {
+      "players": "Spieler: {{count}}",
+      "cashedOut": "Ausgezahlt bei",
+      "profit": "Gewinn",
+      "empty": "Noch keine Einsätze in dieser Runde.",
+      "emptySide": "Noch keine Einsätze auf dieser Seite."
+    },
+    "sections": {
+      "howToPlay": "So wird gespielt",
+      "payouts": "Auszahlungen",
+      "paylines": "Gewinnlinien",
+      "goodToKnow": "Gut zu wissen"
+    },
+    "facts": {
+      "rtp": "Auszahlungsquote",
+      "edge": "Hausvorteil",
+      "bet": "Einsatz",
+      "maxWin": "Maximaler Gewinn",
+      "points": "Bestenlisten-Punkte",
+      "perKp": "{{points}} pro K₽",
+      "noCap": "Keine Grenze",
+      "none": "Keine",
+      "range": "{{min}} bis {{max}}",
+      "rtpSides": "Quote auf {{heads}} oder {{tails}}",
+      "rtpPurple": "Quote auf {{purpleName}}",
+      "return": "Rückgabe",
+      "maxChance": "Höchste Chance",
+      "entry": "Startgeld",
+      "entryValue": "Summe der Kistenpreise",
+      "cases": "Kisten",
+      "players": "Spieler"
+    },
+    "chips": {
+      "rtp": "{{rtp}} % RTP",
+      "fair": "Provably fair",
+      "items": "Mit Items gespielt"
+    },
+    "table": {
+      "chance": "Chance",
+      "winChance": "Gewinnchance",
+      "multiplier": "Multiplikator",
+      "symbol": "Symbol",
+      "threeInLine": "Drei in einer Linie",
+      "perLine": "Chance pro Linie",
+      "oneIn": "1 zu {{n}}",
+      "slot": "Fach",
+      "center": "Mitte",
+      "edge": "Rand",
+      "fromCenter": "{{n}} von der Mitte",
+      "cashoutAt": "Auszahlen bei",
+      "side": "Seite",
+      "pays": "Zahlt",
+      "outcome": "Ergebnis",
+      "card": "Karte",
+      "minesGems": "Minen / Edelsteine",
+      "targetRarity": "Ziel-Seltenheit",
+      "return": "Rückgabe",
+      "maxChance": "Höchste Chance",
+      "mode": "Modus",
+      "players": "Spieler"
+    },
+    "lines": {
+      "top": "Obere Reihe",
+      "middle": "Mittlere Reihe",
+      "bottom": "Untere Reihe",
+      "diagonal": "Diagonale"
+    },
+    "symbols": {
+      "wild": "Katze (Joker)",
+      "yellow": "Froschgeldbörse",
+      "hakkero": "Hakkero",
+      "yin_yang": "Yin-Yang-Kugel",
+      "green": "Lily",
+      "blue": "Shanghai-Puppe",
+      "red": "Schlange"
+    },
+    "fairTitle": "Überprüfbare Fairness",
+    "verifyLink": "Zur Provably-Fair-Seite",
+    "crash": {
+      "summary": "Ein Multiplikator steigt ab 1.00x, bis er an einem zufälligen Punkt crasht. Zahl dich vor dem Crash aus, um deinen Einsatz mal den Multiplikator zu gewinnen; bist du beim Crash noch drin, ist der Einsatz verloren.",
+      "step1": "Setze während des Countdowns vor einer Runde. Ein Einsatz während einer laufenden Runde wartet auf die nächste.",
+      "step2": "Wenn du willst, stell {{cashoutAt}} ein: Der Server zahlt dich bei diesem Multiplikator aus, auch wenn dein Tab geschlossen ist.",
+      "step3": "Sieh zu, wie der Multiplikator steigt, und drück {{cashOut}} vor dem Crash.",
+      "payouts": "Du gewinnst deinen Einsatz mal den Multiplikator im Moment der Auszahlung. Mit {{cashoutAt}} auf x liegt deine Chance auf eine Auszahlung bei 96,03 % geteilt durch x, also bei jedem Ziel dieselbe Quote von 96,03 %. Etwa 4 % der Runden crashen bei 1.00x, bevor sich jemand auszahlen kann.",
+      "note1": "Ein Einsatz pro Runde, und eine Auszahlung nimmt den ganzen Einsatz.",
+      "note2": "{{cashoutAt}} reicht von 1.01x bis 10.000x. Crasht die Runde genau auf deinem Ziel, verliert der Einsatz.",
+      "note3": "Startet der Server mitten in der Runde neu, wird sie abgebrochen und jeder Einsatz, der noch drin war, erstattet.",
+      "note4": "XP gibt es, wenn der Einsatz abgerechnet ist: Eine Auszahlung ab 2x oder ein Einsatz, der bis zum Crash drin bleibt, bringt die vollen XP; unter 2x gibt es weniger (1,5x die Hälfte, 1,01x fast nichts).",
+      "fair": "Der Crash-Punkt jeder Runde steht fest, bevor die Einsätze öffnen. Der Hash seines Seeds wird beim Öffnen der Einsätze veröffentlicht und der Seed am Rundenende aufgedeckt, also kann sich das Ergebnis nach den Einsätzen nicht mehr ändern."
+    },
+    "coinflip": {
+      "summary": "Wähl eine Seite und sieh der Münze beim Drehen zu. Alle paar Sekunden startet ein neuer Wurf, und alle setzen auf dieselbe Münze.",
+      "step1": "Leg deinen Einsatz fest. Das Minimum ist 10.",
+      "step2": "Wähl eine Seite, bevor der Countdown abläuft.",
+      "step3": "Die Münze dreht sich 5 Sekunden lang. Landet sie auf deiner Seite, gewinnst du deinen Einsatz mal den Multiplikator dieser Seite.",
+      "payouts": "{{heads}} und {{tails}} fallen jeweils in {{sideChance}} % der Fälle und zahlen {{side}}x. {{purpleName}} fällt in {{purpleChance}} % der Fälle und zahlt {{purple}}x.",
+      "payoutsPlain": "{{heads}} und {{tails}} fallen jeweils in der Hälfte der Fälle und zahlen {{side}}x.",
+      "note1": "Ein Einsatz pro Wurf, auf eine Seite.",
+      "note2": "Das Haus zahlt jeden Gewinner zu festen Quoten aus, die Summen auf den Seiten ändern deine Auszahlung also nicht.",
+      "note3": "Auszahlungen werden auf ganze K₽ abgerundet.",
+      "note4": "Startet der Server während des Countdowns neu, wird der Wurf abgebrochen und jeder Einsatz erstattet.",
+      "fair": "Das Ergebnis jedes Wurfs wird durch einen Seed festgelegt, bevor die Einsätze öffnen. Sein Hash wird beim Öffnen veröffentlicht und der Seed nach dem Wurf aufgedeckt."
+    },
+    "slots": {
+      "summary": "Ein 3×3-Spielautomat mit fünf Gewinnlinien: den drei Reihen und den zwei Diagonalen. Drei Gleiche auf einer Linie zahlen, und die Katze ist Joker.",
+      "step1": "Leg deinen Einsatz mit den Minus- und Plus-Tasten fest.",
+      "step2": "Dreh. Die Walzen stoppen nacheinander.",
+      "step3": "Jede Linie mit drei Gleichen zahlt deinen Einsatz mal den Multiplikator dieses Symbols.",
+      "payouts": "Gewinnlinien werden addiert. Die Katze ersetzt jedes Symbol: drei Katzen zahlen 100x, zwei Katzen mit einem anderen Symbol zahlen dessen Wert. Der bestmögliche Dreh, neun Katzen, zahlt 500x.",
+      "note1": "Etwa jeder dritte Dreh gewinnt etwas, und etwa jeder 24. zahlt 8x oder mehr.",
+      "note2": "Eine Linie Schlangen zahlt den halben Einsatz, ein Dreh kann also gewinnen und trotzdem weniger zurückgeben, als du gesetzt hast.",
+      "fair": "Das Raster jedes Drehs kommt aus deinem Server-Seed, deinem Client-Seed und der Nonce: neun Ziehungen, eine pro Feld. Deine Seeds stehen auf der Provably-Fair-Seite, und ein Dreh lässt sich von Hand prüfen, sobald du deinen Seed wechselst."
+    },
+    "upgrade": {
+      "summary": "Tausch Items aus deinem Inventar gegen die Chance auf ein besseres Item aus derselben Kiste. Je mehr Wert du einsetzt, desto höher deine Chance.",
+      "step1": "Wähl eines oder mehrere deiner Items zum Einsetzen. Favoriten sind gesperrt und können nicht genutzt werden.",
+      "step2": "Wähl das gewünschte Item aus derselben Kiste: gleiche Seltenheit oder bis zu zwei Seltenheiten über deinen Items.",
+      "step3": "Drück Verbessern. Gewinnst du, gehört das Item dir; verlierst du, sind die eingesetzten Items weg.",
+      "payouts": "Deine Chance ist der Wert deiner Items geteilt durch den Wert des Ziels, mal die Rückgabe für die Seltenheit des Ziels, bis zur höchsten Chance dieser Seltenheit. Die Werte sind die Grundwerte der Items.",
+      "note1": "Hat deine Chance die höchste Chance dieser Seltenheit erreicht, erhöhen weitere Items sie nicht mehr.",
+      "note2": "Alle eingesetzten Items und das Ziel müssen aus derselben Kiste stammen.",
+      "note3": "Upgrades kosten keine K₽ und bringen weder Bestenlisten-Punkte noch XP.",
+      "fair": "Der Wurf ist eine Ziehung aus deinem Server-Seed, deinem Client-Seed und der Nonce: Du gewinnst, wenn er unter deiner Chance landet. Deine Seeds stehen auf der Provably-Fair-Seite."
+    },
+    "battles": {
+      "summary": "Öffne dieselben Kisten wie bis zu drei andere Spieler. Wer den meisten Wert zieht, bekommt alle Items, im Baka-Modus wer den wenigsten zieht.",
+      "step1": "Erstelle ein Battle: Wähl 1 bis 20 Kisten und einen Modus. Das Startgeld ist die Summe der Kistenpreise.",
+      "step2": "Warte auf Mitspieler oder füll die Plätze mit Bots. Der Host startet das Battle, sobald alle Plätze besetzt sind.",
+      "step3": "Alle öffnen dieselben Kisten, eine Runde nach der anderen. Nach der letzten Kiste bekommt die höchste Summe alle Items.",
+      "payouts": "Der Gewinner bekommt alle Items, keine K₽. Ein Gleichstand wird durch einen Wurf aus dem Seed des Battles entschieden.",
+      "note1": "Niemand zahlt, bevor der Host startet. Verlässt der Host vorher das Battle, wird es abgebrochen.",
+      "note2": "Einmal gestartet, läuft ein Battle zu Ende, auch wenn Spieler gehen.",
+      "note3": "Bots öffnen dieselben Kisten kostenlos, und was ein Bot gewinnt, geht an das Haus.",
+      "fair": "Jede Kiste wird vor der ersten Enthüllung gezogen, aus dem Seed des Battles und dem Client-Seed jedes Spielers. Der Hash des Seeds wird beim Start gezeigt und der Seed am Ende aufgedeckt."
+    },
+    "plinko": {
+      "summary": "Lass einen Ball durch 16 Reihen von Stiften fallen. Er springt in jeder Reihe nach links oder rechts und landet in einem von 17 Fächern, dessen Multiplikator deine Auszahlung bestimmt.",
+      "step1": "Leg deinen Einsatz fest und wähl ein Risiko: niedrig, mittel oder hoch.",
+      "step2": "Lass einen Ball fallen oder schalte den Automodus ein, um 10, 25, 50 oder 100 fallen zu lassen. Bis zu 12 Bälle können gleichzeitig fallen.",
+      "step3": "Wo der Ball landet, wird dein Einsatz mit dem Wert dieses Fachs multipliziert.",
+      "payouts": "Jeder Sprung ist ein Münzwurf, deshalb sind die mittleren Fächer am häufigsten und die Ränder am seltensten: Einer der beiden Ränder wird nur einmal in 32.768 Bällen getroffen. Höheres Risiko zahlt mehr an den Rändern und weniger in der Mitte. Fahr mit der Maus über ein Fach, um seine Chance zu sehen.",
+      "note1": "Der Höchsteinsatz ist {{low}} bei niedrigem, {{medium}} bei mittlerem und {{high}} bei hohem Risiko.",
+      "note2": "Das Risiko lässt sich nicht ändern, während Bälle fallen.",
+      "fair": "Jeder Ball nutzt 16 Ziehungen aus deinem Server-Seed, deinem Client-Seed und der Nonce, eine pro Reihe: unter der Hälfte geht es nach links, sonst nach rechts. Klick auf ein Ergebnis, um es auf der Provably-Fair-Seite zu öffnen und nach einem Seed-Wechsel zu prüfen.",
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch"
+    },
+    "blackjack": {
+      "summary": "Schlag den Dealer, indem du näher an 21 kommst, ohne darüber zu gehen. Blackjack zahlt 3 zu 2, und der Dealer bleibt bei jeder 17 stehen.",
+      "step1": "Setz deinen Einsatz und teil aus. Du bekommst zwei Karten, der Dealer zeigt eine.",
+      "step2": "Karte, um eine Karte zu ziehen, Halten, um deine Hand zu behalten, Verdoppeln, um den Einsatz für eine letzte Karte zu verdoppeln, oder Teilen, um ein Paar in zwei Hände aufzuteilen.",
+      "step3": "Der Dealer zieht bis 17 oder mehr. Näher an 21 als der Dealer gewinnt; über 21 verliert.",
+      "payouts": "Ein Sieg zahlt 1 zu 1, ein Unentschieden gibt deinen Einsatz zurück. Ein Blackjack, ein Ass und eine Zehnerkarte als erste zwei Karten, zahlt 3 zu 2, abgerundet. Zeigt der Dealer ein Ass, kannst du für den halben Einsatz eine Versicherung kaufen; sie zahlt 2 zu 1, wenn der Dealer Blackjack hat. Gut gespielt gibt das Spiel etwa 99,4 % zurück.",
+      "note1": "Das Deck geht nie aus: Jede Karte wird neu gezogen, Kartenzählen hilft also nicht.",
+      "note2": "Du kannst einmal teilen, und nur zwei Karten gleichen Rangs: König und Dame sind kein Paar. Geteilte Asse bekommen je eine Karte.",
+      "note3": "Aufgeben gibt es nicht, und eine 21 auf einer geteilten Hand zahlt 1 zu 1.",
+      "note4": "Tastenkürzel: H Karte, S Halten, D Verdoppeln, P Teilen, Leertaste Austeilen.",
+      "note5": "Eine Hand, die 10 Minuten unberührt bleibt, wird für dich beendet: Deine Hände halten und der Dealer spielt.",
+      "fair": "Jede Karte ist eine Ziehung aus deinem Server-Seed, deinem Client-Seed und der Nonce, eine pro Karte. Öffne eine Hand aus deinem Verlauf auf der Provably-Fair-Seite; nach einem Seed-Wechsel spielt Prüfen sie nach.",
+      "rtp": "Etwa 99,4 %",
+      "outWin": "Sieg",
+      "outBlackjack": "Blackjack",
+      "outInsurance": "Versicherung",
+      "outPush": "Unentschieden",
+      "pays11": "1 zu 1",
+      "pays32": "3 zu 2",
+      "pays21": "2 zu 1",
+      "paysBack": "Einsatz zurück"
+    },
+    "dice": {
+      "summary": "Wähl ein Ziel und würfle eine Zahl von 0.00 bis 99.99. Wette darauf, dass der Wurf unter oder über deinem Ziel landet: Je unwahrscheinlicher der Gewinn, desto mehr zahlt er.",
+      "step1": "Leg deinen Einsatz fest und zieh dann den Regler oder gib einen Multiplikator oder eine Gewinnchance ein. Alle drei bewegen dasselbe Ziel.",
+      "step2": "Wechsle mit den Pfeilen neben dem Ziel zwischen „darüber“ und „darunter“.",
+      "step3": "Würfle. Landet die Zahl auf deiner Seite des Ziels, gewinnst du deinen Einsatz mal den Multiplikator.",
+      "payouts": "Der Multiplikator ist 99 geteilt durch deine Gewinnchance, jede Einstellung gibt also im Schnitt 99 % zurück. Die Chancen reichen von 2 % (49.5x) bis 98 % (1.0102x).",
+      "note1": "Darüber gewinnt auf dem Ziel selbst oder höher; darunter gewinnt nur darunter.",
+      "note2": "Der Automodus setzt 10, 25, 50 oder 100 Mal hintereinander mit denselben Einstellungen.",
+      "note3": "Auszahlungen werden auf den Cent abgerundet.",
+      "fair": "Jeder Wurf ist eine Ziehung aus deinem Server-Seed, deinem Client-Seed und der Nonce. Öffne einen Wurf aus deinem Verlauf auf der Provably-Fair-Seite; nach einem Seed-Wechsel spielt Prüfen ihn nach."
+    },
+    "mines": {
+      "summary": "Ein 5×5-Raster versteckt Edelsteine und Minen. Jeder aufgedeckte Edelstein erhöht deinen Multiplikator; triffst du eine Mine, ist der Einsatz weg. Zahl dich aus, wann du willst.",
+      "step1": "Leg deinen Einsatz fest und wähl, wie viele Minen versteckt werden, von 1 bis 24.",
+      "step2": "Klick auf Felder, um sie aufzudecken. Jeder Edelstein erhöht deinen Multiplikator.",
+      "step3": "Zahl dich aus, um deinen Einsatz mal den aktuellen Multiplikator zu nehmen. Deckst du jeden Edelstein auf, wirst du automatisch ausgezahlt.",
+      "payouts": "Jeder Multiplikator ist 0,99 geteilt durch deine Chance, so weit gekommen zu sein, also gibt jede Minenzahl und jeder Ausstiegspunkt im Schnitt 99 % zurück. Mehr Minen machen jeden Edelstein mehr wert.",
+      "note1": "Du kannst dich nach deinem ersten Edelstein auszahlen.",
+      "note2": "Ein Spiel zahlt höchstens K₽1.000.000.",
+      "note3": "Ein Spiel, das 30 Minuten unberührt bleibt, wird als Verlust geschlossen, samt Edelsteinen.",
+      "note4": "Der Automodus wählt zufällige Felder für dich, für 10 bis 100 Runden.",
+      "fair": "Die Minen werden beim Spielstart aus deinem Server-Seed, deinem Client-Seed und der Nonce gelegt und bewegen sich nie. Öffne ein Spiel aus deinem Verlauf auf der Provably-Fair-Seite; nach einem Seed-Wechsel baut Prüfen das Brett nach."
+    },
+    "hilo": {
+      "summary": "Rate, ob die nächste Karte höher oder niedriger ist als die offene. Jeder Treffer vervielfacht deinen Gewinn; ein Fehler kostet den Einsatz.",
+      "step1": "Leg deinen Einsatz fest und starte. Die erste Karte wird ausgeteilt.",
+      "step2": "Wähl {{higher}} oder {{lower}}. Überspring die Karte kostenlos, wenn sie dir nicht gefällt.",
+      "step3": "Jeder Treffer vervielfacht deine Summe. Zahl dich nach deinem ersten Treffer aus, wann du willst.",
+      "payouts": "Jeder Tipp zahlt 0,99 geteilt durch seine Chance: Ein sicherer Tipp zahlt wenig, ein gewagter viel. Asse sind die niedrigsten Karten, Könige die höchsten. Bei einem Ass heißt höher streng höher; bei einem König heißt niedriger streng niedriger.",
+      "note1": "Das Deck geht nie aus: Jede Karte wird neu gezogen, dieselbe Karte kann also zweimal hintereinander kommen.",
+      "note2": "Du kannst bis zu {{skips}} Mal pro Spiel überspringen, und Überspringen ändert deinen Multiplikator nie.",
+      "note3": "Ein Spiel zahlt höchstens K₽1.000.000.",
+      "note4": "Ein Spiel, das 30 Minuten unberührt bleibt, wird als Verlust geschlossen.",
+      "fair": "Jede Karte ist eine Ziehung aus deinem Server-Seed, deinem Client-Seed und der Nonce, eine pro Karte. Öffne ein Spiel aus deinem Verlauf auf der Provably-Fair-Seite; nach einem Seed-Wechsel spielt Prüfen es nach.",
+      "chip": "1 % Hausvorteil pro Tipp",
+      "edgeValue": "1 % pro Tipp"
+    }
   }
 }

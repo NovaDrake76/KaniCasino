@@ -137,6 +137,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   openRoll,
 }) => (
   <GameLayout
+    game="plinko"
       bar={
         <GameBar>
           <LiveStatsButton />

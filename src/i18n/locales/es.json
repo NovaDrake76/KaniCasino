@@ -2161,5 +2161,218 @@
       "changeSent": "Enviamos un enlace a {{email}}. Tu dirección cambia cuando hagas clic en él.",
       "cancel": "Cancelar"
     }
+  },
+  "gameInfo": {
+    "tabs": {
+      "info": "Información del juego",
+      "totalBets": "Apuestas de la ronda"
+    },
+    "round": {
+      "players": "Jugadores: {{count}}",
+      "cashedOut": "Retiró en",
+      "profit": "Ganancia",
+      "empty": "Todavía no hay apuestas en esta ronda.",
+      "emptySide": "Todavía no hay apuestas en este lado."
+    },
+    "sections": {
+      "howToPlay": "Cómo jugar",
+      "payouts": "Pagos",
+      "paylines": "Líneas de pago",
+      "goodToKnow": "Conviene saber"
+    },
+    "facts": {
+      "rtp": "Retorno al jugador",
+      "edge": "Ventaja de la casa",
+      "bet": "Apuesta",
+      "maxWin": "Ganancia máxima",
+      "points": "Puntos de clasificación",
+      "perKp": "{{points}} por K₽",
+      "noCap": "Sin límite",
+      "none": "Ninguno",
+      "range": "{{min}} a {{max}}",
+      "rtpSides": "Retorno en {{heads}} o {{tails}}",
+      "rtpPurple": "Retorno en {{purpleName}}",
+      "return": "Retorno",
+      "maxChance": "Probabilidad máxima",
+      "entry": "Entrada",
+      "entryValue": "Suma de los precios de las cajas",
+      "cases": "Cajas",
+      "players": "Jugadores"
+    },
+    "chips": {
+      "rtp": "{{rtp}}% de RTP",
+      "fair": "Provably fair",
+      "items": "Se juega con objetos"
+    },
+    "table": {
+      "chance": "Probabilidad",
+      "winChance": "Probabilidad de ganar",
+      "multiplier": "Multiplicador",
+      "symbol": "Símbolo",
+      "threeInLine": "Tres en línea",
+      "perLine": "Probabilidad por línea",
+      "oneIn": "1 de cada {{n}}",
+      "slot": "Casilla",
+      "center": "Centro",
+      "edge": "Borde",
+      "fromCenter": "{{n}} desde el centro",
+      "cashoutAt": "Retirar en",
+      "side": "Lado",
+      "pays": "Paga",
+      "outcome": "Resultado",
+      "card": "Carta",
+      "minesGems": "Minas / gemas",
+      "targetRarity": "Rareza objetivo",
+      "return": "Retorno",
+      "maxChance": "Probabilidad máxima",
+      "mode": "Modo",
+      "players": "Jugadores"
+    },
+    "lines": {
+      "top": "Fila de arriba",
+      "middle": "Fila del medio",
+      "bottom": "Fila de abajo",
+      "diagonal": "Diagonal"
+    },
+    "symbols": {
+      "wild": "Gato (comodín)",
+      "yellow": "Monedero de rana",
+      "hakkero": "Hakkero",
+      "yin_yang": "Orbe yin-yang",
+      "green": "Lily",
+      "blue": "Muñeca de Shanghái",
+      "red": "Serpiente"
+    },
+    "fairTitle": "Juego verificable",
+    "verifyLink": "Ir a la página Provably Fair",
+    "crash": {
+      "summary": "Un multiplicador sube desde 1.00x hasta que estalla en un punto al azar. Retira antes del estallido para ganar tu apuesta por el multiplicador; si sigues dentro cuando estalla, pierdes la apuesta.",
+      "step1": "Haz tu apuesta durante la cuenta atrás antes de la ronda. Una apuesta hecha con la ronda en marcha espera a la siguiente.",
+      "step2": "Si quieres, configura {{cashoutAt}}: el servidor retira por ti en ese multiplicador, incluso con la pestaña cerrada.",
+      "step3": "Mira cómo sube el multiplicador y pulsa {{cashOut}} antes de que estalle.",
+      "payouts": "Ganas tu apuesta por el multiplicador del momento en que retiras. Con {{cashoutAt}} en x, tu probabilidad de cobrar es 96,03% dividido entre x, el mismo retorno del 96,03% con cualquier objetivo. Cerca del 4% de las rondas estallan en 1.00x, antes de que nadie pueda retirar.",
+      "note1": "Una apuesta por ronda, y al retirar te llevas la apuesta completa.",
+      "note2": "{{cashoutAt}} va de 1.01x a 10.000x. Si la ronda estalla justo en tu objetivo, la apuesta pierde.",
+      "note3": "Si el servidor se reinicia a mitad de ronda, la ronda se anula y se devuelven todas las apuestas que seguían en juego.",
+      "note4": "La XP llega cuando la apuesta se resuelve: un retiro desde 2x, o una apuesta que llega hasta el crash, da toda su XP; por debajo de 2x da menos (1,5x da la mitad, 1,01x casi nada).",
+      "fair": "El punto de estallido de cada ronda se fija antes de que se abran las apuestas. El hash de su semilla se publica al abrir las apuestas y la semilla se revela al terminar la ronda, así que el resultado no puede cambiar una vez hechas las apuestas."
+    },
+    "coinflip": {
+      "summary": "Elige un lado y mira girar la moneda. Cada pocos segundos empieza una tirada nueva, y todos apuestan a la misma moneda.",
+      "step1": "Fija tu apuesta. El mínimo es 10.",
+      "step2": "Elige un lado antes de que termine la cuenta atrás.",
+      "step3": "La moneda gira durante 5 segundos. Si cae de tu lado, ganas tu apuesta por el multiplicador de ese lado.",
+      "payouts": "{{heads}} y {{tails}} salen cada uno el {{sideChance}}% de las veces y pagan {{side}}x. {{purpleName}} sale el {{purpleChance}}% de las veces y paga {{purple}}x.",
+      "payoutsPlain": "{{heads}} y {{tails}} salen cada uno la mitad de las veces y pagan {{side}}x.",
+      "note1": "Una apuesta por tirada, a un solo lado.",
+      "note2": "La casa paga a cada ganador con cuotas fijas, así que lo apostado en cada lado no cambia tu pago.",
+      "note3": "Los pagos se redondean hacia abajo a un K₽ entero.",
+      "note4": "Si el servidor se reinicia durante la cuenta atrás, la tirada se anula y se devuelven todas las apuestas.",
+      "fair": "El resultado de cada tirada lo fija una semilla antes de que se abran las apuestas. Su hash se publica al abrir las apuestas y la semilla se revela después de la tirada."
+    },
+    "slots": {
+      "summary": "Una tragaperras de 3×3 con cinco líneas de pago: las tres filas y las dos diagonales. Tres iguales en una línea pagan, y el gato es comodín.",
+      "step1": "Fija tu apuesta con los botones de menos y más.",
+      "step2": "Gira. Los rodillos se detienen uno tras otro.",
+      "step3": "Cada línea con tres iguales paga tu apuesta por el multiplicador de ese símbolo.",
+      "payouts": "Las líneas ganadoras se suman. El gato sustituye a cualquier símbolo: tres gatos pagan 100x, y dos gatos con otro símbolo pagan lo de ese símbolo. La mejor tirada posible, nueve gatos, paga 500x.",
+      "note1": "Más o menos una tirada de cada tres gana algo, y una de cada 24 paga 8x o más.",
+      "note2": "Una línea de serpientes paga la mitad de la apuesta, así que una tirada puede ganar y aun así devolver menos de lo apostado.",
+      "fair": "La cuadrícula de cada tirada sale de tu semilla del servidor, tu semilla de cliente y el nonce: nueve sorteos, uno por casilla. Tus semillas están en la página Provably Fair, y una tirada se puede comprobar a mano cuando rotas tu semilla."
+    },
+    "upgrade": {
+      "summary": "Cambia objetos de tu inventario por la posibilidad de conseguir uno mejor de la misma caja. Cuanto más valor pongas, mayor será tu probabilidad.",
+      "step1": "Elige uno o más de tus objetos para poner. Los favoritos están bloqueados y no se pueden usar.",
+      "step2": "Elige el objeto que quieres de la misma caja: de la misma rareza o hasta dos rarezas por encima de tus objetos.",
+      "step3": "Pulsa Mejorar. Si ganas, el objeto es tuyo; si pierdes, los objetos que pusiste desaparecen.",
+      "payouts": "Tu probabilidad es el valor de tus objetos dividido entre el valor del objetivo, por el retorno de la rareza del objetivo, hasta la probabilidad máxima de esa rareza. Los valores son los valores base de los objetos.",
+      "note1": "Cuando tu probabilidad llega a la máxima de esa rareza, añadir más objetos ya no la sube.",
+      "note2": "Todos los objetos que pongas y el objetivo deben ser de la misma caja.",
+      "note3": "Las mejoras no usan K₽ y no dan puntos de clasificación ni XP.",
+      "fair": "La tirada es un sorteo de tu semilla del servidor, tu semilla de cliente y el nonce: ganas si cae por debajo de tu probabilidad. Tus semillas están en la página Provably Fair."
+    },
+    "battles": {
+      "summary": "Abre las mismas cajas que hasta otros tres jugadores. Quien saque más valor se lleva todos los objetos, o quien saque menos en el Modo baka.",
+      "step1": "Crea una batalla: elige de 1 a 20 cajas y un modo. La entrada es la suma de los precios de las cajas.",
+      "step2": "Espera a que entren jugadores o llena los asientos con bots. El anfitrión empieza la batalla cuando todos los asientos están ocupados.",
+      "step3": "Todos abren las mismas cajas, una ronda cada vez. Tras la última caja, el total más alto se lleva todos los objetos.",
+      "payouts": "El ganador se lleva todos los objetos, no K₽. Un empate se decide con una tirada de la semilla de la batalla.",
+      "note1": "Nadie paga hasta que el anfitrión empieza. Si el anfitrión se va antes, la batalla se cancela.",
+      "note2": "Una vez empezada, la batalla se juega hasta el final aunque se vayan jugadores.",
+      "note3": "Los bots abren las mismas cajas gratis, y lo que gana un bot se lo queda la casa.",
+      "fair": "Cada caja se sortea antes de la primera revelación, con la semilla de la batalla y la semilla de cliente de cada jugador. El hash de la semilla se muestra al empezar la batalla y la semilla se revela al terminar."
+    },
+    "plinko": {
+      "summary": "Suelta una bola por 16 filas de clavos. Rebota a izquierda o derecha en cada fila y cae en una de 17 casillas, cuyo multiplicador fija tu pago.",
+      "step1": "Fija tu apuesta y elige un riesgo: bajo, medio o alto.",
+      "step2": "Suelta una bola, o activa el modo automático para soltar 10, 25, 50 o 100. Pueden caer hasta 12 bolas a la vez.",
+      "step3": "Donde cae la bola, tu apuesta se multiplica por el valor de esa casilla.",
+      "payouts": "Cada rebote es cara o cruz, así que las casillas del centro son las más comunes y los bordes los más raros: uno de los dos bordes sale una vez cada 32.768 bolas. Más riesgo paga más en los bordes y menos en el centro. Pasa el ratón sobre una casilla del tablero para ver su probabilidad.",
+      "note1": "La apuesta máxima es {{low}} con riesgo bajo, {{medium}} con medio y {{high}} con alto.",
+      "note2": "El riesgo no se puede cambiar mientras caen bolas.",
+      "fair": "Cada bola usa 16 sorteos de tu semilla del servidor, tu semilla de cliente y el nonce, uno por fila: por debajo de la mitad va a la izquierda, el resto a la derecha. Haz clic en un resultado para abrirlo en la página Provably Fair y verificarlo después de rotar tu semilla.",
+      "low": "Bajo",
+      "medium": "Medio",
+      "high": "Alto"
+    },
+    "blackjack": {
+      "summary": "Gana al crupier acercándote más a 21 sin pasarte. El blackjack paga 3 a 2 y el crupier se planta con cualquier 17.",
+      "step1": "Haz tu apuesta y reparte. Recibes dos cartas y el crupier muestra una.",
+      "step2": "Pedir para recibir una carta, Plantarse para quedarte con tu mano, Doblar para doblar la apuesta por una última carta, o Dividir una pareja en dos manos.",
+      "step3": "El crupier pide hasta tener 17 o más. Acercarte más a 21 que el crupier gana; pasarte de 21 pierde.",
+      "payouts": "Una victoria paga 1 a 1 y un empate te devuelve la apuesta. Un blackjack, un as y una carta de valor diez como tus dos primeras cartas, paga 3 a 2, redondeado hacia abajo. Cuando el crupier muestra un as puedes comprar un seguro por la mitad de tu apuesta; paga 2 a 1 si el crupier tiene blackjack. Jugando bien, el juego devuelve cerca del 99,4%.",
+      "note1": "La baraja nunca se acaba: cada carta es un sorteo nuevo, así que contar cartas no sirve.",
+      "note2": "Puedes dividir una vez, y solo dos cartas del mismo valor: un rey y una reina no son pareja. Los ases divididos reciben una carta cada uno.",
+      "note3": "No hay rendición, y un 21 en una mano dividida paga 1 a 1.",
+      "note4": "Atajos: H pedir, S plantarse, D doblar, P dividir, Espacio repartir.",
+      "note5": "Una mano sin tocar durante 10 minutos se termina por ti: tus manos se plantan y juega el crupier.",
+      "fair": "Cada carta es un sorteo de tu semilla del servidor, tu semilla de cliente y el nonce, uno por carta. Abre una mano de tu historial en la página Provably Fair; después de rotar tu semilla, Verificar la repite.",
+      "rtp": "Cerca del 99,4%",
+      "outWin": "Victoria",
+      "outBlackjack": "Blackjack",
+      "outInsurance": "Seguro",
+      "outPush": "Empate",
+      "pays11": "1 a 1",
+      "pays32": "3 a 2",
+      "pays21": "2 a 1",
+      "paysBack": "Te devuelve la apuesta"
+    },
+    "dice": {
+      "summary": "Elige un objetivo y saca un número de 0.00 a 99.99. Apuesta a que la tirada cae por debajo o por encima de tu objetivo: cuanto menos probable sea ganar, más paga.",
+      "step1": "Fija tu apuesta y luego arrastra el control o escribe un multiplicador o una probabilidad de ganar. Los tres mueven el mismo objetivo.",
+      "step2": "Cambia entre tirar por encima y tirar por debajo con las flechas junto al objetivo.",
+      "step3": "Tira. Si el número cae de tu lado del objetivo, ganas tu apuesta por el multiplicador.",
+      "payouts": "El multiplicador es 99 dividido entre tu probabilidad de ganar, así que cualquier ajuste devuelve el 99% de media. Las probabilidades van del 2% (49.5x) al 98% (1.0102x).",
+      "note1": "Tirar por encima gana en el propio objetivo o por encima; tirar por debajo solo gana por debajo.",
+      "note2": "El modo automático hace 10, 25, 50 o 100 apuestas seguidas con los mismos ajustes.",
+      "note3": "Los pagos se redondean hacia abajo al céntimo.",
+      "fair": "Cada tirada es un sorteo de tu semilla del servidor, tu semilla de cliente y el nonce. Abre cualquier tirada de tu historial en la página Provably Fair; después de rotar tu semilla, Verificar la repite."
+    },
+    "mines": {
+      "summary": "Una cuadrícula de 5×5 esconde gemas y minas. Cada gema que descubres sube tu multiplicador; si tocas una mina, pierdes la apuesta. Retira cuando quieras.",
+      "step1": "Fija tu apuesta y elige cuántas minas esconder, de 1 a 24.",
+      "step2": "Haz clic en las casillas para descubrirlas. Cada gema sube tu multiplicador.",
+      "step3": "Retira para llevarte tu apuesta por el multiplicador actual. Si descubres todas las gemas, se retira automáticamente.",
+      "payouts": "Cada multiplicador es 0,99 dividido entre tu probabilidad de haber llegado hasta ahí, así que cualquier número de minas y cualquier punto de parada devuelve el 99% de media. Más minas hacen que cada gema valga más.",
+      "note1": "Puedes retirar después de tu primera gema.",
+      "note2": "Una partida paga como máximo K₽1.000.000.",
+      "note3": "Una partida sin tocar durante 30 minutos se cierra como derrota, con gemas incluidas.",
+      "note4": "El modo automático elige casillas al azar por ti, de 10 a 100 rondas.",
+      "fair": "Las minas se colocan con tu semilla del servidor, tu semilla de cliente y el nonce al empezar la partida y nunca se mueven. Abre una partida de tu historial en la página Provably Fair; después de rotar tu semilla, Verificar reconstruye el tablero."
+    },
+    "hilo": {
+      "summary": "Adivina si la siguiente carta es mayor o menor que la que se ve. Cada acierto multiplica tus ganancias; un fallo pierde la apuesta.",
+      "step1": "Fija tu apuesta y empieza. Se reparte la primera carta.",
+      "step2": "Elige {{higher}} o {{lower}}. Salta la carta gratis si no te gusta.",
+      "step3": "Cada acierto multiplica tu total. Retira cuando quieras después de tu primer acierto.",
+      "payouts": "Cada predicción paga 0,99 dividido entre su probabilidad: una apuesta segura paga poco y una arriesgada paga mucho. El as es la carta más baja y el rey la más alta. Con un as, mayor significa estrictamente mayor; con un rey, menor significa estrictamente menor.",
+      "note1": "La baraja nunca se acaba: cada carta es un sorteo nuevo, así que la misma carta puede salir dos veces seguidas.",
+      "note2": "Puedes saltar hasta {{skips}} veces por partida, y saltar nunca cambia tu multiplicador.",
+      "note3": "Una partida paga como máximo K₽1.000.000.",
+      "note4": "Una partida sin tocar durante 30 minutos se cierra como derrota.",
+      "fair": "Cada carta es un sorteo de tu semilla del servidor, tu semilla de cliente y el nonce, uno por carta. Abre una partida de tu historial en la página Provably Fair; después de rotar tu semilla, Verificar la repite.",
+      "chip": "1% de ventaja por predicción",
+      "edgeValue": "1% por predicción"
+    }
   }
 }

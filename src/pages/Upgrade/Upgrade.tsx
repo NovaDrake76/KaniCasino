@@ -4,6 +4,7 @@ import Title from "../../components/Title";
 import { Tooltip } from "react-tooltip";
 import Items from "./Items";
 import TopContent from "./TopContent";
+import GameDetails from "../../components/game/GameDetails";
 import i18n from "../../i18n";
 
 interface selectedItems {
@@ -53,6 +54,10 @@ const Upgrade: React.FC = () => {
                     selectedTarget={selectedTarget} setSelectedTarget={setSelectedTarget}
                     selectedCase={selectedCase} setSelectedCase={setSelectedCase}
                     setSuccessRate={setSuccessRate} toggleReload={toggleReload} setFinished={setFinished} spinning={spinning} />
+
+                <div className="flex justify-center px-4 pb-10 pt-8">
+                    <GameDetails game="upgrade" feed={false} />
+                </div>
             </div>
         </div>
     );

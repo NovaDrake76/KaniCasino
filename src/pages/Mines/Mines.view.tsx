@@ -88,6 +88,7 @@ const MinesView: React.FC<MinesViewProps> = ({
 
   return (
     <GameLayout
+      game="mines"
       bar={
         <GameBar>
           <LiveStatsButton />

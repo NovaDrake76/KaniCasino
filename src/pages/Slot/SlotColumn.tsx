@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { RotatingLines } from "react-loader-spinner";
+import { symbolImage } from "./symbols";
 
 interface SlotColumnProps {
     symbols: string[];
@@ -60,21 +61,6 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
     }, [isSpinning, translateValue]);
 
 
-    const getSymbolImage = (symbol: string) => {
-
-        const images: { [key: string]: string } = {
-            red: '/images/slot/red.webp',
-            blue: '/images/slot/shangai.webp',
-            green: '/images/slot/lily.webp',
-            yin_yang: '/images/slot/yin.webp',
-            hakkero: '/images/slot/hakkero.webp',
-            yellow: '/images/slot/green.webp',
-            wild: "/images/slot/wild.webp"
-        };
-
-        return images[symbol];
-    }
-
     const isWinningSymbol = (index: number) => {
         if (index < 46) return false;
 
@@ -130,7 +116,7 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
                                         />
                                     </div>
                                 }
-                                <img src={getSymbolImage(symbol)} alt={symbol}
+                                <img src={symbolImage(symbol)} alt={symbol}
                                     className={`w-full h-full z-10 ${loading ? "hidden" : ""}`}
                                     onLoad={handleImageLoad} />
                                 {isWinningSymbol(index) && isSpinning == false &&
