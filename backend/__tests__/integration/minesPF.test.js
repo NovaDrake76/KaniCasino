@@ -8,6 +8,7 @@ const Roll = require("../../models/Roll");
 const Seed = require("../../models/Seed");
 const Transaction = require("../../models/Transaction");
 const MinesGame = require("../../models/MinesGame");
+const seeds = require("../../utils/seeds");
 const { TX } = require("../../utils/economy");
 const { TILES, multiplierFor } = require("../../utils/minesMath");
 
@@ -141,4 +142,39 @@ test("a rotated seed lets the verifier reproduce the game", async () => {
   expect(verified.body.commitmentValid).toBe(true);
   expect(verified.body.recomputedMineSet).toEqual([...game.mineSet].sort((a, b) => a - b));
   expect(verified.body.recomputedPayout).toBe(cash.body.payout);
+});
+
+// the seed rotates at nonce 1000 and rotating reveals it, so a board must never be laid on a seed that is
+// revealed while the game is live: the player could read every mine
+test("a start that reaches the rotation lays its board on the fresh seed, never the revealed one", async () => {
+  const u = await makeUser(1000);
+  const h = auth(u);
+  const first = await seeds.getOrCreateActiveSeed(u._id);
+  await Seed.updateOne({ _id: first._id }, { $set: { nonce: 999 } });
+
+  const start = await request(app).post("/games/mines/start").set(h).send({ betAmount: 100, mineCount: 3 });
+  expect(start.status).toBe(200);
+
+  expect((await Seed.findById(first._id)).active).toBe(false); // revealed by the rotation
+  const live = await MinesGame.findOne({ userId: u._id, status: "active" });
+  const fresh = await Seed.findOne({ userId: u._id, active: true });
+  expect(String(live.seedId)).toBe(String(fresh._id));
+  expect(await MinesGame.countDocuments({ userId: u._id, status: "voided" })).toBe(1);
+  expect(await Transaction.countDocuments({ userId: u._id, type: TX.MINES_BET })).toBe(1);
+  expect((await User.findById(u._id)).walletBalance).toBe(900);
+});
+
+test("another game's roll past the rotation waits until the board is finished", async () => {
+  const u = await makeUser(1000);
+  const h = auth(u);
+  await request(app).post("/games/mines/start").set(h).send({ betAmount: 100, mineCount: 3 });
+  const game = await MinesGame.findOne({ userId: u._id, status: "active" });
+  await Seed.updateOne({ _id: game.seedId }, { $set: { nonce: 999 } });
+
+  expect((await request(app).post("/games/plinko").set(h).send({ betAmount: 10, risk: "low" })).status).toBe(200);
+  expect((await Seed.findById(game.seedId)).active).toBe(true);
+
+  await request(app).post("/games/mines/reveal").set(h).send({ tile: game.mineSet[0] });
+  expect((await request(app).post("/games/plinko").set(h).send({ betAmount: 10, risk: "low" })).status).toBe(200);
+  expect((await Seed.findById(game.seedId)).active).toBe(false);
 });
