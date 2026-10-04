@@ -2161,5 +2161,218 @@
       "changeSent": "We sent a link to {{email}}. Your address changes when you click it.",
       "cancel": "Cancel"
     }
+  },
+  "gameInfo": {
+    "tabs": {
+      "info": "Game info",
+      "totalBets": "Total bets"
+    },
+    "round": {
+      "players": "Players: {{count}}",
+      "cashedOut": "Cashed out",
+      "profit": "Profit",
+      "empty": "No bets on this round yet.",
+      "emptySide": "No bets on this side yet."
+    },
+    "sections": {
+      "howToPlay": "How to play",
+      "payouts": "Payouts",
+      "paylines": "Paylines",
+      "goodToKnow": "Good to know"
+    },
+    "facts": {
+      "rtp": "Return to player",
+      "edge": "House edge",
+      "bet": "Bet",
+      "maxWin": "Max win",
+      "points": "Leaderboard points",
+      "perKp": "{{points}} per K₽",
+      "noCap": "No cap",
+      "none": "None",
+      "range": "{{min}} to {{max}}",
+      "rtpSides": "Return on {{heads}} or {{tails}}",
+      "rtpPurple": "Return on {{purpleName}}",
+      "return": "Return",
+      "maxChance": "Highest chance",
+      "entry": "Entry",
+      "entryValue": "Sum of the case prices",
+      "cases": "Cases",
+      "players": "Players"
+    },
+    "chips": {
+      "rtp": "{{rtp}}% RTP",
+      "fair": "Provably fair",
+      "items": "Played with items"
+    },
+    "table": {
+      "chance": "Chance",
+      "winChance": "Win chance",
+      "multiplier": "Multiplier",
+      "symbol": "Symbol",
+      "threeInLine": "Three in a line",
+      "perLine": "Chance per line",
+      "oneIn": "1 in {{n}}",
+      "slot": "Slot",
+      "center": "Center",
+      "edge": "Edge",
+      "fromCenter": "{{n}} from center",
+      "cashoutAt": "Cash out at",
+      "side": "Side",
+      "pays": "Pays",
+      "outcome": "Outcome",
+      "card": "Card",
+      "minesGems": "Mines / gems",
+      "targetRarity": "Target rarity",
+      "return": "Return",
+      "maxChance": "Highest chance",
+      "mode": "Mode",
+      "players": "Players"
+    },
+    "lines": {
+      "top": "Top row",
+      "middle": "Middle row",
+      "bottom": "Bottom row",
+      "diagonal": "Diagonal"
+    },
+    "symbols": {
+      "wild": "Cat (wild)",
+      "yellow": "Frog purse",
+      "hakkero": "Hakkero",
+      "yin_yang": "Yin-yang orb",
+      "green": "Lily",
+      "blue": "Shanghai doll",
+      "red": "Snake"
+    },
+    "fairTitle": "Fairness",
+    "verifyLink": "Go to the Provably Fair page",
+    "crash": {
+      "summary": "A multiplier climbs from 1.00x until it crashes at a random point. Cash out before the crash to win your bet times the multiplier; if you are still in when it crashes, the bet is lost.",
+      "step1": "Place your bet during the countdown before a round. A bet placed while a round is flying waits for the next one.",
+      "step2": "If you like, set {{cashoutAt}}: the server cashes you out at that multiplier, even with your tab closed.",
+      "step3": "Watch the multiplier climb and press {{cashOut}} before it crashes.",
+      "payouts": "You win your bet times the multiplier at the moment you cash out. With {{cashoutAt}} set to x, your chance of being paid is 96.03% divided by x, the same 96.03% return at any target. About 4% of rounds crash at 1.00x, before anyone can cash out.",
+      "note1": "One bet per round, and cashing out takes the whole bet.",
+      "note2": "{{cashoutAt}} goes from 1.01x to 10,000x. If the round crashes exactly at your target, the bet loses.",
+      "note3": "If the server restarts mid-round, the round is called off and every bet still in it is refunded.",
+      "note4": "XP comes when the bet settles: a cash-out at 2x or more, or a bet that rides to the crash, earns its full XP; below 2x it earns less (1.5x earns half, 1.01x almost nothing).",
+      "fair": "Each round's crash point is fixed before betting opens. The hash of its seed is published when betting opens and the seed is revealed when the round ends, so the result cannot change once bets are in."
+    },
+    "coinflip": {
+      "summary": "Pick a side and watch the coin spin. A new flip starts every few seconds, and everyone bets on the same coin.",
+      "step1": "Set your bet. The minimum is 10.",
+      "step2": "Pick a side before the countdown runs out.",
+      "step3": "The coin spins for 5 seconds. If it lands on your side, you win your bet times that side's multiplier.",
+      "payouts": "{{heads}} and {{tails}} each land {{sideChance}}% of the time and pay {{side}}x. {{purpleName}} lands {{purpleChance}}% of the time and pays {{purple}}x.",
+      "payoutsPlain": "{{heads}} and {{tails}} each land half the time and pay {{side}}x.",
+      "note1": "One bet per flip, on one side.",
+      "note2": "The house pays every winner at fixed odds, so the totals on each side don't change your payout.",
+      "note3": "Payouts are rounded down to a whole K₽.",
+      "note4": "If the server restarts during the countdown, the flip is called off and every bet is refunded.",
+      "fair": "Each flip's result is fixed by a seed before betting opens. Its hash is published when betting opens and the seed is revealed after the flip."
+    },
+    "slots": {
+      "summary": "A 3×3 slot machine with five paylines: the three rows and the two diagonals. Three of a kind on a line pays, and the cat is wild.",
+      "step1": "Set your bet with the minus and plus buttons.",
+      "step2": "Spin. The reels stop one after another.",
+      "step3": "Every line showing three of a kind pays your bet times that symbol's multiplier.",
+      "payouts": "Winning lines add up. The cat stands in for any symbol: three cats pay 100x, while two cats and another symbol pay that symbol's rate. The best possible spin, nine cats, pays 500x.",
+      "note1": "About one spin in three wins something, and about one in 24 pays 8x or more.",
+      "note2": "A line of snakes pays half your bet, so a spin can win and still return less than you bet.",
+      "fair": "Each spin's grid comes from your server seed, client seed and nonce: nine draws, one per cell. Your seeds are on the Provably Fair page, and a spin can be checked by hand once you rotate your seed."
+    },
+    "upgrade": {
+      "summary": "Trade items from your inventory for a chance at a better item from the same case. The more value you put in, the higher your chance.",
+      "step1": "Pick one or more of your items to put in. Favorites are locked and can't be used.",
+      "step2": "Pick the item you want from the same case: the same rarity, or up to two rarities above your items.",
+      "step3": "Press Upgrade. If you win, the item is yours; if you lose, the items you put in are gone.",
+      "payouts": "Your chance is the value of your items divided by the target's value, times the return for the target's rarity, up to that rarity's highest chance. Values are the items' base values.",
+      "note1": "Once your chance hits the highest chance for that rarity, adding more items doesn't raise it.",
+      "note2": "Every item you put in and the target must come from the same case.",
+      "note3": "Upgrades don't use K₽ and don't earn leaderboard points or XP.",
+      "fair": "The roll is one draw from your server seed, client seed and nonce: you win if it lands under your chance. Your seeds are on the Provably Fair page."
+    },
+    "battles": {
+      "summary": "Open the same cases as up to three other players. Whoever unboxes the most value takes every item, or the least in Baka mode.",
+      "step1": "Create a battle: pick 1 to 20 cases and a mode. The entry is the sum of the case prices.",
+      "step2": "Wait for players to join, or fill the seats with bots. The host starts the battle once every seat is taken.",
+      "step3": "Everyone opens the same cases, one round at a time. After the last case, the highest total takes all the items.",
+      "payouts": "The winner gets every item, not K₽. A tie is broken by a roll from the battle's seed.",
+      "note1": "Nobody pays until the host starts. If the host leaves before that, the battle is cancelled.",
+      "note2": "Once started, a battle plays out even if players leave.",
+      "note3": "Bots open the same cases for free, and whatever a bot wins goes to the house.",
+      "fair": "Every case is rolled before the first reveal, from the battle's seed and each player's client seed. The seed's hash is shown when the battle starts and the seed is revealed when it ends."
+    },
+    "plinko": {
+      "summary": "Drop a ball through 16 rows of pegs. It bounces left or right on every row and lands in one of 17 slots, whose multiplier sets your payout.",
+      "step1": "Set your bet and pick a risk: low, medium or high.",
+      "step2": "Drop a ball, or turn on auto mode to drop 10, 25, 50 or 100. Up to 12 balls can fall at once.",
+      "step3": "Where the ball lands, your bet is multiplied by that slot's value.",
+      "payouts": "Every bounce is a coin toss, so the middle slots are the most common and the edges the rarest: one edge or the other is hit once in 32,768 drops. Higher risk pays more at the edges and less in the middle. Hover a slot on the board to see its chance.",
+      "note1": "Max bet is {{low}} on low, {{medium}} on medium and {{high}} on high risk.",
+      "note2": "Risk can't be changed while balls are falling.",
+      "fair": "Each drop takes 16 draws from your server seed, client seed and nonce, one per row: under one half goes left, the rest go right. Click a result to open it on the Provably Fair page and verify it after you rotate your seed.",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "blackjack": {
+      "summary": "Beat the dealer by getting closer to 21 without going over. Blackjack pays 3 to 2, and the dealer stands on every 17.",
+      "step1": "Place your bet and deal. You get two cards and the dealer shows one.",
+      "step2": "Hit to take a card, Stand to keep your hand, Double to double your bet for one last card, or Split a pair into two hands.",
+      "step3": "The dealer draws to 17 or more. Closer to 21 than the dealer wins; over 21 loses.",
+      "payouts": "A win pays 1 to 1 and a tie gives your bet back. A blackjack, an ace and a ten-value card as your first two cards, pays 3 to 2, rounded down. When the dealer shows an ace you can buy insurance for half your bet; it pays 2 to 1 if the dealer has blackjack. Played well, the game returns about 99.4%.",
+      "note1": "The deck never runs out: every card is a fresh draw, so counting cards doesn't help.",
+      "note2": "You can split once, and only two cards of the same rank: a king and a queen are not a pair. Split aces get one card each.",
+      "note3": "There is no surrender, and 21 on a split hand pays 1 to 1.",
+      "note4": "Shortcuts: H hit, S stand, D double, P split, Space deal.",
+      "note5": "A hand left alone for 10 minutes is finished for you: your hands stand and the dealer plays.",
+      "fair": "Every card is a draw from your server seed, client seed and nonce, one per card. Open a hand from your history on the Provably Fair page; after you rotate your seed, Verify replays it.",
+      "rtp": "About 99.4%",
+      "outWin": "Win",
+      "outBlackjack": "Blackjack",
+      "outInsurance": "Insurance",
+      "outPush": "Tie",
+      "pays11": "1 to 1",
+      "pays32": "3 to 2",
+      "pays21": "2 to 1",
+      "paysBack": "Your bet back"
+    },
+    "dice": {
+      "summary": "Pick a target and roll a number from 0.00 to 99.99. Bet on the roll landing under or over your target: the less likely the win, the more it pays.",
+      "step1": "Set your bet, then drag the slider or type a multiplier or a win chance. All three move the same target.",
+      "step2": "Switch between rolling over and rolling under with the arrows next to the target.",
+      "step3": "Roll. If the number lands on your side of the target, you win your bet times the multiplier.",
+      "payouts": "The multiplier is 99 divided by your win chance, so every setting returns 99% on average. Win chances run from 2% (49.5x) to 98% (1.0102x).",
+      "note1": "Rolling over wins on the target itself or above it; rolling under wins only below it.",
+      "note2": "Auto mode places 10, 25, 50 or 100 bets in a row with the same settings.",
+      "note3": "Payouts are rounded down to the cent.",
+      "fair": "Each roll is one draw from your server seed, client seed and nonce. Open any roll from your history on the Provably Fair page; after you rotate your seed, Verify replays it."
+    },
+    "mines": {
+      "summary": "A 5×5 grid hides gems and mines. Every gem you uncover raises your multiplier; hit a mine and the bet is lost. Cash out whenever you like.",
+      "step1": "Set your bet and choose how many mines to hide, from 1 to 24.",
+      "step2": "Click tiles to uncover them. Every gem raises your multiplier.",
+      "step3": "Cash out to take your bet times the current multiplier. Uncover every gem and you are cashed out automatically.",
+      "payouts": "Each multiplier is 0.99 divided by your chance of getting that far, so every mine count and every stopping point returns 99% on average. More mines make every gem worth more.",
+      "note1": "You can cash out after your first gem.",
+      "note2": "A single game pays at most K₽1,000,000.",
+      "note3": "A game left untouched for 30 minutes is closed as a loss, gems included.",
+      "note4": "Auto mode picks random tiles for you, for 10 to 100 rounds.",
+      "fair": "The mines are placed from your server seed, client seed and nonce when the game starts and never move. Open a game from your history on the Provably Fair page; after you rotate your seed, Verify rebuilds the board."
+    },
+    "hilo": {
+      "summary": "Guess whether the next card is higher or lower than the one showing. Every right guess multiplies your winnings; one wrong guess loses the bet.",
+      "step1": "Set your bet and start. The first card is dealt.",
+      "step2": "Choose {{higher}} or {{lower}}. Skip the card for free if you don't like it.",
+      "step3": "Every right guess multiplies your total. Cash out any time after your first right guess.",
+      "payouts": "Each guess pays 0.99 divided by its chance: a safe guess pays a little, a long shot pays a lot. Aces are lowest and kings highest. On an ace, higher means strictly higher; on a king, lower means strictly lower.",
+      "note1": "The deck never runs out: every card is a fresh draw, so the same card can come up twice in a row.",
+      "note2": "You can skip up to {{skips}} times per game, and skipping never changes your multiplier.",
+      "note3": "A single game pays at most K₽1,000,000.",
+      "note4": "A game left untouched for 30 minutes is closed as a loss.",
+      "fair": "Every card is a draw from your server seed, client seed and nonce, one per card. Open a game from your history on the Provably Fair page; after you rotate your seed, Verify replays it.",
+      "chip": "1% edge per guess",
+      "edgeValue": "1% per guess"
+    }
   }
 }

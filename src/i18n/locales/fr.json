@@ -2161,5 +2161,218 @@
       "changeSent": "Nous avons envoyé un lien à {{email}}. Votre adresse change quand vous cliquez dessus.",
       "cancel": "Annuler"
     }
+  },
+  "gameInfo": {
+    "tabs": {
+      "info": "Infos du jeu",
+      "totalBets": "Mises de la manche"
+    },
+    "round": {
+      "players": "Joueurs : {{count}}",
+      "cashedOut": "Encaissé à",
+      "profit": "Gain",
+      "empty": "Aucune mise sur cette manche pour l'instant.",
+      "emptySide": "Aucune mise sur ce côté pour l'instant."
+    },
+    "sections": {
+      "howToPlay": "Comment jouer",
+      "payouts": "Gains",
+      "paylines": "Lignes de paiement",
+      "goodToKnow": "Bon à savoir"
+    },
+    "facts": {
+      "rtp": "Retour au joueur",
+      "edge": "Avantage de la maison",
+      "bet": "Mise",
+      "maxWin": "Gain maximum",
+      "points": "Points de classement",
+      "perKp": "{{points}} par K₽",
+      "noCap": "Sans plafond",
+      "none": "Aucun",
+      "range": "{{min}} à {{max}}",
+      "rtpSides": "Retour sur {{heads}} ou {{tails}}",
+      "rtpPurple": "Retour sur {{purpleName}}",
+      "return": "Retour",
+      "maxChance": "Chance maximale",
+      "entry": "Entrée",
+      "entryValue": "Somme des prix des caisses",
+      "cases": "Caisses",
+      "players": "Joueurs"
+    },
+    "chips": {
+      "rtp": "{{rtp}} % de RTP",
+      "fair": "Provably fair",
+      "items": "Se joue avec des objets"
+    },
+    "table": {
+      "chance": "Chance",
+      "winChance": "Chance de gagner",
+      "multiplier": "Multiplicateur",
+      "symbol": "Symbole",
+      "threeInLine": "Trois sur une ligne",
+      "perLine": "Chance par ligne",
+      "oneIn": "1 sur {{n}}",
+      "slot": "Case",
+      "center": "Centre",
+      "edge": "Bord",
+      "fromCenter": "{{n}} du centre",
+      "cashoutAt": "Encaisser à",
+      "side": "Côté",
+      "pays": "Paie",
+      "outcome": "Résultat",
+      "card": "Carte",
+      "minesGems": "Mines / gemmes",
+      "targetRarity": "Rareté visée",
+      "return": "Retour",
+      "maxChance": "Chance maximale",
+      "mode": "Mode",
+      "players": "Joueurs"
+    },
+    "lines": {
+      "top": "Ligne du haut",
+      "middle": "Ligne du milieu",
+      "bottom": "Ligne du bas",
+      "diagonal": "Diagonale"
+    },
+    "symbols": {
+      "wild": "Chat (joker)",
+      "yellow": "Porte-monnaie grenouille",
+      "hakkero": "Hakkero",
+      "yin_yang": "Orbe yin-yang",
+      "green": "Lily",
+      "blue": "Poupée de Shanghai",
+      "red": "Serpent"
+    },
+    "fairTitle": "Équité vérifiable",
+    "verifyLink": "Aller sur la page Provably Fair",
+    "crash": {
+      "summary": "Un multiplicateur grimpe à partir de 1.00x jusqu'à exploser à un moment aléatoire. Encaissez avant l'explosion pour gagner votre mise multipliée ; si vous êtes encore en jeu quand il explose, la mise est perdue.",
+      "step1": "Placez votre mise pendant le compte à rebours avant la manche. Une mise placée pendant une manche attend la suivante.",
+      "step2": "Si vous le souhaitez, réglez {{cashoutAt}} : le serveur encaisse pour vous à ce multiplicateur, même onglet fermé.",
+      "step3": "Regardez le multiplicateur monter et appuyez sur {{cashOut}} avant l'explosion.",
+      "payouts": "Vous gagnez votre mise multipliée par le multiplicateur au moment où vous encaissez. Avec {{cashoutAt}} réglé sur x, votre chance d'être payé est de 96,03 % divisé par x, soit le même retour de 96,03 % quelle que soit la cible. Environ 4 % des manches explosent à 1.00x, avant que quiconque puisse encaisser.",
+      "note1": "Une mise par manche, et encaisser retire toute la mise.",
+      "note2": "{{cashoutAt}} va de 1.01x à 10 000x. Si la manche explose pile sur votre cible, la mise est perdue.",
+      "note3": "Si le serveur redémarre en pleine manche, elle est annulée et chaque mise encore en jeu est remboursée.",
+      "note4": "L'XP arrive quand la mise est réglée : un encaissement à partir de 2x, ou une mise qui va jusqu'au crash, rapporte toute son XP ; sous 2x, elle rapporte moins (1,5x la moitié, 1,01x presque rien).",
+      "fair": "Le point d'explosion de chaque manche est fixé avant l'ouverture des mises. Le hash de sa graine est publié à l'ouverture des mises et la graine est révélée à la fin de la manche : le résultat ne peut donc pas changer une fois les mises placées."
+    },
+    "coinflip": {
+      "summary": "Choisissez un côté et regardez la pièce tourner. Un nouveau lancer démarre toutes les quelques secondes, et tout le monde mise sur la même pièce.",
+      "step1": "Réglez votre mise. Le minimum est de 10.",
+      "step2": "Choisissez un côté avant la fin du compte à rebours.",
+      "step3": "La pièce tourne pendant 5 secondes. Si elle tombe sur votre côté, vous gagnez votre mise multipliée par le multiplicateur de ce côté.",
+      "payouts": "{{heads}} et {{tails}} tombent chacun {{sideChance}} % du temps et paient {{side}}x. {{purpleName}} tombe {{purpleChance}} % du temps et paie {{purple}}x.",
+      "payoutsPlain": "{{heads}} et {{tails}} tombent chacun la moitié du temps et paient {{side}}x.",
+      "note1": "Une mise par lancer, sur un seul côté.",
+      "note2": "La maison paie chaque gagnant à cote fixe : les totaux misés sur chaque côté ne changent pas votre gain.",
+      "note3": "Les gains sont arrondis à l'unité inférieure de K₽.",
+      "note4": "Si le serveur redémarre pendant le compte à rebours, le lancer est annulé et toutes les mises sont remboursées.",
+      "fair": "Le résultat de chaque lancer est fixé par une graine avant l'ouverture des mises. Son hash est publié à l'ouverture des mises et la graine est révélée après le lancer."
+    },
+    "slots": {
+      "summary": "Une machine à sous 3×3 avec cinq lignes de paiement : les trois rangées et les deux diagonales. Trois symboles identiques sur une ligne paient, et le chat est joker.",
+      "step1": "Réglez votre mise avec les boutons moins et plus.",
+      "step2": "Lancez. Les rouleaux s'arrêtent l'un après l'autre.",
+      "step3": "Chaque ligne qui affiche trois symboles identiques paie votre mise multipliée par le multiplicateur de ce symbole.",
+      "payouts": "Les lignes gagnantes s'additionnent. Le chat remplace n'importe quel symbole : trois chats paient 100x, et deux chats avec un autre symbole paient le taux de ce symbole. Le meilleur tirage possible, neuf chats, paie 500x.",
+      "note1": "Environ un tirage sur trois gagne quelque chose, et environ un sur 24 paie 8x ou plus.",
+      "note2": "Une ligne de serpents paie la moitié de votre mise : un tirage peut donc gagner et rapporter moins que la mise.",
+      "fair": "La grille de chaque tirage vient de votre graine serveur, de votre graine client et du nonce : neuf tirages, un par case. Vos graines sont sur la page Provably Fair, et un tirage peut être vérifié à la main une fois votre graine changée."
+    },
+    "upgrade": {
+      "summary": "Échangez des objets de votre inventaire contre une chance d'obtenir un meilleur objet de la même caisse. Plus vous mettez de valeur, plus votre chance est élevée.",
+      "step1": "Choisissez un ou plusieurs de vos objets à mettre en jeu. Les favoris sont verrouillés et ne peuvent pas être utilisés.",
+      "step2": "Choisissez l'objet voulu dans la même caisse : de même rareté, ou jusqu'à deux raretés au-dessus de vos objets.",
+      "step3": "Appuyez sur Améliorer. Si vous gagnez, l'objet est à vous ; si vous perdez, les objets mis en jeu disparaissent.",
+      "payouts": "Votre chance est la valeur de vos objets divisée par celle de la cible, multipliée par le retour de la rareté visée, dans la limite de la chance maximale de cette rareté. Les valeurs sont les valeurs de base des objets.",
+      "note1": "Une fois la chance maximale de la rareté atteinte, ajouter des objets ne l'augmente plus.",
+      "note2": "Tous les objets mis en jeu et la cible doivent venir de la même caisse.",
+      "note3": "Les améliorations n'utilisent pas de K₽ et ne rapportent ni points de classement ni XP.",
+      "fair": "Le tirage est une valeur issue de votre graine serveur, de votre graine client et du nonce : vous gagnez s'il tombe sous votre chance. Vos graines sont sur la page Provably Fair."
+    },
+    "battles": {
+      "summary": "Ouvrez les mêmes caisses que jusqu'à trois autres joueurs. Celui qui obtient le plus de valeur remporte tous les objets, ou le moins en Mode baka.",
+      "step1": "Créez une bataille : choisissez de 1 à 20 caisses et un mode. L'entrée est la somme des prix des caisses.",
+      "step2": "Attendez que des joueurs rejoignent, ou complétez les places avec des bots. L'hôte lance la bataille une fois toutes les places prises.",
+      "step3": "Tout le monde ouvre les mêmes caisses, une manche à la fois. Après la dernière caisse, le total le plus élevé remporte tous les objets.",
+      "payouts": "Le gagnant remporte tous les objets, pas des K₽. Une égalité est départagée par un tirage issu de la graine de la bataille.",
+      "note1": "Personne ne paie avant le lancement par l'hôte. Si l'hôte part avant, la bataille est annulée.",
+      "note2": "Une fois lancée, la bataille va jusqu'au bout même si des joueurs partent.",
+      "note3": "Les bots ouvrent les mêmes caisses gratuitement, et ce qu'un bot gagne revient à la maison.",
+      "fair": "Chaque caisse est tirée avant la première révélation, à partir de la graine de la bataille et de la graine client de chaque joueur. Le hash de la graine est affiché au lancement et la graine est révélée à la fin."
+    },
+    "plinko": {
+      "summary": "Lâchez une bille à travers 16 rangées de picots. Elle rebondit à gauche ou à droite à chaque rangée et tombe dans l'une des 17 cases, dont le multiplicateur fixe votre gain.",
+      "step1": "Réglez votre mise et choisissez un risque : faible, moyen ou élevé.",
+      "step2": "Lâchez une bille, ou activez le mode auto pour en lâcher 10, 25, 50 ou 100. Jusqu'à 12 billes peuvent tomber en même temps.",
+      "step3": "Là où la bille tombe, votre mise est multipliée par la valeur de cette case.",
+      "payouts": "Chaque rebond est un pile ou face : les cases du milieu sont les plus fréquentes et les bords les plus rares, l'un ou l'autre bord étant touché une fois sur 32 768 billes. Un risque plus élevé paie plus sur les bords et moins au milieu. Survolez une case du plateau pour voir sa chance.",
+      "note1": "La mise maximale est de {{low}} en risque faible, {{medium}} en moyen et {{high}} en élevé.",
+      "note2": "Le risque ne peut pas être changé pendant que des billes tombent.",
+      "fair": "Chaque bille utilise 16 tirages issus de votre graine serveur, de votre graine client et du nonce, un par rangée : sous la moitié elle va à gauche, sinon à droite. Cliquez sur un résultat pour l'ouvrir sur la page Provably Fair et le vérifier après avoir changé votre graine.",
+      "low": "Faible",
+      "medium": "Moyen",
+      "high": "Élevé"
+    },
+    "blackjack": {
+      "summary": "Battez le croupier en vous approchant plus de 21 sans le dépasser. Le blackjack paie 3 pour 2 et le croupier reste sur tout 17.",
+      "step1": "Placez votre mise et distribuez. Vous recevez deux cartes et le croupier en montre une.",
+      "step2": "Tirer pour prendre une carte, Rester pour garder votre main, Doubler pour doubler la mise contre une dernière carte, ou Séparer une paire en deux mains.",
+      "step3": "Le croupier tire jusqu'à 17 ou plus. Être plus proche de 21 que lui gagne ; dépasser 21 perd.",
+      "payouts": "Une victoire paie 1 pour 1 et une égalité vous rend la mise. Un blackjack, un as et une carte valant dix comme deux premières cartes, paie 3 pour 2, arrondi à l'inférieur. Quand le croupier montre un as, vous pouvez prendre une assurance pour la moitié de la mise ; elle paie 2 pour 1 si le croupier a un blackjack. Bien joué, le jeu rend environ 99,4 %.",
+      "note1": "Le sabot ne s'épuise jamais : chaque carte est un nouveau tirage, compter les cartes ne sert donc à rien.",
+      "note2": "Vous pouvez séparer une seule fois, et seulement deux cartes de même rang : un roi et une dame ne forment pas une paire. Les as séparés reçoivent une carte chacun.",
+      "note3": "L'abandon n'existe pas, et un 21 sur une main séparée paie 1 pour 1.",
+      "note4": "Raccourcis : H tirer, S rester, D doubler, P séparer, Espace distribuer.",
+      "note5": "Une main laissée 10 minutes sans action est terminée pour vous : vos mains restent et le croupier joue.",
+      "fair": "Chaque carte est un tirage issu de votre graine serveur, de votre graine client et du nonce, un par carte. Ouvrez une main depuis votre historique sur la page Provably Fair ; après avoir changé votre graine, Vérifier la rejoue.",
+      "rtp": "Environ 99,4 %",
+      "outWin": "Victoire",
+      "outBlackjack": "Blackjack",
+      "outInsurance": "Assurance",
+      "outPush": "Égalité",
+      "pays11": "1 pour 1",
+      "pays32": "3 pour 2",
+      "pays21": "2 pour 1",
+      "paysBack": "Votre mise rendue"
+    },
+    "dice": {
+      "summary": "Choisissez une cible et tirez un nombre de 0.00 à 99.99. Pariez que le tirage tombe sous ou au-dessus de votre cible : moins la victoire est probable, plus elle paie.",
+      "step1": "Réglez votre mise, puis faites glisser le curseur ou tapez un multiplicateur ou une chance de gagner. Les trois déplacent la même cible.",
+      "step2": "Passez de « au-dessus » à « en dessous » avec les flèches à côté de la cible.",
+      "step3": "Lancez. Si le nombre tombe de votre côté de la cible, vous gagnez votre mise multipliée.",
+      "payouts": "Le multiplicateur vaut 99 divisé par votre chance de gagner : chaque réglage rend 99 % en moyenne. Les chances vont de 2 % (49.5x) à 98 % (1.0102x).",
+      "note1": "Au-dessus gagne sur la cible elle-même ou plus haut ; en dessous ne gagne que plus bas.",
+      "note2": "Le mode auto place 10, 25, 50 ou 100 mises d'affilée avec les mêmes réglages.",
+      "note3": "Les gains sont arrondis au centime inférieur.",
+      "fair": "Chaque tirage vient de votre graine serveur, de votre graine client et du nonce. Ouvrez n'importe quel tirage depuis votre historique sur la page Provably Fair ; après avoir changé votre graine, Vérifier le rejoue."
+    },
+    "mines": {
+      "summary": "Une grille 5×5 cache des gemmes et des mines. Chaque gemme découverte augmente votre multiplicateur ; touchez une mine et la mise est perdue. Encaissez quand vous voulez.",
+      "step1": "Réglez votre mise et choisissez combien de mines cacher, de 1 à 24.",
+      "step2": "Cliquez sur les cases pour les découvrir. Chaque gemme augmente votre multiplicateur.",
+      "step3": "Encaissez pour prendre votre mise multipliée par le multiplicateur actuel. Découvrez toutes les gemmes et vous encaissez automatiquement.",
+      "payouts": "Chaque multiplicateur vaut 0,99 divisé par votre chance d'être arrivé jusque-là : tout nombre de mines et tout moment d'arrêt rend 99 % en moyenne. Plus de mines rendent chaque gemme plus précieuse.",
+      "note1": "Vous pouvez encaisser après votre première gemme.",
+      "note2": "Une partie paie au maximum K₽1 000 000.",
+      "note3": "Une partie laissée 30 minutes sans action est close comme perdue, gemmes comprises.",
+      "note4": "Le mode auto choisit des cases au hasard pour vous, de 10 à 100 manches.",
+      "fair": "Les mines sont placées à partir de votre graine serveur, de votre graine client et du nonce au début de la partie et ne bougent jamais. Ouvrez une partie depuis votre historique sur la page Provably Fair ; après avoir changé votre graine, Vérifier reconstruit le plateau."
+    },
+    "hilo": {
+      "summary": "Devinez si la carte suivante est plus haute ou plus basse que celle affichée. Chaque bonne réponse multiplie vos gains ; une seule erreur fait perdre la mise.",
+      "step1": "Réglez votre mise et commencez. La première carte est distribuée.",
+      "step2": "Choisissez {{higher}} ou {{lower}}. Passez la carte gratuitement si elle ne vous plaît pas.",
+      "step3": "Chaque bonne réponse multiplie votre total. Encaissez quand vous voulez après votre première bonne réponse.",
+      "payouts": "Chaque pronostic paie 0,99 divisé par sa chance : un choix sûr paie peu, un pari risqué paie beaucoup. L'as est la carte la plus basse et le roi la plus haute. Sur un as, plus haut signifie strictement plus haut ; sur un roi, plus bas signifie strictement plus bas.",
+      "note1": "Le paquet ne s'épuise jamais : chaque carte est un nouveau tirage, la même carte peut donc sortir deux fois de suite.",
+      "note2": "Vous pouvez passer jusqu'à {{skips}} fois par partie, et passer ne change jamais votre multiplicateur.",
+      "note3": "Une partie paie au maximum K₽1 000 000.",
+      "note4": "Une partie laissée 30 minutes sans action est close comme perdue.",
+      "fair": "Chaque carte est un tirage issu de votre graine serveur, de votre graine client et du nonce, un par carte. Ouvrez une partie depuis votre historique sur la page Provably Fair ; après avoir changé votre graine, Vérifier la rejoue.",
+      "chip": "1 % d'avantage par pronostic",
+      "edgeValue": "1 % par pronostic"
+    }
   }
 }

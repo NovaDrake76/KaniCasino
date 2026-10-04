@@ -2161,5 +2161,218 @@
       "changeSent": "Chúng tôi đã gửi liên kết đến {{email}}. Địa chỉ của bạn sẽ đổi khi bạn nhấn vào đó.",
       "cancel": "Hủy"
     }
+  },
+  "gameInfo": {
+    "tabs": {
+      "info": "Thông tin trò chơi",
+      "totalBets": "Cược của ván"
+    },
+    "round": {
+      "players": "Người chơi: {{count}}",
+      "cashedOut": "Rút tại",
+      "profit": "Lợi nhuận",
+      "empty": "Ván này chưa có cược nào.",
+      "emptySide": "Mặt này chưa có cược nào."
+    },
+    "sections": {
+      "howToPlay": "Cách chơi",
+      "payouts": "Trả thưởng",
+      "paylines": "Đường trả thưởng",
+      "goodToKnow": "Nên biết"
+    },
+    "facts": {
+      "rtp": "Tỉ lệ hoàn trả",
+      "edge": "Lợi thế nhà cái",
+      "bet": "Cược",
+      "maxWin": "Thắng tối đa",
+      "points": "Điểm bảng xếp hạng",
+      "perKp": "{{points}} mỗi K₽",
+      "noCap": "Không giới hạn",
+      "none": "Không có",
+      "range": "{{min}} đến {{max}}",
+      "rtpSides": "Hoàn trả khi chọn {{heads}} hoặc {{tails}}",
+      "rtpPurple": "Hoàn trả khi chọn {{purpleName}}",
+      "return": "Hoàn trả",
+      "maxChance": "Tỉ lệ cao nhất",
+      "entry": "Phí vào",
+      "entryValue": "Tổng giá các hòm",
+      "cases": "Hòm",
+      "players": "Người chơi"
+    },
+    "chips": {
+      "rtp": "Hoàn trả {{rtp}}%",
+      "fair": "Provably fair",
+      "items": "Chơi bằng vật phẩm"
+    },
+    "table": {
+      "chance": "Tỉ lệ",
+      "winChance": "Tỉ lệ thắng",
+      "multiplier": "Hệ số",
+      "symbol": "Biểu tượng",
+      "threeInLine": "Ba trên một đường",
+      "perLine": "Tỉ lệ mỗi đường",
+      "oneIn": "1 trên {{n}}",
+      "slot": "Ô",
+      "center": "Giữa",
+      "edge": "Rìa",
+      "fromCenter": "Cách giữa {{n}} ô",
+      "cashoutAt": "Rút tại",
+      "side": "Mặt",
+      "pays": "Trả",
+      "outcome": "Kết quả",
+      "card": "Lá bài",
+      "minesGems": "Mìn / đá quý",
+      "targetRarity": "Độ hiếm mục tiêu",
+      "return": "Hoàn trả",
+      "maxChance": "Tỉ lệ cao nhất",
+      "mode": "Chế độ",
+      "players": "Người chơi"
+    },
+    "lines": {
+      "top": "Hàng trên",
+      "middle": "Hàng giữa",
+      "bottom": "Hàng dưới",
+      "diagonal": "Đường chéo"
+    },
+    "symbols": {
+      "wild": "Mèo (thay thế)",
+      "yellow": "Ví ếch",
+      "hakkero": "Hakkero",
+      "yin_yang": "Ngọc âm dương",
+      "green": "Lily",
+      "blue": "Búp bê Thượng Hải",
+      "red": "Rắn"
+    },
+    "fairTitle": "Công bằng",
+    "verifyLink": "Đến trang Provably Fair",
+    "crash": {
+      "summary": "Hệ số tăng dần từ 1.00x cho đến khi nổ ở một điểm ngẫu nhiên. Rút tiền trước khi nổ để thắng tiền cược nhân với hệ số; nếu bạn vẫn còn trong ván khi nổ, bạn mất tiền cược.",
+      "step1": "Đặt cược trong lúc đếm ngược trước ván. Cược đặt khi ván đang chạy sẽ chờ sang ván sau.",
+      "step2": "Nếu muốn, hãy đặt {{cashoutAt}}: máy chủ sẽ rút giúp bạn ở hệ số đó, kể cả khi bạn đã đóng tab.",
+      "step3": "Theo dõi hệ số tăng lên và nhấn {{cashOut}} trước khi nổ.",
+      "payouts": "Bạn thắng tiền cược nhân với hệ số tại lúc rút. Với {{cashoutAt}} đặt ở x, cơ hội được trả là 96,03% chia cho x, cùng mức hoàn trả 96,03% ở mọi mục tiêu. Khoảng 4% số ván nổ ngay ở 1.00x, trước khi ai kịp rút.",
+      "note1": "Mỗi ván một lần cược, và rút tiền là rút toàn bộ tiền cược.",
+      "note2": "{{cashoutAt}} từ 1.01x đến 10.000x. Nếu ván nổ đúng ở mục tiêu của bạn, cược đó thua.",
+      "note3": "Nếu máy chủ khởi động lại giữa ván, ván đó bị hủy và mọi cược còn trong ván được hoàn lại.",
+      "note4": "XP được cộng khi cược kết thúc: rút ở 2x trở lên, hoặc cược để tới lúc crash, được đủ XP; dưới 2x được ít hơn (1,5x được một nửa, 1,01x gần như không có).",
+      "fair": "Điểm nổ của mỗi ván được định trước khi mở cược. Mã băm của hạt giống được công bố khi mở cược và hạt giống được tiết lộ khi ván kết thúc, nên kết quả không thể thay đổi sau khi đã đặt cược."
+    },
+    "coinflip": {
+      "summary": "Chọn một mặt và xem đồng xu quay. Cứ vài giây lại có một lượt tung mới, và mọi người cùng cược trên một đồng xu.",
+      "step1": "Đặt mức cược. Tối thiểu là 10.",
+      "step2": "Chọn một mặt trước khi hết giờ đếm ngược.",
+      "step3": "Đồng xu quay trong 5 giây. Nếu rơi vào mặt bạn chọn, bạn thắng tiền cược nhân với hệ số của mặt đó.",
+      "payouts": "{{heads}} và {{tails}} mỗi mặt ra {{sideChance}}% số lần và trả {{side}}x. {{purpleName}} ra {{purpleChance}}% số lần và trả {{purple}}x.",
+      "payoutsPlain": "{{heads}} và {{tails}} mỗi mặt ra một nửa số lần và trả {{side}}x.",
+      "note1": "Mỗi lượt tung một lần cược, vào một mặt.",
+      "note2": "Nhà cái trả mọi người thắng theo tỉ lệ cố định, nên tổng cược ở mỗi mặt không ảnh hưởng đến tiền thắng của bạn.",
+      "note3": "Tiền thắng được làm tròn xuống đến K₽ nguyên.",
+      "note4": "Nếu máy chủ khởi động lại trong lúc đếm ngược, lượt tung bị hủy và mọi cược được hoàn lại.",
+      "fair": "Kết quả mỗi lượt tung được định bằng một hạt giống trước khi mở cược. Mã băm được công bố khi mở cược và hạt giống được tiết lộ sau lượt tung."
+    },
+    "slots": {
+      "summary": "Máy slot 3×3 với năm đường trả thưởng: ba hàng ngang và hai đường chéo. Ba biểu tượng giống nhau trên một đường là thắng, và con mèo là biểu tượng thay thế.",
+      "step1": "Đặt mức cược bằng nút trừ và cộng.",
+      "step2": "Quay. Các cuộn dừng lần lượt.",
+      "step3": "Mỗi đường có ba biểu tượng giống nhau trả tiền cược nhân với hệ số của biểu tượng đó.",
+      "payouts": "Các đường thắng được cộng dồn. Con mèo thay cho mọi biểu tượng: ba con mèo trả 100x, còn hai con mèo với một biểu tượng khác trả theo biểu tượng đó. Lượt quay tốt nhất có thể, chín con mèo, trả 500x.",
+      "note1": "Khoảng một trong ba lượt quay thắng được gì đó, và khoảng một trong 24 lượt trả 8x trở lên.",
+      "note2": "Một đường rắn chỉ trả nửa tiền cược, nên một lượt quay có thể thắng mà vẫn nhận lại ít hơn số đã cược.",
+      "fair": "Bàn của mỗi lượt quay lấy từ hạt giống máy chủ, hạt giống của bạn và nonce: chín lần rút, mỗi ô một lần. Hạt giống của bạn ở trang Provably Fair, và có thể tự kiểm tra lượt quay sau khi bạn đổi hạt giống."
+    },
+    "upgrade": {
+      "summary": "Đổi vật phẩm trong kho lấy cơ hội nhận vật phẩm tốt hơn từ cùng một hòm. Bạn bỏ vào càng nhiều giá trị, cơ hội càng cao.",
+      "step1": "Chọn một hoặc nhiều vật phẩm để bỏ vào. Vật phẩm yêu thích bị khóa và không dùng được.",
+      "step2": "Chọn vật phẩm bạn muốn từ cùng hòm: cùng độ hiếm, hoặc cao hơn vật phẩm của bạn tối đa hai bậc.",
+      "step3": "Nhấn Nâng cấp. Nếu thắng, vật phẩm là của bạn; nếu thua, các vật phẩm đã bỏ vào sẽ mất.",
+      "payouts": "Cơ hội của bạn là giá trị vật phẩm của bạn chia cho giá trị mục tiêu, nhân với tỉ lệ hoàn trả của độ hiếm mục tiêu, tối đa bằng tỉ lệ cao nhất của độ hiếm đó. Giá trị là giá trị gốc của vật phẩm.",
+      "note1": "Khi cơ hội đã chạm tỉ lệ cao nhất của độ hiếm đó, bỏ thêm vật phẩm cũng không tăng nữa.",
+      "note2": "Mọi vật phẩm bỏ vào và mục tiêu phải cùng một hòm.",
+      "note3": "Nâng cấp không dùng K₽ và không được điểm bảng xếp hạng hay XP.",
+      "fair": "Lần quay là một lần rút từ hạt giống máy chủ, hạt giống của bạn và nonce: bạn thắng nếu kết quả thấp hơn cơ hội của bạn. Hạt giống của bạn ở trang Provably Fair."
+    },
+    "battles": {
+      "summary": "Mở cùng những hòm với tối đa ba người chơi khác. Ai mở ra nhiều giá trị nhất sẽ lấy hết vật phẩm, hoặc ít nhất ở chế độ baka.",
+      "step1": "Tạo trận đấu: chọn từ 1 đến 20 hòm và một chế độ. Phí vào là tổng giá các hòm.",
+      "step2": "Chờ người chơi vào, hoặc lấp chỗ trống bằng bot. Chủ phòng bắt đầu trận khi mọi chỗ đã có người.",
+      "step3": "Mọi người mở cùng những hòm, mỗi vòng một hòm. Sau hòm cuối, tổng cao nhất lấy toàn bộ vật phẩm.",
+      "payouts": "Người thắng nhận toàn bộ vật phẩm, không phải K₽. Hòa được phân định bằng một lần rút từ hạt giống của trận.",
+      "note1": "Không ai trả tiền cho đến khi chủ phòng bắt đầu. Nếu chủ phòng rời đi trước đó, trận bị hủy.",
+      "note2": "Đã bắt đầu thì trận sẽ chơi đến hết, kể cả khi có người rời đi.",
+      "note3": "Bot mở cùng những hòm miễn phí, và mọi thứ bot thắng thuộc về nhà cái.",
+      "fair": "Mỗi hòm được rút trước lần mở đầu tiên, từ hạt giống của trận và hạt giống của từng người chơi. Mã băm của hạt giống hiện khi trận bắt đầu và hạt giống được tiết lộ khi kết thúc."
+    },
+    "plinko": {
+      "summary": "Thả một quả bóng qua 16 hàng đinh. Mỗi hàng bóng nảy sang trái hoặc phải rồi rơi vào một trong 17 ô, và hệ số của ô đó quyết định tiền thắng.",
+      "step1": "Đặt mức cược và chọn mức rủi ro: thấp, trung bình hoặc cao.",
+      "step2": "Thả một quả bóng, hoặc bật chế độ tự động để thả 10, 25, 50 hoặc 100 quả. Có thể có tối đa 12 quả rơi cùng lúc.",
+      "step3": "Bóng rơi vào ô nào, tiền cược của bạn được nhân với hệ số của ô đó.",
+      "payouts": "Mỗi lần nảy là năm ăn năm thua, nên các ô giữa phổ biến nhất và các ô rìa hiếm nhất: cứ khoảng 32.768 quả mới có một quả vào một trong hai rìa. Rủi ro càng cao thì rìa trả càng nhiều và giữa trả càng ít. Rê chuột lên một ô trên bàn để xem tỉ lệ của nó.",
+      "note1": "Cược tối đa là {{low}} ở rủi ro thấp, {{medium}} ở trung bình và {{high}} ở cao.",
+      "note2": "Không thể đổi mức rủi ro khi đang có bóng rơi.",
+      "fair": "Mỗi quả bóng dùng 16 lần rút từ hạt giống máy chủ, hạt giống của bạn và nonce, mỗi hàng một lần: dưới một nửa thì sang trái, còn lại sang phải. Nhấp vào một kết quả để mở trên trang Provably Fair và kiểm tra sau khi bạn đổi hạt giống.",
+      "low": "Thấp",
+      "medium": "Trung bình",
+      "high": "Cao"
+    },
+    "blackjack": {
+      "summary": "Thắng nhà cái bằng cách đến gần 21 hơn mà không vượt quá. Blackjack trả 3 ăn 2, và nhà cái dừng ở mọi điểm 17.",
+      "step1": "Đặt cược và chia bài. Bạn nhận hai lá, nhà cái lật một lá.",
+      "step2": "Rút bài để lấy thêm lá, Dừng để giữ tay bài, Gấp đôi để nhân đôi cược và lấy thêm đúng một lá, hoặc Tách bài để chia một đôi thành hai tay.",
+      "step3": "Nhà cái rút đến 17 điểm trở lên. Gần 21 hơn nhà cái là thắng; vượt quá 21 là thua.",
+      "payouts": "Thắng trả 1 ăn 1, hòa được trả lại tiền cược. Blackjack, tức một lá át và một lá mười điểm ở hai lá đầu, trả 3 ăn 2, làm tròn xuống. Khi nhà cái lật lá át, bạn có thể mua bảo hiểm bằng nửa tiền cược; bảo hiểm trả 2 ăn 1 nếu nhà cái có blackjack. Chơi tốt thì tỉ lệ hoàn trả khoảng 99,4%.",
+      "note1": "Bộ bài không bao giờ hết: mỗi lá là một lần rút mới, nên đếm bài không có tác dụng.",
+      "note2": "Bạn chỉ được tách bài một lần, và chỉ với hai lá cùng hạng: K và Q không phải một đôi. Hai lá át đã tách chỉ nhận một lá mỗi bên.",
+      "note3": "Không có đầu hàng, và 21 điểm trên tay bài đã tách trả 1 ăn 1.",
+      "note4": "Phím tắt: H rút bài, S dừng, D gấp đôi, P tách bài, Space chia bài.",
+      "note5": "Tay bài bị bỏ quên 10 phút sẽ được kết thúc giúp bạn: các tay bài của bạn dừng và nhà cái chơi tiếp.",
+      "fair": "Mỗi lá bài là một lần rút từ hạt giống máy chủ, hạt giống của bạn và nonce, mỗi lá một lần. Mở một ván trong lịch sử trên trang Provably Fair; sau khi đổi hạt giống, Kiểm tra sẽ chơi lại ván đó.",
+      "rtp": "Khoảng 99,4%",
+      "outWin": "Thắng",
+      "outBlackjack": "Blackjack",
+      "outInsurance": "Bảo hiểm",
+      "outPush": "Hòa",
+      "pays11": "1 ăn 1",
+      "pays32": "3 ăn 2",
+      "pays21": "2 ăn 1",
+      "paysBack": "Trả lại tiền cược"
+    },
+    "dice": {
+      "summary": "Chọn một mục tiêu và tung ra một số từ 0.00 đến 99.99. Cược kết quả rơi dưới hay trên mục tiêu: càng khó thắng thì càng trả nhiều.",
+      "step1": "Đặt mức cược, rồi kéo thanh trượt hoặc nhập hệ số hay tỉ lệ thắng. Cả ba đều điều chỉnh cùng một mục tiêu.",
+      "step2": "Chuyển giữa tung trên và tung dưới bằng mũi tên cạnh mục tiêu.",
+      "step3": "Tung. Nếu số rơi vào phía bạn chọn, bạn thắng tiền cược nhân với hệ số.",
+      "payouts": "Hệ số bằng 99 chia cho tỉ lệ thắng, nên mọi thiết lập đều hoàn trả trung bình 99%. Tỉ lệ thắng từ 2% (49.5x) đến 98% (1.0102x).",
+      "note1": "Tung trên thắng khi bằng hoặc cao hơn mục tiêu; tung dưới chỉ thắng khi thấp hơn.",
+      "note2": "Chế độ tự động đặt 10, 25, 50 hoặc 100 lần cược liên tiếp với cùng thiết lập.",
+      "note3": "Tiền thắng được làm tròn xuống đến xu.",
+      "fair": "Mỗi lần tung là một lần rút từ hạt giống máy chủ, hạt giống của bạn và nonce. Mở bất kỳ lần tung nào trong lịch sử trên trang Provably Fair; sau khi đổi hạt giống, Kiểm tra sẽ tái hiện nó."
+    },
+    "mines": {
+      "summary": "Một lưới 5×5 giấu đá quý và mìn. Mỗi viên đá quý bạn lật lên làm tăng hệ số; dính mìn là mất tiền cược. Rút tiền bất cứ lúc nào bạn muốn.",
+      "step1": "Đặt mức cược và chọn số mìn cần giấu, từ 1 đến 24.",
+      "step2": "Nhấp vào các ô để lật. Mỗi viên đá quý làm tăng hệ số của bạn.",
+      "step3": "Rút tiền để nhận tiền cược nhân với hệ số hiện tại. Lật hết đá quý thì sẽ tự động rút.",
+      "payouts": "Mỗi hệ số bằng 0,99 chia cho cơ hội bạn đi được đến đó, nên với mọi số mìn và mọi điểm dừng, mức hoàn trả trung bình đều là 99%. Càng nhiều mìn, mỗi viên đá quý càng giá trị.",
+      "note1": "Bạn có thể rút tiền sau viên đá quý đầu tiên.",
+      "note2": "Một ván trả tối đa K₽1.000.000.",
+      "note3": "Ván bị bỏ quên 30 phút sẽ bị đóng như thua, kể cả các viên đá quý đã lật.",
+      "note4": "Chế độ tự động chọn ô ngẫu nhiên giúp bạn, từ 10 đến 100 vòng.",
+      "fair": "Mìn được đặt từ hạt giống máy chủ, hạt giống của bạn và nonce khi ván bắt đầu và không bao giờ di chuyển. Mở một ván trong lịch sử trên trang Provably Fair; sau khi đổi hạt giống, Kiểm tra sẽ dựng lại bàn chơi."
+    },
+    "hilo": {
+      "summary": "Đoán lá bài tiếp theo cao hơn hay thấp hơn lá đang mở. Mỗi lần đoán đúng nhân tiền thắng lên; đoán sai một lần là mất tiền cược.",
+      "step1": "Đặt mức cược và bắt đầu. Lá bài đầu tiên được chia.",
+      "step2": "Chọn {{higher}} hoặc {{lower}}. Bỏ qua lá bài miễn phí nếu bạn không thích.",
+      "step3": "Mỗi lần đoán đúng nhân tổng của bạn lên. Rút tiền bất cứ lúc nào sau lần đoán đúng đầu tiên.",
+      "payouts": "Mỗi lần đoán trả 0,99 chia cho tỉ lệ của nó: đoán an toàn trả ít, đoán liều trả nhiều. Át là lá thấp nhất và K là lá cao nhất. Với lá át, cao hơn nghĩa là cao hơn hẳn; với lá K, thấp hơn nghĩa là thấp hơn hẳn.",
+      "note1": "Bộ bài không bao giờ hết: mỗi lá là một lần rút mới, nên cùng một lá có thể ra hai lần liền.",
+      "note2": "Bạn có thể bỏ qua tối đa {{skips}} lần mỗi ván, và bỏ qua không bao giờ đổi hệ số của bạn.",
+      "note3": "Một ván trả tối đa K₽1.000.000.",
+      "note4": "Ván bị bỏ quên 30 phút sẽ bị đóng như thua.",
+      "fair": "Mỗi lá bài là một lần rút từ hạt giống máy chủ, hạt giống của bạn và nonce, mỗi lá một lần. Mở một ván trong lịch sử trên trang Provably Fair; sau khi đổi hạt giống, Kiểm tra sẽ chơi lại ván đó.",
+      "chip": "Lợi thế 1% mỗi lần đoán",
+      "edgeValue": "1% mỗi lần đoán"
+    }
   }
 }

@@ -12,7 +12,7 @@ import i18n from "../../i18n";
 import { useSessionStats } from "../../stats/SessionStatsContext";
 import GameBar from "../../components/game/GameBar";
 import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
-import LiveBets from "../../components/game/LiveBets";
+import GameDetails from "../../components/game/GameDetails";
 import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 import { play } from "../../services/sound/sound";
 // import { RotatingLines } from "react-loader-spinner";
@@ -222,7 +222,7 @@ const Slots = () => {
             </div >
 
             <div className="w-full flex justify-center px-3 sm:px-4 pb-10">
-                <LiveBets />
+                <GameDetails game="slots" />
             </div>
         </div>
 
