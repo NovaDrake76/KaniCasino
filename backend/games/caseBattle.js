@@ -1,7 +1,7 @@
 const Battle = require("../models/Battle");
 const Case = require("../models/Case");
 const User = require("../models/User");
-const { modeConfig } = require("../utils/battle");
+const { modeConfig, OPEN_MODES } = require("../utils/battle");
 const engine = require("./battleEngine");
 
 const REVEAL_MS = 4500; // time the client spends animating each case round
@@ -112,6 +112,7 @@ const caseBattle = (io) => {
 
         const config = modeConfig(mode);
         if (!config) return cb && cb({ error: "Invalid mode" });
+        if (!OPEN_MODES.includes(mode)) return cb && cb({ error: "That mode is not available" });
         if (!Array.isArray(caseIds) || !caseIds.length || caseIds.length > MAX_CASES) {
           return cb && cb({ error: "Pick between 1 and 20 cases" });
         }

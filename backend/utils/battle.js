@@ -11,6 +11,10 @@ const MODES = {
 
 const modeConfig = (mode) => MODES[mode] || null;
 
+// the modes a new battle can be created in. 2v2 is closed but stays in MODES, so a battle
+// already played in it still loads, finishes and verifies
+const OPEN_MODES = ["1v1", "1v1v1", "1v1v1v1"];
+
 // total base value accumulated per team
 function teamTotals(players) {
   const totals = {};
@@ -62,4 +66,4 @@ function splitItemsEvenly(items, recipientCount) {
   return buckets.map((b) => b.items);
 }
 
-module.exports = { MODES, modeConfig, teamTotals, evaluateWinner, pickWinningTeam, splitItemsEvenly };
+module.exports = { MODES, OPEN_MODES, modeConfig, teamTotals, evaluateWinner, pickWinningTeam, splitItemsEvenly };

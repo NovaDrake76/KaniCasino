@@ -47,7 +47,8 @@ export const MODE_SLOTS: Record<string, number> = {
   "2v2": 4,
 };
 
-export const MODES = ["1v1", "1v1v1", "1v1v1v1", "2v2"];
+// the modes a battle can be created in; 2v2 is closed, and MODE_SLOTS keeps it so an old one still renders
+export const MODES = ["1v1", "1v1v1", "1v1v1v1"];
 
 const ack = <T,>(event: string, ...args: any[]): Promise<T> =>
   new Promise((resolve) => socket.emit(event, ...args, (res: T) => resolve(res)));
