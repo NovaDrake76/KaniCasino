@@ -7,23 +7,6 @@ const badges = require("../utils/badges");
 const leaderboard = require("../utils/leaderboard");
 const { TABLE, MULTIPLIERS } = require("../utils/leaderboardPoints");
 
-// the board is one query answering every viewer, so it is cached rather than run per
-// request. fifteen seconds is under the countdown's own tick and keeps a busy evening to
-// four aggregates a minute instead of one per player.
-const BOARD_TTL_MS = 15000;
-let cached = { key: null, at: 0, rows: null };
-
-async function board(startsAt, endsAt) {
-  const key = String(startsAt.getTime());
-  if (cached.key === key && Date.now() - cached.at < BOARD_TTL_MS) return cached.rows;
-  const rows = await leaderboard.padStandings(
-    await leaderboard.standings(startsAt, endsAt, leaderboard.PAID_PLACES),
-    leaderboard.PAID_PLACES
-  );
-  cached = { key, at: Date.now(), rows };
-  return rows;
-}
-
 const publicRow = (row, index) => ({
   _id: row._id,
   rank: index + 1,
@@ -43,8 +26,9 @@ const publicRow = (row, index) => ({
 // caller sits. one endpoint because the page renders in one go.
 router.get("/", maybeAuthenticated, async (req, res) => {
   try {
-    const current = await leaderboard.ensureToday();
-    const rows = await board(current.startsAt, current.endsAt);
+    // the board is one recount answering every viewer, shared rather than run per request (utils/leaderboard.js)
+    const current = await leaderboard.today();
+    const { rows } = await leaderboard.live(current.startsAt, current.endsAt);
 
     const payload = {
       boardId: String(current._id),
