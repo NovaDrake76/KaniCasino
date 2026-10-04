@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "Không còn bản nào.",
     "noItems": "Không có vật phẩm",
     "noTransactionsYet": "Chưa có giao dịch nào.",
+    "historyRetention": "Các lượt Plinko, Xúc xắc và Máy quay rời danh sách này sau {{short}} ngày; các trò khác, tiền thưởng và bán cho cửa hàng sau {{long}} ngày. Nhiệm vụ và tổng của bạn vẫn tính chúng.",
     "occasionalEmailWhenSomething": "Thỉnh thoảng một email khi có thứ gì mới ra mắt. Mặc định tắt cho tới khi bạn bật, và bạn có thể dừng bất cứ lúc nào.",
     "requestDeclined": "Đã từ chối lời mời",
     "requestSent": "Đã gửi lời mời",

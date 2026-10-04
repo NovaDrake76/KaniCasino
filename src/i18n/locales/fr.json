@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "Plus aucun exemplaire.",
     "noItems": "Aucun objet",
     "noTransactionsYet": "Aucune transaction pour l'instant.",
+    "historyRetention": "Les manches de Plinko, Dés et Machine à sous quittent cette liste après {{short}} jours ; les autres jeux, bonus et ventes à la boutique après {{long}}. Vos missions et vos totaux les comptent toujours.",
     "occasionalEmailWhenSomething": "Un e-mail de temps en temps, quand une nouveauté sort. Désactivé tant que vous ne l'activez pas, et arrêtable à tout moment.",
     "requestDeclined": "Demande refusée",
     "requestSent": "Demande envoyée",

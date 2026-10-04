@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "No copies left.",
     "noItems": "No items",
     "noTransactionsYet": "No transactions yet.",
+    "historyRetention": "Plinko, Dice and Slots rounds leave this list after {{short}} days; other games, bonuses and shop sales after {{long}}. Your missions and totals still count them.",
     "occasionalEmailWhenSomething": "Occasional email when something new ships. Off unless you turn it on, and you can stop it any time.",
     "requestDeclined": "Request declined",
     "requestSent": "Request sent",

@@ -5,6 +5,7 @@ const fandom = require("../utils/fandom");
 const badges = require("../utils/badges");
 const predictions = require("../utils/predictionSettlement");
 const leaderboard = require("../utils/leaderboard");
+const ledgerDays = require("../utils/ledgerDays");
 
 module.exports = {
     startCronJobs: function (io) {
@@ -53,6 +54,18 @@ module.exports = {
                 if (closed) console.log(`Closed ${closed} markets whose clock ran out.`);
             } catch (error) {
                 console.error('Error closing expired markets:', error);
+            }
+        })
+
+        // two small reads per tick; once a day it folds the day that closed, one aggregation inside mongo that returns
+        // nothing, and with LEDGER_PRUNE=1 it deletes rows past their retention, an hour of them per command
+        cron.schedule('5,15,25,35,45,55 * * * *', async () => {
+            try {
+                const { folded, deleted } = await ledgerDays.run();
+                if (folded) console.log(`Ledger: folded ${folded} day(s) into daily totals.`);
+                if (deleted) console.log(`Ledger: deleted ${deleted} rows past retention.`);
+            } catch (error) {
+                console.error('Error folding the ledger:', error);
             }
         })
 

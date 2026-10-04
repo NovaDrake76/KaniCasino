@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "Gaada duplikat bersisa.",
     "noItems": "Gaada barang",
     "noTransactionsYet": "Belum ada transaksi.",
+    "historyRetention": "Ronde Bola Plinko, Dadu, dan Nyelot hilang dari daftar ini setelah {{short}} hari; permainan lain, bonus, dan penjualan ke toko setelah {{long}} hari. Misi dan total Anda tetap menghitungnya.",
     "occasionalEmailWhenSomething": "Email sesekali akan dikirimkan saat ada produk baru yang diluncurkan. Fitur ini nonaktif kecuali Anda mengaktifkannya, dan Anda dapat menghentikannya kapan saja.",
     "requestDeclined": "Req ditolak",
     "requestSent": "Req dikirim",

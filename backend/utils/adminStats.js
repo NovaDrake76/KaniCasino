@@ -7,6 +7,7 @@ const Transaction = require("../models/Transaction");
 const { accountBalance, ledgerSupply, TX, STAKE_TYPES } = require("./economy");
 const { HOUSE, MINT, ESCROW, GENESIS } = require("./accounts");
 const PM = require("./predictionMath");
+const ledgerDays = require("./ledgerDays");
 
 const PAGE_SIZE = 20;
 
@@ -26,6 +27,8 @@ const sinceFor = (days) => {
   return Number.isFinite(n) && n > 0 ? new Date(Date.now() - n * 24 * 60 * 60 * 1000) : null;
 };
 const matchSince = (since) => (since ? { createdAt: { $gte: since } } : {});
+// the ledger from `since` on, folded days and raw rows alike; a window that starts on a folded day counts all of that day
+const ledgerFrom = async (match, since, group) => Transaction.aggregate([...(await ledgerDays.stream(match, { since })), ...group]);
 
 async function overview(days) {
   const since = sinceFor(days);
@@ -34,7 +37,7 @@ async function overview(days) {
     since
       ? User.countDocuments({ _id: { $gte: mongoose.Types.ObjectId.createFromTime(Math.floor(since.getTime() / 1000)) } })
       : User.countDocuments({}),
-    Transaction.aggregate([{ $match: matchSince(since) }, { $group: { _id: "$userId" } }, { $count: "n" }]),
+    ledgerFrom({}, since, [{ $group: { _id: "$userId" } }, { $count: "n" }]),
     ledgerSupply(),
     accountBalance(HOUSE),
     accountBalance(ESCROW),
@@ -62,22 +65,15 @@ const GAME_LINES = [
 ];
 
 // blackjack charges BLACKJACK_BET again on double/split/insurance, so a raw debit
-// count overcounts hands; the deal row is the only one with no side-action marker
-const blackjackHandsMatch = (since) => ({
-  type: TX.BLACKJACK_BET,
-  direction: "debit",
-  "meta.double": { $ne: true },
-  "meta.split": { $ne: true },
-  "meta.insurance": { $ne: true },
-  ...matchSince(since),
-});
+// count overcounts hands; `base` counts only the deal rows, the ones with no side-action marker
+const BLACKJACK_BETS = { type: TX.BLACKJACK_BET, direction: "debit" };
+const HANDS = [{ $group: { _id: null, n: { $sum: "$base" } } }];
 
 async function gameStats(days) {
   const since = sinceFor(days);
   // a system account can sit on either side of a row (market fees are written with
   // HOUSE as the userId), so keep which one without exploding the group by real users
-  const rows = await Transaction.aggregate([
-    { $match: matchSince(since) },
+  const rows = await ledgerFrom({}, since, [
     {
       $group: {
         _id: {
@@ -87,8 +83,8 @@ async function gameStats(days) {
           sysUser: { $cond: [{ $in: ["$userId", [HOUSE, MINT]] }, "$userId", null] },
         },
         amount: { $sum: "$amount" },
-        count: { $sum: 1 },
-        qty: { $sum: { $ifNull: ["$meta.quantity", 0] } },
+        count: { $sum: "$count" },
+        qty: { $sum: "$qty" },
       },
     },
   ]);
@@ -106,17 +102,13 @@ async function gameStats(days) {
 
   // per-type reach and outliers feed the enriched game rows
   const gameTypes = new Set(GAME_LINES.flatMap((g) => [...g.bets, ...g.outs]));
-  const perType = await Transaction.aggregate([
-    { $match: { type: { $in: [...gameTypes] }, ...matchSince(since) } },
-    { $group: { _id: "$type", users: { $addToSet: "$userId" }, maxAmount: { $max: "$amount" } } },
+  const perType = await ledgerFrom({ type: { $in: [...gameTypes] } }, since, [
+    { $group: { _id: "$type", users: { $addToSet: "$userId" }, maxAmount: { $max: "$max" } } },
     { $project: { users: { $size: "$users" }, maxAmount: 1 } },
   ]);
   const reach = new Map(perType.map((r) => [r._id, r]));
 
-  const [bjHands] = await Transaction.aggregate([
-    { $match: blackjackHandsMatch(since) },
-    { $count: "n" },
-  ]);
+  const [bjHands] = await ledgerFrom(BLACKJACK_BETS, since, HANDS);
   const blackjackHands = bjHands ? bjHands.n : 0;
 
   const games = GAME_LINES.map(({ game, bets, outs }) => {
@@ -172,15 +164,15 @@ async function gameStats(days) {
 
 async function caseStats(days) {
   const since = sinceFor(days);
-  const rows = await Transaction.aggregate([
-    { $match: { type: TX.CASE_OPEN, "meta.caseId": { $exists: true }, ...matchSince(since) } },
+  const rows = await ledgerFrom({ type: TX.CASE_OPEN }, since, [
+    { $match: { tag: { $ne: null } } },
     {
       $group: {
-        _id: "$meta.caseId",
-        opens: { $sum: { $max: [{ $ifNull: ["$meta.quantity", 1] }, 1] } },
+        _id: "$tag",
+        opens: { $sum: "$units" },
         spent: { $sum: "$amount" },
-        title: { $last: "$meta.caseTitle" },
-        lastOpened: { $max: "$createdAt" },
+        title: { $last: "$title" },
+        lastOpened: { $max: "$last" },
       },
     },
     { $sort: { opens: -1 } },
@@ -207,11 +199,10 @@ async function caseStats(days) {
 // so the series stays bounded. system accounts are excluded so player counts are real.
 async function timeseries(days) {
   const since = sinceFor(days) || new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
-  const rows = await Transaction.aggregate([
-    { $match: { createdAt: { $gte: since }, userId: { $nin: [HOUSE, MINT, ESCROW, GENESIS] } } },
+  const rows = await ledgerFrom({ userId: { $nin: [HOUSE, MINT, ESCROW, GENESIS] } }, since, [
     {
       $group: {
-        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+        _id: { $dateToString: { format: "%Y-%m-%d", date: "$day" } },
         wagered: { $sum: { $cond: [{ $in: ["$type", STAKE_TYPES] }, "$amount", 0] } },
         paidOut: { $sum: { $cond: [{ $in: ["$type", [...WIN_TYPES, ...REFUND_TYPES]] }, "$amount", 0] } },
         faucet: {
@@ -279,23 +270,19 @@ async function playerDetail(id, days) {
   const since = sinceFor(days);
   const uid = user._id;
   const [byTypeDirRows, bjHandsRows, recent, referrals, referrer] = await Promise.all([
-    Transaction.aggregate([
-      { $match: { userId: uid, ...matchSince(since) } },
+    ledgerFrom({ userId: uid }, since, [
       {
         $group: {
           _id: { type: "$type", direction: "$direction" },
           total: { $sum: "$amount" },
-          count: { $sum: 1 },
-          max: { $max: "$amount" },
-          qty: { $sum: { $ifNull: ["$meta.quantity", 0] } },
-          last: { $max: "$createdAt" },
+          count: { $sum: "$count" },
+          max: { $max: "$max" },
+          qty: { $sum: "$qty" },
+          last: { $max: "$last" },
         },
       },
     ]),
-    Transaction.aggregate([
-      { $match: { userId: uid, ...blackjackHandsMatch(since) } },
-      { $count: "n" },
-    ]),
+    ledgerFrom({ userId: uid, ...BLACKJACK_BETS }, since, HANDS),
     // _id breaks the tie: ledger writes land in the same millisecond often enough that
     // sorting on createdAt alone leaves the newest rows in an arbitrary order. objectids
     // climb with insertion, so this is the order they were actually written in.
@@ -385,13 +372,12 @@ async function userStats({ days, page = 1, search = "", sort = "newest" } = {}) 
 
   const ids = users.map((u) => u._id);
   const [activity, referrers] = await Promise.all([
-    Transaction.aggregate([
-      { $match: { userId: { $in: ids }, ...matchSince(since) } },
+    ledgerFrom({ userId: { $in: ids } }, since, [
       {
         $group: {
           _id: "$userId",
           wagered: { $sum: { $cond: [{ $in: ["$type", STAKE_TYPES] }, "$amount", 0] } },
-          lastActive: { $max: "$createdAt" },
+          lastActive: { $max: "$last" },
         },
       },
     ]),

@@ -28,9 +28,13 @@ const MissionStateSchema = new mongoose.Schema(
       visited: { type: [String], default: [] },
       // the chapter whose completions at opening were recorded without a toast
       seeded: { type: Number, default: 0 },
+      // the opening day's rows after openedAt, kept once the ledger folds that day (utils/ledgerDays.js)
+      head: { type: mongoose.Schema.Types.Mixed },
     },
   },
   { timestamps: true }
 );
+
+MissionStateSchema.index({ "roadmap.openedAt": 1 });
 
 module.exports = mongoose.model("MissionState", MissionStateSchema);

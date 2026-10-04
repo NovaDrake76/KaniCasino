@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "没有剩余的副本。",
     "noItems": "暂无物品",
     "noTransactionsYet": "暂无交易记录。",
+    "historyRetention": "Plinko、骰子和老虎机的记录会在 {{short}} 天后从此列表移除，其他游戏、奖励和出售给商店的记录在 {{long}} 天后移除。任务和总计仍会计入。",
     "occasionalEmailWhenSomething": "有新内容上线时偶尔发一封邮件。默认关闭，你可以随时开启或停止。",
     "requestDeclined": "已拒绝请求",
     "requestSent": "请求已发送",

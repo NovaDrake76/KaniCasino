@@ -4,9 +4,11 @@ const mongoose = require("mongoose");
 
 const User = require("../models/User");
 const Transaction = require("../models/Transaction");
+const LedgerDay = require("../models/LedgerDay");
 const MissionState = require("../models/MissionState");
 const UsageEvent = require("../models/UsageEvent");
 const { TX } = require("../utils/economy");
+const ledgerDays = require("../utils/ledgerDays");
 const { CHAPTERS } = require("../utils/roadmapCatalog");
 
 // the rows a player's own hand writes, so a payout landing on an idle account does not count as a visit
@@ -23,14 +25,18 @@ const pct = (n, of) => (of ? `${Math.round((100 * n) / of)}%` : "-");
 async function report(days) {
   const since = new Date(Date.now() - days * 86400000);
   const fromId = mongoose.Types.ObjectId.createFromTime(Math.floor(since.getTime() / 1000));
-  const [rows, played, ledger] = await Promise.all([
+  const through = await ledgerDays.watermark();
+  const [rows, recent, folded, ledger] = await Promise.all([
     UsageEvent.find({ at: { $gte: since } }, { _id: 0, path: 0 }).sort({ at: 1 }).lean(),
     Transaction.distinct("userId", { _id: { $gte: fromId }, type: { $regex: PLAYED } }),
+    // rows past their retention live on as daily totals; a window that starts on a folded day counts all of it
+    through ? LedgerDay.distinct("userId", { day: { $gte: new Date(ledgerDays.dayStart(since)), $lt: through }, type: { $regex: PLAYED } }) : [],
     Transaction.find(
       { _id: { $gte: fromId }, type: { $in: [TX.MISSION_REWARD, TX.SHOP_PURCHASE] } },
       { userId: 1, type: 1, meta: 1, createdAt: 1 }
     ).lean(),
   ]);
+  const played = [...new Set([...recent, ...folded].map(String))];
   const events = rows.map((e) => ({ ...e, params: e.params || {} }));
   // a player who only looked at her panels and never played is still a player she was shown to
   const ids = new Set([...played.map(String), ...events.map((e) => String(e.userId))]);

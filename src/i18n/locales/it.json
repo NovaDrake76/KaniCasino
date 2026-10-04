@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "Nessuna copia rimasta.",
     "noItems": "Nessun oggetto",
     "noTransactionsYet": "Ancora nessuna transazione.",
+    "historyRetention": "I round di Plinko, Dadi e Slot escono da questa lista dopo {{short}} giorni; gli altri giochi, i bonus e le vendite al negozio dopo {{long}}. Le tue missioni e i tuoi totali continuano a contarli.",
     "occasionalEmailWhenSomething": "Una e-mail ogni tanto, quando esce qualcosa di nuovo. È spenta finché non la accendi, e puoi fermarla quando vuoi.",
     "requestDeclined": "Richiesta rifiutata",
     "requestSent": "Richiesta inviata",
