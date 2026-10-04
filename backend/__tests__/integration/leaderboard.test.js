@@ -354,3 +354,38 @@ describe("the empty seats", () => {
     expect(await Transaction.countDocuments({ type: TX.LEADERBOARD_PRIZE })).toBe(1);
   });
 });
+
+describe("the live board", () => {
+  test("readers at the same moment share one recount", async () => {
+    const u = await makeUser();
+    await wager(u, TX.CASE_OPEN, 1000, midWindow());
+    const { startsAt, endsAt } = leaderboard.windowFor();
+
+    const spy = jest.spyOn(Transaction, "aggregate");
+    const reads = await Promise.all(Array.from({ length: 6 }, () => leaderboard.live(startsAt, endsAt)));
+    expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockRestore();
+
+    expect(reads.every((read) => read === reads[0])).toBe(true);
+    expect(String(reads[0].rows[0]._id)).toBe(String(u._id));
+    expect(reads[0].points).toEqual([1500]);
+  });
+
+  test("a player's rank comes off the shared copy, never a recount of the field", async () => {
+    const players = [];
+    for (let i = 0; i < 4; i++) {
+      const u = await makeUser();
+      await wager(u, TX.CASE_OPEN, (i + 1) * 1000, midWindow());
+      players.push(u);
+    }
+    const { startsAt, endsAt } = leaderboard.windowFor();
+
+    const spy = jest.spyOn(Transaction, "aggregate");
+    const ranks = await Promise.all(players.map((u) => leaderboard.standingFor(u._id, startsAt, endsAt)));
+    // each player's own rows, plus one recount of the field for all four
+    expect(spy).toHaveBeenCalledTimes(players.length + 1);
+    spy.mockRestore();
+
+    expect(ranks.map((r) => r.rank)).toEqual([4, 3, 2, 1]);
+  });
+});

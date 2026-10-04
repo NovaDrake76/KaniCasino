@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "No quedan copias.",
     "noItems": "Sin objetos",
     "noTransactionsYet": "Todavía no hay transacciones.",
+    "historyRetention": "Las rondas de Plinko, Dados y Tragaperras salen de esta lista a los {{short}} días; otros juegos, bonos y ventas a la tienda, a los {{long}}. Tus misiones y totales las siguen contando.",
     "occasionalEmailWhenSomething": "Un correo de vez en cuando, cuando sale algo nuevo. Está desactivado hasta que lo actives, y puedes pararlo cuando quieras.",
     "requestDeclined": "Solicitud rechazada",
     "requestSent": "Solicitud enviada",

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Transaction = require("../models/Transaction");
+const LedgerDay = require("../models/LedgerDay");
 const ChatMessage = require("../models/ChatMessage");
 const Marketplace = require("../models/Marketplace");
 const PredictionTrade = require("../models/PredictionTrade");
@@ -13,7 +14,8 @@ const { getIo } = require("./realtime");
 const EVIDENCE = {
   collectionBook: async (user) =>
     (user.badges || []).some((b) => String(b.key).startsWith("collection:")) ||
-    !!(await Transaction.exists({ userId: user._id, type: TX.ITEM_SELL, "meta.source": "quicksell" })),
+    !!(await Transaction.exists({ userId: user._id, type: TX.ITEM_SELL, "meta.source": "quicksell" })) ||
+    !!(await LedgerDay.exists({ userId: user._id, type: TX.ITEM_SELL, tag: "quicksell" })),
   tradersLicense: async (user) =>
     !!(await Transaction.exists({ userId: user._id, type: { $in: [TX.MARKET_BUY, TX.MARKET_SALE, TX.MARKET_ORDER] } })) ||
     !!(await Marketplace.exists({ sellerId: user._id })),

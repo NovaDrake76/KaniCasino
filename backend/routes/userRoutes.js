@@ -17,6 +17,7 @@ const { loginLimiter, registerLimiter, registerDailyLimiter } = require("../midd
 const { sellValue } = require("../utils/itemValue");
 const { creditUser, recordTransaction, runAtomic, TX, WITHOUT_INVENTORY } = require("../utils/economy");
 const { findReferrer, payReferralBonuses } = require("../utils/referrals");
+const ledgerDays = require("../utils/ledgerDays");
 const { sellUniqueIds } = require("../utils/inventorySell");
 const { copiesFor, countsFor } = require("../utils/inventoryCounts");
 const getRandomPlaceholderImage = require("../utils/placeholderImages");
@@ -488,6 +489,8 @@ router.get('/transactions', authMiddleware.isAuthenticated, async (req, res) => 
       currentPage: page,
       totalPages: Math.ceil(total / limit),
       total,
+      // how long game rows stay listed once they are folded into daily totals, or null while nothing is deleted
+      retention: ledgerDays.retention(),
     });
   } catch (err) {
     console.error(err);

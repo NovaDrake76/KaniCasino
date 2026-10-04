@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "Keine Exemplare mehr.",
     "noItems": "Keine Gegenstände",
     "noTransactionsYet": "Noch keine Transaktionen.",
+    "historyRetention": "Plinko-, Würfel- und Slots-Runden verschwinden nach {{short}} Tagen aus dieser Liste, andere Spiele, Boni und Shop-Verkäufe nach {{long}}. Deine Missionen und Summen zählen sie weiterhin.",
     "occasionalEmailWhenSomething": "Gelegentlich eine E-Mail, wenn etwas Neues erscheint. Aus, bis du es einschaltest, und jederzeit wieder abstellbar.",
     "requestDeclined": "Anfrage abgelehnt",
     "requestSent": "Anfrage gesendet",

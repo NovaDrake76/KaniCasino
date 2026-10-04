@@ -2009,6 +2009,7 @@
     "noCopiesLeft": "Nenhuma cópia restante.",
     "noItems": "Sem itens",
     "noTransactionsYet": "Nenhuma transação ainda.",
+    "historyRetention": "Rodadas de Plinko, Dados e Caça-níquel saem desta lista depois de {{short}} dias; outros jogos, bônus e vendas para a loja depois de {{long}}. Suas missões e totais continuam contando.",
     "occasionalEmailWhenSomething": "Um e-mail de vez em quando, quando algo novo sai. Fica desligado até você ativar, e dá para parar quando quiser.",
     "requestDeclined": "Pedido recusado",
     "requestSent": "Pedido enviado",

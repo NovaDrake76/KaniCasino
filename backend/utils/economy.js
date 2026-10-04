@@ -167,7 +167,8 @@ async function recordTransaction({ userId, type, direction, amount, balanceAfter
 async function accountBalance(accountId) {
   const id = new mongoose.Types.ObjectId(String(accountId));
   const [row] = await Transaction.aggregate([
-    { $match: { $or: [{ userId: id }, { counterparty: id }] } },
+    // required here: the fold reads this module's TX at load
+    ...(await require("./ledgerDays").stream({ $or: [{ userId: id }, { counterparty: id }] })),
     {
       $group: {
         _id: null,
