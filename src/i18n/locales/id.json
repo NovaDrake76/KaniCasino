@@ -33,7 +33,9 @@
     "user": "Pengguna",
     "yourReferralLink": "Tautan rujukanmu",
     "yourReferralLinkIs": "Tautan rujukanmu sudah aktif.",
-    "yourReferrals": "Referensi Anda"
+    "yourReferrals": "Referensi Anda",
+    "waitingVerification": "Menunggu verifikasi",
+    "verifiedOnly": "Anda mendapat hasil dari teman setelah akunnya terverifikasi dengan Google, Discord, atau email."
   },
   "arcade": {
     "backToCasino": "Kembali ke kasino",
@@ -2091,5 +2093,73 @@
     "upgradeFailed": "Upgrade gagal",
     "upgradeSuccess": "Upgrade berhasil",
     "wonByUpgrading": "Didapat dari upgrade"
+  },
+  "verify": {
+    "title": "Verifikasi akun Anda",
+    "why": "Akun terverifikasi bisa masuk papan peringkat, berdagang di pasar, dan ikut hujan. Pilih salah satu cara:",
+    "emailOption": "Lewat email",
+    "emailBody": "Kami akan mengirim tautan ke {{email}}.",
+    "send": "Kirim tautan",
+    "sent": "Selesai! Periksa kotak masuk {{email}} dan klik tautannya. Tautan berlaku selama 24 jam.",
+    "discordOption": "Dengan Discord",
+    "discordBody": "Hubungkan akun Discord Anda. Setiap akun Discord bisa memverifikasi satu akun KaniCasino.",
+    "discordButton": "Hubungkan Discord",
+    "googleHint": "Masuk dengan Google juga memverifikasi akun Anda, jika akun memakai alamat yang sama dengan akun Google Anda.",
+    "changeEmail": "Alamat salah? Ubah di Pengaturan.",
+    "verified": "Akun Anda sudah terverifikasi.",
+    "via": {
+      "google": "dengan Google",
+      "email": "lewat email",
+      "discord": "dengan Discord"
+    },
+    "button": "Verifikasi akun",
+    "how": "Hanya semenit: konfirmasi email Anda atau hubungkan Discord.",
+    "notRanked": "Tidak masuk peringkat: verifikasi akun Anda untuk bersaing.",
+    "suggestion": "Maksud Anda {{email}}?",
+    "locked": {
+      "leaderboard": "Anda butuh akun terverifikasi untuk masuk papan peringkat.",
+      "market": "Anda butuh akun terverifikasi untuk berdagang di pasar.",
+      "rain": "Anda butuh akun terverifikasi untuk ikut hujan.",
+      "license": "Lisensi Pedagang membutuhkan akun terverifikasi."
+    },
+    "soon": {
+      "leaderboard": "Mulai {{date}}, Anda akan butuh akun terverifikasi untuk masuk papan peringkat.",
+      "market": "Mulai {{date}}, Anda akan butuh akun terverifikasi untuk berdagang di pasar.",
+      "rain": "Mulai {{date}}, Anda akan butuh akun terverifikasi untuk ikut hujan.",
+      "license": "Mulai {{date}}, pasar yang dibukanya akan membutuhkan akun terverifikasi."
+    },
+    "errors": {
+      "invalid": "Itu bukan alamat email yang valid.",
+      "noMailServer": "Alamat itu tidak bisa menerima email. Periksa apakah ada salah ketik.",
+      "disposable": "Kotak masuk sekali pakai tidak bisa memverifikasi akun. Gunakan alamat Anda sendiri.",
+      "taken": "Kotak masuk itu sudah memverifikasi akun lain.",
+      "inUse": "Akun lain sudah memakai alamat itu.",
+      "same": "Itu sudah alamat Anda.",
+      "google": "Akun yang masuk dengan Google tetap memakai alamat Google-nya.",
+      "password": "Kata sandi salah.",
+      "bounced": "Email ke alamat Anda ditolak. Ganti dengan alamat yang berfungsi.",
+      "tooSoon": "Tunggu satu menit sebelum meminta lagi (maksimal lima email sehari).",
+      "expired": "Tautan itu sudah kedaluwarsa atau sudah dipakai. Minta yang baru.",
+      "failed": "Terjadi kesalahan. Silakan coba lagi."
+    },
+    "page": {
+      "working": "Memverifikasi akun Anda...",
+      "done": "Akun Anda sudah terverifikasi!",
+      "doneBody": "{{email}} sudah dikonfirmasi. Anda bisa masuk papan peringkat, berdagang di pasar, dan ikut hujan.",
+      "failed": "Kami tidak bisa memverifikasi akun Anda",
+      "back": "Kembali ke KaniCasino"
+    },
+    "settings": {
+      "title": "Akun",
+      "status": "Verifikasi",
+      "notVerified": "Belum terverifikasi. Mulai {{date}}, papan peringkat, pasar, dan hujan membutuhkan akun terverifikasi.",
+      "email": "Alamat email",
+      "change": "Ubah",
+      "newEmail": "Alamat email baru",
+      "password": "Kata sandi saat ini",
+      "sendChange": "Kirim tautan konfirmasi",
+      "changeSent": "Kami mengirim tautan ke {{email}}. Alamat Anda berubah setelah Anda mengkliknya.",
+      "cancel": "Batal"
+    }
   }
 }

@@ -5,6 +5,7 @@ const { maybeAuthenticated } = require("../middleware/authMiddleware");
 const Leaderboard = require("../models/Leaderboard");
 const badges = require("../utils/badges");
 const leaderboard = require("../utils/leaderboard");
+const verification = require("../utils/verification");
 const { TABLE, MULTIPLIERS } = require("../utils/leaderboardPoints");
 
 const publicRow = (row, index) => ({
@@ -43,7 +44,10 @@ router.get("/", maybeAuthenticated, async (req, res) => {
     };
 
     if (req.user) {
-      const mine = await leaderboard.standingFor(req.user._id, current.startsAt, current.endsAt);
+      // from the lock date an unverified account plays and scores but is not ranked or paid
+      const needsVerify = verification.enforced(current.startsAt) && !verification.isVerified(req.user);
+      const scoredMine = await leaderboard.standingFor(req.user._id, current.startsAt, current.endsAt);
+      const mine = needsVerify ? { ...scoredMine, rank: null } : scoredMine;
       // against the last row somebody actually earned, not a padded seat on nought
       const earned = rows.filter((row) => !row.placeholder);
       const lastPaid =
@@ -57,6 +61,7 @@ router.get("/", maybeAuthenticated, async (req, res) => {
         toPaidPlace:
           mine.rank && mine.rank <= leaderboard.PAID_PLACES ? 0 : Math.max(0, lastPaid - mine.points + 1),
         prize: mine.rank && mine.rank <= leaderboard.PAID_PLACES ? leaderboard.prizeFor(mine.rank) : 0,
+        needsVerify,
       };
     }
 

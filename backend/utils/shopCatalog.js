@@ -12,7 +12,8 @@ const ITEMS = [
   // unlocks and perks
   { key: "spyglass", kind: "unlock", price: 500, level: 3 },
   { key: "chatPass", kind: "unlock", price: 1000, level: 10 },
-  { key: "tradersLicense", kind: "unlock", price: 3000, level: 10 },
+  // `verified`: from the lock date the item, and the market it opens, need a verified account (utils/verification.js)
+  { key: "tradersLicense", kind: "unlock", price: 3000, level: 10, verified: true },
   { key: "collectionBook", kind: "unlock", price: 6000, level: 10 },
   { key: "affiliateCard", kind: "unlock", price: 10000, level: 10 },
   { key: "predictionPass", kind: "unlock", price: 15000, level: 15 },

@@ -20,6 +20,10 @@ const ROOT = path.resolve(__dirname, "..");
 const SKIP = new Set(["node_modules", "__tests__", ".git", "coverage"]);
 const MARKER = "inventory-read:";
 const FIELD = "inventory";
+// shared inclusion projections, imported rather than declared here, that never name the inventory
+const INCLUSIONS = new Set(["VERIFIED_FIELDS"]);
+const constName = (node) =>
+  node && (node.type === "Identifier" ? node.name : node.type === "MemberExpression" && node.property ? node.property.name : null);
 
 // the reads that hand a document back. exists/count/updateOne return no fields.
 const READS = new Set([
@@ -84,7 +88,7 @@ function dropsInventory(node, consts) {
     for (const prop of node.properties) {
       if (prop.type === "SpreadElement") {
         if (dropsInventory(prop.argument, consts)) excluded = true;
-        else inclusionOnly = false;
+        else if (!INCLUSIONS.has(constName(prop.argument))) inclusionOnly = false;
         continue;
       }
       const key = prop.key && (prop.key.name || prop.key.value);

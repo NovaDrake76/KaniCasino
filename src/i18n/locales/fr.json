@@ -33,7 +33,9 @@
     "user": "Utilisateur",
     "yourReferralLink": "Votre lien de parrainage",
     "yourReferralLinkIs": "Votre lien de parrainage est actif",
-    "yourReferrals": "Vos filleuls"
+    "yourReferrals": "Vos filleuls",
+    "waitingVerification": "En attente de vérification",
+    "verifiedOnly": "Vous gagnez avec un ami une fois son compte vérifié avec Google, Discord ou e-mail."
   },
   "arcade": {
     "backToCasino": "Retour au casino",
@@ -2091,5 +2093,73 @@
     "upgradeFailed": "Amélioration échouée",
     "upgradeSuccess": "Amélioration réussie",
     "wonByUpgrading": "Obtenu par amélioration"
+  },
+  "verify": {
+    "title": "Vérifiez votre compte",
+    "why": "Les comptes vérifiés peuvent figurer au classement, échanger sur le marché et rejoindre la pluie. Choisissez une méthode :",
+    "emailOption": "Par e-mail",
+    "emailBody": "Nous enverrons un lien à {{email}}.",
+    "send": "Envoyer le lien",
+    "sent": "C'est fait ! Consultez votre boîte de réception à {{email}} et cliquez sur le lien. Il fonctionne pendant 24 heures.",
+    "discordOption": "Avec Discord",
+    "discordBody": "Liez votre compte Discord. Chaque compte Discord peut vérifier un compte KaniCasino.",
+    "discordButton": "Lier Discord",
+    "googleHint": "Se connecter avec Google vérifie aussi votre compte, s'il utilise la même adresse que votre compte Google.",
+    "changeEmail": "Mauvaise adresse ? Modifiez-la dans les Paramètres.",
+    "verified": "Votre compte est vérifié.",
+    "via": {
+      "google": "avec Google",
+      "email": "par e-mail",
+      "discord": "avec Discord"
+    },
+    "button": "Vérifier le compte",
+    "how": "Cela prend une minute : confirmez votre e-mail ou liez Discord.",
+    "notRanked": "Non classé : vérifiez votre compte pour concourir.",
+    "suggestion": "Vouliez-vous dire {{email}} ?",
+    "locked": {
+      "leaderboard": "Vous avez besoin d'un compte vérifié pour figurer au classement.",
+      "market": "Vous avez besoin d'un compte vérifié pour échanger sur le marché.",
+      "rain": "Vous avez besoin d'un compte vérifié pour rejoindre la pluie.",
+      "license": "La Licence de commerçant nécessite un compte vérifié."
+    },
+    "soon": {
+      "leaderboard": "À partir du {{date}}, vous aurez besoin d'un compte vérifié pour figurer au classement.",
+      "market": "À partir du {{date}}, vous aurez besoin d'un compte vérifié pour échanger sur le marché.",
+      "rain": "À partir du {{date}}, vous aurez besoin d'un compte vérifié pour rejoindre la pluie.",
+      "license": "À partir du {{date}}, le marché qu'elle ouvre nécessitera un compte vérifié."
+    },
+    "errors": {
+      "invalid": "Ce n'est pas une adresse e-mail valide.",
+      "noMailServer": "Cette adresse ne peut pas recevoir d'e-mails. Vérifiez qu'il n'y a pas de faute de frappe.",
+      "disposable": "Les boîtes jetables ne peuvent pas vérifier un compte. Utilisez votre propre adresse.",
+      "taken": "Cette boîte de réception a déjà vérifié un autre compte.",
+      "inUse": "Un autre compte utilise déjà cette adresse.",
+      "same": "C'est déjà votre adresse.",
+      "google": "Les comptes qui se connectent avec Google gardent leur adresse Google.",
+      "password": "Mot de passe incorrect.",
+      "bounced": "Les e-mails envoyés à votre adresse ont été rejetés. Remplacez-la par une adresse qui fonctionne.",
+      "tooSoon": "Attendez une minute avant de redemander (cinq e-mails par jour au maximum).",
+      "expired": "Ce lien a expiré ou a déjà été utilisé. Demandez-en un nouveau.",
+      "failed": "Une erreur s'est produite. Veuillez réessayer."
+    },
+    "page": {
+      "working": "Vérification de votre compte...",
+      "done": "Votre compte est vérifié !",
+      "doneBody": "{{email}} est confirmé. Vous pouvez figurer au classement, échanger sur le marché et rejoindre la pluie.",
+      "failed": "Nous n'avons pas pu vérifier votre compte",
+      "back": "Retour à KaniCasino"
+    },
+    "settings": {
+      "title": "Compte",
+      "status": "Vérification",
+      "notVerified": "Pas encore vérifié. Le classement, le marché et la pluie nécessitent un compte vérifié à partir du {{date}}.",
+      "email": "Adresse e-mail",
+      "change": "Modifier",
+      "newEmail": "Nouvelle adresse e-mail",
+      "password": "Mot de passe actuel",
+      "sendChange": "Envoyer le lien de confirmation",
+      "changeSent": "Nous avons envoyé un lien à {{email}}. Votre adresse change quand vous cliquez dessus.",
+      "cancel": "Annuler"
+    }
   }
 }

@@ -4,6 +4,7 @@ import { getEmailPreferences, setMarketingOptIn } from "../../services/email/Ema
 import LanguageSelector from "../../components/LanguageSelector";
 import DiscordSettings from "./DiscordSettings";
 import NicknameSettings from "./NicknameSettings";
+import AccountSettings from "./AccountSettings";
 import SoundSettings from "./SoundSettings";
 import i18n from "../../i18n";
 
@@ -44,6 +45,8 @@ const EmailSettings = () => {
     return (
         <div className="w-full max-w-2xl flex flex-col gap-4">
             <NicknameSettings />
+
+            <AccountSettings />
 
             <span className="text-lg font-bold">{i18n.t("settings.language")}</span>
 

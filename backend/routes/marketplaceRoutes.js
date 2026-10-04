@@ -15,6 +15,7 @@ const { sellValue, marketFee, sellerNet, MARKET_FEE_RATE } = require("../utils/i
 const market = require("../utils/market");
 const beta = require("../utils/beta");
 const shop = require("../utils/shop");
+const verification = require("../utils/verification");
 const { SEAL_FEE_RATE } = require("../utils/shopCatalog");
 const fandom = require("../utils/fandom");
 const itemCatalog = require("../utils/itemCatalog");
@@ -134,7 +135,7 @@ module.exports = (io) => {
   router.post("/", isAuthenticated, marketWriteLimiter, async (req, res) => {
     try {
       // in daisu's beta the trader's license replaces the level gates
-      const locked = await shop.lockFor(req.user, "tradersLicense");
+      const locked = (await shop.lockFor(req.user, "tradersLicense")) || verification.lockFor(req.user);
       if (locked) return res.status(403).json(locked);
       const { item: uniqueId } = req.body;
       const price = cleanPrice(req.body.price);
@@ -377,7 +378,7 @@ module.exports = (io) => {
   // then escrow the remainder so a later match can never fail for lack of funds.
   router.post("/orders", isAuthenticated, marketWriteLimiter, async (req, res) => {
     try {
-      const locked = await shop.lockFor(req.user, "tradersLicense");
+      const locked = (await shop.lockFor(req.user, "tradersLicense")) || verification.lockFor(req.user);
       if (locked) return res.status(403).json(locked);
       const { itemId } = req.body;
       const price = cleanPrice(req.body.price);
@@ -673,7 +674,7 @@ module.exports = (io) => {
   // Buy a listing outright (id here is the listing's _id)
   router.post("/buy/:id", isAuthenticated, marketBuyLimiter, async (req, res) => {
     try {
-      const locked = await shop.lockFor(req.user, "tradersLicense");
+      const locked = (await shop.lockFor(req.user, "tradersLicense")) || verification.lockFor(req.user);
       if (locked) return res.status(403).json(locked);
       if (!isValidId(req.params.id)) {
         return res.status(404).json({ message: "Item not found" });

@@ -33,7 +33,9 @@
     "user": "사용자",
     "yourReferralLink": "내 추천 링크",
     "yourReferralLinkIs": "추천 링크가 활성화되었습니다",
-    "yourReferrals": "내 추천 목록"
+    "yourReferrals": "내 추천 목록",
+    "waitingVerification": "인증 대기 중",
+    "verifiedOnly": "친구의 계정이 Google, Discord 또는 이메일로 인증되면 수익을 받습니다."
   },
   "arcade": {
     "backToCasino": "카지노로 돌아가기",
@@ -2091,5 +2093,73 @@
     "upgradeFailed": "업그레이드 실패",
     "upgradeSuccess": "업그레이드 성공",
     "wonByUpgrading": "업그레이드로 획득"
+  },
+  "verify": {
+    "title": "계정 인증하기",
+    "why": "인증된 계정은 리더보드에 오르고, 마켓에서 거래하고, 레인에 참여할 수 있습니다. 방법을 선택하세요:",
+    "emailOption": "이메일로",
+    "emailBody": "{{email}}(으)로 링크를 보내 드립니다.",
+    "send": "링크 보내기",
+    "sent": "완료! {{email}} 받은편지함을 확인하고 링크를 클릭하세요. 링크는 24시간 동안 유효합니다.",
+    "discordOption": "Discord로",
+    "discordBody": "Discord 계정을 연동하세요. Discord 계정 하나로 KaniCasino 계정 하나를 인증할 수 있습니다.",
+    "discordButton": "Discord 연동",
+    "googleHint": "Google 계정과 같은 주소를 쓰는 경우 Google로 로그인해도 계정이 인증됩니다.",
+    "changeEmail": "주소가 틀렸나요? 설정에서 변경하세요.",
+    "verified": "계정이 인증되었습니다.",
+    "via": {
+      "google": "Google",
+      "email": "이메일",
+      "discord": "Discord"
+    },
+    "button": "계정 인증",
+    "how": "1분이면 됩니다: 이메일을 확인하거나 Discord를 연동하세요.",
+    "notRanked": "순위 제외: 경쟁하려면 계정을 인증하세요.",
+    "suggestion": "{{email}}을(를) 말씀하신 건가요?",
+    "locked": {
+      "leaderboard": "리더보드에 오르려면 인증된 계정이 필요합니다.",
+      "market": "마켓에서 거래하려면 인증된 계정이 필요합니다.",
+      "rain": "레인에 참여하려면 인증된 계정이 필요합니다.",
+      "license": "거래 허가증은 인증된 계정이 필요합니다."
+    },
+    "soon": {
+      "leaderboard": "{{date}}부터 리더보드에 오르려면 인증된 계정이 필요합니다.",
+      "market": "{{date}}부터 마켓에서 거래하려면 인증된 계정이 필요합니다.",
+      "rain": "{{date}}부터 레인에 참여하려면 인증된 계정이 필요합니다.",
+      "license": "{{date}}부터 이 허가증으로 여는 마켓은 인증된 계정이 필요합니다."
+    },
+    "errors": {
+      "invalid": "올바른 이메일 주소가 아닙니다.",
+      "noMailServer": "이 주소는 이메일을 받을 수 없습니다. 오타가 있는지 확인하세요.",
+      "disposable": "일회용 메일함으로는 계정을 인증할 수 없습니다. 본인의 주소를 사용하세요.",
+      "taken": "이 메일함은 이미 다른 계정을 인증했습니다.",
+      "inUse": "다른 계정이 이미 이 주소를 사용 중입니다.",
+      "same": "이미 사용 중인 주소입니다.",
+      "google": "Google로 로그인하는 계정은 Google 주소를 유지합니다.",
+      "password": "비밀번호가 틀렸습니다.",
+      "bounced": "주소로 보낸 이메일이 반송되었습니다. 사용할 수 있는 주소로 변경하세요.",
+      "tooSoon": "1분 후에 다시 요청하세요(하루 최대 5통).",
+      "expired": "링크가 만료되었거나 이미 사용되었습니다. 새 링크를 요청하세요.",
+      "failed": "문제가 발생했습니다. 다시 시도하세요."
+    },
+    "page": {
+      "working": "계정을 인증하는 중...",
+      "done": "계정이 인증되었습니다!",
+      "doneBody": "{{email}} 확인이 완료되었습니다. 리더보드에 오르고, 마켓에서 거래하고, 레인에 참여할 수 있습니다.",
+      "failed": "계정을 인증하지 못했습니다",
+      "back": "KaniCasino로 돌아가기"
+    },
+    "settings": {
+      "title": "계정",
+      "status": "인증",
+      "notVerified": "아직 인증되지 않았습니다. {{date}}부터 리더보드, 마켓, 레인에는 인증된 계정이 필요합니다.",
+      "email": "이메일 주소",
+      "change": "변경",
+      "newEmail": "새 이메일 주소",
+      "password": "현재 비밀번호",
+      "sendChange": "확인 링크 보내기",
+      "changeSent": "{{email}}(으)로 링크를 보냈습니다. 링크를 클릭하면 주소가 변경됩니다.",
+      "cancel": "취소"
+    }
   }
 }

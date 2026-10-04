@@ -8,6 +8,7 @@ const { HOUSE } = require("./accounts");
 const { VISIBLE } = require("./visibility");
 const shop = require("./shop");
 const { RAIN_COAT_WEIGHT } = require("./shopCatalog");
+const verification = require("./verification");
 
 // the rain. every half hour a share of what the site wagered is split between whoever was
 // in the chat for it. it is rakeback, the same as the daily board: the pool comes out of
@@ -119,10 +120,12 @@ async function state(userId) {
 // joining is idempotent: the guard is in the query, so two clicks cannot enter twice
 async function join(userId) {
   if (!userId) return { error: "auth" };
-  const user = await User.findById(userId).select("level disabled").lean();
+  const user = await User.findById(userId).select({ level: 1, disabled: 1, ...verification.VERIFIED_FIELDS }).lean();
   if (!user) return { error: "auth" };
   if (user.disabled) return { error: "banned" };
   if ((user.level || 0) < MIN_LEVEL) return { error: "level", minLevel: MIN_LEVEL };
+  // from the lock date a share of the pool needs a verified account, so a second account is not a second share
+  if (verification.lockFor(user)) return { error: "verify", from: verification.requiredFrom() };
 
   const round = await currentRound();
   await RainRound.updateOne(

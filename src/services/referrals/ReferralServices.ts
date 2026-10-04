@@ -8,6 +8,8 @@ export interface ReferralRow {
   level: number;
   milestonePaid: boolean;
   wagered: number;
+  // an unverified referee's new wagers earn their referrer nothing until they verify
+  verified?: boolean;
   commission: number;
   active: boolean;
 }

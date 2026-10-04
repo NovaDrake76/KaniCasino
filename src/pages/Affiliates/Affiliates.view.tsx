@@ -66,6 +66,9 @@ const ReferralTable = ({ referrals, milestoneLevel }: { referrals: ReferralRow[]
             </td>
             <td className="py-3 pr-4 text-green-400">
               <Monetary value={r.commission} />
+              {r.verified === false && (
+                <span className="block text-xs text-accent-amber">{i18n.t("affiliates.waitingVerification")}</span>
+              )}
             </td>
             <td className={`py-3 ${r.active ? "text-green-400" : "text-red-400"}`}>
               {r.active ? "Active" : "Inactive"}
@@ -110,6 +113,7 @@ const AffiliatesView: React.FC<Props> = ({
           On top, <span className="text-accent-gold">{Math.round(data.commissionRate * 100)}%</span> of everything
           they wager is yours to claim.
         </p>
+        <p className="-mt-3 text-sm text-ink-muted">{i18n.t("affiliates.verifiedOnly")}</p>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard label={i18n.t("affiliates.totalEarned")}>

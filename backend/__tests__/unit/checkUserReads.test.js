@@ -39,6 +39,12 @@ describe("reads the rule leaves alone", () => {
     expect(flagged(wrap("  const u = await User.findById(id).select(WITHOUT_INVENTORY);"))).toBe(0);
   });
 
+  it("takes the verified fields spread into an inclusion list, but not an unknown spread", () => {
+    expect(flagged(wrap("  const u = await User.findById(id).select({ level: 1, ...verification.VERIFIED_FIELDS });"))).toBe(0);
+    expect(flagged(wrap("  const u = await User.find(q, { username: 1, ...VERIFIED_FIELDS });"))).toBe(0);
+    expect(flagged(wrap("  const u = await User.findById(id).select({ level: 1, ...extra });"))).toBe(1);
+  });
+
   it("follows a projection through a variable", () => {
     const body = "  const o = { new: true, projection: WITHOUT_INVENTORY };\n  const u = await User.findOneAndUpdate(q, up, o);";
     expect(flagged(wrap(body))).toBe(0);

@@ -16,7 +16,7 @@ const TermsOfPrivacy = () => {
     return (
         <div className="flex flex-col text-sm">
             <span className="font-bold text-lg mb-1">Privacy Policy</span>
-            <span className="mb-1 italic">Last updated: 25 September 2026</span>
+            <span className="mb-1 italic">Last updated: 4 October 2026</span>
             <span className="mb-4 text-ink-muted">
                 KaniCasino ("we") is an independent project run from Brazil, and is the controller
                 of the personal data described below. This policy explains what we
@@ -29,16 +29,15 @@ const TermsOfPrivacy = () => {
             </span>
 
             <div className="mb-4 border-l-2 border-accent bg-surface px-3 py-2">
-                <span className="font-semibold block mb-1">What changed since the version of 26 July 2026</span>
+                <span className="font-semibold block mb-1">What changed since the version of 25 September 2026</span>
                 <ul className="list-disc ml-5 flex flex-col gap-1">
-                    <li>The site chat, and what other players can see of you (2.7 and 7).</li>
                     <li>
-                        The records of how you use Daisu's features: what they hold, why we keep
-                        them and for how long (2.6, 3.5 and 7).
+                        Verifying your account and changing your email address, and what we keep
+                        when you do (2.1, 3.2 and 7).
                     </li>
                     <li>
-                        What linking Discord stores, including whether you are in our server, and
-                        the Discord widget on our home page (2.4, 5 and 7).
+                        A keyed hash of the IP address you use the site from, kept for 90 days to
+                        find accounts run by the same person (2.3, 3.2 and 7).
                     </li>
                 </ul>
             </div>
@@ -57,7 +56,11 @@ const TermsOfPrivacy = () => {
                     Your email address, a username, and a profile picture. If you sign in with
                     Google we receive your email address, name and profile picture from Google, and
                     store a Google account identifier. If you register directly we store a hashed
-                    password, never the password itself.
+                    password, never the password itself. If you verify your account with the link we
+                    email you, we record when you did it and a normalised form of the address, so
+                    that one inbox can verify only one account. Changing your address works the same
+                    way: the link goes to the new address, and your address changes only when you
+                    click it.
                 </Row>
                 <Row label="2.2 Gameplay data">
                     Your K₽ balance, inventory, level and experience, game results, provably-fair
@@ -66,8 +69,12 @@ const TermsOfPrivacy = () => {
                 </Row>
                 <Row label="2.3 Technical data">
                     Server logs and connection data, including IP address, needed to operate the
-                    site and prevent abuse. Analytics and advertising providers set cookies and
-                    similar identifiers in your browser (see section 5).
+                    site and prevent abuse. When you sign up, sign in or open the site while signed
+                    in, we also store a keyed hash of your IP address with your account, and when we
+                    first and last saw it. The hash is made with a secret key that stays on our
+                    server, so the stored value does not show your address, but two accounts on the
+                    same connection get the same hash. Analytics and advertising providers set
+                    cookies and similar identifiers in your browser (see section 5).
                 </Row>
                 <Row label="2.4 Discord, if you link it">
                     Linking is optional and nothing below is collected unless you do it. We store
@@ -112,7 +119,10 @@ const TermsOfPrivacy = () => {
                 </Row>
                 <Row label="3.2 To keep the game fair and secure">
                     Detecting abuse, cheating and duplicate accounts, and investigating problems.
-                    Legal basis: our legitimate interest in a working, fair service (Art. 7, IX).
+                    This includes comparing the IP hashes in 2.3 between accounts, asking for a
+                    verified account before you can be on the leaderboard, trade on the market or
+                    join the rain, and paying referral rewards only for verified accounts. Legal
+                    basis: our legitimate interest in a working, fair service (Art. 7, IX).
                 </Row>
                 <Row label="3.3 Service messages">
                     Account and security notices, and changes to this policy. These are part of
@@ -183,6 +193,14 @@ const TermsOfPrivacy = () => {
                     Kept while the account exists so balances and provably-fair verification stay
                     meaningful. Some game round records are deleted automatically after a short
                     period.
+                </Row>
+                <Row label="IP hashes">
+                    Deleted automatically 90 days after we last saw your account on that
+                    connection.
+                </Row>
+                <Row label="Verification links">
+                    A link we email you works once and for 24 hours, and is deleted automatically
+                    after that.
                 </Row>
                 <Row label="Records of how you use Daisu's features">
                     Deleted automatically 180 days after they are made.

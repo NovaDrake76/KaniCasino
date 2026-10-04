@@ -1,6 +1,7 @@
 import { FanRank } from "../services/fandom/FandomService";
 import { Badge, BadgeKey } from "../services/badges/BadgeService";
 import type { UnlockKey } from "../services/daisu/ShopService";
+import type { Verification } from "../services/account/AccountService";
 
 export interface User {
     id: string;
@@ -38,6 +39,8 @@ export interface User {
     xpBoost?: { all?: number; [game: string]: number | undefined };
     // item ids whose every copy the bulk sells leave alone
     favoriteItems?: string[];
+    // whether the account is verified, and when the gated features start needing it
+    verification?: Verification;
 
 }
 

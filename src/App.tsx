@@ -18,6 +18,7 @@ import PageMeta from "./components/PageMeta";
 import BootLoader from "./components/BootLoader";
 import { useTranslation } from "react-i18next";
 import OnboardingModal from "./components/OnboardingModal";
+import VerifyModal from "./components/verify/VerifyModal";
 import GiftPrompt from "./components/header/GiftPrompt";
 import DaisuDock from "./components/daisu";
 import TourOverlay from "./components/daisu/tour/TourOverlay";
@@ -311,6 +312,7 @@ function App() {
                   railPad={chat.railWidth}
                 />
                 <OnboardingModal />
+                <VerifyModal />
                 {/* the navbar keeps the whole width and the rail hangs under it, so only
                     what sits below the bar is shifted across */}
                 <div className="flex w-full min-w-0 flex-col">

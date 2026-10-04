@@ -4,6 +4,7 @@ const Notification = require("../models/Notification");
 const { creditUser, runAtomic, TX, STAKE_TYPES } = require("./economy");
 const { isRealMoneyMode } = require("./mode");
 const ledgerDays = require("./ledgerDays");
+const verification = require("./verification");
 
 // what each side gets when the referee registers. the affiliate card's shop copy quotes the referrer's numbers, in every locale
 const REFERRER_SIGNUP_BONUS = 1000;
@@ -15,6 +16,9 @@ const MILESTONE_BONUS = 10000;
 const COMMISSION_RATE = 0.01;
 // a referee counts as active if they wagered within this window
 const ACTIVE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+// wagers before this utc midnight earn commission from any referee, as they did when they were made; from it only a
+// verified referee's count. a midnight, so a folded ledger day never straddles it.
+const commissionVerifiedFrom = () => new Date(process.env.REFERRAL_VERIFIED_FROM || "2026-10-05T00:00:00Z");
 
 // referrals mint marketing KP, which only makes sense while balances are play money
 const referralsEnabled = () => !isRealMoneyMode();
@@ -73,18 +77,61 @@ async function payReferralBonuses(referee, referrer) {
     type: TX.REFERRAL_BONUS,
     meta: { role: "referee", referrerId: String(referrer._id), referrerUsername: referrer.username },
   });
-  await creditUser(referrer._id, REFERRER_SIGNUP_BONUS, 0, {
-    type: TX.REFERRAL_BONUS,
-    meta: { role: "referrer", referredUserId: String(referee._id), referredUsername: referee.username },
-  });
   await notify(
     referee._id, referrer._id, "Referral bonus",
     `Welcome! Signing up with ${referrer.username}'s code paid you K₽${REFEREE_SIGNUP_BONUS}.`
   );
+  // the referrer is paid for an account somebody can vouch for, so an unverified one waits (settleOnVerified)
+  if (verification.isVerified(referee)) {
+    await creditUser(referrer._id, REFERRER_SIGNUP_BONUS, 0, {
+      type: TX.REFERRAL_BONUS,
+      meta: { role: "referrer", referredUserId: String(referee._id), referredUsername: referee.username },
+    });
+    await notify(
+      referrer._id, referee._id, "Referral bonus",
+      `${referee.username} joined with your code: +K₽${REFERRER_SIGNUP_BONUS}. If they reach level ${MILESTONE_LEVEL} you earn K₽${MILESTONE_BONUS} more.`
+    );
+    return;
+  }
+  await User.updateOne({ _id: referee._id }, { $set: { referralBonusPending: true } });
   await notify(
     referrer._id, referee._id, "Referral bonus",
-    `${referee.username} joined with your code: +K₽${REFERRER_SIGNUP_BONUS}. If they reach level ${MILESTONE_LEVEL} you earn K₽${MILESTONE_BONUS} more.`
+    `${referee.username} joined with your code. You get K₽${REFERRER_SIGNUP_BONUS} when they verify their account, and K₽${MILESTONE_BONUS} more if they reach level ${MILESTONE_LEVEL}.`
   );
+}
+
+// the referee was just verified: the signup bonus that waited, then the milestone if they are already past it.
+// clearing the pending flag is the mutex and commits with the credit, so it pays once and a failed credit stays owed.
+async function settleOnVerified(userId) {
+  if (!referralsEnabled()) return;
+  let waiting = null;
+  try {
+    waiting = await runAtomic(async (session) => {
+      const row = await User.findOneAndUpdate(
+        { _id: userId, referralBonusPending: true, referredBy: { $ne: null } },
+        { $unset: { referralBonusPending: "" } },
+        { projection: { username: 1, referredBy: 1 }, session }
+      );
+      if (!row) return null;
+      const credited = await creditUser(row.referredBy, REFERRER_SIGNUP_BONUS, 0, {
+        type: TX.REFERRAL_BONUS,
+        meta: { role: "referrer", referredUserId: String(row._id), referredUsername: row.username },
+        session,
+      });
+      if (!credited) throw new Error("referrer bonus credit failed"); // abort, the flag stays set
+      return row;
+    });
+  } catch (e) {
+    console.error("referral bonus failed:", e);
+  }
+  if (waiting) {
+    await notify(
+      waiting.referredBy, userId, "Referral bonus",
+      `${waiting.username} verified their account: +K₽${REFERRER_SIGNUP_BONUS}. If they reach level ${MILESTONE_LEVEL} you earn K₽${MILESTONE_BONUS} more.`
+    );
+  }
+  const me = await User.findById(userId, { level: 1, referredBy: 1 });
+  if (me && me.referredBy) await maybePayReferralMilestone(userId, me.level || 0);
 }
 
 // pay the level milestone once per referee. the paid flag is the mutex and commits in
@@ -93,8 +140,9 @@ async function maybePayReferralMilestone(userId, level, known = null) {
   if (!referralsEnabled() || level < MILESTONE_LEVEL) return;
   // a bet hands in the account it just charged, so a player nobody referred, or one already paid for, costs no read
   if (known && (!known.referredBy || known.referralMilestonePaid)) return;
+  // an unverified referee pays nothing yet; verifying settles it (settleOnVerified)
   const referee = await User.findOne(
-    { _id: userId, referredBy: { $ne: null }, referralMilestonePaid: { $ne: true } },
+    { _id: userId, referredBy: { $ne: null }, referralMilestonePaid: { $ne: true }, ...verification.verifiedFilter() },
     { username: 1, referredBy: 1 }
   );
   if (!referee) return;
@@ -137,14 +185,22 @@ async function maybePayReferralMilestone(userId, level, known = null) {
 async function refereeStats(userId) {
   const referees = await User.find(
     { referredBy: userId },
-    { username: 1, profilePicture: 1, level: 1, referralMilestonePaid: 1 }
+    { username: 1, profilePicture: 1, level: 1, referralMilestonePaid: 1, ...verification.VERIFIED_FIELDS }
   ).lean();
   if (!referees.length) return [];
 
   const ids = referees.map((r) => r._id);
+  const from = commissionVerifiedFrom();
   const agg = await Transaction.aggregate([
     ...(await ledgerDays.stream({ userId: { $in: ids }, type: { $in: STAKE_TYPES } })),
-    { $group: { _id: "$userId", wagered: { $sum: "$amount" }, lastAt: { $max: "$last" } } },
+    {
+      $group: {
+        _id: "$userId",
+        wagered: { $sum: "$amount" },
+        earlier: { $sum: { $cond: [{ $lt: ["$day", from] }, "$amount", 0] } },
+        lastAt: { $max: "$last" },
+      },
+    },
   ]);
   const byId = new Map(agg.map((row) => [String(row._id), row]));
 
@@ -152,6 +208,9 @@ async function refereeStats(userId) {
   return referees.map((r) => {
     const row = byId.get(String(r._id));
     const wagered = row ? row.wagered : 0;
+    // an unverified referee earns on what they wagered before the rule; everything counts once they verify
+    const verified = verification.isVerified(r);
+    const counted = verified ? wagered : row ? row.earlier : 0;
     return {
       id: String(r._id),
       username: r.username,
@@ -160,7 +219,8 @@ async function refereeStats(userId) {
       level: r.level || 0,
       milestonePaid: !!r.referralMilestonePaid,
       wagered,
-      commission: Math.floor(wagered * COMMISSION_RATE),
+      verified,
+      commission: Math.floor(counted * COMMISSION_RATE),
       active: !!row && now - new Date(row.lastAt).getTime() < ACTIVE_WINDOW_MS,
     };
   });
@@ -253,6 +313,7 @@ module.exports = {
   findReferrer,
   payReferralBonuses,
   maybePayReferralMilestone,
+  settleOnVerified,
   getDashboard,
   claimCommission,
 };

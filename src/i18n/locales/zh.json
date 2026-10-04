@@ -33,7 +33,9 @@
     "user": "用户",
     "yourReferralLink": "你的推荐链接",
     "yourReferralLinkIs": "你的推荐链接已生效",
-    "yourReferrals": "你的推荐"
+    "yourReferrals": "你的推荐",
+    "waitingVerification": "等待验证",
+    "verifiedOnly": "好友的账户通过 Google、Discord 或邮箱验证后，你才能从中获得收益。"
   },
   "arcade": {
     "backToCasino": "返回赌场",
@@ -2091,5 +2093,73 @@
     "upgradeFailed": "升级失败",
     "upgradeSuccess": "升级成功",
     "wonByUpgrading": "通过升级获得"
+  },
+  "verify": {
+    "title": "验证你的账户",
+    "why": "已验证的账户可以上排行榜、在市场交易并加入红包池。选择一种方式：",
+    "emailOption": "通过邮箱",
+    "emailBody": "我们会发送一个链接到 {{email}}。",
+    "send": "发送链接",
+    "sent": "完成！请查看 {{email}} 的收件箱并点击链接。链接在 24 小时内有效。",
+    "discordOption": "通过 Discord",
+    "discordBody": "绑定你的 Discord 账户。每个 Discord 账户只能验证一个 KaniCasino 账户。",
+    "discordButton": "绑定 Discord",
+    "googleHint": "如果你的账户使用与 Google 账户相同的地址，用 Google 登录也会完成验证。",
+    "changeEmail": "地址不对？去设置里修改。",
+    "verified": "你的账户已验证。",
+    "via": {
+      "google": "通过 Google",
+      "email": "通过邮箱",
+      "discord": "通过 Discord"
+    },
+    "button": "验证账户",
+    "how": "只需一分钟：确认邮箱或绑定 Discord。",
+    "notRanked": "未上榜：验证账户后才能参与排名。",
+    "suggestion": "你是想输入 {{email}} 吗？",
+    "locked": {
+      "leaderboard": "需要已验证的账户才能上排行榜。",
+      "market": "需要已验证的账户才能在市场交易。",
+      "rain": "需要已验证的账户才能加入红包池。",
+      "license": "交易许可证需要已验证的账户。"
+    },
+    "soon": {
+      "leaderboard": "从 {{date}} 起，上排行榜需要已验证的账户。",
+      "market": "从 {{date}} 起，在市场交易需要已验证的账户。",
+      "rain": "从 {{date}} 起，加入红包池需要已验证的账户。",
+      "license": "从 {{date}} 起，它开启的市场需要已验证的账户。"
+    },
+    "errors": {
+      "invalid": "这不是有效的邮箱地址。",
+      "noMailServer": "这个地址无法接收邮件。请检查是否有拼写错误。",
+      "disposable": "一次性邮箱不能用于验证账户。请使用你自己的地址。",
+      "taken": "这个邮箱已经验证过另一个账户。",
+      "inUse": "另一个账户已经在使用这个地址。",
+      "same": "这已经是你的地址了。",
+      "google": "使用 Google 登录的账户会保留其 Google 地址。",
+      "password": "密码错误。",
+      "bounced": "发往你地址的邮件被退回了。请换成可用的地址。",
+      "tooSoon": "请等一分钟再试（每天最多五封邮件）。",
+      "expired": "该链接已过期或已被使用。请重新申请。",
+      "failed": "出了点问题，请重试。"
+    },
+    "page": {
+      "working": "正在验证你的账户...",
+      "done": "你的账户已验证！",
+      "doneBody": "{{email}} 已确认。你可以上排行榜、在市场交易并加入红包池。",
+      "failed": "无法验证你的账户",
+      "back": "返回 KaniCasino"
+    },
+    "settings": {
+      "title": "账户",
+      "status": "验证",
+      "notVerified": "尚未验证。从 {{date}} 起，排行榜、市场和红包池需要已验证的账户。",
+      "email": "邮箱地址",
+      "change": "修改",
+      "newEmail": "新邮箱地址",
+      "password": "当前密码",
+      "sendChange": "发送确认链接",
+      "changeSent": "我们已向 {{email}} 发送了链接。点击链接后地址才会更改。",
+      "cancel": "取消"
+    }
   }
 }
