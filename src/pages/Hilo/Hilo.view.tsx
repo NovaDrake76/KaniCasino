@@ -31,6 +31,7 @@ const HiloView: React.FC<HiloViewProps> = ({
   normalizeBet,
   halveBet,
   doubleBet,
+  maxOutBet,
   game,
   active,
   busy,
@@ -68,6 +69,7 @@ const HiloView: React.FC<HiloViewProps> = ({
             onBlur={normalizeBet}
             onHalve={halveBet}
             onDouble={doubleBet}
+            onMax={maxOutBet}
             betValue={betValue}
             disabled={controlsLocked}
             note={<BonusBetHint game="hilo" bet={betValue} />}
