@@ -2017,7 +2017,7 @@
     "requestSent": "Demande envoyée",
     "serviceMessagesAboutYour": "Les messages de service concernant votre compte, comme les avis de sécurité et de politique, sont envoyés quel que soit ce réglage.",
     "somethingWentWrong": "Une erreur est survenue",
-    "toEvery1kSpent": "Chaque K₽ 1 misé rapporte 5 XP, gagné ou perdu. Les bonus de la boutique de Daisu s'y ajoutent.",
+    "toEvery1kSpent": "Chaque K₽ 1 misé rapporte 5 XP, gagné ou perdu ; au Crash, un encaissement sous 2x rapporte moins. Les bonus de la boutique de Daisu s'y ajoutent.",
     "updatesTurnedOff": "Actualités désactivées",
     "weAreNotSending": "Nous n'envoyons plus à votre adresse car un e-mail précédent a échoué ou a été signalé comme spam. Écrivez-nous si vous pensez que c'est une erreur.",
     "xpBonus": "+{{pct}}% XP",

@@ -2017,7 +2017,7 @@
     "requestSent": "Anfrage gesendet",
     "serviceMessagesAboutYour": "Service-Nachrichten zu deinem Konto, etwa Sicherheits- und Richtlinienhinweise, gehen unabhängig von dieser Einstellung raus.",
     "somethingWentWrong": "Etwas ist schiefgelaufen",
-    "toEvery1kSpent": "Jeder gesetzte K₽ 1 gibt 5 XP, gewonnen oder verloren. Boosts aus Daisus Laden kommen dazu.",
+    "toEvery1kSpent": "Jeder gesetzte K₽ 1 gibt 5 XP, gewonnen oder verloren; bei Crash bringt eine Auszahlung unter 2x weniger. Boosts aus Daisus Laden kommen dazu.",
     "updatesTurnedOff": "Neuigkeiten ausgeschaltet",
     "weAreNotSending": "Wir senden nicht an deine Adresse, weil eine frühere E-Mail nicht zugestellt oder als Spam gemeldet wurde. Melde dich, wenn das falsch ist.",
     "xpBonus": "+{{pct}}% XP",

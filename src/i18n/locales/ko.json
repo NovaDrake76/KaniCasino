@@ -2017,7 +2017,7 @@
     "requestSent": "요청을 보냈습니다",
     "serviceMessagesAboutYour": "보안이나 정책 안내 같은 계정 관련 서비스 메시지는 이 설정과 관계없이 발송됩니다.",
     "somethingWentWrong": "문제가 발생했습니다",
-    "toEvery1kSpent": "K₽ 1을 베팅할 때마다 5 XP, 이기든 지든. 다이스의 상점 부스트가 더해져요.",
+    "toEvery1kSpent": "K₽ 1을 베팅할 때마다 5 XP, 이기든 지든. Crash에서는 2배 미만에서 캐시아웃하면 덜 받아요. 다이스의 상점 부스트가 더해져요.",
     "updatesTurnedOff": "소식 수신을 껐습니다",
     "weAreNotSending": "이전 메일이 반송되었거나 스팸으로 신고되어 해당 주소로 발송하지 않고 있습니다. 잘못된 것 같다면 연락해 주세요.",
     "xpBonus": "XP +{{pct}}%",

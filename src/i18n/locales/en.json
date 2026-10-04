@@ -2017,7 +2017,7 @@
     "requestSent": "Request sent",
     "serviceMessagesAboutYour": "Service messages about your account, such as security and policy notices, are sent whatever this is set to.",
     "somethingWentWrong": "Something went wrong",
-    "toEvery1kSpent": "Every K₽ 1 you bet gives 5 XP, win or lose. Boosts from Daisu's shop add to it.",
+    "toEvery1kSpent": "Every K₽ 1 you bet gives 5 XP, win or lose; in Crash, a cash-out under 2x gives less. Boosts from Daisu's shop add to it.",
     "updatesTurnedOff": "Updates turned off",
     "weAreNotSending": "We are not sending to your address because a previous email bounced or was reported as spam. Contact us if you think that is wrong.",
     "xpBonus": "+{{pct}}% XP",

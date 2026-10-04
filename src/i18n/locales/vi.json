@@ -2017,7 +2017,7 @@
     "requestSent": "Đã gửi lời mời",
     "serviceMessagesAboutYour": "Các thông báo dịch vụ về tài khoản, như cảnh báo bảo mật và chính sách, vẫn được gửi bất kể tuỳ chọn này.",
     "somethingWentWrong": "Đã có lỗi xảy ra",
-    "toEvery1kSpent": "Mỗi K₽ 1 cược cho 5 XP, thắng hay thua. Tăng cường từ cửa hàng của Daisu cộng thêm.",
+    "toEvery1kSpent": "Mỗi K₽ 1 cược cho 5 XP, thắng hay thua; ở Crash, rút dưới 2x được ít hơn. Tăng cường từ cửa hàng của Daisu cộng thêm.",
     "updatesTurnedOff": "Đã tắt tin cập nhật",
     "weAreNotSending": "Chúng tôi không gửi tới địa chỉ của bạn vì một email trước đó bị trả lại hoặc bị báo là spam. Hãy liên hệ nếu bạn thấy điều này không đúng.",
     "xpBonus": "+{{pct}}% XP",

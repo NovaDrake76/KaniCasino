@@ -2017,7 +2017,7 @@
     "requestSent": "Pedido enviado",
     "serviceMessagesAboutYour": "Mensagens de serviço sobre sua conta, como avisos de segurança e de política, são enviadas independentemente desta opção.",
     "somethingWentWrong": "Algo deu errado",
-    "toEvery1kSpent": "Cada K₽ 1 apostado dá 5 XP, ganhando ou perdendo. Os impulsos da loja da Daisu somam a isso.",
+    "toEvery1kSpent": "Cada K₽ 1 apostado dá 5 XP, ganhando ou perdendo; no Crash, um saque abaixo de 2x dá menos. Os impulsos da loja da Daisu somam a isso.",
     "updatesTurnedOff": "Novidades desativadas",
     "weAreNotSending": "Não estamos enviando para o seu endereço porque um e-mail anterior voltou ou foi marcado como spam. Fale com a gente se achar que está errado.",
     "xpBonus": "+{{pct}}% XP",
