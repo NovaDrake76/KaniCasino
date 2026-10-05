@@ -19,6 +19,7 @@ export const LANGUAGES: Language[] = [
   { code: "it", name: "Italiano", english: "Italian" },
   { code: "vi", name: "Tiếng Việt", english: "Vietnamese" },
   { code: "id", name: "Bahasa Indonesia", english: "Indonesian" },
+  { code: "pl", name: "Polski", english: "Polish" },
 ];
 
 export const DEFAULT_LANGUAGE = "en";
