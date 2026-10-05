@@ -7,9 +7,13 @@ export interface ReferralRow {
   joinedAt: string;
   level: number;
   milestonePaid: boolean;
+  // the distinct days they have bet on, which the milestone waits for alongside the level
+  daysPlayed: number;
   wagered: number;
   // an unverified referee's new wagers earn their referrer nothing until they verify
   verified?: boolean;
+  // held: seen on the referrer's own connection, waiting for staff. rejected: earns nothing more
+  review: "held" | "rejected" | null;
   commission: number;
   active: boolean;
 }
@@ -21,8 +25,11 @@ export interface ReferralDashboard {
   referrerBonus: number;
   refereeBonus: number;
   milestoneLevel: number;
+  milestoneDays: number;
   milestoneBonus: number;
-  commissionRate: number;
+  // the referrer's share of the house edge on each bet, and the edge per bet type
+  commissionShare: number;
+  houseEdge: Record<string, number>;
   totals: {
     earned: number;
     claimed: number;

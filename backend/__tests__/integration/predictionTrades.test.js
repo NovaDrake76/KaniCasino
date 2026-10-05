@@ -259,3 +259,34 @@ describe("a busy market", () => {
     expect(totalOf(after)).toBe(targetSum());
   });
 });
+
+describe("what a trade counts for", () => {
+  it("a buy earns no xp yet and stakes what it cost; selling back takes the stake with it", async () => {
+    const user = await makeUser();
+    const market = await makeMarket();
+
+    const buy = await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o1", action: "buy", shares: 100 });
+    expect((await User.findById(user._id)).xp || 0).toBe(0);
+    expect((await PredictionPosition.findOne({ userId: user._id })).stake).toBe(buy.spent);
+
+    const sell = await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o1", action: "sell", shares: 100 });
+    // a round trip leaves at stake only what it cost
+    expect((await PredictionPosition.findOne({ userId: user._id })).stake).toBe(buy.spent - sell.received);
+  });
+
+  it("a sale for more than the stake leaves none, and the next buy counts in full", async () => {
+    const user = await makeUser();
+    const crowd = await makeUser(50000);
+    const market = await makeMarket();
+    await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o1", action: "buy", shares: 100 });
+    // the crowd piles in behind and lifts the price
+    await trade({ userId: crowd._id, predictionId: market._id, outcomeKey: "o1", action: "buy", shares: 1500 });
+
+    const sell = await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o1", action: "sell", shares: 100 });
+    expect(sell.received).toBeGreaterThan(57);
+    expect((await PredictionPosition.findOne({ userId: user._id })).stake).toBe(0);
+
+    const again = await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o1", action: "buy", shares: 10 });
+    expect((await PredictionPosition.findOne({ userId: user._id })).stake).toBe(again.spent);
+  });
+});

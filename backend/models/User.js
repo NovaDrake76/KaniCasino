@@ -247,6 +247,10 @@ const UserSchema = new mongoose.Schema({
   verifiedMailbox: String,
   // a referrer's signup bonus waits here until the account they brought is verified
   referralBonusPending: Boolean,
+  // staff's decision on a referee seen on their referrer's connection: approved pays as usual, rejected never pays
+  referralReview: { type: String, enum: ["approved", "rejected"] },
+  referralReviewedAt: Date,
+  referralReviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   // verification emails sent today, so the button cannot be used to flood an inbox
   verifyMail: {
     day: String,

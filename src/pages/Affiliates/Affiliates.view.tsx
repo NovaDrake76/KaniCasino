@@ -27,7 +27,53 @@ const StatCard = ({ label, children }: { label: string; children: React.ReactNod
   </div>
 );
 
-const ReferralTable = ({ referrals, milestoneLevel }: { referrals: ReferralRow[]; milestoneLevel: number }) => (
+// the same form as <Monetary />, for amounts that go inside a sentence
+const kp = (n: number) => `K₽ ${n.toLocaleString("en-US")}`;
+
+const Rule = ({ amount, children }: { amount: string; children: React.ReactNode }) => (
+  <li className="flex gap-3">
+    <span className="w-24 shrink-0 text-right font-semibold text-accent-gold">{amount}</span>
+    <span>{children}</span>
+  </li>
+);
+
+const Rules = ({ data }: { data: ReferralDashboard }) => {
+  const onAThousand = (type: string) => kp(Math.round(1000 * ((data.houseEdge && data.houseEdge[type]) || 0) * data.commissionShare));
+  return (
+    <div className="flex flex-col gap-3 text-ink-muted">
+      <ul className="flex flex-col gap-1.5 text-sm">
+        <Rule amount={`+${kp(data.refereeBonus)}`}>{i18n.t("affiliates.ruleFriend")}</Rule>
+        <Rule amount={`+${kp(data.referrerBonus)}`}>{i18n.t("affiliates.ruleVerify")}</Rule>
+        <Rule amount={`+${kp(data.milestoneBonus)}`}>
+          {i18n.t("affiliates.ruleMilestone", { level: data.milestoneLevel, days: data.milestoneDays })}
+        </Rule>
+        <Rule amount={`${Math.round(data.commissionShare * 100)}%`}>
+          {i18n.t("affiliates.ruleCommission")}{" "}
+          <span className="text-ink-faint">
+            {i18n.t("affiliates.commissionExample", {
+              amount: kp(1000),
+              crash: onAThousand("crash_bet"),
+              cases: onAThousand("case_open"),
+              blackjack: onAThousand("blackjack_bet"),
+            })}
+          </span>
+        </Rule>
+      </ul>
+      <p className="text-sm">
+        {i18n.t("affiliates.verifiedOnly")} {i18n.t("affiliates.ruleReview")}
+      </p>
+    </div>
+  );
+};
+
+const standingOf = (r: ReferralRow) => {
+  if (r.review === "rejected") return <span className="block text-xs text-red-400">{i18n.t("affiliates.notEligible")}</span>;
+  if (r.review === "held") return <span className="block text-xs text-accent-amber">{i18n.t("affiliates.underReview")}</span>;
+  if (r.verified === false) return <span className="block text-xs text-accent-amber">{i18n.t("affiliates.waitingVerification")}</span>;
+  return null;
+};
+
+const ReferralTable = ({ referrals, milestoneLevel, milestoneDays }: { referrals: ReferralRow[]; milestoneLevel: number; milestoneDays: number }) => (
   <div className="overflow-x-auto">
     <table className="w-full text-left text-sm">
       <thead>
@@ -52,12 +98,16 @@ const ReferralTable = ({ referrals, milestoneLevel }: { referrals: ReferralRow[]
             <td className="py-3 pr-4 text-ink-soft">{new Date(r.joinedAt).toLocaleDateString()}</td>
             <td className="py-3 pr-4 text-ink-soft">
               {r.level}
-              {r.milestonePaid && (
+              {r.milestonePaid ? (
                 <span
                   className="ml-2 text-xs px-1.5 py-0.5 rounded bg-accent-gold/15 text-accent-gold"
                   title={i18n.t("affiliates.reachedLevel", { level: milestoneLevel })}
                 >
                   {i18n.t("affiliates.paid")}
+                </span>
+              ) : (
+                <span className="block text-xs text-ink-muted">
+                  {i18n.t("affiliates.daysPlayed", { played: Math.min(r.daysPlayed, milestoneDays), total: milestoneDays })}
                 </span>
               )}
             </td>
@@ -66,9 +116,7 @@ const ReferralTable = ({ referrals, milestoneLevel }: { referrals: ReferralRow[]
             </td>
             <td className="py-3 pr-4 text-green-400">
               <Monetary value={r.commission} />
-              {r.verified === false && (
-                <span className="block text-xs text-accent-amber">{i18n.t("affiliates.waitingVerification")}</span>
-              )}
+              {standingOf(r)}
             </td>
             <td className={`py-3 ${r.active ? "text-green-400" : "text-red-400"}`}>
               {r.active ? "Active" : "Inactive"}
@@ -106,14 +154,7 @@ const AffiliatesView: React.FC<Props> = ({
 
   return (
     <div className="w-full max-w-[1100px] flex flex-col gap-6">
-        <p className="text-ink-muted">
-          Bring a friend: they start with <span className="text-accent-gold">+{data.refereeBonus} K₽</span>, you
-          get <span className="text-accent-gold">+{data.referrerBonus} K₽</span>, and when they reach level{" "}
-          {data.milestoneLevel} you earn <span className="text-accent-gold">+{data.milestoneBonus.toLocaleString()} K₽</span> more.
-          On top, <span className="text-accent-gold">{Math.round(data.commissionRate * 100)}%</span> of everything
-          they wager is yours to claim.
-        </p>
-        <p className="-mt-3 text-sm text-ink-muted">{i18n.t("affiliates.verifiedOnly")}</p>
+        <Rules data={data} />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard label={i18n.t("affiliates.totalEarned")}>
@@ -183,7 +224,7 @@ const AffiliatesView: React.FC<Props> = ({
               {i18n.t("affiliates.noOneYetShare")}
             </p>
           ) : (
-            <ReferralTable referrals={data.referrals} milestoneLevel={data.milestoneLevel} />
+            <ReferralTable referrals={data.referrals} milestoneLevel={data.milestoneLevel} milestoneDays={data.milestoneDays} />
           )}
         </div>
     </div>

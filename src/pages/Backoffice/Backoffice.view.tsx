@@ -18,6 +18,7 @@ import { Window } from "./Backoffice.services";
 import { Tab, TABS, TAB_LABELS, WINDOWS } from "./Backoffice.tabs";
 import AdminChart from "./AdminChart";
 import PredictionsAdmin from "./PredictionsAdmin";
+import ReferralReview from "./ReferralReview";
 import { CHART_AMBER, CHART_INDIGO, fillDays } from "./adminSeries";
 
 interface Props {
@@ -692,6 +693,11 @@ const BackofficeView: React.FC<Props> = ({
             </Panel>
 
               </>
+            )}
+            {tab === "referrals" && (
+              <Panel title="Referrals waiting for a review">
+                <ReferralReview openPlayer={openPlayer} />
+              </Panel>
             )}
           </>
         )}

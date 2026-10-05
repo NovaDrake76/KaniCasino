@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Il tuo link di invito è attivo",
     "yourReferrals": "I tuoi invitati",
     "waitingVerification": "In attesa di verifica",
-    "verifiedOnly": "Guadagni da un amico quando il suo account è verificato con Google, Discord o email."
+    "verifiedOnly": "Guadagni da un amico quando il suo account è verificato con Google, Discord o email.",
+    "ruleFriend": "per il tuo amico, appena si registra con il tuo link",
+    "ruleVerify": "per te, quando il suo account è verificato",
+    "ruleMilestone": "per te, quando raggiunge il livello {{level}} e ha giocato in {{days}} giorni diversi",
+    "ruleCommission": "del vantaggio del banco su ogni sua puntata, da riscattare. Le previsioni non contano.",
+    "commissionExample": "Una puntata da {{amount}} ti fa guadagnare circa {{crash}} a crash, {{cases}} sulle casse e {{blackjack}} a blackjack.",
+    "ruleReview": "Un amico che gioca dalla tua stessa connessione aspetta una verifica dello staff prima di farti guadagnare qualcosa.",
+    "daysPlayed": "{{played}}/{{total}} giorni giocati",
+    "underReview": "In attesa di verifica dello staff",
+    "notEligible": "Non idoneo"
   },
   "arcade": {
     "backToCasino": "Torna al casinò",
@@ -946,7 +955,7 @@
         },
         "r4-stake": {
           "desc": "Punta {{target}} K₽ in totale, su qualsiasi cosa.",
-          "help": "Ogni puntata conta: giochi, casse, battaglie e previsioni. Si sommano più in fretta di quanto pensi.",
+          "help": "Ogni puntata conta: giochi, casse, battaglie, e previsioni quando il loro mercato si risolve. Si sommano più in fretta di quanto pensi.",
           "title": "Punta {{target}} K₽"
         },
         "r4-streak": {
@@ -1060,8 +1069,8 @@
           "title": "Punta K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Invita {{target}} amici che raggiungano il livello 10.",
-          "help": "Il tuo link affiliato è sul tuo profilo. Un amico conta quando arriva al livello 10, quindi porta gente che resta, non turisti.",
+          "desc": "Invita {{target}} amici che raggiungano il livello 10 e giochino in 7 giorni diversi.",
+          "help": "Il tuo link affiliato è sul tuo profilo. Un amico conta quando il suo traguardo viene pagato: livello 10 e sette giorni di gioco diversi. Porta gente che resta, non turisti.",
           "title": "Porta {{target}} amici al livello 10"
         },
         "r10-predictions": {
@@ -1167,15 +1176,15 @@
       "failed": "Acquisto non riuscito. Riprova.",
       "items": {
         "affiliateCard": {
-          "about": "Apre la scheda Affiliati: scegli il tuo codice invito e condividi il link. Ogni giocatore che si registra con quello ti fa guadagnare 1.000 K₽, altri 10.000 K₽ quando arriva al livello 10 e l'1% di tutto ciò che punta.",
+          "about": "Apre la scheda Affiliati: scegli il tuo codice invito e condividi il link. Ogni giocatore che si registra con quello ti fa guadagnare 1.000 K₽ quando verifica l'account, altri 10.000 K₽ quando arriva al livello 10 e ha giocato in 7 giorni diversi, e un quarto del vantaggio del banco su tutto ciò che punta.",
           "getIt": "Prendila nel negozio di Daisu",
           "kept": "mantenuta grazie al tuo codice invito",
-          "lockedBody": "La Tessera Affiliato ti dà un codice invito. Chiunque si registri con quello ti fa guadagnare K₽: 1.000 alla registrazione, 10.000 al livello 10 e l'1% di tutto ciò che punta.",
+          "lockedBody": "La Tessera Affiliato ti dà un codice invito. Chiunque si registri con quello ti fa guadagnare K₽: 1.000 quando verifica l'account, 10.000 al livello 10 dopo aver giocato in 7 giorni diversi e un quarto del vantaggio del banco su tutto ciò che punta.",
           "lockedTitle": "Gli affiliati sono bloccati",
           "name": "Tessera Affiliato",
           "opened": "Sei in affari. Scegli un codice e inizia a condividerlo. Ti faccio vedere dove?",
           "pitch": "Tu mi porti clienti, io ti pago una parte. Affari semplici.",
-          "what": "Il tuo codice invito: 1.000 K₽ per ogni registrazione, 10.000 K₽ al livello 10 e l'1% di tutto ciò che puntano i tuoi invitati."
+          "what": "Il tuo codice invito: 1.000 K₽ per ogni registrazione verificata, 10.000 K₽ quando arrivano al livello 10 e hanno giocato in 7 giorni diversi, e un quarto del vantaggio del banco su tutto ciò che puntano i tuoi invitati."
         },
         "chatPass": {
           "about": "Ti permette di mandare messaggi nella chat del sito. Per leggerla non serve mai un pass.",
@@ -1754,7 +1763,7 @@
     "game": "GIOCO",
     "houseEdge": "VANTAGGIO",
     "edgeVaries": "variabile",
-    "notScored": "L'Upgrade punta oggetti e non K₽, quindi non dà punti. Le vendite al mercato e il bonus da 8 minuti non sono puntate e non contano mai.",
+    "notScored": "L'Upgrade punta oggetti e non K₽, quindi non dà punti. Le vendite al mercato e il bonus da 8 minuti non sono puntate e non contano mai. Le previsioni contano quando il loro mercato si risolve, sulle quote che hai ancora; quelle rivendute prima non contano.",
     "resultTitle": "IERI SEI ARRIVATO #{{rank}}",
     "resultPoints": "{{points}} punti",
     "resultPaid": "Accreditato sul tuo saldo all'azzeramento di mezzanotte.",
@@ -2007,7 +2016,8 @@
     "loss": "Perdita",
     "profit": "Profitto",
     "youPaid": "Hai pagato",
-    "youReceive": "Ricevi"
+    "youReceive": "Ricevi",
+    "countsNote": "XP e punti in classifica arrivano quando il mercato si risolve, sulle quote che hai ancora. Le quote rivendute prima non danno né l'una né gli altri."
   },
   "profile": {
     "acceptRequest": "Accetta richiesta",
@@ -2040,7 +2050,7 @@
     "requestSent": "Richiesta inviata",
     "serviceMessagesAboutYour": "I messaggi di servizio sul tuo account, come avvisi di sicurezza e di policy, vengono inviati a prescindere da questa impostazione.",
     "somethingWentWrong": "Qualcosa è andato storto",
-    "toEvery1kSpent": "Ogni K₽ 1 puntato dà 5 XP, vinto o perso; a Crash, un incasso sotto 2x ne dà meno. I potenziamenti del negozio di Daisu si aggiungono.",
+    "toEvery1kSpent": "Ogni K₽ 1 puntato dà 5 XP, vinto o perso; a Crash, un incasso sotto 2x ne dà meno, e una previsione dà la sua XP quando il mercato si risolve. I potenziamenti del negozio di Daisu si aggiungono.",
     "updatesTurnedOff": "Novità disattivate",
     "weAreNotSending": "Non stiamo scrivendo al tuo indirizzo perché una e-mail precedente è tornata indietro o è stata segnalata come spam. Scrivici se pensi sia un errore.",
     "xpBonus": "+{{pct}}% XP",

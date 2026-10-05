@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Twój link polecający jest aktywny",
     "yourReferrals": "Twoje polecenia",
     "waitingVerification": "Czeka na weryfikację",
-    "verifiedOnly": "Zarabiasz na znajomym, gdy jego konto zostanie zweryfikowane przez Google, Discorda albo email."
+    "verifiedOnly": "Zarabiasz na znajomym, gdy jego konto zostanie zweryfikowane przez Google, Discorda albo email.",
+    "ruleFriend": "dla twojego znajomego, gdy tylko zarejestruje się z twojego linku",
+    "ruleVerify": "dla ciebie, gdy jego konto zostanie zweryfikowane",
+    "ruleMilestone": "dla ciebie, gdy osiągnie poziom {{level}} i zagra w {{days}} różnych dniach",
+    "ruleCommission": "przewagi kasyna z każdego jego zakładu, do odebrania. Predykcje się nie liczą.",
+    "commissionExample": "Zakład za {{amount}} daje ci około {{crash}} w crashu, {{cases}} na skrzynkach i {{blackjack}} w blackjacku.",
+    "ruleReview": "Znajomy, który gra z tego samego połączenia co ty, czeka na sprawdzenie przez obsługę, zanim cokolwiek ci przyniesie.",
+    "daysPlayed": "{{played}}/{{total}} dni gry",
+    "underReview": "Czeka na sprawdzenie przez obsługę",
+    "notEligible": "Nie kwalifikuje się"
   },
   "arcade": {
     "backToCasino": "Wróć do kasyna",
@@ -954,7 +963,7 @@
         },
         "r4-stake": {
           "desc": "Obstaw łącznie na czymkolwiek K₽ {{target}}.",
-          "help": "Liczy się każdy zakład: gry, skrzynki, bitwy i predykcje. Nazbiera się szybciej, niż myślisz.",
+          "help": "Liczy się każdy zakład: gry, skrzynki, bitwy, i predykcje, gdy ich rynek się rozstrzygnie. Nazbiera się szybciej, niż myślisz.",
           "title": "Obstaw K₽ {{target}}"
         },
         "r4-streak": {
@@ -1068,8 +1077,8 @@
           "title": "Obstaw K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Zaproś {{target}} znajomych, którzy dojdą do poziomu 10.",
-          "help": "Twój link polecający jest na twoim profilu. Znajomy się liczy, gdy dobije do poziomu 10, więc przyprowadzaj ludzi, którzy zostaną, a nie turystów.",
+          "desc": "Zaproś {{target}} znajomych, którzy dojdą do poziomu 10 i zagrają w 7 różnych dniach.",
+          "help": "Twój link polecający jest na twoim profilu. Znajomy się liczy, gdy jego nagroda zostanie wypłacona: poziom 10 i siedem różnych dni gry. Przyprowadzaj ludzi, którzy zostaną, a nie turystów.",
           "title": "Doprowadź {{target}} znajomych do poziomu 10"
         },
         "r10-predictions": {
@@ -1175,15 +1184,15 @@
       "failed": "Nie udało się kupić. Spróbuj ponownie.",
       "items": {
         "affiliateCard": {
-          "about": "Otwiera zakładkę Polecenia: wybierz swój kod polecający i podziel się linkiem. Każdy gracz, który zarejestruje się z twoim linkiem, daje ci 1000 K₽, kolejne 10 000 K₽, gdy osiągnie poziom 10, i 1% wszystkiego, co obstawi.",
+          "about": "Otwiera zakładkę Polecenia: wybierz swój kod polecający i podziel się linkiem. Każdy gracz, który zarejestruje się z twoim linkiem, daje ci 1000 K₽ po weryfikacji konta, kolejne 10 000 K₽, gdy osiągnie poziom 10 i zagra w 7 różnych dniach, i ćwierć przewagi kasyna ze wszystkiego, co obstawi.",
           "getIt": "Zdobądź w sklepie Daisu",
           "kept": "zachowano gdyż masz już kod polecający",
-          "lockedBody": "Wizytówka daje ci kod polecający. Każdy, kto zarejestruje się z nim, daje ci K₽: 1000 przy rejestracji, 10 000 na poziomie 10 i 1% wszystkiego, co obstawi.",
+          "lockedBody": "Wizytówka daje ci kod polecający. Każdy, kto zarejestruje się z nim, daje ci K₽: 1000 po weryfikacji konta, 10 000 na poziomie 10 po grze w 7 różnych dniach i ćwierć przewagi kasyna ze wszystkiego, co obstawi.",
           "lockedTitle": "Polecenia są zablokowane",
           "name": "Wizytówka",
           "opened": "Witamy w biznesie. Stwórz swój kod i zacznij go rozsyłać. Chcesz, żebym ci pokazała, gdzie to zrobić?",
           "pitch": "Ty ogarniasz mi klientów, ja ci daję niezły procent. Umowa stoi?",
-          "what": "Twój własny kod polecający: 1000 K₽ za każdą rejestrację, 10 000 K₽, gdy dojdą do poziomu 10, i 1% wszystkiego, co obstawią."
+          "what": "Twój własny kod polecający: 1000 K₽ za każdą zweryfikowaną rejestrację, 10 000 K₽, gdy dojdą do poziomu 10 i zagrają w 7 różnych dniach, i ćwierć przewagi kasyna ze wszystkiego, co obstawią."
         },
         "chatPass": {
           "about": "Pozwala ci pisać na czacie. Czytanie go nie wymaga.",
@@ -1762,7 +1771,7 @@
     "game": "GRA",
     "houseEdge": "PRZEWAGA KASYNA",
     "edgeVaries": "różni się",
-    "notScored": "Upgrader obraca przedmiotami a nie K₽, więc nie daje punktów. Handel na rynku i 8-minutowy bonus to nie zakłady i nigdy nie będą się liczyć.",
+    "notScored": "Upgrader obraca przedmiotami, a nie K₽, więc nie daje punktów. Handel na rynku i 8-minutowy bonus to nie zakłady i nigdy nie będą się liczyć. Predykcje liczą się, gdy ich rynek się rozstrzygnie, za udziały, które wtedy jeszcze masz; udziały sprzedane wcześniej się nie liczą.",
     "resultTitle": "WCZORAJ SKOŃCZYŁEŚ JAKO #{{rank}}",
     "resultPoints": "{{points}} punktów",
     "resultPaid": "Wpłacono na konto, gdy tablica zresetowała się o północy.",
@@ -2017,7 +2026,8 @@
     "loss": "Strata",
     "profit": "Zysk",
     "youPaid": "Zapłaciłeś",
-    "youReceive": "Otrzymasz"
+    "youReceive": "Otrzymasz",
+    "countsNote": "XP i punkty w rankingu przychodzą, gdy rynek się rozstrzygnie, za udziały, które wtedy jeszcze masz. Udziały sprzedane wcześniej nie dają ani jednego, ani drugiego."
   },
   "profile": {
     "acceptRequest": "Akceptuj prośbę",
@@ -2050,7 +2060,7 @@
     "requestSent": "Wysłano prośbę",
     "serviceMessagesAboutYour": "Wiadomości serwisowe o twoim koncie, takie jak zmiany bezpieczeństwa i polityki, są wysyłane niezależnie od tego ustawienia.",
     "somethingWentWrong": "Coś poszło nie tak",
-    "toEvery1kSpent": "Każdy obstawiony K₽ 1 daje 5 XP, wygrany czy przegrany; w Crashu wypłata poniżej 2x daje mniej. Boosty ze sklepu Daisu się do tego dodają.",
+    "toEvery1kSpent": "Każdy obstawiony K₽ 1 daje 5 XP, wygrany czy przegrany; w Crashu wypłata poniżej 2x daje mniej, a predykcja daje swoje XP, gdy jej rynek się rozstrzygnie. Boosty ze sklepu Daisu się do tego dodają.",
     "updatesTurnedOff": "Powiadomienia o zmianach są wyłączone",
     "weAreNotSending": "Nie wyślemy ci nic, gdyż nasz wcześniejszy mail był zgłoszony jako spam lub nie dotarł. Skontaktuj się z nami, jeżeli była to pomyłka.",
     "xpBonus": "+{{pct}}% XP",

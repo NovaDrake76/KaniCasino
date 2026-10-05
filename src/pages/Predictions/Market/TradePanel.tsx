@@ -264,6 +264,7 @@ const TradePanel: React.FC<Props> = ({
       </button>
 
       <p className="text-[11px] text-ink-faint leading-snug">{i18n.t("predictions.panelNote")}</p>
+      <p className="text-[11px] text-ink-faint leading-snug">{i18n.t("predictions.countsNote")}</p>
     </div>
   );
 };

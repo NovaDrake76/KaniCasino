@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Tautan rujukanmu sudah aktif.",
     "yourReferrals": "Referensi Anda",
     "waitingVerification": "Menunggu verifikasi",
-    "verifiedOnly": "Anda mendapat hasil dari teman setelah akunnya terverifikasi dengan Google, Discord, atau email."
+    "verifiedOnly": "Anda mendapat hasil dari teman setelah akunnya terverifikasi dengan Google, Discord, atau email.",
+    "ruleFriend": "untuk temanmu, begitu mereka mendaftar lewat tautanmu",
+    "ruleVerify": "untukmu, setelah akun mereka terverifikasi",
+    "ruleMilestone": "untukmu, saat mereka mencapai level {{level}} dan sudah bermain di {{days}} hari yang berbeda",
+    "ruleCommission": "dari keunggulan bandar di setiap taruhan mereka, untuk kamu klaim. Prediksi tidak dihitung.",
+    "commissionExample": "Taruhan {{amount}} memberimu sekitar {{crash}} di crash, {{cases}} di peti, dan {{blackjack}} di blackjack.",
+    "ruleReview": "Teman yang bermain dari koneksi yang sama denganmu menunggu tinjauan staf sebelum memberimu apa pun.",
+    "daysPlayed": "{{played}}/{{total}} hari bermain",
+    "underReview": "Menunggu tinjauan staf",
+    "notEligible": "Tidak memenuhi syarat"
   },
   "arcade": {
     "backToCasino": "Kembali ke kasino",
@@ -946,7 +955,7 @@
         },
         "r4-stake": {
           "desc": "Taruhkan total {{target}} K₽, di mana saja.",
-          "help": "Setiap taruhan dihitung: game, kotak, adu gacor, dan prediksi. Terkumpulnya lebih cepat dari yang kamu kira.",
+          "help": "Setiap taruhan dihitung: game, kotak, adu gacor, dan prediksi saat pasarnya diselesaikan. Terkumpulnya lebih cepat dari yang kamu kira.",
           "title": "Taruhkan {{target}} K₽"
         },
         "r4-streak": {
@@ -1060,8 +1069,8 @@
           "title": "Bertaruh K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Undang {{target}} teman yang mencapai level 10.",
-          "help": "Tautan afiliasimu ada di profil. Teman dihitung setelah mencapai level 10, jadi bawa orang yang akan tinggal, bukan turis.",
+          "desc": "Undang {{target}} teman yang mencapai level 10 dan bermain di 7 hari yang berbeda.",
+          "help": "Tautan afiliasimu ada di profil. Teman dihitung setelah bonus pencapaiannya dibayar: level 10 dan tujuh hari bermain yang berbeda. Bawa orang yang akan tinggal, bukan turis.",
           "title": "Bawa {{target}} teman ke level 10"
         },
         "r10-predictions": {
@@ -1167,15 +1176,15 @@
       "failed": "Gagal membeli. Coba lagi.",
       "items": {
         "affiliateCard": {
-          "about": "Membuka tab Afiliasi: pilih kode undanganmu dan bagikan tautanmu. Setiap pemain yang mendaftar dengannya memberimu 1.000 K₽, tambahan 10.000 K₽ saat mencapai level 10, dan 1% dari semua taruhannya.",
+          "about": "Membuka tab Afiliasi: pilih kode undanganmu dan bagikan tautanmu. Setiap pemain yang mendaftar dengannya memberimu 1.000 K₽ setelah akunnya terverifikasi, tambahan 10.000 K₽ saat mencapai level 10 dan sudah bermain di 7 hari yang berbeda, dan seperempat keunggulan bandar dari semua taruhannya.",
           "getIt": "Dapatkan di toko Daisu",
           "kept": "dipertahankan dari kode undanganmu",
-          "lockedBody": "Kartu Afiliasi memberimu kode undangan. Setiap orang yang mendaftar dengannya memberimu K₽: 1.000 saat mendaftar, 10.000 di level 10, dan 1% dari semua taruhannya.",
+          "lockedBody": "Kartu Afiliasi memberimu kode undangan. Setiap orang yang mendaftar dengannya memberimu K₽: 1.000 setelah verifikasi, 10.000 di level 10 setelah bermain di 7 hari yang berbeda, dan seperempat keunggulan bandar dari semua taruhannya.",
           "lockedTitle": "Afiliasi terkunci",
           "name": "Kartu Afiliasi",
           "opened": "Kamu resmi berbisnis. Pilih kode dan mulai bagikan. Mau kutunjukkan tempatnya?",
           "pitch": "Kamu bawakan aku pelanggan, aku beri kamu bagian. Bisnis sederhana.",
-          "what": "Kode undanganmu sendiri: 1.000 K₽ per pendaftaran, 10.000 K₽ saat mereka mencapai level 10, dan 1% dari semua taruhan mereka."
+          "what": "Kode undanganmu sendiri: 1.000 K₽ per pendaftaran terverifikasi, 10.000 K₽ saat mereka mencapai level 10 dan sudah bermain di 7 hari yang berbeda, dan seperempat keunggulan bandar dari semua taruhan mereka."
         },
         "chatPass": {
           "about": "Membuatmu bisa mengirim pesan di obrolan situs. Untuk membaca tidak pernah perlu pass.",
@@ -1754,7 +1763,7 @@
     "game": "PERMAINAN",
     "houseEdge": "KEUNGGULAN BANDAR",
     "edgeVaries": "bervariasi",
-    "notScored": "Upgrade mempertaruhkan item dan bukan K₽, jadi tidak menghasilkan poin. Transaksi pasar dan bonus 8 menit bukan taruhan dan tidak pernah dihitung.",
+    "notScored": "Upgrade mempertaruhkan item dan bukan K₽, jadi tidak menghasilkan poin. Transaksi pasar dan bonus 8 menit bukan taruhan dan tidak pernah dihitung. Prediksi mendapat poin saat pasarnya diselesaikan, berdasarkan bagian yang masih kamu pegang; bagian yang sudah dijual tidak dihitung.",
     "resultTitle": "KAMU FINIS #{{rank}} KEMARIN",
     "resultPoints": "{{points}} poin",
     "resultPaid": "Dibayarkan ke saldomu saat papan direset tengah malam.",
@@ -2007,7 +2016,8 @@
     "loss": "Rugi",
     "profit": "Untung",
     "youPaid": "Kamu bayar",
-    "youReceive": "Kamu terima"
+    "youReceive": "Kamu terima",
+    "countsNote": "XP dan poin papan peringkat diberikan saat pasar diselesaikan, berdasarkan bagian yang masih kamu pegang saat itu. Bagian yang sudah dijual sebelumnya tidak mendapat keduanya."
   },
   "profile": {
     "acceptRequest": "Acc req",
@@ -2040,7 +2050,7 @@
     "requestSent": "Req dikirim",
     "serviceMessagesAboutYour": "Pesan layanan tentang akun Kamu, seperti pemberitahuan keamanan dan kebijakan, akan dikirim terlepas dari pengaturan ini.",
     "somethingWentWrong": "Ada yang salah",
-    "toEvery1kSpent": "Setiap K₽ 1 yang dipertaruhkan memberi 5 XP, menang atau kalah; di Crash, pencairan di bawah 2x memberi lebih sedikit. Booster dari toko Daisu menambahnya.",
+    "toEvery1kSpent": "Setiap K₽ 1 yang dipertaruhkan memberi 5 XP, menang atau kalah; di Crash, pencairan di bawah 2x memberi lebih sedikit, dan prediksi memberi XP-nya saat pasarnya diselesaikan. Booster dari toko Daisu menambahnya.",
     "updatesTurnedOff": "Pembaruan dimatiin",
     "weAreNotSending": "Kami tidak mengirim email ke alamat Anda karena email sebelumnya gagal terkirim atau dilaporkan sebagai spam. Hubungi kami jika Anda merasa hal itu keliru.",
     "xpBonus": "+{{pct}}% XP",

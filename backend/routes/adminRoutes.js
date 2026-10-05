@@ -12,6 +12,7 @@ const { recomputeCasesHolding } = require("../utils/sharedItems");
 const { recordTransaction, runAtomic, TX } = require("../utils/economy");
 const adminStats = require("../utils/adminStats");
 const chat = require("../utils/chat");
+const referrals = require("../utils/referrals");
 const { slugify, mintSlug } = require("../utils/slugs");
 
 // the backoffice dashboard: everything is derived from the ledger, ?days= windows it
@@ -426,6 +427,26 @@ router.post("/predictions/:id/reopen", isAuthenticated, isAdmin, async (req, res
   const result = await settlement.reopenMarket(req.params.id);
   if (result.error) return res.status(400).json({ message: result.error });
   res.json(result.prediction);
+});
+
+// referees seen on their referrer's connection, held until staff look at them
+router.get("/referrals/held", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json(await referrals.heldReferrals());
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/referrals/:id/review", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const result = await referrals.reviewReferral(req.params.id, req.body && req.body.decision, req.user._id);
+    res.status(result.code).json(result.body);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 // taking a message down, which is the only moderation action there is. it goes for
