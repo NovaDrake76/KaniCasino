@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Dein Empfehlungslink ist aktiv",
     "yourReferrals": "Deine Empfehlungen",
     "waitingVerification": "Wartet auf Verifizierung",
-    "verifiedOnly": "Du verdienst an einem Freund, sobald sein Konto mit Google, Discord oder E-Mail verifiziert ist."
+    "verifiedOnly": "Du verdienst an einem Freund, sobald sein Konto mit Google, Discord oder E-Mail verifiziert ist.",
+    "ruleFriend": "für deinen Freund, sobald er sich mit deinem Link anmeldet",
+    "ruleVerify": "für dich, sobald sein Konto verifiziert ist",
+    "ruleMilestone": "für dich, sobald er Level {{level}} erreicht und an {{days}} verschiedenen Tagen gespielt hat",
+    "ruleCommission": "vom Hausvorteil auf jeden seiner Einsätze, für dich zum Abholen. Vorhersagen zählen nicht.",
+    "commissionExample": "Ein Einsatz von {{amount}} bringt dir etwa {{crash}} bei Crash, {{cases}} bei Kisten und {{blackjack}} bei Blackjack.",
+    "ruleReview": "Ein Freund, der über dieselbe Verbindung spielt wie du, wartet auf eine Prüfung durch das Team, bevor er dir etwas einbringt.",
+    "daysPlayed": "{{played}}/{{total}} Tage gespielt",
+    "underReview": "Wartet auf Prüfung durch das Team",
+    "notEligible": "Nicht berechtigt"
   },
   "arcade": {
     "backToCasino": "Zurück zum Casino",
@@ -946,7 +955,7 @@
         },
         "r4-stake": {
           "desc": "Setze insgesamt {{target}} K₽, egal worauf.",
-          "help": "Jede Wette zählt: Spiele, Kisten, Battles und Vorhersagen. Das summiert sich schneller, als du denkst.",
+          "help": "Jede Wette zählt: Spiele, Kisten, Battles und Vorhersagen, sobald ihr Markt aufgelöst ist. Das summiert sich schneller, als du denkst.",
           "title": "Setze {{target}} K₽"
         },
         "r4-streak": {
@@ -1060,8 +1069,8 @@
           "title": "Setze K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Lade {{target}} Freunde ein, die Level 10 erreichen.",
-          "help": "Dein Affiliate-Link steht in deinem Profil. Ein Freund zählt ab Level 10, also bring Leute, die bleiben, keine Touristen.",
+          "desc": "Lade {{target}} Freunde ein, die Level 10 erreichen und an 7 verschiedenen Tagen spielen.",
+          "help": "Dein Affiliate-Link steht in deinem Profil. Ein Freund zählt, sobald sein Meilenstein ausgezahlt ist: Level 10 und sieben verschiedene Spieltage. Bring Leute, die bleiben, keine Touristen.",
           "title": "Bring {{target}} Freunde auf Level 10"
         },
         "r10-predictions": {
@@ -1167,15 +1176,15 @@
       "failed": "Kauf fehlgeschlagen. Versuch es noch mal.",
       "items": {
         "affiliateCard": {
-          "about": "Öffnet den Tab Partner: Wähle deinen Einladungscode und teile deinen Link. Jeder Spieler, der sich damit anmeldet, bringt dir 1.000 K₽, weitere 10.000 K₽, wenn er Level 10 erreicht, und 1 % von allem, was er setzt.",
+          "about": "Öffnet den Tab Partner: Wähle deinen Einladungscode und teile deinen Link. Jeder Spieler, der sich damit anmeldet, bringt dir 1.000 K₽, sobald sein Konto verifiziert ist, weitere 10.000 K₽, wenn er Level 10 erreicht und an 7 verschiedenen Tagen gespielt hat, und ein Viertel des Hausvorteils auf alles, was er setzt.",
           "getIt": "Hol sie dir in Daisus Laden",
           "kept": "behalten durch deinen Einladungscode",
-          "lockedBody": "Die Partnerkarte gibt dir einen Einladungscode. Jeder, der sich damit anmeldet, bringt dir K₽: 1.000 bei der Anmeldung, 10.000 bei Level 10 und 1 % von allem, was er setzt.",
+          "lockedBody": "Die Partnerkarte gibt dir einen Einladungscode. Jeder, der sich damit anmeldet, bringt dir K₽: 1.000 nach der Verifizierung, 10.000 bei Level 10 nach 7 verschiedenen Spieltagen und ein Viertel des Hausvorteils auf alles, was er setzt.",
           "lockedTitle": "Partner ist gesperrt",
           "name": "Partnerkarte",
           "opened": "Du bist im Geschäft. Such dir einen Code aus und teile ihn. Soll ich dir zeigen, wo?",
           "pitch": "Du bringst mir Kunden, ich zahle dir einen Anteil. Einfaches Geschäft.",
-          "what": "Dein eigener Einladungscode: 1.000 K₽ pro Anmeldung, 10.000 K₽ bei Level 10 und 1 % von allem, was deine Eingeladenen setzen."
+          "what": "Dein eigener Einladungscode: 1.000 K₽ pro verifizierter Anmeldung, 10.000 K₽ bei Level 10 nach 7 verschiedenen Spieltagen und ein Viertel des Hausvorteils auf alles, was deine Eingeladenen setzen."
         },
         "chatPass": {
           "about": "Erlaubt dir, im Chat der Seite Nachrichten zu schreiben. Zum Lesen braucht es nie einen Pass.",
@@ -1754,7 +1763,7 @@
     "game": "SPIEL",
     "houseEdge": "HAUSVORTEIL",
     "edgeVaries": "variabel",
-    "notScored": "Upgrade setzt Gegenstände statt K₽ und bringt daher keine Punkte. Marktverkäufe und der 8-Minuten-Bonus sind keine Einsätze und zählen nie.",
+    "notScored": "Upgrade setzt Gegenstände statt K₽ und bringt daher keine Punkte. Marktverkäufe und der 8-Minuten-Bonus sind keine Einsätze und zählen nie. Vorhersagen zählen, wenn ihr Markt aufgelöst wird, auf die Anteile, die du dann noch hältst; vorher verkaufte Anteile zählen nicht.",
     "resultTitle": "DU WURDEST GESTERN #{{rank}}",
     "resultPoints": "{{points}} Punkte",
     "resultPaid": "Um Mitternacht bei der Zurücksetzung deinem Guthaben gutgeschrieben.",
@@ -2007,7 +2016,8 @@
     "loss": "Verlust",
     "profit": "Gewinn",
     "youPaid": "Du hast gezahlt",
-    "youReceive": "Du erhältst"
+    "youReceive": "Du erhältst",
+    "countsNote": "XP und Ranglistenpunkte gibt es, wenn der Markt aufgelöst wird, auf die Anteile, die du dann noch hältst. Vorher verkaufte Anteile bringen keins von beidem."
   },
   "profile": {
     "acceptRequest": "Anfrage annehmen",
@@ -2040,7 +2050,7 @@
     "requestSent": "Anfrage gesendet",
     "serviceMessagesAboutYour": "Service-Nachrichten zu deinem Konto, etwa Sicherheits- und Richtlinienhinweise, gehen unabhängig von dieser Einstellung raus.",
     "somethingWentWrong": "Etwas ist schiefgelaufen",
-    "toEvery1kSpent": "Jeder gesetzte K₽ 1 gibt 5 XP, gewonnen oder verloren; bei Crash bringt eine Auszahlung unter 2x weniger. Boosts aus Daisus Laden kommen dazu.",
+    "toEvery1kSpent": "Jeder gesetzte K₽ 1 gibt 5 XP, gewonnen oder verloren; bei Crash bringt eine Auszahlung unter 2x weniger, und eine Vorhersage gibt ihre XP, wenn ihr Markt aufgelöst wird. Boosts aus Daisus Laden kommen dazu.",
     "updatesTurnedOff": "Neuigkeiten ausgeschaltet",
     "weAreNotSending": "Wir senden nicht an deine Adresse, weil eine frühere E-Mail nicht zugestellt oder als Spam gemeldet wurde. Melde dich, wenn das falsch ist.",
     "xpBonus": "+{{pct}}% XP",

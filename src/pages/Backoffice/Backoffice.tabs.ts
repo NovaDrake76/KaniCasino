@@ -2,7 +2,7 @@ import { Window } from "./Backoffice.services";
 
 // the page used to hold every section at once, so reaching the player table meant scrolling
 // past the charts, the games, the wins and every case. one section at a time instead.
-export const TABS = ["overview", "games", "cases", "players", "predictions"] as const;
+export const TABS = ["overview", "games", "cases", "players", "predictions", "referrals"] as const;
 export type Tab = (typeof TABS)[number];
 
 export const TAB_LABELS: Record<Tab, string> = {
@@ -11,6 +11,7 @@ export const TAB_LABELS: Record<Tab, string> = {
   cases: "Cases",
   players: "Players",
   predictions: "Predictions",
+  referrals: "Referrals",
 };
 
 export const WINDOWS: { value: Window; text: string }[] = [

@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Liên kết giới thiệu của bạn đã hoạt động",
     "yourReferrals": "Danh sách giới thiệu của bạn",
     "waitingVerification": "Đang chờ xác minh",
-    "verifiedOnly": "Bạn nhận thưởng từ bạn bè khi tài khoản của họ được xác minh bằng Google, Discord hoặc email."
+    "verifiedOnly": "Bạn nhận thưởng từ bạn bè khi tài khoản của họ được xác minh bằng Google, Discord hoặc email.",
+    "ruleFriend": "cho bạn bè, ngay khi họ đăng ký bằng liên kết của bạn",
+    "ruleVerify": "cho bạn, khi tài khoản của họ được xác minh",
+    "ruleMilestone": "cho bạn, khi họ đạt cấp {{level}} và đã chơi vào {{days}} ngày khác nhau",
+    "ruleCommission": "lợi thế nhà cái trên mỗi lần cược của họ, để bạn nhận. Dự đoán không được tính.",
+    "commissionExample": "Một lần cược {{amount}} mang về cho bạn khoảng {{crash}} với crash, {{cases}} khi mở hộp và {{blackjack}} với blackjack.",
+    "ruleReview": "Bạn bè chơi từ cùng kết nối mạng với bạn sẽ phải chờ đội ngũ xem xét trước khi mang lại gì cho bạn.",
+    "daysPlayed": "Đã chơi {{played}}/{{total}} ngày",
+    "underReview": "Đang chờ đội ngũ xem xét",
+    "notEligible": "Không đủ điều kiện"
   },
   "arcade": {
     "backToCasino": "Quay lại casino",
@@ -946,7 +955,7 @@
         },
         "r4-stake": {
           "desc": "Cược tổng cộng {{target}} K₽, vào bất cứ thứ gì.",
-          "help": "Lần cược nào cũng tính: trò chơi, hòm, đấu hòm và dự đoán. Cộng dồn nhanh hơn bạn nghĩ.",
+          "help": "Lần cược nào cũng tính: trò chơi, hòm, đấu hòm, và dự đoán khi thị trường kết thúc. Cộng dồn nhanh hơn bạn nghĩ.",
           "title": "Cược {{target}} K₽"
         },
         "r4-streak": {
@@ -1060,8 +1069,8 @@
           "title": "Cược K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Mời {{target}} người bạn đạt cấp 10.",
-          "help": "Link giới thiệu nằm trên hồ sơ của bạn. Một người bạn được tính khi lên cấp 10, nên hãy đưa người sẽ ở lại, không phải khách du lịch.",
+          "desc": "Mời {{target}} người bạn đạt cấp 10 và chơi vào 7 ngày khác nhau.",
+          "help": "Link giới thiệu nằm trên hồ sơ của bạn. Một người bạn được tính khi mốc thưởng của họ được trả: cấp 10 và bảy ngày chơi khác nhau. Hãy đưa người sẽ ở lại, không phải khách du lịch.",
           "title": "Đưa {{target}} người bạn lên cấp 10"
         },
         "r10-predictions": {
@@ -1167,15 +1176,15 @@
       "failed": "Không mua được. Thử lại nhé.",
       "items": {
         "affiliateCard": {
-          "about": "Mở tab Liên kết: chọn mã mời và chia sẻ liên kết. Mỗi người chơi đăng ký bằng mã đó mang về cho bạn 1.000 K₽, thêm 10.000 K₽ khi họ đạt cấp 10, và 1% mọi khoản họ cược.",
+          "about": "Mở tab Liên kết: chọn mã mời và chia sẻ liên kết. Mỗi người chơi đăng ký bằng mã đó mang về cho bạn 1.000 K₽ khi tài khoản được xác minh, thêm 10.000 K₽ khi họ đạt cấp 10 và đã chơi vào 7 ngày khác nhau, và một phần tư lợi thế nhà cái trên mọi khoản họ cược.",
           "getIt": "Lấy ở cửa hàng của Daisu",
           "kept": "giữ lại nhờ mã mời của bạn",
-          "lockedBody": "Thẻ Liên Kết cho bạn một mã mời. Ai đăng ký bằng mã đó đều mang K₽ về cho bạn: 1.000 khi đăng ký, 10.000 khi đạt cấp 10, và 1% mọi khoản họ cược.",
+          "lockedBody": "Thẻ Liên Kết cho bạn một mã mời. Ai đăng ký bằng mã đó đều mang K₽ về cho bạn: 1.000 khi xác minh tài khoản, 10.000 khi đạt cấp 10 sau 7 ngày chơi khác nhau, và một phần tư lợi thế nhà cái trên mọi khoản họ cược.",
           "lockedTitle": "Liên kết đang bị khóa",
           "name": "Thẻ Liên Kết",
           "opened": "Bạn vào nghề rồi đấy. Chọn một mã và bắt đầu chia sẻ. Muốn tôi chỉ chỗ không?",
           "pitch": "Bạn mang khách đến, tôi chia phần cho bạn. Làm ăn đơn giản.",
-          "what": "Mã mời của riêng bạn: 1.000 K₽ mỗi lượt đăng ký, 10.000 K₽ khi họ đạt cấp 10, và 1% mọi khoản họ cược."
+          "what": "Mã mời của riêng bạn: 1.000 K₽ mỗi lượt đăng ký đã xác minh, 10.000 K₽ khi họ đạt cấp 10 và đã chơi vào 7 ngày khác nhau, và một phần tư lợi thế nhà cái trên mọi khoản họ cược."
         },
         "chatPass": {
           "about": "Cho phép bạn gửi tin nhắn trong khung chat của trang. Chỉ đọc thì không bao giờ cần vé.",
@@ -1754,7 +1763,7 @@
     "game": "TRÒ CHƠI",
     "houseEdge": "LỢI THẾ NHÀ CÁI",
     "edgeVaries": "thay đổi",
-    "notScored": "Upgrade đặt vật phẩm chứ không phải K₽ nên không được điểm. Giao dịch chợ và phần thưởng 8 phút không phải là cược nên không bao giờ được tính.",
+    "notScored": "Upgrade đặt vật phẩm chứ không phải K₽ nên không được điểm. Giao dịch chợ và phần thưởng 8 phút không phải là cược nên không bao giờ được tính. Dự đoán được tính điểm khi thị trường kết thúc, dựa trên số phần bạn còn giữ; phần đã bán lại thì không.",
     "resultTitle": "HÔM QUA BẠN VỀ #{{rank}}",
     "resultPoints": "{{points}} điểm",
     "resultPaid": "Đã cộng vào số dư khi bảng làm mới lúc nửa đêm.",
@@ -2007,7 +2016,8 @@
     "loss": "Lỗ",
     "profit": "Lợi nhuận",
     "youPaid": "Bạn đã trả",
-    "youReceive": "Bạn nhận"
+    "youReceive": "Bạn nhận",
+    "countsNote": "XP và điểm bảng xếp hạng được tính khi thị trường kết thúc, dựa trên số phần bạn còn giữ lúc đó. Phần đã bán lại trước đó không được cả hai."
   },
   "profile": {
     "acceptRequest": "Chấp nhận lời mời",
@@ -2040,7 +2050,7 @@
     "requestSent": "Đã gửi lời mời",
     "serviceMessagesAboutYour": "Các thông báo dịch vụ về tài khoản, như cảnh báo bảo mật và chính sách, vẫn được gửi bất kể tuỳ chọn này.",
     "somethingWentWrong": "Đã có lỗi xảy ra",
-    "toEvery1kSpent": "Mỗi K₽ 1 cược cho 5 XP, thắng hay thua; ở Crash, rút dưới 2x được ít hơn. Tăng cường từ cửa hàng của Daisu cộng thêm.",
+    "toEvery1kSpent": "Mỗi K₽ 1 cược cho 5 XP, thắng hay thua; ở Crash, rút dưới 2x được ít hơn, còn dự đoán cho XP khi thị trường kết thúc. Tăng cường từ cửa hàng của Daisu cộng thêm.",
     "updatesTurnedOff": "Đã tắt tin cập nhật",
     "weAreNotSending": "Chúng tôi không gửi tới địa chỉ của bạn vì một email trước đó bị trả lại hoặc bị báo là spam. Hãy liên hệ nếu bạn thấy điều này không đúng.",
     "xpBonus": "+{{pct}}% XP",

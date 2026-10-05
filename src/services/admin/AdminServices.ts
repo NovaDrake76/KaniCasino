@@ -182,3 +182,23 @@ export const voidAdminMarket = async (id: string, note: string) =>
 
 export const updateAdminMarket = async (id: string, body: Partial<NewMarket> & { boardOrder?: number }) =>
   (await api.put(`/admin/predictions/${id}`, body)).data;
+
+export interface HeldReferral {
+  id: string;
+  username: string;
+  level: number;
+  verified: boolean;
+  daysPlayed: number;
+  wagered: number;
+  bonusPending: boolean;
+  milestonePaid: boolean;
+  referrer: { id: string; username: string | null };
+}
+
+export const getHeldReferrals = async (): Promise<HeldReferral[]> => (await api.get("/admin/referrals/held")).data;
+
+export const reviewReferral = async (
+  id: string,
+  decision: "approved" | "rejected"
+): Promise<{ decision: string; paid: { bonus: boolean; milestone: boolean } }> =>
+  (await api.post(`/admin/referrals/${id}/review`, { decision })).data;

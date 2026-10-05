@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Tu enlace de referido está activo",
     "yourReferrals": "Tus referidos",
     "waitingVerification": "Esperando verificación",
-    "verifiedOnly": "Ganas con un amigo cuando su cuenta está verificada con Google, Discord o correo."
+    "verifiedOnly": "Ganas con un amigo cuando su cuenta está verificada con Google, Discord o correo.",
+    "ruleFriend": "para tu amigo, en cuanto se registre con tu enlace",
+    "ruleVerify": "para ti, cuando su cuenta esté verificada",
+    "ruleMilestone": "para ti, cuando llegue al nivel {{level}} y haya jugado {{days}} días distintos",
+    "ruleCommission": "de la ventaja de la casa en cada apuesta suya, para que lo reclames. Las predicciones no cuentan.",
+    "commissionExample": "Una apuesta de {{amount}} te da unos {{crash}} en crash, {{cases}} en cajas y {{blackjack}} en blackjack.",
+    "ruleReview": "Un amigo que juega desde la misma conexión que tú espera una revisión del equipo antes de darte nada.",
+    "daysPlayed": "{{played}}/{{total}} días jugados",
+    "underReview": "Esperando revisión del equipo",
+    "notEligible": "No elegible"
   },
   "arcade": {
     "backToCasino": "Volver al casino",
@@ -946,7 +955,7 @@
         },
         "r4-stake": {
           "desc": "Apuesta {{target}} K₽ en total, en lo que sea.",
-          "help": "Cuenta toda apuesta: juegos, cajas, batallas y predicciones. Suma más rápido de lo que crees.",
+          "help": "Cuenta toda apuesta: juegos, cajas, batallas, y predicciones cuando su mercado se resuelve. Suma más rápido de lo que crees.",
           "title": "Apuesta {{target}} K₽"
         },
         "r4-streak": {
@@ -1060,8 +1069,8 @@
           "title": "Apuesta K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Invita a {{target}} amigos que lleguen al nivel 10.",
-          "help": "Tu enlace de afiliado está en tu perfil. Un amigo cuenta cuando llega al nivel 10, así que trae gente que se quede, no turistas.",
+          "desc": "Invita a {{target}} amigos que lleguen al nivel 10 y jueguen 7 días distintos.",
+          "help": "Tu enlace de afiliado está en tu perfil. Un amigo cuenta cuando se paga su hito: nivel 10 y siete días distintos de juego. Trae gente que se quede, no turistas.",
           "title": "Trae a {{target}} amigos hasta el nivel 10"
         },
         "r10-predictions": {
@@ -1167,15 +1176,15 @@
       "failed": "No se pudo comprar. Inténtalo de nuevo.",
       "items": {
         "affiliateCard": {
-          "about": "Abre la pestaña Afiliados: elige tu código de invitación y comparte tu enlace. Cada jugador que se registre con él te da 1.000 K₽, 10.000 K₽ más cuando llegue al nivel 10 y el 1% de todo lo que apueste.",
+          "about": "Abre la pestaña Afiliados: elige tu código de invitación y comparte tu enlace. Cada jugador que se registre con él te da 1.000 K₽ cuando verifique su cuenta, 10.000 K₽ más cuando llegue al nivel 10 y haya jugado 7 días distintos, y un cuarto de la ventaja de la casa en todo lo que apueste.",
           "getIt": "Consíguela en la tienda de Daisu",
           "kept": "conservado por tu código de invitación",
-          "lockedBody": "La Tarjeta de Afiliado te da un código de invitación. Todo el que se registre con él te paga K₽: 1.000 al registrarse, 10.000 al nivel 10 y el 1% de todo lo que apueste.",
+          "lockedBody": "La Tarjeta de Afiliado te da un código de invitación. Todo el que se registre con él te paga K₽: 1.000 al verificar su cuenta, 10.000 al nivel 10 tras jugar 7 días distintos y un cuarto de la ventaja de la casa en todo lo que apueste.",
           "lockedTitle": "Afiliados está bloqueado",
           "name": "Tarjeta de Afiliado",
           "opened": "Ya estás en el negocio. Elige un código y empieza a compartirlo. ¿Te enseño dónde?",
           "pitch": "Tú me traes clientes, yo te pago una parte. Negocio sencillo.",
-          "what": "Tu propio código de invitación: 1.000 K₽ por registro, 10.000 K₽ cuando lleguen al nivel 10 y el 1% de todo lo que apuesten."
+          "what": "Tu propio código de invitación: 1.000 K₽ por registro verificado, 10.000 K₽ cuando lleguen al nivel 10 y hayan jugado 7 días distintos, y un cuarto de la ventaja de la casa en todo lo que apuesten."
         },
         "chatPass": {
           "about": "Te deja enviar mensajes en el chat del sitio. Para leerlo nunca hace falta pase.",
@@ -1754,7 +1763,7 @@
     "game": "JUEGO",
     "houseEdge": "VENTAJA",
     "edgeVaries": "varía",
-    "notScored": "El Upgrade apuesta objetos y no K₽, así que no suma puntos. Las ventas del mercado y el bono de 8 minutos no son apuestas y nunca cuentan.",
+    "notScored": "El Upgrade apuesta objetos y no K₽, así que no suma puntos. Las ventas del mercado y el bono de 8 minutos no son apuestas y nunca cuentan. Las predicciones puntúan cuando su mercado se resuelve, sobre las participaciones que aún tengas; las que vendas antes no puntúan.",
     "resultTitle": "AYER QUEDASTE #{{rank}}",
     "resultPoints": "{{points}} puntos",
     "resultPaid": "Pagado a tu saldo cuando la tabla se reinició a medianoche.",
@@ -2007,7 +2016,8 @@
     "loss": "Pérdida",
     "profit": "Ganancia",
     "youPaid": "Pagaste",
-    "youReceive": "Recibes"
+    "youReceive": "Recibes",
+    "countsNote": "La XP y los puntos de la clasificación llegan cuando el mercado se resuelve, sobre las participaciones que aún tengas. Las que vendas antes no dan ni lo uno ni lo otro."
   },
   "profile": {
     "acceptRequest": "Aceptar solicitud",
@@ -2040,7 +2050,7 @@
     "requestSent": "Solicitud enviada",
     "serviceMessagesAboutYour": "Los mensajes de servicio sobre tu cuenta, como avisos de seguridad y de políticas, se envían con independencia de esta opción.",
     "somethingWentWrong": "Algo ha salido mal",
-    "toEvery1kSpent": "Cada K₽ 1 apostado da 5 XP, ganes o pierdas; en Crash, un retiro por debajo de 2x da menos. Los impulsos de la tienda de Daisu se suman.",
+    "toEvery1kSpent": "Cada K₽ 1 apostado da 5 XP, ganes o pierdas; en Crash, un retiro por debajo de 2x da menos, y una predicción da su XP cuando su mercado se resuelve. Los impulsos de la tienda de Daisu se suman.",
     "updatesTurnedOff": "Novedades desactivadas",
     "weAreNotSending": "No estamos enviando a tu dirección porque un correo anterior rebotó o se marcó como spam. Escríbenos si crees que es un error.",
     "xpBonus": "+{{pct}}% XP",

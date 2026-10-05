@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Votre lien de parrainage est actif",
     "yourReferrals": "Vos filleuls",
     "waitingVerification": "En attente de vérification",
-    "verifiedOnly": "Vous gagnez avec un ami une fois son compte vérifié avec Google, Discord ou e-mail."
+    "verifiedOnly": "Vous gagnez avec un ami une fois son compte vérifié avec Google, Discord ou e-mail.",
+    "ruleFriend": "pour votre ami, dès qu'il s'inscrit avec votre lien",
+    "ruleVerify": "pour vous, une fois son compte vérifié",
+    "ruleMilestone": "pour vous, quand il atteint le niveau {{level}} et a joué {{days}} jours différents",
+    "ruleCommission": "de l'avantage de la maison sur chacune de ses mises, à réclamer. Les prédictions ne comptent pas.",
+    "commissionExample": "Une mise de {{amount}} vous rapporte environ {{crash}} au crash, {{cases}} sur les caisses et {{blackjack}} au blackjack.",
+    "ruleReview": "Un ami qui joue depuis la même connexion que vous attend une vérification de l'équipe avant de vous rapporter quoi que ce soit.",
+    "daysPlayed": "{{played}}/{{total}} jours joués",
+    "underReview": "En attente d'une vérification de l'équipe",
+    "notEligible": "Non éligible"
   },
   "arcade": {
     "backToCasino": "Retour au casino",
@@ -946,7 +955,7 @@
         },
         "r4-stake": {
           "desc": "Mise {{target}} K₽ au total, sur n'importe quoi.",
-          "help": "Chaque mise compte : jeux, caisses, batailles et prédictions. Ça monte plus vite que tu ne crois.",
+          "help": "Chaque mise compte : jeux, caisses, batailles, et prédictions une fois leur marché résolu. Ça monte plus vite que tu ne crois.",
           "title": "Mise {{target}} K₽"
         },
         "r4-streak": {
@@ -1060,8 +1069,8 @@
           "title": "Mise K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Invite {{target}} amis qui atteignent le niveau 10.",
-          "help": "Ton lien d'affilié est sur ton profil. Un ami compte une fois au niveau 10, alors amène des gens qui restent, pas des touristes.",
+          "desc": "Invite {{target}} amis qui atteignent le niveau 10 et jouent 7 jours différents.",
+          "help": "Ton lien d'affilié est sur ton profil. Un ami compte une fois son palier payé : niveau 10 et sept jours de jeu différents. Amène des gens qui restent, pas des touristes.",
           "title": "Amène {{target}} amis au niveau 10"
         },
         "r10-predictions": {
@@ -1167,15 +1176,15 @@
       "failed": "Impossible d'acheter ça. Réessaie.",
       "items": {
         "affiliateCard": {
-          "about": "Ouvre l'onglet Affiliés : choisis ton code d'invitation et partage ton lien. Chaque joueur qui s'inscrit avec te rapporte 1 000 K₽, puis 10 000 K₽ quand il atteint le niveau 10, et 1 % de tout ce qu'il mise.",
+          "about": "Ouvre l'onglet Affiliés : choisis ton code d'invitation et partage ton lien. Chaque joueur qui s'inscrit avec te rapporte 1 000 K₽ une fois son compte vérifié, puis 10 000 K₽ quand il atteint le niveau 10 et a joué 7 jours différents, et un quart de l'avantage de la maison sur tout ce qu'il mise.",
           "getIt": "À prendre dans la boutique de Daisu",
           "kept": "conservé grâce à ton code d'invitation",
-          "lockedBody": "La Carte d'Affilié te donne un code d'invitation. Chaque personne qui s'inscrit avec te rapporte des K₽ : 1 000 à l'inscription, 10 000 au niveau 10, et 1 % de tout ce qu'elle mise.",
+          "lockedBody": "La Carte d'Affilié te donne un code d'invitation. Chaque personne qui s'inscrit avec te rapporte des K₽ : 1 000 une fois son compte vérifié, 10 000 au niveau 10 après avoir joué 7 jours différents, et un quart de l'avantage de la maison sur tout ce qu'elle mise.",
           "lockedTitle": "Les affiliés sont verrouillés",
           "name": "Carte d'Affilié",
           "opened": "Tu es dans les affaires. Choisis un code et commence à le partager. Je te montre où ?",
           "pitch": "Tu m'amènes des clients, je te verse une part. Simple comme bonjour.",
-          "what": "Ton propre code d'invitation : 1 000 K₽ par inscription, 10 000 K₽ au niveau 10 et 1 % de tout ce que misent tes invités."
+          "what": "Ton propre code d'invitation : 1 000 K₽ par inscription vérifiée, 10 000 K₽ quand tes invités atteignent le niveau 10 et ont joué 7 jours différents, et un quart de l'avantage de la maison sur tout ce qu'ils misent."
         },
         "chatPass": {
           "about": "Te permet d'envoyer des messages dans le chat du site. Le lire ne demande jamais de pass.",
@@ -1754,7 +1763,7 @@
     "game": "JEU",
     "houseEdge": "AVANTAGE",
     "edgeVaries": "variable",
-    "notScored": "L'Upgrade mise des objets et non des K₽, il ne rapporte donc aucun point. Les ventes du marché et le bonus de 8 minutes ne sont pas des mises et ne comptent jamais.",
+    "notScored": "L'Upgrade mise des objets et non des K₽, il ne rapporte donc aucun point. Les ventes du marché et le bonus de 8 minutes ne sont pas des mises et ne comptent jamais. Les prédictions comptent quand leur marché est résolu, sur les parts encore détenues ; les parts revendues avant ne comptent pas.",
     "resultTitle": "VOUS AVEZ FINI #{{rank}} HIER",
     "resultPoints": "{{points}} points",
     "resultPaid": "Versé sur votre solde à la remise à zéro de minuit.",
@@ -2007,7 +2016,8 @@
     "loss": "Perte",
     "profit": "Profit",
     "youPaid": "Vous avez payé",
-    "youReceive": "Vous recevez"
+    "youReceive": "Vous recevez",
+    "countsNote": "L'XP et les points du classement arrivent quand le marché est résolu, sur les parts que vous détenez encore. Les parts revendues avant ne rapportent ni l'un ni l'autre."
   },
   "profile": {
     "acceptRequest": "Accepter la demande",
@@ -2040,7 +2050,7 @@
     "requestSent": "Demande envoyée",
     "serviceMessagesAboutYour": "Les messages de service concernant votre compte, comme les avis de sécurité et de politique, sont envoyés quel que soit ce réglage.",
     "somethingWentWrong": "Une erreur est survenue",
-    "toEvery1kSpent": "Chaque K₽ 1 misé rapporte 5 XP, gagné ou perdu ; au Crash, un encaissement sous 2x rapporte moins. Les bonus de la boutique de Daisu s'y ajoutent.",
+    "toEvery1kSpent": "Chaque K₽ 1 misé rapporte 5 XP, gagné ou perdu ; au Crash, un encaissement sous 2x rapporte moins, et une prédiction rapporte son XP quand son marché est résolu. Les bonus de la boutique de Daisu s'y ajoutent.",
     "updatesTurnedOff": "Actualités désactivées",
     "weAreNotSending": "Nous n'envoyons plus à votre adresse car un e-mail précédent a échoué ou a été signalé comme spam. Écrivez-nous si vous pensez que c'est une erreur.",
     "xpBonus": "+{{pct}}% XP",
