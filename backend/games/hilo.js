@@ -138,7 +138,7 @@ async function recordGameRoll(game) {
 }
 
 class HiloGameController {
-  static async start(userId, betAmount, io) {
+  static async start(userId, betAmount, io, isRetry = false) {
     if (!validBet(betAmount)) throw httpError(400, "Invalid bet amount");
 
     const reserved = await seeds.reserveNonces(userId, 1);
@@ -168,6 +168,14 @@ class HiloGameController {
       }
     }
     if (!game) throw httpError(500, "Could not create game");
+
+    // this start's own reservation can reach the rotation and reveal the seed the deck comes from:
+    // void it before any charge and deal again from the fresh seed
+    if (!(await Seed.exists({ _id: reserved.seedId, active: true }))) {
+      await HiloGame.updateOne({ _id: game._id, status: "active" }, { $set: { status: "voided", settlementDone: true } });
+      if (!isRetry) return HiloGameController.start(userId, betAmount, io, true);
+      throw httpError(409, "Seed rotated, try again");
+    }
 
     const player = await chargeUser(userId, betAmount, {
       type: TX.HILO_BET,
