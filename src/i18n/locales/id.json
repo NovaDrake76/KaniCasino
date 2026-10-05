@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Tautan rujukanmu sudah aktif.",
     "yourReferrals": "Referensi Anda",
     "waitingVerification": "Menunggu verifikasi",
-    "verifiedOnly": "Anda mendapat hasil dari teman setelah akunnya terverifikasi dengan Google, Discord, atau email."
+    "verifiedOnly": "Anda mendapat hasil dari teman setelah akunnya terverifikasi dengan Google, Discord, atau email.",
+    "ruleFriend": "untuk temanmu, begitu mereka mendaftar lewat tautanmu",
+    "ruleVerify": "untukmu, setelah akun mereka terverifikasi",
+    "ruleMilestone": "untukmu, saat mereka mencapai level {{level}} dan sudah bermain di {{days}} hari yang berbeda",
+    "ruleCommission": "dari keunggulan bandar di setiap taruhan mereka, untuk kamu klaim. Prediksi tidak dihitung.",
+    "commissionExample": "Taruhan {{amount}} memberimu sekitar {{crash}} di crash, {{cases}} di peti, dan {{blackjack}} di blackjack.",
+    "ruleReview": "Teman yang bermain dari koneksi yang sama denganmu menunggu tinjauan staf sebelum memberimu apa pun.",
+    "daysPlayed": "{{played}}/{{total}} hari bermain",
+    "underReview": "Menunggu tinjauan staf",
+    "notEligible": "Tidak memenuhi syarat"
   },
   "arcade": {
     "backToCasino": "Kembali ke kasino",
@@ -216,32 +225,54 @@
     "wearing": "DIPAKAI"
   },
   "balance": {
+    "ad_reward": "Hadiah iklan",
     "admin_adjust": "Penyesuaian admin",
     "arcade_reward": "Hadiah arcade",
     "battle_entry": "Memasuki sesi adu",
     "battle_refund": "Sesi adu dikembalikan",
+    "blackjack_bet": "Taruhan Blackjack",
+    "blackjack_push": "Seri Blackjack",
+    "blackjack_refund": "Taruhan Blackjack dikembalikan",
+    "blackjack_win": "Menang Blackjack",
     "bonus": "Bonus diklaim",
     "case_open": "Kotak dibuka",
     "coinflip_bet": "Taruhan koin lempar",
+    "coinflip_refund": "Taruhan lempar koin dikembalikan",
     "coinflip_win": "Menang dengan lemparan koin",
     "crash_bet": "Taruhan Crash",
     "crash_cashout": "Crash dicairkan",
+    "crash_refund": "Taruhan Crash dikembalikan",
+    "dice_bet": "Taruhan dadu",
+    "dice_win": "Menang dadu",
     "game_credit": "Bonus dari Daisu",
     "game_credit_expired": "Bonus dari Daisu kedaluwarsa",
+    "hilo_bet": "Taruhan HiLo",
+    "hilo_win": "HiLo dicairkan",
     "item_sell": "Barang laris di toko",
+    "leaderboard_prize": "Hadiah papan peringkat",
     "market_buy": "Penukaran pada pemasaran",
     "market_order": "Pesanan pembelian telah ditempatkan",
     "market_order_refund": "Pesanan pembelian dikembalikan",
     "market_sale": "Penjualan di pasar",
+    "mines_bet": "Taruhan Mines",
+    "mines_win": "Mines dicairkan",
     "missionReward": "Hasil tugas: {{mission}}",
     "mission_reward": "Hasil tugas",
     "openedCase": "Terbuka {{case}}",
     "openedCasePlural": "Terbuka {{case}} x{{count}}",
+    "opening_balance": "Saldo awal",
+    "plinko_bet": "Taruhan Plinko",
+    "plinko_win": "Menang Plinko",
     "prediction_buy": "Beli bagian prediksi",
     "prediction_payout": "Pembayaran prediksi",
     "prediction_refund": "Pengembalian prediksi",
     "prediction_sell": "Jual bagian prediksi",
     "purchaseReversed": "Pembelian dibatalkan",
+    "rain_payout": "Hujan",
+    "referral_bonus": "Bonus rujukan",
+    "referral_commission": "Komisi rujukan",
+    "referral_milestone": "Pencapaian rujukan",
+    "shop_purchase": "Toko Daisu",
     "signup": "Bonus pertama kali",
     "slot_bet": "Putaran slot",
     "slot_win": "Slot gacor",
@@ -718,7 +749,7 @@
     "tour": {
       "bet": {
         "blackjack": "Ini taruhanmu untuk satu tangan. Dekati 21 lebih dari bandar tanpa lewat. Hit menambah satu kartu, stand bertahan dengan kartu yang ada.",
-        "coinflip": "Ini taruhanmu. Pilih satu sisi koin di bawahnya dan ikut lemparan berikutnya. Menang dibayar 1,94x.",
+        "coinflip": "Ini taruhanmu. Pilih satu sisi koin di bawahnya dan ikut lemparan berikutnya; tiap sisi menunjukkan bayarannya.",
         "crash": "Ini taruhanmu. Pengalinya naik terus sampai jatuh; cairkan sebelum itu dan kamu dapat taruhan dikali pengali. Menunggu terlalu lama, hilang semua.",
         "dice": "Ini taruhanmu: yang kamu pertaruhkan dalam satu lemparan. Dadu memilih angka 0 sampai 100; kamu menang kalau jatuh di sisi hijau. Mulai kecil saja, kamu masih baru.",
         "hilo": "Ini taruhanmu. Tebak apakah kartu berikutnya lebih tinggi atau lebih rendah; setiap tebakan benar menaikkan hadiahmu. Cairkan kapan saja.",
@@ -924,7 +955,7 @@
         },
         "r4-stake": {
           "desc": "Taruhkan total {{target}} K₽, di mana saja.",
-          "help": "Setiap taruhan dihitung: game, kotak, adu gacor, dan prediksi. Terkumpulnya lebih cepat dari yang kamu kira.",
+          "help": "Setiap taruhan dihitung: game, kotak, adu gacor, dan prediksi saat pasarnya diselesaikan. Terkumpulnya lebih cepat dari yang kamu kira.",
           "title": "Taruhkan {{target}} K₽"
         },
         "r4-streak": {
@@ -1038,8 +1069,8 @@
           "title": "Bertaruh K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Undang {{target}} teman yang mencapai level 10.",
-          "help": "Tautan afiliasimu ada di profil. Teman dihitung setelah mencapai level 10, jadi bawa orang yang akan tinggal, bukan turis.",
+          "desc": "Undang {{target}} teman yang mencapai level 10 dan bermain di 7 hari yang berbeda.",
+          "help": "Tautan afiliasimu ada di profil. Teman dihitung setelah bonus pencapaiannya dibayar: level 10 dan tujuh hari bermain yang berbeda. Bawa orang yang akan tinggal, bukan turis.",
           "title": "Bawa {{target}} teman ke level 10"
         },
         "r10-predictions": {
@@ -1145,15 +1176,15 @@
       "failed": "Gagal membeli. Coba lagi.",
       "items": {
         "affiliateCard": {
-          "about": "Membuka tab Afiliasi: pilih kode undanganmu dan bagikan tautanmu. Setiap pemain yang mendaftar dengannya memberimu 1.000 K₽, tambahan 10.000 K₽ saat mencapai level 10, dan 1% dari semua taruhannya.",
+          "about": "Membuka tab Afiliasi: pilih kode undanganmu dan bagikan tautanmu. Setiap pemain yang mendaftar dengannya memberimu 1.000 K₽ setelah akunnya terverifikasi, tambahan 10.000 K₽ saat mencapai level 10 dan sudah bermain di 7 hari yang berbeda, dan seperempat keunggulan bandar dari semua taruhannya.",
           "getIt": "Dapatkan di toko Daisu",
           "kept": "dipertahankan dari kode undanganmu",
-          "lockedBody": "Kartu Afiliasi memberimu kode undangan. Setiap orang yang mendaftar dengannya memberimu K₽: 1.000 saat mendaftar, 10.000 di level 10, dan 1% dari semua taruhannya.",
+          "lockedBody": "Kartu Afiliasi memberimu kode undangan. Setiap orang yang mendaftar dengannya memberimu K₽: 1.000 setelah verifikasi, 10.000 di level 10 setelah bermain di 7 hari yang berbeda, dan seperempat keunggulan bandar dari semua taruhannya.",
           "lockedTitle": "Afiliasi terkunci",
           "name": "Kartu Afiliasi",
           "opened": "Kamu resmi berbisnis. Pilih kode dan mulai bagikan. Mau kutunjukkan tempatnya?",
           "pitch": "Kamu bawakan aku pelanggan, aku beri kamu bagian. Bisnis sederhana.",
-          "what": "Kode undanganmu sendiri: 1.000 K₽ per pendaftaran, 10.000 K₽ saat mereka mencapai level 10, dan 1% dari semua taruhan mereka."
+          "what": "Kode undanganmu sendiri: 1.000 K₽ per pendaftaran terverifikasi, 10.000 K₽ saat mereka mencapai level 10 dan sudah bermain di 7 hari yang berbeda, dan seperempat keunggulan bandar dari semua taruhan mereka."
         },
         "chatPass": {
           "about": "Membuatmu bisa mengirim pesan di obrolan situs. Untuk membaca tidak pernah perlu pass.",
@@ -1602,6 +1633,7 @@
     "aboutTheKanicasinoMarket": "pengenalan Pasar KaniCasino",
     "canIUpgradeItems": "Bisakah saya meningkatkan level item di gudangku?",
     "cases": "Gacha",
+    "coinFlipBody": "Dalam Lempar koin, pemain memilih satu sisi koin dan bertaruh padanya selama hitung mundur. Lalu koin dilempar, dan pemain yang memilih sisi yang muncul menang sebesar bayaran sisi itu, yang tertera di tombolnya.",
     "coinFlipGame": "Permainan Melempar Koin",
     "contactUs": "Hubungi kami",
     "crashArtsAndBanner": "Gambar-gambar Crash dan banner berasal dari Urban Legend in Limbo.",
@@ -1731,7 +1763,7 @@
     "game": "PERMAINAN",
     "houseEdge": "KEUNGGULAN BANDAR",
     "edgeVaries": "bervariasi",
-    "notScored": "Upgrade mempertaruhkan item dan bukan K₽, jadi tidak menghasilkan poin. Transaksi pasar dan bonus 8 menit bukan taruhan dan tidak pernah dihitung.",
+    "notScored": "Upgrade mempertaruhkan item dan bukan K₽, jadi tidak menghasilkan poin. Transaksi pasar dan bonus 8 menit bukan taruhan dan tidak pernah dihitung. Prediksi mendapat poin saat pasarnya diselesaikan, berdasarkan bagian yang masih kamu pegang; bagian yang sudah dijual tidak dihitung.",
     "resultTitle": "KAMU FINIS #{{rank}} KEMARIN",
     "resultPoints": "{{points}} poin",
     "resultPaid": "Dibayarkan ke saldomu saat papan direset tengah malam.",
@@ -1984,7 +2016,8 @@
     "loss": "Rugi",
     "profit": "Untung",
     "youPaid": "Kamu bayar",
-    "youReceive": "Kamu terima"
+    "youReceive": "Kamu terima",
+    "countsNote": "XP dan poin papan peringkat diberikan saat pasar diselesaikan, berdasarkan bagian yang masih kamu pegang saat itu. Bagian yang sudah dijual sebelumnya tidak mendapat keduanya."
   },
   "profile": {
     "acceptRequest": "Acc req",
@@ -2017,7 +2050,7 @@
     "requestSent": "Req dikirim",
     "serviceMessagesAboutYour": "Pesan layanan tentang akun Kamu, seperti pemberitahuan keamanan dan kebijakan, akan dikirim terlepas dari pengaturan ini.",
     "somethingWentWrong": "Ada yang salah",
-    "toEvery1kSpent": "Setiap K₽ 1 yang dipertaruhkan memberi 5 XP, menang atau kalah. Booster dari toko Daisu menambahnya.",
+    "toEvery1kSpent": "Setiap K₽ 1 yang dipertaruhkan memberi 5 XP, menang atau kalah; di Crash, pencairan di bawah 2x memberi lebih sedikit, dan prediksi memberi XP-nya saat pasarnya diselesaikan. Booster dari toko Daisu menambahnya.",
     "updatesTurnedOff": "Pembaruan dimatiin",
     "weAreNotSending": "Kami tidak mengirim email ke alamat Anda karena email sebelumnya gagal terkirim atau dilaporkan sebagai spam. Hubungi kami jika Anda merasa hal itu keliru.",
     "xpBonus": "+{{pct}}% XP",
@@ -2160,6 +2193,219 @@
       "sendChange": "Kirim tautan konfirmasi",
       "changeSent": "Kami mengirim tautan ke {{email}}. Alamat Anda berubah setelah Anda mengkliknya.",
       "cancel": "Batal"
+    }
+  },
+  "gameInfo": {
+    "tabs": {
+      "info": "Info permainan",
+      "totalBets": "Taruhan ronde ini"
+    },
+    "round": {
+      "players": "Pemain: {{count}}",
+      "cashedOut": "Dicairkan di",
+      "profit": "Untung",
+      "empty": "Belum ada taruhan di ronde ini.",
+      "emptySide": "Belum ada taruhan di sisi ini."
+    },
+    "sections": {
+      "howToPlay": "Cara bermain",
+      "payouts": "Pembayaran",
+      "paylines": "Garis pembayaran",
+      "goodToKnow": "Perlu diketahui"
+    },
+    "facts": {
+      "rtp": "Pengembalian ke pemain",
+      "edge": "Keunggulan bandar",
+      "bet": "Taruhan",
+      "maxWin": "Kemenangan maksimum",
+      "points": "Poin papan peringkat",
+      "perKp": "{{points}} per K₽",
+      "noCap": "Tanpa batas",
+      "none": "Tidak ada",
+      "range": "{{min}} sampai {{max}}",
+      "rtpSides": "Pengembalian di {{heads}} atau {{tails}}",
+      "rtpPurple": "Pengembalian di {{purpleName}}",
+      "return": "Pengembalian",
+      "maxChance": "Peluang tertinggi",
+      "entry": "Biaya masuk",
+      "entryValue": "Jumlah harga peti",
+      "cases": "Peti",
+      "players": "Pemain"
+    },
+    "chips": {
+      "rtp": "RTP {{rtp}}%",
+      "fair": "Provably fair",
+      "items": "Dimainkan dengan item"
+    },
+    "table": {
+      "chance": "Peluang",
+      "winChance": "Peluang menang",
+      "multiplier": "Pengali",
+      "symbol": "Simbol",
+      "threeInLine": "Tiga dalam satu garis",
+      "perLine": "Peluang per garis",
+      "oneIn": "1 dari {{n}}",
+      "slot": "Slot",
+      "center": "Tengah",
+      "edge": "Tepi",
+      "fromCenter": "{{n}} dari tengah",
+      "cashoutAt": "Cairkan di",
+      "side": "Sisi",
+      "pays": "Bayar",
+      "outcome": "Hasil",
+      "card": "Kartu",
+      "minesGems": "Ranjau / gems",
+      "targetRarity": "Kelangkaan target",
+      "return": "Pengembalian",
+      "maxChance": "Peluang tertinggi",
+      "mode": "Mode",
+      "players": "Pemain"
+    },
+    "lines": {
+      "top": "Baris atas",
+      "middle": "Baris tengah",
+      "bottom": "Baris bawah",
+      "diagonal": "Diagonal"
+    },
+    "symbols": {
+      "wild": "Kucing (wild)",
+      "yellow": "Dompet katak",
+      "hakkero": "Hakkero",
+      "yin_yang": "Bola yin-yang",
+      "green": "Lily",
+      "blue": "Boneka Shanghai",
+      "red": "Ular"
+    },
+    "fairTitle": "Keadilan",
+    "verifyLink": "Buka halaman Provably Fair",
+    "crash": {
+      "summary": "Pengali naik dari 1.00x sampai meledak di titik acak. Cairkan sebelum meledak untuk memenangkan taruhan dikali pengali; kalau Anda masih di dalam saat meledak, taruhan hilang.",
+      "step1": "Pasang taruhan selama hitung mundur sebelum ronde. Taruhan yang dipasang saat ronde berjalan menunggu ronde berikutnya.",
+      "step2": "Kalau mau, atur {{cashoutAt}}: server mencairkan untuk Anda di pengali itu, walau tab Anda tertutup.",
+      "step3": "Perhatikan pengali naik dan tekan {{cashOut}} sebelum meledak.",
+      "payouts": "Anda memenangkan taruhan dikali pengali saat Anda mencairkan. Dengan {{cashoutAt}} di x, peluang Anda dibayar adalah 96,03% dibagi x, pengembalian 96,03% yang sama di target mana pun. Sekitar 4% ronde meledak di 1.00x, sebelum siapa pun sempat mencairkan.",
+      "note1": "Satu taruhan per ronde, dan pencairan mengambil seluruh taruhan.",
+      "note2": "{{cashoutAt}} berlaku dari 1.01x sampai 10.000x. Kalau ronde meledak tepat di target Anda, taruhan kalah.",
+      "note3": "Kalau server memulai ulang di tengah ronde, ronde dibatalkan dan setiap taruhan yang masih di dalam dikembalikan.",
+      "note4": "XP diberikan saat taruhan selesai: pencairan di 2x atau lebih, atau taruhan yang bertahan sampai crash, mendapat XP penuh; di bawah 2x lebih sedikit (1,5x setengahnya, 1,01x hampir tidak ada).",
+      "fair": "Titik ledak setiap ronde ditetapkan sebelum taruhan dibuka. Hash seed-nya diumumkan saat taruhan dibuka dan seed-nya diungkap saat ronde berakhir, jadi hasilnya tidak bisa berubah setelah taruhan masuk."
+    },
+    "coinflip": {
+      "summary": "Pilih satu sisi dan lihat koin berputar. Lemparan baru dimulai setiap beberapa detik, dan semua orang bertaruh di koin yang sama.",
+      "step1": "Atur taruhan Anda. Minimumnya 10.",
+      "step2": "Pilih satu sisi sebelum hitung mundur habis.",
+      "step3": "Koin berputar selama 5 detik. Kalau jatuh di sisi Anda, Anda memenangkan taruhan dikali pengali sisi itu.",
+      "payouts": "{{heads}} dan {{tails}} masing-masing keluar {{sideChance}}% dari waktu dan membayar {{side}}x. {{purpleName}} keluar {{purpleChance}}% dari waktu dan membayar {{purple}}x.",
+      "payoutsPlain": "{{heads}} dan {{tails}} masing-masing keluar separuh waktu dan membayar {{side}}x.",
+      "note1": "Satu taruhan per lemparan, di satu sisi.",
+      "note2": "Bandar membayar setiap pemenang dengan odds tetap, jadi total taruhan di tiap sisi tidak mengubah pembayaran Anda.",
+      "note3": "Pembayaran dibulatkan ke bawah ke K₽ bulat.",
+      "note4": "Kalau server memulai ulang saat hitung mundur, lemparan dibatalkan dan semua taruhan dikembalikan.",
+      "fair": "Hasil setiap lemparan ditetapkan oleh seed sebelum taruhan dibuka. Hash-nya diumumkan saat taruhan dibuka dan seed-nya diungkap setelah lemparan."
+    },
+    "slots": {
+      "summary": "Mesin slot 3×3 dengan lima garis pembayaran: tiga baris dan dua diagonal. Tiga yang sama dalam satu garis membayar, dan kucingnya wild.",
+      "step1": "Atur taruhan dengan tombol minus dan plus.",
+      "step2": "Putar. Gulungan berhenti satu per satu.",
+      "step3": "Setiap garis yang menampilkan tiga yang sama membayar taruhan Anda dikali pengali simbol itu.",
+      "payouts": "Garis yang menang dijumlahkan. Kucing bisa menggantikan simbol apa pun: tiga kucing membayar 100x, sedangkan dua kucing dan simbol lain membayar sesuai simbol itu. Putaran terbaik yang mungkin, sembilan kucing, membayar 500x.",
+      "note1": "Sekitar satu dari tiga putaran menang sesuatu, dan sekitar satu dari 24 membayar 8x atau lebih.",
+      "note2": "Garis ular membayar setengah taruhan, jadi putaran bisa menang tapi tetap mengembalikan kurang dari taruhan Anda.",
+      "fair": "Papan setiap putaran berasal dari server seed, client seed, dan nonce Anda: sembilan undian, satu per kotak. Seed Anda ada di halaman Provably Fair, dan putaran bisa dicek manual setelah Anda mengganti seed."
+    },
+    "upgrade": {
+      "summary": "Tukar item dari inventaris Anda dengan peluang mendapat item yang lebih baik dari peti yang sama. Makin besar nilai yang Anda masukkan, makin tinggi peluangnya.",
+      "step1": "Pilih satu atau beberapa item Anda untuk dimasukkan. Favorit terkunci dan tidak bisa dipakai.",
+      "step2": "Pilih item yang Anda inginkan dari peti yang sama: kelangkaan yang sama, atau sampai dua tingkat di atas item Anda.",
+      "step3": "Tekan Upgrade. Kalau menang, item itu milik Anda; kalau kalah, item yang Anda masukkan hilang.",
+      "payouts": "Peluang Anda adalah nilai item Anda dibagi nilai target, dikali pengembalian kelangkaan target, sampai peluang tertinggi kelangkaan itu. Nilainya adalah nilai dasar item.",
+      "note1": "Begitu peluang Anda mencapai peluang tertinggi kelangkaan itu, menambah item tidak menaikkannya lagi.",
+      "note2": "Semua item yang Anda masukkan dan targetnya harus dari peti yang sama.",
+      "note3": "Upgrade tidak memakai K₽ dan tidak memberi poin papan peringkat atau XP.",
+      "fair": "Undiannya adalah satu tarikan dari server seed, client seed, dan nonce Anda: Anda menang kalau hasilnya di bawah peluang Anda. Seed Anda ada di halaman Provably Fair."
+    },
+    "battles": {
+      "summary": "Buka peti yang sama dengan sampai tiga pemain lain. Siapa yang membuka nilai paling tinggi mengambil semua item, atau yang paling rendah di Mode Dongo.",
+      "step1": "Buat battle: pilih 1 sampai 20 peti dan satu mode. Biaya masuknya adalah jumlah harga peti.",
+      "step2": "Tunggu pemain bergabung, atau isi kursi dengan bot. Host memulai battle setelah semua kursi terisi.",
+      "step3": "Semua orang membuka peti yang sama, satu ronde demi satu ronde. Setelah peti terakhir, total tertinggi mengambil semua item.",
+      "payouts": "Pemenang mendapat semua item, bukan K₽. Hasil seri ditentukan oleh undian dari seed battle.",
+      "note1": "Tidak ada yang membayar sampai host memulai. Kalau host keluar sebelum itu, battle dibatalkan.",
+      "note2": "Setelah dimulai, battle berjalan sampai selesai walau ada pemain yang keluar.",
+      "note3": "Bot membuka peti yang sama secara gratis, dan apa pun yang dimenangkan bot menjadi milik bandar.",
+      "fair": "Setiap peti diundi sebelum pembukaan pertama, dari seed battle dan client seed tiap pemain. Hash seed ditampilkan saat battle dimulai dan seed-nya diungkap saat selesai."
+    },
+    "plinko": {
+      "summary": "Jatuhkan bola melewati 16 baris pasak. Di setiap baris bola memantul ke kiri atau kanan lalu masuk ke salah satu dari 17 slot, dan pengali slot itu menentukan pembayaran Anda.",
+      "step1": "Atur taruhan dan pilih risiko: rendah, sedang, atau tinggi.",
+      "step2": "Jatuhkan satu bola, atau nyalakan mode otomatis untuk menjatuhkan 10, 25, 50, atau 100. Sampai 12 bola bisa jatuh bersamaan.",
+      "step3": "Di mana bola mendarat, taruhan Anda dikali nilai slot itu.",
+      "payouts": "Setiap pantulan seperti lempar koin, jadi slot tengah paling sering dan tepi paling jarang: salah satu tepi hanya kena sekali dalam 32.768 bola. Risiko lebih tinggi membayar lebih besar di tepi dan lebih kecil di tengah. Arahkan kursor ke slot di papan untuk melihat peluangnya.",
+      "note1": "Taruhan maksimum adalah {{low}} di risiko rendah, {{medium}} di sedang, dan {{high}} di tinggi.",
+      "note2": "Risiko tidak bisa diganti saat ada bola yang sedang jatuh.",
+      "fair": "Setiap bola memakai 16 undian dari server seed, client seed, dan nonce Anda, satu per baris: di bawah setengah ke kiri, sisanya ke kanan. Klik hasil untuk membukanya di halaman Provably Fair dan memverifikasinya setelah Anda mengganti seed.",
+      "low": "Rendah",
+      "medium": "Sedang",
+      "high": "Tinggi"
+    },
+    "blackjack": {
+      "summary": "Kalahkan dealer dengan mendekati 21 tanpa lewat. Blackjack membayar 3 banding 2, dan dealer berhenti di setiap 17.",
+      "step1": "Pasang taruhan dan bagikan kartu. Anda mendapat dua kartu dan dealer membuka satu.",
+      "step2": "Hit untuk mengambil kartu, Stand untuk menahan tangan Anda, Double untuk menggandakan taruhan demi satu kartu terakhir, atau Split untuk memecah pasangan menjadi dua tangan.",
+      "step3": "Dealer mengambil kartu sampai 17 atau lebih. Lebih dekat ke 21 daripada dealer menang; lewat dari 21 kalah.",
+      "payouts": "Menang membayar 1 banding 1 dan seri mengembalikan taruhan Anda. Blackjack, yaitu As dan kartu bernilai sepuluh sebagai dua kartu pertama, membayar 3 banding 2, dibulatkan ke bawah. Saat dealer membuka As, Anda bisa membeli asuransi seharga setengah taruhan; asuransi membayar 2 banding 1 kalau dealer dapat blackjack. Kalau dimainkan dengan baik, pengembaliannya sekitar 99,4%.",
+      "note1": "Dek tidak pernah habis: setiap kartu adalah undian baru, jadi menghitung kartu tidak membantu.",
+      "note2": "Anda bisa split sekali, dan hanya dua kartu dengan nilai yang sama: K dan Q bukan pasangan. As yang di-split masing-masing mendapat satu kartu.",
+      "note3": "Tidak ada surrender, dan 21 di tangan hasil split membayar 1 banding 1.",
+      "note4": "Pintasan: H hit, S stand, D double, P split, Spasi bagikan.",
+      "note5": "Tangan yang dibiarkan 10 menit diselesaikan untuk Anda: tangan Anda stand dan dealer bermain.",
+      "fair": "Setiap kartu adalah undian dari server seed, client seed, dan nonce Anda, satu per kartu. Buka satu tangan dari riwayat Anda di halaman Provably Fair; setelah Anda mengganti seed, Verifikasi memutar ulang tangan itu.",
+      "rtp": "Sekitar 99,4%",
+      "outWin": "Menang",
+      "outBlackjack": "Blackjack",
+      "outInsurance": "Asuransi",
+      "outPush": "Seri",
+      "pays11": "1 banding 1",
+      "pays32": "3 banding 2",
+      "pays21": "2 banding 1",
+      "paysBack": "Taruhan kembali"
+    },
+    "dice": {
+      "summary": "Pilih target dan lempar angka dari 0.00 sampai 99.99. Bertaruh hasilnya di bawah atau di atas target: makin kecil peluang menang, makin besar bayarannya.",
+      "step1": "Atur taruhan, lalu geser penggeser atau ketik pengali atau peluang menang. Ketiganya menggerakkan target yang sama.",
+      "step2": "Ganti antara lempar di atas dan lempar di bawah dengan panah di samping target.",
+      "step3": "Lempar. Kalau angkanya jatuh di sisi target Anda, Anda memenangkan taruhan dikali pengali.",
+      "payouts": "Pengalinya adalah 99 dibagi peluang menang Anda, jadi setiap pengaturan mengembalikan rata-rata 99%. Peluang menang berkisar dari 2% (49.5x) sampai 98% (1.0102x).",
+      "note1": "Di atas menang kalau sama dengan target atau lebih tinggi; di bawah hanya menang kalau lebih rendah.",
+      "note2": "Mode otomatis memasang 10, 25, 50, atau 100 taruhan berturut-turut dengan pengaturan yang sama.",
+      "note3": "Pembayaran dibulatkan ke bawah ke sen.",
+      "fair": "Setiap lemparan adalah satu undian dari server seed, client seed, dan nonce Anda. Buka lemparan mana pun dari riwayat Anda di halaman Provably Fair; setelah Anda mengganti seed, Verifikasi memutar ulangnya."
+    },
+    "mines": {
+      "summary": "Kotak 5×5 menyembunyikan gems dan ranjau. Setiap gem yang Anda buka menaikkan pengali; kena ranjau dan taruhan hilang. Cairkan kapan pun Anda mau.",
+      "step1": "Atur taruhan dan pilih berapa ranjau yang disembunyikan, dari 1 sampai 24.",
+      "step2": "Klik kotak untuk membukanya. Setiap gem menaikkan pengali Anda.",
+      "step3": "Cairkan untuk mengambil taruhan dikali pengali saat ini. Buka semua gem dan Anda otomatis dicairkan.",
+      "payouts": "Setiap pengali adalah 0,99 dibagi peluang Anda sampai sejauh itu, jadi setiap jumlah ranjau dan setiap titik berhenti mengembalikan rata-rata 99%. Makin banyak ranjau, makin berharga setiap gem.",
+      "note1": "Anda bisa mencairkan setelah gem pertama.",
+      "note2": "Satu permainan membayar paling banyak K₽1.000.000.",
+      "note3": "Permainan yang dibiarkan 30 menit ditutup sebagai kekalahan, termasuk gems yang sudah dibuka.",
+      "note4": "Mode otomatis memilih kotak acak untuk Anda, selama 10 sampai 100 ronde.",
+      "fair": "Ranjau ditempatkan dari server seed, client seed, dan nonce Anda saat permainan dimulai dan tidak pernah berpindah. Buka permainan dari riwayat Anda di halaman Provably Fair; setelah Anda mengganti seed, Verifikasi menyusun ulang papannya."
+    },
+    "hilo": {
+      "summary": "Tebak apakah kartu berikutnya lebih tinggi atau lebih rendah dari kartu yang terbuka. Setiap tebakan benar melipatgandakan kemenangan; satu tebakan salah menghilangkan taruhan.",
+      "step1": "Atur taruhan dan mulai. Kartu pertama dibagikan.",
+      "step2": "Pilih {{higher}} atau {{lower}}. Lewati kartu gratis kalau Anda tidak suka.",
+      "step3": "Setiap tebakan benar melipatgandakan total Anda. Cairkan kapan saja setelah tebakan benar pertama.",
+      "payouts": "Setiap tebakan membayar 0,99 dibagi peluangnya: tebakan aman membayar sedikit, tebakan nekat membayar banyak. As paling rendah dan K paling tinggi. Saat kartunya As, lebih tinggi berarti benar-benar lebih tinggi; saat kartunya K, lebih rendah berarti benar-benar lebih rendah.",
+      "note1": "Dek tidak pernah habis: setiap kartu adalah undian baru, jadi kartu yang sama bisa keluar dua kali berturut-turut.",
+      "note2": "Anda bisa melewati sampai {{skips}} kali per permainan, dan melewati tidak pernah mengubah pengali Anda.",
+      "note3": "Satu permainan membayar paling banyak K₽1.000.000.",
+      "note4": "Permainan yang dibiarkan 30 menit ditutup sebagai kekalahan.",
+      "fair": "Setiap kartu adalah undian dari server seed, client seed, dan nonce Anda, satu per kartu. Buka permainan dari riwayat Anda di halaman Provably Fair; setelah Anda mengganti seed, Verifikasi memutar ulangnya.",
+      "chip": "Keunggulan 1% per tebakan",
+      "edgeValue": "1% per tebakan"
     }
   }
 }

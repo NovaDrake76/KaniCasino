@@ -33,4 +33,8 @@ const normalizeAutoCashout = (value) => {
   return rounded;
 };
 
-module.exports = { GROWTH, INSTANT_CRASH_CHANCE, multiplierAt, crashPointFromRandom, crashPointFromSeed, normalizeAutoCashout };
+// the share of its stake's xp a bet earns as it settles: all of it when it rides to the crash (null), and on a cash-out its
+// profit over its stake, whole from 2x up. cashing out at 1.01x round after round used to farm xp at almost no risk
+const xpWeight = (cashedOutAt) => (cashedOutAt == null ? 1 : Math.min(1, Math.max(0, cashedOutAt - 1)));
+
+module.exports = { GROWTH, INSTANT_CRASH_CHANCE, multiplierAt, crashPointFromRandom, crashPointFromSeed, normalizeAutoCashout, xpWeight };

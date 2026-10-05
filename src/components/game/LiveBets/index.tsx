@@ -12,11 +12,7 @@ const Feed = () => {
 const LiveBets = () => {
     const locked = useLocked("spyglass");
     if (locked) {
-        return (
-            <div className="w-full max-w-[1200px] mt-6">
-                <LockedBanner unlock="spyglass" />
-            </div>
-        );
+        return <LockedBanner unlock="spyglass" />;
     }
     return <Feed />;
 };

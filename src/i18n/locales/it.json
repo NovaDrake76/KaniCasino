@@ -35,7 +35,16 @@
     "yourReferralLinkIs": "Il tuo link di invito è attivo",
     "yourReferrals": "I tuoi invitati",
     "waitingVerification": "In attesa di verifica",
-    "verifiedOnly": "Guadagni da un amico quando il suo account è verificato con Google, Discord o email."
+    "verifiedOnly": "Guadagni da un amico quando il suo account è verificato con Google, Discord o email.",
+    "ruleFriend": "per il tuo amico, appena si registra con il tuo link",
+    "ruleVerify": "per te, quando il suo account è verificato",
+    "ruleMilestone": "per te, quando raggiunge il livello {{level}} e ha giocato in {{days}} giorni diversi",
+    "ruleCommission": "del vantaggio del banco su ogni sua puntata, da riscattare. Le previsioni non contano.",
+    "commissionExample": "Una puntata da {{amount}} ti fa guadagnare circa {{crash}} a crash, {{cases}} sulle casse e {{blackjack}} a blackjack.",
+    "ruleReview": "Un amico che gioca dalla tua stessa connessione aspetta una verifica dello staff prima di farti guadagnare qualcosa.",
+    "daysPlayed": "{{played}}/{{total}} giorni giocati",
+    "underReview": "In attesa di verifica dello staff",
+    "notEligible": "Non idoneo"
   },
   "arcade": {
     "backToCasino": "Torna al casinò",
@@ -216,32 +225,54 @@
     "wearing": "INDOSSATO"
   },
   "balance": {
+    "ad_reward": "Ricompensa pubblicità",
     "admin_adjust": "Rettifica amministrativa",
     "arcade_reward": "Premio dell'arcade",
     "battle_entry": "Iscrizione a battaglia",
     "battle_refund": "Rimborso battaglia",
+    "blackjack_bet": "Puntata a blackjack",
+    "blackjack_push": "Pareggio a blackjack",
+    "blackjack_refund": "Rimborso a blackjack",
+    "blackjack_win": "Vincita a blackjack",
     "bonus": "Bonus riscosso",
     "case_open": "Cassa aperta",
     "coinflip_bet": "Puntata a testa o croce",
+    "coinflip_refund": "Rimborso a testa o croce",
     "coinflip_win": "Vincita a testa o croce",
     "crash_bet": "Puntata al crash",
     "crash_cashout": "Incasso al crash",
+    "crash_refund": "Rimborso al crash",
+    "dice_bet": "Puntata ai dadi",
+    "dice_win": "Vincita ai dadi",
     "game_credit": "Bonus di Daisu",
     "game_credit_expired": "Bonus di Daisu scaduto",
+    "hilo_bet": "Puntata a HiLo",
+    "hilo_win": "Incasso a HiLo",
     "item_sell": "Venduto al negozio",
+    "leaderboard_prize": "Premio classifica",
     "market_buy": "Acquisto sul mercato",
     "market_order": "Ordine d'acquisto creato",
     "market_order_refund": "Ordine d'acquisto rimborsato",
     "market_sale": "Vendita sul mercato",
+    "mines_bet": "Puntata a mine",
+    "mines_win": "Incasso a mine",
     "missionReward": "Ricompensa missione: {{mission}}",
     "mission_reward": "Ricompensa missione",
     "openedCase": "Ha aperto {{case}}",
     "openedCasePlural": "Ha aperto {{case}} x{{count}}",
+    "opening_balance": "Saldo iniziale",
+    "plinko_bet": "Puntata al plinko",
+    "plinko_win": "Vincita al plinko",
     "prediction_buy": "Acquisto di quote",
     "prediction_payout": "Pagamento previsione",
     "prediction_refund": "Rimborso previsione",
     "prediction_sell": "Vendita di quote",
     "purchaseReversed": "Acquisto annullato",
+    "rain_payout": "Pioggia",
+    "referral_bonus": "Bonus invito",
+    "referral_commission": "Commissione inviti",
+    "referral_milestone": "Traguardo invito",
+    "shop_purchase": "Negozio di Daisu",
     "signup": "Bonus di benvenuto",
     "slot_bet": "Giro di slot",
     "slot_win": "Vincita alla slot",
@@ -718,7 +749,7 @@
     "tour": {
       "bet": {
         "blackjack": "Questa è la tua puntata per una mano. Avvicinati a 21 più del banco senza sforare. Chiedendo carta ne prendi un'altra; stando tieni quello che hai.",
-        "coinflip": "Questa è la tua puntata. Scegli testa o croce qui sotto ed entra nel prossimo lancio. Una vittoria paga 1,94x.",
+        "coinflip": "Questa è la tua puntata. Scegli un lato qui sotto ed entra nel prossimo lancio; ogni lato mostra quanto paga.",
         "crash": "Questa è la tua puntata. Il moltiplicatore sale finché non crolla; incassa prima e vinci la puntata per il moltiplicatore. Aspetti troppo e sparisce.",
         "dice": "Questa è la tua puntata: quello che rischi in un lancio. Il dado estrae un numero da 0 a 100; vinci se cade sul lato verde. Comincia piano, sei nuovo.",
         "hilo": "Questa è la tua puntata. Indovina se la prossima carta è più alta o più bassa; ogni risposta giusta alza la vincita. Incassa quando vuoi.",
@@ -924,7 +955,7 @@
         },
         "r4-stake": {
           "desc": "Punta {{target}} K₽ in totale, su qualsiasi cosa.",
-          "help": "Ogni puntata conta: giochi, casse, battaglie e previsioni. Si sommano più in fretta di quanto pensi.",
+          "help": "Ogni puntata conta: giochi, casse, battaglie, e previsioni quando il loro mercato si risolve. Si sommano più in fretta di quanto pensi.",
           "title": "Punta {{target}} K₽"
         },
         "r4-streak": {
@@ -1038,8 +1069,8 @@
           "title": "Punta K₽ {{target}}"
         },
         "r10-referrals": {
-          "desc": "Invita {{target}} amici che raggiungano il livello 10.",
-          "help": "Il tuo link affiliato è sul tuo profilo. Un amico conta quando arriva al livello 10, quindi porta gente che resta, non turisti.",
+          "desc": "Invita {{target}} amici che raggiungano il livello 10 e giochino in 7 giorni diversi.",
+          "help": "Il tuo link affiliato è sul tuo profilo. Un amico conta quando il suo traguardo viene pagato: livello 10 e sette giorni di gioco diversi. Porta gente che resta, non turisti.",
           "title": "Porta {{target}} amici al livello 10"
         },
         "r10-predictions": {
@@ -1145,15 +1176,15 @@
       "failed": "Acquisto non riuscito. Riprova.",
       "items": {
         "affiliateCard": {
-          "about": "Apre la scheda Affiliati: scegli il tuo codice invito e condividi il link. Ogni giocatore che si registra con quello ti fa guadagnare 1.000 K₽, altri 10.000 K₽ quando arriva al livello 10 e l'1% di tutto ciò che punta.",
+          "about": "Apre la scheda Affiliati: scegli il tuo codice invito e condividi il link. Ogni giocatore che si registra con quello ti fa guadagnare 1.000 K₽ quando verifica l'account, altri 10.000 K₽ quando arriva al livello 10 e ha giocato in 7 giorni diversi, e un quarto del vantaggio del banco su tutto ciò che punta.",
           "getIt": "Prendila nel negozio di Daisu",
           "kept": "mantenuta grazie al tuo codice invito",
-          "lockedBody": "La Tessera Affiliato ti dà un codice invito. Chiunque si registri con quello ti fa guadagnare K₽: 1.000 alla registrazione, 10.000 al livello 10 e l'1% di tutto ciò che punta.",
+          "lockedBody": "La Tessera Affiliato ti dà un codice invito. Chiunque si registri con quello ti fa guadagnare K₽: 1.000 quando verifica l'account, 10.000 al livello 10 dopo aver giocato in 7 giorni diversi e un quarto del vantaggio del banco su tutto ciò che punta.",
           "lockedTitle": "Gli affiliati sono bloccati",
           "name": "Tessera Affiliato",
           "opened": "Sei in affari. Scegli un codice e inizia a condividerlo. Ti faccio vedere dove?",
           "pitch": "Tu mi porti clienti, io ti pago una parte. Affari semplici.",
-          "what": "Il tuo codice invito: 1.000 K₽ per ogni registrazione, 10.000 K₽ al livello 10 e l'1% di tutto ciò che puntano i tuoi invitati."
+          "what": "Il tuo codice invito: 1.000 K₽ per ogni registrazione verificata, 10.000 K₽ quando arrivano al livello 10 e hanno giocato in 7 giorni diversi, e un quarto del vantaggio del banco su tutto ciò che puntano i tuoi invitati."
         },
         "chatPass": {
           "about": "Ti permette di mandare messaggi nella chat del sito. Per leggerla non serve mai un pass.",
@@ -1602,6 +1633,7 @@
     "aboutTheKanicasinoMarket": "Il mercato di KaniCasino",
     "canIUpgradeItems": "Posso migliorare gli oggetti del mio inventario?",
     "cases": "Casse",
+    "coinFlipBody": "In Testa o croce i giocatori scelgono un lato della moneta e ci puntano durante il conto alla rovescia. Poi la moneta viene lanciata, e chi ha scelto il lato su cui cade vince quanto paga quel lato, indicato sul suo pulsante.",
     "coinFlipGame": "Testa o croce",
     "contactUs": "Contattaci",
     "crashArtsAndBanner": "Le illustrazioni del crash e del banner vengono da Urban Legend in Limbo.",
@@ -1731,7 +1763,7 @@
     "game": "GIOCO",
     "houseEdge": "VANTAGGIO",
     "edgeVaries": "variabile",
-    "notScored": "L'Upgrade punta oggetti e non K₽, quindi non dà punti. Le vendite al mercato e il bonus da 8 minuti non sono puntate e non contano mai.",
+    "notScored": "L'Upgrade punta oggetti e non K₽, quindi non dà punti. Le vendite al mercato e il bonus da 8 minuti non sono puntate e non contano mai. Le previsioni contano quando il loro mercato si risolve, sulle quote che hai ancora; quelle rivendute prima non contano.",
     "resultTitle": "IERI SEI ARRIVATO #{{rank}}",
     "resultPoints": "{{points}} punti",
     "resultPaid": "Accreditato sul tuo saldo all'azzeramento di mezzanotte.",
@@ -1984,7 +2016,8 @@
     "loss": "Perdita",
     "profit": "Profitto",
     "youPaid": "Hai pagato",
-    "youReceive": "Ricevi"
+    "youReceive": "Ricevi",
+    "countsNote": "XP e punti in classifica arrivano quando il mercato si risolve, sulle quote che hai ancora. Le quote rivendute prima non danno né l'una né gli altri."
   },
   "profile": {
     "acceptRequest": "Accetta richiesta",
@@ -2017,7 +2050,7 @@
     "requestSent": "Richiesta inviata",
     "serviceMessagesAboutYour": "I messaggi di servizio sul tuo account, come avvisi di sicurezza e di policy, vengono inviati a prescindere da questa impostazione.",
     "somethingWentWrong": "Qualcosa è andato storto",
-    "toEvery1kSpent": "Ogni K₽ 1 puntato dà 5 XP, vinto o perso. I potenziamenti del negozio di Daisu si aggiungono.",
+    "toEvery1kSpent": "Ogni K₽ 1 puntato dà 5 XP, vinto o perso; a Crash, un incasso sotto 2x ne dà meno, e una previsione dà la sua XP quando il mercato si risolve. I potenziamenti del negozio di Daisu si aggiungono.",
     "updatesTurnedOff": "Novità disattivate",
     "weAreNotSending": "Non stiamo scrivendo al tuo indirizzo perché una e-mail precedente è tornata indietro o è stata segnalata come spam. Scrivici se pensi sia un errore.",
     "xpBonus": "+{{pct}}% XP",
@@ -2160,6 +2193,219 @@
       "sendChange": "Invia link di conferma",
       "changeSent": "Abbiamo inviato un link a {{email}}. Il tuo indirizzo cambia quando ci clicchi.",
       "cancel": "Annulla"
+    }
+  },
+  "gameInfo": {
+    "tabs": {
+      "info": "Info sul gioco",
+      "totalBets": "Puntate del round"
+    },
+    "round": {
+      "players": "Giocatori: {{count}}",
+      "cashedOut": "Incassato a",
+      "profit": "Profitto",
+      "empty": "Ancora nessuna puntata in questo round.",
+      "emptySide": "Ancora nessuna puntata su questo lato."
+    },
+    "sections": {
+      "howToPlay": "Come si gioca",
+      "payouts": "Vincite",
+      "paylines": "Linee di pagamento",
+      "goodToKnow": "Buono a sapersi"
+    },
+    "facts": {
+      "rtp": "Ritorno al giocatore",
+      "edge": "Vantaggio del banco",
+      "bet": "Puntata",
+      "maxWin": "Vincita massima",
+      "points": "Punti classifica",
+      "perKp": "{{points}} per K₽",
+      "noCap": "Nessun limite",
+      "none": "Nessuno",
+      "range": "Da {{min}} a {{max}}",
+      "rtpSides": "Ritorno su {{heads}} o {{tails}}",
+      "rtpPurple": "Ritorno su {{purpleName}}",
+      "return": "Ritorno",
+      "maxChance": "Probabilità massima",
+      "entry": "Iscrizione",
+      "entryValue": "Somma dei prezzi delle casse",
+      "cases": "Casse",
+      "players": "Giocatori"
+    },
+    "chips": {
+      "rtp": "RTP {{rtp}}%",
+      "fair": "Provably fair",
+      "items": "Si gioca con gli oggetti"
+    },
+    "table": {
+      "chance": "Probabilità",
+      "winChance": "Probabilità di vincita",
+      "multiplier": "Moltiplicatore",
+      "symbol": "Simbolo",
+      "threeInLine": "Tre in linea",
+      "perLine": "Probabilità per linea",
+      "oneIn": "1 su {{n}}",
+      "slot": "Casella",
+      "center": "Centro",
+      "edge": "Bordo",
+      "fromCenter": "{{n}} dal centro",
+      "cashoutAt": "Incassa a",
+      "side": "Lato",
+      "pays": "Paga",
+      "outcome": "Esito",
+      "card": "Carta",
+      "minesGems": "Mine / gemme",
+      "targetRarity": "Rarità obiettivo",
+      "return": "Ritorno",
+      "maxChance": "Probabilità massima",
+      "mode": "Modalità",
+      "players": "Giocatori"
+    },
+    "lines": {
+      "top": "Riga in alto",
+      "middle": "Riga centrale",
+      "bottom": "Riga in basso",
+      "diagonal": "Diagonale"
+    },
+    "symbols": {
+      "wild": "Gatto (jolly)",
+      "yellow": "Borsellino a rana",
+      "hakkero": "Hakkero",
+      "yin_yang": "Sfera yin-yang",
+      "green": "Lily",
+      "blue": "Bambola di Shanghai",
+      "red": "Serpente"
+    },
+    "fairTitle": "Equità verificabile",
+    "verifyLink": "Vai alla pagina Provably Fair",
+    "crash": {
+      "summary": "Un moltiplicatore sale da 1.00x finché non crolla in un punto casuale. Incassa prima del crollo per vincere la puntata per il moltiplicatore; se sei ancora dentro quando crolla, la puntata è persa.",
+      "step1": "Punta durante il conto alla rovescia prima del round. Una puntata fatta a round in corso aspetta il successivo.",
+      "step2": "Se vuoi, imposta {{cashoutAt}}: il server incassa per te a quel moltiplicatore, anche a scheda chiusa.",
+      "step3": "Guarda il moltiplicatore salire e premi {{cashOut}} prima del crollo.",
+      "payouts": "Vinci la puntata per il moltiplicatore del momento in cui incassi. Con {{cashoutAt}} impostato su x, la probabilità di essere pagato è 96,03% diviso x, lo stesso ritorno del 96,03% con qualsiasi obiettivo. Circa il 4% dei round crolla a 1.00x, prima che chiunque possa incassare.",
+      "note1": "Una puntata per round, e incassando prendi l'intera puntata.",
+      "note2": "{{cashoutAt}} va da 1.01x a 10.000x. Se il round crolla esattamente sul tuo obiettivo, la puntata perde.",
+      "note3": "Se il server si riavvia a metà round, il round viene annullato e ogni puntata ancora in gioco viene rimborsata.",
+      "note4": "L'XP arriva quando la puntata si chiude: un incasso da 2x in su, o una puntata che resta fino al crash, dà tutta la sua XP; sotto 2x ne dà meno (1,5x la metà, 1,01x quasi niente).",
+      "fair": "Il punto di crollo di ogni round è fissato prima dell'apertura delle puntate. L'hash del suo seed viene pubblicato all'apertura delle puntate e il seed viene rivelato a fine round, quindi il risultato non può cambiare dopo le puntate."
+    },
+    "coinflip": {
+      "summary": "Scegli un lato e guarda la moneta girare. Un nuovo lancio parte ogni pochi secondi, e tutti puntano sulla stessa moneta.",
+      "step1": "Imposta la puntata. Il minimo è 10.",
+      "step2": "Scegli un lato prima che finisca il conto alla rovescia.",
+      "step3": "La moneta gira per 5 secondi. Se cade sul tuo lato, vinci la puntata per il moltiplicatore di quel lato.",
+      "payouts": "{{heads}} e {{tails}} escono ciascuno il {{sideChance}}% delle volte e pagano {{side}}x. {{purpleName}} esce il {{purpleChance}}% delle volte e paga {{purple}}x.",
+      "payoutsPlain": "{{heads}} e {{tails}} escono ciascuno metà delle volte e pagano {{side}}x.",
+      "note1": "Una puntata per lancio, su un solo lato.",
+      "note2": "Il banco paga ogni vincitore a quote fisse, quindi il totale puntato su ogni lato non cambia la tua vincita.",
+      "note3": "Le vincite sono arrotondate per difetto al K₽ intero.",
+      "note4": "Se il server si riavvia durante il conto alla rovescia, il lancio viene annullato e ogni puntata rimborsata.",
+      "fair": "Il risultato di ogni lancio è fissato da un seed prima dell'apertura delle puntate. Il suo hash viene pubblicato all'apertura e il seed viene rivelato dopo il lancio."
+    },
+    "slots": {
+      "summary": "Una slot 3×3 con cinque linee di pagamento: le tre righe e le due diagonali. Tre uguali su una linea pagano, e il gatto è jolly.",
+      "step1": "Imposta la puntata con i pulsanti meno e più.",
+      "step2": "Gira. I rulli si fermano uno dopo l'altro.",
+      "step3": "Ogni linea con tre uguali paga la puntata per il moltiplicatore di quel simbolo.",
+      "payouts": "Le linee vincenti si sommano. Il gatto sostituisce qualsiasi simbolo: tre gatti pagano 100x, mentre due gatti e un altro simbolo pagano quanto quel simbolo. Il miglior giro possibile, nove gatti, paga 500x.",
+      "note1": "Circa un giro su tre vince qualcosa, e circa uno su 24 paga 8x o più.",
+      "note2": "Una linea di serpenti paga metà della puntata, quindi un giro può vincere e restituire comunque meno di quanto hai puntato.",
+      "fair": "La griglia di ogni giro deriva dal tuo seed del server, dal tuo seed del client e dal nonce: nove estrazioni, una per casella. I tuoi seed sono nella pagina Provably Fair, e un giro si può controllare a mano dopo aver cambiato seed."
+    },
+    "upgrade": {
+      "summary": "Scambia oggetti del tuo inventario con la possibilità di ottenere un oggetto migliore dalla stessa cassa. Più valore metti, più alta è la probabilità.",
+      "step1": "Scegli uno o più dei tuoi oggetti da mettere in gioco. I preferiti sono bloccati e non si possono usare.",
+      "step2": "Scegli l'oggetto che vuoi dalla stessa cassa: della stessa rarità o fino a due rarità sopra i tuoi oggetti.",
+      "step3": "Premi Migliora. Se vinci, l'oggetto è tuo; se perdi, gli oggetti messi in gioco spariscono.",
+      "payouts": "La tua probabilità è il valore dei tuoi oggetti diviso il valore dell'obiettivo, per il ritorno della rarità dell'obiettivo, fino alla probabilità massima di quella rarità. I valori sono i valori base degli oggetti.",
+      "note1": "Quando la probabilità raggiunge il massimo per quella rarità, aggiungere oggetti non la alza più.",
+      "note2": "Tutti gli oggetti messi in gioco e l'obiettivo devono venire dalla stessa cassa.",
+      "note3": "I miglioramenti non usano K₽ e non danno punti classifica né XP.",
+      "fair": "Il tiro è un'estrazione dal tuo seed del server, dal tuo seed del client e dal nonce: vinci se cade sotto la tua probabilità. I tuoi seed sono nella pagina Provably Fair."
+    },
+    "battles": {
+      "summary": "Apri le stesse casse di altri tre giocatori al massimo. Chi trova più valore si prende tutti gli oggetti, o chi ne trova meno in Modalità baka.",
+      "step1": "Crea una battaglia: scegli da 1 a 20 casse e una modalità. L'iscrizione è la somma dei prezzi delle casse.",
+      "step2": "Aspetta che entrino giocatori o riempi i posti con dei bot. L'host avvia la battaglia quando tutti i posti sono occupati.",
+      "step3": "Tutti aprono le stesse casse, un round alla volta. Dopo l'ultima cassa, il totale più alto si prende tutti gli oggetti.",
+      "payouts": "Il vincitore prende tutti gli oggetti, non K₽. Un pareggio viene deciso da un tiro dal seed della battaglia.",
+      "note1": "Nessuno paga finché l'host non avvia. Se l'host esce prima, la battaglia viene annullata.",
+      "note2": "Una volta avviata, la battaglia arriva in fondo anche se i giocatori escono.",
+      "note3": "I bot aprono le stesse casse gratis, e ciò che vince un bot va al banco.",
+      "fair": "Ogni cassa viene estratta prima della prima rivelazione, dal seed della battaglia e dal seed del client di ogni giocatore. L'hash del seed viene mostrato all'avvio e il seed rivelato alla fine."
+    },
+    "plinko": {
+      "summary": "Lascia cadere una pallina attraverso 16 file di pioli. Rimbalza a sinistra o a destra a ogni fila e finisce in una di 17 caselle, il cui moltiplicatore decide la vincita.",
+      "step1": "Imposta la puntata e scegli un rischio: basso, medio o alto.",
+      "step2": "Lascia cadere una pallina, oppure attiva la modalità automatica per lanciarne 10, 25, 50 o 100. Possono cadere fino a 12 palline insieme.",
+      "step3": "Dove cade la pallina, la puntata viene moltiplicata per il valore di quella casella.",
+      "payouts": "Ogni rimbalzo è testa o croce, quindi le caselle centrali sono le più comuni e i bordi i più rari: l'uno o l'altro bordo esce una volta ogni 32.768 palline. Un rischio più alto paga di più ai bordi e meno al centro. Passa il mouse su una casella del tabellone per vederne la probabilità.",
+      "note1": "La puntata massima è {{low}} con rischio basso, {{medium}} con medio e {{high}} con alto.",
+      "note2": "Il rischio non si può cambiare mentre cadono palline.",
+      "fair": "Ogni pallina usa 16 estrazioni dal tuo seed del server, dal tuo seed del client e dal nonce, una per fila: sotto la metà va a sinistra, il resto a destra. Clicca un risultato per aprirlo nella pagina Provably Fair e verificarlo dopo aver cambiato seed.",
+      "low": "Basso",
+      "medium": "Medio",
+      "high": "Alto"
+    },
+    "blackjack": {
+      "summary": "Batti il banco avvicinandoti a 21 più di lui senza superarlo. Il blackjack paga 3 a 2, e il banco sta su ogni 17.",
+      "step1": "Punta e distribuisci. Ricevi due carte e il banco ne mostra una.",
+      "step2": "Carta per prenderne un'altra, Stai per tenere la mano, Raddoppia per raddoppiare la puntata con un'ultima carta, o Dividi una coppia in due mani.",
+      "step3": "Il banco pesca fino a 17 o più. Più vicino a 21 del banco vince; oltre 21 perde.",
+      "payouts": "Una vittoria paga 1 a 1 e un pareggio ti restituisce la puntata. Un blackjack, un asso e una carta da dieci come prime due carte, paga 3 a 2, arrotondato per difetto. Quando il banco mostra un asso puoi comprare un'assicurazione per metà della puntata; paga 2 a 1 se il banco ha blackjack. Giocando bene, il gioco restituisce circa il 99,4%.",
+      "note1": "Il mazzo non finisce mai: ogni carta è un'estrazione nuova, quindi contare le carte non serve.",
+      "note2": "Puoi dividere una volta sola, e solo due carte dello stesso valore: un re e una regina non sono una coppia. Gli assi divisi ricevono una carta ciascuno.",
+      "note3": "Non c'è la resa, e un 21 su una mano divisa paga 1 a 1.",
+      "note4": "Scorciatoie: H carta, S stai, D raddoppia, P dividi, Spazio distribuisci.",
+      "note5": "Una mano lasciata ferma per 10 minuti viene chiusa per te: le tue mani stanno e il banco gioca.",
+      "fair": "Ogni carta è un'estrazione dal tuo seed del server, dal tuo seed del client e dal nonce, una per carta. Apri una mano dalla cronologia nella pagina Provably Fair; dopo aver cambiato seed, Verifica la rigioca.",
+      "rtp": "Circa 99,4%",
+      "outWin": "Vittoria",
+      "outBlackjack": "Blackjack",
+      "outInsurance": "Assicurazione",
+      "outPush": "Pareggio",
+      "pays11": "1 a 1",
+      "pays32": "3 a 2",
+      "pays21": "2 a 1",
+      "paysBack": "Ti torna la puntata"
+    },
+    "dice": {
+      "summary": "Scegli un obiettivo e tira un numero da 0.00 a 99.99. Punta sul fatto che il tiro cada sotto o sopra il tuo obiettivo: meno è probabile la vincita, più paga.",
+      "step1": "Imposta la puntata, poi trascina il cursore o scrivi un moltiplicatore o una probabilità di vincita. Tutti e tre spostano lo stesso obiettivo.",
+      "step2": "Passa da «sopra» a «sotto» con le frecce accanto all'obiettivo.",
+      "step3": "Tira. Se il numero cade dalla tua parte dell'obiettivo, vinci la puntata per il moltiplicatore.",
+      "payouts": "Il moltiplicatore è 99 diviso la tua probabilità di vincita, quindi ogni impostazione restituisce il 99% in media. Le probabilità vanno dal 2% (49.5x) al 98% (1.0102x).",
+      "note1": "Sopra vince sull'obiettivo stesso o più su; sotto vince solo più giù.",
+      "note2": "La modalità automatica fa 10, 25, 50 o 100 puntate di fila con le stesse impostazioni.",
+      "note3": "Le vincite sono arrotondate per difetto al centesimo.",
+      "fair": "Ogni tiro è un'estrazione dal tuo seed del server, dal tuo seed del client e dal nonce. Apri un tiro dalla cronologia nella pagina Provably Fair; dopo aver cambiato seed, Verifica lo rigioca."
+    },
+    "mines": {
+      "summary": "Una griglia 5×5 nasconde gemme e mine. Ogni gemma che scopri alza il moltiplicatore; se trovi una mina, la puntata è persa. Incassa quando vuoi.",
+      "step1": "Imposta la puntata e scegli quante mine nascondere, da 1 a 24.",
+      "step2": "Clicca le caselle per scoprirle. Ogni gemma alza il tuo moltiplicatore.",
+      "step3": "Incassa per prendere la puntata per il moltiplicatore attuale. Se scopri tutte le gemme, incassi in automatico.",
+      "payouts": "Ogni moltiplicatore è 0,99 diviso la probabilità di essere arrivato fin lì, quindi ogni numero di mine e ogni punto di arresto restituisce il 99% in media. Più mine rendono ogni gemma più preziosa.",
+      "note1": "Puoi incassare dopo la prima gemma.",
+      "note2": "Una partita paga al massimo K₽1.000.000.",
+      "note3": "Una partita lasciata ferma per 30 minuti viene chiusa come persa, gemme comprese.",
+      "note4": "La modalità automatica sceglie caselle a caso per te, da 10 a 100 round.",
+      "fair": "Le mine vengono piazzate dal tuo seed del server, dal tuo seed del client e dal nonce all'inizio della partita e non si spostano mai. Apri una partita dalla cronologia nella pagina Provably Fair; dopo aver cambiato seed, Verifica ricostruisce il tabellone."
+    },
+    "hilo": {
+      "summary": "Indovina se la prossima carta è più alta o più bassa di quella scoperta. Ogni risposta giusta moltiplica la vincita; un errore fa perdere la puntata.",
+      "step1": "Imposta la puntata e inizia. Viene distribuita la prima carta.",
+      "step2": "Scegli {{higher}} o {{lower}}. Salta la carta gratis se non ti piace.",
+      "step3": "Ogni risposta giusta moltiplica il totale. Incassa quando vuoi dopo la prima risposta giusta.",
+      "payouts": "Ogni previsione paga 0,99 diviso la sua probabilità: una scelta sicura paga poco, un azzardo paga molto. L'asso è la carta più bassa e il re la più alta. Su un asso, più alta vuol dire strettamente più alta; su un re, più bassa vuol dire strettamente più bassa.",
+      "note1": "Il mazzo non finisce mai: ogni carta è un'estrazione nuova, quindi la stessa carta può uscire due volte di fila.",
+      "note2": "Puoi saltare fino a {{skips}} volte per partita, e saltare non cambia mai il moltiplicatore.",
+      "note3": "Una partita paga al massimo K₽1.000.000.",
+      "note4": "Una partita lasciata ferma per 30 minuti viene chiusa come persa.",
+      "fair": "Ogni carta è un'estrazione dal tuo seed del server, dal tuo seed del client e dal nonce, una per carta. Apri una partita dalla cronologia nella pagina Provably Fair; dopo aver cambiato seed, Verifica la rigioca.",
+      "chip": "1% di vantaggio per previsione",
+      "edgeValue": "1% per previsione"
     }
   }
 }

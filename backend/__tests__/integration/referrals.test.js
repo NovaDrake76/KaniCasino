@@ -13,22 +13,28 @@ jest.mock("google-auth-library", () => ({
 
 const request = require("supertest");
 const { setupDb, clearDb, teardownDb } = require("./db");
-const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
+const { makeApp, tokenFor, uniqueSuffix, betOnDays } = require("./helpers");
 
 const User = require("../../models/User");
 const Transaction = require("../../models/Transaction");
 const Notification = require("../../models/Notification");
+const IpSighting = require("../../models/IpSighting");
 const { TX, awardXp, calculateXPForLevel, chargeUser } = require("../../utils/economy");
 const { HOUSE, MINT } = require("../../utils/accounts");
 const {
   REFERRER_SIGNUP_BONUS,
   REFEREE_SIGNUP_BONUS,
   MILESTONE_LEVEL,
+  MILESTONE_DAYS,
   MILESTONE_BONUS,
-  COMMISSION_RATE,
+  COMMISSION_SHARE,
+  HOUSE_EDGE,
+  LEGACY_COMMISSION_RATE,
   maybePayReferralMilestone,
+  sweepReferrals,
 } = require("../../utils/referrals");
 const verification = require("../../utils/verification");
+const ipSightings = require("../../utils/ipSightings");
 
 // the level hooks fire and forget, so tests wait for the money to land
 async function waitFor(check, ms = 2000) {
@@ -76,10 +82,17 @@ const registerWith = (referralCode) => {
   });
 };
 
-const wager = (userId, amount, createdAt) => {
-  const doc = { userId, type: TX.CRASH_BET, direction: "debit", amount };
+const wager = (userId, amount, createdAt, type = TX.CRASH_BET) => {
+  const doc = { userId, type, direction: "debit", amount };
   if (createdAt) doc.createdAt = createdAt;
   return Transaction.create(doc);
+};
+
+// the accounts seen on one connection, which is what holds a referral for staff
+const sameConnection = async (...users) => {
+  const ipHash = ipSightings.hashIp(`10.0.${uniqueSuffix()}`);
+  const at = new Date();
+  for (const u of users) await IpSighting.create({ userId: u._id, ipHash, firstAt: at, lastAt: at });
 };
 
 describe("POST /referrals/code", () => {
@@ -250,7 +263,8 @@ describe("google sign-in with a referral code", () => {
 describe("the level milestone", () => {
   test("a referee reaching the level pays the referrer once, with notifications", async () => {
     const referrer = await makeUser({ walletBalance: 0 });
-    const referee = await makeVerified({ referredBy: referrer._id });
+    const referee = await makeVerified({ referredBy: referrer._id, level: MILESTONE_LEVEL });
+    await betOnDays(referee._id, MILESTONE_DAYS);
 
     await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL);
 
@@ -267,9 +281,31 @@ describe("the level milestone", () => {
     expect(await Transaction.countDocuments({ type: TX.REFERRAL_MILESTONE })).toBe(1);
   });
 
+  test("the level alone pays nothing: the referee also has to have played on seven different days", async () => {
+    const referrer = await makeUser({ walletBalance: 0 });
+    const referee = await makeVerified({ referredBy: referrer._id, level: MILESTONE_LEVEL });
+    await betOnDays(referee._id, MILESTONE_DAYS - 1);
+    // many bets on one day are still one day
+    await wager(referee._id, 500);
+    await wager(referee._id, 500);
+
+    await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL);
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+    expect(await sweepReferrals()).toBe(0);
+
+    // the seventh day comes and the sweep pays it, once
+    await wager(referee._id, 10, new Date(Date.now() - MILESTONE_DAYS * 864e5));
+    expect(await sweepReferrals()).toBe(1);
+    expect(await sweepReferrals()).toBe(0);
+    expect((await User.findById(referrer._id)).walletBalance).toBe(MILESTONE_BONUS);
+    const note = await Notification.findOne({ receiverId: referrer._id, title: "Referral milestone" });
+    expect(note.content).toMatch(/7 different days/);
+  });
+
   test("a referee past the level is paid for the moment they verify, once", async () => {
     const referrer = await makeUser({ walletBalance: 0 });
     const referee = await makeUser({ referredBy: referrer._id, level: MILESTONE_LEVEL + 2 });
+    await betOnDays(referee._id, MILESTONE_DAYS);
 
     await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL + 2);
     expect((await User.findById(referrer._id)).walletBalance).toBe(0);
@@ -297,6 +333,7 @@ describe("the level milestone", () => {
   test("levelling up through play triggers the payout by itself", async () => {
     const referrer = await makeUser({ walletBalance: 0 });
     const referee = await makeVerified({ referredBy: referrer._id });
+    await betOnDays(referee._id, MILESTONE_DAYS);
 
     await awardXp(referee._id, calculateXPForLevel(MILESTONE_LEVEL));
 
@@ -310,6 +347,8 @@ describe("the level milestone", () => {
   test("a bet that crosses the level pays it, from the account the bet already holds", async () => {
     const referrer = await makeUser({ walletBalance: 0 });
     const referee = await makeVerified({ referredBy: referrer._id, xp: calculateXPForLevel(MILESTONE_LEVEL) - 1, level: MILESTONE_LEVEL - 1 });
+    // six earlier days, and the bet itself is the seventh
+    for (let i = 1; i < MILESTONE_DAYS; i++) await wager(referee._id, 10, new Date(Date.now() - i * 864e5));
 
     await chargeUser(referee._id, 100, { type: TX.DICE_BET });
 
@@ -319,16 +358,34 @@ describe("the level milestone", () => {
     expect(paid).toBe(true);
   });
 
-  test("a bet by a player nobody referred, or one already paid for, reads nothing more", async () => {
+  test("a bet by a player nobody referred, one already paid for, or one the rules do not count yet reads nothing more", async () => {
     const loner = await makeUser({ level: MILESTONE_LEVEL + 5 });
     const read = jest.spyOn(User, "findOne");
     try {
       await maybePayReferralMilestone(loner._id, MILESTONE_LEVEL + 5, { referredBy: null });
       await maybePayReferralMilestone(loner._id, MILESTONE_LEVEL + 5, { referredBy: loner._id, referralMilestonePaid: true });
+      await maybePayReferralMilestone(loner._id, MILESTONE_LEVEL + 5, { referredBy: loner._id });
+      await maybePayReferralMilestone(loner._id, MILESTONE_LEVEL + 5, { referredBy: loner._id, emailVerifiedAt: new Date(), referralReview: "rejected" });
       expect(read).not.toHaveBeenCalled();
     } finally {
       read.mockRestore();
     }
+  });
+
+  test("a waiting referee's bets look at their days once a day, not on every bet", async () => {
+    const referrer = await makeUser({ walletBalance: 0 });
+    const referee = await makeVerified({ referredBy: referrer._id, level: MILESTONE_LEVEL, walletBalance: 5000 });
+    await betOnDays(referee._id, 2);
+    const read = jest.spyOn(User, "findOne");
+    try {
+      for (let i = 0; i < 4; i++) await chargeUser(referee._id, 10, { type: TX.DICE_BET });
+      await waitFor(async () => read.mock.calls.length > 0);
+      await new Promise((r) => setTimeout(r, 100));
+      expect(read).toHaveBeenCalledTimes(1);
+    } finally {
+      read.mockRestore();
+    }
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
   });
 });
 
@@ -376,7 +433,7 @@ describe("GET /referrals/me", () => {
     expect(res.body.referrals).toEqual([]);
   });
 
-  test("commission derives from referred wagers only, floored per referee", async () => {
+  test("before the edge rule, commission is one percent of referred wagers only, floored per referee", async () => {
     const me = await makeUser({ referralCode: "MYCODE" });
     const whale = await makeVerified({ referredBy: me._id });
     const minnow = await makeVerified({ referredBy: me._id });
@@ -394,13 +451,47 @@ describe("GET /referrals/me", () => {
     const [top, bottom] = res.body.referrals;
     expect(top.username).toBe(whale.username);
     expect(top.wagered).toBe(2550);
-    expect(top.commission).toBe(Math.floor(2550 * COMMISSION_RATE));
+    expect(top.commission).toBe(Math.floor(2550 * LEGACY_COMMISSION_RATE));
     expect(bottom.wagered).toBe(149);
     expect(bottom.commission).toBe(1);
     expect(res.body.totals.totalWagered).toBe(2699);
     expect(res.body.totals.earned).toBe(26);
     expect(res.body.totals.available).toBe(26);
     expect(res.body.totals.referralCount).toBe(2);
+  });
+
+  test("from the edge rule on, commission is a quarter of the house's edge on each bet, and predictions earn none", async () => {
+    process.env.REFERRAL_EDGE_FROM = "2026-01-01T00:00:00Z";
+    try {
+      const me = await makeUser({ referralCode: "EDGY" });
+      const referee = await makeVerified({ referredBy: me._id });
+      // a stake from before the rule keeps the one percent it was made under
+      await wager(referee._id, 1000, new Date("2025-12-31T12:00:00Z"));
+      await wager(referee._id, 10000);
+      await wager(referee._id, 10000, null, TX.BLACKJACK_BET);
+      await wager(referee._id, 10000, null, TX.CASE_OPEN);
+      await wager(referee._id, 10000, null, TX.PREDICTION_BUY);
+
+      const res = await auth(request(app).get("/referrals/me"), me);
+      const edge = 10000 * (HOUSE_EDGE[TX.CRASH_BET] + HOUSE_EDGE[TX.BLACKJACK_BET] + HOUSE_EDGE[TX.CASE_OPEN]);
+      expect(res.body.referrals[0].commission).toBe(Math.floor(1000 * LEGACY_COMMISSION_RATE + edge * COMMISSION_SHARE));
+      // 10 from the old stake, then 99.25 on crash, 12.5 on blackjack and 250 on cases
+      expect(res.body.referrals[0].commission).toBe(371);
+      expect(res.body.commissionShare).toBe(COMMISSION_SHARE);
+      expect(res.body.milestoneDays).toBe(MILESTONE_DAYS);
+    } finally {
+      process.env.REFERRAL_EDGE_FROM = "2100-01-01T00:00:00Z";
+    }
+  });
+
+  test("shows each referee's days played", async () => {
+    const me = await makeUser();
+    const referee = await makeVerified({ referredBy: me._id });
+    await betOnDays(referee._id, 3);
+    await wager(referee._id, 100);
+
+    const res = await auth(request(app).get("/referrals/me"), me);
+    expect(res.body.referrals[0]).toMatchObject({ daysPlayed: 3, review: null });
   });
 
   test("a referee is active only if they wagered this week", async () => {
@@ -458,5 +549,123 @@ describe("POST /referrals/claim", () => {
     expect(res.body.claimed).toBe(5);
     expect((await User.findById(me._id)).walletBalance).toBe(15);
     expect((await User.findById(me._id)).referralClaimed).toBe(15);
+  });
+});
+
+describe("a referee on their referrer's connection", () => {
+  // the hold stops the edge share, so these wagers fall under it
+  beforeEach(() => {
+    process.env.REFERRAL_EDGE_FROM = "2026-01-01T00:00:00Z";
+  });
+  afterEach(() => {
+    process.env.REFERRAL_EDGE_FROM = "2100-01-01T00:00:00Z";
+  });
+
+  test("is held: no bonus, no milestone and no commission until staff look at it", async () => {
+    const referrer = await makeUser({ walletBalance: 0 });
+    const referee = await makeUser({ referredBy: referrer._id, referralBonusPending: true, level: MILESTONE_LEVEL });
+    await sameConnection(referrer, referee);
+    await betOnDays(referee._id, MILESTONE_DAYS);
+    await wager(referee._id, 100000);
+
+    await User.updateOne({ _id: referee._id }, { $set: { emailVerifiedAt: new Date() } });
+    await verification.onVerified(referee._id);
+    expect(await sweepReferrals()).toBe(0);
+
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+    const dash = await auth(request(app).get("/referrals/me"), referrer);
+    expect(dash.body.referrals[0].review).toBe("held");
+    expect(dash.body.totals.earned).toBe(0);
+    expect((await auth(request(app).post("/referrals/claim"), referrer)).status).toBe(400);
+  });
+
+  test("shows up in the staff queue, and an approval pays everything that waited, once", async () => {
+    const staff = await makeUser({ isAdmin: true });
+    const referrer = await makeUser({ walletBalance: 0 });
+    const referee = await makeVerified({ referredBy: referrer._id, referralBonusPending: true, level: MILESTONE_LEVEL });
+    await sameConnection(referrer, referee);
+    await betOnDays(referee._id, MILESTONE_DAYS);
+
+    const queue = await auth(request(app).get("/admin/referrals/held"), staff);
+    expect(queue.status).toBe(200);
+    expect(queue.body).toHaveLength(1);
+    expect(queue.body[0]).toMatchObject({ id: String(referee._id), daysPlayed: MILESTONE_DAYS, bonusPending: true, verified: true });
+    expect(queue.body[0].referrer.username).toBe(referrer.username);
+
+    const res = await auth(request(app).post(`/admin/referrals/${referee._id}/review`), staff).send({ decision: "approved" });
+    expect(res.status).toBe(200);
+    expect(res.body.paid).toEqual({ bonus: true, milestone: true });
+    expect((await User.findById(referrer._id)).walletBalance).toBe(REFERRER_SIGNUP_BONUS + MILESTONE_BONUS);
+
+    // cleared for good: the shared connection no longer holds anything, and nothing pays twice
+    expect((await auth(request(app).get("/admin/referrals/held"), staff)).body).toHaveLength(0);
+    expect(await sweepReferrals()).toBe(0);
+    expect((await User.findById(referrer._id)).walletBalance).toBe(REFERRER_SIGNUP_BONUS + MILESTONE_BONUS);
+  });
+
+  test("a rejection means the referee never earns their referrer anything", async () => {
+    const staff = await makeUser({ isAdmin: true });
+    const referrer = await makeUser({ walletBalance: 0 });
+    const referee = await makeVerified({ referredBy: referrer._id, referralBonusPending: true, level: MILESTONE_LEVEL });
+    await sameConnection(referrer, referee);
+    await betOnDays(referee._id, MILESTONE_DAYS);
+    await wager(referee._id, 100000);
+
+    const res = await auth(request(app).post(`/admin/referrals/${referee._id}/review`), staff).send({ decision: "rejected" });
+    expect(res.status).toBe(200);
+    expect(await sweepReferrals()).toBe(0);
+    await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL);
+
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+    const dash = await auth(request(app).get("/referrals/me"), referrer);
+    expect(dash.body.referrals[0]).toMatchObject({ review: "rejected", commission: 0 });
+    expect(dash.body.totals.earned).toBe(0);
+  });
+
+  test("what the old rules paid stays earned, held or rejected: nothing is clawed back", async () => {
+    const referrer = await makeUser({ walletBalance: 0 });
+    const referee = await makeVerified({ referredBy: referrer._id });
+    await sameConnection(referrer, referee);
+    await wager(referee._id, 5000, new Date("2025-12-31T12:00:00Z"));
+    await wager(referee._id, 100000);
+
+    const held = await auth(request(app).get("/referrals/me"), referrer);
+    expect(held.body.referrals[0]).toMatchObject({ review: "held", commission: 50 });
+    expect(held.body.totals.earned).toBe(50);
+
+    await User.updateOne({ _id: referee._id }, { $set: { referralReview: "rejected" } });
+    const rejected = await auth(request(app).get("/referrals/me"), referrer);
+    expect(rejected.body.totals.earned).toBe(50);
+  });
+
+  test("staff decisions are staff only, and only approve or reject", async () => {
+    const staff = await makeUser({ isAdmin: true });
+    const player = await makeUser();
+    const referee = await makeUser({ referredBy: player._id });
+
+    expect((await auth(request(app).get("/admin/referrals/held"), player)).status).toBe(403);
+    expect((await auth(request(app).post(`/admin/referrals/${referee._id}/review`), player).send({ decision: "approved" })).status).toBe(403);
+    expect((await auth(request(app).post(`/admin/referrals/${referee._id}/review`), staff).send({ decision: "maybe" })).status).toBe(400);
+    expect((await auth(request(app).post(`/admin/referrals/${player._id}/review`), staff).send({ decision: "approved" })).status).toBe(404);
+  });
+
+  test("a signup from the referrer's own connection is held from the start, and the referrer is told why", async () => {
+    const referrer = await makeUser({ referralCode: "SAMEROOF", walletBalance: 0 });
+    const ip = "203.0.113.7";
+    await IpSighting.create({ userId: referrer._id, ipHash: ipSightings.hashIp(ip), firstAt: new Date(), lastAt: new Date() });
+
+    const s = uniqueSuffix();
+    mockGooglePayload = { email: `g-${s}@x.com`, name: `g-${s}`, picture: "p.png", sub: `sub-${s}` };
+    const started = await request(app).post("/users/googlelogin").set("cf-connecting-ip", ip).send({ token: "fake", referralCode: "SAMEROOF" });
+    const res = await request(app)
+      .post("/users/google/complete")
+      .set("cf-connecting-ip", ip)
+      .send({ ticket: started.body.ticket, username: `g-${s}`, referralCode: "SAMEROOF" });
+    expect(res.status).toBe(200);
+
+    // a google account is verified at once, and still nothing is paid
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+    const note = await Notification.findOne({ receiverId: referrer._id, title: "Referral bonus" });
+    expect(note.content).toMatch(/review/);
   });
 });

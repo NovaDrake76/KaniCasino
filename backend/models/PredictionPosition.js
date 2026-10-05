@@ -16,9 +16,14 @@ const PredictionPositionSchema = new mongoose.Schema(
     costBps: { type: Number, default: 0 },
     // KP actually spent net of sales, which is what a void refunds
     spent: { type: Number, default: 0 },
+    // what the position counts for as a bet when its market resolves: buys add, sells take away. xp, leaderboard
+    // points and wager missions read it then, so shares bought and sold back count for nothing (utils/predictionStake.js)
+    stake: { type: Number, default: 0 },
 
     settled: { type: Boolean, default: false },
     settledAt: Date,
+    // a void refunds the position, so it never counts as a bet
+    voided: Boolean,
     payout: { type: Number, default: 0 },
   },
   { timestamps: true }
@@ -36,5 +41,7 @@ PredictionPositionSchema.index(
 );
 PredictionPositionSchema.index({ predictionId: 1, settled: 1 });
 PredictionPositionSchema.index({ userId: 1, updatedAt: -1 });
+// the daily leaderboard reads the positions settled inside its window
+PredictionPositionSchema.index({ settledAt: 1 }, { sparse: true });
 
 module.exports = mongoose.model("PredictionPosition", PredictionPositionSchema);

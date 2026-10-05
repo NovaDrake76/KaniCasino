@@ -78,6 +78,12 @@ const flags: Record<string, JSX.Element> = {
       <rect width="24" height="8" fill="#CE1126" />
     </>
   ),
+  pl: (
+    <>
+      <rect width="24" height="16" fill="#DC143C" />
+      <rect width="24" height="8" fill="#fff" />
+    </>
+  ),
   vi: (
     <>
       <rect width="24" height="16" fill="#DA251D" />

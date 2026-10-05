@@ -47,6 +47,7 @@ const MinesView: React.FC<MinesViewProps> = ({
   normalizeBet,
   halveBet,
   doubleBet,
+  maxOutBet,
   mineCount,
   changeMineCount,
   gemsCount,
@@ -88,6 +89,7 @@ const MinesView: React.FC<MinesViewProps> = ({
 
   return (
     <GameLayout
+      game="mines"
       bar={
         <GameBar>
           <LiveStatsButton />
@@ -111,6 +113,7 @@ const MinesView: React.FC<MinesViewProps> = ({
             onBlur={normalizeBet}
             onHalve={halveBet}
             onDouble={doubleBet}
+            onMax={maxOutBet}
             betValue={betValue}
             disabled={controlsLocked}
             note={<BonusBetHint game="mines" bet={betValue} />}

@@ -61,18 +61,18 @@ describe("the live bets under a game", () => {
   it("is a locked strip for an account in her beta without the spyglass, and the feed is not asked for", () => {
     draw({ id: "u1", features: { daisu: true }, unlocks: [] });
     expect(screen.getByText(/live bets need a spyglass/i)).toBeTruthy();
-    expect(screen.queryByText(/live bets$/i)).toBeNull();
+    expect(screen.queryByText(/no bets in the last/i)).toBeNull();
     expect(subscribe).not.toHaveBeenCalled();
   });
 
   it("shows the feed once the spyglass is held, and always outside her beta", () => {
     const { unmount } = draw({ id: "u1", features: { daisu: true }, unlocks: ["spyglass"] });
-    expect(screen.getByText(/^live bets$/i)).toBeTruthy();
+    expect(screen.getByText(/no bets in the last/i)).toBeTruthy();
     expect(subscribe).toHaveBeenCalledTimes(1);
     unmount();
 
     draw({ id: "u2", features: {}, unlocks: [] });
-    expect(screen.getByText(/^live bets$/i)).toBeTruthy();
+    expect(screen.getByText(/no bets in the last/i)).toBeTruthy();
     expect(screen.queryByText(/spyglass/i)).toBeNull();
   });
 });

@@ -124,7 +124,7 @@ router.post(
         meta: { source: "register" },
       });
 
-      if (referrer) await payReferralBonuses(user, referrer);
+      if (referrer) await payReferralBonuses(user, referrer, { ipHash: ipSightings.requestHash(req) });
 
       // Generate and send JWT
       const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
@@ -333,7 +333,7 @@ router.post("/google/complete", registerLimiter, registerDailyLimiter, async (re
       meta: { source: "google" },
     });
 
-    if (referrer) await payReferralBonuses(user, referrer);
+    if (referrer) await payReferralBonuses(user, referrer, { ipHash: ipSightings.requestHash(req) });
 
     const payload = { userId: user.id, tokenVersion: user.tokenVersion || 0 };
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "30d" }, (err, jwtToken) => {

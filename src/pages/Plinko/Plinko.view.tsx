@@ -19,7 +19,6 @@ import {
   DROP_DURATION_S,
   DROP_X,
   DROP_Y,
-  MAX_WIN,
   PAYOUT_MULTIPLIERS,
   PEG_RADIUS,
   RISKS,
@@ -28,6 +27,7 @@ import {
   binColor,
   binTextColor,
   formatMultiplier,
+  maxWinFor,
   pegRows,
 } from "./plinkoBoard";
 import { AUTO_COUNTS } from "./Plinko.services";
@@ -137,6 +137,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
   openRoll,
 }) => (
   <GameLayout
+    game="plinko"
       bar={
         <GameBar>
           <LiveStatsButton />
@@ -195,7 +196,7 @@ const PlinkoView: React.FC<PlinkoViewProps> = ({
 
         <div className="text-xs text-[#84819a] border-t border-[#2a2840] pt-3 flex flex-col gap-1">
           <span className="flex items-center gap-1">
-            Max win <Monetary value={MAX_WIN} />
+            Max win <Monetary value={maxWinFor(risk)} />
           </span>
           <span>{i18n.t("plinko.provablyFairHint")}</span>
         </div>

@@ -10,6 +10,7 @@ const { liveStreak, dayIndex } = require("./dailyGift");
 const { getIo } = require("./realtime");
 const { casesCompletedBy } = require("./collectionCheck");
 const ledgerDays = require("./ledgerDays");
+const predictionStake = require("./predictionStake");
 
 const GAME_BETS = [TX.SLOT_BET, TX.PLINKO_BET, TX.CRASH_BET, TX.COINFLIP_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET];
 const TRADES = [TX.MARKET_BUY, TX.MARKET_SALE, TX.MARKET_ORDER_FILL];
@@ -72,9 +73,20 @@ async function ledgerSince(userId, since, goals, head = null) {
     { userId: new mongoose.Types.ObjectId(String(userId)), type: { $in: types } },
     { since: folded ? opening + ledgerDays.DAY : since }
   );
-  const rows = await Transaction.aggregate([
-    ...stages,
-    { $group: { _id: "$type", ...ledgerDays.SUMS, days: { $addToSet: { $dateToString: { format: "%Y-%m-%d", date: "$day" } } } } },
+  const [rows, predicted] = await Promise.all([
+    Transaction.aggregate([
+      ...stages,
+      {
+        $group: {
+          _id: "$type",
+          ...ledgerDays.SUMS,
+          later: predictionStake.laterBuyAmount(),
+          days: { $addToSet: { $dateToString: { format: "%Y-%m-%d", date: "$day" } } },
+        },
+      },
+    ]),
+    // a prediction is staked when its market resolves, not when its shares are bought
+    goals.includes("staked") ? predictionStake.resolvedSince(userId, since) : 0,
   ]);
   if (folded && head && new Date(head.since).getTime() === new Date(since).getTime()) {
     const day = new Date(opening).toISOString().slice(0, 10);
@@ -88,7 +100,7 @@ async function ledgerSince(userId, since, goals, head = null) {
     itemsSold: sum([TX.ITEM_SELL], "count"),
     marketTrades: sum(TRADES, "count"),
     casesOpened: sum([TX.CASE_OPEN], "units"),
-    staked: sum(STAKE_TYPES, "amount"),
+    staked: sum(STAKE_TYPES, "amount") - sum([TX.PREDICTION_BUY], "later") + predicted,
     gamesTried: new Set(of(GAME_BETS).map((r) => r._id)).size,
     daysPlayed: new Set(of(STAKE_TYPES).flatMap((r) => r.days)).size,
     bigWin: of(GAME_WINS).reduce((m, r) => Math.max(m, r.max || 0), 0),

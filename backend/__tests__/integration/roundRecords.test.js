@@ -177,6 +177,44 @@ test("an auto cashout pays at exactly its target", async () => {
   expect(tx.meta.multiplier).toBe(1.05);
 });
 
+test("a crash bet ridden to the bust earns its full xp, with the crash charm on top", async () => {
+  mockCrashSeed = INSTANT_SEED;
+  const user = await makeUser(5000);
+  await User.updateOne({ _id: user._id }, { $set: { xpBoost: { all: 1, crash: 0.25 } } });
+  const io = makeIo();
+
+  start(crashGame, io, FAST_CRASH);
+  const socket = makeSocket(String(user._id));
+  io.connection(socket);
+  const opened = await betOnRound("crash", "crash:bet", socket, [100]);
+  await until(settledById(opened._id), "the crash round to bust and settle");
+
+  // 100 K₽ at 5 XP each, times 1.25 for the charm
+  const after = await until(async () => {
+    const u = await User.findById(user._id);
+    return u.xp > 0 ? u : null;
+  }, "the bust to grant xp");
+  expect(after.xp).toBe(625);
+});
+
+test("a crash cash-out under 2x earns only the share its profit is of the stake", async () => {
+  mockCrashSeed = RUNNING_SEED;
+  const user = await makeUser(5000);
+  const io = makeIo();
+
+  start(crashGame, io, FAST_CRASH);
+  const socket = makeSocket(String(user._id));
+  io.connection(socket);
+  await betOnRound("crash", "crash:bet", socket, [{ amount: 100, autoCashoutAt: 1.05 }]);
+
+  // a twentieth of the 500 a full bet would earn
+  const after = await until(async () => {
+    const u = await User.findById(user._id);
+    return u.xp > 0 ? u : null;
+  }, "the cash-out to grant xp");
+  expect(after.xp).toBe(25);
+});
+
 test("a bad auto-cashout target refuses the bet before any money moves", async () => {
   mockCrashSeed = RUNNING_SEED;
   const user = await makeUser(5000);

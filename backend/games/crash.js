@@ -1,6 +1,6 @@
 const Round = require("../models/Round");
-const { chargeUser, creditUser, TX } = require("../utils/economy");
-const { multiplierAt, crashPointFromSeed, normalizeAutoCashout } = require("../utils/crashMath");
+const { chargeUser, creditUser, awardStakeXp, TX } = require("../utils/economy");
+const { multiplierAt, crashPointFromSeed, normalizeAutoCashout, xpWeight } = require("../utils/crashMath");
 const { consumeNextSeed } = require("../utils/gameChain");
 const { sha256 } = require("../utils/hashChain");
 const liveFeed = require("../utils/liveFeed");
@@ -86,7 +86,7 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000, drainMs
           return reply({ error: "You already have a bet this round" });
         }
 
-        // atomically take the stake (crash grants no xp). the round is captured before the
+        // atomically take the stake (its xp waits for the outcome). the round is captured before the
         // await so the ledger row a restart reads names the same round the bet is on.
         const activeRound = round;
         const roundId = String(activeRound._id);
@@ -231,6 +231,7 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000, drainMs
       xp: updatedUser.xp,
       level: updatedUser.level,
     });
+    grantXp(userId, betAmount, multiplier);
 
     io.emit("crash:gameState", publicState(gameState));
 
@@ -239,6 +240,12 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000, drainMs
     notify({ userId, payout, multiplier });
     return true;
   };
+
+  // a bet's xp trails its money: a grant that fails never touches the stake or the payout
+  const grantXp = (userId, stake, cashedOutAt) =>
+    awardStakeXp(userId, stake * xpWeight(cashedOutAt), "crash")
+      .then((user) => user && io.to(userId.toString()).emit("userDataUpdated", { xp: user.xp, level: user.level }))
+      .catch((e) => console.log(e));
 
   const calculateMultiplier = () => {
     if (!gameState.gameStartTime) return 1.0; // no round running
@@ -342,6 +349,13 @@ const crashGame = (io, { bettingMs = 12000, tickMs = 80, retryMs = 2000, drainMs
           serverSeedHash: gameState.serverSeedHash,
           crashPoint: gameState.crashPoint,
         });
+
+        // whoever was still in rode it to the crash, so their bets earn their xp in full; a
+        // cash-out still in flight is paid and credited by its own settle
+        for (const [userId, stake] of Object.entries(gameState.gameBets)) {
+          const player = gameState.gamePlayers[userId];
+          if (player && player.payout == null && !pendingCashouts.has(userId)) grantXp(userId, stake, null);
+        }
 
         // the round is over: whoever did not cash out lost it fairly, which is what
         // separates a settled round from one a restart has to hand back
