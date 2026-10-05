@@ -104,6 +104,15 @@ const COPY = {
     expires: "Tautan berlaku selama 24 jam.",
     ignore: "Jika Anda tidak memintanya, abaikan email ini.",
   },
+  pl: {
+    subject: "Zweryfikuj swoje konto KaniCasino",
+    preview: "Potwierdź email, żeby odblokować ranking, rynek i deszcz.",
+    hi: "Cześć, {name}!",
+    body: "Potwierdź ten adres email, żeby zweryfikować swoje konto KaniCasino. Zweryfikowane konta mogą rywalizować w rankingu, handlować na rynku i dołączać do deszczu.",
+    button: "Zweryfikuj moje konto",
+    expires: "Link działa przez 24 godziny.",
+    ignore: "Jeśli to nie twoja prośba, możesz zignorować tego maila.",
+  },
 };
 
 const P = "margin:0 0 16px;font-size:15px;line-height:1.65;color:#3C3A4B";
