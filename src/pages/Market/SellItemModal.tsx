@@ -14,7 +14,7 @@ import Filters from "../../components/InventoryFilters";
 import Modal from "../../components/Modal";
 import i18n from "../../i18n";
 import { digitsOnly, clampDigits } from "../../utils/digits";
-import { handleVerifyLock } from "../../components/verify/verifyEvents";
+import { handleAccountLock } from "../../components/verify/verifyEvents";
 
 interface Props {
   isOpen: boolean;
@@ -132,7 +132,7 @@ const SellItemModal: React.FC<Props> = ({ isOpen, onClose, setRefresh }) => {
       }
       CloseModal();
     } catch (error: any) {
-      if (!handleVerifyLock(error, "market")) toast.error(error?.response?.data?.message || i18n.t("market.couldNotListThe"));
+      if (!handleAccountLock(error, "market")) toast.error(error?.response?.data?.message || i18n.t("market.couldNotListThe"));
     }
     setLoadingButton(false);
   };

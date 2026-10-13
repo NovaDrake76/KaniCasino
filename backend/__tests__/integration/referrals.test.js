@@ -378,10 +378,14 @@ describe("the level milestone", () => {
     await betOnDays(referee._id, 2);
     const read = jest.spyOn(User, "findOne");
     try {
-      for (let i = 0; i < 4; i++) await chargeUser(referee._id, 10, { type: TX.DICE_BET });
+      // the first bet of the day looks, whatever one look costs; the rest read nothing more
+      await chargeUser(referee._id, 10, { type: TX.DICE_BET });
       await waitFor(async () => read.mock.calls.length > 0);
       await new Promise((r) => setTimeout(r, 100));
-      expect(read).toHaveBeenCalledTimes(1);
+      const oneLook = read.mock.calls.length;
+      for (let i = 0; i < 3; i++) await chargeUser(referee._id, 10, { type: TX.DICE_BET });
+      await new Promise((r) => setTimeout(r, 100));
+      expect(read).toHaveBeenCalledTimes(oneLook);
     } finally {
       read.mockRestore();
     }

@@ -126,6 +126,21 @@ describe("settling", () => {
     expect((await User.findById(b._id)).walletBalance).toBe(expected);
   });
 
+  it("gives no share to an account limited after it joined", async () => {
+    const a = await makeUser();
+    const b = await makeUser();
+    await rain.join(a._id);
+    await rain.join(b._id);
+    await User.updateOne({ _id: b._id }, { $set: { limited: { at: new Date(), reason: "review" } } });
+    await ripen();
+    await stakeInside(a._id, 200000);
+
+    const result = await rain.settle();
+
+    expect(result.paidOut).toBe(Math.floor(200000 * rain.RATE));
+    expect((await User.findById(b._id)).walletBalance).toBe(0);
+  });
+
   // the floors used to leave a K₽ or two, and the panel showed it as the new pool right after the fall
   it("leaves nothing for the next round once it falls, so the pool starts again from zero", async () => {
     const people = [await makeUser({ level: 10 }), await makeUser({ level: 23 }), await makeUser({ level: 57 })];

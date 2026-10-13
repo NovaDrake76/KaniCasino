@@ -9,6 +9,7 @@ const { ITEMS, itemOf, boostsOf, REVEAL_AHEAD } = require("./shopCatalog");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("./economy");
 const { getIo } = require("./realtime");
 const verification = require("./verification");
+const limits = require("./limits");
 
 // what proves an account used a feature before the shop existed. each is one exists query, run once
 // per account and then stored; the chat's capped room has no userId index but holds at most 6 MB
@@ -105,8 +106,8 @@ async function buy(user, key) {
     return { code: 200, body: { bought: false, alreadyOwned: true, key, unlocks: keysOf(held), shop: await viewFor(user) } };
   }
   if ((user.level || 0) < item.level) return { code: 400, body: { message: `That needs level ${item.level}`, reason: "level" } };
-  const unverified = item.verified && verification.lockFor(user);
-  if (unverified) return { code: 403, body: unverified };
+  const locked = item.verified && (limits.lockFor(user) || verification.lockFor(user));
+  if (locked) return { code: 403, body: locked };
 
   const at = new Date();
   let updated;

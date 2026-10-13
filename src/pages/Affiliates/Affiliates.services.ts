@@ -7,6 +7,7 @@ import {
   ReferralDashboard,
 } from "../../services/referrals/ReferralServices";
 import UserContext from "../../UserContext";
+import { handleAccountLock } from "../../components/verify/verifyEvents";
 import i18n from "../../i18n";
 
 export const useAffiliatesServices = () => {
@@ -63,7 +64,7 @@ export const useAffiliatesServices = () => {
       toast.success(`Claimed +${res.claimed} K₽`);
       await load();
     } catch (e: any) {
-      toast.error(e.response?.data?.message || "Could not claim");
+      if (!handleAccountLock(e, "referrals")) toast.error(e.response?.data?.message || "Could not claim");
     } finally {
       setClaiming(false);
     }

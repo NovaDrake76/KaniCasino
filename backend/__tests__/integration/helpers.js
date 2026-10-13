@@ -22,6 +22,7 @@ const daisuRoutes = require("../../routes/daisuRoutes");
 const arcadeRoutes = require("../../routes/arcadeRoutes");
 const usageRoutes = require("../../routes/usageRoutes");
 const accountRoutes = require("../../routes/accountRoutes");
+const leaderboardRoutes = require("../../routes/leaderboardRoutes");
 const Transaction = require("../../models/Transaction");
 const { TX } = require("../../utils/economy");
 
@@ -55,6 +56,7 @@ function makeApp() {
   app.use("/arcade", arcadeRoutes);
   app.use("/usage", usageRoutes);
   app.use("/account", accountRoutes);
+  app.use("/leaderboard", leaderboardRoutes);
   return app;
 }
 

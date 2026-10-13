@@ -11,6 +11,11 @@ export interface Verification {
   enforced: boolean;
 }
 
+export interface AccountLimit {
+  at: string;
+  reason: string;
+}
+
 // why the server would not send or accept a link; the copy for each lives under verify.errors
 export type VerifyProblem =
   | "invalid"

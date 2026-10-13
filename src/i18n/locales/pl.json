@@ -382,7 +382,8 @@
       "removeFailed": "Nie udało się usunąć tej wiadomości.",
       "slowDown": "Zwolnij, wysłałeś za dużo wiadomości.",
       "slur": "Nie ma bata, że ktokolwiek to przeczyta.",
-      "tooLong": "Za bardzo się rozpisałeś."
+      "tooLong": "Za bardzo się rozpisałeś.",
+      "limited": "Twoje konto jest ograniczone, więc nie możesz pisać na czacie."
     },
     "hide": "Ukryj czat",
     "loading": "Ładowanie czatu",
@@ -2204,6 +2205,17 @@
       "changeSent": "Wysłaliśmy link na {{email}}. Twój adres zmieni się, gdy go klikniesz.",
       "cancel": "Anuluj"
     }
+  },
+  "limited": {
+    "title": "Twoje konto jest ograniczone",
+    "reason": "Powód: {{reason}}",
+    "what": "Możesz dalej grać, ale dopóki obsługa nie zdejmie ograniczenia, nie możesz handlować na rynku, pisać na czacie, dołączać do deszczu, dostawać nagród za polecenia ani pojawiać się w rankingu.",
+    "contact": "Jeśli uważasz, że to pomyłka, napisz do nas na Discordzie albo mailem.",
+    "market": "Twoje konto jest ograniczone, więc nie możesz handlować na rynku.",
+    "rain": "Twoje konto jest ograniczone, więc nie możesz dołączyć do deszczu.",
+    "license": "Twoje konto jest ograniczone, więc nie możesz kupić Licencji Kupca.",
+    "referrals": "Twoje konto jest ograniczone, więc nagrody za polecenia są wstrzymane.",
+    "leaderboard": "Bez miejsca w rankingu: twoje konto jest ograniczone."
   },
   "gameInfo": {
     "tabs": {

@@ -8,6 +8,7 @@ const { SCORING_TYPES, pointsExpression } = require("./leaderboardPoints");
 const { VISIBLE } = require("./visibility");
 const memo = require("./memo");
 const verification = require("./verification");
+const limits = require("./limits");
 const predictionStake = require("./predictionStake");
 
 const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
@@ -62,10 +63,11 @@ const betsIn = (startsAt, endsAt, match = {}) => [
 
 // every account's points in the window, best first. nothing is incremented on the money
 // path, so a bet cannot be double counted and there is no stored total to drift.
-const scored = (startsAt, endsAt) => [
+// `limited` are accounts staff have limited: they score but are neither ranked nor paid
+const scored = (startsAt, endsAt, limited = []) => [
   ...betsIn(startsAt, endsAt),
   { $group: { _id: "$userId", points: { $sum: pointsExpression() }, bets: { $sum: 1 } } },
-  { $match: { points: { $gt: 0 } } },
+  { $match: limited.length ? { points: { $gt: 0 }, _id: { $nin: limited } } : { points: { $gt: 0 } } },
   ...eligibleOnly(startsAt),
   // ties break on the older account, so a redraw never reorders a settled board
   { $sort: { points: -1, _id: 1 } },
@@ -101,7 +103,7 @@ const placed = (limit) => [
 
 // the board, straight from the ledger. one day is a few thousand rows and { type, createdAt } already indexes it.
 async function standings(startsAt, endsAt, limit = PAID_PLACES) {
-  return Transaction.aggregate([...scored(startsAt, endsAt), ...placed(limit)]);
+  return Transaction.aggregate([...scored(startsAt, endsAt, await limits.limitedIds()), ...placed(limit)]);
 }
 
 // the live board and every score behind it, shared by all readers: one recount per window however many
@@ -109,7 +111,7 @@ async function standings(startsAt, endsAt, limit = PAID_PLACES) {
 function live(startsAt, endsAt) {
   return memo.remember(`leaderboard:live:${startsAt.getTime()}`, LIVE_TTL_MS, async () => {
     const [facets] = await Transaction.aggregate([
-      ...scored(startsAt, endsAt),
+      ...scored(startsAt, endsAt, await limits.limitedIds()),
       { $facet: { board: placed(PAID_PLACES), all: [{ $group: { _id: null, points: { $push: "$points" } } }] } },
     ]);
     return {
@@ -135,7 +137,7 @@ async function padStandings(rows, limit, { verifiedOnly = false } = {}) {
   // the biggest accounts first, so the empty seats read as names rather than as filler.
   // one indexed read of at most nine documents, behind the board's own cache.
   // an empty seat says anyone could take it, so once the board needs verification it only offers verified accounts
-  const idle = await User.find({ _id: { $nin: taken }, ...VISIBLE, ...(verifiedOnly ? verification.verifiedFilter() : {}) })
+  const idle = await User.find({ _id: { $nin: taken }, ...VISIBLE, "limited.at": { $exists: false }, ...(verifiedOnly ? verification.verifiedFilter() : {}) })
     .sort({ level: -1, _id: 1 })
     .limit(missing)
     .select(CARD)
