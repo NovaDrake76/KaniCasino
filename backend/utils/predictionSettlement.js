@@ -6,7 +6,7 @@ const Prediction = require("../models/Prediction");
 const PredictionPosition = require("../models/PredictionPosition");
 const PredictionSettlement = require("../models/PredictionSettlement");
 const Notification = require("../models/Notification");
-const { creditUser, TX } = require("../utils/economy");
+const { creditUser, awardStakeXp, TX } = require("../utils/economy");
 const { ONE } = require("./predictionMath");
 
 // a share wins a whole KP, which is the entire point of the one KP ceiling on a price
@@ -60,16 +60,21 @@ async function claimLease(predictionId, kind, outcomeKey) {
   }
 }
 
+// a resolved position is a bet on what it still held, and earns that bet's xp now; a refund is no bet at all
+const countStake = (position, isVoid) =>
+  isVoid ? null : awardStakeXp(position.userId, Math.max(0, position.stake || 0), null).catch(() => null);
+
 // pay one position and mark it paid in the same write. the filter on settled is what makes
 // a resumed run safe: a position already paid matches nothing and is simply skipped.
 async function payPosition(position, amount, prediction, kind) {
+  const isVoid = kind === "void";
   const claimed = await PredictionPosition.findOneAndUpdate(
     { _id: position._id, settled: false },
-    { $set: { settled: true, settledAt: new Date(), payout: amount } },
+    { $set: { settled: true, settledAt: new Date(), payout: amount, voided: isVoid } },
     { new: false }
   );
   if (!claimed) return null;
-  if (amount <= 0) return null;
+  if (amount <= 0) return { amount: 0, user: await countStake(claimed, isVoid) };
 
   const meta = {
     predictionId: String(prediction._id),
@@ -79,7 +84,6 @@ async function payPosition(position, amount, prediction, kind) {
     shares: position.shares,
   };
   // a refund is money coming back, not winnings, so it stays off the weekly leaderboard
-  const isVoid = kind === "void";
   const credited = await creditUser(position.userId, amount, isVoid ? 0 : amount, {
     type: isVoid ? TX.PREDICTION_REFUND : TX.PREDICTION_PAYOUT,
     meta,
@@ -89,6 +93,9 @@ async function payPosition(position, amount, prediction, kind) {
     await PredictionPosition.updateOne({ _id: position._id }, { $set: { settled: false, payout: 0 } });
     throw new Error("prediction payout could not be credited");
   }
+  // after the credit, so a payout handed back for a retry has not counted its stake yet
+  const levelled = await countStake(claimed, isVoid);
+  if (levelled) Object.assign(credited, { xp: levelled.xp, level: levelled.level });
   return { amount, user: credited };
 }
 
@@ -110,7 +117,7 @@ async function runSettlement(prediction, kind, winningKey, io) {
 
   let paidPositions = 0;
   let totalPaid = 0;
-  const winners = new Map();
+  const touched = new Map();
 
   try {
     for (;;) {
@@ -120,13 +127,21 @@ async function runSettlement(prediction, kind, winningKey, io) {
       for (const position of batch) {
         const amount = owedFor(position, kind, winningKey);
         const paid = await payPosition(position, amount, prediction, kind);
-        if (paid) {
+        if (!paid) continue;
+        if (paid.amount > 0) {
           paidPositions += 1;
           totalPaid += paid.amount;
-          const key = String(position.userId);
-          const running = winners.get(key);
-          winners.set(key, { amount: (running ? running.amount : 0) + paid.amount, user: paid.user });
         }
+        // the latest read of the account wins: each one was taken after everything before it
+        const key = String(position.userId);
+        const seen = touched.get(key) || { amount: 0 };
+        seen.amount += paid.amount;
+        if (paid.user) {
+          if (paid.user.walletBalance != null) seen.walletBalance = paid.user.walletBalance;
+          seen.xp = paid.user.xp;
+          seen.level = paid.user.level;
+        }
+        touched.set(key, seen);
       }
       // the lease is held for as long as the loop is making progress
       await PredictionSettlement.updateOne({ _id: lease._id }, { $set: { lockedAt: new Date() } });
@@ -142,33 +157,33 @@ async function runSettlement(prediction, kind, winningKey, io) {
     { $set: { status: "done", finishedAt: new Date() }, $inc: { paidPositions, totalPaid } }
   );
 
-  await tellWinners(prediction, kind, winners, io);
+  await tellPlayers(prediction, kind, touched, io);
   return { ok: true, paidPositions, totalPaid };
 }
 
-async function tellWinners(prediction, kind, winners, io) {
-  if (winners.size === 0) return;
+// the winners hear what they won; everyone whose balance or xp moved gets it pushed
+async function tellPlayers(prediction, kind, touched, io) {
+  if (touched.size === 0) return;
   const title = kind === "void" ? "Market cancelled" : "Market resolved";
-  const rows = [...winners.entries()].map(([userId, won]) => ({
+  const rows = [...touched.entries()].map(([userId, seen]) => ({
     receiverId: userId,
     type: "alert",
     title,
     content:
       kind === "void"
-        ? `${prediction.title} was cancelled and your ${won.amount} KP was returned.`
-        : `You won ${won.amount} KP on ${prediction.title}.`,
-    user: won.user,
+        ? `${prediction.title} was cancelled and your ${seen.amount} KP was returned.`
+        : `You won ${seen.amount} KP on ${prediction.title}.`,
+    seen,
   }));
-  await Notification.insertMany(rows.map(({ user, ...row }) => row)).catch(() => {});
+  const won = rows.filter((row) => row.seen.amount > 0);
+  if (won.length) await Notification.insertMany(won.map(({ seen, ...row }) => row)).catch(() => {});
   if (!io) return;
-  for (const row of rows) {
-    io.to(String(row.receiverId)).emit("newNotification", { message: row.content });
+  for (const { receiverId, content, seen } of rows) {
+    if (seen.amount > 0) io.to(receiverId).emit("newNotification", { message: content });
     // the navbar balance only moves on a payload; an empty emit reads as undefined there
-    io.to(String(row.receiverId)).emit("userDataUpdated", {
-      walletBalance: row.user.walletBalance,
-      xp: row.user.xp,
-      level: row.user.level,
-    });
+    const payload = {};
+    for (const field of ["walletBalance", "xp", "level"]) if (seen[field] != null) payload[field] = seen[field];
+    if (Object.keys(payload).length) io.to(receiverId).emit("userDataUpdated", payload);
   }
 }
 

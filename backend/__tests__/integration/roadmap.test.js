@@ -12,6 +12,7 @@ const { dayIndex, RESET_HOUR_UTC } = require("../../utils/dailyGift");
 const Item = require("../../models/Item");
 const Case = require("../../models/Case");
 const PredictionTrade = require("../../models/PredictionTrade");
+const PredictionPosition = require("../../models/PredictionPosition");
 const mongoose = require("mongoose");
 
 let app;
@@ -255,6 +256,25 @@ describe("daisu's missions", () => {
     const ten = (await roadmapOf(user)).body;
     expect(mission(ten, "r10-referrals").current).toBe(2);
     expect(mission(ten, "r10-predictions").current).toBe(1);
+  });
+
+  it("counts a prediction as staked once its market resolves, on what was still held", async () => {
+    const user = await makeUser({ level: 21 });
+    await openChapter(user, 4);
+    await row(user._id, TX.DICE_BET, { amount: 1000 });
+    // buying the shares is not the stake
+    await row(user._id, TX.PREDICTION_BUY, { amount: 30000 });
+    expect(mission((await roadmapOf(user)).body, "r4-stake").current).toBe(1000);
+
+    const position = (stake, settledAt, extra = {}) =>
+      PredictionPosition.create({
+        userId: user._id, predictionId: new mongoose.Types.ObjectId(), outcomeKey: "o1", stake, settled: true, settledAt, ...extra,
+      });
+    await position(20000, new Date());
+    // a cancelled market refunds, and one that resolved before the chapter opened belongs to the one before
+    await position(9000, new Date(), { voided: true });
+    await position(7000, new Date(Date.now() - 864e5));
+    expect(mission((await roadmapOf(user)).body, "r4-stake").current).toBe(21000);
   });
 
   it("stays behind the beta flag", async () => {

@@ -11,6 +11,8 @@ const Item = require("../../models/Item");
 const Case = require("../../models/Case");
 const Battle = require("../../models/Battle");
 const Transaction = require("../../models/Transaction");
+const PredictionPosition = require("../../models/PredictionPosition");
+const mongoose = require("mongoose");
 const { TX } = require("../../utils/economy");
 
 let app;
@@ -156,6 +158,18 @@ describe("GET /missions", () => {
     expect(find(res.body, "crash-50").current).toBe(1);
     expect(find(res.body, "level-30").complete).toBe(true);
     expect(find(res.body, "millionaire").complete).toBe(true);
+  });
+
+  test("a prediction adds to the total wagered when its market resolves, not when its shares are bought", async () => {
+    const u = await makeUser();
+    await tx(u._id, TX.CRASH_BET, { amount: 900000 });
+    await tx(u._id, TX.PREDICTION_BUY, { amount: 200000 });
+    expect(find((await getMissions(u)).body, "wager-million").current).toBe(900000);
+
+    await PredictionPosition.create({
+      userId: u._id, predictionId: new mongoose.Types.ObjectId(), outcomeKey: "o1", stake: 100000, settled: true, settledAt: new Date(),
+    });
+    expect(find((await getMissions(u)).body, "wager-million")).toMatchObject({ current: 1000000, complete: true });
   });
 
   test("master collector needs every case complete, not just one", async () => {

@@ -371,3 +371,55 @@ describe("the admin surface", () => {
     expect(row.worstCase).toBe(300);
   });
 });
+
+describe("what a settled position counts for", () => {
+  const xpOf = async (user) => (await User.findById(user._id)).xp || 0;
+
+  it("earns the xp of the stake still held when the market resolves, won or lost, and only once", async () => {
+    const winner = await makeUser();
+    const loser = await makeUser();
+    const market = await makeMarket();
+    const won = await trade({ userId: winner._id, predictionId: market._id, outcomeKey: "o1", action: "buy", shares: 100 });
+    const lost = await trade({ userId: loser._id, predictionId: market._id, outcomeKey: "o2", action: "buy", shares: 100 });
+    expect(await xpOf(winner)).toBe(0);
+
+    await settlement.resolveMarket({ predictionId: market._id, outcomeKey: "o1" });
+    await settlement.resolveMarket({ predictionId: market._id, outcomeKey: "o1" });
+
+    expect(await xpOf(winner)).toBe(won.spent * 5);
+    expect(await xpOf(loser)).toBe(lost.spent * 5);
+  });
+
+  it("shares sold back before the end earn only what the round trip cost", async () => {
+    const user = await makeUser();
+    const market = await makeMarket();
+    const buy = await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o1", action: "buy", shares: 500 });
+    const sell = await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o1", action: "sell", shares: 500 });
+
+    await settlement.resolveMarket({ predictionId: market._id, outcomeKey: "o1" });
+    expect(await xpOf(user)).toBe((buy.spent - sell.received) * 5);
+    expect(await xpOf(user)).toBeLessThan(buy.spent * 5 * 0.1);
+  });
+
+  it("a cancelled market is no bet: no xp, and the position is marked as refunded", async () => {
+    const user = await makeUser();
+    const market = await makeMarket();
+    await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o1", action: "buy", shares: 100 });
+
+    await settlement.voidMarket({ predictionId: market._id });
+    expect(await xpOf(user)).toBe(0);
+    expect((await PredictionPosition.findOne({ userId: user._id })).voided).toBe(true);
+  });
+
+  it("pushes the new xp to a player the market paid nothing", async () => {
+    const user = await makeUser();
+    const market = await makeMarket();
+    await trade({ userId: user._id, predictionId: market._id, outcomeKey: "o2", action: "buy", shares: 100 });
+    const pushed = [];
+    const io = { to: (room) => ({ emit: (event, payload) => pushed.push({ room, event, payload }) }) };
+
+    await settlement.resolveMarket({ predictionId: market._id, outcomeKey: "o1", io });
+    expect(pushed).toEqual([{ room: String(user._id), event: "userDataUpdated", payload: { xp: await xpOf(user), level: expect.any(Number) } }]);
+    expect(await Notification.countDocuments({ receiverId: user._id })).toBe(0);
+  });
+});

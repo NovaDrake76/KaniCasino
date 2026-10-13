@@ -16,7 +16,7 @@ const HowGamesWork = () => {
 
             <GameDescription
                 title={i18n.t("help.coinFlipGame")}
-                description="In the Coin Flip game, players can place bets on either heads or tails. The game starts automatically, and after a brief period, the result is revealed. If a player's choice matches the result, they win and receive a 2X payout."
+                description={i18n.t("help.coinFlipBody")}
             />
 
             <GameDescription

@@ -139,7 +139,7 @@ async function chargeAndStart(battleId, io = noopIo) {
     if (!updated) {
       await refundAll();
       await release();
-      return { error: "A player could not pay; battle cancelled" };
+      return { error: "A player could not pay; any entry already taken was refunded and the battle is waiting again" };
     }
     charged.push(p.userId);
   }

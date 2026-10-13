@@ -122,7 +122,7 @@ async function recordGameRoll(game) {
 }
 
 class MinesGameController {
-  static async start(userId, betAmount, mineCount, io) {
+  static async start(userId, betAmount, mineCount, io, isRetry = false) {
     if (!validBet(betAmount)) throw httpError(400, "Invalid bet amount");
     if (!validMineCount(mineCount)) throw httpError(400, "Invalid mine count");
 
@@ -156,6 +156,14 @@ class MinesGameController {
       }
     }
     if (!game) throw httpError(500, "Could not create game");
+
+    // this start's own reservation can reach the rotation and reveal the seed the board came from:
+    // void it before any charge and lay a new board on the fresh seed
+    if (!(await Seed.exists({ _id: reserved.seedId, active: true }))) {
+      await MinesGame.updateOne({ _id: game._id, status: "active" }, { $set: { status: "voided", settlementDone: true } });
+      if (!isRetry) return MinesGameController.start(userId, betAmount, mineCount, io, true);
+      throw httpError(409, "Seed rotated, try again");
+    }
 
     const player = await chargeUser(userId, betAmount, {
       type: TX.MINES_BET,

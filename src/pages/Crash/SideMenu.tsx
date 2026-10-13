@@ -84,6 +84,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ bet, setBet, cashoutAt, setCashoutA
           onChange={(value) => setBet(value === "" ? null : Math.min(MAX_BET, Number(value)))}
           onHalve={() => setBet(Math.max(1, Math.floor((bet || 0) / 2)))}
           onDouble={() => setBet(Math.min(MAX_BET, (bet || 1) * 2))}
+          onMax={() => setBet(Math.min(MAX_BET, Math.max(1, Math.floor(userData?.walletBalance || 1))))}
           betValue={bet || 0}
         />
 

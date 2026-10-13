@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { rankOf, hiChance, loChance, RANKS } from "./hiloCards";
+import { rankOf, hiChance, loChance, RANKS, payoutFor } from "./hiloCards";
 
 describe("hilo card odds", () => {
     it("ranks a card 0..12", () => {
@@ -23,5 +23,10 @@ describe("hilo card odds", () => {
 
     it("has a 13-rank deck", () => {
         expect(RANKS).toBe(13);
+    });
+
+    it("prices a payout to the cent and caps it where the server does", () => {
+        expect(payoutFor(100, 1.83857)).toBe(183.86);
+        expect(payoutFor(10000, 250)).toBe(1_000_000);
     });
 });

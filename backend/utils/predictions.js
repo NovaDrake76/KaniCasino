@@ -168,7 +168,8 @@ async function buy({ userId, prediction, q }) {
   if (!committed) return null; // the book moved, the caller re-quotes
 
   const meta = tradeMeta(prediction, q);
-  const charged = await chargeUser(userId, q.amount, { type: TX.PREDICTION_BUY, meta });
+  // no xp at the buy: a buy sold straight back would farm it. it comes when the market resolves, on what is still held
+  const charged = await chargeUser(userId, q.amount, { type: TX.PREDICTION_BUY, meta, awardXp: false });
   if (!charged) {
     await revertPrices(prediction, committed, q.index, q.shares, q.amount);
     return bad("Not enough KP");
@@ -176,7 +177,7 @@ async function buy({ userId, prediction, q }) {
 
   const before = await PredictionPosition.findOneAndUpdate(
     { userId, predictionId: prediction._id, outcomeKey: q.outcomeKey },
-    { $inc: { shares: q.shares, costBps: q.shares * q.avgBps, spent: q.amount } },
+    { $inc: { shares: q.shares, costBps: q.shares * q.avgBps, spent: q.amount, stake: q.amount } },
     { upsert: true }
   );
   // no pre-image means the upsert inserted, which is this player's first position here
@@ -198,7 +199,17 @@ async function sell({ userId, prediction, q }) {
   const basis = Math.round((held.costBps / held.shares) * q.shares);
   const reduced = await PredictionPosition.findOneAndUpdate(
     { _id: held._id, shares: { $gte: q.shares } },
-    { $inc: { shares: -q.shares, costBps: -basis, spent: -q.amount } }
+    [
+      {
+        $set: {
+          shares: { $subtract: ["$shares", q.shares] },
+          costBps: { $subtract: ["$costBps", basis] },
+          spent: { $subtract: ["$spent", q.amount] },
+          // a sale for more than the stake leaves none, not a debt the next buy would have to pay off before it counted
+          stake: { $max: [0, { $subtract: [{ $ifNull: ["$stake", 0] }, q.amount] }] },
+        },
+      },
+    ]
   );
   if (!reduced) {
     await revertPrices(prediction, committed, q.index, -q.shares, q.amount);

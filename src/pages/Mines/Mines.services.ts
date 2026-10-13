@@ -211,6 +211,7 @@ export const useMinesServices = () => {
     normalizeBet: () => setBetInput(String(betValue)),
     halveBet: () => setBetInput(String(Math.max(MIN_BET, Math.floor(betValue / 2)))),
     doubleBet: () => setBetInput(String(Math.min(MAX_BET, betValue * 2))),
+    maxOutBet: () => setBetInput(String(Math.min(MAX_BET, Math.max(MIN_BET, Math.floor(userData?.walletBalance || MIN_BET))))),
     mineCount,
     changeMineCount,
     gemsCount: gemsFor(mineCount),

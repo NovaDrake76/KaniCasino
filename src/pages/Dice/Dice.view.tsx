@@ -24,6 +24,7 @@ const DiceView: React.FC<DiceViewProps> = ({
   normalizeBet,
   halveBet,
   doubleBet,
+  maxOutBet,
   target,
   direction,
   controls,
@@ -57,6 +58,7 @@ const DiceView: React.FC<DiceViewProps> = ({
 
   return (
     <GameLayout
+      game="dice"
       bar={
         <GameBar>
           <LiveStatsButton />
@@ -70,7 +72,7 @@ const DiceView: React.FC<DiceViewProps> = ({
       }
       panel={
         <>
-          <ModeToggle mode={mode} setMode={setMode} />
+          <ModeToggle mode={mode} setMode={setMode} manualDisabled={autoRunning} autoDisabled={autoRunning} />
 
           <GameBonusStrip game="dice" />
 
@@ -80,6 +82,7 @@ const DiceView: React.FC<DiceViewProps> = ({
             onBlur={normalizeBet}
             onHalve={halveBet}
             onDouble={doubleBet}
+            onMax={maxOutBet}
             betValue={betValue}
             disabled={autoRunning}
             note={<BonusBetHint game="dice" bet={betValue} />}

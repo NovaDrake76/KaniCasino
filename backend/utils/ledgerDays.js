@@ -6,6 +6,7 @@ const Leaderboard = require("../models/Leaderboard");
 const MissionState = require("../models/MissionState");
 const memo = require("./memo");
 const { TX } = require("./economy");
+const predictionStake = require("./predictionStake");
 
 const DAY = 24 * 60 * 60 * 1000;
 const HOUR = 60 * 60 * 1000;
@@ -158,7 +159,7 @@ async function freezeOpenings(start) {
     const types = await Transaction.aggregate([
       { $match: { userId: state.userId, createdAt: { $gte: since, $lt: new Date(end + HOUR) }, _id: { $lt: oid(end) } } },
       { $project: ROW },
-      { $group: { _id: "$type", ...SUMS } },
+      { $group: { _id: "$type", ...SUMS, later: predictionStake.laterBuyAmount() } },
     ]);
     if (!types.length) continue;
     await MissionState.updateOne(

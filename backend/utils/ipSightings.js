@@ -40,6 +40,12 @@ function record(req, userId) {
   }
 }
 
+// the hash of the address a request came from, or null when it carries none
+const requestHash = (req) => {
+  const ip = clientIp(req);
+  return ip ? hashIp(ip) : null;
+};
+
 const forget = () => recent.clear();
 
-module.exports = { record, hashIp, clientIp, forget };
+module.exports = { record, hashIp, clientIp, requestHash, forget };

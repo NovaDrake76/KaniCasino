@@ -44,4 +44,9 @@ describe("dice controls", () => {
         expect(c.multiplier).toBe(2);
         expect(c.payoutOnWin(100)).toBe(200);
     });
+
+    it("pays the cent a float multiply would floor away", () => {
+        // 2.07% under: the server pays 4,782.61 on 100, and 100 * 47.8261 in floats lands just under it
+        expect(controlsFor(207, "under").payoutOnWin(100)).toBe(4782.61);
+    });
 });

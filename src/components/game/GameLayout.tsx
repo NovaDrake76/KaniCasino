@@ -1,7 +1,10 @@
 import Title from "../Title";
-import LiveBets from "./LiveBets";
+import GameDetails from "./GameDetails";
+import type { GameKey } from "./GameDetails/content";
 
 interface GameLayoutProps {
+  // which game's info the strip under the board explains
+  game: GameKey;
   title?: string;
   panel: React.ReactNode;
   children: React.ReactNode;
@@ -14,7 +17,7 @@ interface GameLayoutProps {
 // the shared shell every game page sits in: one container holding the controls and the board.
 // the board comes first on phones, so the game is on screen without scrolling past a tall
 // stack of controls to reach it.
-const GameLayout: React.FC<GameLayoutProps> = ({ title, panel, children, footer, bar }) => (
+const GameLayout: React.FC<GameLayoutProps> = ({ game, title, panel, children, footer, bar }) => (
   <div className="w-full flex flex-col items-center gap-6 stage:gap-4 short:gap-3 px-3 sm:px-4 pt-4 stage:pt-1 pb-10">
     {/* the board is what a short screen has no room for, and the page title is the
         cheapest 60px to give back: the tab and the panel already say which game it is */}
@@ -38,7 +41,7 @@ const GameLayout: React.FC<GameLayoutProps> = ({ title, panel, children, footer,
 
     {footer}
 
-    <LiveBets />
+    <GameDetails game={game} />
   </div>
 );
 

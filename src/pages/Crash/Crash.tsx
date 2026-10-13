@@ -6,7 +6,8 @@ import UserContext from "../../UserContext";
 import falling from "/images/crash/falling.gif";
 import idle from "/images/crash/idle.gif";
 import up from "/images/crash/up.gif";
-import LiveBets from "./LiveBets";
+import RoundBets, { RoundSummary } from "./RoundBets";
+import GameDetails from "../../components/game/GameDetails";
 import GameContainer from "./GameContainer";
 import SideMenu from "./SideMenu";
 import { emitGameResult } from "../../components/daisu/tour/tourEvents";
@@ -179,7 +180,7 @@ const CrashGame = () => {
       const payout = sync.gamePlayers?.[id as string]?.payout;
       setUserGambled(true);
       setUserCashedOut(payout != null);
-      if (payout != null) setUserMultiplier(payout / stake);
+      if (payout != null) setUserMultiplier(payout);
     };
 
     socket.on("crash:sync", syncListener);
@@ -282,7 +283,12 @@ const CrashGame = () => {
           falling={falling}
           history={history} />
       </div>
-      <LiveBets gameState={gameState} />
+      <GameDetails
+        game="crash"
+        roundBets={<RoundBets gameState={gameState} />}
+        roundSummary={<RoundSummary gameState={gameState} />}
+        className="max-w-[800px] xl:max-w-[1140px]"
+      />
     </div >
   );
 };

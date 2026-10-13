@@ -74,6 +74,7 @@ export const SOUND_EVENTS = [
   "battle.start",
   "battle.win",
   "battle.lose",
+  "battle.join",
   // gift wheel
   "gift.spin",
   "gift.stop",
@@ -129,4 +130,5 @@ export const SOUND_DEFAULTS: Partial<Record<SoundEvent, SoundOptions>> = {
   "gift.spin": { volume: 0.35, rate: [0.95, 1.1], throttleMs: 70 },
   "upgrade.success": { volume: 0.65, solo: true },
   "battle.win": { volume: 0.65, solo: true },
+  "battle.join": { volume: 0.6, throttleMs: 500 },
 };

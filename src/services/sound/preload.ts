@@ -19,7 +19,7 @@ export const SOUND_PAGES: [string, SoundEvent[]][] = [
   ["/dice", [...GAME, "dice.roll", "dice.land"]],
   ["/mines", [...GAME, "mines.reveal", "mines.bomb"]],
   ["/hilo", [...GAME, ...CARDS, "hilo.correct", "hilo.wrong"]],
-  ["/battles/", [...REEL, "battle.start", "battle.win", "battle.lose"]],
+  ["/battles/", [...REEL, "battle.start", "battle.win", "battle.lose", "battle.join"]],
   ["/gift", ["game.bet", "gift.spin", "gift.stop", "gift.claim"]],
   ["/marketplace", ["ui.purchase"]],
 ];

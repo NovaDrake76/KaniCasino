@@ -95,6 +95,16 @@ describe("case battle socket layer", () => {
     sock.close();
   });
 
+  test("a 2v2 battle can no longer be created, and nothing is written", async () => {
+    const u = await makeUser();
+    const c = await makeCase(50);
+    const sock = await connect(tokenFor(u));
+    const res = await emitAck(sock, "battle:create", { caseIds: [c._id.toString()], mode: "2v2", bakaMode: false });
+    expect(res.error).toBe("That mode is not available");
+    expect(await Battle.countDocuments({})).toBe(0);
+    sock.close();
+  });
+
   test("a second human can join a created battle", async () => {
     const host = await makeUser();
     const c = await makeCase(50);

@@ -11,6 +11,7 @@ import {
   binChance,
   binColor,
   formatChance,
+  maxWinFor,
   pegRows,
 } from "./plinkoBoard";
 
@@ -30,6 +31,12 @@ describe("plinko payout display tables", () => {
     for (const risk of RISKS) {
       expect(MAX_BET[risk] * PAYOUT_MULTIPLIERS[risk][0]).toBeLessThanOrEqual(MAX_WIN);
     }
+  });
+
+  test("the max win shown is what each risk can actually pay", () => {
+    expect(maxWinFor("low")).toBe(750000);
+    expect(maxWinFor("medium")).toBe(1000000);
+    expect(maxWinFor("high")).toBe(1000000);
   });
 });
 

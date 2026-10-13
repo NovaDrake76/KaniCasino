@@ -4,6 +4,13 @@ const { generateServerSeed, hashServerSeed, generateClientSeed } = require("./pr
 // after this many rolls a seed auto-rotates (revealing it), so seeds don't live forever
 const AUTO_ROTATE_NONCE = 1000;
 
+// the games that keep drawing from their seed after the bet: blackjack's cards, the mines board, hi-lo's deck
+async function liveGameOn(userId) {
+  const games = [require("../models/BlackjackHand"), require("../models/MinesGame"), require("../models/HiloGame")];
+  const live = await Promise.all(games.map((Game) => Game.exists({ userId, status: "active" })));
+  return live.some(Boolean);
+}
+
 // the active seed for a user, creating one on first use. safe under concurrent
 // first-rolls thanks to the partial-unique index on active seeds.
 async function getOrCreateActiveSeed(userId) {
@@ -75,11 +82,9 @@ async function reserveNonces(userId, count = 1) {
   // future rolls use the fresh seed. the client seed carries over. >= (not just
   // crossing) so a rotation deferred by a live blackjack hand re-fires later.
   if (seed.nonce >= AUTO_ROTATE_NONCE) {
-    // rotating reveals the server seed, which would hand a mid-hand blackjack
-    // player the hole card and every future draw; defer until the hand settles
-    const BlackjackHand = require("../models/BlackjackHand");
-    const inHand = await BlackjackHand.exists({ userId, status: "active" });
-    if (!inHand) await rotate(userId);
+    // rotating reveals the server seed, which would hand a player mid-game every card or mine still to come;
+    // defer until the game settles
+    if (!(await liveGameOn(userId))) await rotate(userId);
   }
 
   return material;

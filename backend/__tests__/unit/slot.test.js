@@ -17,6 +17,15 @@ describe("slot win calculation", () => {
     expect(topRow.payout).toBe(1);
   });
 
+  // the slot page prints this table (src/pages/Slot/symbols.ts), so the two change together
+  test("three of a kind pays the published multiplier", () => {
+    const published = { wild: 100, yellow: 25, hakkero: 12, yin_yang: 8, green: 3, blue: 1, red: 0.5 };
+    for (const [symbol, pays] of Object.entries(published)) {
+      const grid = [symbol, symbol, symbol, "blue", "red", "green", "green", "hakkero", "blue"];
+      expect(SlotGameController.calculateWins(grid)).toEqual([{ line: "Horizontal 1", payout: pays }]);
+    }
+  });
+
   test("a grid with no matching payline pays nothing", () => {
     const grid = ["red", "blue", "green", "blue", "yellow", "red", "green", "red", "blue"];
     expect(SlotGameController.calculateWins(grid)).toHaveLength(0);

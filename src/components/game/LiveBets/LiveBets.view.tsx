@@ -45,14 +45,9 @@ const Row = ({ row }: { row: LiveBet }) => {
     );
 };
 
+// the title lives on the tab above it (GameDetails), so this is the table alone
 const LiveBetsView = ({ rows }: LiveBetsViewProps) => (
-    <div className="w-full max-w-[1200px] mt-6">
-        <div className="flex items-center gap-2 px-1 pb-2">
-            <span className="w-[7px] h-[7px] bg-emerald-400" />
-            <h2 className="text-[11px] font-bold tracking-[0.14em] text-ink-muted">
-                {i18n.t("liveBets.title")}
-            </h2>
-        </div>
+    <div className="w-full">
         <div className="w-full overflow-x-auto bg-surface rounded-lg border border-line">
             <table className="min-w-full divide-y divide-line">
                 <thead className="bg-surface-nav">

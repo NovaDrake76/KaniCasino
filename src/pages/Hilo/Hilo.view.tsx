@@ -6,7 +6,7 @@ import { BonusBetHint, GameBonusStrip } from "../../components/daisu/GameBonus";
 import Monetary from "../../components/Monetary";
 import PlayingCard, { SuitIcon } from "../Blackjack/PlayingCard";
 import { isRedSuit, rankLabel, suitOf } from "../Blackjack/blackjackCards";
-import { pct } from "./hiloCards";
+import { pct, payoutFor } from "./hiloCards";
 import { HiloViewProps } from "./Hilo.types";
 import i18n from "../../i18n";
 import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
@@ -31,6 +31,7 @@ const HiloView: React.FC<HiloViewProps> = ({
   normalizeBet,
   halveBet,
   doubleBet,
+  maxOutBet,
   game,
   active,
   busy,
@@ -42,10 +43,11 @@ const HiloView: React.FC<HiloViewProps> = ({
 }) => {
   const ended = !!game && (game.status === "cashed" || game.status === "busted");
   const controlsLocked = active;
-  const currentPayout = game ? betValue * game.multiplier : betValue;
+  const currentPayout = game ? payoutFor(betValue, game.multiplier) : betValue;
 
   return (
     <GameLayout
+      game="hilo"
       bar={
         <GameBar>
           <LiveStatsButton />
@@ -67,6 +69,7 @@ const HiloView: React.FC<HiloViewProps> = ({
             onBlur={normalizeBet}
             onHalve={halveBet}
             onDouble={doubleBet}
+            onMax={maxOutBet}
             betValue={betValue}
             disabled={controlsLocked}
             note={<BonusBetHint game="hilo" bet={betValue} />}
@@ -151,13 +154,13 @@ const HiloView: React.FC<HiloViewProps> = ({
             <div className="bg-surface-nav border border-line rounded p-3">
               <div className="text-xs text-ink-muted font-semibold mb-1">Profit if Higher ({(game?.hiMultiplier ?? 0).toFixed(2)}×)</div>
               <div className="text-sm text-accent-gold font-semibold">
-                <Monetary value={active && game?.hiMultiplier ? betValue * game.hiMultiplier - betValue : 0} showFraction />
+                <Monetary value={active && game?.hiMultiplier ? payoutFor(betValue, game.hiMultiplier) - betValue : 0} showFraction />
               </div>
             </div>
             <div className="bg-surface-nav border border-line rounded p-3">
               <div className="text-xs text-ink-muted font-semibold mb-1">Profit if Lower ({(game?.loMultiplier ?? 0).toFixed(2)}×)</div>
               <div className="text-sm text-accent-gold font-semibold">
-                <Monetary value={active && game?.loMultiplier ? betValue * game.loMultiplier - betValue : 0} showFraction />
+                <Monetary value={active && game?.loMultiplier ? payoutFor(betValue, game.loMultiplier) - betValue : 0} showFraction />
               </div>
             </div>
           </div>

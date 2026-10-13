@@ -8,6 +8,7 @@ const Roll = require("../../models/Roll");
 const Seed = require("../../models/Seed");
 const Transaction = require("../../models/Transaction");
 const HiloGame = require("../../models/HiloGame");
+const seeds = require("../../utils/seeds");
 const { TX } = require("../../utils/economy");
 const { rankOf, hiChance, loChance } = require("../../utils/hiloMath");
 
@@ -136,4 +137,39 @@ test("a rotated seed lets the verifier reproduce the game", async () => {
   expect(verified.body.ok).toBe(true);
   expect(verified.body.commitmentValid).toBe(true);
   expect(verified.body.recomputedPayout).toBe((await HiloGame.findOne({ userId: u._id }).lean()).payout);
+});
+
+// the seed rotates at nonce 1000 and rotating reveals it, so a deck must never be dealt from a seed that is
+// revealed while the game is live: the player could read every card to come
+test("a start that reaches the rotation deals from the fresh seed, never the revealed one", async () => {
+  const u = await makeUser(1000);
+  const h = auth(u);
+  const first = await seeds.getOrCreateActiveSeed(u._id);
+  await Seed.updateOne({ _id: first._id }, { $set: { nonce: 999 } });
+
+  const start = await request(app).post("/games/hilo/start").set(h).send({ betAmount: 100 });
+  expect(start.status).toBe(200);
+
+  expect((await Seed.findById(first._id)).active).toBe(false);
+  const live = await HiloGame.findOne({ userId: u._id, status: "active" });
+  const fresh = await Seed.findOne({ userId: u._id, active: true });
+  expect(String(live.seedId)).toBe(String(fresh._id));
+  expect(await HiloGame.countDocuments({ userId: u._id, status: "voided" })).toBe(1);
+  expect(await Transaction.countDocuments({ userId: u._id, type: TX.HILO_BET })).toBe(1);
+  expect((await User.findById(u._id)).walletBalance).toBe(900);
+});
+
+test("another game's roll past the rotation waits until the run is finished", async () => {
+  const u = await makeUser(1000);
+  const h = auth(u);
+  await request(app).post("/games/hilo/start").set(h).send({ betAmount: 100 });
+  const game = await HiloGame.findOne({ userId: u._id, status: "active" });
+  await Seed.updateOne({ _id: game.seedId }, { $set: { nonce: 999 } });
+
+  expect((await request(app).post("/games/plinko").set(h).send({ betAmount: 10, risk: "low" })).status).toBe(200);
+  expect((await Seed.findById(game.seedId)).active).toBe(true);
+
+  await HiloGame.updateOne({ _id: game._id }, { $set: { status: "busted" } });
+  expect((await request(app).post("/games/plinko").set(h).send({ betAmount: 10, risk: "low" })).status).toBe(200);
+  expect((await Seed.findById(game.seedId)).active).toBe(false);
 });

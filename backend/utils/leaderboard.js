@@ -9,6 +9,7 @@ const { VISIBLE } = require("./visibility");
 const memo = require("./memo");
 const verification = require("./verification");
 const limits = require("./limits");
+const predictionStake = require("./predictionStake");
 
 const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
 
@@ -54,11 +55,17 @@ const eligibleOnly = (startsAt) =>
       ]
     : [];
 
+// the window's bets: the ledger's, and the predictions whose market resolved inside it, on what was still held
+const betsIn = (startsAt, endsAt, match = {}) => [
+  { $match: { ...match, type: { $in: SCORING_TYPES }, createdAt: { $gte: startsAt, $lt: endsAt }, $nor: [predictionStake.laterBuys()] } },
+  predictionStake.resolvedAsBets({ ...match, settledAt: { $gte: startsAt, $lt: endsAt } }),
+];
+
 // every account's points in the window, best first. nothing is incremented on the money
 // path, so a bet cannot be double counted and there is no stored total to drift.
 // `limited` are accounts staff have limited: they score but are neither ranked nor paid
 const scored = (startsAt, endsAt, limited = []) => [
-  { $match: { type: { $in: SCORING_TYPES }, createdAt: { $gte: startsAt, $lt: endsAt } } },
+  ...betsIn(startsAt, endsAt),
   { $group: { _id: "$userId", points: { $sum: pointsExpression() }, bets: { $sum: 1 } } },
   { $match: limited.length ? { points: { $gt: 0 }, _id: { $nin: limited } } : { points: { $gt: 0 } } },
   ...eligibleOnly(startsAt),
@@ -146,13 +153,7 @@ async function padStandings(rows, limit, { verifiedOnly = false } = {}) {
 async function standingFor(userId, startsAt, endsAt) {
   const id = new mongoose.Types.ObjectId(String(userId));
   const [mine] = await Transaction.aggregate([
-    {
-      $match: {
-        userId: id,
-        type: { $in: SCORING_TYPES },
-        createdAt: { $gte: startsAt, $lt: endsAt },
-      },
-    },
+    ...betsIn(startsAt, endsAt, { userId: id }),
     { $group: { _id: null, points: { $sum: pointsExpression() }, bets: { $sum: 1 } } },
   ]);
   if (!mine || mine.points <= 0) return { points: 0, bets: 0, rank: null };

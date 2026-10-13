@@ -16,6 +16,8 @@ export const PAYOUT_MULTIPLIERS: Record<PlinkoRisk, number[]> = {
 // per-risk bet ceilings keep the top payout at the max win (cap times top multiplier)
 export const MAX_BET: Record<PlinkoRisk, number> = { low: 50000, medium: 10000, high: 1000 };
 export const MAX_WIN = 1000000;
+// what a risk can actually pay: low's cap times its 15x edge stops at 750,000
+export const maxWinFor = (risk: PlinkoRisk) => MAX_BET[risk] * PAYOUT_MULTIPLIERS[risk][0];
 
 // board geometry in viewBox units; the svg scales it to any container width
 export const BOARD_W = 1000;

@@ -12,8 +12,9 @@ import de from "./locales/de.json";
 import italian from "./locales/it.json";
 import vi from "./locales/vi.json";
 import id from "./locales/id.json";
+import pl from "./locales/pl.json";
 
-const locales: Record<string, unknown> = { en, zh, ja, ko, es, pt, fr, de, it: italian, vi, id };
+const locales: Record<string, unknown> = { en, zh, ja, ko, es, pt, fr, de, it: italian, vi, id, pl };
 
 const flatten = (node: unknown, prefix = ""): Record<string, string> => {
   const out: Record<string, string> = {};
@@ -26,6 +27,14 @@ const flatten = (node: unknown, prefix = ""): Record<string, string> => {
 
 const english = flatten(en);
 
+// a language with more plural forms than english (polish counts in one, few and many) adds them
+// beside the _other english has; anything else extra is invented
+const PLURAL = /_(zero|one|two|few|many|other)$/;
+const extraPlural = (key: string) => {
+  const form = key.match(PLURAL);
+  return !!form && `${key.slice(0, -form[0].length)}_other` in english;
+};
+
 describe("translations", () => {
   it("ships a file for every language the selector offers", () => {
     for (const language of LANGUAGES) expect(locales[language.code]).toBeTruthy();
@@ -35,7 +44,7 @@ describe("translations", () => {
     // a missing key silently falls back to english, which is worse than a failing test
     it(`${code} covers every key without inventing new ones`, () => {
       const keys = Object.keys(flatten(bundle));
-      expect(keys.filter((k) => !(k in english))).toEqual([]);
+      expect(keys.filter((k) => !(k in english) && !extraPlural(k))).toEqual([]);
       expect(Object.keys(english).filter((k) => !keys.includes(k))).toEqual([]);
     });
   }

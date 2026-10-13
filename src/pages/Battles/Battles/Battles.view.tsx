@@ -2,6 +2,7 @@ import { AiOutlineArrowLeft, AiOutlineClose } from "react-icons/ai";
 import Title from "../../../components/Title";
 import Monetary from "../../../components/Monetary";
 import Avatar from "../../../components/Avatar";
+import GameDetails from "../../../components/game/GameDetails";
 import { BattlesViewProps, CaseInfo } from "./Battles.types";
 import type { CaseGroup } from "../../Home/groupCases";
 import i18n from "../../../i18n";
@@ -280,6 +281,8 @@ const BattlesView: React.FC<BattlesViewProps> = ({
         ))
       )}
     </div>
+
+    <GameDetails game="battles" feed={false} className="max-w-[1100px]" />
   </div>
 );
 

@@ -3,11 +3,12 @@ process.env.JWT_SECRET = process.env.JWT_SECRET || "test-secret";
 const mongoose = require("mongoose");
 const request = require("supertest");
 const { setupDb, clearDb, teardownDb } = require("./db");
-const { makeApp, tokenFor, uniqueSuffix } = require("./helpers");
+const { makeApp, tokenFor, uniqueSuffix, betOnDays } = require("./helpers");
 const User = require("../../models/User");
 const BuyOrder = require("../../models/BuyOrder");
 const IpSighting = require("../../models/IpSighting");
 const Transaction = require("../../models/Transaction");
+const Notification = require("../../models/Notification");
 const leaderboard = require("../../utils/leaderboard");
 const chat = require("../../utils/chat");
 const rain = require("../../utils/rain");
@@ -15,11 +16,13 @@ const memo = require("../../utils/memo");
 const { TX } = require("../../utils/economy");
 const {
   REFERRER_SIGNUP_BONUS,
-  COMMISSION_RATE,
+  LEGACY_COMMISSION_RATE,
   MILESTONE_LEVEL,
+  MILESTONE_DAYS,
   MILESTONE_BONUS,
   settleOnVerified,
   maybePayReferralMilestone,
+  sweepReferrals,
 } = require("../../utils/referrals");
 
 let app;
@@ -146,10 +149,32 @@ describe("referrals while limited", () => {
     expect(await Transaction.countDocuments({ userId: referrer._id, type: TX.REFERRAL_BONUS })).toBe(1);
   });
 
+  test("a limited referrer's due milestone waits for the lift, and a signup on their code is told why nothing pays", async () => {
+    const admin = await makeUser({ isAdmin: true });
+    const referrer = await makeUser({ walletBalance: 0, referralCode: `LIM${uniqueSuffix().replace(/\D/g, "").slice(-8)}` });
+    await limit(admin, referrer, "review");
+    const referee = await makeUser({ level: MILESTONE_LEVEL, referredBy: referrer._id, googleId: `g-${uniqueSuffix()}` });
+    await betOnDays(referee._id, MILESTONE_DAYS);
+
+    await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL);
+    expect(await sweepReferrals()).toBe(0);
+    expect((await User.findById(referrer._id)).walletBalance).toBe(0);
+
+    const s = uniqueSuffix();
+    await request(app).post("/users/register").send({ email: `n-${s}@x.com`, username: `n-${s}`, password: "secret1", referralCode: referrer.referralCode });
+    const note = await Notification.findOne({ receiverId: referrer._id, title: "Referral bonus" }).sort({ _id: -1 });
+    expect(note.content).toMatch(/paused while your account is limited/);
+
+    await lift(admin, referrer);
+    expect((await User.findById(referrer._id)).walletBalance).toBe(MILESTONE_BONUS);
+    expect((await User.findById(referee._id)).referralMilestonePaid).toBe(true);
+  });
+
   test("a milestone reached while the referee is limited is paid when the limit lifts", async () => {
     const admin = await makeUser({ isAdmin: true });
     const referrer = await makeUser({ walletBalance: 0 });
     const referee = await makeUser({ level: MILESTONE_LEVEL, referredBy: referrer._id, googleId: `g-${uniqueSuffix()}` });
+    await betOnDays(referee._id, MILESTONE_DAYS);
     await limit(admin, referee, "review");
 
     await maybePayReferralMilestone(referee._id, MILESTONE_LEVEL);
@@ -169,10 +194,10 @@ describe("referrals while limited", () => {
     const commission = async () => (await auth(request(app).get("/referrals/me"), referrer)).body.referrals[0].commission;
 
     await limit(admin, referee, "review");
-    expect(await commission()).toBe(Math.floor(3000 * COMMISSION_RATE));
+    expect(await commission()).toBe(Math.floor(3000 * LEGACY_COMMISSION_RATE));
 
     await lift(admin, referee);
-    expect(await commission()).toBe(Math.floor(8000 * COMMISSION_RATE));
+    expect(await commission()).toBe(Math.floor(8000 * LEGACY_COMMISSION_RATE));
   });
 
   test("a limited account cannot claim its commission", async () => {

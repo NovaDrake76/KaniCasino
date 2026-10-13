@@ -5,6 +5,9 @@ export const RANKS = 13;
 export const MIN_BET = 1;
 export const MAX_BET = 10000;
 export const MAX_SKIPS = 52;
+// the server caps a run's payout at this, to the cent
+export const MAX_PAYOUT = 1_000_000;
+export const payoutFor = (bet: number, multiplier: number) => Math.min(Math.round(bet * multiplier * 100) / 100, MAX_PAYOUT);
 
 export const rankOf = (card: number) => card % RANKS;
 // the tie falls to the minority side on the extremes, so neither ace nor king is a 100% bet

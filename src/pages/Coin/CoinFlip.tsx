@@ -5,7 +5,8 @@ import { setStakeAtRisk } from "../../services/stakeGuard";
 import Coin from "./Coin"
 import { motion } from "framer-motion";
 import UserContext from "../../UserContext";
-import LiveBets from "./LiveBets";
+import RoundBets, { RoundSummary } from "./RoundBets";
+import GameDetails from "../../components/game/GameDetails";
 import PurpleNote from "./PurpleNote";
 import GameButton from "../../components/game/GameButton";
 import BetAmount from "../../components/game/BetAmount";
@@ -45,6 +46,7 @@ const CoinFlip = () => {
   // the round the server sent carries a version; until one lands the page knows neither the payouts nor whether purple is on
   const loaded = gameState?.version !== undefined;
   const purpleOn = !!gameState?.purpleOn;
+  const sides = [...SIDES.slice(0, purpleOn || !loaded ? 3 : 2)];
   const pays = gameState?.pays || { side: WIN_MULTIPLIER };
   const multiplierOf = (side: number | null) => (side === 2 ? pays.purple || 0 : pays.side || WIN_MULTIPLIER);
 
@@ -166,6 +168,7 @@ const CoinFlip = () => {
               onChange={(value) => setBet(value === "" ? 0 : Math.min(MAX_BET, Number(value)))}
               onHalve={() => setBet(Math.max(MIN_BET, Math.floor(bet / 2)))}
               onDouble={() => setBet(Math.min(MAX_BET, (bet || MIN_BET) * 2))}
+              onMax={() => setBet(Math.min(MAX_BET, Math.max(MIN_BET, Math.floor(userData?.walletBalance || MIN_BET))))}
               betValue={bet}
             />
           </div>
@@ -259,13 +262,13 @@ const CoinFlip = () => {
           </div>
         </div>
       </div>
-      <div className="flex gap-8 flex-col lg:flex-row">
-        {gameState &&
-          SIDES.slice(0, purpleOn || !loaded ? 3 : 2).map((side) => (
-            <LiveBets gameState={gameState} type={side} key={side} />
-          ))
-        }
-      </div>
+      <GameDetails
+        game="coinflip"
+        roundBets={<RoundBets gameState={gameState} sides={sides} />}
+        roundSummary={<RoundSummary gameState={gameState} sides={sides} />}
+        info={{ purpleOn, side: pays.side, purple: pays.purple, purpleChance: pays.purpleChance }}
+        className="max-w-[800px] xl:max-w-[1140px]"
+      />
 
     </div >
   );
