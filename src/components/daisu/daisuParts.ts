@@ -4,3 +4,6 @@ export const ART_HEIGHT = 1768;
 
 // the glass she holds, as a share of the drawing: the click target, and what the numbers pop out of
 export const JAR = {"left": 44.19, "top": 51.07, "width": 25.78, "height": 24.49};
+
+// changes whenever a part does, so a browser or the cdn holding an older drawing under the same name fetches this one
+export const ART_VERSION = "99eb4405";

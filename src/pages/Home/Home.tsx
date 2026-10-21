@@ -81,6 +81,20 @@ const Home = () => {
     },
     {
       left: {
+        image: "/images/banners/home-plate.webp",
+        //if title is hide, it will hide the information component on the left side
+        title: "hide",
+        description: i18n.t("home.tryYourLuckNow"),
+        link: "/slots",
+      },
+      right: (
+        <div className="hidden 2xl:flex 2xl:mr-36">
+          <img src="/images/KANICASINO.webp" alt={i18n.t("home.kanicasino")} />
+        </div>
+      ),
+    },
+    {
+      left: {
         image: "/images/banners/blue-archive-plate.webp",
         title: i18n.t("home.blueArchive"),
         description: i18n.t("home.fourCasesFromKivotos"),
@@ -150,20 +164,6 @@ const Home = () => {
             src="/images/banners/counter-strike-lockup.webp"
             alt={i18n.t("home.counterStrikeCases")}
           />
-        </div>
-      ),
-    },
-    {
-      left: {
-        image: "/images/banners/home-plate.webp",
-        //if title is hide, it will hide the information component on the left side
-        title: "hide",
-        description: i18n.t("home.tryYourLuckNow"),
-        link: "/slots",
-      },
-      right: (
-        <div className="hidden 2xl:flex 2xl:mr-36">
-          <img src="/images/KANICASINO.webp" alt={i18n.t("home.kanicasino")} />
         </div>
       ),
     },
