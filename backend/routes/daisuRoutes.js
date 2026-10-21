@@ -33,6 +33,8 @@ const statusOf = (user, now = new Date()) => {
     pickProgress: user.bonusAmount > 0 ? Math.min(1, (user.potCycleClaimed || 0) / user.bonusAmount) : 0,
     creditTtlMs: pot.CREDIT_TTL_MS,
     bonuses: pot.bonusesOf(user, now),
+    // the jar ticks on the player's device between reads, and a device clock can be far off this one
+    serverTime: now.toISOString(),
   };
 };
 
@@ -41,13 +43,16 @@ router.get("/status", ...gate, (req, res) => {
 });
 
 const TOUR_STEPS = ["pot", "case", "open", "drop", "game", "bet", "range", "play", "done"];
-// where each status may be reached from; skipped and done are final, so a tour runs once. null is an account from before the tour
+// where each status may be reached from; skipped and done are final, so a tab catching up never restarts a tour. null is an account from before the tour
 const TOUR_FROM = { active: ["offered", "active", null], skipped: ["offered", "active", null], done: ["active"] };
+// the footer's replay is the one way back in, asked for by name and only from the first step
+const REPLAY_FROM = ["skipped", "done"];
 
 router.post("/tour", ...gate, async (req, res) => {
-  const { status, step } = req.body || {};
+  const { status, step, replay } = req.body || {};
   if (!TOUR_FROM[status]) return res.status(400).json({ message: "Unknown tour status" });
   if (step != null && !TOUR_STEPS.includes(step)) return res.status(400).json({ message: "Unknown tour step" });
+  const from = replay === true && status === "active" && step === TOUR_STEPS[0] ? TOUR_FROM.active.concat(REPLAY_FROM) : TOUR_FROM[status];
   try {
     const now = new Date();
     const was = (req.user.onboarding && req.user.onboarding.status) || null;
@@ -55,7 +60,7 @@ router.post("/tour", ...gate, async (req, res) => {
     if (step) set["onboarding.step"] = step;
     if (status === "active" && (was === "offered" || was === null)) set["onboarding.startedAt"] = now;
     if (status !== "active") set["onboarding.endedAt"] = now;
-    const result = await User.updateOne({ _id: req.user._id, "onboarding.status": { $in: TOUR_FROM[status] } }, { $set: set });
+    const result = await User.updateOne({ _id: req.user._id, "onboarding.status": { $in: from } }, { $set: set });
     if (!result.matchedCount) return res.status(409).json({ message: "The tour is not running", reason: "tour" });
     res.json({ onboarding: { status, step: step || (req.user.onboarding && req.user.onboarding.step) || null } });
   } catch (err) {

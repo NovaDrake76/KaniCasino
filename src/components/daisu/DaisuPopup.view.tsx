@@ -40,6 +40,7 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   roadmap,
   giftReady,
   missionReady,
+  cardFit,
 }) => (
   <motion.section
     initial={{ opacity: 0, y: 24, scale: 0.96 }}
@@ -47,7 +48,8 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
     transition={spring}
     aria-label="Daisu"
     data-tour="daisu-card"
-    className="fixed bottom-4 right-4 z-sticky flex max-h-[calc(100vh-2rem)] w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-y-auto bg-surface shadow-2xl"
+    style={{ zoom: cardFit.zoom, maxHeight: cardFit.maxHeight || undefined }}
+    className="fixed bottom-4 right-4 z-sticky flex w-[22rem] max-w-[calc(100vw-2rem)] flex-col overflow-y-auto bg-surface shadow-2xl"
   >
     <header className="flex items-center justify-between border-b border-line px-4 py-2">
       <div className="flex items-baseline gap-2">

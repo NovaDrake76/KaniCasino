@@ -14,6 +14,7 @@ import { usePotStatus } from "../potStore";
 import { useLocked } from "../shop/useLocked";
 import { GAME_NAME_KEYS, GAME_PATHS } from "../potMath";
 import type { PotStatus } from "../../../services/daisu/DaisuService";
+import { serverNow } from "../../../services/serverClock";
 import i18n from "../../../i18n";
 
 // a beat to see how the round landed before she lets go
@@ -61,7 +62,7 @@ const placeOf = (wizard: Wizard, step: string, userId: string, gamePath: string 
 const expiry = (at: string | null) => (at ? Date.parse(at) : 0);
 
 // the freshest bonus still running, which is the one a bet would spend
-const liveBonus = (status: PotStatus | null, now = Date.now()) =>
+const liveBonus = (status: PotStatus | null, now = serverNow()) =>
   (status?.bonuses || [])
     .filter((b) => !b.expired && b.amount > 0 && (!b.expiresAt || expiry(b.expiresAt) > now))
     .sort((a, b) => expiry(b.expiresAt) - expiry(a.expiresAt))[0] || null;

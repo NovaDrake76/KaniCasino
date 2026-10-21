@@ -4,13 +4,14 @@ export const PART = (name: string) => `/images/daisu/parts/${name}.webp`;
 export const PARTS = [
   "base",
   "jar-0", "jar-1", "jar-2", "jar-3", "jar-4",
-  "eyes-default", "eyes-smug", "eyes-sharp",
+  "eyes-normal", "eyes-smug",
+  "brows-neutral", "brows-smug", "brows-angry",
   "mouth-closed", "mouth-open", "mouth-smug",
 ];
 
 let warmed = false;
 
-// her card used to fetch its nine layers the moment it opened, so the first open always waited on the
+// her card used to fetch its layers the moment it opened, so the first open always waited on the
 // network. they are asked for once the page is idle instead, so she is in the cache before the click
 export const preloadDaisuArt = () => {
   if (warmed || typeof window === "undefined") return;

@@ -9,6 +9,8 @@ export const ITEM_SOLD_EVENT = "item:sold";
 export const SHOP_OPEN_EVENT = "daisu:shop";
 export const CHAT_OPEN_EVENT = "chat:open";
 export const DAISU_POKED_EVENT = "daisu:poked";
+// the footer brings the visitors' welcome back for anyone who wants to read it again
+export const ONBOARDING_OPEN_EVENT = "onboarding:open";
 
 export interface RevealedItem {
   name: string;
@@ -36,3 +38,4 @@ export const emitItemSold = () => emit(ITEM_SOLD_EVENT);
 export const openDaisuShop = (key?: string) => emit(SHOP_OPEN_EVENT, key);
 export const openChat = () => emit(CHAT_OPEN_EVENT);
 export const emitPoked = () => emit(DAISU_POKED_EVENT);
+export const openOnboarding = () => emit(ONBOARDING_OPEN_EVENT);

@@ -2,23 +2,22 @@
 
 run from the repo root:  python tools/daisu/export.py
 
-input is Daisu_pngs/ (local only, never committed): twelve 2048x2048 layers that already
-share one canvas, so nothing here has to align anything by hand. output is
+input is Daisu_pngs/ (local only, never committed): the artist's 2048x2048 colour layers, which
+already share one canvas, so nothing here has to align anything by hand. output is
 
-  public/images/daisu/parts/*.webp   the layers, cropped to the drawing and recoloured
+  public/images/daisu/parts/*.webp   the layers, cropped to the drawing
   public/images/daisu/idle.webp      one flat composite for the decorative <img> call sites
   public/images/daisu/bust.webp      her head, for the same
   src/components/daisu/daisuParts.ts the measured geometry, so no percentage is guessed
 
-the art is drawn in black on transparent; the site wants the same lavender the first sketch
-used, so every layer is recoloured to INK with its alpha kept. lossless webp is smaller
-than quality 85 here because each layer is one flat colour, and it leaves the lines clean.
+the art is in colour since the artist finished it (2026-10), so the layers keep their colours;
+the first sketch was black line art recoloured to lavender. lossy webp at a high quality is a
+third of the lossless size on shaded colour and the difference does not show at her sizes.
 """
 import io
 import json
 import os
 
-import numpy as np
 from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -28,26 +27,30 @@ PARTS = os.path.join(REPO, "public", "images", "daisu", "parts")
 ART = os.path.join(REPO, "public", "images", "daisu")
 GEOMETRY = os.path.join(REPO, "src", "components", "daisu", "daisuParts.ts")
 
-INK = (232, 229, 246)
-# the drawing is this wide in the export; she is never shown above 320 css px, so this is 2x
-WIDTH = 760
+# the drawing is this wide in the export; she is never shown above 320 css px, so this stays
+# sharp on a 2x screen zoomed to 140%
+WIDTH = 900
 # the flat composites are decoration at 46 to 290 px
-IDLE_WIDTH = 420
-BUST_WIDTH = 260
+IDLE_WIDTH = 480
+BUST_WIDTH = 300
+QUALITY = 90
 
 LAYERS = {
-    "base": "base/base.png",
-    "eyes-default": "olhos/olhos_2_default.png",
-    "eyes-smug": "olhos/olhos_1_smug.png",
-    "eyes-sharp": "olhos/olhos_3_sharp.png",
-    "mouth-closed": "bocas/boca_3_default.png",
-    "mouth-open": "bocas/boca_2_open.png",
-    "mouth-smug": "bocas/boca_1_open_smug.png",
-    "jar-0": "jarro/jarro_0_vazio.png",
-    "jar-1": "jarro/jarro_1_um_quarto.png",
-    "jar-2": "jarro/jarro_2_2_quartos.png",
-    "jar-3": "jarro/jarro_3_3_quartos.png",
-    "jar-4": "jarro/jarro_4_full.png",
+    "base": "base/base_daisu.png",
+    "eyes-normal": "rosto/olhos/olhos_normal.png",
+    "eyes-smug": "rosto/olhos/olhos_smug.png",
+    # the artist's first brows dip toward the nose and are the angry pair, the second are raised and smug, the third level
+    "brows-angry": "rosto/sobrancelhas/sobrancelhas_1.png",
+    "brows-smug": "rosto/sobrancelhas/sobrancelhas_2.png",
+    "brows-neutral": "rosto/sobrancelhas/sobrancelhas_3.png",
+    "mouth-closed": "rosto/bocas/boca_fechada.png",
+    "mouth-open": "rosto/bocas/boca_fala.png",
+    "mouth-smug": "rosto/bocas/boca_smug.png",
+    "jar-0": "jarro/jarro_0.png",
+    "jar-1": "jarro/jarro_1.png",
+    "jar-2": "jarro/jarro_2.png",
+    "jar-3": "jarro/jarro_3.png",
+    "jar-4": "jarro/jarro_4.png",
 }
 
 # the bust reaches this far past the rim of the jar, so her collar closes the crop
@@ -58,12 +61,6 @@ def load(name):
     return Image.open(os.path.join(SRC, LAYERS[name])).convert("RGBA")
 
 
-def tint(im):
-    a = np.array(im)
-    a[:, :, 0], a[:, :, 1], a[:, :, 2] = INK
-    return Image.fromarray(a)
-
-
 def union(boxes):
     return (min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes))
 
@@ -71,28 +68,32 @@ def union(boxes):
 def write(im, path, width):
     im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    im.save(path, "WEBP", lossless=True, method=6)
+    im.save(path, "WEBP", quality=QUALITY, method=6)
     return os.path.getsize(path)
 
 
 def main():
     art = {name: load(name) for name in LAYERS}
-    box = art["base"].split()[-1].getbbox()
+    box = union([im.split()[-1].getbbox() for im in art.values()])
     jar = union([art[f"jar-{i}"].split()[-1].getbbox() for i in range(5)])
+
+    # parts from an earlier set of art that this one no longer has
+    for old in os.listdir(PARTS):
+        if old.endswith(".webp") and old[:-5] not in LAYERS:
+            os.remove(os.path.join(PARTS, old))
 
     total = 0
     for name, im in art.items():
-        total += write(tint(im).crop(box), os.path.join(PARTS, f"{name}.webp"), WIDTH)
+        total += write(im.crop(box), os.path.join(PARTS, f"{name}.webp"), WIDTH)
 
     flat = art["base"].copy()
-    for part in ("jar-4", "eyes-default", "mouth-closed"):
+    for part in ("jar-4", "eyes-normal", "brows-neutral", "mouth-closed"):
         flat.alpha_composite(art[part])
-    flat = tint(flat)
     total += write(flat.crop(box), os.path.join(ART, "idle.webp"), IDLE_WIDTH)
 
     # a square portrait: as wide as it is tall, centred on her eyes, cut under the rim of
     # the jar, so her face still reads at the 46px the bubble draws it
-    eyes = art["eyes-default"].split()[-1].getbbox()
+    eyes = art["eyes-normal"].split()[-1].getbbox()
     middle = (eyes[0] + eyes[2]) // 2
     bottom = jar[1] + BUST_BELOW
     half = (bottom - box[1]) // 2

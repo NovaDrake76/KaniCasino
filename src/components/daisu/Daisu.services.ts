@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
 import { claimPot, getPotStatus, PotStatus } from "../../services/daisu/DaisuService";
+import { serverNow } from "../../services/serverClock";
 import { useGiftStatus } from "../header/useGiftReady";
 import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
 import { greetingFor, lineKey, Mood, openingMood, pokeMood, relationshipRank } from "./daisuLines";
@@ -13,6 +14,7 @@ import { startHelp } from "./tour/helpStore";
 import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import { preloadDaisuArt } from "./daisuArtFiles";
+import { useCardFit } from "./cardFit";
 import { track } from "../../services/usage/usage";
 import type { UnlockKey } from "../../services/daisu/ShopService";
 import { itemWords } from "./shop/shopCopy";
@@ -91,7 +93,8 @@ export const useDaisu = () => {
   }, [enabled]);
 
   const [stage, setStage] = useState<Stage>(readStage);
-  const [now, setNow] = useState(() => Date.now());
+  // the jar fills on the server's clock, which this one only follows
+  const [now, setNow] = useState(() => serverNow());
   // where the fill stood at the last click: what is between there and now is in the jar
   const [lastClickFill, setLastClickFill] = useState(0);
   const [line, setLine] = useState<Line | null>(null);
@@ -183,6 +186,7 @@ export const useDaisu = () => {
       .then((s) => {
         if (seq !== statusSeq.current) return;
         setPotStatus(s);
+        setNow(serverNow());
         if (reset) setLastClickFill(0);
       })
       .catch(() => {
@@ -217,7 +221,7 @@ export const useDaisu = () => {
 
   useEffect(() => {
     if (!enabled) return;
-    const t = setInterval(() => setNow(Date.now()), stage === "bubble" ? CLOSED_TICK_MS : OPEN_TICK_MS);
+    const t = setInterval(() => setNow(serverNow()), stage === "bubble" ? CLOSED_TICK_MS : OPEN_TICK_MS);
     return () => clearInterval(t);
   }, [enabled, stage]);
 
@@ -433,7 +437,7 @@ export const useDaisu = () => {
     // the jar kept filling through the pause and the server takes all of it, so it is poured
     // into the run first: the number that turns green is then the one that piled up on screen
     const s = statusRef.current;
-    const fillNow = s ? fillAt(s.fullAt, s.cycleMs, Date.now()) : 0;
+    const fillNow = s ? fillAt(s.fullAt, s.cycleMs, serverNow()) : 0;
     const rest = s ? takeBetween(s.full, lastClickFillRef.current, fillNow) : 0;
     if (rest >= 1) {
       setLastClickFill(fillNow);
@@ -445,6 +449,7 @@ export const useDaisu = () => {
       lastStatusAt.current = Date.now();
       statusSeq.current += 1;
       setPotStatus(res.status);
+      setNow(serverNow());
       setLastClickFill(0);
       if (userData) toogleUserData({ ...userData, walletBalance: res.walletBalance, nextBonus: res.nextBonus });
       endRun("sent", res.amount);
@@ -452,7 +457,7 @@ export const useDaisu = () => {
       // said once the run has settled, so a burst of clicks gets one line: teasing for a pot taken early, thanks for a full one.
       // the game her next bonus moves to is never announced: this take's bonus is still on the old one, and naming another game beside its ticket reads as a mistake
       if (res.fill < 1) {
-        say("filling", { amount: kp(res.amount), clock: clock(msUntil(res.status.fullAt, res.status.cycleMs, 1, Date.now())) });
+        say("filling", { amount: kp(res.amount), clock: clock(msUntil(res.status.fullAt, res.status.cycleMs, 1, serverNow())) });
       } else if (res.credit >= 1 && Math.random() < 0.5) {
         say("claimedCredit", { amount: kp(res.amount), credit: kp(res.credit), game: i18n.t(GAME_NAME_KEYS[res.pick]) });
       } else {
@@ -601,6 +606,7 @@ export const useDaisu = () => {
     startHelp(userId, `shop:${item.key}`, `unlock:${item.key}`, itemWords(item).name);
   };
   const backToPopup = () => setStage("popup");
+  const cardFit = useCardFit(stage === "popup");
 
   return {
     enabled,
@@ -657,5 +663,6 @@ export const useDaisu = () => {
     attention,
     giftReady: gift.canSpin,
     bubbleGift,
+    cardFit,
   };
 };

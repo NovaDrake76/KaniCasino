@@ -155,7 +155,7 @@ const Home = () => {
     },
     {
       left: {
-        image: "/images/homeBanner.webp",
+        image: "/images/banners/home-plate.webp",
         //if title is hide, it will hide the information component on the left side
         title: "hide",
         description: i18n.t("home.tryYourLuckNow"),

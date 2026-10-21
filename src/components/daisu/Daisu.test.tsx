@@ -9,6 +9,7 @@ import type { PotStatus } from "../../services/daisu/DaisuService";
 import { endHelp, helpState } from "./tour/helpStore";
 import { DAISU_POKED_EVENT, openDaisuShop, showDaisu } from "./tour/tourEvents";
 import { endTour, setPokeMode, syncTour } from "./tour/tourStore";
+import { noteServerTime, resetServerClock } from "../../services/serverClock";
 
 const getPotStatus = vi.fn();
 const claimPot = vi.fn();
@@ -137,6 +138,7 @@ describe("daisu in the corner", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    resetServerClock();
     delete (document as { visibilityState?: string }).visibilityState;
   });
 
@@ -270,6 +272,20 @@ describe("daisu in the corner", () => {
     await wait(4100);
     expect(claimPot).not.toHaveBeenCalled();
     expect(runState()).toBeUndefined();
+  });
+
+  // a phone set an hour behind saw a full pot an hour from full, and its clicks never left the phone
+  it("fills the jar on the server's clock when the device's own runs behind", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    noteServerTime(iso(3600000));
+    getPotStatus.mockResolvedValue(status(0, { fullAt: iso(3600000) }));
+    claimPot.mockResolvedValue(claimed(1000, 1100));
+    draw();
+    expect(await screen.findByText(/full pot bonus \+25%/i)).toBeTruthy();
+
+    fireEvent.click(jar());
+    await wait(4100);
+    await waitFor(() => expect(claimPot).toHaveBeenCalledTimes(1));
   });
 
   it("shows a live bonus on her card as a ticket with its clock, and leaves an expired one off", async () => {

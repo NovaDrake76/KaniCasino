@@ -3,6 +3,7 @@ import MarketItem from "./MarketItem";
 import { getItems, getMyOrders, cancelBuyOrder, BuyOrder } from "../../services/market/MarketService";
 import SellItemModal from "./SellItemModal";
 import MyListings from "./MyListings";
+import OrderBook from "./OrderBook";
 import Skeleton from "react-loading-skeleton";
 import UserContext from "../../UserContext";
 import Pagination from "../../components/Pagination";
@@ -66,6 +67,8 @@ const Marketplace: React.FC = () => {
   const locked = useLocked("tradersLicense");
   const [searchParams, setSearchParams] = useSearchParams();
   const mine = isLogged && searchParams.get("view") === "mine";
+  // what other players are bidding, open to visitors too
+  const bids = searchParams.get("view") === "orders";
 
   // a filter change also resets the page, which would fire a second overlapping
   // request; the sequence guard makes sure only the newest response is rendered
@@ -156,18 +159,21 @@ const Marketplace: React.FC = () => {
 
         {locked ? <LockedBanner unlock="tradersLicense" /> : <VerifyBanner feature="market" />}
 
-        {isLogged && (
-          <div className="flex gap-2">
-            <ViewTab active={!mine} onClick={() => setSearchParams({})}>
-              {i18n.t("market.allItems")}
-            </ViewTab>
+        <div className="flex flex-wrap gap-2">
+          <ViewTab active={!mine && !bids} onClick={() => setSearchParams({})}>
+            {i18n.t("market.allItems")}
+          </ViewTab>
+          {isLogged && (
             <ViewTab active={mine} onClick={() => setSearchParams({ view: "mine" })}>
               {i18n.t("market.myListings")}
             </ViewTab>
-          </div>
-        )}
+          )}
+          <ViewTab active={bids} onClick={() => setSearchParams({ view: "orders" })}>
+            {i18n.t("market.buyOrders")}
+          </ViewTab>
+        </div>
 
-        {!mine && <Filters filters={filters} setFilters={setFilters} />}
+        {!mine && !bids && <Filters filters={filters} setFilters={setFilters} />}
 
         {/* your open buy orders, so escrowed KP is never invisible */}
         {isLogged && orders.length > 0 && (
@@ -207,6 +213,8 @@ const Marketplace: React.FC = () => {
             fits, and a short last row still lines up with the ones above it. */}
         {mine ? (
           <MyListings key={listingsVersion} onChanged={fetchItems} />
+        ) : bids ? (
+          <OrderBook key={listingsVersion} />
         ) : loading ? (
           <div className="grid grid-cols-[repeat(auto-fill,200px)] justify-center gap-4">
             {Array(12)
@@ -227,7 +235,7 @@ const Marketplace: React.FC = () => {
           </div>
         )}
 
-        {!mine && items?.totalPages && items.totalPages > 1 ? (
+        {!mine && !bids && items?.totalPages && items.totalPages > 1 ? (
           <div className="flex justify-center">
             <Pagination totalPages={items.totalPages} currentPage={page} setPage={setPage} />
           </div>

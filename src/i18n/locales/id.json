@@ -196,10 +196,10 @@
     "clearHint": "Klik lencana yang dipakai untuk melepasnya.",
     "collection": {
       "animals": "Penjaga Kebun Binatang",
-      "blue-archive": "Ahli Kivotos",
+      "blue-archive": "Digugu lan Ditiru",
       "counter-strike": "Pedagang Senjata",
       "touhou": "Ahli Gensokyo",
-      "uma-musume": "Pelatih Legendaris"
+      "uma-musume": "Torena san"
     },
     "collectionGeneric": "Ahli {{category}}",
     "collectionHint": "Punya semua item di koleksi {{category}}.",
@@ -571,7 +571,7 @@
         "14": "Crash berikutnya bakal 430.2X.",
         "15": "3 blackjack berturut-turut? Kamu bercanda?",
         "16": "Membunuh itu tidak dibenarkan.",
-        "17": "Kalau kamu terus berjudi begini, tahun depan aku beli mobil baru.",
+        "17": "Kalian tidur! Besok kani casino lagi!",
         "18": "Aku sudah menunjukkan kode sumberku, tolong jawab aku.",
         "19": "Orang di peringkat 1 papan skor? Tidak, dia tidak bicara denganku.",
         "20": "Ulang tahunku? Tanggal 7 Juli.",
@@ -661,14 +661,14 @@
       "poke0": {
         "0": "Apa?",
         "1": "Ya? Aku sibuk.",
-        "2": "Butuh sesuatu, atau memang suka mencolekku?",
+        "2": "Pencet-pencet mulu, apa sih....",
         "3": "Toplesnya di sana. Aku bukan toples.",
         "4": "Tuan Penjudi, aku bukan toplesnya."
       },
       "poke1": {
         "0": "Berhenti.",
-        "1": "Ada game untuk dimainkan dan kamu malah mencolekku. Lucu.",
-        "2": "Terus saja dan aku mulai menagih.",
+        "1": "Ada game untuk dimainkan dan kamu malah mencolekku. Lawak banget lho ya😹.",
+        "2": "Sudah ku bilang, jangan cari doksli itu lagi.",
         "3": "Ini seru buatmu? ...Sedikit seru buatku juga."
       },
       "poke2": {
@@ -849,7 +849,7 @@
       "titleCase": "Satu kotak",
       "titleGame": "Satu game",
       "titlePot": "Toples",
-      "welcomeBackBody": "Namaku Daisu. Aku yang akan mengurus bonusmu, jadi mari akur. Aku tahu kamu sudah tahu cara bermain, tapi... mau kutunjukkan sekeliling?",
+      "welcomeBackBody": "Namaku Daisu. Aku yang akan mengurus bonusmu, jadi mari akur. Aku tahu kamu sudah tahu cara bermain, tapi... mau kutunjukkan sekeliling? tapi jangan ngarbit jadi my bini ya~ ehem....",
       "welcomeBackTitle": "Halo, {{name}}.",
       "welcomeBody": "Senang bertemu denganmu, {{name}}. Kamu kelihatan bingung, jadi aku punya tawaran: tur singkat untuk belajar cara bermain. Satu menit, mungkin dua, kalau kamu bisa mengikuti.",
       "welcomeTitle": "Oh? Wajah baru."
@@ -1569,6 +1569,7 @@
     "howToPlay": "Cara bermain",
     "kanicasinoCasesUpgradeTouhou": "KANICASINO - Gacha - Upgrade - TOHOK",
     "main": "Utama",
+    "onboarding": "Tutorial",
     "provablyFair": "Terbukti Adil",
     "slot": "Nyelot",
     "sounds": "Suara",
@@ -1878,7 +1879,23 @@
     "youHaveNoBuy": "Anda tidak memiliki pesanan pembelian untuk barang ini.",
     "youOwnCount": "Punyamu {{count}}",
     "yourOrders": "Pesanan Anda",
-    "yourPrice": "Harga Anda"
+    "yourPrice": "Harga Anda",
+    "ordersIntro": "Apa yang ingin dibeli pemain lain. Menjual ke order beli itu instan, dan tiap baris menunjukkan berapa yang kamu dapat dibanding menjual ke bandar.",
+    "sortBestGain": "Untung terbesar",
+    "sortHighestBid": "Tawaran tertinggi",
+    "sortNewest": "Terbaru",
+    "wanted": "Dicari",
+    "atThisPrice": "{{n}} di harga ini",
+    "youReceive": "Kamu dapat",
+    "youReceiveEach": "Kamu dapat, per item",
+    "vsHouse": "Selisih dari bandar",
+    "noOpenOrders": "Belum ada yang memasang order beli saat ini.",
+    "sellToBuyOrder": "Jual ke order beli",
+    "onlyIntoOrders": "Ini hanya menjual ke order beli: salinan yang tidak lagi diterima tetap ada di inventarismu.",
+    "soldIntoOrders": "Terjual {{sold}} seharga K₽{{received}}",
+    "soldIntoOrdersSomeKept": "Terjual {{sold}} seharga K₽{{received}}. {{returned}} tetap di inventarismu.",
+    "orderGone": "Tawaran itu sudah hilang, jadi tidak ada yang terjual.",
+    "couldNotSell": "Gagal menjual item"
   },
   "mines": {
     "boomVerifyRoll": "Duar! muter cek",
