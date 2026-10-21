@@ -107,6 +107,16 @@ describe("reading the pot", () => {
     expect(res.body.creditTtlMs).toBe(pot.CREDIT_TTL_MS);
     expect(res.body.bonuses).toEqual([]);
   });
+
+  it("says what time it is here, for a device whose own clock is off", async () => {
+    const user = await makeUser({ nextBonus: fillingFor(4) });
+    const before = Date.now();
+
+    const res = await status(user);
+
+    expect(Date.parse(res.body.serverTime)).toBeGreaterThanOrEqual(before);
+    expect(Date.parse(res.body.serverTime)).toBeLessThanOrEqual(Date.now());
+  });
 });
 
 describe("taking from the pot", () => {

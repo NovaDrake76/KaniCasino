@@ -33,6 +33,8 @@ const statusOf = (user, now = new Date()) => {
     pickProgress: user.bonusAmount > 0 ? Math.min(1, (user.potCycleClaimed || 0) / user.bonusAmount) : 0,
     creditTtlMs: pot.CREDIT_TTL_MS,
     bonuses: pot.bonusesOf(user, now),
+    // the jar ticks on the player's device between reads, and a device clock can be far off this one
+    serverTime: now.toISOString(),
   };
 };
 

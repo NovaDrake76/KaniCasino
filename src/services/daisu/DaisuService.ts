@@ -1,4 +1,5 @@
 import api from "../api";
+import { noteServerTime } from "../serverClock";
 
 export type PickGame = "slots" | "dice" | "plinko" | "mines" | "blackjack" | "hilo";
 
@@ -24,6 +25,7 @@ export interface PotStatus {
   pickProgress: number;
   creditTtlMs: number;
   bonuses: PotBonus[];
+  serverTime?: string;
 }
 
 export interface PotClaim {
@@ -39,6 +41,7 @@ export interface PotClaim {
 
 export async function getPotStatus(): Promise<PotStatus> {
   const res = await api.get("/daisu/status");
+  noteServerTime(res.data?.serverTime);
   return res.data;
 }
 
@@ -51,5 +54,6 @@ export async function saveTour(status: TourStatus, step?: TourStep): Promise<voi
 
 export async function claimPot(): Promise<PotClaim> {
   const res = await api.post("/daisu/claim");
+  noteServerTime(res.data?.status?.serverTime);
   return res.data;
 }
