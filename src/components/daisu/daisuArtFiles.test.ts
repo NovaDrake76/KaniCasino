@@ -16,6 +16,6 @@ describe("warming her drawings", () => {
     expect(idle).toHaveBeenCalledTimes(1);
     expect(asked).toEqual(PARTS.map(PART));
     expect(asked).toContain("/images/daisu/parts/base.webp");
-    expect(asked).toHaveLength(12);
+    expect(asked).toHaveLength(14);
   });
 });

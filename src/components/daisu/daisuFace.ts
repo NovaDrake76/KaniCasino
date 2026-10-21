@@ -1,14 +1,15 @@
 export type Expression = "default" | "smug" | "sharp";
-type Eyes = "default" | "smug" | "sharp";
+type Eyes = "normal" | "smug";
+type Brows = "neutral" | "smug" | "angry";
 type Mouth = "closed" | "open" | "smug";
 
-// one drawing set per expression: the eyes she wears, the mouth she rests on, and the
+// one drawing set per expression: the eyes and brows she wears, the mouth she rests on, and the
 // mouths a line flaps through while she says it. the closed mouth is drawn turned down, so
 // under smug's lowered lids it read as a pout; smug keeps its own mouth at rest
-export const EXPRESSIONS: Record<Expression, { eyes: Eyes; rest: Mouth; talk: Mouth[] }> = {
-  default: { eyes: "default", rest: "closed", talk: ["open"] },
-  smug: { eyes: "smug", rest: "smug", talk: ["open"] },
-  sharp: { eyes: "sharp", rest: "closed", talk: ["open"] },
+export const EXPRESSIONS: Record<Expression, { eyes: Eyes; brows: Brows; rest: Mouth; talk: Mouth[] }> = {
+  default: { eyes: "normal", brows: "neutral", rest: "closed", talk: ["open"] },
+  smug: { eyes: "smug", brows: "smug", rest: "smug", talk: ["open"] },
+  sharp: { eyes: "normal", brows: "angry", rest: "closed", talk: ["open"] },
 };
 
 // the face a group of lines wears unless one of its lines says otherwise
