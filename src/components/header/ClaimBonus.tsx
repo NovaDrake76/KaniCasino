@@ -15,6 +15,7 @@ import {
   AdRewardStatus,
 } from "../../services/rewards/AdRewardServices";
 import { showDaisu } from "../daisu/tour/tourEvents";
+import { serverNow } from "../../services/serverClock";
 import i18n from "../../i18n";
 import { play } from "../../services/sound/sound";
 
@@ -49,7 +50,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false, on
   useEffect(() => {
     if (!bonusDate) return;
     const tick = () => {
-      const diff = new Date(bonusDate).getTime() - Date.now();
+      const diff = new Date(bonusDate).getTime() - serverNow();
       if (diff <= 0) {
         setBonusAvailable(true);
         setTimeLeft("");
