@@ -5,7 +5,7 @@ const router = express.Router();
 const { isAuthenticated, maybeAuthenticated } = require("../middleware/authMiddleware");
 
 const User = require("../models/User");
-const { copiesFor } = require("../utils/inventoryCounts");
+const { copiesFor, countsFor } = require("../utils/inventoryCounts");
 const Item = require("../models/Item");
 const Marketplace = require("../models/Marketplace");
 const MarketSale = require("../models/MarketSale");
@@ -140,6 +140,8 @@ module.exports = (io) => {
       if (locked) return res.status(403).json(locked);
       const { item: uniqueId } = req.body;
       const price = cleanPrice(req.body.price);
+      // selling into the buy orders tab: a copy no order takes at this price goes back to the inventory, never onto the market
+      const fillOnly = req.body.fillOnly === true;
       if (price === null) {
         return res.status(400).json({ message: "Invalid price" });
       }
@@ -221,6 +223,11 @@ module.exports = (io) => {
           if (filled.reason === "seller gone") break;
         }
 
+        if (fillOnly) {
+          await User.updateOne({ _id: user._id }, { $push: { inventory: inventoryItem } });
+          return { sold: false, returned: true };
+        }
+
         const marketplaceItem = new Marketplace(pending);
         await marketplaceItem.save();
         return { sold: false, listing: marketplaceItem };
@@ -230,17 +237,32 @@ module.exports = (io) => {
       for (const copy of copies) {
         const r = await listOne(copy);
         if (r) results.push(r);
+        // the bids at this price ran out, so the copies after this one would only be pulled and put back
+        if (r && r.returned) break;
       }
 
       if (!results.length) {
         return res.status(404).json({ message: "Item not found in inventory" });
       }
 
+      const soldNow = results.filter((r) => r.sold);
+      if (fillOnly && !soldNow.length) {
+        return res.status(409).json({ message: "No buy order takes it at that price any more", code: "no-bid" });
+      }
+
       // a copy on the market has left the inventory, so it stops counting on the board
       await fandom.touch(user._id, itemDocument._id);
 
+      if (fillOnly) {
+        return res.json({
+          sold: soldNow.length,
+          returned: copies.length - soldNow.length,
+          received: soldNow.reduce((sum, r) => sum + r.received, 0),
+          itemName: itemDocument.name,
+        });
+      }
+
       // one copy keeps the original response shape, so existing callers are untouched
-      const soldNow = results.filter((r) => r.sold);
       if (results.length === 1) {
         const only = results[0];
         if (only.sold) {
@@ -347,6 +369,76 @@ module.exports = (io) => {
     try {
       const orders = await BuyOrder.find({ userId: req.user._id, status: "open" }).sort({ createdAt: -1 });
       res.json({ orders });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // every item someone is bidding on, best bid first per item, against what the house pays for it. the viewer's own
+  // bids are left out, since the matcher never sells into them, and a signed-in viewer sees how many copies they hold
+  router.get("/orders", maybeAuthenticated, async (req, res) => {
+    try {
+      const limit = 30;
+      const page = Math.max(1, Math.floor(Number(req.query.page)) || 1);
+      const sort = ["gain", "bid", "recent"].includes(String(req.query.sort)) ? String(req.query.sort) : "gain";
+      const me = req.user ? req.user._id : null;
+
+      const match = { status: "open", $expr: { $lt: ["$filled", "$quantity"] } };
+      if (me) match.userId = { $ne: me };
+      // one row per item, so this is bounded by the catalog however many orders there are
+      const books = await BuyOrder.aggregate([
+        { $match: match },
+        { $project: { item: 1, price: 1, userId: 1, createdAt: 1, left: { $subtract: ["$quantity", "$filled"] } } },
+        { $sort: { price: -1 } },
+        {
+          $group: {
+            _id: "$item",
+            bestBid: { $first: "$price" },
+            levels: { $push: { price: "$price", left: "$left" } },
+            wanted: { $sum: "$left" },
+            buyers: { $addToSet: "$userId" },
+            latest: { $max: "$createdAt" },
+          },
+        },
+      ]);
+
+      const catalog = new Map((await itemCatalog.all()).map((item) => [String(item._id), item]));
+      const feeRate = shop.holds(req.user, "merchantSeal") ? SEAL_FEE_RATE : MARKET_FEE_RATE;
+      let rows = books
+        .filter((book) => catalog.has(String(book._id)))
+        .map((book) => {
+          const item = catalog.get(String(book._id));
+          const net = sellerNet(book.bestBid, feeRate);
+          const house = sellValue(item.baseValue);
+          return {
+            item: { _id: item._id, name: item.name, image: item.image, rarity: item.rarity, slug: item.slug || null },
+            bestBid: book.bestBid,
+            atBest: book.levels.filter((level) => level.price === book.bestBid).reduce((sum, level) => sum + level.left, 0),
+            wanted: book.wanted,
+            buyers: book.buyers.length,
+            latest: book.latest,
+            net,
+            house,
+            gain: net - house,
+          };
+        });
+
+      const by = {
+        gain: (a, b) => b.gain - a.gain,
+        bid: (a, b) => b.bestBid - a.bestBid,
+        recent: (a, b) => new Date(b.latest) - new Date(a.latest),
+      };
+      rows.sort(by[sort]);
+      const totalPages = Math.max(1, Math.ceil(rows.length / limit));
+      rows = rows.slice((page - 1) * limit, page * limit);
+
+      if (me && rows.length) {
+        const held = await countsFor(me, rows.map((row) => row.item._id));
+        rows = rows.map((row) => ({ ...row, owned: held.get(String(row.item._id)) || 0 }));
+      }
+
+      res.json({ totalPages, currentPage: page, feeRate, orders: rows });
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Internal server error" });

@@ -46,11 +46,45 @@ export interface MyListing {
     createdAt: string;
 }
 
+// one item someone is bidding on, at its best bid, with what a sale into it pays against the house
+export interface OrderBookRow {
+    item: { _id: string; name: string; image: string; rarity: string; slug: string | null };
+    bestBid: number;
+    atBest: number;
+    wanted: number;
+    buyers: number;
+    latest: string;
+    net: number;
+    house: number;
+    gain: number;
+    owned?: number;
+}
+
+export interface OrderBookPage {
+    totalPages: number;
+    currentPage: number;
+    feeRate: number;
+    orders: OrderBookRow[];
+}
+
+export type OrderBookSort = "gain" | "bid" | "recent";
+
 export interface MyListingsPage {
     total: number;
     totalPages: number;
     currentPage: number;
     listings: MyListing[];
+}
+
+export async function getOrderBook(page: number, sort: OrderBookSort): Promise<OrderBookPage> {
+    const response = await api.get(`/marketplace/orders`, { params: { page, sort } });
+    return response.data;
+}
+
+// sells straight into the buy orders: a copy no bid takes at this price stays in the inventory
+export async function sellIntoOrders(itemId: string, price: number, quantity: number): Promise<{ sold: number; returned: number; received: number; itemName: string }> {
+    const response = await api.post(`/marketplace/`, { itemId, price, quantity, fillOnly: true });
+    return response.data;
 }
 
 export async function getMyListings(page: number): Promise<MyListingsPage> {
