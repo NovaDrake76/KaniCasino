@@ -1,5 +1,7 @@
+import { ART_VERSION } from "./daisuParts";
+
 // the drawings her card stacks, and their paths, in one place so the card and the preload agree
-export const PART = (name: string) => `/images/daisu/parts/${name}.webp`;
+export const PART = (name: string) => `/images/daisu/parts/${name}.webp?v=${ART_VERSION}`;
 
 export const PARTS = [
   "base",

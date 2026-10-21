@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { PART, PARTS, preloadDaisuArt } from "./daisuArtFiles";
+import { ART_VERSION } from "./daisuParts";
 
 describe("warming her drawings", () => {
   afterEach(() => vi.restoreAllMocks());
@@ -15,7 +16,8 @@ describe("warming her drawings", () => {
 
     expect(idle).toHaveBeenCalledTimes(1);
     expect(asked).toEqual(PARTS.map(PART));
-    expect(asked).toContain("/images/daisu/parts/base.webp");
+    // versioned, so a copy of last release's layer under the same name is never mixed into this drawing
+    expect(asked).toContain(`/images/daisu/parts/base.webp?v=${ART_VERSION}`);
     expect(asked).toHaveLength(14);
   });
 });

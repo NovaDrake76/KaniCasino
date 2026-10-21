@@ -14,6 +14,7 @@ the art is in colour since the artist finished it (2026-10), so the layers keep 
 the first sketch was black line art recoloured to lavender. lossy webp at a high quality is a
 third of the lossless size on shaded colour and the difference does not show at her sizes.
 """
+import hashlib
 import io
 import json
 import os
@@ -85,6 +86,10 @@ def main():
     total = 0
     for name, im in art.items():
         total += write(im.crop(box), os.path.join(PARTS, f"{name}.webp"), WIDTH)
+    digest = hashlib.sha1()
+    for name in sorted(LAYERS):
+        with open(os.path.join(PARTS, f"{name}.webp"), "rb") as f:
+            digest.update(f.read())
 
     flat = art["base"].copy()
     for part in ("jar-4", "eyes-normal", "brows-neutral", "mouth-closed"):
@@ -116,7 +121,9 @@ def main():
         f.write(f"export const ART_WIDTH = {geometry['WIDTH']};\n")
         f.write(f"export const ART_HEIGHT = {geometry['HEIGHT']};\n\n")
         f.write("// the glass she holds, as a share of the drawing: the click target, and what the numbers pop out of\n")
-        f.write(f"export const JAR = {json.dumps(geometry['JAR'])};\n")
+        f.write(f"export const JAR = {json.dumps(geometry['JAR'])};\n\n")
+        f.write("// changes whenever a part does, so a browser or the cdn holding an older drawing under the same name fetches this one\n")
+        f.write(f'export const ART_VERSION = "{digest.hexdigest()[:8]}";\n')
 
     print(f"{len(LAYERS)} parts + idle + bust, {total // 1024} KB, drawing {w}x{h}, jar {geometry['JAR']}")
 
