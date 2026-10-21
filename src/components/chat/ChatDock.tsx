@@ -264,7 +264,7 @@ const ChatDock = ({ open, wide, onClose }: DockProps) => {
 
   return (
     <div className="fixed inset-0 z-overlay flex">
-      <div className="h-full w-[min(320px,85vw)] border-r border-line">
+      <div className="h-full w-[min(320px,85vw)] border-r border-line lg:w-[300px]">
         <ChatPanel open onClose={onClose} />
       </div>
       <button
