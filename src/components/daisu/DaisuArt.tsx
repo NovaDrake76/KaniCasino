@@ -70,8 +70,8 @@ const mouthNow = (expression: Expression, talking: boolean, frame: number) => {
   return look.talk[Math.floor(frame / 2) % look.talk.length];
 };
 
-// daisu holding the jar, drawn as stacked parts: the body, one of five jars, her eyes and
-// her mouth. how full the jar is picks its drawing, so the picture itself is the gauge
+// daisu holding the jar, drawn as stacked parts: the body, one of five jars, her eyes, brows and
+// mouth. how full the jar is picks its drawing, so the picture itself is the gauge
 const DaisuArt = ({ fill, expression, shaking, hopping, bust, className, onJar, onPoke, pops = [], run, settleMs, jarLabel, pokeLabel, pokeLocked }: Props) => {
   const level = Math.max(0, Math.min(1, fill));
   const stage = jarStage(level);
@@ -109,8 +109,11 @@ const DaisuArt = ({ fill, expression, shaking, hopping, bust, className, onJar, 
             className={`${shaking ? "daisu-shake" : ""} ${level >= 1 ? "daisu-glow" : ""}`}
           />
         ))}
-        {(["default", "smug", "sharp"] as const).map((eyes) => (
+        {(["normal", "smug"] as const).map((eyes) => (
           <Layer key={eyes} part={`eyes-${eyes}`} hidden={eyes !== look.eyes} />
+        ))}
+        {(["neutral", "smug", "angry"] as const).map((brows) => (
+          <Layer key={brows} part={`brows-${brows}`} hidden={brows !== look.brows} />
         ))}
         {(["closed", "open", "smug"] as const).map((shape) => (
           <Layer key={shape} part={`mouth-${shape}`} hidden={shape !== mouth} />
