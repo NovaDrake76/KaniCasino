@@ -86,6 +86,27 @@ describe("the first-login tour", () => {
     expect((await tour(finished, { status: "active", step: "pot" })).status).toBe(409);
   });
 
+  it("starts over from the jar when the player asks for it again, after a skip or once done", async () => {
+    const skipped = await makeUser({ onboarding: { status: "skipped", startedAt: new Date(0) } });
+    const finished = await makeUser({ onboarding: { status: "done", step: "done" } });
+
+    expect((await tour(skipped, { status: "active", step: "pot", replay: true })).status).toBe(200);
+    expect((await tour(finished, { status: "active", step: "pot", replay: true })).status).toBe(200);
+
+    const again = await User.findById(skipped._id).lean();
+    expect(again.onboarding).toMatchObject({ status: "active", step: "pot" });
+    // the first time it was taken stays on record
+    expect(again.onboarding.startedAt).toEqual(new Date(0));
+    expect((await me(finished)).body.onboarding).toEqual({ status: "active", step: "pot" });
+  });
+
+  it("takes a replay only from the first step", async () => {
+    const finished = await makeUser({ onboarding: { status: "done", step: "done" } });
+
+    expect((await tour(finished, { status: "active", step: "game", replay: true })).status).toBe(409);
+    expect((await tour(finished, { status: "skipped", replay: true })).status).toBe(409);
+  });
+
   it("knows the dice range step", async () => {
     const user = await makeUser({ onboarding: { status: "active", step: "bet" } });
     expect((await tour(user, { status: "active", step: "range" })).status).toBe(200);

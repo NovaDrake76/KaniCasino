@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { endTour, finishTour, goTo, startTour, syncTour, tourState } from "./tourStore";
+import { endTour, finishTour, goTo, replayTour, startTour, syncTour, tourState } from "./tourStore";
 
 const saveTour = vi.fn();
 vi.mock("../../../services/daisu/DaisuService", () => ({
@@ -46,6 +46,14 @@ describe("the tour's record", () => {
     signIn({ status: "done", step: "done" });
     endTour();
     expect(saved()).toEqual([["skipped"]]);
+  });
+
+  it("starts over from the jar when the footer asks, and tells the server it is a replay", () => {
+    signIn({ status: "done", step: "done" });
+    replayTour();
+
+    expect(tourState()).toMatchObject({ status: "active", step: "pot", game: null, drop: null, result: null });
+    expect(saved()).toEqual([["active", "pot", true]]);
   });
 
   it("closes the last card without saving again", () => {
