@@ -440,3 +440,92 @@ describe("my listings", () => {
     expect((await request(app).get("/marketplace/listings/me")).status).toBe(401);
   });
 });
+
+describe("the buy orders tab", () => {
+  const bid = (buyer, item, price, quantity = 1) =>
+    request(app).post("/marketplace/orders").set(...auth(buyer)).send({ itemId: item._id, price, quantity });
+
+  test("lists each item once at its best bid, against what the house pays, the best gain first", async () => {
+    const a = await makeUser();
+    const b = await makeUser();
+    const cheap = await makeItem({ baseValue: 100 });
+    const dear = await makeItem({ baseValue: 1000 });
+    await bid(a, cheap, 300, 2);
+    await bid(b, cheap, 300, 1);
+    await bid(b, cheap, 200, 4);
+    await bid(a, dear, 700, 1);
+
+    const res = await request(app).get("/marketplace/orders");
+
+    expect(res.status).toBe(200);
+    expect(res.body.orders.map((o) => String(o.item._id))).toEqual([String(cheap._id), String(dear._id)]);
+    // the house pays 75% of base, and a sale into a bid pays the bid less the 5% fee
+    expect(res.body.orders[0]).toMatchObject({ bestBid: 300, atBest: 3, wanted: 7, buyers: 2, net: 285, house: 75, gain: 210 });
+    expect(res.body.orders[1]).toMatchObject({ bestBid: 700, net: 665, house: 750, gain: -85 });
+    expect(res.body.orders[0]).not.toHaveProperty("owned");
+  });
+
+  test("leaves out the viewer's own bids, and says how many copies the viewer holds", async () => {
+    const me = await makeUser();
+    const other = await makeUser();
+    const mine = await makeItem();
+    const theirs = await makeItem();
+    await bid(me, mine, 500);
+    await bid(other, theirs, 400);
+    await giveItem(me, theirs, "t-1");
+    await giveItem(me, theirs, "t-2");
+
+    const res = await request(app).get("/marketplace/orders").set(...auth(me));
+
+    expect(res.body.orders.map((o) => String(o.item._id))).toEqual([String(theirs._id)]);
+    expect(res.body.orders[0].owned).toBe(2);
+  });
+
+  test("counts only what is still wanted", async () => {
+    const buyer = await makeUser();
+    const item = await makeItem();
+    const placed = await bid(buyer, item, 100, 2);
+    const dropped = await bid(buyer, await makeItem(), 100, 1);
+    await request(app).delete(`/marketplace/orders/${dropped.body.order._id}`).set(...auth(buyer));
+    await BuyOrder.updateOne({ _id: placed.body.order._id }, { $set: { filled: 1 } });
+
+    const res = await request(app).get("/marketplace/orders");
+
+    expect(res.body.orders).toHaveLength(1);
+    expect(res.body.orders[0]).toMatchObject({ wanted: 1, atBest: 1 });
+  });
+
+  test("sells from the tab into the bids and never lists a copy they do not take", async () => {
+    const buyer = await makeUser({ walletBalance: 1000 });
+    const seller = await makeUser({ walletBalance: 0 });
+    const item = await makeItem();
+    await bid(buyer, item, 200, 1);
+    for (const id of ["c-1", "c-2", "c-3"]) await giveItem(seller, item, id);
+
+    const res = await request(app)
+      .post("/marketplace/")
+      .set(...auth(seller))
+      .send({ itemId: String(item._id), price: 200, quantity: 3, fillOnly: true });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ sold: 1, returned: 2, received: 190 });
+    expect(await Marketplace.countDocuments({ item: item._id })).toBe(0);
+    const { inventory } = await User.findById(seller._id, { inventory: 1 }).lean();
+    expect(inventory.filter((e) => String(e._id) === String(item._id))).toHaveLength(2);
+    expect((await User.findById(seller._id)).walletBalance).toBe(190);
+  });
+
+  test("puts the copy back and says so when the bid is gone by the time the sale lands", async () => {
+    const seller = await makeUser();
+    const item = await makeItem();
+    await giveItem(seller, item, "late-1");
+
+    const res = await request(app).post("/marketplace/").set(...auth(seller)).send({ item: "late-1", price: 300, fillOnly: true });
+
+    expect(res.status).toBe(409);
+    expect(res.body.code).toBe("no-bid");
+    expect(await Marketplace.countDocuments({ item: item._id })).toBe(0);
+    const { inventory } = await User.findById(seller._id, { inventory: 1 }).lean();
+    expect(inventory.map((e) => e.uniqueId)).toEqual(["late-1"]);
+  });
+});
