@@ -4,6 +4,7 @@ import type { Roadmap } from "../../../services/daisu/RoadmapService";
 import MissionRow from "./MissionRow";
 import { chapterName, missionWords } from "./missionCopy";
 import i18n from "../../../i18n";
+import { BUST } from "../daisuArtFiles";
 
 interface Props {
   roadmap: Roadmap | null;
@@ -45,7 +46,7 @@ const NextChapter = ({ roadmap }: { roadmap: Roadmap }) =>
 
 const Finished = () => (
   <div className="flex items-center gap-4 bg-surface p-5">
-    <img src="/images/daisu/bust.webp" alt="" className="h-14 w-14 shrink-0 object-contain object-top" />
+    <img src={BUST} alt="" className="h-14 w-14 shrink-0 object-contain object-top" />
     <div className="flex flex-col gap-1">
       <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">{t("finishedTitle")}</span>
       <p className="m-0 text-sm leading-relaxed text-ink-soft">{t("finishedLine")}</p>

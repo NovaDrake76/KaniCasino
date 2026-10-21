@@ -6,12 +6,13 @@ import UserContext from "../UserContext";
 import MainButton from "./MainButton";
 import { ONBOARDING_OPEN_EVENT } from "./daisu/tour/tourEvents";
 import i18n from "../i18n";
+import { BUST } from "./daisu/daisuArtFiles";
 
 const SEEN_KEY = "kani.onboardingSeen";
 
 const steps = () => [
   {
-    image: "/images/daisu/bust.webp",
+    image: BUST,
     title: i18n.t("common.startWithFreeCoins"),
     text: i18n.t("common.startWithFreeCoinsBody"),
   },

@@ -22,6 +22,7 @@ import { rarityName } from "../../../utils/rarity";
 import { visitMission, getPendingMissions } from "../../../services/missions/MissionService";
 import { toastMissionComplete } from "../../../pages/Missions/components/missionCompleteToast";
 import i18n from "../../../i18n";
+import { BUST, IDLE } from "../daisuArtFiles";
 
 // long enough to take in how the round landed before the closing card covers it
 const RESULT_BEAT_MS = 4000;
@@ -127,11 +128,11 @@ const Welcome = ({ name, returning, onStart, onDecline }: { name: string; return
           <FiX />
         </button>
         <div className="hidden w-[220px] shrink-0 items-end justify-center bg-surface-nav px-2.5 pt-5 md:flex">
-          <img src="/images/daisu/idle.webp" alt="" className="block h-[290px] w-full object-contain object-bottom" />
+          <img src={IDLE} alt="" className="block h-[290px] w-full object-contain object-bottom" />
         </div>
         <div className="flex flex-col gap-4 px-5 pb-6 pt-5 md:px-8 md:pb-7 md:pt-8">
           <div className="flex items-end gap-3.5">
-            <img src="/images/daisu/bust.webp" alt="" className="h-14 w-14 object-contain object-top md:hidden" />
+            <img src={BUST} alt="" className="h-14 w-14 object-contain object-top md:hidden" />
             <div className="flex flex-col gap-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">Daisu</span>
               <h2 className="m-0 text-2xl font-extrabold leading-tight md:text-[28px]">{title}</h2>
@@ -174,7 +175,7 @@ const DoneCard = ({ tour, onMissions, onLater }: { tour: TourState; onMissions: 
     <Backdrop>
       <div role="dialog" aria-label={t("doneTitle")} className="flex max-h-full w-full flex-col overflow-y-auto bg-surface shadow-2xl md:w-[520px]">
         <div className="flex gap-4 px-5 pb-4 pt-6 md:px-6">
-          <img src="/images/daisu/idle.webp" alt="" className="block h-32 w-auto shrink-0 md:h-[170px]" />
+          <img src={IDLE} alt="" className="block h-32 w-auto shrink-0 md:h-[170px]" />
           <div className="flex flex-col gap-2.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">{t("doneTitle")}</span>
             <p className="m-0 text-sm leading-normal text-ink-soft">

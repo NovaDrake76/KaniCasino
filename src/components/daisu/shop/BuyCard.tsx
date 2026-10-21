@@ -11,6 +11,7 @@ import i18n from "../../../i18n";
 import TypedText from "../TypedText";
 import { lockDate, useVerification } from "../../verify/useVerification";
 import { openVerify } from "../../verify/verifyEvents";
+import { BUST } from "../daisuArtFiles";
 
 interface Props {
   item: ShopItem;
@@ -88,7 +89,7 @@ const BuyCard = ({ item, walletBalance, level, buying, onBuy, onClose, onShowMe 
           </button>
         )}
         <div className="flex items-start gap-3 bg-surface-nav p-3">
-          <img src="/images/daisu/bust.webp" alt="" className="h-10 w-10 shrink-0 object-contain object-top" />
+          <img src={BUST} alt="" className="h-10 w-10 shrink-0 object-contain object-top" />
           <p className="m-0 text-[13px] leading-normal text-ink-soft"><TypedText text={item.owned ? words.opened : words.pitch} /></p>
         </div>
         <div className="flex flex-col gap-2">

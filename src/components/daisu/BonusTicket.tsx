@@ -3,6 +3,7 @@ import { FiClock } from "react-icons/fi";
 import Monetary from "../Monetary";
 import type { BonusView } from "./Daisu.types";
 import i18n from "../../i18n";
+import { BUST } from "./daisuArtFiles";
 
 interface Props {
   bonus: Pick<BonusView, "name" | "art" | "amount" | "clock" | "left" | "expiring"> & { path?: string };
@@ -20,7 +21,7 @@ const t = (key: string, vars?: Record<string, string | number>) => i18n.t(`daisu
 // a bonus drawn as a ticket: what game it is for, how much it holds and how long it lasts
 const BonusTicket = ({ bonus, small, daisu, onGo, className }: Props) => {
   const stub = small ? 44 : 64;
-  const art = daisu ? "/images/daisu/bust.webp" : bonus.art;
+  const art = daisu ? BUST : bonus.art;
   const body = (
     <>
       <span className="flex items-center justify-center self-stretch border-r-2 border-dashed border-black/40 p-1.5">

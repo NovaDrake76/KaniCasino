@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import type { Rect } from "./useTarget";
 import i18n from "../../../i18n";
 import TypedText from "../TypedText";
+import { BUST } from "../daisuArtFiles";
 
 interface Props {
   rect: Rect | null;
@@ -60,7 +61,7 @@ const TourBubble = ({ rect, eyebrow, line, step, wait, next, endLabel, onEnd, pr
       style={phone ? undefined : { ...placement(rect, height, prefer), width: WIDTH }}
     >
       <div className="flex gap-3 px-[18px] pb-3 pt-4">
-        <img src="/images/daisu/bust.webp" alt="" className="h-[46px] w-[46px] shrink-0 object-contain object-top" />
+        <img src={BUST} alt="" className="h-[46px] w-[46px] shrink-0 object-contain object-top" />
         <div className="flex flex-col gap-1.5">
           <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{eyebrow}</span>
           <p className="m-0 text-sm leading-normal text-ink-soft">

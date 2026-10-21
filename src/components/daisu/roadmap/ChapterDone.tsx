@@ -5,6 +5,7 @@ import { chapterName, missionWords } from "./missionCopy";
 import { kp } from "../potMath";
 import i18n from "../../../i18n";
 import TypedText from "../TypedText";
+import { IDLE } from "../daisuArtFiles";
 
 interface Props {
   done: { chapter: number; bonus: number };
@@ -28,7 +29,7 @@ const ChapterDone = ({ done, roadmap, game, onClose }: Props) =>
           className="flex gap-5 px-5 pb-5 pt-6 md:px-7 md:pt-7"
           style={{ background: "radial-gradient(120% 90% at 20% 10%, rgba(255, 204, 0, 0.14), transparent 60%)" }}
         >
-          <img src="/images/daisu/idle.webp" alt="" className="h-36 w-auto shrink-0 md:h-[190px]" />
+          <img src={IDLE} alt="" className="h-36 w-auto shrink-0 md:h-[190px]" />
           <div className="flex flex-col gap-2.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">{t("chapterDone", { n: done.chapter })}</span>
             <span className="text-[32px] font-extrabold leading-none text-accent-gold md:text-[40px]">+{kp(done.bonus)}</span>

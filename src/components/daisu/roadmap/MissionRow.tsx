@@ -7,6 +7,7 @@ import type { RoadmapMission } from "../../../services/daisu/RoadmapService";
 import { MissionProgress, MissionTile } from "./missionLook";
 import { wizardFor } from "../tour/helpWizards";
 import i18n from "../../../i18n";
+import { BUST } from "../daisuArtFiles";
 
 interface Props {
   mission: RoadmapMission;
@@ -96,7 +97,7 @@ const MissionRow = ({ mission, words, art, claiming, helpOpen, onClaim, onHelp, 
     </div>
     {helpOpen && (
       <div className="mx-3.5 mb-3.5 flex gap-3.5 bg-surface-nav p-4 md:mx-4 md:mb-4">
-        <img src="/images/daisu/bust.webp" alt="" className="h-[52px] w-[52px] shrink-0 object-contain object-top" />
+        <img src={BUST} alt="" className="h-[52px] w-[52px] shrink-0 object-contain object-top" />
         <div className="flex flex-col gap-3">
           <p className="m-0 text-sm leading-relaxed text-ink-soft">{words.help}</p>
           <div className="flex gap-2">
