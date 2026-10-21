@@ -48,8 +48,9 @@ export async function getPotStatus(): Promise<PotStatus> {
 export type TourStatus = "offered" | "active" | "skipped" | "done";
 export type TourStep = "pot" | "case" | "open" | "drop" | "game" | "bet" | "range" | "play" | "done";
 
-export async function saveTour(status: TourStatus, step?: TourStep): Promise<void> {
-  await api.post("/daisu/tour", { status, step });
+// a replay is the footer asking for the tour again, which the server takes from a finished or skipped one
+export async function saveTour(status: TourStatus, step?: TourStep, replay?: boolean): Promise<void> {
+  await api.post("/daisu/tour", { status, step, replay });
 }
 
 export async function claimPot(): Promise<PotClaim> {

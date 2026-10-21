@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import OnboardingModal from "./OnboardingModal";
+import { ONBOARDING_OPEN_EVENT } from "./daisu/tour/tourEvents";
 import UserContext from "../UserContext";
 
 // the tour reads the route to know when to stay out of the way
@@ -52,6 +53,17 @@ describe("OnboardingModal", () => {
 
   it("still shows once that visitor reaches the site", () => {
     at("/");
+    expect(screen.getByText("Welcome to KaniCasino!")).toBeInTheDocument();
+  });
+
+  it("comes back when the footer asks for it, after it was seen", () => {
+    localStorage.setItem("kani.onboardingSeen", "1");
+    at("/");
+    expect(screen.queryByText("Welcome to KaniCasino!")).toBeNull();
+
+    act(() => {
+      window.dispatchEvent(new Event(ONBOARDING_OPEN_EVENT));
+    });
     expect(screen.getByText("Welcome to KaniCasino!")).toBeInTheDocument();
   });
 

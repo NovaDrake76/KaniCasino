@@ -1,5 +1,5 @@
 import Modal from "./Modal";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TermsOfPrivacy from "./modalsChilden/TermsOfPrivacy"
 import UserAgreement from "./modalsChilden/UserAgreement"
@@ -10,6 +10,9 @@ import ContactUs from "./modalsChilden/ContactUs";
 import FAQ from "./modalsChilden/FAQ";
 import Artists from "./modalsChilden/Artists";
 import LanguageSelector from "./LanguageSelector";
+import UserContext from "../UserContext";
+import { openOnboarding, showDaisu } from "./daisu/tour/tourEvents";
+import { replayTour } from "./daisu/tour/tourStore";
 import i18n from "../i18n";
 
 function Footer() {
@@ -18,11 +21,22 @@ function Footer() {
   const [modalContent, setModalContent] = useState<JSX.Element>(<></>);
 
   const navigate = useNavigate();
+  const { userData } = useContext(UserContext);
 
   const handleModalInfo = (content: JSX.Element) => {
     setModalContent(content);
     setShowModal(true);
   }
+
+  // a signed-in player gets daisu's tour again from its first step, a visitor the welcome card
+  const replayOnboarding = () => {
+    if (userData?.features?.daisu) {
+      showDaisu("bubble", "tour");
+      replayTour();
+    } else {
+      openOnboarding();
+    }
+  };
 
   const sections = [
     {
@@ -39,6 +53,10 @@ function Footer() {
         {
           title: i18n.t("footer.howGamesWork"),
           onClick: () => handleModalInfo(<HowGamesWork />),
+        },
+        {
+          title: i18n.t("footer.onboarding"),
+          onClick: replayOnboarding,
         },
       ],
     },

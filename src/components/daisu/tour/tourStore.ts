@@ -31,9 +31,9 @@ const publish = (next: Partial<TourState>) => {
 
 // best-effort: the tour carries on in this tab even when a save does not land
 // the server keeps only where the tour stopped; the usage record keeps when each step was reached, so the slow ones show
-const persist = (status: TourStatus, step?: TourStep) => {
+const persist = (status: TourStatus, step?: TourStep, replay?: boolean) => {
   track("tour_step", { step: step || status });
-  saveTour(status, step).catch(() => undefined);
+  saveTour(status, step, replay).catch(() => undefined);
 };
 
 // the server's word is taken once per account; after that this tab is ahead of it
@@ -58,6 +58,12 @@ export const setPokeMode = (pokeMode: PokeMode) => {
 export const startTour = () => {
   publish({ status: "active", step: "pot" });
   persist("active", "pot");
+};
+
+// the footer's way back in, for a player who skipped the tour or wants it again: it starts over from the jar
+export const replayTour = () => {
+  publish({ ...EMPTY, owner: state.owner, status: "active", step: "pot" });
+  persist("active", "pot", true);
 };
 
 export const goTo = (step: TourStep, extra: Partial<TourState> = {}) => {

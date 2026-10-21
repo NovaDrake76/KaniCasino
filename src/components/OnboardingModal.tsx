@@ -1,9 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import Modal from "./Modal";
 import UserContext from "../UserContext";
 import MainButton from "./MainButton";
+import { ONBOARDING_OPEN_EVENT } from "./daisu/tour/tourEvents";
 import i18n from "../i18n";
 
 const SEEN_KEY = "kani.onboardingSeen";
@@ -38,6 +39,12 @@ const OnboardingModal = () => {
       return true;
     }
   });
+
+  useEffect(() => {
+    const reopen = () => setOpen(true);
+    window.addEventListener(ONBOARDING_OPEN_EVENT, reopen);
+    return () => window.removeEventListener(ONBOARDING_OPEN_EVENT, reopen);
+  }, []);
 
   const dismiss = () => {
     try {
