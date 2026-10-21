@@ -4,6 +4,7 @@ import ShopArt from "./ShopArt";
 import { itemWords } from "./shopCopy";
 import i18n from "../../../i18n";
 import TypedText from "../TypedText";
+import { BUST } from "../daisuArtFiles";
 
 interface Props {
   item: ShopItem;
@@ -31,7 +32,7 @@ const UnlockedCard = ({ item, onShowMe, onLater }: Props) => {
         <span className="text-[11px] font-bold uppercase tracking-wider text-accent-gold">{t("unlocked")}</span>
         <span className="text-2xl font-extrabold leading-tight md:text-[28px]">{words.name}</span>
         <div className="flex items-start gap-3 bg-surface-nav p-3 text-left">
-          <img src="/images/daisu/bust.webp" alt="" className="h-10 w-10 shrink-0 object-contain object-top" />
+          <img src={BUST} alt="" className="h-10 w-10 shrink-0 object-contain object-top" />
           <p className="m-0 text-[13px] leading-normal text-ink-soft"><TypedText text={words.opened} /></p>
         </div>
         <div className="flex w-full flex-col gap-2.5 md:flex-row">

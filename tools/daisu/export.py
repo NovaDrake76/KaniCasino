@@ -86,10 +86,6 @@ def main():
     total = 0
     for name, im in art.items():
         total += write(im.crop(box), os.path.join(PARTS, f"{name}.webp"), WIDTH)
-    digest = hashlib.sha1()
-    for name in sorted(LAYERS):
-        with open(os.path.join(PARTS, f"{name}.webp"), "rb") as f:
-            digest.update(f.read())
 
     flat = art["base"].copy()
     for part in ("jar-4", "eyes-normal", "brows-neutral", "mouth-closed"):
@@ -103,6 +99,11 @@ def main():
     bottom = jar[1] + BUST_BELOW
     half = (bottom - box[1]) // 2
     total += write(flat.crop((middle - half, box[1], middle + half, bottom)), os.path.join(ART, "bust.webp"), BUST_WIDTH)
+
+    digest = hashlib.sha1()
+    for path in [os.path.join(PARTS, f"{name}.webp") for name in sorted(LAYERS)] + [os.path.join(ART, "idle.webp"), os.path.join(ART, "bust.webp")]:
+        with open(path, "rb") as f:
+            digest.update(f.read())
 
     w, h = box[2] - box[0], box[3] - box[1]
     pct = lambda n, of: round(n / of * 10000) / 100
@@ -122,7 +123,7 @@ def main():
         f.write(f"export const ART_HEIGHT = {geometry['HEIGHT']};\n\n")
         f.write("// the glass she holds, as a share of the drawing: the click target, and what the numbers pop out of\n")
         f.write(f"export const JAR = {json.dumps(geometry['JAR'])};\n\n")
-        f.write("// changes whenever a part does, so a browser or the cdn holding an older drawing under the same name fetches this one\n")
+        f.write("// changes whenever a part or a flat drawing does, so a browser or the cdn holding an older one under the same name fetches this one\n")
         f.write(f'export const ART_VERSION = "{digest.hexdigest()[:8]}";\n')
 
     print(f"{len(LAYERS)} parts + idle + bust, {total // 1024} KB, drawing {w}x{h}, jar {geometry['JAR']}")

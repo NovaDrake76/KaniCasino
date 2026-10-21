@@ -2,6 +2,9 @@ import { ART_VERSION } from "./daisuParts";
 
 // the drawings her card stacks, and their paths, in one place so the card and the preload agree
 export const PART = (name: string) => `/images/daisu/parts/${name}.webp?v=${ART_VERSION}`;
+// her head and her whole flat drawing, for the places that show her without stacking the parts
+export const BUST = `/images/daisu/bust.webp?v=${ART_VERSION}`;
+export const IDLE = `/images/daisu/idle.webp?v=${ART_VERSION}`;
 
 export const PARTS = [
   "base",

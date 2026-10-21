@@ -9,6 +9,7 @@ import { CaseLite, cheapestPerCategory } from "./tourCases";
 import Monetary from "../../Monetary";
 import i18n from "../../../i18n";
 import TypedText from "../TypedText";
+import { BUST } from "../daisuArtFiles";
 
 // light enough that the page still reads under it: at three quarters black a player lost where they were
 const DIM = "rgba(9, 7, 20, 0.5)";
@@ -82,7 +83,7 @@ export const Guided = ({ target, anchor, dim = false, bold = false, ...bubble }:
 
 export const Chip = ({ children, endLabel, onEnd }: { children: ReactNode; endLabel: string; onEnd: () => void }) => (
   <div className="pointer-events-auto fixed bottom-20 left-1/2 flex w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-3 bg-surface py-2 pl-2 pr-3 shadow-2xl md:bottom-4">
-    <img src="/images/daisu/bust.webp" alt="" className="h-9 w-9 shrink-0 object-contain object-top" />
+    <img src={BUST} alt="" className="h-9 w-9 shrink-0 object-contain object-top" />
     {children}
     <button
       type="button"
@@ -146,7 +147,7 @@ export const GamePicker = ({ eyebrow, line, step, endLabel, onPick, onEnd }: Pic
   <Backdrop>
     <div role="dialog" aria-label={eyebrow} className="flex max-h-full w-full flex-col overflow-y-auto bg-surface shadow-2xl md:w-[780px]">
       <div className="flex gap-3.5 px-5 pb-4 pt-5 md:px-6">
-        <img src="/images/daisu/bust.webp" alt="" className="h-[54px] w-[54px] shrink-0 object-contain object-top" />
+        <img src={BUST} alt="" className="h-[54px] w-[54px] shrink-0 object-contain object-top" />
         <div className="flex flex-col gap-1.5">
           <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{eyebrow}</span>
           <p className="m-0 text-sm leading-normal text-ink-soft">
@@ -215,7 +216,7 @@ export const CasePicker = ({ eyebrow, line, endLabel, onPick, onEnd }: CasePicke
     <Backdrop>
       <div role="dialog" aria-label={eyebrow} className="flex max-h-full w-full flex-col overflow-y-auto bg-surface shadow-2xl md:w-[780px]">
         <div className="flex gap-3.5 px-5 pb-4 pt-5 md:px-6">
-          <img src="/images/daisu/bust.webp" alt="" className="h-[54px] w-[54px] shrink-0 object-contain object-top" />
+          <img src={BUST} alt="" className="h-[54px] w-[54px] shrink-0 object-contain object-top" />
           <div className="flex flex-col gap-1.5">
             <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">{eyebrow}</span>
             <p className="m-0 text-sm leading-normal text-ink-soft">

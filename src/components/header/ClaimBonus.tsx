@@ -18,6 +18,7 @@ import { showDaisu } from "../daisu/tour/tourEvents";
 import { serverNow } from "../../services/serverClock";
 import i18n from "../../i18n";
 import { play } from "../../services/sound/sound";
+import { BUST } from "../daisu/daisuArtFiles";
 
 interface IBonus {
   bonusDate: string;
@@ -167,7 +168,7 @@ const ClaimBonus: React.FC<IBonus> = ({ bonusDate, userData, potMode = false, on
           pulse={bonusAvailable}
           text={
             <span className="flex items-center gap-2 whitespace-nowrap">
-              <img src="/images/daisu/bust.webp" alt="" className="-my-1 h-8 w-8 object-contain object-top" />
+              <img src={BUST} alt="" className="-my-1 h-8 w-8 object-contain object-top" />
               {bonusAvailable ? i18n.t("bonus.claim") : i18n.t("bonus.nextIn", { time: timeLeft })}
             </span>
           }
