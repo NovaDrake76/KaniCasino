@@ -13,6 +13,7 @@ import { startHelp } from "./tour/helpStore";
 import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import { preloadDaisuArt } from "./daisuArtFiles";
+import { useCardFit } from "./cardFit";
 import { track } from "../../services/usage/usage";
 import type { UnlockKey } from "../../services/daisu/ShopService";
 import { itemWords } from "./shop/shopCopy";
@@ -601,6 +602,7 @@ export const useDaisu = () => {
     startHelp(userId, `shop:${item.key}`, `unlock:${item.key}`, itemWords(item).name);
   };
   const backToPopup = () => setStage("popup");
+  const cardFit = useCardFit(stage === "popup");
 
   return {
     enabled,
@@ -657,5 +659,6 @@ export const useDaisu = () => {
     attention,
     giftReady: gift.canSpin,
     bubbleGift,
+    cardFit,
   };
 };
