@@ -125,3 +125,16 @@ test("a rotated seed lets the verifier reproduce the roll", async () => {
   expect(verified.body.recomputedWon).toBe(roll.body.won);
   expect(verified.body.recomputedPayout).toBe(roll.body.payout);
 });
+
+test("a burst of rolls on one wallet settles every roll, one after another", async () => {
+  const u = await makeUser(1000);
+  const auth = { Authorization: `Bearer ${tokenFor(u)}` };
+
+  const answers = await Promise.all(Array.from({ length: 8 }, () => rollDice(auth, { betAmount: 10, target: 5000, direction: "over" })));
+
+  expect(answers.map((r) => r.status)).toEqual(Array(8).fill(200));
+  const rolls = await Roll.find({ userId: u._id, game: "dice" });
+  expect(rolls.map((r) => r.nonce).sort((a, b) => a - b)).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+  const paid = answers.reduce((sum, r) => sum + r.body.payout, 0);
+  expect((await User.findById(u._id)).walletBalance).toBeCloseTo(1000 - 80 + paid, 10);
+});
