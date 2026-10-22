@@ -1,3 +1,4 @@
+const User = require("../models/User");
 const { chargeUser, creditUser, TX } = require("../utils/economy");
 const seeds = require("../utils/seeds");
 const rolls = require("../utils/rolls");
@@ -31,7 +32,9 @@ class DiceGameController {
       meta: { betAmount, target: cleanTarget, direction },
     });
     if (!player) {
-      throw httpError(400, "Insufficient balance");
+      // a null charge is also a write that lost to another; only an empty wallet is the player's fault, the same split plinko makes
+      const funded = await User.exists({ _id: userId, walletBalance: { $gte: betAmount } });
+      throw funded ? httpError(503, "That roll could not be placed, try again") : httpError(400, "Insufficient balance");
     }
 
     const float = rollFloat(reserved.serverSeed, reserved.clientSeed, nonce, 0);

@@ -12,6 +12,7 @@ const {
   slotSpinLimiter,
   blackjackActionLimiter,
 } = require("../middleware/rateLimit");
+const { oneAtATime } = require("../middleware/oneAtATime");
 
 const Case = require("../models/Case");
 const Round = require("../models/Round");
@@ -90,7 +91,7 @@ module.exports = (io) => {
   });
 
   // drop a plinko ball
-  router.post('/plinko', isAuthenticated, plinkoDropLimiter, async (req, res) => {
+  router.post('/plinko', isAuthenticated, plinkoDropLimiter, oneAtATime, async (req, res) => {
     const user = req.user;
 
     try {
@@ -107,7 +108,7 @@ module.exports = (io) => {
   });
 
   // roll the dice
-  router.post('/dice', isAuthenticated, diceRollLimiter, async (req, res) => {
+  router.post('/dice', isAuthenticated, diceRollLimiter, oneAtATime, async (req, res) => {
     const user = req.user;
 
     try {

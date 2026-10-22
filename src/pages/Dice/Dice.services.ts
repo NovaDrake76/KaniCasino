@@ -42,7 +42,7 @@ export const useDiceServices = () => {
 
   const rollSeq = useRef(0);
   const autoLeftRef = useRef(0);
-  const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const autoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [dragging, setDragging] = useState(false);
 
   const controls = controlsFor(target, direction);
@@ -137,7 +137,7 @@ export const useDiceServices = () => {
   fireRollRef.current = fireRoll;
 
   const stopAuto = useCallback(() => {
-    if (autoTimer.current) clearInterval(autoTimer.current);
+    if (autoTimer.current) clearTimeout(autoTimer.current);
     autoTimer.current = null;
     autoLeftRef.current = 0;
     setAutoLeft(0);
@@ -157,11 +157,13 @@ export const useDiceServices = () => {
       if (autoLeftRef.current <= 0) return stopAuto();
       autoLeftRef.current -= 1;
       setAutoLeft(autoLeftRef.current);
+      const started = Date.now();
       const ok = await fireRollRef.current();
-      if (!ok || autoLeftRef.current <= 0) stopAuto();
+      if (!ok || autoLeftRef.current <= 0) return stopAuto();
+      // the next roll waits for this one: on a slow server a timer kept firing and stacked dozens of bets on the wallet
+      autoTimer.current = setTimeout(tick, Math.max(0, AUTO_INTERVAL_MS - (Date.now() - started)));
     };
     tick();
-    autoTimer.current = setInterval(tick, AUTO_INTERVAL_MS);
   };
 
   useEffect(() => () => stopAuto(), [stopAuto]);
