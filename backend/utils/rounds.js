@@ -10,6 +10,9 @@ const noopIo = { to: () => ({ emit: () => {} }), emit: () => {} };
 // settlement never finished, and the claim doubles as a lease so two boots cannot both
 // run the loop and pay the same staker twice. a lease older than this is assumed dead.
 const SETTLEMENT_LEASE_MS = 60000;
+// no live round gets near this (the longest crash curve runs about six minutes), so a round this old was dropped by
+// its loop, as when the database goes unreachable mid-round and the process lives on with no restart to close it
+const ABANDONED_AFTER_MS = 30 * 60 * 1000;
 
 const leaseFilter = () => ({
   settlementDone: { $ne: true },
@@ -132,10 +135,10 @@ async function settleInterruptedCoinFlip(round, io = noopIo, payoutFor) {
 // a round whose own give-back loop was interrupted is picked up again: it is terminal
 // but not done with, and the money it still owes is the whole reason this runs.
 async function recoverStuckRounds(io = noopIo, payoutFor, { boot = false } = {}) {
-  // the first arm (fresh betting/running rounds) only runs at boot: then every such round
-  // is genuinely orphaned by the restart. on the periodic sweep the live game loop is still
-  // playing those rounds, and voiding one out from under it refunds its stakes and lets the
-  // loop pay on top, so the interval runs only the second arm.
+  // the first arm (betting/running rounds) takes every one at boot: then each is genuinely
+  // orphaned by the restart. on the periodic sweep the live game loop is still playing the
+  // fresh ones, and voiding one out from under it refunds its stakes and lets the loop pay
+  // on top, so the interval only takes those older than any live round can be.
   // the second arm keys on settlementStartedAt, which only exists once a give-back loop has
   // actually claimed the round, so it resumes a loop that died mid-settlement without
   // touching a live round. every round that finished normally, and every round that predates
@@ -147,7 +150,8 @@ async function recoverStuckRounds(io = noopIo, payoutFor, { boot = false } = {})
       settlementDone: { $ne: true },
     },
   ];
-  if (boot) arms.unshift({ status: { $in: ["betting", "running"] } });
+  const live = { status: { $in: ["betting", "running"] } };
+  arms.unshift(boot ? live : { ...live, createdAt: { $lte: new Date(Date.now() - ABANDONED_AFTER_MS) } });
   const stuck = await Round.find({ $or: arms });
   let voided = 0;
   let settled = 0;
@@ -168,9 +172,9 @@ async function recoverStuckRounds(io = noopIo, payoutFor, { boot = false } = {})
     }
   }
   if (voided || settled) {
-    console.log(`rounds recovered on boot: ${voided} voided, ${settled} settled`);
+    console.log(`rounds recovered${boot ? " on boot" : ""}: ${voided} voided, ${settled} settled`);
   }
   return { voided, settled };
 }
 
-module.exports = { voidRound, settleInterruptedCoinFlip, recoverStuckRounds };
+module.exports = { voidRound, settleInterruptedCoinFlip, recoverStuckRounds, ABANDONED_AFTER_MS };

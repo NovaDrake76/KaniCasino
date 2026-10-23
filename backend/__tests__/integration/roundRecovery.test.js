@@ -6,7 +6,7 @@ const User = require("../../models/User");
 const Round = require("../../models/Round");
 const Transaction = require("../../models/Transaction");
 const { TX } = require("../../utils/economy");
-const { recoverStuckRounds } = require("../../utils/rounds");
+const { recoverStuckRounds, ABANDONED_AFTER_MS } = require("../../utils/rounds");
 const { winPayout } = require("../../games/coinFlip");
 
 beforeAll(setupDb);
@@ -38,6 +38,9 @@ const paidRow = (user, round, amount, type) =>
 const recover = () => recoverStuckRounds(undefined, winPayout, { boot: true });
 // the periodic sweep: the live loops are still playing, so it must skip their rounds
 const sweep = () => recoverStuckRounds(undefined, winPayout, { boot: false });
+// straight through the driver, since mongoose stamps createdAt itself
+const openedAgo = (round, ms) =>
+  Round.collection.updateOne({ _id: round._id }, { $set: { createdAt: new Date(Date.now() - ms) } });
 
 describe("rounds a restart left in flight", () => {
   test("a crash round caught during betting gives every stake back", async () => {
@@ -199,6 +202,53 @@ describe("the periodic sweep leaves the live loops' rounds alone", () => {
 
     expect(await sweep()).toEqual({ voided: 0, settled: 0 });
     expect(await balanceOf(winner)).toBe(900); // the live loop pays it, not the sweep
+  });
+
+  test("a round its loop dropped is closed once it is older than any live round", async () => {
+    // the database went away mid-round and came back with no restart: one cash-out had been
+    // paid, the other stake was still out, and only a boot used to give it back
+    const cashed = await makeUser(1150);
+    const riding = await makeUser(900);
+    const round = await Round.create({
+      game: "crash", status: "running", outcome: { crashPoint: 3.93 },
+      bets: [{ userId: cashed._id, amount: 100 }, { userId: riding._id, amount: 100 }],
+    });
+    await openedAgo(round, ABANDONED_AFTER_MS + 1000);
+    await stakeRow(cashed, round, 100, TX.CRASH_BET);
+    await stakeRow(riding, round, 100, TX.CRASH_BET);
+    await paidRow(cashed, round, 250, TX.CRASH_CASHOUT);
+
+    expect(await sweep()).toEqual({ voided: 1, settled: 0 });
+
+    expect((await Round.findById(round._id)).status).toBe("voided");
+    expect(await balanceOf(cashed)).toBe(1150);
+    expect(await balanceOf(riding)).toBe(1000);
+  });
+
+  test("a dropped coin flip that landed pays its winner from the sweep", async () => {
+    const winner = await makeUser(900);
+    const round = await Round.create({
+      game: "coinflip", status: "running", outcome: { result: 0, winningSide: "heads" },
+      bets: [{ userId: winner._id, amount: 100, side: "heads" }],
+    });
+    await openedAgo(round, ABANDONED_AFTER_MS + 1000);
+    await stakeRow(winner, round, 100, TX.COINFLIP_BET, "heads");
+
+    expect(await sweep()).toEqual({ voided: 0, settled: 1 });
+    expect(await balanceOf(winner)).toBe(900 + winPayout(100));
+  });
+
+  test("a round inside the window is still the loop's", async () => {
+    const a = await makeUser(900);
+    const round = await Round.create({
+      game: "crash", status: "running", outcome: { crashPoint: 5 },
+      bets: [{ userId: a._id, amount: 100 }],
+    });
+    await openedAgo(round, ABANDONED_AFTER_MS - 60000);
+    await stakeRow(a, round, 100, TX.CRASH_BET);
+
+    expect(await sweep()).toEqual({ voided: 0, settled: 0 });
+    expect(await balanceOf(a)).toBe(900);
   });
 
   test("but it still resumes a give-back loop that died holding a stale lease", async () => {
