@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import UserContext from "../../UserContext";
 import { dropPlinko } from "../../services/games/GamesServices";
 import { DROP_DURATION_S, MAX_BET, PlinkoRisk } from "./plinkoBoard";
-import { DropOutcome, autoStep, outcomeFor } from "./autoRun";
+import { DropOutcome, autoStep, backoffMs, outcomeFor } from "./autoRun";
 import { PlinkoBall, PlinkoDropResult } from "./Plinko.types";
 import i18n from "../../i18n";
 import { useSessionStats } from "../../stats/SessionStatsContext";
@@ -41,6 +41,8 @@ export const usePlinkoServices = () => {
   const settled = useRef<Set<string>>(new Set());
   const autoLeftRef = useRef(0);
   const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const refusals = useRef(0);
+  const holdUntil = useRef(0);
 
   const maxBet = MAX_BET[risk];
   const betValue = Math.min(Math.max(Math.floor(Number(betInput)) || 1, 1), maxBet);
@@ -116,7 +118,10 @@ export const usePlinkoServices = () => {
     setAutoRunning(true);
     autoLeftRef.current = autoCount;
     setAutoLeft(autoCount);
+    refusals.current = 0;
+    holdUntil.current = 0;
     const tick = async () => {
+      if (Date.now() < holdUntil.current) return;
       const step = stepRef.current();
       if (step === "done") return stopAuto();
       if (step === "broke") {
@@ -129,13 +134,18 @@ export const usePlinkoServices = () => {
       autoLeftRef.current -= 1;
       setAutoLeft(autoLeftRef.current);
       const outcome = await fireDropRef.current();
-      if (outcome === "retry") {
+      if (outcome === "retry" || outcome === "busy") {
         // hand the ball back: the server refused for something that clears on its own,
         // so the run still finishes every ball it was asked for
         autoLeftRef.current += 1;
         setAutoLeft(autoLeftRef.current);
+        if (outcome === "busy") {
+          refusals.current += 1;
+          holdUntil.current = Date.now() + backoffMs(refusals.current);
+        }
         return;
       }
+      refusals.current = 0;
       if (outcome === "stop") return stopAuto();
       if (autoLeftRef.current <= 0) stopAuto();
     };

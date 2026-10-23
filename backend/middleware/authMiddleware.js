@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const User = require("../models/User");
 const { WITHOUT_INVENTORY } = require("../utils/economy");
+const { accountBudget } = require("./accountBudget");
+
+const tooMany = (res) => res.status(429).json({ message: "Too many requests, slow down a little." });
 
 
 const isAuthenticated = async (req, res, next) => {
@@ -21,6 +24,8 @@ const isAuthenticated = async (req, res, next) => {
   // Verify the token
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // refused before the read below, so a flood from one login costs the database nothing
+    if (!accountBudget.spend(String(decoded.userId))) return tooMany(res);
     // no route reads an inventory off req.user, and it reaches 21k entries: carrying it
     // here cost the deepest account 20 seconds on every authenticated request
     const user = await User.findById(decoded.userId).select({ password: 0, ...WITHOUT_INVENTORY });
@@ -61,6 +66,7 @@ const maybeAuthenticated = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(parts[1], process.env.JWT_SECRET);
+    if (!accountBudget.spend(String(decoded.userId))) return tooMany(res);
     // same reason as above: the prediction pages run this on every view
     const user = await User.findById(decoded.userId).select({ password: 0, ...WITHOUT_INVENTORY });
     if (user && !user.disabled && (decoded.tokenVersion || 0) === (user.tokenVersion || 0)) {

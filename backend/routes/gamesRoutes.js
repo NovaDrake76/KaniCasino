@@ -28,10 +28,11 @@ const HiloGameController = require("../games/hilo");
 // Exports
 module.exports = (io) => {
   // Routes
+  // every route that takes a stake waits in oneAtATime: one line per player across all games, a bet a second, however many tabs
   // the opening itself lives in games/openCase.js, because the discord bot has to run the
   // same one: a second path through the money would drift from this one the first time
   // either changed.
-  router.post("/openCase/:id", isAuthenticated, caseOpenLimiter, async (req, res) => {
+  router.post("/openCase/:id", isAuthenticated, caseOpenLimiter, oneAtATime, async (req, res) => {
     try {
       const result = await openCase({
         user: req.user,
@@ -49,7 +50,7 @@ module.exports = (io) => {
 
 
   // Upgrade items
-  router.post("/upgrade", isAuthenticated, upgradeLimiter, async (req, res) => {
+  router.post("/upgrade", isAuthenticated, upgradeLimiter, oneAtATime, async (req, res) => {
     const { selectedItemIds, targetItemId } = req.body;
     const user = req.user;
 
@@ -77,7 +78,7 @@ module.exports = (io) => {
   });
 
   // Spin the slot machine
-  router.post('/slots', isAuthenticated, slotSpinLimiter, async (req, res) => {
+  router.post('/slots', isAuthenticated, slotSpinLimiter, oneAtATime, async (req, res) => {
     const user = req.user;
 
     try {
@@ -135,7 +136,7 @@ module.exports = (io) => {
       res.status(500).json({ message: "Internal server error" });
     }
   };
-  router.post("/blackjack/deal", isAuthenticated, blackjackActionLimiter, blackjackAction(
+  router.post("/blackjack/deal", isAuthenticated, blackjackActionLimiter, oneAtATime, blackjackAction(
     (req) => BlackjackGameController.deal(req.user._id, req.body.betAmount, io)
   ));
   router.post("/blackjack/hit", isAuthenticated, blackjackActionLimiter, blackjackAction(
@@ -159,7 +160,7 @@ module.exports = (io) => {
 
   // mines: a game spans several requests, so each action resolves the user's single
   // active game; reuses the statused-error wrapper (409 = resync)
-  router.post("/mines/start", isAuthenticated, minesActionLimiter, blackjackAction(
+  router.post("/mines/start", isAuthenticated, minesActionLimiter, oneAtATime, blackjackAction(
     (req) => MinesGameController.start(req.user._id, req.body.betAmount, req.body.mineCount, io)
   ));
   router.post("/mines/reveal", isAuthenticated, minesActionLimiter, blackjackAction(
@@ -174,7 +175,7 @@ module.exports = (io) => {
 
   // hilo: a game spans several requests, so each action resolves the user's single
   // active game; reuses the statused-error wrapper (409 = resync)
-  router.post("/hilo/start", isAuthenticated, hiloActionLimiter, blackjackAction(
+  router.post("/hilo/start", isAuthenticated, hiloActionLimiter, oneAtATime, blackjackAction(
     (req) => HiloGameController.start(req.user._id, req.body.betAmount, io)
   ));
   router.post("/hilo/guess", isAuthenticated, hiloActionLimiter, blackjackAction(

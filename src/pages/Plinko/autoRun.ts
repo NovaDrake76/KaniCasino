@@ -4,12 +4,15 @@ export type AutoStep = "fire" | "wait" | "done" | "broke";
 
 // what a finished drop request means for the run. a refusal the server calls retryable is
 // the board being busy, not the player being out of money, so it costs a tick and no ball.
-export type DropOutcome = "ok" | "retry" | "stop";
+export type DropOutcome = "ok" | "retry" | "busy" | "stop";
 
-// 503 is the server saying it lost a race with another drop; 429 is its own rate limit.
-// both clear on their own, so neither should end a hundred-ball run.
+// 503 is the server saying it lost a race with another drop, which clears at once; 429 is the player's bet line being full or
+// a limit, where asking again every second only adds to the pile. neither should end a hundred-ball run.
 export const outcomeFor = (status?: number): DropOutcome =>
-  status === 503 || status === 429 ? "retry" : "stop";
+  status === 503 ? "retry" : status === 429 ? "busy" : "stop";
+
+// how long a run holds off after refusals in a row: a second, doubling, never past fifteen
+export const backoffMs = (refusals: number) => Math.min(15000, 1000 * 2 ** Math.max(0, refusals - 1));
 
 export interface AutoState {
   left: number;
