@@ -25,7 +25,8 @@ const LONG_TYPES = [
   TX.CRASH_BET, TX.CRASH_CASHOUT, TX.COINFLIP_BET, TX.COINFLIP_WIN, TX.HILO_BET, TX.HILO_WIN,
   TX.BONUS, TX.GAME_CREDIT, TX.GAME_CREDIT_EXPIRED, TX.ITEM_SELL,
 ];
-const SHORT_DAYS = 3;
+// one day: auto runs write a hundred thousand of these a day, against the free tier's 512 mb
+const SHORT_DAYS = 1;
 const LONG_DAYS = 14;
 // a payout this size stays a row for good, so the backoffice's biggest wins never lose one
 const KEEP_CREDIT_AT = 50000;

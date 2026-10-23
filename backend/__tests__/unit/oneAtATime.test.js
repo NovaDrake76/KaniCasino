@@ -1,21 +1,22 @@
 const express = require("express");
 const request = require("supertest");
-const { oneAtATime, MAX_WAITING } = require("../../middleware/oneAtATime");
+const { oneAtATime, makeLane, MAX_WAITING } = require("../../middleware/oneAtATime");
 
 // a bet route that takes a while, counting how many run at once, per player and overall
-function makeApp(delayMs = 15) {
+function makeApp(delayMs = 15, lane = oneAtATime) {
   const running = new Map();
   const most = new Map();
   let all = 0;
-  const seen = { all: 0, placed: 0 };
+  const seen = { all: 0, placed: 0, starts: [] };
   const app = express();
   app.use((req, res, next) => {
     req.user = { _id: req.header("x-player") };
     next();
   });
-  app.post("/bet", oneAtATime, async (req, res) => {
+  app.post("/bet", lane, async (req, res) => {
     const id = req.user._id;
     seen.placed += 1;
+    seen.starts.push({ id, at: Date.now() });
     running.set(id, (running.get(id) || 0) + 1);
     most.set(id, Math.max(most.get(id) || 0, running.get(id)));
     all += 1;
@@ -71,5 +72,42 @@ describe("one bet at a time per player", () => {
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect(seen.placed).toBe(1);
+  });
+});
+
+describe("one bet a second per player", () => {
+  const GAP = 200;
+  const startsOf = (seen, id) => seen.starts.filter((s) => s.id === id).map((s) => s.at);
+
+  it("spaces a burst from one player a gap apart", async () => {
+    const { app, seen } = makeApp(15, makeLane({ gapMs: GAP }));
+
+    const answers = await Promise.all(Array.from({ length: 3 }, () => bet(app, "a")));
+
+    expect(answers.map((r) => r.status)).toEqual([200, 200, 200]);
+    const [first, second, third] = startsOf(seen, "a");
+    expect(second - first).toBeGreaterThanOrEqual(GAP - 5);
+    expect(third - second).toBeGreaterThanOrEqual(GAP - 5);
+  });
+
+  it("holds a bet sent the moment the last one answered", async () => {
+    const { app, seen } = makeApp(15, makeLane({ gapMs: GAP }));
+
+    await bet(app, "a");
+    await bet(app, "a");
+
+    const [first, second] = startsOf(seen, "a");
+    expect(second - first).toBeGreaterThanOrEqual(GAP - 5);
+  });
+
+  it("never holds one player for another's gap", async () => {
+    // a long gap, so a loaded test machine cannot pass for a held bet
+    const { app, seen } = makeApp(15, makeLane({ gapMs: 2000 }));
+
+    await Promise.all([bet(app, "a"), bet(app, "b")]);
+
+    const [a] = startsOf(seen, "a");
+    const [b] = startsOf(seen, "b");
+    expect(Math.abs(a - b)).toBeLessThan(1000);
   });
 });
