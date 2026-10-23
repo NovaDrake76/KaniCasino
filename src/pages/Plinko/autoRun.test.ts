@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { autoStep, outcomeFor } from "./autoRun";
+import { autoStep, backoffMs, outcomeFor } from "./autoRun";
 
 const state = (over: Partial<Parameters<typeof autoStep>[0]> = {}) => ({
   left: 100,
@@ -42,9 +42,16 @@ describe("an auto run", () => {
 });
 
 describe("a refused drop", () => {
-  test("is retryable when the server says it lost a race or is rate limiting", () => {
+  test("is tried again at once when the server lost a race", () => {
     expect(outcomeFor(503)).toBe("retry");
-    expect(outcomeFor(429)).toBe("retry");
+  });
+
+  test("holds the run off when the player's bet line is full or a limit says so", () => {
+    expect(outcomeFor(429)).toBe("busy");
+  });
+
+  test("holds off a second, doubling with each refusal in a row, never past fifteen", () => {
+    expect([1, 2, 3, 4, 5, 6, 20].map(backoffMs)).toEqual([1000, 2000, 4000, 8000, 15000, 15000, 15000]);
   });
 
   test("ends the run when the refusal is the player's to fix", () => {
