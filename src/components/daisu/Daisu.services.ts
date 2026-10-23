@@ -15,7 +15,7 @@ import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import { preloadDaisuArt } from "./daisuArtFiles";
 import { useCardFit } from "./cardFit";
-import { useHereSignal } from "./useHereSignal";
+import { signalHere, useHereSignal } from "./useHereSignal";
 import { track } from "../../services/usage/usage";
 import type { UnlockKey } from "../../services/daisu/ShopService";
 import { itemWords } from "./shop/shopCopy";
@@ -92,7 +92,7 @@ export const useDaisu = () => {
   const touring = tour.status === "offered" || tour.status === "active";
   // the server would meet the next take with her question, so the jar waits for an answer
   const asking = !!status?.stillThere;
-  useHereSignal(enabled && !!userId);
+  useHereSignal(enabled && !!userId, userId);
 
   useEffect(() => {
     if (enabled) preloadDaisuArt();
@@ -210,7 +210,8 @@ export const useDaisu = () => {
     }
     // an account starts from its own pot, never from whoever was signed in before
     setPotStatus(null);
-    refresh();
+    // opening the site is a sign of life, and it lands before the pot is read
+    signalHere(userId).finally(() => refresh());
   }, [enabled, userId, refresh]);
 
   // only a bet spends a bonus, and one the bonus paid in full leaves the wallet where it was, so

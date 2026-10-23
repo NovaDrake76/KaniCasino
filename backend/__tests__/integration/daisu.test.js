@@ -387,9 +387,12 @@ describe("her still there?", () => {
   afterEach(() => activity.reset());
 
   const post = (user, path) => request(app).post(path).set("Authorization", `Bearer ${tokenFor(user)}`);
+  // in the middle of a run of takes: the last one a pot ago, so the take is not a visit
+  const claimer = (fields = {}) =>
+    makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60), potLastTakeAt: new Date(Date.now() - minutes(8)), ...fields });
 
   it("asks instead of paying when the player has done nothing but take the pot for half an hour", async () => {
-    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60) });
+    const user = await claimer();
 
     const res = await claim(user);
 
@@ -401,13 +404,13 @@ describe("her still there?", () => {
   });
 
   it("tells the card before a click is spent on it", async () => {
-    const user = await makeUser({ nextBonus: fillingFor(60) });
+    const user = await claimer();
 
     expect((await status(user)).body.stillThere).toBe(true);
   });
 
   it("pays again once the player answers, for the next hour", async () => {
-    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60) });
+    const user = await claimer();
 
     const answer = await post(user, "/daisu/still-there");
     expect(answer.status).toBe(200);
@@ -419,7 +422,7 @@ describe("her still there?", () => {
   });
 
   it("counts a bet anywhere else as being there", async () => {
-    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60), walletBalance: 100 });
+    const user = await claimer({ walletBalance: 100 });
 
     const bet = await post(user, "/games/dice").send({ betAmount: 1, target: 5050, direction: "over" });
     expect(bet.status).toBe(200);
@@ -428,7 +431,7 @@ describe("her still there?", () => {
   });
 
   it("counts the page saying its player is around", async () => {
-    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60) });
+    const user = await claimer();
 
     expect((await post(user, "/daisu/here")).status).toBe(204);
 
@@ -436,7 +439,7 @@ describe("her still there?", () => {
   });
 
   it("never counts a refused take or the usage batches as being there", async () => {
-    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60) });
+    const user = await claimer();
 
     await claim(user);
     await post(user, "/usage").send({ events: [] });
@@ -474,5 +477,23 @@ describe("her still there?", () => {
     const after = await User.findById(user._id).lean();
     expect(new Date(after.potLastTakeAt).getTime()).toBeGreaterThan(Date.now() - minutes(1));
     expect(new Date(after.potRunStart).getTime()).toBe(runStart);
+  });
+
+  it("lets a visit through without asking, however long the player was idle", async () => {
+    const user = await claimer({ potLastTakeAt: new Date(Date.now() - minutes(61)) });
+
+    const res = await claim(user);
+
+    expect(res.status).toBe(200);
+    expect(res.body.amount).toBe(1000);
+  });
+
+  it("never follows a take that just paid with her question on the spot", async () => {
+    const user = await claimer({ potLastTakeAt: new Date(Date.now() - minutes(61)) });
+
+    const res = await claim(user);
+
+    expect(res.status).toBe(200);
+    expect(res.body.status.stillThere).toBe(false);
   });
 });
