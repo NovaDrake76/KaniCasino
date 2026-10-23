@@ -18,7 +18,7 @@ const gate = [authMiddleware.isAuthenticated, beta.requireFlag("daisu")];
 const shareOf = (user) => (shop.holds(user, "goldenTicket") ? GOLDEN_TICKET_SHARE : pot.CREDIT_SHARE);
 
 // everything the dock needs to draw the pot and tick it locally until the next take
-const statusOf = (user, now = new Date()) => {
+const statusOf = (user, now = new Date(), { ask = true } = {}) => {
   const fill = pot.fillAt(user.nextBonus, now);
   const index = user.potPickIndex || 0;
   return {
@@ -38,7 +38,7 @@ const statusOf = (user, now = new Date()) => {
     // the jar ticks on the player's device between reads, and a device clock can be far off this one
     serverTime: now.toISOString(),
     // the next take would be met with her question, so the card can ask before a click is spent on it
-    stillThere: stillThere.due(user, activity.lastAt(user._id), now.getTime()),
+    stillThere: ask && stillThere.due(user, activity.lastAt(user._id), now.getTime()),
   };
 };
 
@@ -155,7 +155,9 @@ router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
       pickChanged: advanced.index !== (req.user.potPickIndex || 0),
       walletBalance: updated.walletBalance,
       nextBonus: updated.nextBonus,
-      status: statusOf(updated, now),
+      // a take that just paid is never followed by her question on the spot: someone back after an hour would be asked the
+      // moment the coins landed. the next take decides
+      status: statusOf(updated, now, { ask: false }),
     });
   } catch (err) {
     console.error(err);

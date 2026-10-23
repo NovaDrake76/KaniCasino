@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { act, render, fireEvent, screen } from "@testing-library/react";
 import { MemoryRouter, useNavigate } from "react-router-dom";
-import { countsAsHere, HERE_EVERY_MS, useHereSignal } from "./useHereSignal";
+import { countsAsHere, HERE_EVERY_MS, resetHere, signalHere, useHereSignal } from "./useHereSignal";
 
 const sayHere = vi.fn();
 vi.mock("../../services/daisu/DaisuService", () => ({
@@ -9,7 +9,7 @@ vi.mock("../../services/daisu/DaisuService", () => ({
 }));
 
 const Page = ({ enabled = true }: { enabled?: boolean }) => {
-  useHereSignal(enabled);
+  useHereSignal(enabled, "u1");
   const navigate = useNavigate();
   return (
     <>
@@ -30,6 +30,7 @@ describe("telling the server the player is around", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     sayHere.mockReset().mockResolvedValue(undefined);
+    resetHere();
   });
   afterEach(() => vi.useRealTimers());
 
@@ -61,6 +62,28 @@ describe("telling the server the player is around", () => {
       vi.advanceTimersByTime(HERE_EVERY_MS);
     });
     fireEvent.click(screen.getByText("plinko"));
+    expect(sayHere).toHaveBeenCalledTimes(2);
+  });
+
+  it("shares one request between every caller in the window, settling once the server has it", async () => {
+    let land: () => void = () => undefined;
+    sayHere.mockReturnValue(new Promise<void>((resolve) => (land = resolve)));
+    let settled = 0;
+
+    signalHere("u1").then(() => (settled += 1));
+    signalHere("u1").then(() => (settled += 1));
+    await Promise.resolve();
+    expect(sayHere).toHaveBeenCalledTimes(1);
+    expect(settled).toBe(0);
+
+    land();
+    await act(() => Promise.resolve());
+    expect(settled).toBe(2);
+  });
+
+  it("never lends one account's sign of life to the next one to sign in", () => {
+    signalHere("u1");
+    signalHere("u2");
     expect(sayHere).toHaveBeenCalledTimes(2);
   });
 

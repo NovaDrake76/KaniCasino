@@ -10,6 +10,7 @@ import { endHelp, helpState } from "./tour/helpStore";
 import { DAISU_POKED_EVENT, openDaisuShop, showDaisu } from "./tour/tourEvents";
 import { endTour, setPokeMode, syncTour } from "./tour/tourStore";
 import { noteServerTime, resetServerClock } from "../../services/serverClock";
+import { resetHere } from "./useHereSignal";
 
 const getPotStatus = vi.fn();
 const claimPot = vi.fn();
@@ -139,6 +140,7 @@ describe("daisu in the corner", () => {
     claimPot.mockReset();
     answerStillThere.mockReset();
     sayHere.mockReset().mockResolvedValue(undefined);
+    resetHere();
     getPotStatus.mockReset().mockResolvedValue(status(0));
   });
 
@@ -599,6 +601,18 @@ describe("daisu in the corner", () => {
 
     expect(await screen.findByLabelText("Open Daisu")).toBeTruthy();
     expect(window.localStorage.getItem("kani.daisuStage")).toBe("bubble");
+  });
+
+  it("reads the pot only once the page's sign of life has landed, so opening the site never reads as away", async () => {
+    let land: () => void = () => undefined;
+    sayHere.mockReturnValue(new Promise<void>((resolve) => (land = resolve)));
+    draw();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(sayHere).toHaveBeenCalledTimes(1);
+    expect(getPotStatus).not.toHaveBeenCalled();
+
+    land();
+    await waitFor(() => expect(getPotStatus).toHaveBeenCalledTimes(1));
   });
 
   it("asks if the player is still there instead of taking, and a click on the jar sends nothing", async () => {
