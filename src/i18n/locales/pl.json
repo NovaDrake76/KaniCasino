@@ -2072,7 +2072,7 @@
     "noCopiesLeft": "Brak kopii.",
     "noItems": "Brak przedmiotów",
     "noTransactionsYet": "Nie ma jeszcze żadnych transakcji.",
-    "historyRetention": "Rundy Plinko, Kości i Slotów znikają z tej listy po {{short}} dniach; inne gry, bonusy i sprzedaże w sklepie po {{long}}. Twoje zadania i sumy nadal je liczą.",
+    "historyRetention": "Rundy Plinko, Kości i Slotów znikają z tej listy po jednym dniu; inne gry, bonusy i sprzedaże w sklepie po {{long}} dniach. Twoje zadania i sumy nadal je liczą.",
     "occasionalEmailWhenSomething": "Od czasu do czasu wyślemy ci maila, jak coś dodamy. Wyłączone, dopóki nie włączysz, możesz to anulować, kiedy chcesz.",
     "requestDeclined": "Odrzucono prośbę",
     "requestSent": "Wysłano prośbę",

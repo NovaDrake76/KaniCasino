@@ -14,8 +14,8 @@ const DEFAULT_BET = 10;
 const HISTORY_SIZE = 8;
 // hard cap on concurrent balls (pending requests + falling); the server allows more
 const MAX_IN_FLIGHT = 12;
-// paced so an auto run reads as a stream of balls instead of one burst
-const AUTO_DROP_INTERVAL_MS = 400;
+// the server takes one bet a second per player, so a faster run would only queue behind itself
+const AUTO_DROP_INTERVAL_MS = 1000;
 export const AUTO_COUNTS = [10, 25, 50, 100];
 
 export const usePlinkoServices = () => {

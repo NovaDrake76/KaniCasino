@@ -21,7 +21,7 @@ import { play } from "../../services/sound/sound";
 const DEFAULT_BET = 10;
 const DEFAULT_TARGET = 5050; // over 50.50 -> 2.0000x, the classic starting point
 const HISTORY_SIZE = 12;
-const AUTO_INTERVAL_MS = 550; // paced so an auto run reads as a sequence, not a burst
+const AUTO_INTERVAL_MS = 1000; // the server takes one bet a second per player, so a faster run would only queue behind itself
 export const AUTO_COUNTS = [10, 25, 50, 100];
 
 export const useDiceServices = () => {

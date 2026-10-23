@@ -168,21 +168,24 @@ describe("folding the ledger into daily totals", () => {
 
   test("the prune keeps each retention, big payouts, and the rows nothing folds away", async () => {
     const world = await seed();
+    // half a day before the fold's edge: folded, but still inside the short retention
+    await row(world.alice._id, TX.DICE_BET, "debit", 4, T0() - 12 * HOUR);
     await ledgerDays.foldClosedDays({ now: T0() + 20 * 60 * 1000 });
     process.env.LEDGER_PRUNE = "1";
-    await ledgerDays.prune();
+    // on the fold's clock, or whether a half-day-old row is past a day would depend on the hour the test runs
+    await ledgerDays.prune({ now: T0() + 20 * 60 * 1000 });
 
     const left = await Transaction.find({}, { type: 1, amount: 1, createdAt: 1 }).lean();
     const age = (r) => (T0() - r.createdAt.getTime()) / DAY;
-    // plinko, dice and slots past three days are gone, except the payout of 50,000 or more
-    expect(left.filter((r) => ledgerDays.SHORT_TYPES.includes(r.type) && age(r) > 3).map((r) => r.amount)).toEqual([60000]);
+    // plinko, dice and slots past a day are gone, except the payout of 50,000 or more
+    expect(left.filter((r) => ledgerDays.SHORT_TYPES.includes(r.type) && age(r) > ledgerDays.SHORT_DAYS).map((r) => r.amount)).toEqual([60000]);
     // the other games, bonuses and sales go after fourteen days
     expect(left.filter((r) => ledgerDays.LONG_TYPES.includes(r.type) && age(r) > 14)).toEqual([]);
     expect(left.filter((r) => ledgerDays.LONG_TYPES.includes(r.type) && age(r) < 14).length).toBe(8);
     // rows outside both lists stay for good
     expect(left.filter((r) => r.type === TX.MISSION_REWARD || r.type === TX.MARKET_SALE).length).toBe(2);
-    // the short rows inside three days are untouched
-    expect(left.filter((r) => ledgerDays.SHORT_TYPES.includes(r.type) && age(r) <= 3).length).toBe(3);
+    // the short rows inside a day are untouched: the half-day-old one and today's
+    expect(left.filter((r) => ledgerDays.SHORT_TYPES.includes(r.type) && age(r) <= ledgerDays.SHORT_DAYS).length).toBe(2);
     expect(world.alice).toBeTruthy();
   });
 
@@ -258,6 +261,6 @@ describe("folding the ledger into daily totals", () => {
     const get = () => request(app).get("/users/transactions").set("Authorization", `Bearer ${tokenFor(user)}`);
     expect((await get()).body.retention).toBeNull();
     process.env.LEDGER_PRUNE = "1";
-    expect((await get()).body.retention).toEqual({ shortDays: 3, longDays: 14 });
+    expect((await get()).body.retention).toEqual({ shortDays: 1, longDays: 14 });
   });
 });
