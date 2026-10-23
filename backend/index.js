@@ -204,9 +204,9 @@ app.use("/account", accountRoutes);
 // crash or coin flip round holds real stakes, and until this runs they are unaccounted.
 // it repeats because a give-back loop that dies holds its lease until that goes stale,
 // and a boot-only sweep would leave the money it still owes until the next restart.
-// boot recovers live-looking rounds/battles the restart orphaned; the interval only
-// resumes a give-back loop that died holding a stale lease, so it never touches the
-// rounds the running game loops are still playing.
+// boot recovers live-looking rounds/battles the restart orphaned; the interval resumes a
+// give-back loop that died holding a stale lease, and closes a round older than any live
+// one can be, so it never touches the rounds the running game loops are still playing.
 const sweepRounds = ({ boot = false } = {}) => {
   recoverStuckRounds(io, coinFlip.payoutFor, { boot }).catch((e) => console.log(e));
   completeStuckBattles(io, { boot }).catch((e) => console.log(e));
