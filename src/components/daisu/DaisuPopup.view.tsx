@@ -7,6 +7,7 @@ import BonusTicket from "./BonusTicket";
 import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
+import StillThere from "./StillThere";
 import type { DaisuViewProps } from "./Daisu.types";
 import i18n from "../../i18n";
 
@@ -26,6 +27,10 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
   untilFull,
   fullBonusPct,
   takeFromJar,
+  asking,
+  askSpot,
+  answering,
+  answer,
   poke,
   pokeLocked,
   touring,
@@ -93,16 +98,20 @@ const DaisuPopupView: React.FC<DaisuViewProps> = ({
         pokeLabel="Daisu"
         className="mx-auto h-64"
       />
-      <JarReadout
-        inJar={inJar}
-        full={full}
-        fresh={fresh}
-        fill={fill}
-        isFull={isFull}
-        untilFull={untilFull}
-        fullBonusPct={fullBonusPct}
-        pending={pending}
-      />
+      {asking ? (
+        <StillThere spot={askSpot} answering={answering} onAnswer={answer} />
+      ) : (
+        <JarReadout
+          inJar={inJar}
+          full={full}
+          fresh={fresh}
+          fill={fill}
+          isFull={isFull}
+          untilFull={untilFull}
+          fullBonusPct={fullBonusPct}
+          pending={pending}
+        />
+      )}
     </div>
 
     <div className="flex flex-col gap-2 px-4 pb-4 pt-3">

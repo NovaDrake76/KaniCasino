@@ -5,9 +5,11 @@ const http = require("http");
 const socketIO = require("socket.io");
 const cronJobs = require("./tasks/cronJobs");
 const checkApiKey = require("./middleware/checkApiKey");
+const { markActivity } = require("./middleware/markActivity");
 const tunnel = require("./utils/tunnel");
 const { socketAuth } = require("./middleware/socketAuth");
 const presence = require("./utils/presence");
+const activity = require("./utils/activity");
 const realtime = require("./utils/realtime");
 const timing = require("./utils/timing");
 
@@ -176,6 +178,8 @@ app.use("/email", emailRoutes);
 // block requests from outside
 app.use(checkApiKey);
 
+app.use(markActivity);
+
 // Routes
 // app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
@@ -270,7 +274,17 @@ server.listen(port, () => {
 // watch games but the game handlers ignore any client-supplied identity.
 io.use(socketAuth);
 
+// what a player sends over the socket on purpose; the reads a page sends on its own are left out
+const SOCKET_ACTIVITY = new Set([
+  "crash:bet", "crash:cashout", "coinFlip:bet", "chat:send",
+  "battle:create", "battle:join", "battle:start", "battle:addBot", "battle:kick", "battle:leave",
+]);
+
 io.on("connection", (socket) => {
+  socket.use(([event], next) => {
+    if (socket.userId && SOCKET_ACTIVITY.has(event)) activity.mark(socket.userId);
+    next();
+  });
   // people, not sockets: a second tab or a scripted burst of connections is not a crowd
   const who = presence.keyFor(socket);
   if (presence.join(who)) io.emit("onlineUsers", presence.count());

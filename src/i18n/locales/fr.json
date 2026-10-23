@@ -552,7 +552,21 @@
     "play": "Jouer",
     "roomTitle": "La chambre de Daisu",
     "visit": "Visiter la chambre de Daisu",
+    "stillThere": {
+      "button": "Je suis là",
+      "hint": "Réponds-lui et le pot est de nouveau à toi"
+    },
     "lines": {
+      "stillThere": {
+        "0": "Hé. Tu es toujours là ? Clique sur le bouton pour que je sache que c'est vraiment toi.",
+        "1": "Tu es devenu bien silencieux... Toujours là ? Montre-moi.",
+        "2": "Avant de te donner quoi que ce soit : tu es vraiment là ? Clique sur le bouton."
+      },
+      "stillThereThanks": {
+        "0": "Te voilà. Bon, le pot est de nouveau à toi.",
+        "1": "Bien. Je commençais à croire que je parlais à une machine.",
+        "2": "Oui, oui, tu es là. Vas-y, sers-toi."
+      },
       "hello": {
         "0": "Ah, te revoilà. Ne t'emballe pas, le pot se remplit encore.",
         "1": "T'en as mis du temps. J'allais tout dépenser moi-même.",

@@ -552,7 +552,21 @@
     "play": "Play",
     "roomTitle": "Daisu's room",
     "visit": "Visit Daisu's room",
+    "stillThere": {
+      "button": "I'm here",
+      "hint": "Answer her and the jar is yours again"
+    },
     "lines": {
+      "stillThere": {
+        "0": "Hey. Are you still there? Click the button so I know it's really you.",
+        "1": "You've gone quiet... Still there? Show me.",
+        "2": "Before I hand anything over: are you actually there? Click the button."
+      },
+      "stillThereThanks": {
+        "0": "There you are. Fine, the jar's yours again.",
+        "1": "Good. I was starting to think I was talking to a machine.",
+        "2": "Okay, okay, you're here. Go on, take it."
+      },
       "hello": {
         "0": "Oh, you're back. Don't get excited, the pot is still filling.",
         "1": "Took you long enough. I was about to spend it myself.",

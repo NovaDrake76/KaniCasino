@@ -552,7 +552,21 @@
     "play": "Jugar",
     "roomTitle": "El cuarto de Daisu",
     "visit": "Visitar el cuarto de Daisu",
+    "stillThere": {
+      "button": "Estoy aquí",
+      "hint": "Contéstale y el bote vuelve a ser tuyo"
+    },
     "lines": {
+      "stillThere": {
+        "0": "Oye. ¿Sigues ahí? Haz clic en el botón para que sepa que eres tú de verdad.",
+        "1": "Te quedaste muy callado... ¿Sigues ahí? Demuéstramelo.",
+        "2": "Antes de darte nada: ¿de verdad estás ahí? Haz clic en el botón."
+      },
+      "stillThereThanks": {
+        "0": "Ahí estás. Bueno, el bote vuelve a ser tuyo.",
+        "1": "Bien. Ya empezaba a pensar que hablaba con una máquina.",
+        "2": "Vale, vale, estás aquí. Anda, tómalo."
+      },
       "hello": {
         "0": "Ah, volviste. No te emociones, el bote sigue llenándose.",
         "1": "Tardaste, eh. Ya iba a gastarlo yo.",

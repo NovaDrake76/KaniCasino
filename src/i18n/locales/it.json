@@ -552,7 +552,21 @@
     "play": "Gioca",
     "roomTitle": "La stanza di Daisu",
     "visit": "Visita la stanza di Daisu",
+    "stillThere": {
+      "button": "Ci sono",
+      "hint": "Rispondile e il vaso torna tuo"
+    },
     "lines": {
+      "stillThere": {
+        "0": "Ehi. Ci sei ancora? Clicca il pulsante, così so che sei davvero tu.",
+        "1": "Sei diventato silenzioso... Ci sei ancora? Dimostramelo.",
+        "2": "Prima che ti dia qualcosa: ci sei davvero? Clicca il pulsante."
+      },
+      "stillThereThanks": {
+        "0": "Eccoti. Va bene, il vaso è di nuovo tuo.",
+        "1": "Bene. Cominciavo a pensare di parlare con una macchina.",
+        "2": "Sì, sì, ci sei. Dai, prendilo."
+      },
       "hello": {
         "0": "Oh, sei tornato. Non esaltarti, il vaso si sta ancora riempiendo.",
         "1": "Ce ne hai messo di tempo. Stavo per spenderlo io.",

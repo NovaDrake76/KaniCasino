@@ -552,7 +552,21 @@
     "play": "Main",
     "roomTitle": "Kamar Daisu",
     "visit": "Kunjungi kamar Daisu",
+    "stillThere": {
+      "button": "Aku di sini",
+      "hint": "Jawab dia, toplesnya jadi milikmu lagi"
+    },
     "lines": {
+      "stillThere": {
+        "0": "Hei. Kamu masih di sana? Klik tombolnya biar aku tahu itu beneran kamu.",
+        "1": "Kamu diam saja dari tadi... Masih di sana? Buktikan.",
+        "2": "Sebelum aku kasih apa-apa: kamu beneran ada di sana? Klik tombolnya."
+      },
+      "stillThereThanks": {
+        "0": "Nah, itu kamu. Ya sudah, toplesnya milikmu lagi.",
+        "1": "Bagus. Aku sudah mulai mengira lagi ngobrol sama mesin.",
+        "2": "Iya, iya, kamu di sini. Ayo, ambil."
+      },
       "hello": {
         "0": "Oh, kamu kembali. Jangan senang dulu, toplesnya masih terisi.",
         "1": "Lama banget. Hampir saja kuhabiskan sendiri.",

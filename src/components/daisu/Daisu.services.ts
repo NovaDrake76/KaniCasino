@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import UserContext from "../../UserContext";
 import { GAME_PLAYED_EVENT } from "../../services/api";
-import { claimPot, getPotStatus, PotStatus } from "../../services/daisu/DaisuService";
+import { answerStillThere, claimPot, getPotStatus, PotStatus } from "../../services/daisu/DaisuService";
 import { serverNow } from "../../services/serverClock";
 import { useGiftStatus } from "../header/useGiftReady";
 import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
@@ -15,6 +15,7 @@ import { tourState, useTour } from "./tour/tourStore";
 import { useShop } from "./shop/useShop";
 import { preloadDaisuArt } from "./daisuArtFiles";
 import { useCardFit } from "./cardFit";
+import { useHereSignal } from "./useHereSignal";
 import { track } from "../../services/usage/usage";
 import type { UnlockKey } from "../../services/daisu/ShopService";
 import { itemWords } from "./shop/shopCopy";
@@ -47,6 +48,8 @@ const BUBBLE_SWAP_MS = 4000;
 const POP_MS = 1200;
 // a sent or failed run stays under the jar this long, then fades out
 const RUN_RESULT_MS = 1600;
+// where her "still there?" button lands, as percentages of its box: anywhere it still fits whole
+const randomSpot = () => ({ left: 4 + Math.round(Math.random() * 52), top: 4 + Math.round(Math.random() * 56) });
 
 // what asked her to move, for the usage record: the button, and what the bubble showed when it was clicked
 interface Move {
@@ -87,6 +90,9 @@ export const useDaisu = () => {
   const pokeLocked = tour.pokeMode === "locked";
   // while her tour runs, the tour is the only one talking
   const touring = tour.status === "offered" || tour.status === "active";
+  // the server would meet the next take with her question, so the jar waits for an answer
+  const asking = !!status?.stillThere;
+  useHereSignal(enabled && !!userId);
 
   useEffect(() => {
     if (enabled) preloadDaisuArt();
@@ -105,6 +111,8 @@ export const useDaisu = () => {
   const [run, setRun] = useState<Run | null>(null);
   const [settling, setSettling] = useState(false);
   const [bubbleGift, setBubbleGift] = useState(false);
+  const [askSpot, setAskSpot] = useState(randomSpot);
+  const [answering, setAnswering] = useState(false);
 
   // what asked her to move last, and since when she has been up, for the usage record of each move
   const cause = useRef<Move>({ via: "page" });
@@ -372,7 +380,7 @@ export const useDaisu = () => {
 
   // she speaks once per opening, once there is something to speak about
   useEffect(() => {
-    if (stage === "bubble" || !status || greeted.current || touring) return;
+    if (stage === "bubble" || !status || greeted.current || touring || status.stillThere) return;
     greeted.current = true;
     const soon = liveBonuses.find((b) => b.expiring);
     const gone = liveBonuses.length ? undefined : bonuses.find((b) => b.expired);
@@ -396,6 +404,18 @@ export const useDaisu = () => {
     // reads the derived values of the moment it opened; later ticks must not re-greet
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage, status, touring]);
+
+  // a fresh spot each time she asks, so a clicker aimed at the jar, or at any one place, misses the button
+  useEffect(() => {
+    if (asking) setAskSpot(randomSpot());
+  }, [asking]);
+
+  // she asks as soon as she is open and a take would be refused; the greeting waits for the answer
+  useEffect(() => {
+    if (!asking || stage === "bubble" || touring) return;
+    greeted.current = true;
+    say("stillThere");
+  }, [asking, stage, touring, say]);
 
   // the first sight of a bonus is silent, since opening the card already greets with it
   useEffect(() => {
@@ -464,13 +484,17 @@ export const useDaisu = () => {
         say("claimed", { amount: kp(res.amount) });
       }
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { reason?: string } } };
+      const e = err as { response?: { data?: { reason?: string; status?: PotStatus } } };
       const reason = e?.response?.data?.reason;
       // nothing was taken, so the pot still holds every coin of the run: re-read it
       refresh();
       if (reason === "raced") {
         // another tab took this pot first, so the coins did land, only not from here
         setRun(null);
+      } else if (reason === "stillThere") {
+        // her question takes over the card at once; the coins wait in the jar for the answer
+        setRun(null);
+        if (e.response?.data?.status) setPotStatus(e.response.data.status);
       } else {
         endRun("failed");
         play("daisu.take_failed");
@@ -520,6 +544,12 @@ export const useDaisu = () => {
 
   const takeFromJar = () => {
     if (!status) return;
+    // the jar stays shut until her question is answered, and a click on it sends nothing
+    if (asking) {
+      shake();
+      pull("sharp");
+      return;
+    }
     const delta = takeBetween(full, lastClickFill, fill);
     if (delta < 1) {
       shake();
@@ -547,6 +577,24 @@ export const useDaisu = () => {
     );
     hop();
     if (!settlingRef.current) scheduleSettle();
+  };
+
+  // the answer to her question opens the jar again for an hour; nothing left it while she waited
+  const answer = async () => {
+    if (answering) return;
+    setAnswering(true);
+    try {
+      const s = await answerStillThere();
+      statusSeq.current += 1;
+      setPotStatus(s);
+      say("stillThereThanks");
+      hop();
+    } catch {
+      shake();
+      say("failed");
+    } finally {
+      setAnswering(false);
+    }
   };
 
   const poke = () => {
@@ -633,6 +681,10 @@ export const useDaisu = () => {
     fullBonusPct,
     creditSharePct,
     takeFromJar,
+    asking,
+    askSpot,
+    answering,
+    answer,
     poke,
     pokeLocked,
     touring,

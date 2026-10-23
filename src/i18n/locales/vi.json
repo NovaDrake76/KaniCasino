@@ -552,7 +552,21 @@
     "play": "Chơi",
     "roomTitle": "Phòng của Daisu",
     "visit": "Ghé phòng của Daisu",
+    "stillThere": {
+      "button": "Tôi ở đây",
+      "hint": "Trả lời cô ấy là cái hũ lại là của bạn"
+    },
     "lines": {
+      "stillThere": {
+        "0": "Này. Bạn vẫn còn ở đó chứ? Bấm nút để tôi biết đúng là bạn.",
+        "1": "Tự nhiên im lặng thế... Vẫn còn ở đó không? Cho tôi xem nào.",
+        "2": "Trước khi đưa gì: bạn có thật sự ở đó không? Bấm nút đi."
+      },
+      "stillThereThanks": {
+        "0": "Đây rồi. Thôi được, cái hũ lại là của bạn.",
+        "1": "Tốt. Tôi còn tưởng đang nói chuyện với máy.",
+        "2": "Rồi, rồi, bạn ở đây. Lấy đi."
+      },
       "hello": {
         "0": "Ồ, quay lại rồi à. Đừng hí hửng, hũ vẫn đang đầy dần thôi.",
         "1": "Lâu thế. Tôi suýt tự tiêu hết rồi đấy.",
