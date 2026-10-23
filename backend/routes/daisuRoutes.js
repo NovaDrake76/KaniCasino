@@ -5,7 +5,9 @@ const authMiddleware = require("../middleware/authMiddleware");
 const beta = require("../utils/beta");
 const pot = require("../utils/pot");
 const { runAtomic, recordTransaction, WITHOUT_INVENTORY, TX } = require("../utils/economy");
-const { potClaimLimiter } = require("../middleware/rateLimit");
+const { potClaimLimiter, stillThereLimiter } = require("../middleware/rateLimit");
+const activity = require("../utils/activity");
+const stillThere = require("../utils/stillThere");
 const roadmap = require("../utils/roadmap");
 const shop = require("../utils/shop");
 const { GOLDEN_TICKET_SHARE } = require("../utils/shopCatalog");
@@ -35,6 +37,8 @@ const statusOf = (user, now = new Date()) => {
     bonuses: pot.bonusesOf(user, now),
     // the jar ticks on the player's device between reads, and a device clock can be far off this one
     serverTime: now.toISOString(),
+    // the next take would be met with her question, so the card can ask before a click is spent on it
+    stillThere: stillThere.due(user, activity.lastAt(user._id), now.getTime()),
   };
 };
 
@@ -72,6 +76,10 @@ router.post("/tour", ...gate, async (req, res) => {
 router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
   try {
     const now = new Date();
+    // nothing is taken until the player answers, and the jar holds one pot at most, so waiting costs a person nothing
+    if (stillThere.due(req.user, activity.lastAt(req.user._id), now.getTime())) {
+      return res.status(409).json({ message: "Still there?", reason: "stillThere", status: statusOf(req.user, now) });
+    }
     const fill = pot.fillAt(req.user.nextBonus, now);
     const amount = pot.payout(req.user.bonusAmount, fill);
     if (amount < pot.MIN_CLAIM) {
@@ -100,6 +108,8 @@ router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
         bonusAmount: pot.fullAmount(req.user.level),
         potPickIndex: advanced.index,
         potCycleClaimed: advanced.cycleClaimed,
+        potLastTakeAt: now,
+        potRunStart: new Date(stillThere.runStart(req.user, now.getTime())),
       };
       // burned amounts are pinned too, so a bet that spent one just before it expired is never burned twice
       for (const b of expired) {
@@ -151,6 +161,28 @@ router.post("/claim", ...gate, potClaimLimiter, async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
+});
+
+// the answer to her "still there?": takes are open again for the next hour
+router.post("/still-there", ...gate, stillThereLimiter, async (req, res) => {
+  try {
+    const now = new Date();
+    const updated = await User.findOneAndUpdate(
+      { _id: req.user._id },
+      { $set: { stillThereAt: now } },
+      { new: true, projection: WITHOUT_INVENTORY }
+    );
+    res.json({ status: statusOf(updated, now) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// the page saying its player clicked, typed, scrolled or changed page (never on the jar), at most every few minutes
+router.post("/here", ...gate, (req, res) => {
+  activity.mark(req.user._id);
+  res.status(204).end();
 });
 
 router.get("/missions", ...gate, async (req, res) => {

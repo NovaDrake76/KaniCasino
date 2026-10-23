@@ -552,7 +552,21 @@
     "play": "Spielen",
     "roomTitle": "Daisus Zimmer",
     "visit": "Daisus Zimmer besuchen",
+    "stillThere": {
+      "button": "Ich bin da",
+      "hint": "Antworte ihr, dann gehört der Topf wieder dir"
+    },
     "lines": {
+      "stillThere": {
+        "0": "Hey. Bist du noch da? Klick auf den Knopf, damit ich weiß, dass du es wirklich bist.",
+        "1": "Du bist so still geworden... Noch da? Zeig's mir.",
+        "2": "Bevor ich dir irgendwas gebe: Bist du wirklich da? Klick auf den Knopf."
+      },
+      "stillThereThanks": {
+        "0": "Da bist du ja. Na gut, der Topf gehört wieder dir.",
+        "1": "Gut. Ich dachte schon, ich rede mit einer Maschine.",
+        "2": "Ja, ja, du bist da. Na los, nimm's dir."
+      },
       "hello": {
         "0": "Oh, du bist zurück. Freu dich nicht zu früh, der Topf füllt sich noch.",
         "1": "Hat ja lange gedauert. Ich wollte ihn gerade selbst ausgeben.",

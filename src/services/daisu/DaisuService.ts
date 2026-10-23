@@ -26,6 +26,8 @@ export interface PotStatus {
   creditTtlMs: number;
   bonuses: PotBonus[];
   serverTime?: string;
+  // the next take would be met with her "still there?"
+  stillThere?: boolean;
 }
 
 export interface PotClaim {
@@ -57,4 +59,16 @@ export async function claimPot(): Promise<PotClaim> {
   const res = await api.post("/daisu/claim");
   noteServerTime(res.data?.status?.serverTime);
   return res.data;
+}
+
+// her "still there?" answered: takes are open again for the next hour
+export async function answerStillThere(): Promise<PotStatus> {
+  const res = await api.post("/daisu/still-there");
+  noteServerTime(res.data?.status?.serverTime);
+  return res.data.status;
+}
+
+// the page telling the server its player is around; never sent for a click on the jar
+export async function sayHere(): Promise<void> {
+  await api.post("/daisu/here");
 }

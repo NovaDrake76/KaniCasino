@@ -23,6 +23,7 @@ const arcadeRoutes = require("../../routes/arcadeRoutes");
 const usageRoutes = require("../../routes/usageRoutes");
 const accountRoutes = require("../../routes/accountRoutes");
 const leaderboardRoutes = require("../../routes/leaderboardRoutes");
+const { markActivity } = require("../../middleware/markActivity");
 const Transaction = require("../../models/Transaction");
 const { TX } = require("../../utils/economy");
 
@@ -32,6 +33,7 @@ const io = { emit: () => {}, to: () => ({ emit: () => {} }) };
 function makeApp() {
   const app = express();
   app.use(express.json({ limit: "5mb" }));
+  app.use(markActivity);
   app.use("/users", userRoutes);
   app.use("/marketplace", marketplaceRoutes(io));
   app.use("/friends", friendsRoutes(io));

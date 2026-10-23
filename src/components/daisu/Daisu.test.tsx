@@ -13,9 +13,13 @@ import { noteServerTime, resetServerClock } from "../../services/serverClock";
 
 const getPotStatus = vi.fn();
 const claimPot = vi.fn();
+const answerStillThere = vi.fn();
+const sayHere = vi.fn();
 vi.mock("../../services/daisu/DaisuService", () => ({
   getPotStatus: (...args: unknown[]) => getPotStatus(...args),
   claimPot: (...args: unknown[]) => claimPot(...args),
+  answerStillThere: (...args: unknown[]) => answerStillThere(...args),
+  sayHere: (...args: unknown[]) => sayHere(...args),
   saveTour: () => Promise.resolve(),
 }));
 
@@ -133,6 +137,8 @@ describe("daisu in the corner", () => {
     getShop.mockReset().mockResolvedValue(shopOf([]));
     buyShopItem.mockReset();
     claimPot.mockReset();
+    answerStillThere.mockReset();
+    sayHere.mockReset().mockResolvedValue(undefined);
     getPotStatus.mockReset().mockResolvedValue(status(0));
   });
 
@@ -593,5 +599,55 @@ describe("daisu in the corner", () => {
 
     expect(await screen.findByLabelText("Open Daisu")).toBeTruthy();
     expect(window.localStorage.getItem("kani.daisuStage")).toBe("bubble");
+  });
+
+  it("asks if the player is still there instead of taking, and a click on the jar sends nothing", async () => {
+    getPotStatus.mockResolvedValue(status(0, { stillThere: true }));
+    draw();
+
+    expect(await screen.findByRole("button", { name: en.daisu.stillThere.button })).toBeTruthy();
+    fireEvent.click(jar());
+    await new Promise((r) => setTimeout(r, 50));
+
+    expect(claimPot).not.toHaveBeenCalled();
+    expect(screen.queryByText(/full pot bonus/i)).toBeNull();
+  });
+
+  it("opens the jar again once the player answers", async () => {
+    getPotStatus.mockResolvedValue(status(0, { stillThere: true }));
+    answerStillThere.mockResolvedValue(status(0));
+    draw();
+
+    fireEvent.click(await screen.findByRole("button", { name: en.daisu.stillThere.button }));
+
+    expect(answerStillThere).toHaveBeenCalledTimes(1);
+    expect(await screen.findByText(/full pot bonus/i)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: en.daisu.stillThere.button })).toBeNull();
+  });
+
+  it("turns a refused take into her question rather than a failure", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    getPotStatus.mockResolvedValueOnce(status(60000)).mockResolvedValue(status(60000, { stillThere: true }));
+    claimPot.mockRejectedValue({ response: { data: { reason: "stillThere", status: status(60000, { stillThere: true }) } } });
+    draw();
+    await screen.findByText(/full in \d/i);
+
+    fireEvent.click(jar());
+    await wait(4000);
+
+    expect(claimPot).toHaveBeenCalledTimes(1);
+    expect(await screen.findByRole("button", { name: en.daisu.stillThere.button })).toBeTruthy();
+    expect(runState()).not.toBe("failed");
+  });
+
+  it("puts the answer where a clicker aimed at one spot cannot know to look", async () => {
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.75);
+    getPotStatus.mockResolvedValue(status(0, { stillThere: true }));
+    draw();
+
+    const button = await screen.findByRole("button", { name: en.daisu.stillThere.button });
+    expect(button.style.left).toBe("43%");
+    expect(button.style.top).toBe("46%");
+    random.mockRestore();
   });
 });

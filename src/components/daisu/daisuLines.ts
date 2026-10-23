@@ -20,7 +20,9 @@ export type Mood =
   | "poke1"
   | "poke2"
   | "gift"
-  | "room";
+  | "room"
+  | "stillThere"
+  | "stillThereThanks";
 
 // the highest relationship rank, one per chapter of her missions
 export const RANKS = 5;

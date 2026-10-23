@@ -560,7 +560,21 @@
     "play": "Zagraj",
     "roomTitle": "Pokój Daisu",
     "visit": "Odwiedź pokój Daisu",
+    "stillThere": {
+      "button": "Jestem",
+      "hint": "Odpowiedz jej, a słoik znowu będzie twój"
+    },
     "lines": {
+      "stillThere": {
+        "0": "Hej. Jesteś tam jeszcze? Kliknij przycisk, żebym wiedziała, że to naprawdę ty.",
+        "1": "Coś cicho się zrobiło... Jesteś tam? Pokaż mi.",
+        "2": "Zanim cokolwiek ci dam: naprawdę tam jesteś? Kliknij przycisk."
+      },
+      "stillThereThanks": {
+        "0": "No jesteś. Dobra, słoik znowu jest twój.",
+        "1": "Dobrze. Już myślałam, że gadam z maszyną.",
+        "2": "Dobra, dobra, jesteś. No, bierz."
+      },
       "hello": {
         "0": "Oh, wróciłeś. Nie ciesz się tak, słoik się wciąż napełnia.",
         "1": "Wreszcie. Miałam już sama to wydać.",

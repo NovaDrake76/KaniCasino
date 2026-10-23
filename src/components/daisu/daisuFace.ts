@@ -37,6 +37,8 @@ export const BY_GROUP: Record<string, Expression> = {
   poke2: "smug",
   gift: "smug",
   room: "default",
+  stillThere: "sharp",
+  stillThereThanks: "smug",
 };
 
 // the lines that want a face of their own: a tease, or something she is sharp about

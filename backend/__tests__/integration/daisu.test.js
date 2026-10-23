@@ -9,6 +9,7 @@ const Transaction = require("../../models/Transaction");
 const pot = require("../../utils/pot");
 const { chargeUser, TX } = require("../../utils/economy");
 const { MINT } = require("../../utils/accounts");
+const activity = require("../../utils/activity");
 
 let app;
 
@@ -377,5 +378,101 @@ describe("the pot with her perks", () => {
     const res = await claim(user);
     expect(res.body.credit).toBe(100);
     expect(res.body.status.cycleMs).toBe(pot.CYCLE_MS);
+  });
+});
+
+describe("her still there?", () => {
+  // an account with no mark counts as active since the boot, so moving the boot back leaves everyone idle
+  beforeEach(() => activity.reset(Date.now() - minutes(31)));
+  afterEach(() => activity.reset());
+
+  const post = (user, path) => request(app).post(path).set("Authorization", `Bearer ${tokenFor(user)}`);
+
+  it("asks instead of paying when the player has done nothing but take the pot for half an hour", async () => {
+    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60) });
+
+    const res = await claim(user);
+
+    expect(res.status).toBe(409);
+    expect(res.body.reason).toBe("stillThere");
+    expect(res.body.status.stillThere).toBe(true);
+    expect((await User.findById(user._id).lean()).walletBalance).toBe(0);
+    expect(await Transaction.countDocuments({ userId: user._id })).toBe(0);
+  });
+
+  it("tells the card before a click is spent on it", async () => {
+    const user = await makeUser({ nextBonus: fillingFor(60) });
+
+    expect((await status(user)).body.stillThere).toBe(true);
+  });
+
+  it("pays again once the player answers, for the next hour", async () => {
+    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60) });
+
+    const answer = await post(user, "/daisu/still-there");
+    expect(answer.status).toBe(200);
+    expect(answer.body.status.stillThere).toBe(false);
+
+    const res = await claim(user);
+    expect(res.status).toBe(200);
+    expect(res.body.amount).toBe(1000);
+  });
+
+  it("counts a bet anywhere else as being there", async () => {
+    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60), walletBalance: 100 });
+
+    const bet = await post(user, "/games/dice").send({ betAmount: 1, target: 5050, direction: "over" });
+    expect(bet.status).toBe(200);
+
+    expect((await claim(user)).status).toBe(200);
+  });
+
+  it("counts the page saying its player is around", async () => {
+    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60) });
+
+    expect((await post(user, "/daisu/here")).status).toBe(204);
+
+    expect((await claim(user)).status).toBe(200);
+  });
+
+  it("never counts a refused take or the usage batches as being there", async () => {
+    const user = await makeUser({ bonusAmount: 1000, nextBonus: fillingFor(60) });
+
+    await claim(user);
+    await post(user, "/usage").send({ events: [] });
+
+    expect((await claim(user)).status).toBe(409);
+  });
+
+  it("asks after three hours of unbroken takes even while the player keeps playing", async () => {
+    const user = await makeUser({
+      bonusAmount: 1000,
+      nextBonus: fillingFor(60),
+      potLastTakeAt: new Date(Date.now() - minutes(8)),
+      potRunStart: new Date(Date.now() - minutes(181)),
+    });
+    activity.mark(user._id);
+
+    const res = await claim(user);
+
+    expect(res.status).toBe(409);
+    expect(res.body.reason).toBe("stillThere");
+  });
+
+  it("keeps the start of the run on each take, so the three hours are counted across takes", async () => {
+    activity.reset();
+    const runStart = Date.now() - minutes(100);
+    const user = await makeUser({
+      bonusAmount: 1000,
+      nextBonus: fillingFor(60),
+      potLastTakeAt: new Date(Date.now() - minutes(8)),
+      potRunStart: new Date(runStart),
+    });
+
+    expect((await claim(user)).status).toBe(200);
+
+    const after = await User.findById(user._id).lean();
+    expect(new Date(after.potLastTakeAt).getTime()).toBeGreaterThan(Date.now() - minutes(1));
+    expect(new Date(after.potRunStart).getTime()).toBe(runStart);
   });
 });

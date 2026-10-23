@@ -180,6 +180,10 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  // the "still there?" check on pot takes (utils/stillThere.js): the last answer, the last take, and when that run of takes began
+  stillThereAt: Date,
+  potLastTakeAt: Date,
+  potRunStart: Date,
   // features a few accounts see before everyone does
   betaFlags: [String],
   // daisu's first-login tour: offered to accounts created after it shipped, then taken or skipped
