@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { ALL_STYLES, PINNED, resolveStyle, stylesFor } from "./cardStyles";
 import { canShareCard, cardFromBoard, cardFromStanding, yearOf } from "./cardData";
 import { fileNameFor } from "./ShareCard/ShareCard.services";
+import { fitWrap } from "./cardRender";
 import { FanBoard, FanRank } from "../../services/fandom/FandomService";
 
 const fan = {
@@ -106,5 +107,22 @@ describe("supporting bits", () => {
     expect(fileNameFor("Keine")).toBe("keine-top-fan.png");
     expect(fileNameFor("Yuuma Toutetsu")).toBe("yuuma-toutetsu-top-fan.png");
     expect(fileNameFor("???")).toBe("fan-top-fan.png");
+  });
+
+  it("fits a whole pinned description on the card, shrinking it rather than cutting it", () => {
+    // each glyph is 0.6 of the font size, close enough to montserrat to size the lines
+    const ctx = { font: "", measureText(text: string) { return { width: text.length * 0.6 * Number(/(\d+)px/.exec(this.font)?.[1]) }; } };
+    const font = (v: number) => `600 ${v}px Montserrat`;
+    const fits = (text: string) => fitWrap(ctx as never, text, 250, 4, 30, font);
+
+    expect(fits("she taught me everything")).toEqual({ size: 30, lines: ["she taught me", "everything"] });
+
+    const long = fits("she never finishes second when it is raining hard");
+    expect(long.lines.join(" ")).toBe("she never finishes second when it is raining hard");
+    expect(long.lines.length).toBeLessThanOrEqual(4);
+
+    const word = fits("Supercalifragilisticexpialidocious");
+    expect(word.lines).toEqual(["Supercalifragilisticexpialidocious"]);
+    expect(word.size * 0.6 * 34).toBeLessThanOrEqual(250);
   });
 });

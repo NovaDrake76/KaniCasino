@@ -57,6 +57,19 @@ function wrap(ctx: Ctx, text: string, max: number) {
   return out;
 }
 
+// the largest size at which the whole text wraps into the rows it is given, no line wider than max
+export function fitWrap(ctx: Ctx, text: string, max: number, rows: number, start: number, mk: Sizer) {
+  let size = start;
+  while (size > 8) {
+    ctx.font = mk(size);
+    const lines = wrap(ctx, text, max);
+    if (lines.length <= rows && lines.every((line) => ctx.measureText(line).width <= max)) return { size, lines };
+    size -= 1;
+  }
+  ctx.font = mk(size);
+  return { size, lines: wrap(ctx, text, max).slice(0, rows) };
+}
+
 function off(w: number, h: number) {
   const c = document.createElement("canvas");
   c.width = w;
@@ -214,8 +227,8 @@ const DRAW: Record<FanCardStyleId, Draw> = {
       ctx.fillText("“", cx + 148, cy + 190);
       ctx.fillText("”", cx + 448, cy + 190);
       ctx.fillStyle = "#FFFFFF";
-      ctx.font = '600 30px Montserrat';
-      wrap(ctx, d.desc, 250).slice(0, 3).forEach((line, i) => ctx.fillText(line, cx + 298, cy + 172 + i * 38));
+      const { size, lines } = fitWrap(ctx, d.desc, 250, 4, 30, (v) => `600 ${v}px Montserrat`);
+      lines.forEach((line, i) => ctx.fillText(line, cx + 298, cy + 142 + size + i * size * 1.27));
     }
     ctx.drawImage(img, cx + cw - 300, cy + 66, 190, 190);
     ctx.font = '700 30px Montserrat';
