@@ -528,6 +528,47 @@
     "queuedClickToCancel": "Ditunggu (klik buat batalin)"
   },
   "daisu": {
+    "daily": {
+      "title": "Permintaan harian",
+      "resets": "Baru dalam {{time}}",
+      "goals": {
+        "fullPots": {
+          "title": "Ambil toples penuh",
+          "desc": "Tunggu toplesku penuh, lalu ambil semuanya.",
+          "help": "Toplesku terisi dalam 8 menit. Ambil saat tertulis Penuh dan itu dihitung, plus bonus toples penuh."
+        },
+        "casesOpened": {
+          "title": "Buka {{target}} kotak",
+          "desc": "Kotak apa saja, yang murah juga dihitung.",
+          "help": "Yang murah dihitung sama dengan yang mahal, dan membuka beberapa sekaligus dihitung satu per satu."
+        },
+        "giftSpins": {
+          "title": "Putar bansos harian",
+          "desc": "Putar hadiahku sekali hari ini.",
+          "help": "Buka dari kartuku saat menyala. Kalau sudah kamu putar hari ini, yang ini beres."
+        },
+        "bonusSpent": {
+          "title": "Pakai bonus dari Daisu",
+          "desc": "Mainkan game tempat bonusku berada. Sekarang di {{game}}.",
+          "help": "Ambil dari toplesku dan aku tambahkan sedikit ekstra untuk satu game. Bertaruh di sana sekali dan bonusnya membayar lebih dulu dari dompetmu."
+        },
+        "rounds": {
+          "title": "Main {{target}} ronde {{game}}",
+          "desc": "Taruhan berapa pun dihitung.",
+          "help": "Setiap taruhan adalah satu ronde, yang kecil juga. Hanya yang hari ini dihitung, jadi ayo."
+        },
+        "staked": {
+          "title": "Taruhkan {{target}} K₽",
+          "desc": "Totalnya, di mana saja, hari ini.",
+          "help": "Game, kotak, dan adu gacor semuanya dihitung. Terkumpulnya lebih cepat dari yang kamu kira."
+        },
+        "gamesTried": {
+          "title": "Mainkan {{target}} game berbeda",
+          "desc": "Sekali per game cukup.",
+          "help": "Crash, slot, dadu, blackjack, terserah. Satu taruhan di masing-masing {{target}} game berbeda hari ini."
+        }
+      }
+    },
     "back": "Kembali ke Daisu",
     "bonusBubble": "Bonus {{game}}, {{clock}}",
     "bonusHurry": "Main sebelum habis",
@@ -2182,6 +2223,7 @@
     "notRanked": "Tidak masuk peringkat: verifikasi akun Anda untuk bersaing.",
     "suggestion": "Maksud Anda {{email}}?",
     "locked": {
+      "daily": "Anda butuh akun terverifikasi untuk mengklaim permintaan harian.",
       "leaderboard": "Anda butuh akun terverifikasi untuk masuk papan peringkat.",
       "market": "Anda butuh akun terverifikasi untuk berdagang di pasar.",
       "rain": "Anda butuh akun terverifikasi untuk ikut hujan.",
@@ -2228,6 +2270,7 @@
     }
   },
   "limited": {
+    "daily": "Akun Anda dibatasi, jadi Anda tidak bisa mengklaim permintaan harian.",
     "title": "Akun Anda dibatasi",
     "reason": "Alasan: {{reason}}",
     "what": "Anda tetap bisa bermain, tetapi sampai staf mencabut batasannya, Anda tidak bisa berdagang di pasar, menulis di chat, ikut hujan, mendapat hadiah referal, atau masuk papan peringkat.",

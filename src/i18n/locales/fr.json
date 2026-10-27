@@ -528,6 +528,47 @@
     "queuedClickToCancel": "En file (cliquez pour annuler)"
   },
   "daisu": {
+    "daily": {
+      "title": "Demandes du jour",
+      "resets": "Nouvelles dans {{time}}",
+      "goals": {
+        "fullPots": {
+          "title": "Prends un pot plein",
+          "desc": "Attends que mon pot soit plein, puis prends tout.",
+          "help": "Mon pot se remplit en 8 minutes. Prends-le quand il affiche Plein et ça compte, bonus de pot plein en plus."
+        },
+        "casesOpened": {
+          "title": "Ouvre {{target}} caisses",
+          "desc": "N'importe lesquelles, les moins chères comptent aussi.",
+          "help": "Les moins chères comptent autant que les chères, et en ouvrir plusieurs d'un coup compte chacune."
+        },
+        "giftSpins": {
+          "title": "Tourne le cadeau quotidien",
+          "desc": "Tourne mon cadeau une fois aujourd'hui.",
+          "help": "Ouvre-le depuis ma carte quand il s'allume. Si tu l'as déjà tourné aujourd'hui, c'est fait."
+        },
+        "bonusSpent": {
+          "title": "Dépense un bonus de Daisu",
+          "desc": "Joue au jeu où se trouve mon bonus. En ce moment, c'est {{game}}.",
+          "help": "Prends dans mon pot et j'ajoute un petit extra pour un jeu. Mise là-bas une fois et le bonus paie avant ton portefeuille."
+        },
+        "rounds": {
+          "title": "Joue {{target}} manches de {{game}}",
+          "desc": "Toute mise compte.",
+          "help": "Chaque mise est une manche, même les petites. Seules celles d'aujourd'hui comptent, alors vas-y."
+        },
+        "staked": {
+          "title": "Mise {{target}} K₽",
+          "desc": "Au total, sur n'importe quoi, aujourd'hui.",
+          "help": "Jeux, caisses et batailles comptent tous. Ça monte plus vite que tu ne crois."
+        },
+        "gamesTried": {
+          "title": "Joue à {{target}} jeux différents",
+          "desc": "Une mise chacun suffit.",
+          "help": "Crash, machines à sous, dés, blackjack, ce que tu veux. Une mise sur chacun de {{target}} jeux différents aujourd'hui."
+        }
+      }
+    },
     "back": "Retour à Daisu",
     "bonusBubble": "Bonus {{game}}, {{clock}}",
     "bonusHurry": "Jouez avant qu'il expire",
@@ -2182,6 +2223,7 @@
     "notRanked": "Non classé : vérifiez votre compte pour concourir.",
     "suggestion": "Vouliez-vous dire {{email}} ?",
     "locked": {
+      "daily": "Vous avez besoin d'un compte vérifié pour réclamer les demandes du jour.",
       "leaderboard": "Vous avez besoin d'un compte vérifié pour figurer au classement.",
       "market": "Vous avez besoin d'un compte vérifié pour échanger sur le marché.",
       "rain": "Vous avez besoin d'un compte vérifié pour rejoindre la pluie.",
@@ -2228,6 +2270,7 @@
     }
   },
   "limited": {
+    "daily": "Votre compte est limité, vous ne pouvez donc pas réclamer les demandes du jour.",
     "title": "Votre compte est limité",
     "reason": "Motif : {{reason}}",
     "what": "Vous pouvez continuer à jouer, mais tant que l'équipe n'a pas levé la limite, vous ne pouvez pas échanger sur le marché, écrire dans le chat, rejoindre la pluie, gagner des récompenses de parrainage ni figurer au classement.",

@@ -528,6 +528,47 @@
     "queuedClickToCancel": "Na fila (clique para cancelar)"
   },
   "daisu": {
+    "daily": {
+      "title": "Pedidos do dia",
+      "resets": "Novos em {{time}}",
+      "goals": {
+        "fullPots": {
+          "title": "Pegue um pote cheio",
+          "desc": "Espere meu pote encher e pegue tudo.",
+          "help": "Meu pote enche em 8 minutos. Pegue quando estiver Cheio e conta, com o bônus de pote cheio por cima."
+        },
+        "casesOpened": {
+          "title": "Abra {{target}} caixas",
+          "desc": "Quaisquer caixas, as baratas também contam.",
+          "help": "As baratas contam igual às caras, e abrir várias de uma vez conta cada uma."
+        },
+        "giftSpins": {
+          "title": "Gire o presente diário",
+          "desc": "Gire meu presente uma vez hoje.",
+          "help": "Abra pelo meu card quando ele acender. Se você já girou hoje, esse está feito."
+        },
+        "bonusSpent": {
+          "title": "Gaste um bônus da Daisu",
+          "desc": "Jogue o jogo em que está meu bônus. Agora é {{game}}.",
+          "help": "Pegue do meu pote e eu coloco um extra para um jogo. Aposte lá uma vez e o bônus paga antes da sua carteira."
+        },
+        "rounds": {
+          "title": "Jogue {{target}} rodadas de {{game}}",
+          "desc": "Qualquer valor de aposta conta.",
+          "help": "Cada aposta é uma rodada, as pequenas também. Só contam as de hoje, então anda logo."
+        },
+        "staked": {
+          "title": "Aposte {{target}} K₽",
+          "desc": "No total, no que quiser, hoje.",
+          "help": "Jogos, caixas e batalhas contam. Soma mais rápido do que você imagina."
+        },
+        "gamesTried": {
+          "title": "Jogue {{target}} jogos diferentes",
+          "desc": "Uma aposta em cada basta.",
+          "help": "Crash, slots, dados, blackjack, o que você quiser. Uma aposta em cada um de {{target}} jogos diferentes hoje."
+        }
+      }
+    },
     "back": "Voltar para a Daisu",
     "bonusBubble": "Bônus de {{game}}, {{clock}}",
     "bonusHurry": "Jogue antes que acabe",
@@ -2182,6 +2223,7 @@
     "notRanked": "Fora do ranking: verifique sua conta para competir.",
     "suggestion": "Você quis dizer {{email}}?",
     "locked": {
+      "daily": "Você precisa de uma conta verificada para resgatar os pedidos do dia.",
       "leaderboard": "Você precisa de uma conta verificada para aparecer no ranking.",
       "market": "Você precisa de uma conta verificada para negociar no mercado.",
       "rain": "Você precisa de uma conta verificada para participar da chuva.",
@@ -2228,6 +2270,7 @@
     }
   },
   "limited": {
+    "daily": "Sua conta está limitada, então você não pode resgatar os pedidos do dia.",
     "title": "Sua conta está limitada",
     "reason": "Motivo: {{reason}}",
     "what": "Você pode continuar jogando, mas até a equipe remover o limite você não pode negociar no mercado, usar o chat, participar da chuva, ganhar recompensas de indicação nem aparecer no ranking.",

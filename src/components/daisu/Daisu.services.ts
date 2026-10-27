@@ -377,7 +377,7 @@ export const useDaisu = () => {
     : { name: pickName, art: status ? GAME_ART[status.pick] : undefined };
 
   rankRef.current = relationshipRank(missions.roadmap);
-  const missionReady = !!missions.roadmap?.missions.some((m) => m.claimable);
+  const missionReady = !!missions.roadmap?.missions.some((m) => m.claimable) || !!missions.roadmap?.daily?.missions.some((m) => m.claimable);
   const attention = isFull || missionReady || gift.canSpin;
 
   // she speaks once per opening, once there is something to speak about

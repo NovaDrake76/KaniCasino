@@ -528,6 +528,47 @@
     "queuedClickToCancel": "In der Warteschlange (klicken zum Abbrechen)"
   },
   "daisu": {
+    "daily": {
+      "title": "Tagesaufträge",
+      "resets": "Neue in {{time}}",
+      "goals": {
+        "fullPots": {
+          "title": "Nimm einen vollen Topf",
+          "desc": "Warte, bis mein Topf voll ist, und nimm dann alles.",
+          "help": "Mein Topf füllt sich in 8 Minuten. Nimm ihn, wenn Voll dasteht, dann zählt es, mit dem Bonus für den vollen Topf obendrauf."
+        },
+        "casesOpened": {
+          "title": "Öffne {{target}} Kisten",
+          "desc": "Egal welche, billige zählen auch.",
+          "help": "Billige zählen genauso wie teure, und wenn du mehrere auf einmal öffnest, zählt jede einzelne."
+        },
+        "giftSpins": {
+          "title": "Dreh das Tagesgeschenk",
+          "desc": "Dreh heute einmal mein Geschenk.",
+          "help": "Öffne es über meine Karte, wenn es leuchtet. Hast du es heute schon gedreht, ist das hier erledigt."
+        },
+        "bonusSpent": {
+          "title": "Gib einen Daisu-Bonus aus",
+          "desc": "Spiel das Spiel, auf dem mein Bonus liegt. Gerade ist das {{game}}.",
+          "help": "Nimm aus meinem Topf, und ich lege ein kleines Extra für ein Spiel dazu. Setz dort einmal, und der Bonus zahlt vor deinem Wallet."
+        },
+        "rounds": {
+          "title": "Spiele {{target}} Runden {{game}}",
+          "desc": "Jeder Einsatz zählt.",
+          "help": "Jede Wette ist eine Runde, auch kleine. Nur heutige zählen, also los."
+        },
+        "staked": {
+          "title": "Setze {{target}} K₽",
+          "desc": "Insgesamt, egal worauf, heute.",
+          "help": "Spiele, Kisten und Battles zählen alle. Das summiert sich schneller, als du denkst."
+        },
+        "gamesTried": {
+          "title": "Spiele {{target}} verschiedene Spiele",
+          "desc": "Eine Wette pro Spiel reicht.",
+          "help": "Crash, Slots, Würfel, Blackjack, was du willst. Heute je eine Wette bei {{target}} verschiedenen Spielen."
+        }
+      }
+    },
     "back": "Zurück zu Daisu",
     "bonusBubble": "{{game}}-Bonus, {{clock}}",
     "bonusHurry": "Spiel, bevor er abläuft",
@@ -2182,6 +2223,7 @@
     "notRanked": "Nicht gewertet: Verifiziere dein Konto, um mitzumachen.",
     "suggestion": "Meintest du {{email}}?",
     "locked": {
+      "daily": "Du brauchst ein verifiziertes Konto, um Tagesaufträge einzulösen.",
       "leaderboard": "Du brauchst ein verifiziertes Konto, um in der Bestenliste zu stehen.",
       "market": "Du brauchst ein verifiziertes Konto, um auf dem Markt zu handeln.",
       "rain": "Du brauchst ein verifiziertes Konto, um beim Regen mitzumachen.",
@@ -2228,6 +2270,7 @@
     }
   },
   "limited": {
+    "daily": "Dein Konto ist eingeschränkt, deshalb kannst du keine Tagesaufträge einlösen.",
     "title": "Dein Konto ist eingeschränkt",
     "reason": "Grund: {{reason}}",
     "what": "Du kannst weiterspielen, aber bis das Team die Einschränkung aufhebt, kannst du nicht auf dem Markt handeln, im Chat schreiben, beim Regen mitmachen, Empfehlungsprämien verdienen oder in der Bestenliste stehen.",

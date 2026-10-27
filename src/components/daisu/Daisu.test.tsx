@@ -26,10 +26,12 @@ vi.mock("../../services/daisu/DaisuService", () => ({
 
 const getRoadmap = vi.fn();
 const claimRoadmapMission = vi.fn();
+const claimDailyMission = vi.fn();
 vi.mock("../../services/daisu/RoadmapService", () => ({
   ROADMAP_CHANGED_EVENT: "daisu:missions-changed",
   getRoadmap: (...args: unknown[]) => getRoadmap(...args),
   claimRoadmapMission: (...args: unknown[]) => claimRoadmapMission(...args),
+  claimDailyMission: (...args: unknown[]) => claimDailyMission(...args),
 }));
 
 const track = vi.fn();
@@ -487,6 +489,26 @@ describe("daisu in the corner", () => {
 
     fireEvent.click(screen.getByText(/back to daisu/i));
     expect(await screen.findByLabelText("Daisu", { selector: "section" })).toBeTruthy();
+  });
+
+  it("pays a finished daily request in her room, with the chapter left as it was", async () => {
+    const daily = (claimed: boolean) => ({
+      day: "2026-10-27",
+      resetsAt: new Date(Date.now() + 3600000).toISOString(),
+      missions: [mission({ key: "cases", goal: "casesOpened", target: 3, current: 3, reward: 300, complete: true, claimable: !claimed, claimed, game: null })],
+    });
+    getRoadmap.mockResolvedValue({ ...roadmap([mission({ key: "r1-level", goal: "level", target: 5, current: 3, reward: 500 })]), daily: daily(false) });
+    claimDailyMission.mockResolvedValue({ claimed: true, reward: 300, walletBalance: 1400, daily: daily(true) });
+    draw();
+
+    fireEvent.click(await screen.findByRole("button", { name: /0 of 1 missions complete/i }));
+    expect(await screen.findByText("Daily requests")).toBeTruthy();
+    fireEvent.click(await screen.findByRole("button", { name: /^claim/i }));
+
+    await waitFor(() => expect(claimDailyMission).toHaveBeenCalledWith("cases"));
+    await waitFor(() => expect(toogleUserData.mock.calls[0][0].walletBalance).toBe(1400));
+    expect(screen.getByText("Reach level 5")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /^claim/i })).toBeNull();
   });
 
   it("folds into her bubble to show how a mission is done", async () => {
