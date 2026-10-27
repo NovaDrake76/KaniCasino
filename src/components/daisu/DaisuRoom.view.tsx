@@ -6,6 +6,7 @@ import DaisuArt from "./DaisuArt";
 import JarReadout from "./JarReadout";
 import SpeechBubble from "./SpeechBubble";
 import RoadmapPanel from "./roadmap/RoadmapPanel";
+import DailyPanel from "./roadmap/DailyPanel";
 import ShopShelf from "./shop/ShopShelf";
 import OwnedItems from "./shop/OwnedItems";
 import YourBonus from "./YourBonus";
@@ -42,6 +43,7 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
   roadmap,
   claimingMission,
   claimMission,
+  claimDaily,
   helpKey,
   toggleHelp,
   showMe,
@@ -126,6 +128,16 @@ const DaisuRoomView: React.FC<DaisuViewProps> = ({
             </Link>
           )}
           <ShopShelf shop={shop} onPick={pickItem} />
+          {roadmap?.daily && (
+            <DailyPanel
+              daily={roadmap.daily}
+              claimingMission={claimingMission}
+              helpKey={helpKey}
+              bonusGame={bonusGame}
+              onClaim={claimDaily}
+              onHelp={toggleHelp}
+            />
+          )}
           <RoadmapPanel
             roadmap={roadmap}
             claimingMission={claimingMission}

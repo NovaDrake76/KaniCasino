@@ -23,6 +23,7 @@ const ICONS: Record<RoadmapGoal, PixelIconName> = {
   rainsCaught: "drop",
   referrals: "people",
   predictions: "crystal",
+  rounds: "dice",
 };
 
 // a mission's picture: the game's own art when it is about one game, a pixel icon otherwise

@@ -536,6 +536,47 @@
     "queuedClickToCancel": "W kolejce (kliknij, żeby anulować)"
   },
   "daisu": {
+    "daily": {
+      "title": "Prośby na dziś",
+      "resets": "Nowe za {{time}}",
+      "goals": {
+        "fullPots": {
+          "title": "Zbierz pełen słój",
+          "desc": "Poczekaj, aż mój słoik się napełni, i weź wszystko.",
+          "help": "Mój słoik napełnia się przez 8 minut. Kliknij go, kiedy jest pełen, a to się liczy, z bonusem za pełen słoik."
+        },
+        "casesOpened": {
+          "title": "Otwórz skrzynki: {{target}}",
+          "desc": "Dowolne, tanie też się liczą.",
+          "help": "Tanie skrzynki liczą się tak samo jak drogie, a otwieranie paru naraz liczy wszystkie."
+        },
+        "giftSpins": {
+          "title": "Otwórz dzienny prezent",
+          "desc": "Otwórz dziś raz mój prezent.",
+          "help": "Otwórz go z mojej zakładki, kiedy się podświetli. Jeśli już go dziś otworzyłeś, to zadanie jest zrobione."
+        },
+        "bonusSpent": {
+          "title": "Wydaj bonus od Daisu",
+          "desc": "Zagraj w grę, na którą dałam ci bonus. Teraz jest to {{game}}.",
+          "help": "Odbierz coś z mojego słoika, a dorzucę małe co nieco na jedną grę. Obstaw tam raz, a pieniądze pójdą z bonusu, nie z twojego portfela."
+        },
+        "rounds": {
+          "title": "Zagraj w {{game}}: {{target}} rund",
+          "desc": "Każda stawka się liczy.",
+          "help": "Każdy zakład to jedna runda, małe też. Liczą się tylko dzisiejsze, więc do dzieła."
+        },
+        "staked": {
+          "title": "Obstaw K₽ {{target}}",
+          "desc": "Łącznie, na czymkolwiek, dzisiaj.",
+          "help": "Gry, skrzynki i bitwy liczą się wszystkie. Nazbiera się szybciej, niż myślisz."
+        },
+        "gamesTried": {
+          "title": "Zagraj w {{target}} różne gry",
+          "desc": "Jeden zakład na każdej wystarczy.",
+          "help": "Crash, sloty, kości, blackjack, cokolwiek chcesz. Dziś jeden zakład na każdej z {{target}} różnych gier."
+        }
+      }
+    },
     "back": "Wróć do Daisu",
     "bonusBubble": "Bonus na {{game}}, {{clock}}",
     "bonusHurry": "Zagraj, zanim wygaśnie",
@@ -2192,6 +2233,7 @@
     "notRanked": "Poza rankingiem: zweryfikuj konto, żeby rywalizować.",
     "suggestion": "Czy chodziło ci o {{email}}?",
     "locked": {
+      "daily": "Musisz mieć zweryfikowane konto, żeby odebrać nagrody za prośby na dziś.",
       "leaderboard": "Musisz mieć zweryfikowane konto, żeby być w rankingu.",
       "market": "Musisz mieć zweryfikowane konto, żeby handlować na rynku.",
       "rain": "Musisz mieć zweryfikowane konto, żeby dołączyć do deszczu.",
@@ -2238,6 +2280,7 @@
     }
   },
   "limited": {
+    "daily": "Twoje konto jest ograniczone, więc nie możesz odebrać nagród za prośby na dziś.",
     "title": "Twoje konto jest ograniczone",
     "reason": "Powód: {{reason}}",
     "what": "Możesz dalej grać, ale dopóki obsługa nie zdejmie ograniczenia, nie możesz handlować na rynku, pisać na czacie, dołączać do deszczu, dostawać nagród za polecenia ani pojawiać się w rankingu.",
