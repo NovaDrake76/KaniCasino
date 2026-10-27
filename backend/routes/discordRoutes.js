@@ -17,6 +17,7 @@ const { openCase, MAX_PER_OPEN } = require("../games/openCase");
 const { pickFromRanges, TOTAL } = require("../utils/provablyFair");
 const { buildRangeTable } = require("../utils/caseRanges");
 const { sellValue } = require("../utils/itemValue");
+const coupons = require("../utils/coupons");
 
 // how long a link code stays redeemable. long enough to switch to a browser and log in,
 // short enough that a code read off someone else's screen is worthless by the time it lands.
@@ -614,6 +615,17 @@ router.get("/preview/:caseId", botOnly, async (req, res) => {
   } catch (err) {
     console.error("discord preview:", err.message);
     res.status(500).json({ message: "Could not spin that case" });
+  }
+});
+
+// the daily coupon drop. the terms are the server's own, so the bot only says when
+router.post("/coupons", botOnly, async (req, res) => {
+  try {
+    const r = await coupons.drop();
+    res.status(r.code).json(r.body);
+  } catch (err) {
+    console.error("discord coupon:", err.message);
+    res.status(500).json({ message: "Could not drop a coupon" });
   }
 });
 

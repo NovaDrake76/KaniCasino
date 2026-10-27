@@ -182,6 +182,7 @@
     "signUp": "Registrieren"
   },
   "avatarMenu": {
+    "redeem": "Code einlösen",
     "open": "Kontomenü",
     "viewProfile": "Profil ansehen",
     "level": "Level {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Münzwurf-Einsatz",
     "coinflip_refund": "Münzwurf-Rückerstattung",
     "coinflip_win": "Münzwurf-Gewinn",
+    "coupon": "Gutscheincode",
     "crash_bet": "Crash-Einsatz",
     "crash_cashout": "Crash-Auszahlung",
     "crash_refund": "Crash-Rückerstattung",
@@ -515,6 +517,26 @@
     "welcomeToKanicasino": "Willkommen bei KaniCasino!",
     "won": "Gewonnen",
     "yourSessionExpiredPlease": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an."
+  },
+  "coupon": {
+    "title": "Code einlösen",
+    "intro": "Codes gibt es auf unserem Discord. Jeder zahlt K₽ einmal pro Konto, an die ersten Spieler, die ihn nutzen.",
+    "discord": "Tritt dem Discord bei",
+    "label": "Code",
+    "redeem": "Einlösen",
+    "needLogin": "Melde dich an, um diesen Code einzulösen. Er wird eingelöst, sobald du drin bist.",
+    "logIn": "Anmelden",
+    "doneTitle": "Eingelöst",
+    "done": "Deinem Guthaben gutgeschrieben.",
+    "errors": {
+      "unknown": "Diesen Code gibt es nicht. Prüf ihn und versuch es noch einmal.",
+      "already": "Du hast diesen Code schon eingelöst.",
+      "off": "Dieser Code wurde abgeschaltet.",
+      "expired": "Dieser Code ist abgelaufen.",
+      "usedUp": "Zu spät: Dieser Code wurde schon so oft eingelöst wie möglich.",
+      "tooMany": "Zu viele Versuche. Warte ein paar Minuten.",
+      "retry": "Der Code konnte nicht eingelöst werden. Versuch es gleich noch einmal."
+    }
   },
   "crash": {
     "betNextRound": "Einsatz (nächste Runde)",
@@ -2223,6 +2245,7 @@
     "notRanked": "Nicht gewertet: Verifiziere dein Konto, um mitzumachen.",
     "suggestion": "Meintest du {{email}}?",
     "locked": {
+      "coupon": "Du brauchst ein verifiziertes Konto, um Codes einzulösen.",
       "daily": "Du brauchst ein verifiziertes Konto, um Tagesaufträge einzulösen.",
       "leaderboard": "Du brauchst ein verifiziertes Konto, um in der Bestenliste zu stehen.",
       "market": "Du brauchst ein verifiziertes Konto, um auf dem Markt zu handeln.",
@@ -2270,6 +2293,7 @@
     }
   },
   "limited": {
+    "coupon": "Dein Konto ist eingeschränkt, deshalb kannst du keine Codes einlösen.",
     "daily": "Dein Konto ist eingeschränkt, deshalb kannst du keine Tagesaufträge einlösen.",
     "title": "Dein Konto ist eingeschränkt",
     "reason": "Grund: {{reason}}",

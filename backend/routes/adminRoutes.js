@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const router = express.Router();
 const { isAuthenticated, isAdmin } = require("../middleware/authMiddleware");
 const badges = require("../utils/badges");
@@ -14,6 +15,7 @@ const adminStats = require("../utils/adminStats");
 const chat = require("../utils/chat");
 const limits = require("../utils/limits");
 const referrals = require("../utils/referrals");
+const coupons = require("../utils/coupons");
 const { slugify, mintSlug } = require("../utils/slugs");
 
 // the backoffice dashboard: everything is derived from the ledger, ?days= windows it
@@ -456,6 +458,46 @@ router.delete("/chat/:id", isAuthenticated, isAdmin, async (req, res) => {
   const result = await chat.remove(req.params.id);
   if (result.error) return res.status(404).json({ message: "That message is already gone" });
   res.json({ ok: true });
+});
+
+// the newest coupons, the bot's drops and staff's own, with how far each has gone
+router.get("/coupons", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    res.json({ coupons: await coupons.recent() });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// a code of staff's own; leave the code out for a random one
+router.post("/coupons", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    const { amount, maxRedemptions, minutes, code } = req.body || {};
+    const r = await coupons.create({
+      amount: Number(amount),
+      maxRedemptions: Number(maxRedemptions),
+      minutes: Number(minutes),
+      code: code ? String(code) : "",
+      source: "admin",
+      createdBy: req.user._id,
+    });
+    res.status(r.code).json(r.body);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/coupons/:id/disable", isAuthenticated, isAdmin, async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(404).json({ message: "No live coupon with that id" });
+    const r = await coupons.disable(req.params.id);
+    res.status(r.code).json(r.body);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 // limited accounts keep playing but cannot trade, chat, join the rain, earn referrals or rank, until staff lift it

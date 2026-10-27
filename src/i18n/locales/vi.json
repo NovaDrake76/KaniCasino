@@ -182,6 +182,7 @@
     "signUp": "Đăng ký"
   },
   "avatarMenu": {
+    "redeem": "Đổi mã",
     "open": "Menu tài khoản",
     "viewProfile": "Xem hồ sơ",
     "level": "Cấp {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Cược tung đồng xu",
     "coinflip_refund": "Hoàn tiền tung đồng xu",
     "coinflip_win": "Thắng tung đồng xu",
+    "coupon": "Mã phiếu thưởng",
     "crash_bet": "Cược crash",
     "crash_cashout": "Rút tiền crash",
     "crash_refund": "Hoàn tiền crash",
@@ -515,6 +517,26 @@
     "welcomeToKanicasino": "Chào mừng đến KaniCasino!",
     "won": "Thắng",
     "yourSessionExpiredPlease": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+  },
+  "coupon": {
+    "title": "Đổi mã",
+    "intro": "Mã được phát trên Discord của chúng tôi. Mỗi mã trả K₽ một lần cho mỗi tài khoản, cho những người chơi dùng sớm nhất.",
+    "discord": "Tham gia Discord",
+    "label": "Mã",
+    "redeem": "Đổi",
+    "needLogin": "Đăng nhập để đổi mã này. Mã được áp dụng ngay khi bạn đăng nhập.",
+    "logIn": "Đăng nhập",
+    "doneTitle": "Đã đổi",
+    "done": "Đã cộng vào số dư của bạn.",
+    "errors": {
+      "unknown": "Mã này không tồn tại. Kiểm tra lại rồi thử lần nữa.",
+      "already": "Bạn đã đổi mã này rồi.",
+      "off": "Mã này đã bị tắt.",
+      "expired": "Mã này đã hết hạn.",
+      "usedUp": "Muộn rồi: mã này đã được đổi hết lượt.",
+      "tooMany": "Thử quá nhiều lần. Hãy đợi vài phút.",
+      "retry": "Không đổi được mã. Thử lại sau giây lát."
+    }
   },
   "crash": {
     "betNextRound": "Cược (vòng sau)",
@@ -2223,6 +2245,7 @@
     "notRanked": "Chưa được xếp hạng: hãy xác minh tài khoản để thi đấu.",
     "suggestion": "Có phải bạn muốn nhập {{email}}?",
     "locked": {
+      "coupon": "Bạn cần tài khoản đã xác minh để đổi mã.",
       "daily": "Bạn cần tài khoản đã xác minh để nhận thưởng yêu cầu hôm nay.",
       "leaderboard": "Bạn cần tài khoản đã xác minh để lên bảng xếp hạng.",
       "market": "Bạn cần tài khoản đã xác minh để giao dịch ở chợ.",
@@ -2270,6 +2293,7 @@
     }
   },
   "limited": {
+    "coupon": "Tài khoản của bạn bị hạn chế nên không thể đổi mã.",
     "daily": "Tài khoản của bạn bị hạn chế nên không thể nhận thưởng yêu cầu hôm nay.",
     "title": "Tài khoản của bạn bị hạn chế",
     "reason": "Lý do: {{reason}}",

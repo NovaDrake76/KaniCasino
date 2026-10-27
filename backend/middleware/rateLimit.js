@@ -166,6 +166,19 @@ const stillThereLimiter = perUser(10, "Too many answers, slow down a little.", 6
 // the page sends a batch every half minute at most, plus one as a tab closes
 const usageLimiter = perUser(20, "Too many usage batches.", 60 * 1000);
 
+// a code is ten characters from thirty-two, so guessing is hopeless anyway; this stops a script trying, and only a refused code counts
+const couponRedeemLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 10,
+  keyGenerator: (req) => String(req.user._id),
+  skipSuccessfulRequests: true,
+  skip: skipInTests,
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
+  message: { message: "Too many tries. Wait a few minutes.", reason: "tooMany" },
+});
+
 // verification mail on top of the per-account daily cap: one address cannot work through a pile of accounts
 const verifyMailLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -180,6 +193,7 @@ const verifyMailLimiter = rateLimit({
 
 module.exports = {
   artLimiter,
+  couponRedeemLimiter,
   loginLimiter,
   registerLimiter,
   registerDailyLimiter,

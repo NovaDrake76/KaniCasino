@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { FiCheck, FiChevronDown, FiChevronRight, FiSettings } from "react-icons/fi";
+import { FiCheck, FiChevronDown, FiChevronRight, FiSettings, FiTag } from "react-icons/fi";
 import { MdLanguage } from "react-icons/md";
 import { IoMdExit } from "react-icons/io";
 import Avatar, { levelColor } from "../../../Avatar";
@@ -93,6 +93,11 @@ const AvatarMenuView = ({
               </div>
             )}
             <SoundRow />
+            <Link to="/coupon" className={row}>
+              <FiTag className="text-lg text-ink-faint" />
+              <span className="flex-1">{t("avatarMenu.redeem")}</span>
+              <FiChevronRight className="text-ink-faint" />
+            </Link>
             <Link to={settingsPath} className={row}>
               <FiSettings className="text-lg text-ink-faint" />
               <span className="flex-1">{t("settings.title")}</span>

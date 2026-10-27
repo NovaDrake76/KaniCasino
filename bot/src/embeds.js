@@ -1,4 +1,5 @@
-const { EmbedBuilder } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
+const { couponLine } = require("./couponLines");
 
 const SITE = (process.env.SITE_URL || "https://kanicasino.com").replace(/\/$/, "");
 // the domain, derived rather than typed, so a staging SITE_URL never signs itself as
@@ -142,4 +143,29 @@ function linkEmbed(link) {
 const noticeEmbed = (text) =>
   new EmbedBuilder().setColor(NEUTRAL).setDescription(text).setFooter({ text: HOST });
 
-module.exports = { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, SITE, HOST };
+const couponUrl = (code) => `${SITE}/coupon/${encodeURIComponent(code)}`;
+
+// her line above, the facts in the embed; the code is printed as well as linked, so a player on another device can type it in
+function couponMessage(coupon, random = Math.random) {
+  const url = couponUrl(coupon.code);
+  const expires = Math.floor(new Date(coupon.expiresAt).getTime() / 1000);
+  const embed = new EmbedBuilder()
+    .setColor(NEUTRAL)
+    .setTitle(`Coupon: ${num(coupon.amount)} K₽`)
+    .setURL(url)
+    .setDescription(
+      [
+        `The first ${num(coupon.maxRedemptions)} players to redeem it get **${num(coupon.amount)} K₽**, once per account.`,
+        `Code: **${coupon.code}**`,
+        `Expires <t:${expires}:R>. Needs a verified account.`,
+      ].join("\n")
+    )
+    .setFooter({ text: HOST });
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setLabel(`Redeem on ${HOST}`).setStyle(ButtonStyle.Link).setURL(url)
+  );
+  const content = couponLine({ amount: `${num(coupon.amount)} K₽`, max: num(coupon.maxRedemptions) }, random);
+  return { content, embeds: [embed], components: [row] };
+}
+
+module.exports = { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, couponMessage, couponUrl, SITE, HOST };

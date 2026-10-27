@@ -182,6 +182,7 @@
     "signUp": "S'inscrire"
   },
   "avatarMenu": {
+    "redeem": "Utiliser un code",
     "open": "Menu du compte",
     "viewProfile": "Voir le profil",
     "level": "Niveau {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Mise à pile ou face",
     "coinflip_refund": "Remboursement à pile ou face",
     "coinflip_win": "Gain à pile ou face",
+    "coupon": "Code promo",
     "crash_bet": "Mise au crash",
     "crash_cashout": "Encaissement au crash",
     "crash_refund": "Remboursement au crash",
@@ -515,6 +517,26 @@
     "welcomeToKanicasino": "Bienvenue sur KaniCasino !",
     "won": "Gagné",
     "yourSessionExpiredPlease": "Votre session a expiré. Reconnectez-vous."
+  },
+  "coupon": {
+    "title": "Utiliser un code",
+    "intro": "Les codes tombent sur notre Discord. Chacun rapporte des K₽ une fois par compte, aux premiers joueurs qui l'utilisent.",
+    "discord": "Rejoindre le Discord",
+    "label": "Code",
+    "redeem": "Valider",
+    "needLogin": "Connectez-vous pour utiliser ce code. Il passe dès que vous êtes connecté.",
+    "logIn": "Se connecter",
+    "doneTitle": "Code validé",
+    "done": "Ajouté à votre solde.",
+    "errors": {
+      "unknown": "Ce code n'existe pas. Vérifiez-le et réessayez.",
+      "already": "Vous avez déjà utilisé ce code.",
+      "off": "Ce code a été désactivé.",
+      "expired": "Ce code a expiré.",
+      "usedUp": "Trop tard : ce code a déjà été utilisé autant de fois que possible.",
+      "tooMany": "Trop de tentatives. Attendez quelques minutes.",
+      "retry": "Impossible de valider le code. Réessayez dans un instant."
+    }
   },
   "crash": {
     "betNextRound": "Miser (manche suivante)",
@@ -2223,6 +2245,7 @@
     "notRanked": "Non classé : vérifiez votre compte pour concourir.",
     "suggestion": "Vouliez-vous dire {{email}} ?",
     "locked": {
+      "coupon": "Vous avez besoin d'un compte vérifié pour utiliser des codes.",
       "daily": "Vous avez besoin d'un compte vérifié pour réclamer les demandes du jour.",
       "leaderboard": "Vous avez besoin d'un compte vérifié pour figurer au classement.",
       "market": "Vous avez besoin d'un compte vérifié pour échanger sur le marché.",
@@ -2270,6 +2293,7 @@
     }
   },
   "limited": {
+    "coupon": "Votre compte est limité, vous ne pouvez donc pas utiliser de codes.",
     "daily": "Votre compte est limité, vous ne pouvez donc pas réclamer les demandes du jour.",
     "title": "Votre compte est limité",
     "reason": "Motif : {{reason}}",

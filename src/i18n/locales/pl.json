@@ -182,6 +182,7 @@
     "signUp": "Zarejestruj się"
   },
   "avatarMenu": {
+    "redeem": "Wykorzystaj kod",
     "open": "Menu konta",
     "viewProfile": "Zobacz profil",
     "level": "Poziom {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Obstawiono coin flipa",
     "coinflip_refund": "Zwrot za coin flipa",
     "coinflip_win": "Wygrano coin flipa",
+    "coupon": "Kod kuponu",
     "crash_bet": "Postawiono zakład na crashu",
     "crash_cashout": "Wypłata z crasha",
     "crash_refund": "Zwrot za crasha",
@@ -523,6 +525,26 @@
     "welcomeToKanicasino": "Witamy w KaniCasino!",
     "won": "Wygrana",
     "yourSessionExpiredPlease": "Twoja sesja wygasła. Proszę zaloguj się ponownie."
+  },
+  "coupon": {
+    "title": "Wykorzystaj kod",
+    "intro": "Kody pojawiają się na naszym Discordzie. Każdy płaci K₽ raz na konto, pierwszym graczom, którzy go użyją.",
+    "discord": "Dołącz do Discorda",
+    "label": "Kod",
+    "redeem": "Wykorzystaj",
+    "needLogin": "Zaloguj się, żeby wykorzystać ten kod. Zadziała od razu po zalogowaniu.",
+    "logIn": "Zaloguj się",
+    "doneTitle": "Wykorzystano",
+    "done": "Dodano do twojego salda.",
+    "errors": {
+      "unknown": "Taki kod nie istnieje. Sprawdź go i spróbuj ponownie.",
+      "already": "Ten kod został już przez ciebie wykorzystany.",
+      "off": "Ten kod został wyłączony.",
+      "expired": "Ten kod wygasł.",
+      "usedUp": "Za późno: limit użyć tego kodu się wyczerpał.",
+      "tooMany": "Za dużo prób. Poczekaj kilka minut.",
+      "retry": "Nie udało się wykorzystać kodu. Spróbuj ponownie za chwilę."
+    }
   },
   "crash": {
     "betNextRound": "Obstaw (Kolejna runda)",
@@ -2233,6 +2255,7 @@
     "notRanked": "Poza rankingiem: zweryfikuj konto, żeby rywalizować.",
     "suggestion": "Czy chodziło ci o {{email}}?",
     "locked": {
+      "coupon": "Musisz mieć zweryfikowane konto, żeby wykorzystywać kody.",
       "daily": "Musisz mieć zweryfikowane konto, żeby odebrać nagrody za prośby na dziś.",
       "leaderboard": "Musisz mieć zweryfikowane konto, żeby być w rankingu.",
       "market": "Musisz mieć zweryfikowane konto, żeby handlować na rynku.",
@@ -2280,6 +2303,7 @@
     }
   },
   "limited": {
+    "coupon": "Twoje konto jest ograniczone, więc nie możesz wykorzystywać kodów.",
     "daily": "Twoje konto jest ograniczone, więc nie możesz odebrać nagród za prośby na dziś.",
     "title": "Twoje konto jest ograniczone",
     "reason": "Powód: {{reason}}",
