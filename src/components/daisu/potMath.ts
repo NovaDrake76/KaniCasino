@@ -30,6 +30,10 @@ export const kp = (n: number) => `K₽${NBSP}${Math.floor(n).toLocaleString("en-
 export const kpExact = (n: number) =>
   `K₽${NBSP}${n.toLocaleString("en-US", { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })}`;
 
+// whole bets whittle a bonus kept to the cent down to cents that read as K₽ 0, so under K₽ 1 it
+// counts as spent on screen; the next bet still takes it first
+export const showsBonus = (amount: number) => amount >= 1;
+
 // a bonus this close to running out turns amber and she starts counting
 export const EXPIRING_MS = 60000;
 

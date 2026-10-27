@@ -58,6 +58,14 @@ describe("daisu's bonus inside a game", () => {
     expect(screen.getByText(/this bet/i).textContent).toMatch(/K₽\s4\.50 from your bonus, K₽\s5\.50 from your wallet/);
   });
 
+  it("drops the strip once whole bets leave only cents, which the next bet still takes", () => {
+    setPotStatus(pot([{ game: "dice", amount: 0.53, expiresAt: iso(91000), expired: false }]));
+    draw(10);
+
+    expect(screen.queryByText(/dice bonus balance/i)).toBeNull();
+    expect(screen.getByText(/this bet/i).textContent).toMatch(/K₽\s0\.53 from your bonus, K₽\s9\.47 from your wallet/);
+  });
+
   it("keeps out of games the bonus is not for, and out of the way once it has expired", () => {
     setPotStatus(
       pot([
