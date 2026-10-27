@@ -40,32 +40,26 @@ export const useFandomServices = () => {
   const [characterCount, setCharacterCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // the debounced term owns both the query and the url, in one place, so neither can
-  // write back the value the other just wrote
-  useEffect(() => {
-    const id = setTimeout(() => {
-      const trimmed = search.trim();
-      setQuery(trimmed);
-      setSearchParams((prev) => {
-        const params = new URLSearchParams(prev);
-        if ((params.get("q") || "") === trimmed) return params;
-        if (trimmed) params.set("q", trimmed);
-        else params.delete("q");
-        params.delete("page");
-        return params;
-      });
-    }, SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(id);
-  }, [search, setSearchParams]);
-
-  const move = (next: Record<string, string>) => {
+  const move = (next: Record<string, string>, replace = false) => {
     const params = new URLSearchParams(searchParams);
     Object.entries(next).forEach(([key, value]) => {
       if (value) params.set(key, value);
       else params.delete(key);
     });
-    setSearchParams(params);
+    setSearchParams(params, { replace });
   };
+
+  // the debounced term owns both the query and the url; it writes only a changed term, in place,
+  // since every write is a history entry and an unchanged one left the back button doing nothing
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const trimmed = search.trim();
+      setQuery(trimmed);
+      if ((searchParams.get("q") || "") !== trimmed) move({ q: trimmed, page: "" }, true);
+    }, SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, searchParams]);
 
   const selectTab = (next: FandomTab) => move({ tab: next === "contested" ? "" : next, page: "" });
   const goToPage = (next: number) => move({ page: next > 1 ? String(next) : "" });
