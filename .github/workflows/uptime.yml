@@ -1,7 +1,7 @@
 name: API uptime
 
 # scheduled runs only fire from the default branch. the ubuntu runners are US-based,
-# so they enter cloudflare at a non-sydney colo, which is the path that actually breaks.
+# so the probe sees the api from far away, as a distant player does.
 on:
   schedule:
     - cron: '*/5 * * * *'
@@ -9,21 +9,19 @@ on:
 
 jobs:
   probe:
-    name: Probe the API through the tunnel
+    name: Probe the API
     runs-on: ubuntu-latest
     steps:
-      - name: Measure latency from a non-Sydney vantage
+      - name: Measure latency from outside
         env:
-          URL: https://kanicasino.fabrixhosting.com.au/health
+          URL: https://api.kanicasino.com/health
           THRESHOLD: '3'
           SAMPLES: '5'
           DISCORD_WEBHOOK: ${{ secrets.MONITOR_DISCORD_WEBHOOK }}
-          MAINT_TOKEN: ${{ secrets.MAINT_TOKEN }}
         run: |
           set -u
-          # first hit pays the tcp+tls+quic setup, so warm the connection before timing
+          # first hit pays the tcp+tls setup, so warm the connection before timing
           curl -s -m 25 -o /dev/null "$URL" || true
-          ray=$(curl -s -m 25 -D - -o /dev/null "$URL" | tr -d '\r' | awk 'tolower($1)=="cf-ray:"{print $2}')
           bad=0; slow=0; errored=0; worst=0; summary=""; codes=""
           for i in $(seq 1 "$SAMPLES"); do
             resp=$(curl -s -m 25 -o /dev/null -w '%{http_code} %{time_total}' "$URL" || echo '000 25')
@@ -35,39 +33,21 @@ jobs:
             codes="${codes}${code} "
             summary="${summary}try ${i}: http=${code} time=${t}s"$'\n'
           done
-          echo "vantage colo: ${ray:-unknown}"
           printf '%s' "$summary"
           echo "worst=${worst}s threshold=${THRESHOLD}s bad=${bad}/${SAMPLES} (${errored} non-200, ${slow} slow)"
 
           if [ "$bad" -lt 3 ]; then
-            echo "API healthy from ${ray:-?}"
+            echo "API healthy"
             exit 0
           fi
 
           # say which failure it was: a fast non-200 and a 20s stall look identical in a
           # bad count, and they are different problems
-          msg="KaniCasino API bad from ${ray:-?}: ${bad}/${SAMPLES} samples (${errored} non-200 [${codes%% }], ${slow} over ${THRESHOLD}s), worst ${worst}s. Likely the cloudflared tunnel."
+          msg="KaniCasino API bad: ${bad}/${SAMPLES} samples (${errored} non-200 [${codes%% }], ${slow} over ${THRESHOLD}s), worst ${worst}s."
 
-          # ask the origin to re-roll its edge servers. reaching the endpoint at all proves
-          # the origin is up, so the fault is the path between. the api rate limits this to
-          # one restart per 15 min, so a flapping probe cannot cause a restart loop.
-          action="no restart requested (MAINT_TOKEN unset)"
-          if [ -n "${MAINT_TOKEN:-}" ]; then
-            body=$(jq -n --arg r "uptime probe from ${ray:-?}: ${bad}/${SAMPLES} bad" '{reason:$r}')
-            out=$(curl -s -m 30 -o /dev/null -w '%{http_code}' -X POST \
-              -H 'Content-Type: application/json' -H "x-maint-token: ${MAINT_TOKEN}" \
-              -d "$body" https://kanicasino.fabrixhosting.com.au/internal/tunnel-restart || echo 000)
-            case "$out" in
-              202) action="restarted cloudflared" ;;
-              429) action="restart skipped, still within the 15 min cooldown" ;;
-              *)   action="restart request failed (http ${out})" ;;
-            esac
-          fi
-          echo "$action"
-
-          echo "::error::${msg} ${action}."
+          echo "::error::${msg}"
           if [ -n "${DISCORD_WEBHOOK:-}" ]; then
             curl -s -m 15 -H 'Content-Type: application/json' \
-              -d "$(jq -n --arg c "${msg} ${action}." '{content:$c}')" "$DISCORD_WEBHOOK" || true
+              -d "$(jq -n --arg c "${msg}" '{content:$c}')" "$DISCORD_WEBHOOK" || true
           fi
           exit 1
