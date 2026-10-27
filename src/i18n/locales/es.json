@@ -182,6 +182,7 @@
     "signUp": "Registrarse"
   },
   "avatarMenu": {
+    "redeem": "Canjear un código",
     "open": "Menú de la cuenta",
     "viewProfile": "Ver perfil",
     "level": "Nivel {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Apuesta a cara o cruz",
     "coinflip_refund": "Reembolso en cara o cruz",
     "coinflip_win": "Victoria en cara o cruz",
+    "coupon": "Código de cupón",
     "crash_bet": "Apuesta en crash",
     "crash_cashout": "Retiro en crash",
     "crash_refund": "Reembolso en crash",
@@ -515,6 +517,26 @@
     "welcomeToKanicasino": "¡Bienvenido a KaniCasino!",
     "won": "Ganó",
     "yourSessionExpiredPlease": "Tu sesión expiró. Inicia sesión de nuevo."
+  },
+  "coupon": {
+    "title": "Canjear un código",
+    "intro": "Los códigos se publican en nuestro Discord. Cada uno paga K₽ una vez por cuenta, a los primeros jugadores que lo usen.",
+    "discord": "Únete al Discord",
+    "label": "Código",
+    "redeem": "Canjear",
+    "needLogin": "Inicia sesión para canjear este código. Se aplica en cuanto entres.",
+    "logIn": "Iniciar sesión",
+    "doneTitle": "Canjeado",
+    "done": "Añadido a tu saldo.",
+    "errors": {
+      "unknown": "Ese código no existe. Revísalo e inténtalo de nuevo.",
+      "already": "Ya canjeaste ese código.",
+      "off": "Ese código fue desactivado.",
+      "expired": "Ese código ha caducado.",
+      "usedUp": "Demasiado tarde: ese código ya se canjeó todas las veces posibles.",
+      "tooMany": "Demasiados intentos. Espera unos minutos.",
+      "retry": "No se pudo canjear el código. Inténtalo de nuevo en un momento."
+    }
   },
   "crash": {
     "betNextRound": "Apostar (próxima ronda)",
@@ -2223,6 +2245,7 @@
     "notRanked": "Sin clasificar: verifica tu cuenta para competir.",
     "suggestion": "¿Quisiste decir {{email}}?",
     "locked": {
+      "coupon": "Necesitas una cuenta verificada para canjear códigos.",
       "daily": "Necesitas una cuenta verificada para reclamar los encargos del día.",
       "leaderboard": "Necesitas una cuenta verificada para estar en la clasificación.",
       "market": "Necesitas una cuenta verificada para comerciar en el mercado.",
@@ -2270,6 +2293,7 @@
     }
   },
   "limited": {
+    "coupon": "Tu cuenta está limitada, así que no puedes canjear códigos.",
     "daily": "Tu cuenta está limitada, así que no puedes reclamar los encargos del día.",
     "title": "Tu cuenta está limitada",
     "reason": "Motivo: {{reason}}",

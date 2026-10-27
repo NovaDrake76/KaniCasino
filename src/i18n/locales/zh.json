@@ -182,6 +182,7 @@
     "signUp": "注册"
   },
   "avatarMenu": {
+    "redeem": "兑换码",
     "open": "账户菜单",
     "viewProfile": "查看资料",
     "level": "等级 {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "抛硬币投注",
     "coinflip_refund": "抛硬币退款",
     "coinflip_win": "抛硬币赢取",
+    "coupon": "兑换码",
     "crash_bet": "Crash 投注",
     "crash_cashout": "Crash 提现",
     "crash_refund": "Crash 退款",
@@ -515,6 +517,26 @@
     "welcomeToKanicasino": "欢迎来到 KaniCasino！",
     "won": "赢得",
     "yourSessionExpiredPlease": "登录已过期，请重新登录。"
+  },
+  "coupon": {
+    "title": "兑换码",
+    "intro": "兑换码会在我们的 Discord 发放。每个码每个账户只能用一次，先到先得，送 K₽。",
+    "discord": "加入 Discord",
+    "label": "兑换码",
+    "redeem": "兑换",
+    "needLogin": "登录后即可兑换这个码，登录后会立即生效。",
+    "logIn": "登录",
+    "doneTitle": "兑换成功",
+    "done": "已加到你的余额。",
+    "errors": {
+      "unknown": "这个兑换码不存在。请检查后重试。",
+      "already": "你已经兑换过这个码了。",
+      "off": "这个兑换码已被停用。",
+      "expired": "这个兑换码已过期。",
+      "usedUp": "来晚了：这个兑换码已被领完。",
+      "tooMany": "尝试次数太多，请等几分钟。",
+      "retry": "无法兑换这个码，请稍后再试。"
+    }
   },
   "crash": {
     "betNextRound": "投注（下一轮）",
@@ -2223,6 +2245,7 @@
     "notRanked": "未上榜：验证账户后才能参与排名。",
     "suggestion": "你是想输入 {{email}} 吗？",
     "locked": {
+      "coupon": "需要已验证的账户才能兑换。",
       "daily": "需要已验证的账户才能领取今日委托。",
       "leaderboard": "需要已验证的账户才能上排行榜。",
       "market": "需要已验证的账户才能在市场交易。",
@@ -2270,6 +2293,7 @@
     }
   },
   "limited": {
+    "coupon": "你的账户已被限制，因此无法兑换。",
     "daily": "你的账户已被限制，因此无法领取今日委托。",
     "title": "你的账户已被限制",
     "reason": "原因：{{reason}}",

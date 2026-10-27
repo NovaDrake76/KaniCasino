@@ -182,6 +182,7 @@
     "signUp": "Cadastrar"
   },
   "avatarMenu": {
+    "redeem": "Resgatar um código",
     "open": "Menu da conta",
     "viewProfile": "Ver perfil",
     "level": "Nível {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Aposta no cara ou coroa",
     "coinflip_refund": "Reembolso no cara ou coroa",
     "coinflip_win": "Vitória no cara ou coroa",
+    "coupon": "Código de cupom",
     "crash_bet": "Aposta no crash",
     "crash_cashout": "Saque no crash",
     "crash_refund": "Reembolso no crash",
@@ -515,6 +517,26 @@
     "welcomeToKanicasino": "Bem-vindo ao KaniCasino!",
     "won": "Ganhou",
     "yourSessionExpiredPlease": "Sua sessão expirou. Entre novamente."
+  },
+  "coupon": {
+    "title": "Resgatar um código",
+    "intro": "Os códigos saem no nosso Discord. Cada um paga K₽ uma vez por conta, para os primeiros jogadores que usarem.",
+    "discord": "Entrar no Discord",
+    "label": "Código",
+    "redeem": "Resgatar",
+    "needLogin": "Entre na sua conta para resgatar este código. Ele é aplicado assim que você entrar.",
+    "logIn": "Entrar",
+    "doneTitle": "Resgatado",
+    "done": "Adicionado ao seu saldo.",
+    "errors": {
+      "unknown": "Esse código não existe. Confira e tente de novo.",
+      "already": "Você já resgatou esse código.",
+      "off": "Esse código foi desativado.",
+      "expired": "Esse código expirou.",
+      "usedUp": "Tarde demais: esse código já foi resgatado o máximo de vezes.",
+      "tooMany": "Tentativas demais. Espere alguns minutos.",
+      "retry": "Não foi possível resgatar o código. Tente de novo em instantes."
+    }
   },
   "crash": {
     "betNextRound": "Apostar (próxima rodada)",
@@ -2223,6 +2245,7 @@
     "notRanked": "Fora do ranking: verifique sua conta para competir.",
     "suggestion": "Você quis dizer {{email}}?",
     "locked": {
+      "coupon": "Você precisa de uma conta verificada para resgatar códigos.",
       "daily": "Você precisa de uma conta verificada para resgatar os pedidos do dia.",
       "leaderboard": "Você precisa de uma conta verificada para aparecer no ranking.",
       "market": "Você precisa de uma conta verificada para negociar no mercado.",
@@ -2270,6 +2293,7 @@
     }
   },
   "limited": {
+    "coupon": "Sua conta está limitada, então você não pode resgatar códigos.",
     "daily": "Sua conta está limitada, então você não pode resgatar os pedidos do dia.",
     "title": "Sua conta está limitada",
     "reason": "Motivo: {{reason}}",

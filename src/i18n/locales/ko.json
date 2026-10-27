@@ -182,6 +182,7 @@
     "signUp": "회원가입"
   },
   "avatarMenu": {
+    "redeem": "코드 사용",
     "open": "계정 메뉴",
     "viewProfile": "프로필 보기",
     "level": "레벨 {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "동전 던지기 베팅",
     "coinflip_refund": "동전 던지기 환불",
     "coinflip_win": "동전 던지기 승리",
+    "coupon": "쿠폰 코드",
     "crash_bet": "크래시 베팅",
     "crash_cashout": "크래시 캐시아웃",
     "crash_refund": "크래시 환불",
@@ -515,6 +517,26 @@
     "welcomeToKanicasino": "KaniCasino에 오신 것을 환영합니다!",
     "won": "획득",
     "yourSessionExpiredPlease": "세션이 만료되었습니다. 다시 로그인해 주세요."
+  },
+  "coupon": {
+    "title": "코드 사용",
+    "intro": "코드는 공식 Discord에서 나눠 줍니다. 각 코드는 계정당 한 번, 먼저 사용한 플레이어에게 K₽를 지급합니다.",
+    "discord": "Discord 참여하기",
+    "label": "코드",
+    "redeem": "사용",
+    "needLogin": "이 코드를 사용하려면 로그인하세요. 로그인하면 바로 적용됩니다.",
+    "logIn": "로그인",
+    "doneTitle": "사용 완료",
+    "done": "잔액에 추가되었습니다.",
+    "errors": {
+      "unknown": "존재하지 않는 코드입니다. 확인 후 다시 시도하세요.",
+      "already": "이미 사용한 코드입니다.",
+      "off": "비활성화된 코드입니다.",
+      "expired": "만료된 코드입니다.",
+      "usedUp": "늦었습니다. 이 코드는 사용 한도에 도달했습니다.",
+      "tooMany": "시도 횟수가 너무 많습니다. 몇 분 후에 다시 시도하세요.",
+      "retry": "코드를 사용하지 못했습니다. 잠시 후 다시 시도하세요."
+    }
   },
   "crash": {
     "betNextRound": "베팅 (다음 라운드)",
@@ -2223,6 +2245,7 @@
     "notRanked": "순위 제외: 경쟁하려면 계정을 인증하세요.",
     "suggestion": "{{email}}을(를) 말씀하신 건가요?",
     "locked": {
+      "coupon": "코드를 사용하려면 인증된 계정이 필요합니다.",
       "daily": "오늘의 부탁 보상을 받으려면 인증된 계정이 필요합니다.",
       "leaderboard": "리더보드에 오르려면 인증된 계정이 필요합니다.",
       "market": "마켓에서 거래하려면 인증된 계정이 필요합니다.",
@@ -2270,6 +2293,7 @@
     }
   },
   "limited": {
+    "coupon": "계정이 제한되어 코드를 사용할 수 없습니다.",
     "daily": "계정이 제한되어 오늘의 부탁 보상을 받을 수 없습니다.",
     "title": "계정이 제한되었습니다",
     "reason": "사유: {{reason}}",

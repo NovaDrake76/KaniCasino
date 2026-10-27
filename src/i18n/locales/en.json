@@ -182,6 +182,7 @@
     "signUp": "Sign up"
   },
   "avatarMenu": {
+    "redeem": "Redeem a code",
     "open": "Account menu",
     "viewProfile": "View profile",
     "level": "Level {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Coin flip bet",
     "coinflip_refund": "Coin flip refund",
     "coinflip_win": "Coin flip win",
+    "coupon": "Coupon code",
     "crash_bet": "Crash bet",
     "crash_cashout": "Crash cashout",
     "crash_refund": "Crash refund",
@@ -515,6 +517,26 @@
     "welcomeToKanicasino": "Welcome to KaniCasino!",
     "won": "Won",
     "yourSessionExpiredPlease": "Your session expired. Please log in again."
+  },
+  "coupon": {
+    "title": "Redeem a code",
+    "intro": "Codes drop on our Discord. Each one pays K₽ once per account, to the first players who use it.",
+    "discord": "Join the Discord",
+    "label": "Code",
+    "redeem": "Redeem",
+    "needLogin": "Log in to redeem this code. It goes through as soon as you are in.",
+    "logIn": "Log in",
+    "doneTitle": "Redeemed",
+    "done": "Added to your balance.",
+    "errors": {
+      "unknown": "That code does not exist. Check it and try again.",
+      "already": "You already redeemed that code.",
+      "off": "That code was switched off.",
+      "expired": "That code has expired.",
+      "usedUp": "Too late: every redemption of that code is taken.",
+      "tooMany": "Too many tries. Wait a few minutes.",
+      "retry": "Could not redeem the code. Try again in a moment."
+    }
   },
   "crash": {
     "betNextRound": "Bet (Next Round)",
@@ -2223,6 +2245,7 @@
     "notRanked": "Not ranked: verify your account to compete.",
     "suggestion": "Did you mean {{email}}?",
     "locked": {
+      "coupon": "You need a verified account to redeem codes.",
       "daily": "You need a verified account to claim daily requests.",
       "leaderboard": "You need a verified account to be on the leaderboard.",
       "market": "You need a verified account to trade on the market.",
@@ -2270,6 +2293,7 @@
     }
   },
   "limited": {
+    "coupon": "Your account is limited, so you cannot redeem codes.",
     "daily": "Your account is limited, so you cannot claim daily requests.",
     "title": "Your account is limited",
     "reason": "Reason: {{reason}}",

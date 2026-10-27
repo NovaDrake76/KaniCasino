@@ -5,5 +5,7 @@ Allow: /
 Disallow: /profile/
 Disallow: /battles/
 Disallow: /marketplace/item/
+# a coupon link is a code that expires within the hour
+Disallow: /coupon/
 
 Sitemap: https://kanicasino.com/sitemap.xml

@@ -21,6 +21,7 @@ import PredictionsAdmin from "./PredictionsAdmin";
 import AccountPanel from "./AccountPanel";
 import LimitsAdmin from "./LimitsAdmin";
 import ReferralReview from "./ReferralReview";
+import CouponsAdmin from "./CouponsAdmin";
 import { CHART_AMBER, CHART_INDIGO, fillDays } from "./adminSeries";
 
 interface Props {
@@ -82,6 +83,7 @@ const LINE_LABELS: Record<string, string> = {
   referral_commission: "Referral commission",
   ad_reward: "Ad rewards",
   arcade_reward: "Arcade rewards",
+  coupon: "Coupons",
   admin_adjust: "Admin adjustments",
 };
 const label = (type: string) => LINE_LABELS[type] || type.replace(/_/g, " ");
@@ -708,6 +710,11 @@ const BackofficeView: React.FC<Props> = ({
             {tab === "referrals" && (
               <Panel title="Referrals waiting for a review">
                 <ReferralReview openPlayer={openPlayer} />
+              </Panel>
+            )}
+            {tab === "coupons" && (
+              <Panel title="Coupons">
+                <CouponsAdmin />
               </Panel>
             )}
           </>
