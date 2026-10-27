@@ -62,6 +62,8 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
   const { isLogged, openUserFlow } = useContext(UserContext);
   const navigate = useNavigate();
   const isHome = window.location.pathname === "/";
+  // a page opened straight from a link has nothing of ours behind it, so back goes home
+  const goBack = () => (window.history.state?.idx > 0 ? navigate(-1) : navigate("/"));
   // latches on the first open and never resets: the panel keeps its state, and its
   // transition still needs it in the tree after it closes
   const [everOpened, setEverOpened] = useState<boolean>(false);
@@ -174,7 +176,7 @@ const Header: React.FC<Header> = ({ onlineUsers, recentCaseOpenings, notificatio
       {
         !isHome && (
           <div className="px-4 pt-3 pb-1 transition-[padding] duration-200" style={{ paddingLeft: railPad + 16 }}>
-            <div className="flex items-center gap-2 text-[#84819a] cursor-pointer w-fit" onClick={() => navigate(-1)}>
+            <div className="flex items-center gap-2 text-[#84819a] cursor-pointer w-fit" onClick={goBack}>
               <BiArrowBack />
               <span>{i18n.t("header.back")}</span>
             </div>
