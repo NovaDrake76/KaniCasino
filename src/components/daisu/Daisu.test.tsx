@@ -313,6 +313,21 @@ describe("daisu in the corner", () => {
     expect(screen.queryByRole("link", { name: /dice bonus balance/i })).toBeNull();
   });
 
+  it("leaves a bonus whittled down to cents off her card", async () => {
+    getPotStatus.mockResolvedValue(
+      status(CYCLE, {
+        bonuses: [
+          { game: "plinko", amount: 125, expiresAt: iso(45000), expired: false },
+          { game: "hilo", amount: 0.4, expiresAt: iso(91000), expired: false },
+        ],
+      })
+    );
+    draw();
+
+    await ticket(/plinko bonus balance/i);
+    expect(screen.queryByRole("link", { name: /hilo bonus balance/i })).toBeNull();
+  });
+
   it("goes to the bonus game when its ticket is clicked", async () => {
     getPotStatus.mockResolvedValue(status(CYCLE, { bonuses: [{ game: "plinko", amount: 125, expiresAt: iso(200000), expired: false }] }));
     draw();

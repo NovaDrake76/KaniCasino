@@ -1,13 +1,13 @@
 import useGameBonus from "./useGameBonus";
 import BonusTicket from "./BonusTicket";
-import { GAME_NAME_KEYS, clock, kpExact } from "./potMath";
+import { GAME_NAME_KEYS, clock, kpExact, showsBonus } from "./potMath";
 import type { PickGame } from "../../services/daisu/DaisuService";
 import i18n from "../../i18n";
 
 // the strip above a game's bet: her bonus for this game as a ticket, with how long it has left
 export const GameBonusStrip = ({ game, className }: { game: PickGame; className?: string }) => {
   const bonus = useGameBonus(game);
-  if (!bonus) return null;
+  if (!bonus || !showsBonus(bonus.amount)) return null;
   return (
     <div data-tour="game-bonus" className={className}>
       <BonusTicket daisu small bonus={{ name: i18n.t(GAME_NAME_KEYS[game]), art: "", amount: bonus.amount, clock: clock(bonus.msLeft), left: bonus.left, expiring: bonus.expiring }} />
