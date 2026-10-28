@@ -31,6 +31,7 @@ test("the coupon post prints the code and links straight to it", () => {
   assert.match(embed.description, /\*\*K7QX9MPLA2\*\*/);
   assert.match(embed.description, /first 25 players/);
   assert.match(embed.description, /<t:1793106000:R>/);
+  assert.doesNotMatch(embed.description, /verified|once per account/);
   assert.strictEqual(button.url, "https://kanicasino.com/coupon/K7QX9MPLA2");
 });
 
