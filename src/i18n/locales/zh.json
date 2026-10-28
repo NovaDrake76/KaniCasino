@@ -182,6 +182,7 @@
     "signUp": "注册"
   },
   "avatarMenu": {
+    "redeem": "兑换码",
     "open": "账户菜单",
     "viewProfile": "查看资料",
     "level": "等级 {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "抛硬币投注",
     "coinflip_refund": "抛硬币退款",
     "coinflip_win": "抛硬币赢取",
+    "coupon": "兑换码",
     "crash_bet": "Crash 投注",
     "crash_cashout": "Crash 提现",
     "crash_refund": "Crash 退款",
@@ -516,6 +518,26 @@
     "won": "赢得",
     "yourSessionExpiredPlease": "登录已过期，请重新登录。"
   },
+  "coupon": {
+    "title": "兑换码",
+    "intro": "兑换码会在我们的 Discord 发放。每个码每个账户只能用一次，先到先得，送 K₽。",
+    "discord": "加入 Discord",
+    "label": "兑换码",
+    "redeem": "兑换",
+    "needLogin": "登录后即可兑换这个码，登录后会立即生效。",
+    "logIn": "登录",
+    "doneTitle": "兑换成功",
+    "done": "已加到你的余额。",
+    "errors": {
+      "unknown": "这个兑换码不存在。请检查后重试。",
+      "already": "你已经兑换过这个码了。",
+      "off": "这个兑换码已被停用。",
+      "expired": "这个兑换码已过期。",
+      "usedUp": "来晚了：这个兑换码已被领完。",
+      "tooMany": "尝试次数太多，请等几分钟。",
+      "retry": "无法兑换这个码，请稍后再试。"
+    }
+  },
   "crash": {
     "betNextRound": "投注（下一轮）",
     "cashedOutAt": "已在 x{{multiplier}} 提现",
@@ -528,6 +550,47 @@
     "queuedClickToCancel": "排队中（点击取消）"
   },
   "daisu": {
+    "daily": {
+      "title": "今日委托",
+      "resets": "{{time}} 后刷新",
+      "goals": {
+        "fullPots": {
+          "title": "拿一满罐",
+          "desc": "等我的罐子装满，再全部拿走。",
+          "help": "罐子 8 分钟装满。等显示已满再拿就算数，还有满罐奖励。"
+        },
+        "casesOpened": {
+          "title": "开 {{target}} 个箱子",
+          "desc": "什么箱子都行，便宜的也算。",
+          "help": "便宜的和贵的算一样，一次开好几个也会逐个计数。"
+        },
+        "giftSpins": {
+          "title": "转一次每日礼物",
+          "desc": "今天转一次我的礼物。",
+          "help": "它亮起来的时候从我的卡片打开。今天已经转过的话，这个就完成了。"
+        },
+        "bonusSpent": {
+          "title": "用掉一次 Daisu 奖励",
+          "desc": "去玩我奖励所在的游戏。现在是{{game}}。",
+          "help": "从我的罐子里拿，我会多加一点只能在一个游戏里用的奖励。去那里下注一次，奖励会先于你的钱包支付。"
+        },
+        "rounds": {
+          "title": "玩 {{target}} 局{{game}}",
+          "desc": "下注多少都算。",
+          "help": "每次下注算一局，小额也算。只算今天的，快去吧。"
+        },
+        "staked": {
+          "title": "下注 {{target}} K₽",
+          "desc": "今天累计，下什么都行。",
+          "help": "游戏、箱子、对战都算。累积得比你想的快。"
+        },
+        "gamesTried": {
+          "title": "玩 {{target}} 个不同的游戏",
+          "desc": "每个一次就够。",
+          "help": "Crash、老虎机、骰子、21 点，随便你。今天在 {{target}} 个不同的游戏里各下注一次。"
+        }
+      }
+    },
     "back": "回到 Daisu",
     "bonusBubble": "{{game}} 奖励，{{clock}}",
     "bonusHurry": "趁没过期快去玩",
@@ -2182,6 +2245,8 @@
     "notRanked": "未上榜：验证账户后才能参与排名。",
     "suggestion": "你是想输入 {{email}} 吗？",
     "locked": {
+      "coupon": "需要已验证的账户才能兑换。",
+      "daily": "需要已验证的账户才能领取今日委托。",
       "leaderboard": "需要已验证的账户才能上排行榜。",
       "market": "需要已验证的账户才能在市场交易。",
       "rain": "需要已验证的账户才能加入红包池。",
@@ -2228,6 +2293,8 @@
     }
   },
   "limited": {
+    "coupon": "你的账户已被限制，因此无法兑换。",
+    "daily": "你的账户已被限制，因此无法领取今日委托。",
     "title": "你的账户已被限制",
     "reason": "原因：{{reason}}",
     "what": "你可以继续游戏，但在工作人员解除限制之前，你不能在市场交易、在聊天中发言、加入红包池、获得推荐奖励或上排行榜。",

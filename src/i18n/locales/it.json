@@ -182,6 +182,7 @@
     "signUp": "Registrati"
   },
   "avatarMenu": {
+    "redeem": "Riscatta un codice",
     "open": "Menu account",
     "viewProfile": "Vedi profilo",
     "level": "Livello {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Puntata a testa o croce",
     "coinflip_refund": "Rimborso a testa o croce",
     "coinflip_win": "Vincita a testa o croce",
+    "coupon": "Codice coupon",
     "crash_bet": "Puntata al crash",
     "crash_cashout": "Incasso al crash",
     "crash_refund": "Rimborso al crash",
@@ -516,6 +518,26 @@
     "won": "Vinto",
     "yourSessionExpiredPlease": "La sessione è scaduta. Accedi di nuovo."
   },
+  "coupon": {
+    "title": "Riscatta un codice",
+    "intro": "I codici escono sul nostro Discord. Ognuno paga K₽ una volta per account, ai primi giocatori che lo usano.",
+    "discord": "Entra nel Discord",
+    "label": "Codice",
+    "redeem": "Riscatta",
+    "needLogin": "Accedi per riscattare questo codice. Passa appena sei dentro.",
+    "logIn": "Accedi",
+    "doneTitle": "Riscattato",
+    "done": "Aggiunto al tuo saldo.",
+    "errors": {
+      "unknown": "Quel codice non esiste. Controllalo e riprova.",
+      "already": "Hai già riscattato quel codice.",
+      "off": "Quel codice è stato disattivato.",
+      "expired": "Quel codice è scaduto.",
+      "usedUp": "Troppo tardi: quel codice è già stato riscattato tutte le volte possibili.",
+      "tooMany": "Troppi tentativi. Aspetta qualche minuto.",
+      "retry": "Impossibile riscattare il codice. Riprova tra un momento."
+    }
+  },
   "crash": {
     "betNextRound": "Punta (prossimo round)",
     "cashedOutAt": "Incassato a x{{multiplier}}",
@@ -528,6 +550,47 @@
     "queuedClickToCancel": "In coda (clicca per annullare)"
   },
   "daisu": {
+    "daily": {
+      "title": "Richieste del giorno",
+      "resets": "Nuove tra {{time}}",
+      "goals": {
+        "fullPots": {
+          "title": "Prendi un vaso pieno",
+          "desc": "Aspetta che il mio vaso sia pieno, poi prendi tutto.",
+          "help": "Il mio vaso si riempie in 8 minuti. Prendilo quando dice Pieno e conta, con il bonus del vaso pieno sopra."
+        },
+        "casesOpened": {
+          "title": "Apri {{target}} casse",
+          "desc": "Quali vuoi, anche quelle economiche contano.",
+          "help": "Quelle economiche contano come quelle care, e aprirne diverse insieme le conta tutte."
+        },
+        "giftSpins": {
+          "title": "Gira il regalo giornaliero",
+          "desc": "Gira il mio regalo una volta oggi.",
+          "help": "Aprilo dalla mia scheda quando si illumina. Se l'hai già girato oggi, questa è fatta."
+        },
+        "bonusSpent": {
+          "title": "Spendi un bonus di Daisu",
+          "desc": "Gioca al gioco su cui c'è il mio bonus. Adesso è {{game}}.",
+          "help": "Prendi dal mio vaso e aggiungo un piccolo extra per un gioco. Punta lì una volta e il bonus paga prima del tuo portafoglio."
+        },
+        "rounds": {
+          "title": "Gioca {{target}} round a {{game}}",
+          "desc": "Qualsiasi puntata conta.",
+          "help": "Ogni puntata è un round, anche quelle piccole. Contano solo quelle di oggi, quindi muoviti."
+        },
+        "staked": {
+          "title": "Punta {{target}} K₽",
+          "desc": "In totale, su qualsiasi cosa, oggi.",
+          "help": "Giochi, casse e battaglie contano tutti. Si sommano più in fretta di quanto pensi."
+        },
+        "gamesTried": {
+          "title": "Gioca a {{target}} giochi diversi",
+          "desc": "Basta una puntata per ciascuno.",
+          "help": "Crash, slot, dadi, blackjack, quello che vuoi. Una puntata su ciascuno di {{target}} giochi diversi oggi."
+        }
+      }
+    },
     "back": "Torna da Daisu",
     "bonusBubble": "Bonus {{game}}, {{clock}}",
     "bonusHurry": "Gioca prima che scada",
@@ -2182,6 +2245,8 @@
     "notRanked": "Non in classifica: verifica il tuo account per competere.",
     "suggestion": "Intendevi {{email}}?",
     "locked": {
+      "coupon": "Ti serve un account verificato per riscattare i codici.",
+      "daily": "Ti serve un account verificato per riscattare le richieste del giorno.",
       "leaderboard": "Ti serve un account verificato per stare in classifica.",
       "market": "Ti serve un account verificato per commerciare nel mercato.",
       "rain": "Ti serve un account verificato per partecipare alla pioggia.",
@@ -2228,6 +2293,8 @@
     }
   },
   "limited": {
+    "coupon": "Il tuo account è limitato, quindi non puoi riscattare codici.",
+    "daily": "Il tuo account è limitato, quindi non puoi riscattare le richieste del giorno.",
     "title": "Il tuo account è limitato",
     "reason": "Motivo: {{reason}}",
     "what": "Puoi continuare a giocare, ma finché lo staff non rimuove il limite non puoi commerciare nel mercato, scrivere in chat, partecipare alla pioggia, guadagnare premi per gli inviti né stare in classifica.",

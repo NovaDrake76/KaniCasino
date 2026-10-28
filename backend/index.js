@@ -119,6 +119,7 @@ const daisuRoutes = require("./routes/daisuRoutes");
 const arcadeRoutes = require("./routes/arcadeRoutes");
 const usageRoutes = require("./routes/usageRoutes");
 const accountRoutes = require("./routes/accountRoutes");
+const couponRoutes = require("./routes/couponRoutes");
 
 // Connect to MongoDB
 mongoose
@@ -203,6 +204,7 @@ app.use("/discord", discordRoutes);
 app.use("/leaderboard", leaderboardRoutes);
 app.use("/usage", usageRoutes);
 app.use("/account", accountRoutes);
+app.use("/coupons", couponRoutes);
 
 // settle whatever the last shutdown interrupted before dealing anyone in again: a live
 // crash or coin flip round holds real stakes, and until this runs they are unaccounted.

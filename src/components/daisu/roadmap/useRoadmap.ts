@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { claimRoadmapMission, getRoadmap, Roadmap, ROADMAP_CHANGED_EVENT } from "../../../services/daisu/RoadmapService";
+import { claimDailyMission, claimRoadmapMission, getRoadmap, Roadmap, ROADMAP_CHANGED_EVENT } from "../../../services/daisu/RoadmapService";
 import type { Stage } from "../Daisu.types";
 import { track } from "../../../services/usage/usage";
+import { serverNow } from "../../../services/serverClock";
+import { handleAccountLock } from "../../verify/verifyEvents";
 import i18n from "../../../i18n";
 
 interface Args {
@@ -46,13 +48,21 @@ export const useRoadmap = ({ enabled, userId, stage, onClaimed }: Args) => {
     return () => window.removeEventListener(ROADMAP_CHANGED_EVENT, load);
   }, [live, load]);
 
+  // midnight brings new daily requests, so the list is read again once it has passed
+  const resetsAt = roadmap?.daily?.resetsAt;
+  useEffect(() => {
+    if (!live || !resetsAt) return;
+    const t = setTimeout(load, Math.max(0, Date.parse(resetsAt) - serverNow()) + 2000);
+    return () => clearTimeout(t);
+  }, [live, resetsAt, load]);
+
   const claimMission = async (key: string) => {
     if (claiming) return;
     setClaiming(key);
     try {
       const res = await claimRoadmapMission(key);
       seq.current += 1;
-      setRoadmap(res.roadmap);
+      setRoadmap((r) => ({ ...res.roadmap, daily: r?.daily }));
       if (res.claimed) {
         onClaimed(res.reward ?? 0, res.walletBalance);
         if (res.chapterDone) setChapterDone(res.chapterDone);
@@ -67,10 +77,31 @@ export const useRoadmap = ({ enabled, userId, stage, onClaimed }: Args) => {
     }
   };
 
+  const claimDaily = async (key: string) => {
+    if (claiming) return;
+    setClaiming(`daily:${key}`);
+    try {
+      const res = await claimDailyMission(key);
+      seq.current += 1;
+      setRoadmap((r) => (r ? { ...r, daily: res.daily } : r));
+      if (res.claimed) onClaimed(res.reward ?? 0, res.walletBalance);
+    } catch (err: unknown) {
+      const e = err as { response?: { status?: number; data?: { message?: string } } };
+      if (!handleAccountLock(err, "daily")) {
+        track("mission_claim_failed", { mission: `daily:${key}`, status: e?.response?.status ?? 0 });
+        toast.error(e?.response?.data?.message || i18n.t("missions.couldNotClaimReward"), { theme: "dark" });
+      }
+      load();
+    } finally {
+      setClaiming(null);
+    }
+  };
+
   return {
     roadmap,
     claimingMission: claiming,
     claimMission,
+    claimDaily,
     helpKey,
     toggleHelp: (key: string) => {
       if (helpKey !== key) track("mission_help", { mission: key });

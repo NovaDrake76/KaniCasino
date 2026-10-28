@@ -27,6 +27,7 @@ const LEDGER_TYPES = {
   daysPlayed: STAKE_TYPES,
   bigWin: GAME_WINS,
   rainsCaught: [TX.RAIN_PAYOUT],
+  rounds: GAME_BETS,
 };
 // only a page knows it was looked at, so these are the goals a page may report
 const VISIT_GOALS = ["collectionVisits"];
@@ -105,6 +106,8 @@ async function ledgerSince(userId, since, goals, head = null) {
     daysPlayed: new Set(of(STAKE_TYPES).flatMap((r) => r.days)).size,
     bigWin: of(GAME_WINS).reduce((m, r) => Math.max(m, r.max || 0), 0),
     rainsCaught: sum([TX.RAIN_PAYOUT], "count"),
+    // per bet type, summed since a folded opening day adds its head as a second row of the same type; a blackjack hand is one round however many doubles and splits it took
+    rounds: of(GAME_BETS).reduce((by, r) => ({ ...by, [r._id]: (by[r._id] || 0) + ((r._id === TX.BLACKJACK_BET ? r.base : r.count) || 0) }), {}),
   };
 }
 

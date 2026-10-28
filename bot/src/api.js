@@ -80,4 +80,6 @@ module.exports = {
   // the interaction id is what stops one command charging twice if the gateway replays it
   openCase: (discordId, interactionId, caseId, quantity) =>
     post("/discord/open", { discordId, interactionId, caseId, quantity }),
+  // the server sets the amount, the cap and the clock; the bot only asks for today's drop
+  dropCoupon: () => post("/discord/coupons"),
 };

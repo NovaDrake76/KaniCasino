@@ -6,7 +6,7 @@ export const VERIFY_OPEN_EVENT = "verify:open";
 // every screen that runs into the lock opens the same panel
 export const openVerify = () => window.dispatchEvent(new CustomEvent(VERIFY_OPEN_EVENT));
 
-export type VerifyFeature = "leaderboard" | "market" | "rain" | "license";
+export type VerifyFeature = "leaderboard" | "market" | "rain" | "license" | "daily" | "coupon";
 
 // a request the server turned down because of the account itself: unverified gets the way through, limited gets why
 export const handleAccountLock = (err: unknown, feature: VerifyFeature | "referrals"): boolean => {

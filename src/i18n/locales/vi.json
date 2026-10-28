@@ -182,6 +182,7 @@
     "signUp": "Đăng ký"
   },
   "avatarMenu": {
+    "redeem": "Đổi mã",
     "open": "Menu tài khoản",
     "viewProfile": "Xem hồ sơ",
     "level": "Cấp {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Cược tung đồng xu",
     "coinflip_refund": "Hoàn tiền tung đồng xu",
     "coinflip_win": "Thắng tung đồng xu",
+    "coupon": "Mã phiếu thưởng",
     "crash_bet": "Cược crash",
     "crash_cashout": "Rút tiền crash",
     "crash_refund": "Hoàn tiền crash",
@@ -516,6 +518,26 @@
     "won": "Thắng",
     "yourSessionExpiredPlease": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
   },
+  "coupon": {
+    "title": "Đổi mã",
+    "intro": "Mã được phát trên Discord của chúng tôi. Mỗi mã trả K₽ một lần cho mỗi tài khoản, cho những người chơi dùng sớm nhất.",
+    "discord": "Tham gia Discord",
+    "label": "Mã",
+    "redeem": "Đổi",
+    "needLogin": "Đăng nhập để đổi mã này. Mã được áp dụng ngay khi bạn đăng nhập.",
+    "logIn": "Đăng nhập",
+    "doneTitle": "Đã đổi",
+    "done": "Đã cộng vào số dư của bạn.",
+    "errors": {
+      "unknown": "Mã này không tồn tại. Kiểm tra lại rồi thử lần nữa.",
+      "already": "Bạn đã đổi mã này rồi.",
+      "off": "Mã này đã bị tắt.",
+      "expired": "Mã này đã hết hạn.",
+      "usedUp": "Muộn rồi: mã này đã được đổi hết lượt.",
+      "tooMany": "Thử quá nhiều lần. Hãy đợi vài phút.",
+      "retry": "Không đổi được mã. Thử lại sau giây lát."
+    }
+  },
   "crash": {
     "betNextRound": "Cược (vòng sau)",
     "cashedOutAt": "Đã rút tại x{{multiplier}}",
@@ -528,6 +550,47 @@
     "queuedClickToCancel": "Đang xếp hàng (bấm để huỷ)"
   },
   "daisu": {
+    "daily": {
+      "title": "Yêu cầu hôm nay",
+      "resets": "Mới sau {{time}}",
+      "goals": {
+        "fullPots": {
+          "title": "Lấy một hũ đầy",
+          "desc": "Đợi hũ của tôi đầy rồi lấy hết.",
+          "help": "Hũ của tôi đầy sau 8 phút. Lấy khi nó hiện Đầy là được tính, kèm thưởng hũ đầy."
+        },
+        "casesOpened": {
+          "title": "Mở {{target}} hòm",
+          "desc": "Hòm nào cũng được, hòm rẻ cũng tính.",
+          "help": "Hòm rẻ tính như hòm đắt, và mở nhiều hòm một lúc thì tính từng hòm."
+        },
+        "giftSpins": {
+          "title": "Quay quà hằng ngày",
+          "desc": "Quay quà của tôi một lần hôm nay.",
+          "help": "Mở nó từ thẻ của tôi khi nó sáng lên. Nếu hôm nay bạn đã quay rồi thì cái này xong."
+        },
+        "bonusSpent": {
+          "title": "Dùng một phần thưởng của Daisu",
+          "desc": "Chơi trò mà phần thưởng của tôi đang nằm ở đó. Giờ là {{game}}.",
+          "help": "Lấy từ hũ của tôi và tôi thêm một chút cho một trò. Cược ở đó một lần là phần thưởng trả trước cả ví của bạn."
+        },
+        "rounds": {
+          "title": "Chơi {{target}} ván {{game}}",
+          "desc": "Cược bao nhiêu cũng tính.",
+          "help": "Mỗi lần cược là một ván, cược nhỏ cũng vậy. Chỉ tính hôm nay, nên bắt đầu đi."
+        },
+        "staked": {
+          "title": "Cược {{target}} K₽",
+          "desc": "Tổng cộng, vào bất cứ thứ gì, hôm nay.",
+          "help": "Trò chơi, hòm và đấu hòm đều tính. Cộng dồn nhanh hơn bạn nghĩ."
+        },
+        "gamesTried": {
+          "title": "Chơi {{target}} trò khác nhau",
+          "desc": "Mỗi trò một lần là đủ.",
+          "help": "Crash, slots, xúc xắc, blackjack, trò nào cũng được. Hôm nay cược mỗi trò một lần trong {{target}} trò khác nhau."
+        }
+      }
+    },
     "back": "Quay lại Daisu",
     "bonusBubble": "Thưởng {{game}}, {{clock}}",
     "bonusHurry": "Chơi trước khi hết hạn",
@@ -2182,6 +2245,8 @@
     "notRanked": "Chưa được xếp hạng: hãy xác minh tài khoản để thi đấu.",
     "suggestion": "Có phải bạn muốn nhập {{email}}?",
     "locked": {
+      "coupon": "Bạn cần tài khoản đã xác minh để đổi mã.",
+      "daily": "Bạn cần tài khoản đã xác minh để nhận thưởng yêu cầu hôm nay.",
       "leaderboard": "Bạn cần tài khoản đã xác minh để lên bảng xếp hạng.",
       "market": "Bạn cần tài khoản đã xác minh để giao dịch ở chợ.",
       "rain": "Bạn cần tài khoản đã xác minh để tham gia mưa.",
@@ -2228,6 +2293,8 @@
     }
   },
   "limited": {
+    "coupon": "Tài khoản của bạn bị hạn chế nên không thể đổi mã.",
+    "daily": "Tài khoản của bạn bị hạn chế nên không thể nhận thưởng yêu cầu hôm nay.",
     "title": "Tài khoản của bạn bị hạn chế",
     "reason": "Lý do: {{reason}}",
     "what": "Bạn vẫn có thể chơi tiếp, nhưng cho đến khi đội ngũ gỡ hạn chế, bạn không thể giao dịch ở chợ, chat, tham gia mưa, nhận thưởng giới thiệu hay lên bảng xếp hạng.",

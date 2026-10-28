@@ -174,6 +174,31 @@ export const liftLimit = async (id: string): Promise<{ limited: null }> =>
 
 export const getLimitedAccounts = async (): Promise<AdminLimitedRow[]> => (await api.get("/admin/limits")).data.accounts;
 
+export interface AdminCoupon {
+  id: string;
+  code: string;
+  amount: number;
+  redeemed: number;
+  maxRedemptions: number;
+  expiresAt: string;
+  disabledAt: string | null;
+  source: "discord" | "admin";
+  createdAt: string;
+}
+
+export interface NewCoupon {
+  amount: number;
+  maxRedemptions: number;
+  minutes: number;
+  code?: string;
+}
+
+export const getCoupons = async (): Promise<AdminCoupon[]> => (await api.get("/admin/coupons")).data.coupons;
+
+export const createCoupon = async (body: NewCoupon): Promise<AdminCoupon> => (await api.post("/admin/coupons", body)).data;
+
+export const disableCoupon = async (id: string): Promise<AdminCoupon> => (await api.post(`/admin/coupons/${id}/disable`)).data;
+
 export interface AdminMarket {
   _id: string;
   slug: string;

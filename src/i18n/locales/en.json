@@ -182,6 +182,7 @@
     "signUp": "Sign up"
   },
   "avatarMenu": {
+    "redeem": "Redeem a code",
     "open": "Account menu",
     "viewProfile": "View profile",
     "level": "Level {{n}}",
@@ -239,6 +240,7 @@
     "coinflip_bet": "Coin flip bet",
     "coinflip_refund": "Coin flip refund",
     "coinflip_win": "Coin flip win",
+    "coupon": "Coupon code",
     "crash_bet": "Crash bet",
     "crash_cashout": "Crash cashout",
     "crash_refund": "Crash refund",
@@ -516,6 +518,26 @@
     "won": "Won",
     "yourSessionExpiredPlease": "Your session expired. Please log in again."
   },
+  "coupon": {
+    "title": "Redeem a code",
+    "intro": "Codes drop on our Discord. Each one pays K₽ once per account, to the first players who use it.",
+    "discord": "Join the Discord",
+    "label": "Code",
+    "redeem": "Redeem",
+    "needLogin": "Log in to redeem this code. It goes through as soon as you are in.",
+    "logIn": "Log in",
+    "doneTitle": "Redeemed",
+    "done": "Added to your balance.",
+    "errors": {
+      "unknown": "That code does not exist. Check it and try again.",
+      "already": "You already redeemed that code.",
+      "off": "That code was switched off.",
+      "expired": "That code has expired.",
+      "usedUp": "Too late: every redemption of that code is taken.",
+      "tooMany": "Too many tries. Wait a few minutes.",
+      "retry": "Could not redeem the code. Try again in a moment."
+    }
+  },
   "crash": {
     "betNextRound": "Bet (Next Round)",
     "cashedOutAt": "Cashed Out at x{{multiplier}}",
@@ -528,6 +550,47 @@
     "queuedClickToCancel": "Queued (click to cancel)"
   },
   "daisu": {
+    "daily": {
+      "title": "Daily requests",
+      "resets": "New ones in {{time}}",
+      "goals": {
+        "fullPots": {
+          "title": "Take a full pot",
+          "desc": "Wait for my jar to fill, then take all of it.",
+          "help": "My jar fills over 8 minutes. Take it when it says Full and it counts, with the full-pot bonus on top."
+        },
+        "casesOpened": {
+          "title": "Open {{target}} cases",
+          "desc": "Any cases, cheap ones count too.",
+          "help": "Cheap ones count the same as expensive ones, and opening several at once counts each one."
+        },
+        "giftSpins": {
+          "title": "Spin the daily gift",
+          "desc": "Spin my gift once today.",
+          "help": "Open it from my card when it lights up. If you already spun it today, this one is done."
+        },
+        "bonusSpent": {
+          "title": "Spend a Daisu bonus",
+          "desc": "Play the game my bonus is on. Right now that's {{game}}.",
+          "help": "Take from my jar and I add a little extra for one game. Bet there once and the bonus pays before your wallet does."
+        },
+        "rounds": {
+          "title": "Play {{target}} rounds of {{game}}",
+          "desc": "Any bet size counts.",
+          "help": "Every bet is a round, small ones too. Only today's count, so get going."
+        },
+        "staked": {
+          "title": "Bet K₽ {{target}}",
+          "desc": "In total, on anything, today.",
+          "help": "Games, cases and battles all count. It adds up faster than you think."
+        },
+        "gamesTried": {
+          "title": "Play {{target}} different games",
+          "desc": "One bet on each is enough.",
+          "help": "Crash, slots, dice, blackjack, whatever you like. One bet each on {{target}} different games today."
+        }
+      }
+    },
     "back": "Back to Daisu",
     "bonusBubble": "{{game}} bonus, {{clock}}",
     "bonusHurry": "Play before it runs out",
@@ -2182,6 +2245,8 @@
     "notRanked": "Not ranked: verify your account to compete.",
     "suggestion": "Did you mean {{email}}?",
     "locked": {
+      "coupon": "You need a verified account to redeem codes.",
+      "daily": "You need a verified account to claim daily requests.",
       "leaderboard": "You need a verified account to be on the leaderboard.",
       "market": "You need a verified account to trade on the market.",
       "rain": "You need a verified account to join the rain.",
@@ -2228,6 +2293,8 @@
     }
   },
   "limited": {
+    "coupon": "Your account is limited, so you cannot redeem codes.",
+    "daily": "Your account is limited, so you cannot claim daily requests.",
     "title": "Your account is limited",
     "reason": "Reason: {{reason}}",
     "what": "You can keep playing, but until staff lift the limit you cannot trade on the market, chat, join the rain, earn referral rewards or appear on the leaderboard.",

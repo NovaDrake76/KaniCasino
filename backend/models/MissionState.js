@@ -31,6 +31,13 @@ const MissionStateSchema = new mongoose.Schema(
       // the opening day's rows after openedAt, kept once the ledger folds that day (utils/ledgerDays.js)
       head: { type: mongoose.Schema.Types.Mixed },
     },
+    // her daily requests: the utc day the claims belong to, so a new day starts them over, and the level
+    // that day's rewards and targets were sized at, pinned on the day's first look
+    daily: {
+      day: String,
+      claimed: { type: [String], default: undefined },
+      level: Number,
+    },
   },
   { timestamps: true }
 );

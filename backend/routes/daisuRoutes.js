@@ -9,6 +9,7 @@ const { potClaimLimiter, stillThereLimiter } = require("../middleware/rateLimit"
 const activity = require("../utils/activity");
 const stillThere = require("../utils/stillThere");
 const roadmap = require("../utils/roadmap");
+const daily = require("../utils/dailyMissions");
 const shop = require("../utils/shop");
 const { GOLDEN_TICKET_SHARE } = require("../utils/shopCatalog");
 
@@ -189,7 +190,8 @@ router.post("/here", ...gate, (req, res) => {
 
 router.get("/missions", ...gate, async (req, res) => {
   try {
-    res.json(await roadmap.viewFor(req.user));
+    const [chapters, today] = await Promise.all([roadmap.viewFor(req.user), daily.viewFor(req.user)]);
+    res.json({ ...chapters, daily: today });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -199,6 +201,16 @@ router.get("/missions", ...gate, async (req, res) => {
 router.post("/missions/visit", ...gate, async (req, res) => {
   try {
     const r = await roadmap.visit(req.user, req.body && req.body.goal);
+    res.status(r.code).json(r.body);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/missions/daily/:key/claim", ...gate, async (req, res) => {
+  try {
+    const r = await daily.claim(req.user, String(req.params.key));
     res.status(r.code).json(r.body);
   } catch (err) {
     console.error(err);

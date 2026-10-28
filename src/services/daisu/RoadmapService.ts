@@ -24,7 +24,8 @@ export type RoadmapGoal =
   | "bigWin"
   | "rainsCaught"
   | "referrals"
-  | "predictions";
+  | "predictions"
+  | "rounds";
 
 export interface RoadmapMission {
   key: string;
@@ -43,6 +44,17 @@ export interface RoadmapPreview {
   missions: Pick<RoadmapMission, "key" | "goal" | "target" | "reward">[];
 }
 
+// a daily request is a mission like any other; the rounds ones name the game they are for
+export interface DailyMission extends RoadmapMission {
+  game: string | null;
+}
+
+export interface Daily {
+  day: string;
+  resetsAt: string;
+  missions: DailyMission[];
+}
+
 export interface Roadmap {
   chapter: number;
   chapters: number;
@@ -50,6 +62,7 @@ export interface Roadmap {
   bonus: number;
   missions: RoadmapMission[];
   next: RoadmapPreview | null;
+  daily?: Daily;
 }
 
 export interface RoadmapClaim {
@@ -68,6 +81,19 @@ export async function getRoadmap(): Promise<Roadmap> {
 
 export async function claimRoadmapMission(key: string): Promise<RoadmapClaim> {
   const res = await api.post(`/daisu/missions/${key}/claim`);
+  return res.data;
+}
+
+export interface DailyClaim {
+  claimed: boolean;
+  alreadyClaimed?: boolean;
+  reward?: number;
+  walletBalance?: number;
+  daily: Daily;
+}
+
+export async function claimDailyMission(key: string): Promise<DailyClaim> {
+  const res = await api.post(`/daisu/missions/daily/${key}/claim`);
   return res.data;
 }
 

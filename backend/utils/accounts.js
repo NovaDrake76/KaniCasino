@@ -23,6 +23,7 @@ const COUNTERPARTY_FOR_TYPE = {
   ad_reward: MINT, // KP printed against outside ad revenue
   shop_purchase: MINT, // an unlock from daisu's shop: the KP leaves circulation and buys only the feature
   arcade_reward: MINT, // a solved daily halo, paid once a day
+  coupon: MINT, // a code dropped on discord or made in the backoffice
 
   referral_commission: HOUSE, // the house shares its edge with the affiliate
   leaderboard_prize: HOUSE, // rakeback: the daily board pays out of the edge it measures

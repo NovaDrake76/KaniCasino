@@ -4,7 +4,7 @@ import { GAME_PLAYED_EVENT } from "../../services/api";
 import { answerStillThere, claimPot, getPotStatus, PotStatus } from "../../services/daisu/DaisuService";
 import { serverNow } from "../../services/serverClock";
 import { useGiftStatus } from "../header/useGiftReady";
-import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, takeBetween } from "./potMath";
+import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, showsBonus, takeBetween } from "./potMath";
 import { greetingFor, lineKey, Mood, openingMood, pokeMood, relationshipRank } from "./daisuLines";
 import { setPotStatus, usePotStatus } from "./potStore";
 import { DAISU_STAGE_EVENT, emitJarTaken, emitPoked, SHOP_OPEN_EVENT } from "./tour/tourEvents";
@@ -347,6 +347,7 @@ export const useDaisu = () => {
   const ttlMs = status?.creditTtlMs ?? cycleMs;
   const bonuses: BonusView[] = status
     ? status.bonuses
+        .filter((b) => showsBonus(b.amount))
         .map((b) => {
           const msLeft = b.expiresAt ? Math.max(0, Date.parse(b.expiresAt) - now) : 0;
           const expired = b.expired || msLeft <= 0;
@@ -376,7 +377,7 @@ export const useDaisu = () => {
     : { name: pickName, art: status ? GAME_ART[status.pick] : undefined };
 
   rankRef.current = relationshipRank(missions.roadmap);
-  const missionReady = !!missions.roadmap?.missions.some((m) => m.claimable);
+  const missionReady = !!missions.roadmap?.missions.some((m) => m.claimable) || !!missions.roadmap?.daily?.missions.some((m) => m.claimable);
   const attention = isFull || missionReady || gift.canSpin;
 
   // she speaks once per opening, once there is something to speak about
