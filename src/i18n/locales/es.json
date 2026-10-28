@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "Canjear un código",
-    "intro": "Los códigos se publican en nuestro Discord. Cada uno paga K₽ una vez por cuenta, a los primeros jugadores que lo usen.",
+    "intro": "Los códigos se publican en nuestro Discord.",
     "discord": "Únete al Discord",
     "label": "Código",
     "redeem": "Canjear",

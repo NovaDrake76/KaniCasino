@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "兑换码",
-    "intro": "兑换码会在我们的 Discord 发放。每个码每个账户只能用一次，先到先得，送 K₽。",
+    "intro": "兑换码会在我们的 Discord 发放。",
     "discord": "加入 Discord",
     "label": "兑换码",
     "redeem": "兑换",

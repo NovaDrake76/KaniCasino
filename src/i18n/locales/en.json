@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "Redeem a code",
-    "intro": "Codes drop on our Discord. Each one pays K₽ once per account, to the first players who use it.",
+    "intro": "Codes drop on our Discord.",
     "discord": "Join the Discord",
     "label": "Code",
     "redeem": "Redeem",

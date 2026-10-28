@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "コードを使う",
-    "intro": "コードは公式Discordで配布されます。各コードはアカウントごとに一度だけ、先着のプレイヤーにK₽を付与します。",
+    "intro": "コードは公式Discordで配布されます。",
     "discord": "Discordに参加する",
     "label": "コード",
     "redeem": "使う",

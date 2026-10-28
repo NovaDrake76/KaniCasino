@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "Riscatta un codice",
-    "intro": "I codici escono sul nostro Discord. Ognuno paga K₽ una volta per account, ai primi giocatori che lo usano.",
+    "intro": "I codici escono sul nostro Discord.",
     "discord": "Entra nel Discord",
     "label": "Codice",
     "redeem": "Riscatta",

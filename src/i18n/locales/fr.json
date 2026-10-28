@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "Utiliser un code",
-    "intro": "Les codes tombent sur notre Discord. Chacun rapporte des K₽ une fois par compte, aux premiers joueurs qui l'utilisent.",
+    "intro": "Les codes tombent sur notre Discord.",
     "discord": "Rejoindre le Discord",
     "label": "Code",
     "redeem": "Valider",
