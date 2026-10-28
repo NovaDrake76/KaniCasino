@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "Đổi mã",
-    "intro": "Mã được phát trên Discord của chúng tôi. Mỗi mã trả K₽ một lần cho mỗi tài khoản, cho những người chơi dùng sớm nhất.",
+    "intro": "Mã được phát trên Discord của chúng tôi.",
     "discord": "Tham gia Discord",
     "label": "Mã",
     "redeem": "Đổi",

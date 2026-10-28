@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "Code einlösen",
-    "intro": "Codes gibt es auf unserem Discord. Jeder zahlt K₽ einmal pro Konto, an die ersten Spieler, die ihn nutzen.",
+    "intro": "Codes gibt es auf unserem Discord.",
     "discord": "Tritt dem Discord bei",
     "label": "Code",
     "redeem": "Einlösen",

@@ -520,7 +520,7 @@
   },
   "coupon": {
     "title": "Resgatar um código",
-    "intro": "Os códigos saem no nosso Discord. Cada um paga K₽ uma vez por conta, para os primeiros jogadores que usarem.",
+    "intro": "Os códigos saem no nosso Discord.",
     "discord": "Entrar no Discord",
     "label": "Código",
     "redeem": "Resgatar",
