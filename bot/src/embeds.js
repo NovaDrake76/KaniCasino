@@ -155,9 +155,9 @@ function couponMessage(coupon, random = Math.random) {
     .setURL(url)
     .setDescription(
       [
-        `The first ${num(coupon.maxRedemptions)} players to redeem it get **${num(coupon.amount)} K₽**, once per account.`,
+        `The first ${num(coupon.maxRedemptions)} players to redeem it get **${num(coupon.amount)} K₽**.`,
         `Code: **${coupon.code}**`,
-        `Expires <t:${expires}:R>. Needs a verified account.`,
+        `Expires <t:${expires}:R>.`,
       ].join("\n")
     )
     .setFooter({ text: HOST });
