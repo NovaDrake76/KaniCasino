@@ -196,9 +196,7 @@ const Home = () => {
             recommended.length > 0 && (
               <CaseListing
                 name={i18n.t("home.recommendedCases")}
-                description={i18n.t(
-                  isNewCase(recommended[0]._id) ? "home.newCasesThenMostOpened" : "home.whatEveryoneIsOpening"
-                )}
+                description={isNewCase(recommended[0]._id) ? i18n.t("home.newCasesThenMostOpened") : undefined}
                 cases={recommended}
                 sectionId={TOP_CASES_ID}
                 eager

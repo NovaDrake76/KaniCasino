@@ -1816,8 +1816,7 @@
     "tryYourLuckNow": "Teste sua sorte agora!",
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Caixas de Uma Musume",
-    "upgrade": "melhorar",
-    "whatEveryoneIsOpening": "O que todo mundo está abrindo agora."
+    "upgrade": "melhorar"
   },
   "leaderboard": {
     "title": "Ranking Diário",
@@ -1887,7 +1886,6 @@
     "bestBuyOrder": "Melhor ordem de compra",
     "boughtInstantly": "Comprou {{filled}} na hora",
     "boughtNowRest": "Comprou {{filled}} agora, {{left}} ficaram como ordem de compra",
-    "buyFromOtherPlayers": "Compre de outros jogadores ou crie uma ordem de compra e deixe o mercado vir até você.",
     "buyOrderPlaced": "Ordem de compra criada",
     "buyOrders": "Ordens de compra",
     "chargedNowUpTo": "Cobrado agora, até",

@@ -1816,8 +1816,7 @@
     "tryYourLuckNow": "지금 운을 시험해 보세요!",
     "umaMusume": "우마무스메",
     "umaMusumeCases": "우마무스메 케이스",
-    "upgrade": "업그레이드",
-    "whatEveryoneIsOpening": "지금 다들 열고 있는 것."
+    "upgrade": "업그레이드"
   },
   "leaderboard": {
     "title": "일일 리더보드",
@@ -1887,7 +1886,6 @@
     "bestBuyOrder": "최고 매수 주문",
     "boughtInstantly": "{{filled}}개를 즉시 구매했습니다",
     "boughtNowRest": "{{filled}}개를 즉시 구매했고, {{left}}개는 매수 주문으로 남았습니다",
-    "buyFromOtherPlayers": "다른 플레이어에게 사거나, 매수 주문을 걸어 두고 마켓이 찾아오게 하세요.",
     "buyOrderPlaced": "매수 주문을 등록했습니다",
     "buyOrders": "매수 주문",
     "chargedNowUpTo": "지금 결제, 최대",

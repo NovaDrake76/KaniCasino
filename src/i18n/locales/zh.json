@@ -1816,8 +1816,7 @@
     "tryYourLuckNow": "现在就来试试手气！",
     "umaMusume": "赛马娘",
     "umaMusumeCases": "赛马娘箱子",
-    "upgrade": "升级",
-    "whatEveryoneIsOpening": "看看大家现在都在开什么。"
+    "upgrade": "升级"
   },
   "leaderboard": {
     "title": "每日排行榜",
@@ -1887,7 +1886,6 @@
     "bestBuyOrder": "最高买单",
     "boughtInstantly": "已立即买入 {{filled}} 件",
     "boughtNowRest": "已立即买入 {{filled}} 件，剩余 {{left}} 件作为买单挂出",
-    "buyFromOtherPlayers": "从其他玩家手中购买，或者创建买单，让市场主动找上你。",
     "buyOrderPlaced": "买单已创建",
     "buyOrders": "买单",
     "chargedNowUpTo": "立即扣款，最多",
