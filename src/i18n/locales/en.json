@@ -1816,8 +1816,7 @@
     "tryYourLuckNow": "Try your luck now!",
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Uma Musume cases",
-    "upgrade": "upgrade",
-    "whatEveryoneIsOpening": "What everyone is opening right now."
+    "upgrade": "upgrade"
   },
   "leaderboard": {
     "title": "Daily Leaderboard",
@@ -1887,7 +1886,6 @@
     "bestBuyOrder": "Best buy order",
     "boughtInstantly": "Bought {{filled}} instantly",
     "boughtNowRest": "Bought {{filled}} now, {{left}} left as a buy order",
-    "buyFromOtherPlayers": "Buy from other players, or place a buy order and let the market come to you.",
     "buyOrderPlaced": "Buy order placed",
     "buyOrders": "Buy orders",
     "chargedNowUpTo": "Charged now, up to",

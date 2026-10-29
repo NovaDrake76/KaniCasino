@@ -1816,8 +1816,7 @@
     "tryYourLuckNow": "今すぐ運を試そう！",
     "umaMusume": "ウマ娘",
     "umaMusumeCases": "ウマ娘のケース",
-    "upgrade": "アップグレード",
-    "whatEveryoneIsOpening": "いまみんなが開けているもの。"
+    "upgrade": "アップグレード"
   },
   "leaderboard": {
     "title": "デイリーランキング",
@@ -1887,7 +1886,6 @@
     "bestBuyOrder": "最高の買い注文",
     "boughtInstantly": "{{filled}}個を即時購入しました",
     "boughtNowRest": "{{filled}}個を即時購入し、{{left}}個は買い注文として残りました",
-    "buyFromOtherPlayers": "ほかのプレイヤーから買うか、買い注文を出してマーケットのほうから来てもらいましょう。",
     "buyOrderPlaced": "買い注文を作成しました",
     "buyOrders": "買い注文",
     "chargedNowUpTo": "今すぐ請求、上限",

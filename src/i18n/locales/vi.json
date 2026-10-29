@@ -1816,8 +1816,7 @@
     "tryYourLuckNow": "Thử vận may ngay!",
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Hòm Uma Musume",
-    "upgrade": "nâng cấp",
-    "whatEveryoneIsOpening": "Mọi người đang mở gì lúc này."
+    "upgrade": "nâng cấp"
   },
   "leaderboard": {
     "title": "Bảng Xếp Hạng Hằng Ngày",
@@ -1887,7 +1886,6 @@
     "bestBuyOrder": "Lệnh mua tốt nhất",
     "boughtInstantly": "Đã mua ngay {{filled}}",
     "boughtNowRest": "Đã mua ngay {{filled}}, còn {{left}} để lại làm lệnh mua",
-    "buyFromOtherPlayers": "Mua từ người chơi khác, hoặc đặt lệnh mua và để chợ tự tìm đến bạn.",
     "buyOrderPlaced": "Đã đặt lệnh mua",
     "buyOrders": "Lệnh mua",
     "chargedNowUpTo": "Trừ tiền ngay, tối đa",

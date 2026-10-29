@@ -1816,8 +1816,7 @@
     "tryYourLuckNow": "Tentez votre chance !",
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Caisses Uma Musume",
-    "upgrade": "améliorer",
-    "whatEveryoneIsOpening": "Ce que tout le monde ouvre en ce moment."
+    "upgrade": "améliorer"
   },
   "leaderboard": {
     "title": "Classement Quotidien",
@@ -1887,7 +1886,6 @@
     "bestBuyOrder": "Meilleur ordre d'achat",
     "boughtInstantly": "{{filled}} achetés immédiatement",
     "boughtNowRest": "{{filled}} achetés maintenant, {{left}} restent en ordre d'achat",
-    "buyFromOtherPlayers": "Achetez à d'autres joueurs, ou créez un ordre d'achat et laissez le marché venir à vous.",
     "buyOrderPlaced": "Ordre d'achat créé",
     "buyOrders": "Ordres d'achat",
     "chargedNowUpTo": "Débité maintenant, jusqu'à",

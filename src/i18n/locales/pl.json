@@ -1824,8 +1824,7 @@
     "tryYourLuckNow": "Spróbuj swojego szczęścia!",
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Skrzynki Uma Musume",
-    "upgrade": "ulepszanie",
-    "whatEveryoneIsOpening": "Co każdy w tym momencie otwiera."
+    "upgrade": "ulepszanie"
   },
   "leaderboard": {
     "title": "Dzienny Ranking",
@@ -1895,7 +1894,6 @@
     "bestBuyOrder": "Najlepsze zlecenie kupna",
     "boughtInstantly": "Kupiono {{filled}} od razu",
     "boughtNowRest": "Kupiono {{filled}} teraz, {{left}} pozostało jako zlecenie kupna",
-    "buyFromOtherPlayers": "Kupuj od innych graczy, lub złóż zlecenie kupna i daj rynkowi działać.",
     "buyOrderPlaced": "Złożono zlecenie kupna",
     "buyOrders": "Zlecenia kupna",
     "chargedNowUpTo": "Pobierane teraz, do",

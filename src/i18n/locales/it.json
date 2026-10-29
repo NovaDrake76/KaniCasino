@@ -1816,8 +1816,7 @@
     "tryYourLuckNow": "Tenta la fortuna!",
     "umaMusume": "UMA MUSUME",
     "umaMusumeCases": "Casse di Uma Musume",
-    "upgrade": "migliora",
-    "whatEveryoneIsOpening": "Cosa stanno aprendo tutti in questo momento."
+    "upgrade": "migliora"
   },
   "leaderboard": {
     "title": "Classifica Giornaliera",
@@ -1887,7 +1886,6 @@
     "bestBuyOrder": "Miglior ordine d'acquisto",
     "boughtInstantly": "{{filled}} comprati subito",
     "boughtNowRest": "{{filled}} comprati ora, {{left}} restano come ordine d'acquisto",
-    "buyFromOtherPlayers": "Compra dagli altri giocatori, oppure crea un ordine d'acquisto e lascia che sia il mercato a venire da te.",
     "buyOrderPlaced": "Ordine d'acquisto creato",
     "buyOrders": "Ordini d'acquisto",
     "chargedNowUpTo": "Addebitato ora, fino a",

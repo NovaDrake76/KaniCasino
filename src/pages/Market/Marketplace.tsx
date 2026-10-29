@@ -137,12 +137,7 @@ const Marketplace: React.FC = () => {
 
       <div className="w-full max-w-[1312px] px-4 md:px-8 py-6 flex flex-col gap-5">
         <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-bold text-ink">{i18n.t("market.marketplace")}</h1>
-            <span className="text-xs text-ink-muted">
-              {i18n.t("market.buyFromOtherPlayers")}
-            </span>
-          </div>
+          <h1 className="text-2xl font-bold text-ink">{i18n.t("market.marketplace")}</h1>
           {isLogged && (
             <button
               onClick={() => (locked ? openDaisuShop("tradersLicense") : setOpenSellModal(true))}
