@@ -1231,6 +1231,9 @@
         "line": "Passa il mouse su un oggetto e premi il suo pulsante di vendita. Torna subito in K₽, quindi scegline uno che non ti mancherà.",
         "linePhone": "Tocca un oggetto e vendine una copia. Torna subito in K₽, quindi scegline uno che non ti mancherà.",
         "wait": "Aspetto una vendita"
+      },
+      "stats": {
+        "line": "Questo grafico sono le tue statistiche live: profitto, vittorie, sconfitte e quanto hai puntato in questa sessione. Aprilo quando vuoi."
       }
     },
     "shop": {
@@ -1417,14 +1420,14 @@
           "pitch": "Trasforma le puntate in XP. Quello che ha sempre fatto, ma più in fretta."
         },
         "spyglass": {
-          "about": "Apre la striscia delle puntate dal vivo sotto ogni gioco: le ultime puntate del sito mentre arrivano, chi le ha fatte e quanto hanno pagato.",
+          "about": "Apre le statistiche live sotto i giochi: il tuo profitto, le vittorie, le sconfitte e quanto hai puntato in questa sessione, con un grafico dell'andamento.",
           "getIt": "Prendi il Cannocchiale",
           "lockedBody": "Livello {{level}} · {{price}} nel negozio di Daisu",
-          "lockedTitle": "Le puntate dal vivo richiedono un Cannocchiale",
+          "lockedTitle": "Le statistiche live richiedono un Cannocchiale",
           "name": "Cannocchiale",
-          "opened": "Ecco. Ora vedi cosa combinano gli altri. Ti mostro dove?",
-          "pitch": "A tutti piace guardare gli altri perdere. Ora puoi farlo comodamente.",
-          "what": "Guarda le puntate dal vivo sotto ogni gioco: chi gioca, quanto punta, quanto ha pagato."
+          "opened": "Ecco. Ora ogni giro che giochi viene contato. Ti mostro dove?",
+          "pitch": "Per una volta tieni d'occhio te stesso. Su o giù, saprai esattamente di quanto.",
+          "what": "Guarda le tue statistiche live sotto i giochi: profitto, vittorie, sconfitte e quanto hai puntato."
         }
       },
       "level": "Livello {{n}}",

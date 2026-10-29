@@ -1231,6 +1231,9 @@
         "line": "Rê chuột lên một vật phẩm và bấm nút bán của nó. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "linePhone": "Chạm vào một vật phẩm và bán một bản. Nó thành K₽ ngay, nên chọn thứ bạn không tiếc.",
         "wait": "Đang chờ bạn bán"
+      },
+      "stats": {
+        "line": "Biểu đồ này là thống kê trực tiếp của bạn: lợi nhuận, thắng, thua và tổng tiền đã cược trong phiên này. Mở nó bất cứ lúc nào bạn muốn."
       }
     },
     "shop": {
@@ -1417,14 +1420,14 @@
           "pitch": "Nó biến cược thành XP. Vốn dĩ vẫn thế, nhưng nhanh hơn."
         },
         "spyglass": {
-          "about": "Mở dải cược trực tiếp dưới mỗi trò chơi: những lần cược mới nhất trên trang ngay khi diễn ra, ai đặt và trả bao nhiêu.",
+          "about": "Mở thống kê trực tiếp dưới các trò chơi: lợi nhuận, số trận thắng, thua và tổng tiền bạn đã cược trong phiên này, kèm biểu đồ diễn biến.",
           "getIt": "Lấy Ống nhòm",
           "lockedBody": "Cấp {{level}} · {{price}} ở cửa hàng của Daisu",
-          "lockedTitle": "Cược trực tiếp cần Ống nhòm",
+          "lockedTitle": "Thống kê trực tiếp cần Ống nhòm",
           "name": "Ống nhòm",
-          "opened": "Đó. Giờ bạn thấy mọi người đang làm gì rồi. Muốn tôi chỉ chỗ không?",
-          "pitch": "Ai cũng thích xem người khác thua. Giờ bạn có thể xem thoải mái.",
-          "what": "Xem cược trực tiếp dưới mỗi trò chơi: ai đang chơi, cược bao nhiêu, trả bao nhiêu."
+          "opened": "Đó. Giờ mọi ván bạn chơi đều được ghi lại. Muốn tôi chỉ chỗ không?",
+          "pitch": "Thỉnh thoảng hãy để mắt đến chính mình. Lên hay xuống, bạn sẽ biết chính xác bao nhiêu.",
+          "what": "Xem thống kê trực tiếp của bạn dưới các trò chơi: lợi nhuận, thắng, thua và tổng tiền đã cược."
         }
       },
       "level": "Cấp {{n}}",

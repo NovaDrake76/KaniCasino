@@ -1231,6 +1231,9 @@
         "line": "Pasa el ratón por un objeto y pulsa su botón de vender. Vuelve como K₽ al instante, así que elige uno que no vayas a echar de menos.",
         "linePhone": "Toca un objeto y vende una copia. Vuelve como K₽ al instante, así que elige uno que no vayas a echar de menos.",
         "wait": "Esperando una venta"
+      },
+      "stats": {
+        "line": "Este gráfico son tus estadísticas en vivo: beneficio, victorias, derrotas y lo que llevas apostado en la sesión. Ábrelo cuando quieras."
       }
     },
     "shop": {
@@ -1417,14 +1420,14 @@
           "pitch": "Convierte apuestas en XP. Lo que siempre hizo, pero más rápido."
         },
         "spyglass": {
-          "about": "Abre la franja de apuestas en vivo debajo de cada juego: las últimas apuestas del sitio según ocurren, quién las hizo y cuánto pagaron.",
+          "about": "Abre las estadísticas en vivo debajo de los juegos: tu beneficio, victorias, derrotas y lo que llevas apostado en la sesión, con un gráfico de cómo va.",
           "getIt": "Consigue el Catalejo",
           "lockedBody": "Nivel {{level}} · {{price}} en la tienda de Daisu",
-          "lockedTitle": "Las apuestas en vivo requieren un Catalejo",
+          "lockedTitle": "Las estadísticas en vivo requieren un Catalejo",
           "name": "Catalejo",
-          "opened": "Listo. Ahora ves lo que hacen los demás. ¿Te enseño dónde?",
-          "pitch": "A todos les gusta ver perder a los demás. Ahora puedes hacerlo cómodamente.",
-          "what": "Mira las apuestas en vivo debajo de cada juego: quién juega, cuánto apuesta y cuánto pagó."
+          "opened": "Listo. Ahora cada ronda que juegas queda registrada. ¿Te enseño dónde?",
+          "pitch": "Por una vez, vigílate a ti mismo. Ganes o pierdas, sabrás exactamente cuánto.",
+          "what": "Mira tus estadísticas en vivo debajo de los juegos: beneficio, victorias, derrotas y lo apostado."
         }
       },
       "level": "Nivel {{n}}",

@@ -13,7 +13,7 @@ import { Wizard, wizardFor } from "./helpWizards";
 import { usePotStatus } from "../potStore";
 import { useLocked } from "../shop/useLocked";
 import { GAME_NAME_KEYS, GAME_PATHS, showsBonus } from "../potMath";
-import type { PotStatus } from "../../../services/daisu/DaisuService";
+import type { PickGame, PotStatus } from "../../../services/daisu/DaisuService";
 import { serverNow } from "../../../services/serverClock";
 import i18n from "../../../i18n";
 
@@ -167,6 +167,13 @@ const HelpOverlay = () => {
       helpTo("pick");
       return;
     }
+    // the stats icon is on the six house games: the one the player is on, or dice
+    if (wizard === "stats") {
+      const here = (Object.keys(GAME_PATHS) as PickGame[]).find((g) => GAME_PATHS[g] === pathname);
+      helpTo("stats", { game: here || "dice" });
+      if (!here) navigate(GAME_PATHS.dice);
+      return;
+    }
     if (wizard === "bonus") {
       const bonus = liveBonus(status);
       if (bonus) {
@@ -189,7 +196,7 @@ const HelpOverlay = () => {
     }
     const first = placeOf(wizard, wizard, userId, null);
     if (first) navigate(first.go);
-  }, [wizard, step, touring, userId, status, navigate, bookLocked, licenseLocked]);
+  }, [wizard, step, touring, userId, status, navigate, bookLocked, licenseLocked, pathname]);
 
   // a take puts a bonus on a game, and that game is where she shows it
   useEffect(() => {
@@ -240,6 +247,16 @@ const HelpOverlay = () => {
     const onClick = (e: MouseEvent) => {
       const button = e.target instanceof Element ? e.target.closest("button") : null;
       if (button && !button.disabled && button.closest('[data-tour="gift-spin"]')) endHelp();
+    };
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, [step]);
+
+  // opening the stats is the whole lesson
+  useEffect(() => {
+    if (step !== "stats") return;
+    const onClick = (e: MouseEvent) => {
+      if (e.target instanceof Element && e.target.closest('[data-tour="live-stats"]')) endHelp();
     };
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
@@ -320,6 +337,8 @@ const HelpOverlay = () => {
         onEnd={endHelp}
       />
     );
+  } else if (step === "stats") {
+    content = <Guided target="live-stats" eyebrow={eyebrow} line={t("stats.line")} next={gotIt()} />;
   } else if (step === "gift") {
     content = <GiftStep eyebrow={eyebrow} stop={stop} />;
   } else if (step === "market") {

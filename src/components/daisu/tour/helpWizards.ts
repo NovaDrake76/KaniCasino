@@ -4,6 +4,7 @@ export type Wizard =
   | "sell"
   | "bonus"
   | "games"
+  | "stats"
   | "gift"
   | "market"
   | "collection"
@@ -37,7 +38,7 @@ const BY_GOAL: Record<string, Wizard> = {
   referrals: "affiliates",
   predictions: "predictions",
   // what an item from her shop opened, shown right after it is bought
-  "unlock:spyglass": "games",
+  "unlock:spyglass": "stats",
   "unlock:collectionBook": "collection",
   "unlock:tradersLicense": "market",
   "unlock:predictionPass": "predictions",
