@@ -1231,6 +1231,9 @@
         "line": "Arahkan kursor ke barang dan tekan tombol jualnya. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "linePhone": "Ketuk barang dan jual satu salinan. Langsung jadi K₽ lagi, jadi pilih yang tidak akan kamu rindukan.",
         "wait": "Menunggu penjualan"
+      },
+      "stats": {
+        "line": "Grafik ini statistik langsungmu: untung, menang, kalah, dan total taruhanmu di sesi ini. Buka kapan saja kamu mau."
       }
     },
     "shop": {
@@ -1417,14 +1420,14 @@
           "pitch": "Mengubah taruhan jadi XP. Yang memang selalu dilakukannya, tapi lebih cepat."
         },
         "spyglass": {
-          "about": "Membuka baris taruhan langsung di bawah setiap game: taruhan terakhir di situs saat terjadi, siapa yang memasang, dan berapa bayarannya.",
+          "about": "Membuka statistik langsung di bawah game: untung, menang, kalah, dan total taruhanmu di sesi ini, lengkap dengan grafik perkembangannya.",
           "getIt": "Dapatkan Teropong",
           "lockedBody": "Level {{level}} · {{price}} di toko Daisu",
-          "lockedTitle": "Taruhan langsung butuh Teropong",
+          "lockedTitle": "Statistik langsung butuh Teropong",
           "name": "Teropong",
-          "opened": "Nah. Sekarang kamu bisa lihat apa yang dilakukan orang lain. Mau kutunjukkan tempatnya?",
-          "pitch": "Semua orang suka menonton orang lain kalah. Sekarang kamu bisa melakukannya dengan nyaman.",
-          "what": "Lihat taruhan langsung di bawah setiap game: siapa yang main, berapa taruhannya, berapa bayarannya."
+          "opened": "Nah. Sekarang setiap ronde yang kamu mainkan tercatat. Mau kutunjukkan tempatnya?",
+          "pitch": "Sesekali awasi dirimu sendiri. Naik atau turun, kamu tahu persis berapa.",
+          "what": "Lihat statistik langsungmu di bawah game: untung, menang, kalah, dan total taruhan."
         }
       },
       "level": "Level {{n}}",

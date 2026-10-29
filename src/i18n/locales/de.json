@@ -1231,6 +1231,9 @@
         "line": "Fahr mit der Maus über ein Item und drück seinen Verkaufen-Knopf. Es wird sofort wieder zu K₽, also nimm eins, das dir nicht fehlen wird.",
         "linePhone": "Tipp auf ein Item und verkauf ein Exemplar. Es wird sofort wieder zu K₽, also nimm eins, das dir nicht fehlen wird.",
         "wait": "Warte auf einen Verkauf"
+      },
+      "stats": {
+        "line": "Dieses Diagramm ist deine Live-Statistik: Gewinn, Siege, Niederlagen und was du in dieser Sitzung eingesetzt hast. Öffne es, wann immer du willst."
       }
     },
     "shop": {
@@ -1417,14 +1420,14 @@
           "pitch": "Er macht aus Einsätzen XP. Was er immer tat, nur schneller."
         },
         "spyglass": {
-          "about": "Öffnet die Leiste mit den Live-Wetten unter jedem Spiel: die letzten Wetten der Seite, sobald sie fallen, wer sie gemacht hat und was sie gebracht haben.",
+          "about": "Öffnet die Live-Statistik unter den Spielen: dein Gewinn, deine Siege, Niederlagen und was du in dieser Sitzung eingesetzt hast, mit einer Kurve, wie es läuft.",
           "getIt": "Hol dir das Fernrohr",
           "lockedBody": "Level {{level}} · {{price}} in Daisus Laden",
-          "lockedTitle": "Live-Wetten brauchen ein Fernrohr",
+          "lockedTitle": "Live-Statistik braucht ein Fernrohr",
           "name": "Fernrohr",
-          "opened": "Da. Jetzt siehst du, was alle anderen treiben. Soll ich dir zeigen, wo?",
-          "pitch": "Alle sehen gern zu, wie andere verlieren. Jetzt kannst du es bequem tun.",
-          "what": "Sieh die Live-Wetten unter jedem Spiel: wer spielt, was gesetzt wurde, was es gebracht hat."
+          "opened": "Da. Jetzt wird jede Runde mitgezählt. Soll ich dir zeigen, wo?",
+          "pitch": "Behalt zur Abwechslung mal dich selbst im Blick. Ob plus oder minus, du weißt genau, wie viel.",
+          "what": "Sieh deine Live-Statistik unter den Spielen: Gewinn, Siege, Niederlagen und was du eingesetzt hast."
         }
       },
       "level": "Level {{n}}",

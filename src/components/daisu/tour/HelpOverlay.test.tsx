@@ -194,6 +194,19 @@ describe("daisu showing how a mission is done", () => {
     window.removeEventListener("chat:open", opened);
   });
 
+  it("points at the live stats icon once a spyglass is bought, on dice unless a game with it is open", () => {
+    const { unmount } = draw(nextId(), "unlock:spyglass", "/", <span data-tour="live-stats" />, "Spyglass");
+    expect(where()).toBe("/dice");
+    expect(screen.getByText(/this chart is your live stats/i)).toBeTruthy();
+    unmount();
+    act(() => endHelp());
+
+    draw(nextId(), "unlock:spyglass", "/plinko", <span data-tour="live-stats" />, "Spyglass");
+    expect(where()).toBe("/plinko");
+    fireEvent.click(document.querySelector('[data-tour="live-stats"]') as Element);
+    expect(helpState().mission).toBeNull();
+  });
+
   it("takes a new affiliate to their affiliates tab and points at the invite code", () => {
     draw(nextId(), "unlock:affiliateCard", "/", <div data-tour="affiliates-code" />, "Affiliate Card");
 

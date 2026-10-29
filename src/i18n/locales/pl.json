@@ -1239,6 +1239,9 @@
         "line": "Najedź na przedmiot i kliknij przycisk Sprzedaj. Od razu zmienia się w K₽, więc wybierz coś, czego ci nie żal.",
         "linePhone": "Dotknij przedmiotu, a potem przycisku Sprzedaj. Od razu zmienia się w K₽, więc wybierz coś, czego ci nie żal.",
         "wait": "Czekam aż sprzedasz coś"
+      },
+      "stats": {
+        "line": "Ten wykres to twoje statystyki na żywo: zysk, wygrane, przegrane i łączna kwota zakładów z tej sesji. Otwieraj go, kiedy chcesz."
       }
     },
     "shop": {
@@ -1425,14 +1428,14 @@
           "pitch": "Zamienia zakłady w XP. Co zawsze robił, tylko szybciej."
         },
         "spyglass": {
-          "about": "Otwiera pasek zakładów na żywo pod każdą grą: ostatnie zakłady na stronie, gdy tylko wpadają, kto je postawił i ile wypłaciły.",
+          "about": "Otwiera statystyki na żywo pod grami: zysk, wygrane, przegrane i łączną kwotę zakładów z tej sesji, z wykresem przebiegu.",
           "getIt": "Zdobądź Lunetę",
           "lockedBody": "Poziom {{level}} · {{price}} w sklepie Daisu",
-          "lockedTitle": "Zakłady na żywo wymagają Lunety",
+          "lockedTitle": "Statystyki na żywo wymagają Lunety",
           "name": "Luneta",
-          "opened": "Proszę. Teraz widzisz, co robią wszyscy inni. Pokazać ci, gdzie?",
-          "pitch": "Każdy lubi patrzeć, jak inni przegrywają. Teraz możesz to robić w wygodzie.",
-          "what": "Zobacz zakłady na żywo pod każdą grą: kto gra, ile postawił i ile mu wypłaciło."
+          "opened": "Proszę. Teraz każda rozegrana runda jest liczona. Pokazać ci, gdzie?",
+          "pitch": "Choć raz miej oko na siebie. Na plusie czy na minusie, będziesz wiedzieć dokładnie, ile.",
+          "what": "Zobacz swoje statystyki na żywo pod grami: zysk, wygrane, przegrane i łączną kwotę zakładów."
         }
       },
       "level": "Poziom {{n}}",

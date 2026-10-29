@@ -1231,6 +1231,9 @@
         "line": "Survole un objet et appuie sur son bouton de vente. Il redevient des K₽ tout de suite, alors choisis-en un qui ne te manquera pas.",
         "linePhone": "Touche un objet et vends un exemplaire. Il redevient des K₽ tout de suite, alors choisis-en un qui ne te manquera pas.",
         "wait": "J'attends une vente"
+      },
+      "stats": {
+        "line": "Ce graphique, ce sont tes stats en direct : bénéfice, victoires, défaites et ce que tu as misé pendant la session. Ouvre-le quand tu veux."
       }
     },
     "shop": {
@@ -1417,14 +1420,14 @@
           "pitch": "Elle change les mises en XP. Ce qu'elle a toujours fait, mais plus vite."
         },
         "spyglass": {
-          "about": "Ouvre la bande des paris en direct sous chaque jeu : les derniers paris du site au moment où ils tombent, qui les a faits et combien ils ont payé.",
+          "about": "Ouvre les stats en direct sous les jeux : ton bénéfice, tes victoires, tes défaites et ce que tu as misé pendant la session, avec une courbe de l'évolution.",
           "getIt": "Obtenir la Longue-vue",
           "lockedBody": "Niveau {{level}} · {{price}} dans la boutique de Daisu",
-          "lockedTitle": "Les paris en direct demandent une Longue-vue",
+          "lockedTitle": "Les stats en direct demandent une Longue-vue",
           "name": "Longue-vue",
-          "opened": "Voilà. Maintenant tu vois ce que font les autres. Je te montre où ?",
-          "pitch": "Tout le monde aime regarder les autres perdre. Maintenant tu peux le faire confortablement.",
-          "what": "Vois les paris en direct sous chaque jeu : qui joue, combien il mise, combien ça a payé."
+          "opened": "Voilà. Maintenant chaque partie que tu joues est comptée. Je te montre où ?",
+          "pitch": "Pour une fois, garde un œil sur toi-même. En haut ou en bas, tu sauras exactement de combien.",
+          "what": "Vois tes stats en direct sous les jeux : bénéfice, victoires, défaites et total misé."
         }
       },
       "level": "Niveau {{n}}",
