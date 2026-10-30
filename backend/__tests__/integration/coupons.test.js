@@ -136,6 +136,14 @@ describe("the bot's daily drop", () => {
     expect(await Coupon.countDocuments()).toBe(1);
   });
 
+  it("pays 1,000 K₽ for three hours unless the server says otherwise", async () => {
+    const res = await drop();
+    expect(res.body).toMatchObject({ amount: 1000, maxRedemptions: 25 });
+    const left = new Date(res.body.expiresAt).getTime() - Date.now();
+    expect(left).toBeGreaterThan(179 * 60000);
+    expect(left).toBeLessThanOrEqual(180 * 60000);
+  });
+
   it("lands once when two drops race for the same day", async () => {
     const answers = await Promise.all([drop(), drop(), drop()]);
     expect(answers.filter((r) => r.status === 201)).toHaveLength(1);

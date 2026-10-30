@@ -29,17 +29,28 @@ test("the coupon post prints the code and links straight to it", () => {
   const embed = msg.embeds[0].toJSON();
   const button = msg.components[0].toJSON().components[0];
   assert.match(embed.description, /\*\*K7QX9MPLA2\*\*/);
-  assert.match(embed.description, /first 25 players/);
   assert.match(embed.description, /<t:1793106000:R>/);
-  assert.doesNotMatch(embed.description, /verified|once per account/);
+  assert.doesNotMatch(embed.description, /verified|once per account|first|players/);
   assert.strictEqual(button.url, "https://kanicasino.com/coupon/K7QX9MPLA2");
 });
 
 test("daisu opens the drop with one of her lines, every blank filled", () => {
   const { COUPON_LINES } = require("./couponLines");
   const drop = { code: "K7QX9MPLA2", amount: 25000, maxRedemptions: 5, expiresAt: "2026-10-27T13:00:00Z" };
-  const said = COUPON_LINES.map((_, i) => couponMessage(drop, () => i / COUPON_LINES.length).content);
+  const said = COUPON_LINES.map((_, i) => couponMessage(drop, { random: () => i / COUPON_LINES.length, role: "" }).content);
   assert.strictEqual(new Set(said).size, COUPON_LINES.length);
   for (const line of said) assert.doesNotMatch(line, /[{}]/);
-  assert.ok(said.includes("I found 25,000 K₽ under the jar. First 5 to grab it, go."));
+  for (const line of said) assert.doesNotMatch(line, /5/);
+  assert.ok(said.includes("I found 25,000 K₽ under the jar. Fastest hands get it, go."));
+});
+
+test("a drop pings the fans' role and nothing else, and no role means no ping", () => {
+  const drop = { code: "K7QX9MPLA2", amount: 1000, maxRedemptions: 25, expiresAt: "2026-10-27T13:00:00Z" };
+  const pinged = couponMessage(drop, { random: () => 0, role: "1565679546005590058" });
+  assert.ok(pinged.content.startsWith("<@&1565679546005590058> "));
+  assert.deepStrictEqual(pinged.allowedMentions, { roles: ["1565679546005590058"] });
+
+  const quiet = couponMessage(drop, { random: () => 0, role: "" });
+  assert.doesNotMatch(quiet.content, /<@&/);
+  assert.deepStrictEqual(quiet.allowedMentions, { roles: [] });
 });

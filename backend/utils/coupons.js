@@ -18,9 +18,9 @@ const envNumber = (name, fallback) => (process.env[name] !== undefined && proces
 
 // what the bot's daily drop pays is set here, never by the bot, so a leaked bot secret can only drop what this allows
 const dropTerms = () => ({
-  amount: envNumber("COUPON_DROP_AMOUNT", 500),
+  amount: envNumber("COUPON_DROP_AMOUNT", 1000),
   maxRedemptions: envNumber("COUPON_DROP_MAX", 25),
-  minutes: envNumber("COUPON_DROP_MINUTES", 60),
+  minutes: envNumber("COUPON_DROP_MINUTES", 180),
   perDay: envNumber("COUPON_DROPS_PER_DAY", 1),
 });
 

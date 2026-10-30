@@ -146,7 +146,7 @@ const noticeEmbed = (text) =>
 const couponUrl = (code) => `${SITE}/coupon/${encodeURIComponent(code)}`;
 
 // her line above, the facts in the embed; the code is printed as well as linked, so a player on another device can type it in
-function couponMessage(coupon, random = Math.random) {
+function couponMessage(coupon, { random = Math.random, role = process.env.COUPON_ROLE_ID } = {}) {
   const url = couponUrl(coupon.code);
   const expires = Math.floor(new Date(coupon.expiresAt).getTime() / 1000);
   const embed = new EmbedBuilder()
@@ -155,7 +155,6 @@ function couponMessage(coupon, random = Math.random) {
     .setURL(url)
     .setDescription(
       [
-        `The first ${num(coupon.maxRedemptions)} players to redeem it get **${num(coupon.amount)} K₽**.`,
         `Code: **${coupon.code}**`,
         `Expires <t:${expires}:R>.`,
       ].join("\n")
@@ -164,8 +163,9 @@ function couponMessage(coupon, random = Math.random) {
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder().setLabel(`Redeem on ${HOST}`).setStyle(ButtonStyle.Link).setURL(url)
   );
-  const content = couponLine({ amount: `${num(coupon.amount)} K₽`, max: num(coupon.maxRedemptions) }, random);
-  return { content, embeds: [embed], components: [row] };
+  const line = couponLine({ amount: `${num(coupon.amount)} K₽` }, random);
+  // the bot may ping any role, so each post names the only one it means
+  return { content: role ? `<@&${role}> ${line}` : line, allowedMentions: { roles: role ? [role] : [] }, embeds: [embed], components: [row] };
 }
 
 module.exports = { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, couponMessage, couponUrl, SITE, HOST };
