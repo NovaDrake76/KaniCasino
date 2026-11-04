@@ -3,6 +3,7 @@ import UserContext from "../../UserContext";
 import { play } from "../../services/sound/sound";
 import {
   ChatMessage,
+  onConnect,
   onHistory,
   onMessage,
   onRemoved,
@@ -23,11 +24,20 @@ export const useChat = (open: boolean) => {
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const asked = useRef(false);
+  const openRef = useRef(open);
+  openRef.current = open;
+  const loadedRef = useRef(false);
 
   useEffect(() => {
     const offHistory = onHistory((rows) => {
+      loadedRef.current = true;
       setMessages(rows.slice(-KEEP));
       setLoaded(true);
+    });
+    // the app reconnects the socket once the account has loaded, and an answer sent to the old
+    // connection is lost: a panel open from the start asked too early and stayed empty
+    const offConnect = onConnect(() => {
+      if (openRef.current && !loadedRef.current) requestHistory();
     });
     const offMessage = onMessage((m) => {
       if (m.userId !== userData?.id) play("ui.chat");
@@ -36,6 +46,7 @@ export const useChat = (open: boolean) => {
     const offRemoved = onRemoved(({ id }) => setMessages((prev) => prev.filter((m) => m.id !== id)));
     return () => {
       offHistory();
+      offConnect();
       offMessage();
       offRemoved();
     };
