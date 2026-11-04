@@ -3,8 +3,9 @@ require("dotenv").config();
 const { Client, Events, GatewayIntentBits, MessageFlags } = require("discord.js");
 const api = require("./api");
 const { noticeEmbed } = require("./embeds");
-const { commands, onCooldown, runOpen, seriesMenu, casesMenu, categoryFor } = require("./commands");
-const { isMenu, parseMenu, chosenFrame } = require("./menu");
+const { commands, onCooldown, runOpen, seriesMenu, casesMenu, categoryFor, helpEmbed } = require("./commands");
+const { isMenu, parseMenu, chosenFrame, homeFrame } = require("./menu");
+const { begLine } = require("./couponLines");
 const membership = require("./membership");
 const coupons = require("./coupons");
 
@@ -50,7 +51,9 @@ async function suggest(interaction) {
 // no owner check: a second player using someone else's open menu spins on their own balance
 async function navigated(interaction) {
   const { kind, token, offset } = parseMenu(interaction.customId);
-  if (kind === "back") return interaction.update(await seriesMenu());
+  if (kind === "back" || kind === "open") return interaction.update(await seriesMenu());
+  if (kind === "help") return interaction.reply({ embeds: [helpEmbed()], flags: MessageFlags.Ephemeral });
+  if (kind === "beg") return begged(interaction);
   if (kind === "cat") return interaction.update(await casesMenu(interaction.values[0], 0));
   if (kind === "page") {
     // the shelf can be renamed or emptied between the render and the click, and paging a
@@ -75,6 +78,15 @@ async function navigated(interaction) {
     flags: MessageFlags.IsComponentsV2,
   });
   await runOpen(interaction, interaction.values[0], { channel: interaction.channel });
+}
+
+// begging is public, so everyone sees the answer, and it never pays. the name shows without pinging anyone
+async function begged(interaction) {
+  const wait = onCooldown(interaction.user.id, "beg");
+  if (wait) {
+    return interaction.reply({ embeds: [noticeEmbed(`Give it ${wait}s.`)], flags: MessageFlags.Ephemeral });
+  }
+  return interaction.reply({ content: `<@${interaction.user.id}> ${begLine()}`, allowedMentions: { parse: [] } });
 }
 
 // "open another" on somebody else's reveal would charge the clicker for a case they did
@@ -144,7 +156,7 @@ client.on(Events.MessageCreate, async (message) => {
 
   try {
     await api.seen(message.author.id, message.guildId);
-    await message.reply(await seriesMenu());
+    await message.reply({ components: [homeFrame()], flags: MessageFlags.IsComponentsV2 });
   } catch (err) {
     console.error("bot mention:", err.message);
     await message.reply({ embeds: [noticeEmbed("The site did not answer. Try again in a moment.")] }).catch(() => {});

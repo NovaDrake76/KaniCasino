@@ -6,7 +6,8 @@ process.env.SITE_URL = process.env.SITE_URL || "https://kanicasino.com";
 
 const test = require("node:test");
 const assert = require("node:assert");
-const { ID, PER_PAGE, NO_CATEGORY, isMenu, parseMenu, categoryFrame, caseFrame, label, tokenOf } = require("./menu");
+const { ID, PER_PAGE, NO_CATEGORY, isMenu, parseMenu, homeFrame, categoryFrame, caseFrame, label, tokenOf } = require("./menu");
+const { BEG_LINES, begLine } = require("./couponLines");
 
 const json = (frame) => frame.toJSON();
 const rows = (frame) => json(frame).components.filter((c) => c.type === 1);
@@ -51,6 +52,24 @@ test("every menu id is routable on the one prefix", () => {
   assert.ok(isMenu(ID.page("Touhou", 25)));
   assert.equal(isMenu("open:abc:123"), false);
   assert.equal(isMenu(undefined), false);
+});
+
+// a ping is how most players meet her, so it asks what they want before it shows any cases
+test("a mention asks what they want and offers a case, a coupon to beg for and the commands", () => {
+  const frame = homeFrame();
+  assert.match(text(frame), /What do you want, Mr\. Gambler\?/);
+  const pressed = buttons(frame).filter((b) => b.custom_id);
+  assert.deepEqual(pressed.map((b) => b.label), ["Open a case", "Beg for a coupon", "What else can you do?"]);
+  assert.deepEqual(pressed.map((b) => parseMenu(b.custom_id).kind), ["open", "beg", "help"]);
+  assert.ok(pressed.every((b) => isMenu(b.custom_id)));
+});
+
+test("begging gets one of her refusals, and none of them is a real code", () => {
+  const said = BEG_LINES.map((_, i) => begLine(() => i / BEG_LINES.length));
+  assert.equal(new Set(said).size, BEG_LINES.length);
+  for (const line of said) assert.ok(line.length > 0 && line.length < 120, line);
+  // codes are ten letters and digits from the coupon alphabet; a joke code must not look like one
+  for (const line of said) assert.doesNotMatch(line, /\b[A-HJ-NP-Z2-9]{10}\b/);
 });
 
 test("the series menu offers one option per shelf, with its count", () => {
