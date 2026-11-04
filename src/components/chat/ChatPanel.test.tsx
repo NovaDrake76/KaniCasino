@@ -27,6 +27,10 @@ vi.mock("../../services/chat/ChatService", () => ({
     handlers.removed = fn;
     return () => delete handlers.removed;
   },
+  onConnect: (fn: () => void) => {
+    handlers.connect = fn as never;
+    return () => delete handlers.connect;
+  },
 }));
 
 vi.mock("../../services/daisu/ShopService", () => ({
@@ -78,6 +82,19 @@ describe("the site chat panel", () => {
   it("asks for history once it is opened, rather than waiting to be pushed it", () => {
     draw();
     expect(requestHistory).toHaveBeenCalledTimes(1);
+  });
+
+  // the app reconnects the socket once the account loads, and the answer to a request sent on the
+  // old connection never arrives: a chat already open on page load stayed empty until reopened
+  it("asks again when the socket reconnects before the history came back, and not after", () => {
+    draw();
+    act(() => (handlers.connect as unknown as () => void)());
+    expect(requestHistory).toHaveBeenCalledTimes(2);
+
+    act(() => handlers.history?.([message("1", "first")] as never));
+    act(() => (handlers.connect as unknown as () => void)());
+    expect(requestHistory).toHaveBeenCalledTimes(2);
+    expect(screen.getByText("first")).toBeTruthy();
   });
 
   it("asks an account in daisu's beta for a chat pass instead of the box, and keeps reading open", async () => {

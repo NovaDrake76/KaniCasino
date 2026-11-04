@@ -76,3 +76,8 @@ export const onRemoved = (fn: (p: { id: string }) => void) => {
   socket().on("chat:removed", fn);
   return () => void socket().off("chat:removed", fn);
 };
+
+export const onConnect = (fn: () => void) => {
+  socket().on("connect", fn);
+  return () => void socket().off("connect", fn);
+};
