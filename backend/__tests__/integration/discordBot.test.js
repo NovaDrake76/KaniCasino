@@ -105,10 +105,16 @@ describe("discord bot routes", () => {
       expect(await DiscordLink.countDocuments({ code: started.body.code })).toBe(0);
     });
 
-    it("turns away a discord account created in the last 30 days", async () => {
-      const res = await startLink(snowflakeFor(daysAgo(3)));
+    it("turns away a discord account created in the last two weeks", async () => {
+      const res = await startLink(snowflakeFor(daysAgo(10)));
       expect(res.status).toBe(403);
       expect(await DiscordLink.countDocuments()).toBe(0);
+    });
+
+    it("lets a discord account link once it is two weeks old", async () => {
+      const res = await startLink(snowflakeFor(daysAgo(15)));
+      expect(res.status).toBe(200);
+      expect(res.body.code).toBeTruthy();
     });
 
     it("says who holds a discord id rather than minting another code", async () => {

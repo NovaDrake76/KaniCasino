@@ -24,7 +24,7 @@ const coupons = require("../utils/coupons");
 const LINK_TTL_MS = 15 * 60 * 1000;
 // a discord account younger than this cannot link. the snowflake carries its creation
 // time, so throwaway alts farming the bonus are turned away without a lookup.
-const MIN_ACCOUNT_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+const MIN_ACCOUNT_AGE_MS = 14 * 24 * 60 * 60 * 1000;
 const DISCORD_EPOCH = 1420070400000;
 // the home server. membership of this one, and only this one, is what the gift boost pays.
 const HOME_GUILD_ID = process.env.DISCORD_GUILD_ID || "";
@@ -183,7 +183,7 @@ router.post("/link/start", botOnly, async (req, res) => {
 
     const born = snowflakeDate(discordId);
     if (!born || Date.now() - born.getTime() < MIN_ACCOUNT_AGE_MS) {
-      return res.status(403).json({ message: "Discord accounts under 30 days old cannot be linked yet." });
+      return res.status(403).json({ message: "Discord accounts under two weeks old cannot be linked yet." });
     }
 
     const existing = await User.findOne({ discordId }, { username: 1 }).lean();
