@@ -7,7 +7,7 @@ import OptionRow from "../../components/game/OptionRow";
 import Monetary from "../../components/Monetary";
 import { AUTO_COUNTS } from "./Mines.services";
 import { TILES, mineOptions } from "./minesGrid";
-import { MinesViewProps } from "./Mines.types";
+import { MinesGameState, MinesViewProps } from "./Mines.types";
 import i18n from "../../i18n";
 import LiveStatsButton from "../../components/LiveStats/LiveStatsButton";
 import GameBar from "../../components/game/GameBar";
@@ -38,6 +38,17 @@ const Bomb = ({ hit }: { hit: boolean }) => (
   </svg>
 );
 
+// above the board: under the buttons it took Random Tile's place when a round ended, and a fast tap opened the roll page
+const RoundResult = ({ game, openRoll }: { game: MinesGameState; openRoll: (rollId: string) => void }) => (
+  <button
+    onClick={() => game.rollId && openRoll(game.rollId)}
+    disabled={!game.rollId}
+    className={`shrink-0 text-xs font-semibold py-1 rounded ${game.status === "cashed" ? "text-green-400" : "text-red-400"} disabled:opacity-50`}
+  >
+    {game.status === "cashed" ? <>{i18n.t("common.won")} <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : i18n.t("mines.boomVerifyRoll")}
+  </button>
+);
+
 const MinesView: React.FC<MinesViewProps> = ({
   isLogged,
   walletBalance,
@@ -63,8 +74,9 @@ const MinesView: React.FC<MinesViewProps> = ({
   setMode,
   autoCount,
   setAutoCount,
-  autoPicks,
-  setAutoPicks,
+  autoPicksInput,
+  setAutoPicksInput,
+  normalizeAutoPicks,
   autoRunning,
   autoLeft,
   startAuto,
@@ -155,8 +167,9 @@ const MinesView: React.FC<MinesViewProps> = ({
                 type="number"
                 min={1}
                 max={gemsCount}
-                value={autoPicks}
-                onChange={(e) => setAutoPicks(Math.min(Math.max(1, Math.floor(Number(e.target.value)) || 1), gemsCount))}
+                value={autoPicksInput}
+                onChange={(e) => setAutoPicksInput(e.target.value)}
+                onBlur={normalizeAutoPicks}
                 disabled={autoRunning}
                 className="p-2 bg-surface-nav border border-line rounded text-sm disabled:opacity-50"
               />
@@ -188,30 +201,23 @@ const MinesView: React.FC<MinesViewProps> = ({
               {autoRunning ? i18n.t("common.stopAuto", { left: autoLeft }) : isLogged ? i18n.t("common.startBets", { count: autoCount }) : i18n.t("upgrade.signInToPlay")}
             </GameButton>
           )}
-
-          {ended && game && (
-            <button
-              onClick={() => game.rollId && openRoll(game.rollId)}
-              disabled={!game.rollId}
-              className={`text-xs font-semibold text-center py-1 rounded ${game.status === "cashed" ? "text-green-400" : "text-red-400"} disabled:opacity-50`}
-            >
-              {game.status === "cashed" ? <>{i18n.t("common.won")} <Monetary value={game.payout} showFraction /> at {game.multiplier.toFixed(2)}×</> : i18n.t("mines.boomVerifyRoll")}
-            </button>
-          )}
         </>
       }
     >
       <div className="w-full flex flex-col gap-4">
-          <div className="flex items-center justify-end gap-2 h-7 overflow-hidden">
-            {history.map((h) => (
-              <button
-                key={h.key}
-                onClick={() => h.rollId && openRoll(h.rollId)}
-                className={`px-2 py-0.5 rounded text-xs font-bold shrink-0 ${h.won ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}
-              >
-                {h.won ? `${h.multiplier.toFixed(2)}×` : "✕"}
-              </button>
-            ))}
+          <div className="flex items-center justify-between gap-2 h-7">
+            {ended && game ? <RoundResult game={game} openRoll={openRoll} /> : <span />}
+            <div className="flex items-center justify-end gap-2 min-w-0 overflow-hidden">
+              {history.map((h) => (
+                <button
+                  key={h.key}
+                  onClick={() => h.rollId && openRoll(h.rollId)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold shrink-0 ${h.won ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}
+                >
+                  {h.won ? `${h.multiplier.toFixed(2)}×` : "✕"}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="relative grid grid-cols-5 gap-2 sm:gap-3 short:gap-1.5 max-w-[560px] short:max-w-[min(560px,calc(100svh_-_340px))] mx-auto w-full">

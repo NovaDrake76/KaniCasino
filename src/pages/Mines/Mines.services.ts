@@ -34,7 +34,8 @@ export const useMinesServices = () => {
   const [history, setHistory] = useState<{ key: string; won: boolean; multiplier: number; payout: number; rollId: string | null }[]>([]);
   const [mode, setMode] = useState<"manual" | "auto">("manual");
   const [autoCount, setAutoCount] = useState<number>(AUTO_COUNTS[0]);
-  const [autoPicks, setAutoPicks] = useState<number>(3);
+  // kept as typed and clamped on use, like the bet: clamping every keystroke turned an emptied field into 1
+  const [autoPicksInput, setAutoPicksInput] = useState<string>("3");
   const [autoRunning, setAutoRunning] = useState(false);
   const [autoLeft, setAutoLeft] = useState(0);
 
@@ -44,6 +45,7 @@ export const useMinesServices = () => {
   const autoStop = useRef(false);
 
   const betValue = Math.min(Math.max(Math.floor(Number(betInput)) || MIN_BET, MIN_BET), MAX_BET);
+  const autoPicks = Math.min(Math.max(Math.floor(Number(autoPicksInput)) || 1, 1), gemsFor(mineCount));
   const active = game?.status === "active";
   const gems = game?.gems ?? 0;
   const currentPayout = active && gems > 0 ? payoutFor(betValue, mineCount, gems) : 0;
@@ -167,6 +169,7 @@ export const useMinesServices = () => {
       return;
     }
     autoStop.current = false;
+    setAutoPicksInput(String(autoPicks));
     setAutoRunning(true);
     let left = autoCount;
     setAutoLeft(left);
@@ -176,7 +179,7 @@ export const useMinesServices = () => {
       await wait(AUTO_STEP_MS);
       let g: MinesGameState | null = started;
       let picks = 0;
-      const target = Math.min(autoPicks, gemsFor(mineCount));
+      const target = autoPicks;
       while (g && g.status === "active" && picks < target && !autoStop.current) {
         const covered = [];
         for (let t = 0; t < TILES; t++) if (!g.revealed.includes(t)) covered.push(t);
@@ -228,7 +231,9 @@ export const useMinesServices = () => {
     autoCount,
     setAutoCount,
     autoPicks,
-    setAutoPicks,
+    autoPicksInput,
+    setAutoPicksInput,
+    normalizeAutoPicks: () => setAutoPicksInput(String(autoPicks)),
     autoRunning,
     autoLeft,
     startAuto,
