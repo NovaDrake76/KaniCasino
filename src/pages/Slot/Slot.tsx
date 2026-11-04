@@ -27,6 +27,7 @@ const Slots = () => {
     const [response, setResponse] = useState<SlotProps | null>(null);
     const [betAmount, setBetAmount] = useState<number>(10);
     const [isSpinning, setIsSpinning] = useState<boolean>(false);
+    const [waiting, setWaiting] = useState<boolean>(false);
     const [winningLines, setWinningLines] = useState<any[]>([]);
     const [totalWins, setTotalWins] = useState<number>(0);
     const [openBigWin, setOpenBigWin] = useState<boolean>(false);
@@ -76,6 +77,7 @@ const Slots = () => {
 
 
     const handleSpin = async () => {
+        if (isSpinning || waiting) return;
         if (userData == null) {
             toogleUserFlow(true);
             return;
@@ -86,25 +88,23 @@ const Slots = () => {
             return;
         }
 
-        setIsSpinning(true)
+        setWaiting(true);
         setOpenBigWin(false);
         setTotalWins(0);
         play("game.bet");
-        // the reels run 2.0 / 2.4 / 2.8 s (SlotColumn.calculateDelay): a tick while they turn,
-        // a thunk as each stops
-        const spinTicker = window.setInterval(() => play("slots.spin"), 90);
-        const reelStops = [2000, 2400, 2800].map((ms) => window.setTimeout(() => play("slots.stop"), ms));
-        window.setTimeout(() => window.clearInterval(spinTicker), 2800);
-        const stopSpinSounds = () => {
-          window.clearInterval(spinTicker);
-          reelStops.forEach((t) => window.clearTimeout(t));
-        };
 
         try {
             const response = await spinSlots(betAmount);
+            // the reels start once the result is in: started on the click, an answer slower than about 1.4 s swapped the symbols mid-spin
             setResponse(response);
             setGrid(response.gridState);
             setWinningLines(response?.lastSpinResult.map((result: { line: any; }) => result.line) || [])
+            setIsSpinning(true);
+            // the reels run 2.0 / 2.4 / 2.8 s (SlotColumn.calculateDelay): a tick while they turn,
+            // a thunk as each stops
+            const spinTicker = window.setInterval(() => play("slots.spin"), 90);
+            [2000, 2400, 2800].forEach((ms) => window.setTimeout(() => play("slots.stop"), ms));
+            window.setTimeout(() => window.clearInterval(spinTicker), 2800);
             if (response.totalPayout >= betAmount * 8) {
                 setOpenBigWin(true);
                 startAudio();
@@ -125,10 +125,10 @@ const Slots = () => {
                 play(response.totalPayout > 0 ? "slots.win" : "game.lose");
             }, 3000);
         } catch (e: any) {
-            stopSpinSounds();
             console.error(e.response?.data.message || "Error spinning slots");
             toast.error(e.response?.data.message || i18n.t("slot.errorSpinningSlots"));
-            setIsSpinning(false);
+        } finally {
+            setWaiting(false);
         }
     };
 
@@ -202,7 +202,7 @@ const Slots = () => {
                     </div>
                     <div className="flex items-center justify-center gap-8">
                         {handleChangeBet("subtract")}
-                        <button onClick={handleSpin} disabled={isSpinning} data-tour="play-button" className="bg-[#25D160] w-16 h-16 text-white 
+                        <button onClick={handleSpin} disabled={isSpinning || waiting} data-tour="play-button" className="bg-[#25D160] w-16 h-16 text-white 
                             font-bold py-2 px-4 rounded-full transition-all 
                             hover:bg-[#b0ff7c] hover:border-unique border-4 border-[#ECA823] text-sm flex items-center justify-center"
                             style={{
