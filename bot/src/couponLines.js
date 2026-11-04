@@ -20,8 +20,28 @@ const COUPON_LINES = [
   "Click fast, Mr. Gambler. I'm not handing out seconds.",
 ];
 
+// what she says when someone begs. begging never pays, that is the whole joke
+const BEG_LINES = [
+  "No.",
+  "Begging, in front of everyone? ...No.",
+  "Coupons drop when I feel like it. I don't feel like it.",
+  "Ask nicely. ...That was nicely? Then no.",
+  "I wrote your name down. On the no list.",
+  "Every time someone begs, a coupon somewhere cries.",
+  "Have some dignity, Mr. Gambler. Then ask again. Still no.",
+  "Fine, here's one: NOPENOPE. It's expired. lolol~",
+  "Begging is free. That's about what it's worth.",
+  "You'll get one when everyone else does. Patience.",
+  "I'm telling everyone you asked.",
+  "My jar refills every 8 minutes. Go poke that instead.",
+  "Hmm... let me think. No.",
+  "Wah wah. Go win something.",
+];
+
 const fill = (line, { amount }) => line.replace(/\{amount\}/g, amount);
+const pick = (lines, random) => lines[Math.floor(random() * lines.length)];
 
-const couponLine = (vars, random = Math.random) => fill(COUPON_LINES[Math.floor(random() * COUPON_LINES.length)], vars);
+const couponLine = (vars, random = Math.random) => fill(pick(COUPON_LINES, random), vars);
+const begLine = (random = Math.random) => pick(BEG_LINES, random);
 
-module.exports = { COUPON_LINES, couponLine };
+module.exports = { COUPON_LINES, BEG_LINES, couponLine, begLine };
