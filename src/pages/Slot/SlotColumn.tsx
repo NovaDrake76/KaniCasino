@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { RotatingLines } from "react-loader-spinner";
 import { symbolImage } from "./symbols";
 
@@ -11,7 +11,7 @@ interface SlotColumnProps {
 
 const options = ['red', 'blue', 'green', 'yin_yang', 'hakkero', 'yellow', 'wild'];
 const makeFillers = () =>
-    Array.from({ length: 47 }, () => options[Math.floor(Math.random() * options.length)]);
+    Array.from({ length: 44 }, () => options[Math.floor(Math.random() * options.length)]);
 
 const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, winningLines }) => {
     const rollsize = 5260;
@@ -20,11 +20,18 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
     // the scrolling fillers are generated once and never change; regenerating them on a spin
     // repainted the whole reel mid-animation, so only the final three symbols move now
     const [fillers] = useState<string[]>(makeFillers);
+    // what the reel last stopped on heads the strip, so a spin starts from the symbols on screen instead of swapping them
+    const [shown, setShown] = useState<string[]>(symbols);
 
     const rouletteRef = useRef<HTMLDivElement | null>(null);
 
     // the final three symbols land at the stop position; fillers scroll past above them
-    const rouletteItems = [...fillers, symbols[0], symbols[1], symbols[2]];
+    const [top, middle, bottom] = symbols;
+    const rouletteItems = [...shown, ...fillers, top, middle, bottom];
+
+    useEffect(() => {
+        if (!isSpinning) setShown([top, middle, bottom]);
+    }, [isSpinning, top, middle, bottom]);
 
     const handleImageLoad = () => {
         setLoading(false);
@@ -50,7 +57,8 @@ const SlotColumn: React.FC<SlotColumnProps> = ({ symbols, isSpinning, position, 
     };
 
 
-    useEffect(() => {
+    // before paint: the new result is already at the bottom of the strip, and one frame at rest would show it
+    useLayoutEffect(() => {
         if (rouletteRef.current && isSpinning) {
             rouletteRef.current.style.animation = calculateDelay(position);
         } else if (rouletteRef.current) {
