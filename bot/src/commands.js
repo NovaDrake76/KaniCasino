@@ -293,26 +293,26 @@ const commands = [
   {
     data: new SlashCommandBuilder().setName("help").setDescription("What this bot is"),
     async run(interaction) {
-      await interaction.reply({
-        flags: MessageFlags.Ephemeral,
-        embeds: [
-          noticeEmbed(
-            [
-              `**KaniCasino** is a fake-coin casino where you open cases, collect characters and fight for their fan boards.`,
-              "",
-              "`/open` open a case: pick a series, then a case from it",
-              "`/link` attach your account, once",
-              "`/showcase` your pinned character and standing",
-              "`/topfan` who in this server collects a character hardest",
-              "`/leaderboard` the players in this server",
-              "",
-              `Everything else, and every case, is at ${SITE}`,
-            ].join("\n")
-          ),
-        ],
-      });
+      await interaction.reply({ flags: MessageFlags.Ephemeral, embeds: [helpEmbed()] });
     },
   },
 ];
 
-module.exports = { commands, onCooldown, runOpen, seriesMenu, casesMenu, categoryFor, failedFrame };
+// /help and the mention's "what else can you do?" say the same thing
+function helpEmbed() {
+  return noticeEmbed(
+    [
+      `**KaniCasino** is a fake-coin casino where you open cases, collect characters and fight for their fan boards.`,
+      "",
+      "`/open` open a case: pick a series, then a case from it",
+      "`/link` attach your account, once",
+      "`/showcase` your pinned character and standing",
+      "`/topfan` who in this server collects a character hardest",
+      "`/leaderboard` the players in this server",
+      "",
+      `Everything else, and every case, is at ${SITE}`,
+    ].join("\n")
+  );
+}
+
+module.exports = { commands, onCooldown, runOpen, seriesMenu, casesMenu, categoryFor, failedFrame, helpEmbed };

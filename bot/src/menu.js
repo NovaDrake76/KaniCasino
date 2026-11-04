@@ -29,6 +29,9 @@ const ID = {
   cases: (category, offset) => `menu|case|${tokenOf(category)}|${offset}`,
   page: (category, offset) => `menu|page|${tokenOf(category)}|${offset}`,
   back: "menu|back",
+  open: "menu|open",
+  beg: "menu|beg",
+  help: "menu|help",
 };
 
 // every menu id starts here, so index.js can route the whole family on one prefix
@@ -40,6 +43,21 @@ function parseMenu(customId) {
 }
 
 const row = (component) => new ActionRowBuilder().addComponents(component);
+
+// what a bare mention gets: her question, and the things a player can ask her for
+function homeFrame() {
+  const container = new ContainerBuilder()
+    .setAccentColor(ACCENT)
+    .addTextDisplayComponents(new TextDisplayBuilder().setContent("### What do you want, Mr. Gambler?"))
+    .addActionRowComponents(
+      new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId(ID.open).setLabel("Open a case").setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId(ID.beg).setLabel("Beg for a coupon").setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId(ID.help).setLabel("What else can you do?").setStyle(ButtonStyle.Secondary)
+      )
+    );
+  return sign(container);
+}
 
 function categoryFrame(categories) {
   const container = new ContainerBuilder()
@@ -150,6 +168,7 @@ module.exports = {
   NO_CATEGORY,
   isMenu,
   parseMenu,
+  homeFrame,
   categoryFrame,
   caseFrame,
   chosenFrame,
