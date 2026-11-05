@@ -4,7 +4,7 @@ name: API uptime
 # so the probe sees the api from far away, as a distant player does.
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
