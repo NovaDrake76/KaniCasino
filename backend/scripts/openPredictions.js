@@ -68,7 +68,7 @@ async function main() {
       endsAt: new Date(spec.endsAt),
       vigBps,
       impactBps,
-      exposureCap: spec.exposureCap || 10000,
+      exposureCap: spec.exposureCap || 50000,
       boardOrder: Number.isFinite(spec.boardOrder) ? spec.boardOrder : 0,
       outcomes: spec.outcomes.map((label, i) => ({
         key: `o${i + 1}`,

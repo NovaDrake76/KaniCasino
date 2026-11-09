@@ -39,7 +39,7 @@ const PredictionSchema = new mongoose.Schema(
     impactBps: { type: Number, default: DEFAULT_IMPACT_BPS },
     // the most the house will let itself owe here, in KP. without it one market can mint
     // more than the whole economy holds.
-    exposureCap: { type: Number, default: 100000 },
+    exposureCap: { type: Number, default: 50000 },
 
     endsAt: Date,
     resolvedOutcome: String,
