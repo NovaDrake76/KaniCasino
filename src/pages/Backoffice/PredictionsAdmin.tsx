@@ -28,7 +28,7 @@ const emptyDraft = {
   endsAt: "",
   outcomes: "Yes\nNo",
   impactBps: "10",
-  exposureCap: "100000",
+  exposureCap: "50000",
   boardOrder: "0",
 };
 
