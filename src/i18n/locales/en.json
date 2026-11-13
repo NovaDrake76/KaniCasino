@@ -362,7 +362,8 @@
     "openFreeCount": "Open free x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "right arrow",
-    "topArrow": "top arrow"
+    "topArrow": "top arrow",
+    "viewCollection": "View collection"
   },
   "chat": {
     "empty": "Nothing said yet. Go on.",

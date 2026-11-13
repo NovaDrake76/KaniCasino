@@ -362,7 +362,8 @@
     "openFreeCount": "Buka gratis x{{count}}",
     "provablyFair": "Gak ngechit, aman",
     "rightArrow": "panah kanan",
-    "topArrow": "panah atas"
+    "topArrow": "panah atas",
+    "viewCollection": "Lihat koleksi"
   },
   "chat": {
     "empty": "Belum ada yang bicara. Silakan mulai.",

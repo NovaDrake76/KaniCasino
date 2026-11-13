@@ -362,7 +362,8 @@
     "openFreeCount": "無料で開ける x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "右向き矢印",
-    "topArrow": "上向き矢印"
+    "topArrow": "上向き矢印",
+    "viewCollection": "コレクションを見る"
   },
   "chat": {
     "empty": "まだ誰も話していません。どうぞ。",

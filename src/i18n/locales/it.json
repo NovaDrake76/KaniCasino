@@ -362,7 +362,8 @@
     "openFreeCount": "Apri gratis x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "freccia a destra",
-    "topArrow": "freccia in alto"
+    "topArrow": "freccia in alto",
+    "viewCollection": "Vedi collezione"
   },
   "chat": {
     "empty": "Ancora nessuno ha parlato. Inizia tu.",
