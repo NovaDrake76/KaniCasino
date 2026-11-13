@@ -180,12 +180,22 @@ const CasePage = () => {
   return (
     <div className="flex flex-col items-center w-full relative">
       {!loading && data && (
-        <button
-          onClick={() => navigate(`/battles?add=${id}`)}
-          className="self-end mr-4 mt-4 md:absolute md:top-4 md:right-8 md:mr-0 md:mt-0 z-20 px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm"
-        >
-          {i18n.t("casePage.addToBattle")}
-        </button>
+        <div className="self-end mr-4 mt-4 md:absolute md:top-4 md:right-8 md:mr-0 md:mt-0 z-20 flex gap-2">
+          {userData?.id && data.collectible !== false && (
+            <button
+              onClick={() => navigate(`/profile/${userData.id}?tab=collections&case=${caseId}`)}
+              className="px-4 py-2 rounded bg-surface-raised hover:bg-surface-hover font-semibold text-sm"
+            >
+              {i18n.t("casePage.viewCollection")}
+            </button>
+          )}
+          <button
+            onClick={() => navigate(`/battles?add=${id}`)}
+            className="px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 font-semibold text-sm"
+          >
+            {i18n.t("casePage.addToBattle")}
+          </button>
+        </div>
       )}
       <div className="flex w-full flex-col items-center overflow-hidden md:max-w-[1920px]">
         <h1 className="text-2xl color-[#e1dde9] font-bold py-7">
