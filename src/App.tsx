@@ -228,9 +228,11 @@ function App() {
   // socket; show a sticky toast (announced or on an unexpected drop) and clear it on reconnect
   useEffect(() => {
     const RECONNECT_ID = "server-reconnect";
+    // a tap on a phone counts as hovering and never ends, so the bar stopped and the toast stayed; a tap closes it instead
+    const UNPAUSED = { pauseOnHover: false, pauseOnFocusLoss: false, closeOnClick: true };
     const showReconnecting = (msg?: string) => {
       if (toast.isActive(RECONNECT_ID)) return;
-      toast.loading(msg || i18n.t("common.reconnectingToTheServer"), { toastId: RECONNECT_ID });
+      toast.loading(msg || i18n.t("common.reconnectingToTheServer"), { toastId: RECONNECT_ID, ...UNPAUSED });
     };
     const onNotice = (p: { message?: string; seconds?: number }) => showReconnecting(p?.message);
     // ignore intentional client disconnects (the login/logout re-handshake below)
@@ -239,7 +241,7 @@ function App() {
     };
     const onConnect = () => {
       if (toast.isActive(RECONNECT_ID)) {
-        toast.update(RECONNECT_ID, { render: "Reconnected", type: "success", isLoading: false, autoClose: 1500 });
+        toast.update(RECONNECT_ID, { render: "Reconnected", type: "success", isLoading: false, autoClose: 1500, ...UNPAUSED });
       }
     };
     socket.on("serverNotice", onNotice);
