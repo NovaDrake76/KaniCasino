@@ -5,7 +5,7 @@ import { answerStillThere, claimPot, getPotStatus, PotStatus } from "../../servi
 import { serverNow } from "../../services/serverClock";
 import { useGiftStatus } from "../header/useGiftReady";
 import { EXPIRING_MS, GAME_ART, GAME_NAME_KEYS, GAME_PATHS, clock, fillAt, kp, msUntil, payout, showsBonus, takeBetween } from "./potMath";
-import { greetingFor, lineKey, Mood, openingMood, pokeMood, relationshipRank } from "./daisuLines";
+import { greetingFor, Mood, openingMood, pickLine, pokeMood, relationshipRank } from "./daisuLines";
 import { setPotStatus, usePotStatus } from "./potStore";
 import { DAISU_STAGE_EVENT, emitJarTaken, emitPoked, SHOP_OPEN_EVENT } from "./tour/tourEvents";
 import { useRoadmap } from "./roadmap/useRoadmap";
@@ -151,7 +151,7 @@ export const useDaisu = () => {
   const rankRef = useRef(0);
   // every line carries a face, so what she says is what she wears
   const say = useCallback((mood: Mood, vars?: Line["vars"]) => {
-    const key = lineKey(mood, Math.random(), rankRef.current);
+    const key = pickLine(mood, Math.random(), rankRef.current);
     setLine({ key, vars, id: ++utterance.current });
     lineFace.current = expressionFor(key);
     if (faceTimer.current) clearTimeout(faceTimer.current);

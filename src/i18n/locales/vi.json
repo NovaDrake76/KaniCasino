@@ -362,7 +362,8 @@
     "openFreeCount": "Mở miễn phí x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "mũi tên phải",
-    "topArrow": "mũi tên trên"
+    "topArrow": "mũi tên trên",
+    "viewCollection": "Xem bộ sưu tập"
   },
   "chat": {
     "empty": "Chua ai noi gi. Ban bat dau nhe.",

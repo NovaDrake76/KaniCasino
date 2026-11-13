@@ -44,10 +44,24 @@ export const helloKeys = (rank: number) => [
   ...Array.from({ length: Math.max(0, Math.min(RANKS, rank)) }, (_, i) => keysOf(`helloRank${i + 1}`)).flat(),
 ];
 
-// poked six times or more in a row, she may say anything from hello as well
-export const lineKey = (mood: Mood, roll: number, rank = 0) => {
+// poked six times or more in a row, she may say anything from hello as well. a line in `recent` waits its turn;
+// when a small group has said them all, the one said longest ago comes back first
+export const lineKey = (mood: Mood, roll: number, rank = 0, recent: string[] = []) => {
   const keys = mood === "hello" ? helloKeys(rank) : mood === "poke2" ? [...keysOf("poke2"), ...helloKeys(rank)] : keysOf(mood);
-  return keys[Math.min(keys.length - 1, Math.floor(roll * keys.length))];
+  const fresh = keys.filter((key) => !recent.includes(key));
+  if (!fresh.length) return [...keys].sort((a, b) => recent.lastIndexOf(a) - recent.lastIndexOf(b))[0];
+  return fresh[Math.min(fresh.length - 1, Math.floor(roll * fresh.length))];
+};
+
+// what she said lately in this tab, so a click streak does not hear the same line again and again
+const RECENT_LINES = 8;
+const said: string[] = [];
+
+export const pickLine = (mood: Mood, roll: number, rank = 0) => {
+  const key = lineKey(mood, roll, rank, said);
+  said.push(key);
+  if (said.length > RECENT_LINES) said.shift();
+  return key;
 };
 
 interface Situation {

@@ -362,7 +362,8 @@
     "openFreeCount": "무료로 열기 x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "오른쪽 화살표",
-    "topArrow": "위 화살표"
+    "topArrow": "위 화살표",
+    "viewCollection": "컬렉션 보기"
   },
   "chat": {
     "empty": "아직 아무도 말하지 않았습니다. 먼저 해보세요.",

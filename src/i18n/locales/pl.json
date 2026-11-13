@@ -366,7 +366,8 @@
     "openFreeCount": "Otwórz za darmo x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "strzałka w prawo",
-    "topArrow": "strzałka w górę"
+    "topArrow": "strzałka w górę",
+    "viewCollection": "Zobacz kolekcję"
   },
   "chat": {
     "empty": "Cisza jak w kościele. Napisz coś!",

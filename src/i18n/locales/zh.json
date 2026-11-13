@@ -362,7 +362,8 @@
     "openFreeCount": "免费开箱 x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "右箭头",
-    "topArrow": "上箭头"
+    "topArrow": "上箭头",
+    "viewCollection": "查看收藏册"
   },
   "chat": {
     "empty": "还没有人说话，来开个头吧。",
