@@ -66,34 +66,29 @@ KaniCasino is a full-stack web app that recreates the feel of an online casino f
 
 ## Getting started
 
-### Run the frontend only
+### Run it yourself
 
-The quickest way to try it out. It talks to the live API.
-
-```bash
-npm install
-npm run dev
-```
-
-Create a `.env` in the project root with:
-
-```
-VITE_BASE_URL=https://kanicasino.fabrixhosting.com.au
-```
-
-### Run the full stack
-
-You'll need your own MongoDB (local or Atlas, the project's database is not public).
+The live API at `https://api.kanicasino.com` only answers kanicasino.com itself, so a local copy of the site needs its own backend. You'll need your own MongoDB (local or Atlas, the project's database is not public).
 
 1. Install dependencies in both the root and the `backend/` folder.
-2. Point the frontend at your local backend by setting `VITE_BASE_URL=http://localhost:5000` in the root `.env`.
+2. Create a `.env` in the project root:
+
+   ```
+   VITE_BASE_URL=http://localhost:5000
+   VITE_API_KEY=any-shared-key
+   ```
+
 3. Create a `backend/.env` with at least:
 
    ```
    JWT_SECRET=your-secret
    MONGO_URI=your-mongodb-connection-string
    PORT=5000
+   API_KEY=any-shared-key
+   NODE_ENV=development
    ```
+
+   `API_KEY` must match `VITE_API_KEY`. In production the backend refuses to start unless MongoDB is a replica set, because money writes have to be atomic; `NODE_ENV=development` lets a single local server through.
 
 4. Start both together:
 
