@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { greetingFor, helloKeys, lineKey, openingMood, pokeMood, relationshipRank } from "./daisuLines";
+import { greetingFor, helloKeys, lineKey, openingMood, pickLine, pokeMood, relationshipRank } from "./daisuLines";
 import en from "../../i18n/locales/en.json";
 import pt from "../../i18n/locales/pt.json";
 import ja from "../../i18n/locales/ja.json";
@@ -95,5 +95,25 @@ describe("being poked", () => {
     expect(pokeMood(5)).toBe("poke1");
     expect(pokeMood(6)).toBe("poke2");
     expect(pokeMood(40)).toBe("poke2");
+  });
+});
+
+// a player clicking through her card heard the same line five times in a row
+describe("lines she said lately", () => {
+  it("are held back while the group has others to say", () => {
+    const recent = ["daisu.lines.full.0", "daisu.lines.full.1"];
+    expect(lineKey("full", 0, 0, recent)).toBe("daisu.lines.full.2");
+    expect(lineKey("full", 0.99, 0, recent)).toBe("daisu.lines.full.4");
+  });
+
+  it("come back oldest first once the whole group has been said", () => {
+    const recent = ["daisu.lines.empty.1", "daisu.lines.empty.2", "daisu.lines.empty.0"];
+    expect(lineKey("empty", 0.99, 0, recent)).toBe("daisu.lines.empty.1");
+  });
+
+  it("never repeat back to back, even on the same roll every time", () => {
+    const heard = Array.from({ length: 30 }, () => pickLine("empty", 0));
+    for (let i = 1; i < heard.length; i++) expect(heard[i]).not.toBe(heard[i - 1]);
+    expect(new Set(heard).size).toBe(3);
   });
 });
