@@ -23,5 +23,7 @@ const LotteryEntrySchema = new mongoose.Schema(
 
 // the unique pair is what settles two first purchases racing for one player's entry
 LotteryEntrySchema.index({ draw: 1, userId: 1 }, { unique: true });
+// an entry is only read while its draw is open or being settled, and the draw itself is kept, so 90 days is far past any use
+LotteryEntrySchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
 
 module.exports = mongoose.model("LotteryEntry", LotteryEntrySchema);
