@@ -252,7 +252,7 @@
     "hilo_win": "HiLo-Auszahlung",
     "item_sell": "An den Shop verkauft",
     "leaderboard_prize": "Bestenlisten-Preis",
-    "lottery_refund": "Lotterie-Erstattung",
+    "lottery_refund": "Lotterie-Rückerstattung",
     "lottery_ticket": "Lotterielose",
     "lottery_win": "Lotteriegewinn",
     "market_buy": "Marktkauf",
@@ -869,7 +869,7 @@
         "hilo": "höher oder tiefer",
         "mines": "weich den Bomben aus",
         "plinko": "lass eine Kugel fallen",
-        "scratch": "rubbeln und vergleichen",
+        "scratch": "rubbeln und kombinieren",
         "slots": "drehen und kombinieren"
       },
       "gamesLine": "Kisten öffnen kann schnell teuer werden, und mein Topf reicht dafür nicht. Spiele sind gut, um mehr K₽ zu bekommen, also such dir jetzt eins aus.",
@@ -1536,7 +1536,7 @@
     "verifiedMines": "Bestätigt: die Minen lagen auf {{mines}}; {{gems}} Edelsteine, {{outcome}}, Auszahlung {{payout}}.",
     "verifiedPlinko": "Bestätigt: der neu berechnete Pfad landet in Fach {{bin}} bei x{{multiplier}}.",
     "verifiedScratchPocket": "Bestätigt: Das neu berechnete Raster ist {{cells}} und zahlt {{payout}}.",
-    "verifiedScratchNine": "Bestätigt: Die Glückssymbole sind {{lucky}}, der Multiplikator x{{multiplier}}, die Felder {{spots}}; es zahlt {{payout}}.",
+    "verifiedScratchNine": "Bestätigt: Die Glückssymbole sind {{lucky}}, der Multiplikator x{{multiplier}}, die Felder {{spots}}; das Los zahlt {{payout}}.",
     "verifiedScratchTreasure": "Bestätigt: Das Brett ist {{board}}; die Felder {{picks}} wurden freigerubbelt und zahlen {{payout}}.",
     "win": "Sieg",
     "yourSeed": "Dein Seed"
@@ -1957,7 +1957,7 @@
     "history": "Frühere Ziehungen",
     "historyEmpty": "Noch keine Ziehungen.",
     "won": "Jackpot geknackt",
-    "rolled": "Weitergewandert",
+    "rolled": "Nicht geknackt",
     "newer": "Neuere",
     "older": "Ältere",
     "page": "Seite {{page}} von {{pages}}",
@@ -2271,7 +2271,7 @@
       "treasure": "Geliehener Schatz"
     },
     "rules": {
-      "pocket": "**3 gleiche in einer Reihe** gewinnen.",
+      "pocket": "**3 Gleiche in einer Reihe** gewinnen.",
       "nine": "**Finde ein Glückssymbol** und gewinne seinen Preis.",
       "nineMultiplier": "Der Multiplikator erhöht jeden Gewinn.",
       "treasure": "**Nur 3 rubbeln.**"
@@ -2286,7 +2286,7 @@
     "topPrize": "Hauptgewinn",
     "prizes": "Gewinne",
     "multipliers": "Multiplikatoren",
-    "lucky": "Glück",
+    "lucky": "Glückssymbol",
     "multiplier": "Multiplikator",
     "empty": "leer",
     "coating": "RUBBELN",
@@ -2691,7 +2691,7 @@
       "step1": "Wähle ein Los aus der Auslage. Kleingeld und Perfekte Neun gibt es zu 1, 3, 5 oder 10 Stück, Geliehener Schatz nur einzeln.",
       "step2": "Kauf es. Das Los wird im Moment des Kaufs aus deinem Seed erstellt.",
       "step3": "Rubbel die Schicht frei. Sie geht beim Rubbeln nach und nach ab, also fahr zweimal drüber. Bei Kleingeld und Perfekte Neun erledigt Alles aufdecken das für dich.",
-      "pocket": "Neun Symbole in einem 3x3-Raster. Drei gleiche in einer Zeile, einer Spalte oder einer Diagonale gewinnen den Preis dieses Symbols. Ein Los zeigt nie mehr als eine Reihe.",
+      "pocket": "Neun Symbole in einem 3x3-Raster. Drei Gleiche in einer Zeile, einer Spalte oder einer Diagonale gewinnen den Preis dieses Symbols. Ein Los zeigt nie mehr als eine Reihe.",
       "nine": "Zwei Glückssymbole, ein Multiplikator und acht Felder mit je einem Preis darunter. Jedes Feld mit einem Glückssymbol zahlt seinen Preis, und der Multiplikator erhöht die Summe.",
       "treasure": "Neun verdeckte Felder, und du rubbelst nur drei frei. Du gewinnst die Summe dessen, was darunter liegt. Das Brett steht beim Kauf fest, also entscheiden die Felder, die du wählst, über deinen Gewinn; drei beliebige bringen im Schnitt ein Drittel des Bretts.",
       "note1": "Kleingeld und Perfekte Neun werden beim Kauf entschieden und ausgezahlt; dein Guthaben zieht nach, während du rubbelst.",
