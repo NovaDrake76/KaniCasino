@@ -136,6 +136,7 @@ const PointsPanel = ({ points, onClose }: { points: LeaderboardViewProps["points
 
 const LeaderboardView = ({
     loading,
+    sectionId,
     podium,
     rest,
     podiumRest,
@@ -150,7 +151,7 @@ const LeaderboardView = ({
     closePoints,
     aside,
 }: LeaderboardViewProps) => (
-    <div className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none">
+    <div id={sectionId} className="flex flex-col items-center justify-center max-w-[360px] md:max-w-none scroll-mt-16">
 
         <div className="w-full max-w-[1620px] px-4 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
             <div className="w-fit">

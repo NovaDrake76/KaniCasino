@@ -9,6 +9,7 @@ export interface Countdown {
 export interface LeaderboardViewProps {
   loading: boolean;
   board: Board | null;
+  sectionId: string;
   // the three podium places, already ordered 2nd / 1st / 3rd the way they are drawn
   podium: BoardStanding[];
   rest: BoardStanding[];

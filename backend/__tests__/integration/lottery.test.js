@@ -494,6 +494,65 @@ describe("the draw", () => {
   });
 });
 
+describe("the home tile's pot", () => {
+  it("answers anyone with the open draw's number, jackpot and time, and moves with a purchase", async () => {
+    const res = await request(app).get("/lottery/pot");
+    expect(res.status).toBe(200);
+    const open = await LotteryDraw.findOne({ number: 1 }).lean();
+    expect(res.body).toEqual({ number: 1, jackpot: JACKPOT_BASE, drawAt: open.drawAt.toISOString(), serverTime: expect.any(String) });
+
+    const user = await makeUser();
+    await buy(user, [[1, 2, 3], [4, 5, 6]]);
+    const signedIn = await auth(request(app).get("/lottery/pot"), user);
+    expect(signedIn.body).toEqual({
+      number: 1,
+      jackpot: JACKPOT_BASE + 2 * JACKPOT_SHARE,
+      drawAt: open.drawAt.toISOString(),
+      serverTime: expect.any(String),
+    });
+  });
+
+  it("serves the cached draw, so a second ask does not reach the database", async () => {
+    await request(app).get("/lottery/pot");
+    const reads = jest.spyOn(LotteryDraw, "findOne");
+    const again = await request(app).get("/lottery/pot");
+    expect(again.body.number).toBe(1);
+    expect(reads).not.toHaveBeenCalled();
+  });
+
+  it("stamps the time of each answer, not the time the draw was cached", async () => {
+    const first = await request(app).get("/lottery/pot");
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    const before = Date.now();
+    const reads = jest.spyOn(LotteryDraw, "findOne");
+    const second = await request(app).get("/lottery/pot");
+    expect(reads).not.toHaveBeenCalled();
+    const at = Date.parse(second.body.serverTime);
+    expect(at).toBeGreaterThanOrEqual(before);
+    expect(at).toBeLessThanOrEqual(Date.now());
+    expect(at).toBeGreaterThan(Date.parse(first.body.serverTime));
+  });
+
+  it("follows the draw to the next one once it is settled", async () => {
+    const user = await makeUser();
+    const t = await pinDraw(1);
+    await buy(user, [t.m0]);
+    await due(1);
+    await settleDue(io, { revealMs: 0 });
+    const res = await request(app).get("/lottery/pot");
+    expect(res.body).toMatchObject({ number: 2, jackpot: JACKPOT_BASE + JACKPOT_SHARE });
+  });
+
+  it("answers null when there is no open draw", async () => {
+    await LotteryDraw.deleteMany({});
+    memo.forget("lottery:");
+    const res = await request(app).get("/lottery/pot");
+    expect(res.status).toBe(200);
+    expect(res.body).toBeNull();
+    expect(await LotteryDraw.countDocuments({})).toBe(0);
+  });
+});
+
 describe("the page and the history", () => {
   it("shows a guest the draw, the rules and the last result", async () => {
     const res = await request(app).get("/lottery");

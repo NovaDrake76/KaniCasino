@@ -110,7 +110,18 @@ export interface DrawnEvent {
   next: OpenDraw | null;
 }
 
+// the open draw's pot alone, for the home page's tile and today strip
+export interface LotteryPot {
+  number: number;
+  jackpot: number;
+  drawAt: string;
+  // when the answer was made, so the countdown can run on the server's clock
+  serverTime?: string;
+}
+
 export const getLottery = () => api.get<LotteryState>("/lottery").then((r) => r.data);
+
+export const getLotteryPot = () => api.get<LotteryPot | null>("/lottery/pot").then((r) => r.data);
 
 export const buyLotteryTickets = (picks: number[][]) => api.post<LotteryPurchase>("/lottery/tickets", { picks }).then((r) => r.data);
 

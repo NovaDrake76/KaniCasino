@@ -7,6 +7,8 @@ import GameListing from "./GamesListing";
 import Leaderboard from "./Leaderboard";
 import DiscordWidget from "./DiscordWidget";
 import TopFanPromo from "./TopFanPromo";
+import HomeFeed from "./HomeFeed";
+import TodayStrip from "./TodayStrip";
 import { groupCasesByCategory } from "./groupCases";
 import { recommendedCases } from "./recommendedCases";
 import { isNewCase } from "../../utils/caseAge";
@@ -186,6 +188,7 @@ const Home = () => {
             <Banner key={index} left={_item.left} right={_item.right} />
           ))}
         </Carousel>
+        <TodayStrip />
         <CategoryBar sections={sections} loading={recommendedLoading} />
 
         {/* the skeleton reserves the row while loading so the sections below do not jump */}
@@ -233,4 +236,11 @@ const Home = () => {
   );
 };
 
-export default Home;
+// the feed sits outside the page, so a new pot or board re-renders only what reads it, never the cases and the banner
+const HomePage = () => (
+  <HomeFeed>
+    <Home />
+  </HomeFeed>
+);
+
+export default HomePage;

@@ -333,3 +333,15 @@ test("the last draw's tickets go back on the slip from one chip", async ({ page 
   expect(bought).toHaveLength(1);
   expect(bought[0].picks).toEqual([[5, 7, 8], [5, 7, 8]]);
 });
+
+test("the home page's lottery tile carries the live jackpot", async ({ page }) => {
+  await open(page);
+  await onApi(page, "**/lottery/pot", () => ({ number: 2, jackpot: 61300, drawAt: new Date(Date.now() + 2 * 3600 * 1000).toISOString() }));
+  const emit = await fakeSocket(page);
+  await page.goto("/");
+  const chip = page.getByRole("link", { name: /Play Daily Lottery/ }).getByTestId("lottery-pot");
+  await expect(chip).toHaveText(/^Jackpot K₽\s61,300$/);
+  emit("lottery:pot", { draw: 2, jackpot: 61325, tickets: 1000 });
+  await expect(chip).toHaveText(/^Jackpot K₽\s61,325$/);
+  await expect(page.getByTestId("lottery-pot")).toHaveCount(1);
+});

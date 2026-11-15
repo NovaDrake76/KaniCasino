@@ -1,15 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  getBoard,
-  getPoints,
-  Board,
-  PointsGame,
-} from "../../../services/leaderboard/LeaderboardService";
+import { useCallback, useEffect, useState } from "react";
+import { getPoints, PointsGame } from "../../../services/leaderboard/LeaderboardService";
+import { useHomeBoard } from "../HomeFeed/HomeFeed.context";
 import { Countdown } from "./Leaderboard.types";
 
-// the board only moves when someone bets, so it is polled rather than pushed. thirty
-// seconds keeps a busy evening well inside the fifteen-second server-side cache.
-const REFRESH_MS = 30000;
+// the section's anchor, so the today strip can bring it into view
+export const LEADERBOARD_ID = "leaderboard";
 const ZERO: Countdown = { hours: "00", minutes: "00", seconds: "00" };
 
 const pad = (n: number) => String(Math.max(0, Math.floor(n))).padStart(2, "0");
@@ -35,53 +30,21 @@ export const podiumOrder = <T,>(rows: T[]): T[] => {
 };
 
 export const useLeaderboardServices = () => {
-  const [board, setBoard] = useState<Board | null>(null);
-  const [loading, setLoading] = useState(true);
+  // polled once for the whole home page (HomeFeed), so the today strip and this section never ask twice
+  const { board, status, skew } = useHomeBoard();
   const [countdown, setCountdown] = useState<Countdown>(ZERO);
   const [points, setPoints] = useState<PointsGame[]>([]);
   const [showPoints, setShowPoints] = useState(false);
 
   // the device clock can be wrong by minutes; the countdown runs off the server's instead
-  const skew = useRef(0);
-  const endsAt = useRef(0);
-  const rolledOver = useRef(false);
-
-  const load = useCallback(async () => {
-    try {
-      const next = await getBoard();
-      skew.current = Date.now() - new Date(next.serverTime).getTime();
-      endsAt.current = new Date(next.endsAt).getTime();
-      rolledOver.current = false;
-      setBoard(next);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    load();
-    const timer = window.setInterval(load, REFRESH_MS);
-    return () => window.clearInterval(timer);
-  }, [load]);
-
   useEffect(() => {
     if (!board) return;
-    const tick = () => {
-      const remaining = endsAt.current - (Date.now() - skew.current);
-      setCountdown(splitRemaining(remaining));
-      // the day turned over: pull the new board once rather than every second
-      if (remaining <= 0 && !rolledOver.current) {
-        rolledOver.current = true;
-        load();
-      }
-    };
+    const endsAt = new Date(board.endsAt).getTime();
+    const tick = () => setCountdown(splitRemaining(endsAt - (Date.now() - skew)));
     tick();
     const timer = window.setInterval(tick, 1000);
     return () => window.clearInterval(timer);
-  }, [board, load]);
-
+  }, [board, skew]);
 
   const openPoints = useCallback(() => {
     setShowPoints(true);
@@ -96,8 +59,9 @@ export const useLeaderboardServices = () => {
   const me = board ? board.me : null;
 
   return {
-    loading,
+    loading: status === "loading",
     board,
+    sectionId: LEADERBOARD_ID,
     podium: podiumOrder(earned.slice(0, 3)),
     rest: standings.slice(Math.min(earned.length, 3)),
     // the podium only stands first place on mobile, so second and third join the table
