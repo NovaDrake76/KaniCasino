@@ -70,17 +70,23 @@ const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel =
     }
 
 
+    // the picture's own size in a flex box: a bare skeleton sits on a text line and comes out a few pixels taller, which moved the navbar
+    const placeholder = (
+        <Skeleton
+            inline
+            containerClassName="flex"
+            className="shrink-0"
+            circle={true}
+            height={skeletonSize}
+            width={skeletonSize}
+            highlightColor="#161427"
+            baseColor="#1c1a31"
+        />
+    );
+
     const content = (
         <>
-            {!loaded && (
-                <Skeleton
-                    circle={true}
-                    height={40}
-                    width={40}
-                    highlightColor="#161427"
-                    baseColor="#1c1a31"
-                />
-            )}
+            {!loaded && placeholder}
 
             <div className="relative">
                 <img
@@ -111,13 +117,7 @@ const Avatar: React.FC<Avatar> = ({ image, loading, id, size, level, showLevel =
     return (
         <div className="min-w-[48px] ">
             {loading ? (
-                <Skeleton
-                    circle={true}
-                    height={skeletonSize}
-                    width={skeletonSize}
-                    highlightColor="#161427"
-                    baseColor="#1c1a31"
-                />
+                placeholder
             ) : noLink || !id ? (
                 content
             ) : (

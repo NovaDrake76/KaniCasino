@@ -444,6 +444,59 @@ test.describe("the today strip", () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 
+  // mocked english data hid these: a long word in a title, a long label on the lottery tile, a long name on a fan card
+  for (const [locale, width] of [
+    ["de-DE", 320],
+    ["ja-JP", 360],
+    ["pl-PL", 360],
+  ] as const) {
+    test(`no horizontal scroll at ${width} in ${locale}, long names included`, async ({ browser, baseURL }) => {
+      const context = await browser.newContext({ locale, viewport: { width, height: 700 } });
+      const page = await context.newPage();
+      await page.addInitScript(() => localStorage.setItem("kani.onboardingSeen", "1"));
+      await mockApi(page);
+      await today(page);
+      const fan = { username: "Akmal Marisa Kanade Izanagi the Second", profilePicture: "", level: 12 };
+      await page.route("**/fandom**", (route) =>
+        route.request().resourceType() === "document"
+          ? route.fallback()
+          : route.fulfill({ json: { page: 1, pages: 1, boards: [{ name: "Airi", image: IMG, rarity: "rare", caseId: null, fanCount: 9, topCount: 123, secondCount: 40, gap: 83, top: fan }] } })
+      );
+      await page.goto(`${baseURL}/`);
+      await expect(page.locator("html")).toHaveAttribute("lang", new RegExp(`^${locale.slice(0, 2)}`));
+      await expect(amount(page, "leaderboard")).toHaveText(/21,700/);
+      await expect(page.getByText(/Akmal Marisa Kanade Izanagi/).first()).toBeAttached();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+      await context.close();
+    });
+  }
+
+  test("the navbar keeps its height while a signed-in player's picture loads", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await mockApi(page);
+    await mockSession(page);
+    await today(page);
+    // the picture is held back, so the placeholder is on screen when the bar is first measured
+    let release: () => void = () => undefined;
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route("https://i.imgur.com/**", async (route) => {
+      await held;
+      await route.fulfill({ contentType: "image/png", body: Buffer.from(IMG.split(",")[1], "base64") });
+    });
+    await page.goto("/");
+    const menu = page.getByRole("button", { name: /account menu/i });
+    await expect(menu).toBeVisible();
+    await expect(amount(page, "leaderboard")).toHaveText(/21,700/);
+    const before = { nav: (await box(page, "nav"))!.height, strip: (await page.getByTestId("today-strip").boundingBox())!.y };
+    release();
+    await expect(menu.locator("img")).toBeVisible();
+    const after = { nav: (await box(page, "nav"))!.height, strip: (await page.getByTestId("today-strip").boundingBox())!.y };
+    expect(after).toEqual(before);
+  });
+
   for (const size of [
     { width: 1440, height: 900 },
     { width: 390, height: 844 },

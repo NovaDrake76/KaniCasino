@@ -34,7 +34,7 @@ const TopFanPromo = () => {
           </Link>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {boards.map((board) => (
             <Link
               to={`/fandom/${encodeURIComponent(board.name)}`}
