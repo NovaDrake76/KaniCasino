@@ -8,6 +8,8 @@ const MinesGame = require("../../models/MinesGame");
 const HiloGame = require("../../models/HiloGame");
 const ScratchTicket = require("../../models/ScratchTicket");
 const UsageEvent = require("../../models/UsageEvent");
+const LotteryTicket = require("../../models/LotteryTicket");
+const LotteryEntry = require("../../models/LotteryEntry");
 
 const DAY = 24 * 60 * 60;
 
@@ -40,8 +42,14 @@ describe("what the database is allowed to keep", () => {
     expect(ttlOn(UsageEvent, "at")).toBe(180 * DAY);
   });
 
+  it("lets a lottery ticket or entry go 90 days after it was bought", () => {
+    // the draw itself is kept; after it is settled only a player's own tickets in it are ever read again
+    expect(ttlOn(LotteryTicket, "createdAt")).toBe(90 * DAY);
+    expect(ttlOn(LotteryEntry, "createdAt")).toBe(90 * DAY);
+  });
+
   it("keeps every one of them for at least a day, so nothing is swept mid-play", () => {
-    for (const [model, field] of [[Roll, "createdAt"], [Round, "createdAt"], [BlackjackHand, "updatedAt"], [MinesGame, "updatedAt"], [HiloGame, "updatedAt"], [ScratchTicket, "updatedAt"]]) {
+    for (const [model, field] of [[Roll, "createdAt"], [Round, "createdAt"], [BlackjackHand, "updatedAt"], [MinesGame, "updatedAt"], [HiloGame, "updatedAt"], [ScratchTicket, "updatedAt"], [LotteryTicket, "createdAt"], [LotteryEntry, "createdAt"]]) {
       expect(ttlOn(model, field)).toBeGreaterThanOrEqual(DAY);
     }
   });
