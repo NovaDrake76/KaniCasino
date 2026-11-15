@@ -517,7 +517,7 @@
     "sortBy": "정렬 기준",
     "startBets": "{{count}}회 베팅 시작",
     "startWithFreeCoins": "무료 코인으로 시작하세요",
-    "startWithFreeCoinsBody": "다이수가 K₽ 항아리를 맡아두고 있어요. 항아리를 눌러 안에 있는 걸 가져가거나, 가득 찳0 때까지 기다려요.",
+    "startWithFreeCoinsBody": "다이수가 K₽ 항아리를 맡아두고 있어요. 항아리를 눌러 안에 있는 걸 가져가거나, 가득 찰 때까지 기다려요.",
     "stopAuto": "중지 ({{left}}회 남음)",
     "theFreeBonusComes": "항아리는 8분이면 다시 찹니다. 일찍 가져가면 조금, 기다렸다가 가져가면 전부예요.",
     "verifyThisDropProvably": "이 드랍 검증하기 (provably fair)",
