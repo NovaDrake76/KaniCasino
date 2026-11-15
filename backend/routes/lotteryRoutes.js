@@ -17,6 +17,16 @@ module.exports = (io) => {
     }
   });
 
+  // public and cached: the open draw's pot and the time now for the home page, null while there is none
+  router.get("/pot", async (req, res) => {
+    try {
+      res.json(await lottery.pot());
+    } catch (error) {
+      console.error("lottery pot", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   // a purchase takes a stake, so it waits in the same one line per player as every game
   router.post("/tickets", isAuthenticated, lotteryBuyLimiter, oneAtATime, async (req, res) => {
     try {

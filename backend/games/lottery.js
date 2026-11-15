@@ -109,6 +109,13 @@ async function state(user, now = new Date()) {
   return out;
 }
 
+// the home page's jackpot and clock, off the same cached read as the page; nothing about the player, so nothing more to read.
+// serverTime is when this answer is made, never the cached draw's, so the home countdown runs on the server's clock
+async function pot(now = new Date()) {
+  const draw = await current();
+  return draw ? { number: draw.number, jackpot: draw.jackpot, drawAt: draw.drawAt, serverTime: now } : null;
+}
+
 // the cap as one guarded write: two purchases at once cannot both fit under it, and the unique pair settles two first ones
 async function claimCap(draw, userId, n) {
   const filter = { draw, userId, count: { $lte: L.CAP - n } };
@@ -247,4 +254,4 @@ async function ticketsIn(userId, rawNumber) {
   };
 }
 
-module.exports = { PUBLIC, PAGE_SIZE, ensureOpenDraw, state, buyTickets, claimCap, releaseCap, history, ticketsIn, openView, settledView };
+module.exports = { PUBLIC, PAGE_SIZE, ensureOpenDraw, state, pot, buyTickets, claimCap, releaseCap, history, ticketsIn, openView, settledView };

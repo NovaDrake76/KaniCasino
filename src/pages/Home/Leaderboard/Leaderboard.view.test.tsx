@@ -28,6 +28,7 @@ const standings = [
 const props = (over: Partial<LeaderboardViewProps> = {}): LeaderboardViewProps => ({
   loading: false,
   board: null,
+  sectionId: "leaderboard",
   podium: [standings[1], standings[0], standings[2]],
   rest: standings.slice(3),
   podiumRest: standings.slice(1, 3),
@@ -128,7 +129,7 @@ describe("the daily leaderboard", () => {
   it("keeps the placeholder while it is still loading, so the page does not jump", () => {
     const { container } = draw({ loading: true, podium: [], rest: [], podiumRest: [] });
     expect(container.querySelector(SPACER)).toBeTruthy();
-  });
+  });
 
   it("fills the empty rows with players who have not bet, and pays them nothing", () => {
     // a board that has just reset was a header over nothing. the seats are real players,
@@ -155,6 +156,13 @@ describe("the daily leaderboard", () => {
     // no prize against a seat nobody has taken
     expect(cells.every((c) => c[3] === "-")).toBe(true);
     expect(screen.queryByText(/no bets yet/i)).toBeNull();
+  });
+
+  it("carries the anchor the today strip scrolls to, with room for the sticky bar above it", () => {
+    const { container } = draw();
+    const section = container.querySelector("#leaderboard");
+    expect(section).toBeTruthy();
+    expect(section?.classList.contains("scroll-mt-16")).toBe(true);
   });
 
   it("keeps a player who has not bet off the podium", () => {
