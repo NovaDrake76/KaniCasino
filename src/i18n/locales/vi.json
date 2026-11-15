@@ -2668,7 +2668,7 @@
     "lottery": {
       "summary": "Chọn 3 số từ 1 đến 20. Mỗi ngày lúc {{time}} sẽ quay ra ba số: trúng 1 hoặc 2 số để nhận giải cố định, trúng cả 3 để nhận jackpot.",
       "chip": "Quay mỗi ngày",
-      "step1": "Chọn 3 số, hoặc để chọn nhanh chọn giúp, rồi thêm vé vào phiếu.",
+      "step1": "Chọn 3 số, hoặc nhấn Chọn nhanh để chọn ngẫu nhiên, rồi thêm vé vào phiếu.",
       "step2": "Mua phiếu với giá {{price}} mỗi vé, tối đa {{cap}} vé mỗi kỳ quay.",
       "step3": "Lúc {{time}} sẽ quay ra ba số. Tiền thưởng vào thẳng số dư của bạn.",
       "payouts": "Thứ tự không quan trọng. Trúng 1 số được hoàn lại giá vé, 2 số được {{two}}, cả 3 số thắng jackpot. Các giải cố định trả lại {{rtp}} giá vé, và {{share}} từ mỗi vé được đưa vào jackpot.",
@@ -2682,7 +2682,7 @@
       "note2": "Quay mỗi ngày lúc {{time}} theo giờ của bạn. Ngừng bán vé một phút trước đó.",
       "note3": "Chỉ tài khoản đã xác minh mới mua được vé.",
       "note4": "Người trúng nhận được thông báo. Tên người trúng jackpot được hiển thị ở kỳ quay.",
-      "fair": "Trước khi mở bán, mỗi kỳ quay cam kết một seed bí mật và hiển thị hash SHA-256 của nó. Ba số chỉ được tạo từ seed đó và số kỳ quay, bằng cùng HMAC-SHA256 như các trò chơi khác. Khi kỳ quay kết thúc, seed được công bố, và ở Các kỳ quay trước bạn có thể kiểm tra các số ngay trên trình duyệt.",
+      "fair": "Trước khi mở bán, mỗi kỳ quay chốt một hạt giống bí mật và hiển thị mã băm SHA-256 của nó. Ba số chỉ được tạo từ hạt giống đó và số kỳ quay, bằng cùng HMAC-SHA256 như các trò chơi khác. Khi kỳ quay kết thúc, hạt giống được tiết lộ, và ở Các kỳ quay trước bạn có thể kiểm tra các số ngay trên trình duyệt.",
       "fromValue": "Từ {{amount}}",
       "dailyAt": "Mỗi ngày lúc {{time}}"
     },
@@ -2698,7 +2698,7 @@
       "note2": "Kho báu đi mượn trả thưởng khi bạn cào ô thứ ba. Mỗi lúc chỉ có thể mở một vé, và vé đó sẽ chờ bạn; nếu để yên một ngày, các ô chưa cào có số nhỏ nhất sẽ được cào giúp bạn và trả thưởng.",
       "note3": "Mở tất cả vé còn lại sẽ mở hết các vé còn lại trong xấp cùng lúc.",
       "fair": "Mỗi vé dùng một nonce: lần rút đầu chọn giải hoặc bàn trong một triệu vị trí có khả năng như nhau, các lần rút sau xếp biểu tượng và các ô. Mở một vé trên trang Provably Fair; sau khi đổi hạt giống, Kiểm tra sẽ dựng lại vé, và với Kho báu đi mượn còn kiểm tra ba ô của bạn đã trả bao nhiêu.",
-      "lineHead": "Hàng ba",
+      "lineHead": "Ba ô thẳng hàng",
       "paysHead": "Trả",
       "boardHead": "Dưới các ô",
       "boardTotal": "Tổng của bàn",
