@@ -90,6 +90,7 @@ const { completeStuckBattles } = require("./games/battleEngine");
 const { sweepBlackjackHands } = require("./games/blackjack");
 const { sweepMinesGames } = require("./games/mines");
 const { sweepHiloGames } = require("./games/hilo");
+const { sweepScratchTickets } = require("./games/scratch");
 const { sweepSettlements } = require("./utils/predictionSettlement");
 const { sweepBoards } = require("./utils/leaderboard");
 const liveFeed = require("./utils/liveFeed");
@@ -219,6 +220,7 @@ const sweepRounds = ({ boot = false } = {}) => {
   sweepBlackjackHands(io).catch((e) => console.log(e));
   sweepMinesGames(io).catch((e) => console.log(e));
   sweepHiloGames(io).catch((e) => console.log(e));
+  sweepScratchTickets(io).catch((e) => console.log(e));
   sweepSettlements(io).catch((e) => console.log(e));
   sweepBoards(io).catch((e) => console.log(e));
 };

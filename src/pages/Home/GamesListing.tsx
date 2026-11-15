@@ -70,6 +70,12 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
     },
     {
       id: "11",
+      title: i18n.t("scratch.scratch"),
+      image: "/images/scratch.svg",
+      link: "/scratch",
+    },
+    {
+      id: "12",
       title: i18n.t("arcade.title"),
       image: "/images/arcade.svg",
       link: "/arcade",

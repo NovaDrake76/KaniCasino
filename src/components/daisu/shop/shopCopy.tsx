@@ -13,6 +13,7 @@ export const CHARM_GAME_KEYS: Record<string, string> = {
   blackjack: "blackjack.blackjack",
   mines: "mines.mines",
   hilo: "hilo.hilo",
+  scratch: "scratch.scratch",
   coinflip: "nav.coinFlip",
   cases: "daisu.shop.charm.cases",
   battles: "nav.caseBattles",

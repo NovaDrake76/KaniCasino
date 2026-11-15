@@ -39,6 +39,7 @@ const BET_OF = {
   slots: TX.SLOT_BET,
   mines: TX.MINES_BET,
   hilo: TX.HILO_BET,
+  scratch: TX.SCRATCH_BET,
   blackjack: TX.BLACKJACK_BET,
   crash: TX.CRASH_BET,
   coinflip: TX.COINFLIP_BET,

@@ -11,7 +11,7 @@ import { hedged } from './hedge';
 export const SESSION_EXPIRED_EVENT = 'auth:sessionExpired';
 // fired once a game request goes through, since a bonus can pay a stake without moving the wallet
 export const GAME_PLAYED_EVENT = 'games:played';
-const GAME_PATH = /\/games\/(slots|plinko|dice|mines|hilo|blackjack)\b/;
+const GAME_PATH = /\/games\/(slots|plinko|dice|mines|hilo|blackjack|scratch)\b/;
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL

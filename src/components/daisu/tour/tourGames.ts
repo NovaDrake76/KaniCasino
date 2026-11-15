@@ -10,7 +10,7 @@ export interface TourGameInfo {
 
 const picked = (key: PickGame): TourGameInfo => ({ key, path: GAME_PATHS[key], art: GAME_ART[key], nameKey: GAME_NAME_KEYS[key] });
 
-// the eight betting games; crash and coin flip are live rooms, so the pot never picks them
+// the nine betting games; crash and coin flip are live rooms, so the pot never picks them
 export const TOUR_GAMES: TourGameInfo[] = [
   picked("slots"),
   { key: "crash", path: "/crash", art: "/images/crash/idle.gif", nameKey: "nav.crash" },
@@ -20,6 +20,7 @@ export const TOUR_GAMES: TourGameInfo[] = [
   picked("mines"),
   { key: "coinflip", path: "/coinflip", art: "/images/coinHeads.webp", nameKey: "nav.coinFlip" },
   picked("hilo"),
+  picked("scratch"),
 ];
 
 export const tourGame = (key: string | null) => TOUR_GAMES.find((g) => g.key === key) || null;

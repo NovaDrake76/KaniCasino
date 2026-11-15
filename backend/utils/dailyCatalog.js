@@ -16,6 +16,7 @@ const SLOTS = [
     { key: "coinflip", goal: "rounds", game: "coinflip", target: 5, reward: 500 },
     { key: "slots", goal: "rounds", game: "slots", target: 25, reward: 500 },
     { key: "hilo", goal: "rounds", game: "hilo", target: 10, reward: 500 },
+    { key: "scratch", goal: "rounds", game: "scratch", target: 25, reward: 500 },
   ],
   [
     { key: "stake", goal: "staked", target: 10000, reward: 750, scaleTarget: true },

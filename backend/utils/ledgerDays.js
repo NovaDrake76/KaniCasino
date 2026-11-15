@@ -17,9 +17,9 @@ const GRACE_MS = 15 * 60 * 1000;
 const RUN_BUDGET_MS = 30 * 1000;
 const WATERMARK_TTL_MS = 10 * 60 * 1000;
 
-// plinko, dice and slots write two rows a round and nothing reads one back once the round is over. the
+// plinko, dice, slots and scratch cards write two rows a round and nothing reads one back once the round is over. the
 // stateful games, bonuses and sales keep theirs past every recovery sweep and round lookup, which go back minutes.
-const SHORT_TYPES = [TX.PLINKO_BET, TX.PLINKO_WIN, TX.DICE_BET, TX.DICE_WIN, TX.SLOT_BET, TX.SLOT_WIN];
+const SHORT_TYPES = [TX.PLINKO_BET, TX.PLINKO_WIN, TX.DICE_BET, TX.DICE_WIN, TX.SLOT_BET, TX.SLOT_WIN, TX.SCRATCH_BET, TX.SCRATCH_WIN];
 const LONG_TYPES = [
   TX.CASE_OPEN, TX.MINES_BET, TX.MINES_WIN, TX.BLACKJACK_BET, TX.BLACKJACK_WIN, TX.BLACKJACK_PUSH,
   TX.CRASH_BET, TX.CRASH_CASHOUT, TX.COINFLIP_BET, TX.COINFLIP_WIN, TX.HILO_BET, TX.HILO_WIN,

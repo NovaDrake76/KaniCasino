@@ -6,10 +6,22 @@ import { MAX_BET as DICE_MAX, MIN_BET as DICE_MIN, multiplierFor as diceMultipli
 import { MAX_BET as PLINKO_MAX, PAYOUT_MULTIPLIERS, RISKS, ROWS, binChance, formatChance } from "../../../pages/Plinko/plinkoBoard";
 import { MAX_BET as MINES_MAX, MAX_PAYOUT as MINES_CAP, MIN_BET as MINES_MIN, gemsFor, multiplierFor as minesMultiplier } from "../../../pages/Mines/minesGrid";
 import { MAX_BET as HILO_MAX, MAX_SKIPS, MIN_BET as HILO_MIN, RANKS, hiChance, loChance } from "../../../pages/Hilo/hiloCards";
+import {
+  RTP as SCRATCH_RTP,
+  TICKETS as SCRATCH_TICKETS,
+  ninePays,
+  oneIn,
+  payoutSplit,
+  symbolSrc,
+  topPrize as scratchTopPrize,
+  winOdds as scratchWinOdds,
+  type PickTicket,
+  type Ticket as ScratchTicket,
+} from "../../../pages/Scratch/scratchTickets";
 import { ALL_RARITIES, UPGRADE_CEILING, UPGRADE_RTP_BY_RARITY } from "../../../pages/Upgrade/upgradeRules";
 import { MODES, MODE_SLOTS } from "../../../services/battles/BattleService";
 
-export type GameKey = "crash" | "coinflip" | "slots" | "upgrade" | "battles" | "plinko" | "blackjack" | "dice" | "mines" | "hilo";
+export type GameKey = "crash" | "coinflip" | "slots" | "upgrade" | "battles" | "plinko" | "blackjack" | "dice" | "mines" | "hilo" | "scratch";
 
 // what a live page knows that the info cannot: the coin's current sides and what they pay
 export interface InfoContext {
@@ -429,6 +441,95 @@ const hilo = (): GameInfoContent => ({
   verifiable: true,
 });
 
+// each ticket gets its own table: pocket by the symbol on the line, nine by what a ticket pays, treasure by its board
+const scratchOdds = (slots: number, of?: number) => t("gameInfo.table.oneIn", { n: oneIn(slots, of) });
+const scratchSymbol = (name: string) => (
+  <img src={symbolSrc(name)} alt="" width={32} height={32} className="inline-block align-middle [image-rendering:pixelated]" />
+);
+// a board's finds, the repeats folded: K₽100,000 ×3 + K₽10,000
+const scratchFinds = (finds: number[]) =>
+  [...new Set(finds)].map((f) => {
+    const n = finds.filter((x) => x === f).length;
+    return n > 1 ? `${kp(f)} ×${n}` : kp(f);
+  }).join(" + ");
+const scratchRows = (ticket: ScratchTicket): React.ReactNode[][] => {
+  if (ticket.kind === "line") {
+    return [...ticket.prizes].reverse().map(([symbol, m, slots]) => [
+      <span key={symbol} className="inline-flex items-center gap-2">{scratchSymbol(symbol)}×3</span>,
+      kp(m * ticket.price),
+      scratchOdds(slots),
+    ]);
+  }
+  if (ticket.kind === "lucky") {
+    const byPays = new Map<number, number>();
+    for (const row of ticket.outcomes) byPays.set(ninePays(row), (byPays.get(ninePays(row)) || 0) + row[0]);
+    return [...byPays.entries()].sort((a, b) => b[0] - a[0]).map(([pays, slots]) => [times(pays), kp(pays * ticket.price), scratchOdds(slots)]);
+  }
+  return [...ticket.boards].reverse().map(([slots, finds]) => [scratchFinds(finds), kp(finds.reduce((s, f) => s + f, 0)), scratchOdds(slots)]);
+};
+const scratchHead = (ticket: ScratchTicket) =>
+  ticket.kind === "line"
+    ? [g("scratch", "lineHead"), t("gameInfo.table.prize"), t("gameInfo.table.chance")]
+    : ticket.kind === "lucky"
+      ? [g("scratch", "paysHead"), t("gameInfo.table.prize"), t("gameInfo.table.chance")]
+      : [g("scratch", "boardHead"), g("scratch", "boardTotal"), t("gameInfo.table.chance")];
+const scratchChance = (n: number, of: number) => (
+  <>
+    {pct(n / of, 1)} · {scratchOdds(n, of)}
+  </>
+);
+// a find under the price is still a loss, so treasure also shows what three spots pay against the price
+const scratchSplit = (ticket: PickTicket) => {
+  const split = payoutSplit(ticket);
+  const of = split.reduce((s, n) => s + n, 0);
+  const price = kp(ticket.price);
+  const labels = ["splitNothing", "splitLess", "splitBack", "splitMore"].map((key) => g("scratch", key, { price }));
+  return (
+    <InfoTable
+      head={[g("scratch", "splitHead"), t("gameInfo.table.chance")]}
+      plain={[1]}
+      rows={[
+        ...split.map((n, i) => [labels[i], scratchChance(n, of)]),
+        [g("scratch", "splitAtLeast", { price }), scratchChance(split[2] + split[3], of)],
+      ]}
+    />
+  );
+};
+const scratchTicketSection = (ticket: ScratchTicket): InfoSection => {
+  const [wins, of] = scratchWinOdds(ticket);
+  return {
+    title: `${t(`scratch.names.${ticket.id}`)} · ${kp(ticket.price)}`,
+    paragraphs: [g("scratch", ticket.id)],
+    node:
+      ticket.kind === "pick" ? (
+        <div className="flex flex-col gap-3">
+          <InfoTable head={scratchHead(ticket)} plain={[2]} rows={scratchRows(ticket)} />
+          {scratchSplit(ticket)}
+        </div>
+      ) : (
+        <InfoTable head={scratchHead(ticket)} plain={[2]} rows={[...scratchRows(ticket), [g("scratch", "anyWin"), "", pct(wins / of)]]} />
+      ),
+  };
+};
+const scratch = (): GameInfoContent => {
+  const prices = SCRATCH_TICKETS.map((ticket) => ticket.price);
+  return {
+    name: t("scratch.scratch"),
+    summary: g("scratch", "summary"),
+    chips: [rtpChip(SCRATCH_RTP), fairChip()],
+    sections: [howToPlay("scratch"), ...SCRATCH_TICKETS.map(scratchTicketSection), goodToKnow("scratch", 3)],
+    facts: [
+      fact("rtp", pct(SCRATCH_RTP, 0)),
+      fact("edge", pct(1 - SCRATCH_RTP, 0)),
+      fact("bet", range(Math.min(...prices), Math.max(...prices))),
+      fact("maxWin", kp(Math.max(...SCRATCH_TICKETS.map(scratchTopPrize))), true),
+      fact("points", points(1.3)),
+    ],
+    fairness: g("scratch", "fair"),
+    verifiable: true,
+  };
+};
+
 export const gameInfo = (game: GameKey, ctx?: InfoContext): GameInfoContent => {
   switch (game) {
     case "crash":
@@ -451,5 +552,7 @@ export const gameInfo = (game: GameKey, ctx?: InfoContext): GameInfoContent => {
       return mines();
     case "hilo":
       return hilo();
+    case "scratch":
+      return scratch();
   }
 };

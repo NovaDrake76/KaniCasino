@@ -7,7 +7,7 @@ import { gameInfo, GameKey } from "./content";
 vi.mock("../LiveBets", () => ({ default: () => <div data-testid="live-feed" /> }));
 
 const draw = (node: React.ReactNode) => render(<MemoryRouter>{node}</MemoryRouter>);
-const GAMES: GameKey[] = ["crash", "coinflip", "slots", "upgrade", "battles", "plinko", "blackjack", "dice", "mines", "hilo"];
+const GAMES: GameKey[] = ["crash", "coinflip", "slots", "upgrade", "battles", "plinko", "blackjack", "dice", "mines", "hilo", "scratch"];
 
 describe("the strip under a game", () => {
   it("opens on the live bets and switches to the game info", () => {
@@ -50,6 +50,20 @@ describe("the strip under a game", () => {
         }
       }
     }
+  });
+
+  it("splits what three treasure spots pay against the price, from the boards table", () => {
+    const section = gameInfo("scratch").sections.find((s) => s.title.startsWith("Borrowed Treasure"));
+    const { container } = render(<>{section?.node}</>);
+    const split = container.querySelectorAll("table")[1];
+    const rows = [...split.querySelectorAll("tbody tr")].map((tr) => [...tr.children].map((td) => (td.textContent || "").replace(/\s/g, " ")));
+    expect(rows).toEqual([
+      ["Nothing", "25.3% · 1 in 3.9"],
+      ["Less than K₽1,000", "39.3% · 1 in 2.5"],
+      ["K₽1,000, the price back", "19.3% · 1 in 5.2"],
+      ["More than K₽1,000", "16.1% · 1 in 6.2"],
+      ["K₽1,000 or more", "35.3% · 1 in 2.8"],
+    ]);
   });
 
   it("quotes the coin's live payouts", () => {
