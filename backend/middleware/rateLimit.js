@@ -147,6 +147,12 @@ const upgradeLimiter = perUser(30, "Too many upgrades, slow down a little.");
 // one request per spin, same cost profile as a dice roll
 const slotSpinLimiter = perUser(40, "Too many spins, slow down a little.");
 
+// one request per stack of scratch tickets, however many are in it
+const scratchBuyLimiter = perUser(40, "Too many tickets, slow down a little.");
+
+// one request per spot scratched on a treasure ticket, the same headroom the mines reveal has
+const scratchPickLimiter = perUser(80, "Too many actions, slow down a little.");
+
 // one request per action and a hand takes several, so it needs the headroom mines has
 const blackjackActionLimiter = perUser(80, "Too many actions, slow down a little.");
 
@@ -205,6 +211,8 @@ module.exports = {
   caseOpenLimiter,
   upgradeLimiter,
   slotSpinLimiter,
+  scratchBuyLimiter,
+  scratchPickLimiter,
   blackjackActionLimiter,
   marketBuyLimiter,
   marketWriteLimiter,

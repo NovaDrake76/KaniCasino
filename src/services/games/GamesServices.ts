@@ -35,6 +35,21 @@ export async function rollDice(betAmount: number, target: number, direction: "ov
     return response.data;
 }
 
+export async function buyScratch(ticket: string, quantity: number) {
+    const response = await api.post(`/games/scratch`, { ticket, quantity });
+    return response.data;
+}
+
+export async function pickScratch(id: string, cell: number) {
+    const response = await api.post(`/games/scratch/pick`, { id, cell });
+    return response.data;
+}
+
+export async function getActiveScratch() {
+    const response = await api.get(`/games/scratch/active`);
+    return response.data;
+}
+
 export async function startMines(betAmount: number, mineCount: number) {
     const response = await api.post(`/games/mines/start`, { betAmount, mineCount });
     return response.data;

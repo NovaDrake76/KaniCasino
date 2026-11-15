@@ -10,6 +10,8 @@ const {
   caseOpenLimiter,
   upgradeLimiter,
   slotSpinLimiter,
+  scratchBuyLimiter,
+  scratchPickLimiter,
   blackjackActionLimiter,
 } = require("../middleware/rateLimit");
 const { oneAtATime } = require("../middleware/oneAtATime");
@@ -24,6 +26,7 @@ const BlackjackGameController = require("../games/blackjack");
 const DiceGameController = require("../games/dice");
 const MinesGameController = require("../games/mines");
 const HiloGameController = require("../games/hilo");
+const ScratchGameController = require("../games/scratch");
 
 // Exports
 module.exports = (io) => {
@@ -125,6 +128,24 @@ module.exports = (io) => {
     }
   });
 
+  // buy scratch tickets: a stack of pocket or nine tickets is settled here and the scratching only shows it, while a
+  // treasure ticket is bought here and scratched one spot at a time through /scratch/pick
+  router.post('/scratch', isAuthenticated, scratchBuyLimiter, oneAtATime, async (req, res) => {
+    const user = req.user;
+
+    try {
+      const { ticket, quantity = 1 } = req.body;
+
+      const result = await ScratchGameController.buy(user._id, ticket, quantity, io);
+      res.json(result);
+    } catch (error) {
+      // statused errors are intentional answers; anything else stays generic
+      if (error.status) return res.status(error.status).json({ message: error.message });
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // blackjack: a hand spans several requests, so each action resolves the user's
   // single active hand; statused errors are intentional answers (409 = resync)
   const blackjackAction = (fn) => async (req, res) => {
@@ -171,6 +192,14 @@ module.exports = (io) => {
   ));
   router.get("/mines/active", isAuthenticated, blackjackAction(
     async (req) => ({ game: await MinesGameController.active(req.user._id) })
+  ));
+
+  // a treasure ticket's spots: a move inside a ticket already paid for, so it never waits in the bet line
+  router.post("/scratch/pick", isAuthenticated, scratchPickLimiter, blackjackAction(
+    (req) => ScratchGameController.pick(req.user._id, req.body.id, req.body.cell, io)
+  ));
+  router.get("/scratch/active", isAuthenticated, blackjackAction(
+    async (req) => ({ game: await ScratchGameController.active(req.user._id) })
   ));
 
   // hilo: a game spans several requests, so each action resolves the user's single

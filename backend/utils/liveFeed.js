@@ -29,6 +29,7 @@ const WIN_META = {
   [TX.PLINKO_WIN]: "plinko",
   [TX.MINES_WIN]: "mines",
   [TX.HILO_WIN]: "hilo",
+  [TX.SCRATCH_WIN]: "scratch",
   [TX.SLOT_WIN]: "slots",
   [TX.BLACKJACK_WIN]: "blackjack",
 };
@@ -42,6 +43,7 @@ const REVEAL_MS = {
   plinko: 3200, // the ball drop, the same wait games/plinko.js gives the balance
   slots: 3000, // the reels
   blackjack: 1200, // the dealer reveal, SETTLE_EMIT_DELAY_MS
+  scratch: 8000, // a ticket scratched by hand, or a treasure ticket's last spot; a stack can still finish after its row is up
 };
 
 const round2 = (n) => Math.round(n * 100) / 100;

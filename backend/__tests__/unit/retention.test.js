@@ -6,6 +6,7 @@ const Round = require("../../models/Round");
 const BlackjackHand = require("../../models/BlackjackHand");
 const MinesGame = require("../../models/MinesGame");
 const HiloGame = require("../../models/HiloGame");
+const ScratchTicket = require("../../models/ScratchTicket");
 const UsageEvent = require("../../models/UsageEvent");
 
 const DAY = 24 * 60 * 60;
@@ -32,6 +33,7 @@ describe("what the database is allowed to keep", () => {
     expect(ttlOn(BlackjackHand, "updatedAt")).toBe(7 * DAY);
     expect(ttlOn(MinesGame, "updatedAt")).toBe(7 * DAY);
     expect(ttlOn(HiloGame, "updatedAt")).toBe(7 * DAY);
+    expect(ttlOn(ScratchTicket, "updatedAt")).toBe(7 * DAY);
   });
 
   it("lets a usage event go after 180 days, the window the privacy policy promises", () => {
@@ -39,7 +41,7 @@ describe("what the database is allowed to keep", () => {
   });
 
   it("keeps every one of them for at least a day, so nothing is swept mid-play", () => {
-    for (const [model, field] of [[Roll, "createdAt"], [Round, "createdAt"], [BlackjackHand, "updatedAt"], [MinesGame, "updatedAt"], [HiloGame, "updatedAt"]]) {
+    for (const [model, field] of [[Roll, "createdAt"], [Round, "createdAt"], [BlackjackHand, "updatedAt"], [MinesGame, "updatedAt"], [HiloGame, "updatedAt"], [ScratchTicket, "updatedAt"]]) {
       expect(ttlOn(model, field)).toBeGreaterThanOrEqual(DAY);
     }
   });

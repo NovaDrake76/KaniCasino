@@ -16,6 +16,7 @@ const GAME_KEY: Record<string, string> = {
     hilo: "hilo",
     dice: "dice",
     blackjack: "blackjack",
+    scratch: "scratch",
 };
 
 const TH = "px-4 py-2.5 text-left text-[11px] font-medium text-ink-muted uppercase tracking-wider";

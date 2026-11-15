@@ -80,7 +80,7 @@ test("a row waits for the animation that reveals it, or the table spoils the bet
   });
 
   test("every animated game is covered, and nothing else is delayed", async () => {
-    expect(liveFeed.REVEAL_MS).toEqual({ case: 7500, plinko: 3200, slots: 3000, blackjack: 1200 });
+    expect(liveFeed.REVEAL_MS).toEqual({ case: 7500, plinko: 3200, slots: 3000, blackjack: 1200, scratch: 8000 });
     for (const instant of ["dice", "mines", "hilo", "crash", "coinflip"]) {
       expect(liveFeed.REVEAL_MS[instant]).toBeUndefined();
     }

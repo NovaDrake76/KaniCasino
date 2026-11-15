@@ -4,9 +4,11 @@ import BigWin from "/images/slot/bigwin.webp";
 
 interface BigWinAlertProps {
     value: number;
+    // slots waits out its reels; a game whose result is already on screen shows it at once
+    delayMs?: number;
 }
 
-const BigWinAlert: React.FC<BigWinAlertProps> = ({ value }) => {
+const BigWinAlert: React.FC<BigWinAlertProps> = ({ value, delayMs = 3000 }) => {
     const [scale, setScale] = useState(0);
     const [animatedValue, setAnimatedValue] = useState(0);
 
@@ -14,7 +16,7 @@ const BigWinAlert: React.FC<BigWinAlertProps> = ({ value }) => {
         setTimeout(() => {
             setScale(1);
             animateValue();
-        }, 3000);
+        }, delayMs);
     }, [value]);
 
     const animateValue = () => {

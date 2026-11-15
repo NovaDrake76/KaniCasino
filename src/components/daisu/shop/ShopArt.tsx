@@ -40,6 +40,7 @@ const GAME_ART: Record<string, string> = {
   blackjack: "/images/blackjack.svg",
   mines: "/images/mines.svg",
   hilo: "/images/hilo.svg",
+  scratch: "/images/scratch.svg",
   slots: "/images/slot/wild.webp",
   coinflip: "/images/coinHeads.webp",
 };

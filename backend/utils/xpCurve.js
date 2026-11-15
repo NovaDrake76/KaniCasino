@@ -51,6 +51,7 @@ const XP_GAME_OF_BET = {
   mines_bet: "mines",
   blackjack_bet: "blackjack",
   hilo_bet: "hilo",
+  scratch_bet: "scratch",
   crash_bet: "crash",
   coinflip_bet: "coinflip",
   case_open: "cases",

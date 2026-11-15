@@ -4,7 +4,7 @@ const CHARM_XP = 0.25;
 // the charms climb the ladder with the rest, the cheap games first
 const CHARMS = [
   ["dice", 3, 1000], ["slots", 5, 1500], ["coinflip", 7, 2500], ["plinko", 9, 3500], ["crash", 11, 5000],
-  ["mines", 14, 8000], ["hilo", 17, 12000], ["blackjack", 20, 20000], ["cases", 24, 40000], ["battles", 28, 80000],
+  ["mines", 14, 8000], ["hilo", 17, 12000], ["scratch", 18, 15000], ["blackjack", 20, 20000], ["cases", 24, 40000], ["battles", 28, 80000],
 ];
 const CHARM_GAMES = CHARMS.map(([game]) => game);
 

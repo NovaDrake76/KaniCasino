@@ -1,5 +1,6 @@
 import Title from "../../components/Title";
 import { ProvablyFairViewProps } from "./ProvablyFair.types";
+import { scratchVerified } from "./scratchVerified";
 import i18n from "../../i18n";
 
 const Row = ({ label, value }: { label: string; value: React.ReactNode }) => (
@@ -63,10 +64,10 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
           </span>
           <button
             onClick={doVerify}
-            disabled={verifying || (roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines" && roll.game !== "hilo")}
+            disabled={verifying || (roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines" && roll.game !== "hilo" && roll.game !== "scratch")}
             className="px-4 py-1.5 rounded bg-green-700 hover:bg-green-600 text-sm font-semibold disabled:opacity-50"
             title={
-              roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines" && roll.game !== "hilo"
+              roll.game !== "case" && roll.game !== "plinko" && roll.game !== "blackjack" && roll.game !== "dice" && roll.game !== "mines" && roll.game !== "hilo" && roll.game !== "scratch"
                 ? i18n.t("fair.autoVerifySupportedFor")
                 : ""
             }
@@ -148,7 +149,9 @@ const ProvablyFairView: React.FC<ProvablyFairViewProps> = ({
                             outcome: i18n.t(verify.recomputedBusted ? "fair.busted" : "fair.cashed"),
                             payout: verify.recomputedPayout,
                           })
-                        : i18n.t("fair.verifiedCase", { roll: verify.recomputedRoll })
+                        : verify.recomputedTicket
+                          ? scratchVerified(verify)
+                          : i18n.t("fair.verifiedCase", { roll: verify.recomputedRoll })
               : verify.reason
                 ? i18n.t("fair.notVerifiedReason", { reason: verify.reason })
                 : i18n.t("fair.notVerified")}

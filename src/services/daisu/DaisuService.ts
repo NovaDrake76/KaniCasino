@@ -1,7 +1,7 @@
 import api from "../api";
 import { noteServerTime } from "../serverClock";
 
-export type PickGame = "slots" | "dice" | "plinko" | "mines" | "blackjack" | "hilo";
+export type PickGame = "slots" | "dice" | "plinko" | "mines" | "blackjack" | "hilo" | "scratch";
 
 // the extra tenth of a take, spendable on one game until its clock runs out
 export interface PotBonus {

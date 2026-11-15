@@ -60,6 +60,7 @@ test("every game in the listing is clickable and navigates", async ({ page }) =>
     { text: "Play Slot", url: /\/slot/ },
     { text: "Play Plinko", url: /\/plinko/ },
     { text: "Play Blackjack", url: /\/blackjack/ },
+    { text: "Play Scratch Cards", url: /\/scratch/ },
   ];
 
   for (const game of games) {
