@@ -18,10 +18,21 @@ import {
   type PickTicket,
   type Ticket as ScratchTicket,
 } from "../../../pages/Scratch/scratchTickets";
+import {
+  CAP as LOTTERY_CAP,
+  FIXED_RTP as LOTTERY_FIXED_RTP,
+  JACKPOT_BASE,
+  JACKPOT_SHARE,
+  POINTS_PER_KP as LOTTERY_POINTS,
+  PRICE as LOTTERY_PRICE,
+  PRIZES as LOTTERY_PRIZES,
+  localDrawTime,
+  oneIn as lotteryOneIn,
+} from "../../../pages/Lottery/lotteryRules";
 import { ALL_RARITIES, UPGRADE_CEILING, UPGRADE_RTP_BY_RARITY } from "../../../pages/Upgrade/upgradeRules";
 import { MODES, MODE_SLOTS } from "../../../services/battles/BattleService";
 
-export type GameKey = "crash" | "coinflip" | "slots" | "upgrade" | "battles" | "plinko" | "blackjack" | "dice" | "mines" | "hilo" | "scratch";
+export type GameKey = "crash" | "coinflip" | "slots" | "upgrade" | "battles" | "plinko" | "blackjack" | "dice" | "mines" | "hilo" | "scratch" | "lottery";
 
 // what a live page knows that the info cannot: the coin's current sides and what they pay
 export interface InfoContext {
@@ -530,6 +541,48 @@ const scratch = (): GameInfoContent => {
   };
 };
 
+// the draw time is shown on the viewer's clock; the odds are the share of the 1,140 possible draws
+const lottery = (): GameInfoContent => {
+  const time = localDrawTime(i18n.language);
+  return {
+    name: t("lottery.lottery"),
+    summary: g("lottery", "summary", { time }),
+    chips: [g("lottery", "chip"), fairChip()],
+    sections: [
+      howToPlay("lottery", { time, price: kp(LOTTERY_PRICE), cap: LOTTERY_CAP }),
+      {
+        title: t("gameInfo.sections.payouts"),
+        paragraphs: [g("lottery", "payouts", { two: kp(LOTTERY_PRIZES[2]), rtp: pct(LOTTERY_FIXED_RTP), share: kp(JACKPOT_SHARE) })],
+        node: (
+          <InfoTable
+            head={[g("lottery", "match"), t("gameInfo.table.prize"), t("gameInfo.table.chance")]}
+            plain={[2]}
+            rows={[3, 2, 1].map((k) => [
+              g("lottery", "matchN", { n: k }),
+              k === 3 ? g("lottery", "jackpotValue") : kp(LOTTERY_PRIZES[k]),
+              t("gameInfo.table.oneIn", { n: lotteryOneIn(k) }),
+            ])}
+          />
+        ),
+      },
+      {
+        title: g("lottery", "jackpotTitle"),
+        paragraphs: [g("lottery", "jackpot1", { base: kp(JACKPOT_BASE), share: kp(JACKPOT_SHARE) }), g("lottery", "jackpot2")],
+      },
+      goodToKnow("lottery", 4, { cap: LOTTERY_CAP, time }),
+    ],
+    facts: [
+      fact("ticket", kp(LOTTERY_PRICE)),
+      fact("jackpot", g("lottery", "fromValue", { amount: kp(JACKPOT_BASE) }), true),
+      fact("drawTime", g("lottery", "dailyAt", { time })),
+      fact("perDraw", String(LOTTERY_CAP)),
+      fact("points", points(LOTTERY_POINTS)),
+    ],
+    fairness: g("lottery", "fair"),
+    verifiable: false,
+  };
+};
+
 export const gameInfo = (game: GameKey, ctx?: InfoContext): GameInfoContent => {
   switch (game) {
     case "crash":
@@ -554,5 +607,7 @@ export const gameInfo = (game: GameKey, ctx?: InfoContext): GameInfoContent => {
       return hilo();
     case "scratch":
       return scratch();
+    case "lottery":
+      return lottery();
   }
 };

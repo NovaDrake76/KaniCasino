@@ -8,6 +8,7 @@ const { isMenu, parseMenu, chosenFrame, homeFrame } = require("./menu");
 const { begLine } = require("./couponLines");
 const membership = require("./membership");
 const coupons = require("./coupons");
+const lottery = require("./lottery");
 
 const REQUIRED = ["DISCORD_BOT_TOKEN", "DISCORD_BOT_SECRET", "API_KEY"];
 const missing = REQUIRED.filter((key) => !process.env[key]);
@@ -170,6 +171,7 @@ client.on(Events.GuildMemberRemove, (member) => membership.pushOne(member.id, me
 client.once(Events.ClientReady, async (ready) => {
   console.log(`bot: online as ${ready.user.tag} in ${ready.guilds.cache.size} servers`);
   coupons.start(ready);
+  lottery.start(ready);
   await membership.syncAll(ready);
 });
 

@@ -54,6 +54,9 @@ const COUNTERPARTY_FOR_TYPE = {
   hilo_win: HOUSE,
   scratch_bet: HOUSE,
   scratch_win: HOUSE,
+  lottery_ticket: HOUSE,
+  lottery_win: HOUSE,
+  lottery_refund: HOUSE,
   item_sell: HOUSE,
   // the house is the counterparty for every prediction trade, which is what the overround
   // pays for: there is no other player on the other side of the fill

@@ -82,4 +82,6 @@ module.exports = {
     post("/discord/open", { discordId, interactionId, caseId, quantity }),
   // the server sets the amount, the cap and the clock; the bot only asks for today's drop
   dropCoupon: () => post("/discord/coupons"),
+  // the public lottery page, read only: the last settled draw and the next one
+  lottery: () => get("/lottery"),
 };

@@ -23,3 +23,11 @@ describe("the bet line", () => {
     }
   );
 });
+
+describe("the lottery", () => {
+  it("buys its tickets in the same one line as every bet", () => {
+    const router = require("../../routes/lotteryRoutes")(io);
+    const layer = router.stack.find((l) => l.route && l.route.path === "/tickets" && l.route.methods.post);
+    expect(layer.route.stack.map((s) => s.handle)).toContain(oneAtATime);
+  });
+});

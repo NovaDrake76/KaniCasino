@@ -39,6 +39,9 @@ const describe = (tx: Transaction): string => {
   if ((tx.type === "market_order" || tx.type === "market_order_refund") && m.itemName) {
     return i18n.t("balance.withItem", { label: base, item: m.itemName });
   }
+  if (tx.type.startsWith("lottery_") && m.draw) {
+    return i18n.t("balance.withDraw", { label: base, draw: m.draw });
+  }
   return base;
 };
 

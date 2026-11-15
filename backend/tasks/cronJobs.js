@@ -7,6 +7,7 @@ const predictions = require("../utils/predictionSettlement");
 const leaderboard = require("../utils/leaderboard");
 const ledgerDays = require("../utils/ledgerDays");
 const referrals = require("../utils/referrals");
+const lotteryDraw = require("../games/lotteryDraw");
 
 module.exports = {
     startCronJobs: function (io) {
@@ -78,6 +79,17 @@ module.exports = {
                 console.error('Error pruning empty rounds:', error);
             }
         })
+
+        // the daily lottery draw, once a day: one read of the newest draw, then that draw's tickets and winners' entries.
+        // the five-minute sweep in index.js runs the same idempotent call, so a missed tick costs minutes, not the draw
+        cron.schedule('0 20 * * *', async () => {
+            try {
+                const drawn = await lotteryDraw.settleDue(io);
+                if (drawn && !drawn.error) console.log(`Lottery: draw #${drawn.number} drew ${drawn.numbers.join(", ")}, paid ${drawn.paid} player(s).`);
+            } catch (error) {
+                console.error('Error drawing the lottery:', error);
+            }
+        }, { timezone: 'Etc/UTC' })
 
         // referral payouts a referee's seventh day of play or a staff approval has made due since. reads the
         // verified referees still owed something, their sightings and their ledger days: a few KB every 10 minutes
