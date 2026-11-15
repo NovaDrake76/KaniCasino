@@ -35,9 +35,12 @@ export const FACE_BACKGROUND = [
   "linear-gradient(160deg, var(--b), var(--a))",
 ].join(", ");
 
-// the ticket name in the display face, outlined in the ticket's own colour
+// the ticket name in the display face, outlined in the ticket's own colour. the face is latin only, so a name in another
+// script takes the system's heaviest sans (a thin one vanished into the outline); the weight is never faked on the face itself
 export const NAME_STYLE: CSSProperties = {
-  fontFamily: '"Alfa Slab One", Georgia, serif',
+  fontFamily: '"Alfa Slab One", "Hiragino Sans", "Yu Gothic UI", "Malgun Gothic", "Microsoft YaHei", "Noto Sans CJK JP", system-ui, sans-serif',
+  fontWeight: 900,
+  fontSynthesis: "none",
   textShadow: "0 2px 0 var(--a), 2px 0 0 var(--a), -2px 0 0 var(--a), 0 -2px 0 var(--a), 0 4px 0 rgba(0,0,0,.25)",
 };
 

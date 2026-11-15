@@ -37,6 +37,7 @@ const { drawNumbers, JACKPOT_BASE, JACKPOT_SHARE } = require("../../utils/lotter
 const lottery = require("../../games/lottery");
 const { settleDue } = require("../../games/lotteryDraw");
 const memo = require("../../utils/memo");
+const referrals = require("../../utils/referrals");
 
 let emitted = [];
 const io = {
@@ -201,16 +202,18 @@ describe("buying tickets", () => {
     }
   });
 
-  it("says insufficient balance on an empty wallet and gives the cap back", async () => {
+  it("says insufficient balance on an empty wallet, puts the pot back and gives the cap back", async () => {
     const user = await makeUser({ walletBalance: 150 });
     const res = await buy(user, [[1, 2, 3], [4, 5, 6]]);
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/insufficient/i);
     expect((await LotteryEntry.findOne({ userId: user._id }).lean()).count).toBe(0);
+    expect(await LotteryDraw.findOne({ number: 1 }).lean()).toMatchObject({ jackpot: JACKPOT_BASE, tickets: 0 });
+    expect(await Transaction.countDocuments({ userId: user._id })).toBe(0);
     expect((await buy(user, [[1, 2, 3]])).status).toBe(200);
   });
 
-  it("says try again when a funded wallet's charge is lost", async () => {
+  it("says try again when a funded wallet's charge is lost, and puts the pot back", async () => {
     const user = await makeUser();
     mockFailCharge = true;
     const res = await buy(user, [[1, 2, 3]]);
@@ -218,27 +221,28 @@ describe("buying tickets", () => {
     expect(res.body.message).not.toMatch(/insufficient/i);
     expect((await LotteryEntry.findOne({ userId: user._id }).lean()).count).toBe(0);
     expect(await LotteryTicket.countDocuments({})).toBe(0);
+    expect(await LotteryDraw.findOne({ number: 1 }).lean()).toMatchObject({ jackpot: JACKPOT_BASE, tickets: 0 });
   });
 
-  it("refunds a purchase whose draw closed between the charge and the tickets", async () => {
+  it("refuses a purchase whose draw closed after the sales check, and charges nothing", async () => {
     const user = await makeUser();
     const real = LotteryDraw.findOneAndUpdate.bind(LotteryDraw);
     jest.spyOn(LotteryDraw, "findOneAndUpdate").mockImplementation((filter, ...rest) => {
-      // the settlement switches the draw to drawing in the gap
+      // the settlement switches the draw to drawing just before the pot write, which then matches nothing
       if (filter && filter.status === "open" && filter.number === 1) {
-        return { lean: () => real({ number: 1, status: "open" }, { $set: { status: "drawing" } }, { new: true }).lean().then(() => null) };
+        return { lean: () => real({ number: 1, status: "open" }, { $set: { status: "drawing" } }).lean().then(() => real(filter, ...rest).lean()) };
       }
       return real(filter, ...rest);
     });
     const res = await buy(user, [[1, 2, 3], [4, 5, 6]]);
     expect(res.status).toBe(409);
-    expect(res.body.reason).toBe("closed");
+    expect(res.body).toEqual({ reason: "closed", message: "Sales for this draw are closed" });
     expect(await balanceOf(user)).toBe(50000);
-    const refunds = await rowsOf(user, TX.LOTTERY_REFUND);
-    expect(refunds.map((r) => r.amount)).toEqual([200]);
+    expect(await Transaction.countDocuments({ userId: user._id })).toBe(0);
     expect(await LotteryTicket.countDocuments({})).toBe(0);
     expect((await LotteryEntry.findOne({ userId: user._id }).lean()).count).toBe(0);
-    expect((await LotteryDraw.findOne({ number: 1 }).lean()).jackpot).toBe(JACKPOT_BASE);
+    expect(await LotteryDraw.findOne({ number: 1 }).lean()).toMatchObject({ status: "drawing", jackpot: JACKPOT_BASE, tickets: 0 });
+    expect(emitted).toEqual([]);
   });
 
   it("says try again, not sales closed, when the tickets cannot be written while the draw is still on sale", async () => {
@@ -247,14 +251,54 @@ describe("buying tickets", () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const res = await buy(user, [[1, 2, 3]]);
     expect(res.status).toBe(503);
-    expect(res.body.reason).toBe("busy");
+    expect(res.body).toEqual({ reason: "busy", message: "Those tickets could not be bought, try again. Your K₽ was returned." });
+    // without a transaction the charge stood on its own, so it is refunded by hand
     expect(await balanceOf(user)).toBe(50000);
+    expect((await rowsOf(user, TX.LOTTERY_TICKET)).map((r) => r.amount)).toEqual([100]);
     expect((await rowsOf(user, TX.LOTTERY_REFUND)).map((r) => r.amount)).toEqual([100]);
     expect(await LotteryTicket.countDocuments({})).toBe(0);
     expect((await LotteryEntry.findOne({ userId: user._id }).lean()).count).toBe(0);
-    expect((await LotteryDraw.findOne({ number: 1 }).lean()).jackpot).toBe(JACKPOT_BASE);
+    expect(await LotteryDraw.findOne({ number: 1 }).lean()).toMatchObject({ jackpot: JACKPOT_BASE, tickets: 0 });
+    expect(emitted).toEqual([{ to: String(user._id), event: "userDataUpdated", payload: { walletBalance: 50000 } }]);
     // and the same player can buy straight after
     expect((await buy(user, [[1, 2, 3]])).status).toBe(200);
+  });
+
+  it("says try again without promising a refund when the pot write fails before any charge", async () => {
+    const user = await makeUser();
+    const real = LotteryDraw.findOneAndUpdate.bind(LotteryDraw);
+    jest.spyOn(LotteryDraw, "findOneAndUpdate").mockImplementation((filter, ...rest) =>
+      filter && filter.status === "open" ? { lean: () => Promise.reject(new Error("write failed")) } : real(filter, ...rest)
+    );
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    const res = await buy(user, [[1, 2, 3]]);
+    expect(res.status).toBe(503);
+    expect(res.body).toEqual({ reason: "busy", message: "Those tickets could not be bought, try again" });
+    expect(await balanceOf(user)).toBe(50000);
+    expect(await Transaction.countDocuments({ userId: user._id })).toBe(0);
+    expect((await LotteryEntry.findOne({ userId: user._id }).lean()).count).toBe(0);
+  });
+
+  it("says contact support when the tickets cannot be written and the refund fails too", async () => {
+    const user = await makeUser();
+    jest.spyOn(LotteryTicket, "insertMany").mockRejectedValueOnce(new Error("write failed"));
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    mockFailCreditFor = String(user._id);
+    const res = await buy(user, [[1, 2, 3]]);
+    expect(res.status).toBe(500);
+    expect(res.body.reason).toBe("refund");
+    expect(await balanceOf(user)).toBe(49900);
+    expect(await rowsOf(user, TX.LOTTERY_REFUND)).toHaveLength(0);
+    expect((await LotteryEntry.findOne({ userId: user._id }).lean()).count).toBe(0);
+    expect(await LotteryDraw.findOne({ number: 1 }).lean()).toMatchObject({ jackpot: JACKPOT_BASE, tickets: 0 });
+  });
+
+  it("runs the referral check once, from the charge itself, when there is no transaction", async () => {
+    const hook = jest.spyOn(referrals, "maybePayReferralMilestone").mockResolvedValue(undefined);
+    const user = await makeUser();
+    expect((await buy(user, [[1, 2, 3]])).status).toBe(200);
+    expect(hook).toHaveBeenCalledTimes(1);
+    expect(String(hook.mock.calls[0][0])).toBe(String(user._id));
   });
 });
 

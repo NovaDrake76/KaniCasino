@@ -334,16 +334,177 @@ const freshLottery = async () => {
   await LotteryDraw.updateOne({ number: 1 }, { $set: { drawAt: new Date(Date.now() + 3600 * 1000) } });
 };
 
-test("a burst of lottery buyers each ends with their tickets, their charge and their share of the pot", async () => {
+const { JACKPOT_BASE, JACKPOT_SHARE } = lotteryMath;
+const potOf = () => LotteryDraw.findOne({ number: 1 }, { status: 1, jackpot: 1, tickets: 1 }).lean();
+const capOf = async (user) => ((await LotteryEntry.findOne({ userId: user._id }).lean()) || { count: 0 }).count;
+
+test("a burst of lottery buyers each ends with their tickets, their charge and their share of the pot, committed together", async () => {
   await freshLottery();
   const users = await Promise.all([1, 2, 3, 4, 5].map(() => makeUser(10000)));
   const results = await Promise.all(users.map((user) => lottery.buyTickets({ user, picks: [[1, 2, 3], [4, 5, 6]], io: noIo })));
   expect(results.map((r) => r.status)).toEqual([200, 200, 200, 200, 200]);
   const draw = await LotteryDraw.findOne({ number: 1 }).lean();
   expect(draw.tickets).toBe(10);
-  expect(draw.jackpot).toBe(lotteryMath.JACKPOT_BASE + 10 * lotteryMath.JACKPOT_SHARE);
+  expect(draw.jackpot).toBe(JACKPOT_BASE + 10 * JACKPOT_SHARE);
   expect(await LotteryTicket.countDocuments({ draw: 1 })).toBe(10);
-  for (const user of users) expect((await User.findById(user._id)).walletBalance).toBe(9800);
+  for (const user of users) {
+    expect((await User.findById(user._id)).walletBalance).toBe(9800);
+    expect(await Transaction.countDocuments({ userId: user._id, type: TX.LOTTERY_TICKET })).toBe(1);
+    expect(await LotteryTicket.countDocuments({ userId: user._id })).toBe(2);
+  }
+});
+
+test("a lottery purchase whose tickets fail to write inside the transaction leaves nothing behind", async () => {
+  await freshLottery();
+  const user = await makeUser(10000);
+  jest.spyOn(LotteryTicket, "insertMany").mockRejectedValueOnce(new Error("write failed"));
+  jest.spyOn(console, "error").mockImplementation(() => {});
+
+  const res = await lottery.buyTickets({ user, picks: [[1, 2, 3], [4, 5, 6]], io: noIo });
+
+  expect(res.status).toBe(503);
+  // nothing was taken, so the answer does not speak of a refund
+  expect(res.body).toEqual({ reason: "busy", message: "Those tickets could not be bought, try again" });
+  const after = await User.findById(user._id);
+  expect(after.walletBalance).toBe(10000);
+  expect(after.xp).toBe(0); // the stake's xp went back with the charge
+  expect(await Transaction.countDocuments({ userId: user._id })).toBe(0); // no charge row, and no refund row either
+  expect(await potOf()).toMatchObject({ status: "open", jackpot: JACKPOT_BASE, tickets: 0 });
+  expect(await LotteryTicket.countDocuments({})).toBe(0);
+  expect(await capOf(user)).toBe(0);
+});
+
+test("a lottery purchase the wallet cannot cover leaves the pot untouched", async () => {
+  await freshLottery();
+  const user = await makeUser(150);
+
+  const res = await lottery.buyTickets({ user, picks: [[1, 2, 3], [4, 5, 6]], io: noIo });
+
+  expect(res.status).toBe(400);
+  expect(res.body.reason).toBe("funds");
+  expect((await User.findById(user._id)).walletBalance).toBe(150);
+  expect(await Transaction.countDocuments({ userId: user._id })).toBe(0);
+  expect(await potOf()).toMatchObject({ status: "open", jackpot: JACKPOT_BASE, tickets: 0 });
+  expect(await LotteryTicket.countDocuments({})).toBe(0);
+  expect(await capOf(user)).toBe(0);
+});
+
+test("a lottery purchase retried after a write conflict charges, fills the pot and writes its tickets once", async () => {
+  await freshLottery();
+  const user = await makeUser(10000);
+  const spy = jest.spyOn(LotteryTicket, "insertMany").mockImplementationOnce(() => {
+    const conflict = new mongoose.mongo.MongoError("write conflict");
+    conflict.addErrorLabel("TransientTransactionError");
+    return Promise.reject(conflict);
+  });
+
+  const res = await lottery.buyTickets({ user, picks: [[1, 2, 3], [4, 5, 6]], io: noIo });
+
+  expect(res.status).toBe(200);
+  expect(spy).toHaveBeenCalledTimes(2); // the whole purchase ran twice, the first attempt took nothing
+  expect((await User.findById(user._id)).walletBalance).toBe(9800);
+  expect(await Transaction.countDocuments({ userId: user._id })).toBe(1);
+  expect(await potOf()).toMatchObject({ jackpot: JACKPOT_BASE + 2 * JACKPOT_SHARE, tickets: 2 });
+  expect(await LotteryTicket.countDocuments({ userId: user._id })).toBe(2);
+  expect(res.body.draw).toEqual({ number: 1, jackpot: JACKPOT_BASE + 2 * JACKPOT_SHARE, tickets: 2 });
+});
+
+// three numbers the draw will not draw, so a scored ticket pays nothing and the wallet shows only the charge
+const missingPick = async () => {
+  const drawn = lotteryMath.drawNumbers((await LotteryDraw.findOne({ number: 1 }).select("+serverSeed").lean()).serverSeed, 1);
+  return Array.from({ length: 20 }, (_, i) => i + 1).filter((n) => !drawn.includes(n)).slice(0, 3);
+};
+
+// a purchase that raced the settlement: all its tickets in the scored draw and charged, or refused with nothing taken
+async function expectWholeOrNothing(user, res, n) {
+  const draw = await LotteryDraw.findOne({ number: 1 }).lean();
+  const tickets = await LotteryTicket.find({ draw: 1 }).lean();
+  const rows = await Transaction.find({ userId: user._id }).lean();
+  const wallet = (await User.findById(user._id)).walletBalance;
+  expect(draw.status).toBe("settled");
+  if (res.status === 200) {
+    expect(res.body.draw.number).toBe(1);
+    expect(tickets).toHaveLength(n);
+    expect(tickets.every((t) => t.matches === 0)).toBe(true); // every one of them was scored
+    expect(draw).toMatchObject({ tickets: n, jackpot: JACKPOT_BASE + n * JACKPOT_SHARE });
+    expect(rows.map((r) => [r.type, r.amount])).toEqual([[TX.LOTTERY_TICKET, 100 * n]]);
+    expect(wallet).toBe(10000 - 100 * n);
+  } else {
+    expect(res.status).toBe(409);
+    expect(res.body.reason).toBe("closed");
+    expect(tickets).toHaveLength(0);
+    expect(draw).toMatchObject({ tickets: 0, jackpot: JACKPOT_BASE });
+    expect(rows).toHaveLength(0);
+    expect(wallet).toBe(10000);
+    expect(await capOf(user)).toBe(0);
+  }
+}
+
+test("a lottery purchase and a settlement started together never leave tickets charged but unscored", async () => {
+  const due = async () => new Date(new Date((await LotteryDraw.findOne({ number: 1 }).lean()).drawAt).getTime() + 1000);
+
+  // the settlement starts while the purchase's transaction is open: its switch to drawing waits for the commit
+  await freshLottery();
+  const inside = await makeUser(10000);
+  const pick = await missingPick();
+  const insert = LotteryTicket.insertMany.bind(LotteryTicket);
+  let settling;
+  let seenMeanwhile;
+  jest.spyOn(LotteryTicket, "insertMany").mockImplementationOnce(async (...args) => {
+    settling = settleDue(noIo, { now: await due(), revealMs: 0 });
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    seenMeanwhile = (await potOf()).status;
+    return insert(...args);
+  });
+  const bought = await lottery.buyTickets({ user: inside, picks: [pick, pick], io: noIo });
+  await settling;
+  expect(seenMeanwhile).toBe("open");
+  expect(bought.status).toBe(200);
+  await expectWholeOrNothing(inside, bought, 2);
+  jest.restoreAllMocks();
+
+  // the settlement lands between the sales check and the transaction: the purchase is refused and nothing is taken
+  await freshLottery();
+  const before = await makeUser(10000);
+  const claim = LotteryEntry.findOneAndUpdate.bind(LotteryEntry);
+  const at = await due();
+  jest.spyOn(LotteryEntry, "findOneAndUpdate").mockImplementationOnce((...args) => ({
+    lean: () => settleDue(noIo, { now: at, revealMs: 0 }).then(() => claim(...args).lean()),
+  }));
+  const refused = await lottery.buyTickets({ user: before, picks: [[1, 2, 3]], io: noIo });
+  expect(refused.status).toBe(409);
+  await expectWholeOrNothing(before, refused, 1);
+  jest.restoreAllMocks();
+
+  // and started at the same moment, a few times over, whichever wins
+  for (const wait of [0, 2, 5, 10, 20]) {
+    await freshLottery();
+    const user = await makeUser(10000);
+    const picks = [await missingPick()];
+    const [res] = await Promise.all([
+      lottery.buyTickets({ user, picks, io: noIo }),
+      due().then((now) => new Promise((resolve) => setTimeout(resolve, wait)).then(() => settleDue(noIo, { now, revealMs: 0 }))),
+    ]);
+    await expectWholeOrNothing(user, res, 1);
+  }
+});
+
+test("a committed lottery purchase runs the referral check once, and a refused one does not", async () => {
+  await freshLottery();
+  const referrals = require("../../utils/referrals");
+  const hook = jest.spyOn(referrals, "maybePayReferralMilestone").mockResolvedValue(undefined);
+  const user = await makeUser(10000);
+
+  expect((await lottery.buyTickets({ user, picks: [[1, 2, 3]], io: noIo })).status).toBe(200);
+  expect(hook).toHaveBeenCalledTimes(1);
+  const [id, level, known] = hook.mock.calls[0];
+  expect(String(id)).toBe(String(user._id));
+  expect(level).toBe((await User.findById(user._id)).level);
+  expect(known.walletBalance).toBe(9900);
+
+  const broke = await makeUser(50);
+  expect((await lottery.buyTickets({ user: broke, picks: [[1, 2, 3]], io: noIo })).status).toBe(400);
+  expect(hook).toHaveBeenCalledTimes(1);
 });
 
 test("a lottery payout whose ledger row fails rolls its claim back with it, and the resumed draw pays it once", async () => {

@@ -134,26 +134,39 @@ const releaseCap = (draw, userId, n) =>
     console.error("lottery cap release failed", draw, String(userId), err.message)
   );
 
-// the tickets and the pot they feed go in together, and only while the draw is still open; inside a transaction this
-// write is what the settlement's switch from open to drawing serializes against
-function placeTickets(number, userId, picks) {
+// thrown when the wallet does not cover the tickets, so the transaction aborts and the pot goes back with it
+const UNFUNDED = new Error("lottery tickets not covered by the wallet");
+
+// the pot, the charge and the tickets in one transaction while the draw is open; the pot write is what the settlement's
+// switch to drawing serializes against. `wrote` is reset on every run, since a transaction can run this more than once
+async function placeTickets(number, userId, picks, cost, wrote) {
   const n = picks.length;
   return runAtomic(async (session) => {
+    Object.assign(wrote, { session: Boolean(session), pot: false, charged: null });
     const draw = await LotteryDraw.findOneAndUpdate(
       { number, status: "open" },
       { $inc: { jackpot: L.JACKPOT_SHARE * n, tickets: n } },
       { new: true, session, projection: { number: 1, jackpot: 1, tickets: 1 } }
     ).lean();
     if (!draw) return null;
-    try {
-      const tickets = await LotteryTicket.insertMany(picks.map((numbers) => ({ draw: number, userId, numbers })), { session });
-      return { draw, tickets };
-    } catch (err) {
-      // without a transaction the pot is put back by hand
-      if (!session) await LotteryDraw.updateOne({ number, status: "open" }, { $inc: { jackpot: -L.JACKPOT_SHARE * n, tickets: -n } });
-      throw err;
-    }
+    wrote.pot = true;
+    wrote.charged = await chargeUser(userId, cost, { type: TX.LOTTERY_TICKET, meta: { draw: number, quantity: n }, session });
+    if (!wrote.charged) throw UNFUNDED;
+    const tickets = await LotteryTicket.insertMany(picks.map((numbers) => ({ draw: number, userId, numbers })), { session });
+    return { draw, tickets, user: wrote.charged };
   });
+}
+
+// without a transaction each write above committed on its own: the pot goes back, and a charge that landed is refunded.
+// undefined when there was nothing to refund, null when the refund failed
+async function undoByHand(number, userId, n, cost, wrote) {
+  if (wrote.pot) {
+    await LotteryDraw.updateOne({ number, status: "open" }, { $inc: { jackpot: -L.JACKPOT_SHARE * n, tickets: -n } }).catch((err) =>
+      console.error("lottery pot not put back", number, String(userId), err.message)
+    );
+  }
+  if (!wrote.charged) return undefined;
+  return creditUser(userId, cost, 0, { type: TX.LOTTERY_REFUND, meta: { draw: number, quantity: n } });
 }
 
 async function buyTickets({ user, picks, io, now = new Date() }) {
@@ -173,33 +186,36 @@ async function buyTickets({ user, picks, io, now = new Date() }) {
   if (!claim) return fail(409, `You can hold at most ${L.CAP} tickets in one draw`, "cap");
 
   const cost = L.PRICE * n;
-  const charged = await chargeUser(userId, cost, { type: TX.LOTTERY_TICKET, meta: { draw: draw.number, quantity: n } });
-  if (!charged) {
+  const wrote = {};
+  let placed;
+  try {
+    placed = await placeTickets(draw.number, userId, sorted, cost, wrote);
+  } catch (err) {
+    if (err !== UNFUNDED) console.error("lottery tickets not placed", draw.number, String(userId), err.message);
+    // in a transaction nothing was taken, so there is nothing to give back
+    const refunded = wrote.session === false ? await undoByHand(draw.number, userId, n, cost, wrote) : undefined;
     await releaseCap(draw.number, userId, n);
-    // a null charge is also a write that lost to another; only an empty wallet is the player's fault
-    const funded = await User.exists({ _id: userId, walletBalance: { $gte: cost } });
-    return funded ? fail(503, "Those tickets could not be bought, try again", "busy") : fail(400, "Insufficient balance", "funds");
-  }
-
-  const placed = await placeTickets(draw.number, userId, sorted).catch((err) => {
-    console.error("lottery tickets not placed", draw.number, String(userId), err.message);
-    return null;
-  });
-  if (!placed) {
-    // the draw closed between the charge and the tickets, or the write failed: either way the money goes straight back
-    const refunded = await creditUser(userId, cost, 0, { type: TX.LOTTERY_REFUND, meta: { draw: draw.number, quantity: n } });
-    await releaseCap(draw.number, userId, n);
-    if (!refunded) {
+    if (refunded === null) {
       console.error("lottery refund failed", draw.number, String(userId), cost);
       return fail(500, "Your tickets could not be placed and the refund failed, contact support", "refund");
     }
-    io.to(String(userId)).emit("userDataUpdated", { walletBalance: refunded.walletBalance });
-    const onSale = L.salesOpen(draw.drawAt, new Date()) && (await LotteryDraw.exists({ number: draw.number, status: "open" }));
-    return onSale
-      ? fail(503, "Those tickets could not be bought, try again. Your K₽ was returned.", "busy")
-      : fail(409, "Sales closed before your tickets went in. Your K₽ was returned.", "closed");
+    if (refunded) {
+      io.to(String(userId)).emit("userDataUpdated", { walletBalance: refunded.walletBalance });
+      return fail(503, "Those tickets could not be bought, try again. Your K₽ was returned.", "busy");
+    }
+    // a null charge is also a write that lost to another; only an empty wallet is the player's fault
+    if (err === UNFUNDED && !(await User.exists({ _id: userId, walletBalance: { $gte: cost } }))) return fail(400, "Insufficient balance", "funds");
+    return fail(503, "Those tickets could not be bought, try again", "busy");
+  }
+  if (!placed) {
+    // the draw left sales after the check above, and nothing was written
+    await releaseCap(draw.number, userId, n);
+    return fail(409, "Sales for this draw are closed", "closed");
   }
 
+  const charged = placed.user;
+  // joined to the transaction, the charge leaves its referral check to the caller; without one it already ran it
+  if (wrote.session) require("../utils/referrals").maybePayReferralMilestone(userId, charged.level, charged).catch(() => {});
   memo.forget("lottery:");
   io.to(String(userId)).emit("userDataUpdated", { walletBalance: charged.walletBalance, xp: charged.xp, level: charged.level });
   io.emit("lottery:pot", { draw: placed.draw.number, jackpot: placed.draw.jackpot, tickets: placed.draw.tickets });
