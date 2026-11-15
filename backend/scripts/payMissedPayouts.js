@@ -1,4 +1,4 @@
-// Pays out plinko or dice wins whose credit was rolled back by a write conflict.
+// Pays out plinko, dice or scratch card wins whose credit was rolled back by a write conflict.
 //
 // A credit that loses its transaction leaves the stake taken and the winnings unpaid; the
 // roll is still on record, so the roll is what this reconciles against. Dry run by default:
@@ -32,6 +32,24 @@ const GAMES = {
     meta: (o) => ({ betAmount: o.betAmount, target: o.target, direction: o.direction, multiplier: o.multiplier }),
     title: "Dice payout restored",
   },
+  // a stack of tickets is one credit for many rolls, so its rolls are summed back into the purchase first. a treasure
+  // ticket is left out: its sweep pays a lost credit from the ledger by meta.gameId, and two payers would pay it twice
+  scratch: {
+    win: TX.SCRATCH_WIN,
+    meta: (o) => ({ ticket: o.ticketId, quantity: o.stackSize, price: o.price, betAmount: o.price * o.stackSize }),
+    title: "Scratch card payout restored",
+    group: (rolls) => {
+      const stacks = new Map();
+      for (const r of rolls) {
+        if (r.outcome.ticketId === "treasure") continue;
+        const key = `${r.userId}|${r.seedId}|${r.outcome.stackStart}`;
+        const stack = stacks.get(key);
+        if (stack) stack.outcome.payout += Number(r.outcome.payout) || 0;
+        else stacks.set(key, { ...r, outcome: { ...r.outcome, payout: Number(r.outcome.payout) || 0 } });
+      }
+      return [...stacks.values()];
+    },
+  },
 };
 const GAME = arg("--game", "plinko");
 const TO = new Date(arg("--to", "2026-08-22T12:30:00Z"));
@@ -46,10 +64,11 @@ async function main() {
   setTransactionsSupported(await probeTransactions());
   const db = mongoose.connection.db;
 
-  const rolls = await db
+  const found = await db
     .collection("rolls")
     .find({ game: GAME, createdAt: { $gte: FROM, $lte: TO } })
     .toArray();
+  const rolls = game.group ? game.group(found) : found;
   const owed = rolls.filter((r) => r.outcome && Number(r.outcome.payout) > 0);
 
   const wins = await db

@@ -24,6 +24,7 @@ function OptionRow<T extends string | number>({
             key={option}
             onClick={() => onChange(option)}
             disabled={disabled}
+            aria-pressed={value === option}
             className={`flex-1 py-1.5 rounded text-sm font-semibold capitalize transition-colors disabled:opacity-50 ${
               value === option ? "bg-surface-raised text-white" : "bg-surface-nav text-ink-muted hover:text-white"
             }`}

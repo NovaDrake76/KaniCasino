@@ -17,6 +17,8 @@ export const SOUND_PAGES: [string, SoundEvent[]][] = [
   ["/plinko", [...GAME, "plinko.drop", "plinko.peg", "plinko.land.low", "plinko.land.mid", "plinko.land.high"]],
   ["/blackjack", [...GAME, ...CARDS, "bj.push", "bj.blackjack"]],
   ["/dice", [...GAME, "dice.roll", "dice.land"]],
+  ["/scratch", [...GAME, "game.bigwin", "scratch.buy", "scratch.rub", "scratch.reveal"]],
+  ["/lottery", ["game.bet", "game.win", "lottery.pick", "lottery.ball"]],
   ["/mines", [...GAME, "mines.reveal", "mines.bomb"]],
   ["/hilo", [...GAME, ...CARDS, "hilo.correct", "hilo.wrong"]],
   ["/battles/", [...REEL, "battle.start", "battle.win", "battle.lose", "battle.join"]],

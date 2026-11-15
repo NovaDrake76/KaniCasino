@@ -7,7 +7,7 @@ interface TitleProps {
 const Title: React.FC<TitleProps> = ({ title, compact = false }) => {
   return (
     <div className={`w-fit ${compact ? "pb-4 short:pb-1" : "py-10 short:py-4"}`}>
-      <div className="text-white w-auto text-3xl font-semibold">
+      <div className="text-white w-auto text-[clamp(1.5rem,8vw,1.875rem)] leading-9 font-semibold [overflow-wrap:anywhere]">
         {title.toUpperCase()}
       </div>
 

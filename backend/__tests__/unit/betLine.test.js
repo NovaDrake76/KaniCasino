@@ -9,17 +9,25 @@ const handlers = (path) => {
 };
 
 describe("the bet line", () => {
-  it.each(["/openCase/:id", "/upgrade", "/slots", "/plinko", "/dice", "/blackjack/deal", "/mines/start", "/hilo/start"])(
+  it.each(["/openCase/:id", "/upgrade", "/slots", "/plinko", "/dice", "/scratch", "/blackjack/deal", "/mines/start", "/hilo/start"])(
     "%s waits in the player's one line, whatever the game",
     (path) => {
       expect(handlers(path)).toContain(oneAtATime);
     }
   );
 
-  it.each(["/blackjack/hit", "/blackjack/double", "/mines/reveal", "/mines/cashout", "/hilo/guess", "/hilo/cashout"])(
+  it.each(["/blackjack/hit", "/blackjack/double", "/mines/reveal", "/mines/cashout", "/hilo/guess", "/hilo/cashout", "/scratch/pick"])(
     "%s is a move inside a round, so it never waits for the next bet's turn",
     (path) => {
       expect(handlers(path)).not.toContain(oneAtATime);
     }
   );
+});
+
+describe("the lottery", () => {
+  it("buys its tickets in the same one line as every bet", () => {
+    const router = require("../../routes/lotteryRoutes")(io);
+    const layer = router.stack.find((l) => l.route && l.route.path === "/tickets" && l.route.methods.post);
+    expect(layer.route.stack.map((s) => s.handle)).toContain(oneAtATime);
+  });
 });

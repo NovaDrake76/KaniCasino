@@ -34,6 +34,7 @@ module.exports = {
       animation: {
         'spin-fast': 'spin-fast 5s linear infinite',
         'spin-slow': 'spin-slow 2s linear infinite',
+        'ball-drop': 'ball-drop 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) both',
       },
       keyframes: {
         'spin-fast': {
@@ -43,6 +44,10 @@ module.exports = {
         'spin-slow': {
           '0%': { transform: 'rotateY(0deg)' },
           '100%': { transform: 'rotateY(60deg)' },
+        },
+        'ball-drop': {
+          '0%': { transform: 'translateY(-46px) scale(0.6)', opacity: '0' },
+          '100%': { transform: 'none', opacity: '1' },
         },
       },
       colors: {

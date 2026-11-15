@@ -49,6 +49,7 @@ export const GAME_PATHS: Record<PickGame, string> = {
   mines: "/mines",
   blackjack: "/blackjack",
   hilo: "/hilo",
+  scratch: "/scratch",
 };
 
 // the art the home page's game list uses, so a bonus looks like the game it is for
@@ -59,6 +60,7 @@ export const GAME_ART: Record<PickGame, string> = {
   mines: "/images/mines.svg",
   blackjack: "/images/blackjack.svg",
   hilo: "/images/hilo.svg",
+  scratch: "/images/scratch.svg",
 };
 
 // the names the navbar already uses, so the pick reads the same everywhere
@@ -69,4 +71,5 @@ export const GAME_NAME_KEYS: Record<PickGame, string> = {
   mines: "mines.mines",
   blackjack: "blackjack.blackjack",
   hilo: "hilo.hilo",
+  scratch: "scratch.scratch",
 };

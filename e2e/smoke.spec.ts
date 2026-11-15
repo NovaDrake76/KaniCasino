@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, Page } from "@playwright/test";
+import { mockApi, mockSession } from "./mocks";
 
 // 1x1 transparent png so case images load instantly with no network
 const IMG =
@@ -60,6 +61,8 @@ test("every game in the listing is clickable and navigates", async ({ page }) =>
     { text: "Play Slot", url: /\/slot/ },
     { text: "Play Plinko", url: /\/plinko/ },
     { text: "Play Blackjack", url: /\/blackjack/ },
+    { text: "Play Scratch Cards", url: /\/scratch/ },
+    { text: "Play Daily Lottery", url: /\/lottery/ },
   ];
 
   for (const game of games) {
@@ -293,4 +296,240 @@ test("a game board fits a short screen without scrolling", async ({ page }) => {
       { game, overflow: Math.max(0, Math.round(box!.y + box!.height - viewport!.height)) }
     ).toEqual({ game, overflow: 0 });
   }
+});
+
+test.describe("the today strip", () => {
+  const HOUR = 3600 * 1000;
+
+  // answers the strip's two reads and counts them; a delay holds both answers back
+  const today = async (page: Page, { delay = 0, me = null as unknown } = {}) => {
+    const counts = { pot: 0, board: 0 };
+    const hold = () => (delay ? new Promise((resolve) => setTimeout(resolve, delay)) : Promise.resolve());
+    await page.route("**/lottery/pot", async (route) => {
+      if (route.request().resourceType() === "document") return route.fallback();
+      counts.pot += 1;
+      await hold();
+      await route.fulfill({
+        json: { number: 4, jackpot: 38425, drawAt: new Date(Date.now() + 5 * HOUR).toISOString(), serverTime: new Date().toISOString() },
+      });
+    });
+    await page.route("**/leaderboard", async (route) => {
+      counts.board += 1;
+      await hold();
+      await route.fulfill({
+        json: {
+          boardId: "b1",
+          startsAt: new Date(Date.now() - 9 * HOUR).toISOString(),
+          endsAt: new Date(Date.now() + 15 * HOUR).toISOString(),
+          serverTime: new Date().toISOString(),
+          paidPlaces: 10,
+          pool: 21700,
+          prizes: [10000, 5000, 2500, 1200, 900, 700, 500, 400, 300, 200],
+          standings: [],
+          me,
+        },
+      });
+    });
+    return counts;
+  };
+
+  const amount = (page: Page, card: "lottery" | "leaderboard") => page.getByTestId(`today-${card}`).getByTestId("today-amount");
+  const box = async (page: Page, selector: string) => page.locator(selector).first().boundingBox();
+
+  test("shows the open draw's jackpot and today's prize pool from one read of each", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.clock.install();
+    const counts = await today(page);
+    await page.goto("/");
+
+    await expect(amount(page, "lottery")).toHaveText(/^K₽\s38,425$/);
+    await expect(amount(page, "leaderboard")).toHaveText(/^K₽\s21,700$/);
+    await expect(page.getByTestId("lottery-pot")).toHaveText(/^Jackpot K₽\s38,425$/);
+    await expect(page.getByTestId("today-lottery").getByTestId("today-clock")).toHaveText(/^0[45]:\d\d:\d\d$/);
+
+    expect(counts).toEqual({ pot: 1, board: 1 });
+
+    // the board is polled every thirty seconds: one poller for the strip and the section makes it two reads, not four.
+    // the clock moves a second at a time and stops at the poll, so a slow answer never meets the api layer's 2.5 s hedge
+    await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+    let seconds = 0;
+    while (counts.board < 2 && seconds < 40) {
+      await page.clock.runFor(1000);
+      await page.waitForTimeout(300);
+      seconds += 1;
+    }
+    expect(seconds).toBeGreaterThanOrEqual(20);
+    await page.waitForTimeout(500);
+    expect(counts).toEqual({ pot: 1, board: 2 });
+  });
+
+  test("the lottery card opens the lottery", async ({ page }) => {
+    await today(page);
+    await page.goto("/");
+    await page.getByTestId("today-lottery").click();
+    await expect(page).toHaveURL(/\/lottery$/);
+  });
+
+  test("the leaderboard card brings the leaderboard heading into view below the sticky bar", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await today(page);
+    await page.goto("/");
+    const heading = page.getByText("DAILY LEADERBOARD", { exact: true });
+    await expect(heading).toBeVisible();
+    // the shelves above have to be in first, or their placeholder leaving moves the heading after the scroll
+    await expect(page.getByText("Starter Case")).toBeVisible();
+    await expect(page.getByText("Recommended Cases")).toHaveCount(0);
+    await expect(amount(page, "leaderboard")).toHaveText(/21,700/);
+    expect((await heading.boundingBox())!.y).toBeGreaterThan(900);
+
+    await page.getByTestId("today-leaderboard").click();
+    const bar = page.locator("nav.sticky");
+    await expect.poll(async () => (await bar.boundingBox())!.y).toBe(0);
+    await expect
+      .poll(
+        async () => {
+          const b = (await heading.boundingBox())!;
+          const top = (await bar.boundingBox())!;
+          return b.y >= top.y + top.height && b.y + b.height <= 900;
+        },
+        { timeout: 10000 }
+      )
+      .toBe(true);
+    expect(page.url()).not.toContain("#");
+  });
+
+  test("on a laptop the cards sit half over the banner's bottom edge", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await today(page);
+    await page.goto("/");
+    await expect(amount(page, "lottery")).toHaveText(/38,425/);
+
+    const banner = (await box(page, ".carousel-root"))!;
+    for (const card of ["today-lottery", "today-leaderboard"]) {
+      const b = (await page.getByTestId(card).boundingBox())!;
+      expect(Math.round(banner.y + banner.height - b.y)).toBe(44);
+      expect(b.height).toBe(88);
+      // on top of the banner, not under it
+      const owner = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest("a")?.getAttribute("data-testid"), [b.x + b.width / 2, b.y + 10]);
+      expect(owner).toBe(card);
+    }
+    const bar = (await box(page, "nav.sticky"))!;
+    const strip = (await page.getByTestId("today-strip").boundingBox())!;
+    expect(Math.round(bar.y - (strip.y + strip.height))).toBe(0);
+  });
+
+  test("on a phone the strip is the first thing under the navbar, above the category bar", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await today(page);
+    await page.goto("/");
+    await expect(amount(page, "lottery")).toHaveText(/38,425/);
+
+    const navbar = (await box(page, "nav.notched"))!;
+    const strip = (await page.getByTestId("today-strip").boundingBox())!;
+    const bar = (await box(page, "nav.sticky"))!;
+    // the gap is the header's own bottom padding; the hidden banner takes no room
+    expect(Math.round(strip.y - (navbar.y + navbar.height))).toBe(16);
+    expect(Math.round(bar.y - (strip.y + strip.height))).toBe(0);
+    const cards = [await page.getByTestId("today-lottery").boundingBox(), await page.getByTestId("today-leaderboard").boundingBox()];
+    expect(cards[0]!.y).toBe(cards[1]!.y);
+    expect(cards[0]!.height).toBe(cards[1]!.height);
+  });
+
+  test("no horizontal scroll at 320", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 640 });
+    await today(page);
+    await page.goto("/");
+    await expect(amount(page, "leaderboard")).toHaveText(/21,700/);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+
+  // mocked english data hid these: a long word in a title, a long label on the lottery tile, a long name on a fan card
+  for (const [locale, width] of [
+    ["de-DE", 320],
+    ["ja-JP", 360],
+    ["pl-PL", 360],
+  ] as const) {
+    test(`no horizontal scroll at ${width} in ${locale}, long names included`, async ({ browser, baseURL }) => {
+      const context = await browser.newContext({ locale, viewport: { width, height: 700 } });
+      const page = await context.newPage();
+      await page.addInitScript(() => localStorage.setItem("kani.onboardingSeen", "1"));
+      await mockApi(page);
+      await today(page);
+      const fan = { username: "Akmal Marisa Kanade Izanagi the Second", profilePicture: "", level: 12 };
+      await page.route("**/fandom**", (route) =>
+        route.request().resourceType() === "document"
+          ? route.fallback()
+          : route.fulfill({ json: { page: 1, pages: 1, boards: [{ name: "Airi", image: IMG, rarity: "rare", caseId: null, fanCount: 9, topCount: 123, secondCount: 40, gap: 83, top: fan }] } })
+      );
+      await page.goto(`${baseURL}/`);
+      await expect(page.locator("html")).toHaveAttribute("lang", new RegExp(`^${locale.slice(0, 2)}`));
+      await expect(amount(page, "leaderboard")).toHaveText(/21,700/);
+      await expect(page.getByText(/Akmal Marisa Kanade Izanagi/).first()).toBeAttached();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+      await context.close();
+    });
+  }
+
+  test("the navbar keeps its height while a signed-in player's picture loads", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await mockApi(page);
+    await mockSession(page);
+    await today(page);
+    // the picture is held back, so the placeholder is on screen when the bar is first measured
+    let release: () => void = () => undefined;
+    const held = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route("https://i.imgur.com/**", async (route) => {
+      await held;
+      await route.fulfill({ contentType: "image/png", body: Buffer.from(IMG.split(",")[1], "base64") });
+    });
+    await page.goto("/");
+    const menu = page.getByRole("button", { name: /account menu/i });
+    await expect(menu).toBeVisible();
+    await expect(amount(page, "leaderboard")).toHaveText(/21,700/);
+    const before = { nav: (await box(page, "nav"))!.height, strip: (await page.getByTestId("today-strip").boundingBox())!.y };
+    release();
+    await expect(menu.locator("img")).toBeVisible();
+    const after = { nav: (await box(page, "nav"))!.height, strip: (await page.getByTestId("today-strip").boundingBox())!.y };
+    expect(after).toEqual(before);
+  });
+
+  for (const size of [
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    test(`nothing moves when the answers arrive at ${size.width}`, async ({ page }) => {
+      await page.setViewportSize(size);
+      await today(page, { delay: 2500 });
+      await page.goto("/");
+      await expect(page.getByTestId("today-pending").filter({ visible: true })).toHaveCount(4);
+      await page.evaluate(() => document.fonts.ready);
+      const before = { strip: await page.getByTestId("today-strip").boundingBox(), bar: (await box(page, "nav.sticky"))!.y };
+
+      await expect(amount(page, "lottery")).toHaveText(/38,425/);
+      await expect(page.getByTestId("today-leaderboard").getByTestId("today-clock")).toBeVisible();
+      const after = { strip: await page.getByTestId("today-strip").boundingBox(), bar: (await box(page, "nav.sticky"))!.y };
+      expect(after).toEqual(before);
+    });
+  }
+
+  test("a ranked player sees their place on the leaderboard card", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await mockApi(page);
+    await mockSession(page);
+    await today(page, { me: { _id: "player1", points: 900, bets: 3, rank: 12, toPaidPlace: 400, prize: 0 } });
+    await page.goto("/");
+    await expect(page.getByTestId("today-leaderboard").getByText("You #12").filter({ visible: true })).toHaveCount(1);
+    await expect(page.getByTestId("today-lottery").getByText(/You #/)).toHaveCount(0);
+    // a phone shows the place alone, down to the narrowest one
+    for (const width of [390, 360, 320]) {
+      await page.setViewportSize({ width, height: 740 });
+      await expect(page.getByTestId("today-leaderboard").getByText("#12", { exact: true }).filter({ visible: true })).toHaveCount(1);
+      await expect(page.getByTestId("today-leaderboard").getByText("You #12").filter({ visible: true })).toHaveCount(0);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+    }
+  });
 });

@@ -12,7 +12,9 @@ const { TX } = require("./economy");
 const MULTIPLIERS = {
   [TX.CASE_OPEN]: 1.5, // the widest-played game, and the biggest margin
   [TX.BATTLE_ENTRY]: 1.5,
+  [TX.SCRATCH_BET]: 1.3, // 4%
   [TX.CRASH_BET]: 1.3, // 3.97%
+  [TX.LOTTERY_TICKET]: 1.3, // about 3.9%, the house-funded base included
   [TX.SLOT_BET]: 1.15, // 3.55%
   [TX.PLINKO_BET]: 1.15, // ~3.5%
   [TX.COINFLIP_BET]: 1.0, // 3%, the baseline
@@ -27,7 +29,9 @@ const MULTIPLIERS = {
 const TABLE = [
   { type: TX.CASE_OPEN, key: "caseOpening", edge: null },
   { type: TX.BATTLE_ENTRY, key: "battles", edge: null },
+  { type: TX.SCRATCH_BET, key: "scratch", edge: 4.0 },
   { type: TX.CRASH_BET, key: "crash", edge: 3.97 },
+  { type: TX.LOTTERY_TICKET, key: "lottery", edge: 3.9 },
   { type: TX.SLOT_BET, key: "slots", edge: 3.55 },
   { type: TX.PLINKO_BET, key: "plinko", edge: 3.5 },
   { type: TX.COINFLIP_BET, key: "coinFlip", edge: 3.0 },

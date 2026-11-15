@@ -90,7 +90,9 @@ const { completeStuckBattles } = require("./games/battleEngine");
 const { sweepBlackjackHands } = require("./games/blackjack");
 const { sweepMinesGames } = require("./games/mines");
 const { sweepHiloGames } = require("./games/hilo");
+const { sweepScratchTickets } = require("./games/scratch");
 const { sweepSettlements } = require("./utils/predictionSettlement");
+const lotteryDraw = require("./games/lotteryDraw");
 const { sweepBoards } = require("./utils/leaderboard");
 const liveFeed = require("./utils/liveFeed");
 const chat = require("./utils/chat");
@@ -120,6 +122,7 @@ const arcadeRoutes = require("./routes/arcadeRoutes");
 const usageRoutes = require("./routes/usageRoutes");
 const accountRoutes = require("./routes/accountRoutes");
 const couponRoutes = require("./routes/couponRoutes");
+const lotteryRoutes = require("./routes/lotteryRoutes")(io);
 
 // Connect to MongoDB
 mongoose
@@ -205,6 +208,7 @@ app.use("/leaderboard", leaderboardRoutes);
 app.use("/usage", usageRoutes);
 app.use("/account", accountRoutes);
 app.use("/coupons", couponRoutes);
+app.use("/lottery", lotteryRoutes);
 
 // settle whatever the last shutdown interrupted before dealing anyone in again: a live
 // crash or coin flip round holds real stakes, and until this runs they are unaccounted.
@@ -219,8 +223,11 @@ const sweepRounds = ({ boot = false } = {}) => {
   sweepBlackjackHands(io).catch((e) => console.log(e));
   sweepMinesGames(io).catch((e) => console.log(e));
   sweepHiloGames(io).catch((e) => console.log(e));
+  sweepScratchTickets(io).catch((e) => console.log(e));
   sweepSettlements(io).catch((e) => console.log(e));
   sweepBoards(io).catch((e) => console.log(e));
+  // one read of the newest lottery draw per sweep: a draw a restart or crash left unsettled is drawn here, the first boot opens #1
+  lotteryDraw.settleDue(io).catch((e) => console.log(e));
 };
 liveFeed.seed().then((n) => n && console.log(`live feed seeded: ${n} rows`)).catch(() => {});
 // the rain settles on a timer rather than a schedule, so a restart mid round pays it the

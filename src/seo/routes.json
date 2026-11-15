@@ -48,6 +48,14 @@
       "title": "Dice | KaniCasino",
       "description": "Set your target, roll over or under, and chase up to 49.50x. Provably fair, no real money involved."
     },
+    "/scratch": {
+      "title": "Scratch Cards | KaniCasino",
+      "description": "Scratch off the coating and match three amounts to win. Three tickets, prizes up to 1000x. Provably fair, no real money involved."
+    },
+    "/lottery": {
+      "title": "Daily Lottery | KaniCasino",
+      "description": "Pick 3 numbers from 1 to 20 and win a rolling jackpot in the daily draw. Provably fair, no real money involved."
+    },
     "/mines": {
       "title": "Mines | KaniCasino",
       "description": "Reveal diamonds and dodge the bombs. Cash out any time. Provably fair, no real money involved."

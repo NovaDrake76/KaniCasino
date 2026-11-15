@@ -41,7 +41,7 @@ const WARN_MS = Number(process.env.RAIN_WARN_MS || 2 * 60 * 1000);
 
 const WAGER_TYPES = [
   TX.CASE_OPEN, TX.SLOT_BET, TX.PLINKO_BET, TX.CRASH_BET, TX.COINFLIP_BET,
-  TX.BATTLE_ENTRY, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET,
+  TX.BATTLE_ENTRY, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET, TX.SCRATCH_BET,
 ];
 
 const CARD = "username slug profilePicture level fanRank selectedBadge badges";

@@ -35,6 +35,11 @@ const TX = {
   MINES_WIN: "mines_win",
   HILO_BET: "hilo_bet",
   HILO_WIN: "hilo_win",
+  SCRATCH_BET: "scratch_bet", // one row per stack of tickets, meta.quantity says how many
+  SCRATCH_WIN: "scratch_win",
+  LOTTERY_TICKET: "lottery_ticket", // one row per purchase of tickets in a draw, meta.quantity says how many
+  LOTTERY_WIN: "lottery_win", // one row per player per settled draw, every winning ticket summed
+  LOTTERY_REFUND: "lottery_refund", // tickets paid for after their draw had closed
   // the house is the counterparty for every prediction trade, so all four settle against
   // it and the overround is where the edge comes from
   PREDICTION_BUY: "prediction_buy",
@@ -63,7 +68,7 @@ const TX = {
 };
 
 // every KP put at risk on a game; missions and referral commission both count these
-const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.PLINKO_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET, TX.BATTLE_ENTRY, TX.CASE_OPEN, TX.PREDICTION_BUY];
+const STAKE_TYPES = [TX.CRASH_BET, TX.COINFLIP_BET, TX.SLOT_BET, TX.PLINKO_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET, TX.SCRATCH_BET, TX.LOTTERY_TICKET, TX.BATTLE_ENTRY, TX.CASE_OPEN, TX.PREDICTION_BUY];
 
 // the ladder lives in xpCurve.js; these names are what the rest of the code calls
 const calculateXPForLevel = xpForLevel;

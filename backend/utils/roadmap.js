@@ -12,9 +12,9 @@ const { casesCompletedBy } = require("./collectionCheck");
 const ledgerDays = require("./ledgerDays");
 const predictionStake = require("./predictionStake");
 
-const GAME_BETS = [TX.SLOT_BET, TX.PLINKO_BET, TX.CRASH_BET, TX.COINFLIP_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET];
+const GAME_BETS = [TX.SLOT_BET, TX.PLINKO_BET, TX.CRASH_BET, TX.COINFLIP_BET, TX.BLACKJACK_BET, TX.DICE_BET, TX.MINES_BET, TX.HILO_BET, TX.SCRATCH_BET];
 const TRADES = [TX.MARKET_BUY, TX.MARKET_SALE, TX.MARKET_ORDER_FILL];
-const GAME_WINS = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN];
+const GAME_WINS = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.SCRATCH_WIN, TX.LOTTERY_WIN];
 // the goals read from the ledger, and the row types each one needs
 const LEDGER_TYPES = {
   fullPots: [TX.BONUS],
@@ -106,8 +106,8 @@ async function ledgerSince(userId, since, goals, head = null) {
     daysPlayed: new Set(of(STAKE_TYPES).flatMap((r) => r.days)).size,
     bigWin: of(GAME_WINS).reduce((m, r) => Math.max(m, r.max || 0), 0),
     rainsCaught: sum([TX.RAIN_PAYOUT], "count"),
-    // per bet type, summed since a folded opening day adds its head as a second row of the same type; a blackjack hand is one round however many doubles and splits it took
-    rounds: of(GAME_BETS).reduce((by, r) => ({ ...by, [r._id]: (by[r._id] || 0) + ((r._id === TX.BLACKJACK_BET ? r.base : r.count) || 0) }), {}),
+    // per bet type, summed since a folded opening day adds its head as a second row of the same type; a blackjack hand is one round however many doubles and splits it took, and every scratch ticket in a stack is one
+    rounds: of(GAME_BETS).reduce((by, r) => ({ ...by, [r._id]: (by[r._id] || 0) + ((r._id === TX.BLACKJACK_BET ? r.base : r._id === TX.SCRATCH_BET ? r.units : r.count) || 0) }), {}),
   };
 }
 

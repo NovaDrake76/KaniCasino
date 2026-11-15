@@ -167,7 +167,7 @@ const HelpOverlay = () => {
       helpTo("pick");
       return;
     }
-    // the stats icon is on the six house games: the one the player is on, or dice
+    // the stats icon is on the seven house games: the one the player is on, or dice
     if (wizard === "stats") {
       const here = (Object.keys(GAME_PATHS) as PickGame[]).find((g) => GAME_PATHS[g] === pathname);
       helpTo("stats", { game: here || "dice" });

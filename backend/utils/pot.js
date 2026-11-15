@@ -13,7 +13,7 @@ const CREDIT_SHARE = 0.1;
 const CREDIT_TTL_MS = CYCLE_MS;
 // the games a credit can be spent on: single-request games whose stake never comes back
 // as a refund, so a credit can only turn into real KP by being played
-const PICKS = ["slots", "dice", "plinko", "mines", "blackjack", "hilo"];
+const PICKS = ["slots", "dice", "plinko", "mines", "blackjack", "hilo", "scratch"];
 const GAME_OF_BET = {
   slot_bet: "slots",
   dice_bet: "dice",
@@ -21,6 +21,7 @@ const GAME_OF_BET = {
   mines_bet: "mines",
   blackjack_bet: "blackjack",
   hilo_bet: "hilo",
+  scratch_bet: "scratch",
 };
 
 // the same size the navbar button paid at this level

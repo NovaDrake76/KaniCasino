@@ -12,14 +12,14 @@ const ledgerDays = require("./ledgerDays");
 const PAGE_SIZE = 20;
 
 // KP-paying game wins and stake returns, for daily series and big-win surfacing
-const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.PREDICTION_PAYOUT];
-const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND, TX.PREDICTION_REFUND];
+const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.SCRATCH_WIN, TX.LOTTERY_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.PREDICTION_PAYOUT];
+const REFUND_TYPES = [TX.CRASH_REFUND, TX.COINFLIP_REFUND, TX.BATTLE_REFUND, TX.BLACKJACK_PUSH, TX.BLACKJACK_REFUND, TX.PREDICTION_REFUND, TX.LOTTERY_REFUND];
 // KP printed to players outside the games
 const FAUCET_TYPES = [TX.SIGNUP, TX.BONUS, TX.MISSION_REWARD, TX.REFERRAL_BONUS, TX.REFERRAL_MILESTONE, TX.AD_REWARD, TX.ARCADE_REWARD];
 // designed edges per game, so the realized return can be judged against intent
 // predictions is the one line whose theoretical return falls out of its configuration
 // rather than a designed constant: a book that sums to 1 + vig returns 1 / (1 + vig)
-const THEO_RTP = { crash: 0.9603, coinflip: 0.97, slots: 0.9645, plinko: 0.9655, blackjack: 0.9943, dice: 0.99, mines: 0.99, hilo: 0.99, cases: 0.9, battles: 0.9, predictions: PM.ONE / (PM.ONE + PM.DEFAULT_VIG_BPS) };
+const THEO_RTP = { crash: 0.9603, coinflip: 0.97, slots: 0.9645, plinko: 0.9655, blackjack: 0.9943, dice: 0.99, mines: 0.99, hilo: 0.99, scratch: 0.96, lottery: 0.9614, cases: 0.9, battles: 0.9, predictions: PM.ONE / (PM.ONE + PM.DEFAULT_VIG_BPS) };
 
 // window start, or null for all-time
 const sinceFor = (days) => {
@@ -59,6 +59,8 @@ const GAME_LINES = [
   { game: "dice", bets: [TX.DICE_BET], outs: [TX.DICE_WIN] },
   { game: "mines", bets: [TX.MINES_BET], outs: [TX.MINES_WIN] },
   { game: "hilo", bets: [TX.HILO_BET], outs: [TX.HILO_WIN] },
+  { game: "scratch", bets: [TX.SCRATCH_BET], outs: [TX.SCRATCH_WIN] },
+  { game: "lottery", bets: [TX.LOTTERY_TICKET], outs: [TX.LOTTERY_WIN, TX.LOTTERY_REFUND] },
   { game: "cases", bets: [TX.CASE_OPEN], outs: [] },
   { game: "battles", bets: [TX.BATTLE_ENTRY], outs: [TX.BATTLE_REFUND] },
   { game: "predictions", bets: [TX.PREDICTION_BUY], outs: [TX.PREDICTION_SELL, TX.PREDICTION_PAYOUT, TX.PREDICTION_REFUND] },
@@ -67,6 +69,8 @@ const GAME_LINES = [
 // blackjack charges BLACKJACK_BET again on double/split/insurance, so a raw debit
 // count overcounts hands; `base` counts only the deal rows, the ones with no side-action marker
 const BLACKJACK_BETS = { type: TX.BLACKJACK_BET, direction: "debit" };
+// one debit buys several of these, so a play is the quantity the row carries rather than the row
+const QTY_GAMES = new Set(["cases", "scratch", "lottery"]);
 const HANDS = [{ $group: { _id: null, n: { $sum: "$base" } } }];
 
 async function gameStats(days) {
@@ -114,7 +118,7 @@ async function gameStats(days) {
   const games = GAME_LINES.map(({ game, bets, outs }) => {
     const betSlot = byTypeDir[`${bets[0]}:debit`] || { amount: 0, count: 0, qty: 0 };
     const plays =
-      game === "cases" ? betSlot.qty || betSlot.count
+      QTY_GAMES.has(game) ? betSlot.qty || betSlot.count
       : game === "blackjack" ? blackjackHands
       : betSlot.count;
     const wagered = sumOf(bets, "debit");
@@ -303,7 +307,7 @@ async function playerDetail(id, days) {
     const bet = get(bets[0], "debit");
     const won = outs.reduce((s, o) => s + get(o, "credit").total, 0);
     const plays =
-      game === "cases" ? bet.qty || bet.count
+      QTY_GAMES.has(game) ? bet.qty || bet.count
       : game === "blackjack" ? blackjackHands
       : bet.count;
     return { game, plays, wagered: bet.total, won, net: bet.total - won };

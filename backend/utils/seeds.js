@@ -4,9 +4,9 @@ const { generateServerSeed, hashServerSeed, generateClientSeed } = require("./pr
 // after this many rolls a seed auto-rotates (revealing it), so seeds don't live forever
 const AUTO_ROTATE_NONCE = 1000;
 
-// the games that keep drawing from their seed after the bet: blackjack's cards, the mines board, hi-lo's deck
+// the games whose board or deck stays hidden after the bet: blackjack's cards, the mines board, hi-lo's deck, a treasure ticket
 async function liveGameOn(userId) {
-  const games = [require("../models/BlackjackHand"), require("../models/MinesGame"), require("../models/HiloGame")];
+  const games = [require("../models/BlackjackHand"), require("../models/MinesGame"), require("../models/HiloGame"), require("../models/ScratchTicket")];
   const live = await Promise.all(games.map((Game) => Game.exists({ userId, status: "active" })));
   return live.some(Boolean);
 }

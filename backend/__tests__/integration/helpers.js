@@ -24,6 +24,7 @@ const usageRoutes = require("../../routes/usageRoutes");
 const accountRoutes = require("../../routes/accountRoutes");
 const leaderboardRoutes = require("../../routes/leaderboardRoutes");
 const couponRoutes = require("../../routes/couponRoutes");
+const lotteryRoutes = require("../../routes/lotteryRoutes");
 const { markActivity } = require("../../middleware/markActivity");
 const Transaction = require("../../models/Transaction");
 const { TX } = require("../../utils/economy");
@@ -61,6 +62,7 @@ function makeApp() {
   app.use("/account", accountRoutes);
   app.use("/leaderboard", leaderboardRoutes);
   app.use("/coupons", couponRoutes);
+  app.use("/lottery", lotteryRoutes(io));
   return app;
 }
 

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import PotChip from "./PotChip";
 import i18n from "../../i18n";
 
 interface GameListingProps {
@@ -70,6 +71,19 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
     },
     {
       id: "11",
+      title: i18n.t("scratch.scratch"),
+      image: "/images/scratch.svg",
+      link: "/scratch",
+    },
+    {
+      id: "12",
+      title: i18n.t("lottery.lottery"),
+      image: "/images/lottery.svg",
+      link: "/lottery",
+      badge: <PotChip />,
+    },
+    {
+      id: "13",
       title: i18n.t("arcade.title"),
       image: "/images/arcade.svg",
       link: "/arcade",
@@ -90,9 +104,12 @@ const GameListing: React.FC<GameListingProps> = ({ name, description }) => {
           {games.map((item: any) => (
             <Link to={item.link} key={item.id}>
               <div className="relative flex flex-col items-center justify-end h-48 md:h-56 bg-surface rounded-lg p-4 transition-all hover:bg-surface-hover hover:-translate-y-1">
-                <span className="absolute top-3 left-3 text-xs font-semibold text-ink-soft bg-surface-raised px-2 py-0.5 rounded">
-                  {item.title}
-                </span>
+                <div className="absolute top-3 left-3 right-3 flex flex-wrap items-start justify-between gap-1">
+                  <span className="text-xs font-semibold text-ink-soft bg-surface-raised px-2 py-0.5 rounded">
+                    {item.title}
+                  </span>
+                  {item.badge}
+                </div>
                 <img
                   src={item.image}
                   alt={item.title}

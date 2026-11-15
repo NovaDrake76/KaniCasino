@@ -60,6 +60,8 @@ const GAME_LABELS: Record<string, string> = {
   dice: "Dice",
   mines: "Mines",
   hilo: "HiLo",
+  scratch: "Scratch Cards",
+  lottery: "Daily Lottery",
   cases: "Case openings",
   battles: "Case battles",
   predictions: "Predictions",
@@ -70,6 +72,7 @@ const WIN_LABELS: Record<string, string> = {
   plinko_win: "Plinko",
   crash_cashout: "Crash",
   coinflip_win: "Coin Flip",
+  lottery_win: "Daily Lottery",
 };
 
 const LINE_LABELS: Record<string, string> = {

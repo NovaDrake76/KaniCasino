@@ -8,6 +8,14 @@ const { BLACKJACK_ALGO_VERSION, replayHand } = require("./blackjackMath");
 const { DICE_ALGO_VERSION, resolveRoll: resolveDiceRoll } = require("./diceMath");
 const { MINES_ALGO_VERSION, deriveMines, multiplierFor: minesMultiplierFor, payoutCentsFor: minesPayoutCentsFor } = require("./minesMath");
 const { HILO_ALGO_VERSION, resolveHilo, rankOf: hiloRankOf } = require("./hiloMath");
+const {
+  SCRATCH_ALGO_VERSION,
+  TICKETS: SCRATCH_TICKETS,
+  isTicket: isScratchTicket,
+  validCell: validScratchCell,
+  resolveTicket: resolveScratchTicket,
+  treasurePayout,
+} = require("./scratchMath");
 const HILO_RANK_LABELS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 const { rollFloat } = require("./provablyFair");
 
@@ -323,6 +331,68 @@ async function verifyHiloRoll(rollId) {
   };
 }
 
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+// three distinct spots of the nine, in the order they were scratched
+const validPicks = (picks) =>
+  Array.isArray(picks) && picks.length === SCRATCH_TICKETS.treasure.picks && new Set(picks).size === picks.length && picks.every(validScratchCell);
+
+// rebuild a scratch ticket from its public inputs: a pocket grid, a nine's lucky symbols, spots and multiplier, or a
+// treasure board and what its picked spots paid. it folds through the same scratchMath the purchase used
+async function verifyScratchRoll(rollId) {
+  const v = await getRollForVerify(rollId);
+  if (!v || v.game !== "scratch") return { ok: false, reason: "not a scratch roll" };
+  if (!v.serverSeed) return { ok: false, reason: "server seed not revealed yet" };
+
+  const outcome = v.outcome || {};
+  if (outcome.algoVersion !== SCRATCH_ALGO_VERSION) {
+    return { ok: false, reason: "algorithm version superseded" };
+  }
+  if (!isScratchTicket(outcome.ticketId)) return { ok: false, reason: "unknown ticket" };
+
+  const commitmentValid = hashServerSeed(v.serverSeed) === v.serverSeedHash;
+  const replayed = resolveScratchTicket(v.serverSeed, v.clientSeed, v.nonce, outcome.ticketId);
+  const base = { commitmentValid, recomputedTicket: outcome.ticketId, expectedPayout: outcome.payout };
+
+  if (outcome.ticketId === "treasure") {
+    const picksValid = validPicks(outcome.picks);
+    const payout = picksValid ? treasurePayout(replayed.board, outcome.picks) : null;
+    return {
+      ...base,
+      ok: commitmentValid && picksValid && same(replayed.board, outcome.board) && payout === outcome.payout,
+      recomputedBoard: replayed.board,
+      recomputedPicks: picksValid ? outcome.picks : null,
+      recomputedPayout: payout,
+    };
+  }
+
+  if (outcome.ticketId === "pocket") {
+    return {
+      ...base,
+      ok: commitmentValid && same(replayed.cells, outcome.cells) && replayed.multiplier === outcome.multiplier && replayed.payout === outcome.payout,
+      recomputedCells: replayed.cells,
+      recomputedWinningCells: replayed.winningCells,
+      recomputedMultiplier: replayed.multiplier,
+      recomputedPayout: replayed.payout,
+    };
+  }
+
+  return {
+    ...base,
+    ok:
+      commitmentValid &&
+      same(replayed.lucky, outcome.lucky) &&
+      same(replayed.spots, outcome.spots) &&
+      replayed.multiplier === outcome.multiplier &&
+      replayed.payout === outcome.payout,
+    recomputedLucky: replayed.lucky,
+    recomputedSpots: replayed.spots,
+    recomputedWinningSpots: replayed.winningSpots,
+    recomputedMultiplier: replayed.multiplier,
+    recomputedPayout: replayed.payout,
+  };
+}
+
 // route a verify request to the game's reference verifier
 async function verifyRoll(rollId) {
   const r = await Roll.findOne({ rollId }).select("game").lean();
@@ -333,6 +403,7 @@ async function verifyRoll(rollId) {
   if (r.game === "dice") return verifyDiceRoll(rollId);
   if (r.game === "mines") return verifyMinesRoll(rollId);
   if (r.game === "hilo") return verifyHiloRoll(rollId);
+  if (r.game === "scratch") return verifyScratchRoll(rollId);
   return { ok: false, reason: "no server-side verifier for this game" };
 }
 
@@ -347,5 +418,6 @@ module.exports = {
   verifyDiceRoll,
   verifyMinesRoll,
   verifyHiloRoll,
+  verifyScratchRoll,
   verifyRoll,
 };

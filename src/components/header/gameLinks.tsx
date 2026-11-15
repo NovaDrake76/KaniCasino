@@ -1,7 +1,7 @@
 import { BsCoin, BsSortUp } from "react-icons/bs";
-import { GiUpgrade, GiCrossedSwords, GiCardAceSpades, GiMineExplosion, GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
+import { GiUpgrade, GiCrossedSwords, GiCardAceSpades, GiMineExplosion, GiPerspectiveDiceSixFacesRandom, GiCagedBall } from "react-icons/gi";
 import { SlPlane } from "react-icons/sl";
-import { TbCat, TbBounceRight } from "react-icons/tb";
+import { TbCat, TbBounceRight, TbTicket } from "react-icons/tb";
 import i18n from "../../i18n";
 
 export interface NavLink {
@@ -27,4 +27,6 @@ export const gameLinks = (): NavLink[] => [
   { name: i18n.t("dice.dice"), path: "/dice", icon: <GiPerspectiveDiceSixFacesRandom className="text-2xl" /> },
   { name: i18n.t("mines.mines"), path: "/mines", icon: <GiMineExplosion className="text-2xl" /> },
   { name: i18n.t("hilo.hilo"), path: "/hilo", icon: <BsSortUp className="text-2xl" /> },
+  { name: i18n.t("scratch.scratch"), path: "/scratch", icon: <TbTicket className="text-2xl" /> },
+  { name: i18n.t("lottery.lottery"), path: "/lottery", icon: <GiCagedBall className="text-2xl" /> },
 ];

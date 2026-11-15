@@ -11,7 +11,7 @@ const badges = require("./badges");
 const predictionStake = require("./predictionStake");
 
 // a "big win" is any single game payout; pushes and refunds are returned stakes, not wins
-const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.PREDICTION_PAYOUT];
+const WIN_TYPES = [TX.SLOT_WIN, TX.PLINKO_WIN, TX.BLACKJACK_WIN, TX.DICE_WIN, TX.MINES_WIN, TX.HILO_WIN, TX.SCRATCH_WIN, TX.LOTTERY_WIN, TX.CRASH_CASHOUT, TX.COINFLIP_WIN, TX.PREDICTION_PAYOUT];
 
 // missions currently offered; a disabled one (active:false) stays defined but is
 // never shown, announced, or claimable
