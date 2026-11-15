@@ -33,6 +33,9 @@ export const SOUND_EVENTS = [
   "scratch.buy",
   "scratch.rub",
   "scratch.reveal",
+  // lottery
+  "lottery.pick",
+  "lottery.ball",
   // coin flip
   "coin.flip",
   "coin.land",
@@ -117,6 +120,7 @@ export const SOUND_DEFAULTS: Partial<Record<SoundEvent, SoundOptions>> = {
   // the rub fires on every pointer move while scratching, so the throttle is what keeps it a texture rather than a buzz
   "scratch.rub": { volume: 0.3, rate: [0.85, 1.2], throttleMs: 90 },
   "scratch.reveal": { volume: 0.55, rate: [0.95, 1.1], throttleMs: 60 },
+  "lottery.pick": { volume: 0.4, rate: [0.95, 1.05], throttleMs: 60 },
   "coin.land": { volume: 0.5, rate: [0.95, 1.05] },
   "crash.tick": { volume: 0.25, throttleMs: 90 },
   "crash.crash": { volume: 0.7, solo: true },

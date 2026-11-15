@@ -11,6 +11,8 @@ const ScratchTicket = require("../models/ScratchTicket");
 const { crashPointFromSeed } = require("../utils/crashMath");
 const { coinResultFromSeed } = require("../utils/coinMath");
 const { sha256 } = require("../utils/hashChain");
+const LotteryDraw = require("../models/LotteryDraw");
+const { drawNumbers } = require("../utils/lotteryMath");
 
 const cleanClientSeed = (raw) => {
   const s = (raw || "").toString().trim();
@@ -176,6 +178,33 @@ router.get("/coinflip/:roundId", async (req, res) => {
       recomputedResult: recomputed,
       commitmentValid: sha256(round.serverSeed) === round.serverSeedHash,
       outcomeValid: recomputed === (round.outcome && round.outcome.result),
+    });
+  } catch (e) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// verify a lottery draw. while tickets are on sale only the commitment is public; once the draw is settled the seed
+// is revealed and the three numbers can be rebuilt from it and the draw number
+router.get("/lottery/:number", async (req, res) => {
+  try {
+    const number = Number(req.params.number);
+    if (!Number.isInteger(number) || number < 1) return res.status(404).json({ message: "Draw not found" });
+    const draw = await LotteryDraw.findOne({ number }, { number: 1, status: 1, seedHash: 1, numbers: 1 }).select("+serverSeed").lean();
+    if (!draw) return res.status(404).json({ message: "Draw not found" });
+
+    const revealed = draw.status === "settled";
+    const view = { number, status: draw.status, seedHash: draw.seedHash, revealed };
+    if (!revealed) return res.json(view);
+
+    const recomputed = drawNumbers(draw.serverSeed, number);
+    res.json({
+      ...view,
+      serverSeed: draw.serverSeed,
+      numbers: draw.numbers,
+      recomputedNumbers: recomputed,
+      commitmentValid: sha256(draw.serverSeed) === draw.seedHash,
+      outcomeValid: recomputed.join(",") === (draw.numbers || []).join(","),
     });
   } catch (e) {
     res.status(500).json({ message: "Server error" });

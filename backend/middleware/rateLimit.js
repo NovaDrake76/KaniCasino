@@ -153,6 +153,9 @@ const scratchBuyLimiter = perUser(40, "Too many tickets, slow down a little.");
 // one request per spot scratched on a treasure ticket, the same headroom the mines reveal has
 const scratchPickLimiter = perUser(80, "Too many actions, slow down a little.");
 
+// one request buys up to the whole cap of lottery tickets, so a person never needs many
+const lotteryBuyLimiter = perUser(20, "Too many ticket purchases, slow down a little.");
+
 // one request per action and a hand takes several, so it needs the headroom mines has
 const blackjackActionLimiter = perUser(80, "Too many actions, slow down a little.");
 
@@ -213,6 +216,7 @@ module.exports = {
   slotSpinLimiter,
   scratchBuyLimiter,
   scratchPickLimiter,
+  lotteryBuyLimiter,
   blackjackActionLimiter,
   marketBuyLimiter,
   marketWriteLimiter,

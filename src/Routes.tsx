@@ -13,6 +13,7 @@ import Dice from "./pages/Dice";
 import Mines from "./pages/Mines";
 import Hilo from "./pages/Hilo";
 import Scratch from "./pages/Scratch";
+import Lottery from "./pages/Lottery";
 import PrivacyPolicy from "./pages/About/PrivacyPolicy"
 import Terms from "./pages/About/Terms"
 import Unsubscribe from "./pages/About/Unsubscribe"
@@ -51,6 +52,7 @@ const defaultRoutes = (
     <Route path="/mines" element={<Mines />} />
     <Route path="/hilo" element={<Hilo />} />
     <Route path="/scratch" element={<Scratch />} />
+    <Route path="/lottery" element={<Lottery />} />
     <Route path="/battles" element={<Battles />} />
     <Route path="/battles/:id" element={<BattleRoom />} />
     <Route path="/predictions" element={<Predictions />} />

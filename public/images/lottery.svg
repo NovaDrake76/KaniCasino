@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 348">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#221f3d"/>
+      <stop offset="1" stop-color="#151225"/>
+    </linearGradient>
+    <radialGradient id="gold" cx="0.35" cy="0.3" r="0.85">
+      <stop offset="0" stop-color="#ffe680"/>
+      <stop offset="1" stop-color="#f2b705"/>
+    </radialGradient>
+    <radialGradient id="indigo" cx="0.35" cy="0.3" r="0.85">
+      <stop offset="0" stop-color="#8f8af2"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </radialGradient>
+    <radialGradient id="pale" cx="0.35" cy="0.3" r="0.85">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#b9b5cc"/>
+    </radialGradient>
+  </defs>
+  <rect width="256" height="348" rx="14" fill="url(#bg)"/>
+  <ellipse cx="128" cy="236" rx="96" ry="12" fill="#0d0b19" opacity="0.6"/>
+  <g>
+    <circle cx="70" cy="190" r="40" fill="url(#indigo)" stroke="#151225" stroke-width="3"/>
+    <circle cx="70" cy="190" r="19" fill="#e1dde9"/>
+    <text x="70" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#151225">7</text>
+    <ellipse cx="56" cy="168" rx="11" ry="6" fill="#ffffff" opacity="0.35" transform="rotate(-30 56 168)"/>
+  </g>
+  <g>
+    <circle cx="186" cy="190" r="40" fill="url(#pale)" stroke="#151225" stroke-width="3"/>
+    <circle cx="186" cy="190" r="19" fill="#281d3f"/>
+    <text x="186" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">19</text>
+    <ellipse cx="172" cy="168" rx="11" ry="6" fill="#ffffff" opacity="0.6" transform="rotate(-30 172 168)"/>
+  </g>
+  <g>
+    <circle cx="128" cy="150" r="54" fill="url(#gold)" stroke="#151225" stroke-width="3"/>
+    <circle cx="128" cy="150" r="26" fill="#151225"/>
+    <text x="128" y="161" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="#ffcc00">3</text>
+    <ellipse cx="108" cy="120" rx="15" ry="8" fill="#ffffff" opacity="0.45" transform="rotate(-30 108 120)"/>
+  </g>
+  <g fill="#ffcc00">
+    <circle cx="48" cy="92" r="3"/>
+    <circle cx="214" cy="104" r="4"/>
+    <circle cx="200" cy="68" r="2.5"/>
+    <circle cx="62" cy="128" r="2"/>
+  </g>
+  <text x="128" y="326" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#e1dde9" letter-spacing="5">LOTTERY</text>
+</svg>

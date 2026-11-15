@@ -7,7 +7,7 @@ import { gameInfo, GameKey } from "./content";
 vi.mock("../LiveBets", () => ({ default: () => <div data-testid="live-feed" /> }));
 
 const draw = (node: React.ReactNode) => render(<MemoryRouter>{node}</MemoryRouter>);
-const GAMES: GameKey[] = ["crash", "coinflip", "slots", "upgrade", "battles", "plinko", "blackjack", "dice", "mines", "hilo", "scratch"];
+const GAMES: GameKey[] = ["crash", "coinflip", "slots", "upgrade", "battles", "plinko", "blackjack", "dice", "mines", "hilo", "scratch", "lottery"];
 
 describe("the strip under a game", () => {
   it("opens on the live bets and switches to the game info", () => {
@@ -64,6 +64,12 @@ describe("the strip under a game", () => {
       ["More than K₽1,000", "16.1% · 1 in 6.2"],
       ["K₽1,000 or more", "35.3% · 1 in 2.8"],
     ]);
+  });
+
+  it("says what every lottery ticket puts into the jackpot", () => {
+    const payouts = gameInfo("lottery").sections[1].paragraphs?.[0] || "";
+    expect(payouts).toContain("of what tickets cost, and K₽25 of every ticket goes into the jackpot.");
+    expect(payouts).not.toContain("the rest");
   });
 
   it("quotes the coin's live payouts", () => {

@@ -12,12 +12,14 @@ interface GameLayoutProps {
   // the strip under the canvas. opt-in, so a game that migrates into this shell later
   // does not silently inherit controls it cannot feed.
   bar?: React.ReactNode;
+  // a game with no instant result has nothing in the live bets feed, so it shows its info alone
+  feed?: boolean;
 }
 
 // the shared shell every game page sits in: one container holding the controls and the board.
 // the board comes first on phones, so the game is on screen without scrolling past a tall
 // stack of controls to reach it.
-const GameLayout: React.FC<GameLayoutProps> = ({ game, title, panel, children, footer, bar }) => (
+const GameLayout: React.FC<GameLayoutProps> = ({ game, title, panel, children, footer, bar, feed = true }) => (
   <div className="w-full flex flex-col items-center gap-6 stage:gap-4 short:gap-3 px-3 sm:px-4 pt-4 stage:pt-1 pb-10">
     {/* the board is what a short screen has no room for, and the page title is the
         cheapest 60px to give back: the tab and the panel already say which game it is */}
@@ -41,7 +43,7 @@ const GameLayout: React.FC<GameLayoutProps> = ({ game, title, panel, children, f
 
     {footer}
 
-    <GameDetails game={game} />
+    <GameDetails game={game} feed={feed} />
   </div>
 );
 

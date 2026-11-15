@@ -1,4 +1,4 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, escapeMarkdown } = require("discord.js");
 const { couponLine } = require("./couponLines");
 
 const SITE = (process.env.SITE_URL || "https://kanicasino.com").replace(/\/$/, "");
@@ -145,6 +145,36 @@ const noticeEmbed = (text) =>
 
 const couponUrl = (code) => `${SITE}/coupon/${encodeURIComponent(code)}`;
 
+const LOTTERY_URL = `${SITE}/lottery`;
+const GOLD = 0xffcc00;
+
+// the result of a settled draw and the pot of the next one; names are plain text, so nobody is pinged by them
+function lotteryMessage(last, next) {
+  const winners = last.jackpotWinners || [];
+  const names = winners.map((w) => `**${escapeMarkdown(w.username)}**`).join(", ");
+  const result =
+    winners.length === 0
+      ? `Nobody matched 3. The ${num(last.jackpot)} K₽ jackpot rolls over.`
+      : winners.length === 1
+        ? `Jackpot won by ${names}: ${num(last.jackpotEach * (winners[0].tickets || 1))} K₽.`
+        : `Jackpot won by ${names}: ${num(last.jackpotEach)} K₽ each.`;
+  const lines = [result];
+  if (next) {
+    const at = Math.floor(new Date(next.drawAt).getTime() / 1000);
+    lines.push("", `Next draw <t:${at}:R>, jackpot **${num(next.jackpot)} K₽**.`);
+  }
+  const embed = new EmbedBuilder()
+    .setColor(winners.length ? GOLD : NEUTRAL)
+    .setTitle(`Lottery draw #${last.number}: ${last.numbers.join(" · ")}`)
+    .setURL(LOTTERY_URL)
+    .setDescription(lines.join("\n"))
+    .setFooter({ text: HOST });
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setLabel(`Pick your numbers on ${HOST}`).setStyle(ButtonStyle.Link).setURL(LOTTERY_URL)
+  );
+  return { allowedMentions: { parse: [] }, embeds: [embed], components: [row] };
+}
+
 // her line above, the facts in the embed; the code is printed as well as linked, so a player on another device can type it in
 function couponMessage(coupon, { random = Math.random, role = process.env.COUPON_ROLE_ID } = {}) {
   const url = couponUrl(coupon.code);
@@ -168,4 +198,4 @@ function couponMessage(coupon, { random = Math.random, role = process.env.COUPON
   return { content: role ? `<@&${role}> ${line}` : line, allowedMentions: { roles: role ? [role] : [] }, embeds: [embed], components: [row] };
 }
 
-module.exports = { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, couponMessage, couponUrl, SITE, HOST };
+module.exports = { showcaseEmbed, topFanEmbed, leaderboardEmbed, linkEmbed, noticeEmbed, couponMessage, couponUrl, lotteryMessage, LOTTERY_URL, SITE, HOST };
