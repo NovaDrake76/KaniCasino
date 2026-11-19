@@ -8,10 +8,12 @@ import { play } from "../../services/sound/sound";
 import i18n from "../../i18n";
 import {
   BIG_WIN_MULTIPLIER,
+  SYMBOLS,
   TICKETS,
   findSymbol,
   kpText,
   quantitiesOf,
+  symbolSrc,
   ticketOf,
   topPrize,
   type PickTicket,
@@ -388,6 +390,11 @@ export const useScratchServices = () => {
     updateTreasure(() => null);
     setBigWin(null);
   };
+
+  // the symbols are fetched as the page opens, so a ticket's pictures are never behind its result on a slow connection
+  useEffect(() => {
+    for (const name of SYMBOLS) new Image().src = symbolSrc(name);
+  }, []);
 
   // a ticket left open last time, here or on another device, opens straight into play
   useEffect(() => {

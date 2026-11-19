@@ -390,6 +390,31 @@ const tenPockets = {
   balance: 5050,
 };
 
+test("the next ticket of a stack never shows the last one's symbols, and every symbol is fetched as the page opens", async ({ page, baseURL }) => {
+  const asked = new Set<string>();
+  page.on("request", (r) => {
+    const m = /\/images\/scratch\/symbols\/(\w+)\.png/.exec(r.url());
+    if (m) asked.add(m[1]);
+  });
+  await open(page, baseURL, tenPockets);
+  await page.goto("/scratch");
+  await expect.poll(() => asked.size).toBe(15);
+  await page.getByRole("button", { name: "10", exact: true }).click();
+  await page.getByRole("button", { name: /^Buy 10 for/ }).click();
+  await page.getByRole("button", { name: "Reveal all" }).click();
+  const pictures = page.getByTestId("scratch-cell").locator("img");
+  await expect(pictures).toHaveCount(9);
+  // each picture element remembers what it was drawn for; one reused for another symbol would no longer match
+  await pictures.evaluateAll((imgs) => imgs.forEach((img) => img.setAttribute("data-drawn", img.getAttribute("src") || "")));
+  await page.getByRole("button", { name: "Next ticket" }).click();
+  await page.getByRole("button", { name: "Reveal all" }).click();
+  await expect(pictures).toHaveCount(9);
+  const reused = await pictures.evaluateAll((imgs) => imgs.filter((img) => img.hasAttribute("data-drawn") && img.getAttribute("data-drawn") !== img.getAttribute("src")).length);
+  expect(reused).toBe(0);
+  // and the second ticket is not the first one's layout, so some pictures really were replaced
+  expect(await pictures.evaluateAll((imgs) => imgs.filter((img) => !img.hasAttribute("data-drawn")).length)).toBeGreaterThan(0);
+});
+
 test("a stack of ten counts itself in the panel beside the ticket, and next to the ticket on a phone", async ({ page, baseURL }) => {
   await open(page, baseURL, tenPockets);
   await page.setViewportSize({ width: 1366, height: 678 });
