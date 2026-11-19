@@ -153,3 +153,8 @@ export const kpText = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "DOL", maximumFractionDigits: 0 }).format(n).replace("DOL", "K₽");
 
 export const symbolSrc = (name: string) => `/images/scratch/symbols/${name}.png`;
+
+// every symbol any ticket can show
+export const SYMBOLS = [
+  ...new Set(TICKETS.flatMap((t) => (t.kind === "line" ? t.prizes.map(([symbol]) => symbol) : t.kind === "lucky" ? t.pool : t.finds.map(([symbol]) => symbol)))),
+];
