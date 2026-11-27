@@ -1348,7 +1348,7 @@
           "what": "Phần của bạn trong mỗi cơn mưa ở chat nặng gấp 1,5 lần, mãi mãi."
         },
         "stopwatch": {
-          "about": "Bật lên là hòm cho bạn thấy ngay mình nhận được gì thay vì quay vòng quay. Tắt đi bất cứ lúc nào bạn muốn xem lại vòng quay. Đấu hòm vẫn giữ vòng quay của nó.",
+          "about": "Cho phép bỏ qua hoạt ảnh mở hòm. Các trận đấu vẫn giữ vòng quay.",
           "name": "Đồng Hồ Bấm Giờ",
           "opened": "Giờ nó có trên mọi trang hòm, ngay cạnh nút mở. Muốn xem không?",
           "pitch": "Bạn đã xem vòng quay đó vài nghìn lần rồi. Tôi đếm đấy.",
