@@ -1,7 +1,7 @@
 export type PixelIconName =
   | "heart" | "star" | "jar" | "gift" | "ticket" | "coins" | "bag" | "dice" | "flame" | "trade"
   | "lens" | "chest" | "medal" | "swords" | "crown" | "book" | "scroll" | "chat" | "crystal" | "letter" | "clover" | "seal" | "mystery"
-  | "goldticket" | "umbrella" | "hourglass" | "calendar" | "trophy" | "drop" | "people"
+  | "goldticket" | "umbrella" | "stopwatch" | "hourglass" | "calendar" | "trophy" | "drop" | "people"
   | "pencil" | "notebook" | "lamp" | "mug" | "abacus" | "cat" | "desk" | "metronome" | "globe" | "telescope"
   | "goldcat" | "card" | "compass" | "skull" | "diary" | "starchart" | "goldabacus" | "observatory" | "stone";
 

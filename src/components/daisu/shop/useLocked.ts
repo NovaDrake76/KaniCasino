@@ -8,3 +8,9 @@ export const useLocked = (key: UnlockKey): boolean => {
   const userData = useContext(UserContext)?.userData;
   return !!userData?.features?.daisu && Array.isArray(userData.unlocks) && !userData.unlocks.includes(key);
 };
+
+// a perk that adds something is the other way round: only an account in her beta that holds it sees it
+export const useHeld = (key: UnlockKey): boolean => {
+  const userData = useContext(UserContext)?.userData;
+  return !!userData?.features?.daisu && Array.isArray(userData.unlocks) && userData.unlocks.includes(key);
+};

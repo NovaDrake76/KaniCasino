@@ -20,6 +20,7 @@ const ITEMS = [
   { key: "giftCharm", kind: "unlock", price: 40000, level: 20 },
   { key: "merchantSeal", kind: "unlock", price: 150000, level: 30 },
   { key: "goldenTicket", kind: "unlock", price: 400000, level: 40 },
+  { key: "stopwatch", kind: "unlock", price: 600000, level: 40 },
   { key: "rainCoat", kind: "unlock", price: 800000, level: 50 },
   // the boosts: things from her desk, one every few levels
   { key: "luckyPencil", kind: "boost", price: 300, level: 2, xp: 0.05 },

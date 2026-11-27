@@ -48,6 +48,7 @@ const BY_GOAL: Record<string, Wizard> = {
   "unlock:merchantSeal": "market",
   "unlock:goldenTicket": "pot",
   "unlock:rainCoat": "chat",
+  "unlock:stopwatch": "cases",
 };
 
 export const wizardFor = (goal: string | null): Wizard | null => (goal && BY_GOAL[goal]) || null;

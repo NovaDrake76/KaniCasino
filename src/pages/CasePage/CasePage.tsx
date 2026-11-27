@@ -23,6 +23,11 @@ import { caseMeta } from "../../seo/caseMeta";
 import i18n from "../../i18n";
 import { play } from "../../services/sound/sound";
 import { revealSoundFor } from "../../services/sound/reel";
+import { useSkipAnimation } from "./skipAnimation";
+import SkipAnimationSwitch from "./SkipAnimationSwitch";
+
+// with the reel skipped, the case still gets a beat to fly off before the prize fades in
+const SKIP_BEAT_MS = 300;
 
 const CasePage = () => {
   const [data, setData] = useState<any>(null);
@@ -38,6 +43,7 @@ const CasePage = () => {
 
   const { userData, toogleUserFlow, toogleUserData } = useContext(UserContext);
   const [sellingAll, setSellingAll] = useState<boolean>(false);
+  const skipAnimation = useSkipAnimation();
   const navigate = useNavigate();
 
   //get id from url
@@ -91,12 +97,24 @@ const CasePage = () => {
   }, [data, id]);
 
   // the items are passed in: these timers are made before the state holding them updates
-  const resetProps = (items: any[] = []) => {
+  const resetProps = (items: any[] = [], skip = false) => {
     setShowPrize(false);
     setAnimationAux2(false);
 
     // set, never toggled: as a toggle the case only flew away on every other open
     setAnimationAux(true);
+
+    // no reel, so none of the timers below: the open button stays busy until this one has run
+    if (skip) {
+      setTimeout(() => {
+        setShowPrize(true);
+        setAnimationAux2(true);
+        setLoadingButton(false);
+        play(revealSoundFor(items.map((i) => Number(i.rarity))));
+        emitCaseRevealed(items);
+      }, SKIP_BEAT_MS);
+      return;
+    }
 
     setTimeout(() => {
       setStarted(true);
@@ -158,6 +176,7 @@ const CasePage = () => {
 
     setLoadingButton(true);
     play("case.open");
+    const skip = skipAnimation.skip;
 
     let items: BasicItem[] = [];
     try {
@@ -174,7 +193,7 @@ const CasePage = () => {
       return;
     }
 
-    resetProps(items)
+    resetProps(items, skip)
   };
 
   return (
@@ -245,6 +264,9 @@ const CasePage = () => {
               <QuantityButton quantity={quantity} setQuantity={setQuantity} disabled={started} />
             )
           }
+          {!loading && (
+            <SkipAnimationSwitch held={skipAnimation.held} on={skipAnimation.on} onChange={skipAnimation.set} disabled={loadingButton} />
+          )}
 
           {showPrize && !loadingButton && openedItems.length > 0 && openedSellTotal > 0 && (
             <button

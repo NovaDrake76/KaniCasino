@@ -366,6 +366,7 @@
     "openFreeCount": "Abrir gratis x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "flecha derecha",
+    "skipAnimation": "Saltar animación",
     "topArrow": "flecha superior",
     "viewCollection": "Ver colección"
   },
@@ -1345,6 +1346,13 @@
           "opened": "Ya lo llevas puesto. En la próxima lluvia, la porción mayor es tuya. ¿Quieres ver dónde cae?",
           "pitch": "Te mantiene seco. Mentira, te moja más. Aquí la lluvia es dinero.",
           "what": "Tu parte de cada lluvia en el chat pesa 1,5x, para siempre."
+        },
+        "stopwatch": {
+          "about": "Con el interruptor activado, una caja te muestra lo que te tocó al instante en vez de girar la ruleta. Desactívalo cuando quieras recuperar la ruleta. Las batallas conservan sus ruletas.",
+          "name": "Cronómetro",
+          "opened": "Ya está en cada página de caja, justo al lado del botón de abrir. ¿Quieres verlo?",
+          "pitch": "Has visto esa ruleta unos cuantos miles de veces. Las conté.",
+          "what": "Un interruptor en cada página de caja que se salta la ruleta, para siempre."
         },
         "luckyPencil": {
           "name": "Lápiz de la Suerte",

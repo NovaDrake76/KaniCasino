@@ -30,6 +30,7 @@ const EVIDENCE = {
   merchantSeal: async () => false,
   goldenTicket: async () => false,
   rainCoat: async () => false,
+  stopwatch: async () => false,
   predictionPass: async (user) => !!(await PredictionTrade.exists({ userId: user._id })),
 };
 // a boost or a charm is new, so nobody held one before the shop

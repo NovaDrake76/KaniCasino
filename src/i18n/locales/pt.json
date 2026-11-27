@@ -366,6 +366,7 @@
     "openFreeCount": "Abrir grátis x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "seta direita",
+    "skipAnimation": "Pular animação",
     "topArrow": "seta superior",
     "viewCollection": "Ver coleção"
   },
@@ -1345,6 +1346,13 @@
           "opened": "Está vestida. Na próxima chuva, a fatia maior é sua. Quer ver onde ela cai?",
           "pitch": "Ela te mantém seco. Mentira, te deixa mais molhado. Aqui chuva é dinheiro.",
           "what": "Sua parte de toda chuva no chat pesa 1,5x, pra sempre."
+        },
+        "stopwatch": {
+          "about": "Com ele ligado, a caixa mostra na hora o que você ganhou, em vez de girar a roleta. Desliga quando quiser a roleta de volta. As batalhas continuam com as roletas delas.",
+          "name": "Cronômetro",
+          "opened": "Agora ele está em toda página de caixa, bem do lado do botão de abrir. Quer ver?",
+          "pitch": "Você já viu essa roleta uns milhares de vezes. Eu contei.",
+          "what": "Um interruptor em toda página de caixa que pula a roleta, pra sempre."
         },
         "luckyPencil": {
           "name": "Lápis da Sorte",

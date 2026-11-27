@@ -366,6 +366,7 @@
     "openFreeCount": "Gratis öffnen x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "Pfeil rechts",
+    "skipAnimation": "Animation überspringen",
     "topArrow": "Pfeil oben",
     "viewCollection": "Sammlung ansehen"
   },
@@ -1345,6 +1346,13 @@
           "opened": "Du trägst ihn. Beim nächsten Regen bekommst du das größere Stück. Willst du sehen, wo er fällt?",
           "pitch": "Hält dich trocken. Gelogen, macht dich nasser. Regen ist hier Geld.",
           "what": "Dein Anteil an jedem Regen im Chat wiegt 1,5x, für immer."
+        },
+        "stopwatch": {
+          "about": "Ist der Schalter an, zeigt dir eine Kiste sofort, was du bekommen hast, statt die Walze zu drehen. Schalte ihn aus, wann immer du die Walze zurückwillst. Battles behalten ihre Walzen.",
+          "name": "Stoppuhr",
+          "opened": "Der Schalter ist jetzt auf jeder Kistenseite, direkt neben dem Öffnen-Knopf. Willst du ihn sehen?",
+          "pitch": "Du hast dieser Walze schon ein paar tausend Mal zugesehen. Ich habe mitgezählt.",
+          "what": "Ein Schalter auf jeder Kistenseite, der die Walze überspringt, für immer."
         },
         "luckyPencil": {
           "name": "Glücksstift",

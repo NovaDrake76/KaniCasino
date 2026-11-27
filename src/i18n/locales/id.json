@@ -366,6 +366,7 @@
     "openFreeCount": "Buka gratis x{{count}}",
     "provablyFair": "Gak ngechit, aman",
     "rightArrow": "panah kanan",
+    "skipAnimation": "Lewati animasi",
     "topArrow": "panah atas",
     "viewCollection": "Lihat koleksi"
   },
@@ -1345,6 +1346,13 @@
           "opened": "Sudah kamu pakai. Hujan berikutnya, potongan lebih besar jadi milikmu. Mau lihat di mana turunnya?",
           "pitch": "Membuatmu tetap kering. Bohong, membuatmu lebih basah. Di sini hujan adalah uang.",
           "what": "Bagianmu dari setiap hujan di chat berbobot 1,5x, selamanya."
+        },
+        "stopwatch": {
+          "about": "Nyalakan, dan kotak langsung menunjukkan apa yang kamu dapat tanpa memutar gulungan. Matikan kapan saja kalau kamu mau gulungannya kembali. Adu tetap pakai gulungan.",
+          "name": "Stopwatch",
+          "opened": "Sekarang sudah ada di setiap halaman kotak, tepat di samping tombol buka. Mau lihat?",
+          "pitch": "Kamu sudah menonton gulungan itu beberapa ribu kali. Aku menghitungnya.",
+          "what": "Sakelar di setiap halaman kotak untuk melewati gulungan, selamanya."
         },
         "luckyPencil": {
           "name": "Pensil Keberuntungan",
