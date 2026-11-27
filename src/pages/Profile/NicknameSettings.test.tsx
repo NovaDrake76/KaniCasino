@@ -45,6 +45,12 @@ describe("changing your nickname from settings", () => {
     expect(box().value).toBe("Nova Drake");
   });
 
+  it("shows a card with nothing under the field while the name can change", () => {
+    draw();
+    expect(screen.getByRole("heading", { name: "Nickname" })).toBeTruthy();
+    expect(box().getAttribute("aria-describedby")).toBeNull();
+  });
+
   it("will not save a name that has not changed", () => {
     draw();
     expect(button().disabled).toBe(true);

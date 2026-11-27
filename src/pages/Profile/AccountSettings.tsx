@@ -5,7 +5,7 @@ import Field from "../../components/Field";
 import MainButton from "../../components/MainButton";
 import { changeEmail, problemOf, Verification } from "../../services/account/AccountService";
 import { openVerify } from "../../components/verify/verifyEvents";
-import { lockDate } from "../../components/verify/useVerification";
+import SettingsCard from "./SettingsCard";
 import i18n from "../../i18n";
 
 // the account's verification, and the way to fix an address that cannot receive the link
@@ -41,74 +41,65 @@ const AccountSettings = () => {
     setSaving(false);
   };
 
-  return (
+  const badge = v.verified ? (
+    <span className="flex items-center gap-1.5 rounded-full bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-400">
+      <FiCheckCircle /> {i18n.t("verify.settings.verified")}
+    </span>
+  ) : (
+    <span className="text-sm text-ink-muted">{i18n.t("verify.settings.notVerified")}</span>
+  );
+
+  const footer = editing ? (
     <>
-      <span className="text-lg font-bold">{i18n.t("verify.settings.title")}</span>
-
-      <div className="flex flex-col gap-4 bg-surface border border-line rounded-lg p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold">{i18n.t("verify.settings.status")}</span>
-            {v.verified ? (
-              <span className="flex items-center gap-1.5 text-sm text-green-400">
-                <FiCheckCircle /> {i18n.t("verify.verified")} {v.via && `(${i18n.t(`verify.via.${v.via}`)})`}
-              </span>
-            ) : (
-              <span className="text-sm text-ink-muted">
-                {i18n.t("verify.settings.notVerified", { date: lockDate(new Date(v.requiredFrom)) })}
-              </span>
-            )}
-          </div>
-          {!v.verified && (
-            <div className="shrink-0">
-              <MainButton text={i18n.t("verify.button")} onClick={openVerify} />
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-2 border-t border-line pt-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex min-w-0 flex-col gap-1">
-              <span className="font-semibold">{i18n.t("verify.settings.email")}</span>
-              <span className="truncate text-sm text-ink-soft">{v.email}</span>
-            </div>
-            {v.canChangeEmail && !editing && (
-              <button
-                type="button"
-                onClick={() => {
-                  setEditing(true);
-                  setSentTo(null);
-                }}
-                className="shrink-0 rounded-none border-0 bg-transparent p-0 text-sm font-semibold text-secondary-light hover:text-white focus:outline-none"
-              >
-                {i18n.t("verify.settings.change")}
-              </button>
-            )}
-          </div>
-          {!v.canChangeEmail && <span className="text-xs text-ink-muted">{i18n.t("verify.errors.google")}</span>}
-          {sentTo && <span className="text-sm text-green-400">{i18n.t("verify.settings.changeSent", { email: sentTo })}</span>}
-
-          {editing && (
-            <form onSubmit={submit} className="flex flex-col gap-3" noValidate>
-              <Field id="new-email" type="email" label={i18n.t("verify.settings.newEmail")} value={email} onChange={setEmail} autoComplete="email" />
-              <Field id="current-password" type="password" label={i18n.t("verify.settings.password")} value={password} onChange={setPassword} autoComplete="current-password" />
-              {error && <span className="text-sm text-red-400">{error}</span>}
-              {suggestion && (
-                <button type="button" onClick={() => setEmail(suggestion)} className="self-start rounded-none border-0 bg-transparent p-0 text-left text-sm font-semibold text-secondary-light hover:text-white focus:outline-none">
-                  {i18n.t("verify.suggestion", { email: suggestion })}
-                </button>
-              )}
-              <div className="flex items-center gap-3">
-                <MainButton text={i18n.t("verify.settings.sendChange")} onClick={() => undefined} loading={saving} disabled={saving || !email.trim()} submit />
-                <button type="button" onClick={() => setEditing(false)} className="rounded-none border-0 bg-transparent p-0 text-sm text-ink-muted hover:text-white focus:outline-none">
-                  {i18n.t("verify.settings.cancel")}
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
+      <button type="button" onClick={() => setEditing(false)} className="rounded-none border-0 bg-transparent p-0 text-sm text-ink-muted hover:text-white focus:outline-none">
+        {i18n.t("verify.settings.cancel")}
+      </button>
+      <div className="min-w-[10rem]">
+        <MainButton text={i18n.t("verify.settings.sendChange")} onClick={() => undefined} loading={saving} disabled={saving || !email.trim()} submit />
       </div>
     </>
+  ) : v.canChangeEmail || !v.verified ? (
+    <>
+      {v.canChangeEmail && (
+        <button
+          type="button"
+          onClick={() => {
+            setEditing(true);
+            setSentTo(null);
+          }}
+          className="h-10 rounded-md border border-line bg-surface-nav px-4 font-semibold text-white transition-colors hover:border-line-strong hover:bg-line focus:outline-none"
+        >
+          {i18n.t("verify.settings.change")}
+        </button>
+      )}
+      {!v.verified && (
+        <div className="min-w-[10rem]">
+          <MainButton text={i18n.t("verify.button")} onClick={openVerify} />
+        </div>
+      )}
+    </>
+  ) : undefined;
+
+  return (
+    <form onSubmit={submit} noValidate>
+      <SettingsCard title={i18n.t("verify.settings.email")} badge={badge} footer={footer}>
+        <div className="truncate border-b-2 border-line bg-surface-nav px-3 py-2.5 text-sm text-ink-soft">{v.email}</div>
+        {sentTo && <span className="text-sm text-green-400">{i18n.t("verify.settings.changeSent", { email: sentTo })}</span>}
+
+        {editing && (
+          <>
+            <Field id="new-email" type="email" label={i18n.t("verify.settings.newEmail")} value={email} onChange={setEmail} autoComplete="email" />
+            <Field id="current-password" type="password" label={i18n.t("verify.settings.password")} value={password} onChange={setPassword} autoComplete="current-password" />
+            {error && <span className="text-sm text-red-400">{error}</span>}
+            {suggestion && (
+              <button type="button" onClick={() => setEmail(suggestion)} className="self-start rounded-none border-0 bg-transparent p-0 text-left text-sm font-semibold text-secondary-light hover:text-white focus:outline-none">
+                {i18n.t("verify.suggestion", { email: suggestion })}
+              </button>
+            )}
+          </>
+        )}
+      </SettingsCard>
+    </form>
   );
 };
 

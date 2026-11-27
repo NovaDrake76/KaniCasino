@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { getUser, getInventory } from "../../services/users/UserServices";
-import { FiFilter, FiLock } from 'react-icons/fi'
+import { FiFilter, FiLock, FiSettings } from 'react-icons/fi'
 import UserInfo from "./UserInfo";
 import FriendButton from "./FriendButton";
 import Item from "../../components/Item";
@@ -16,7 +16,7 @@ import AffiliatesPanel from "../Affiliates/AffiliatesPanel";
 import { resolveTab, Tab } from "./tabs";
 import PredictionsPanel from "./PredictionsPanel";
 import ItemCopiesModal from "./ItemCopiesModal";
-import EmailSettings from "./EmailSettings";
+import SettingsPanel from "./SettingsPanel";
 import LockedPanel from "../../components/daisu/shop/LockedPanel";
 import { useLocked } from "../../components/daisu/shop/useLocked";
 import { User } from '../../components/Types'
@@ -194,7 +194,6 @@ const Profile = () => {
           { key: "affiliates" as const, label: i18n.t("profile.affiliates") },
           { key: "predictions" as const, label: i18n.t("predictions.myPositions") },
           { key: "history" as const, label: i18n.t("profile.balanceHistory") },
-          { key: "settings" as const, label: i18n.t("settings.title") },
         ]
       : []),
   ];
@@ -229,8 +228,8 @@ const Profile = () => {
       <div className="flex flex-col items-center w-full bg-[#141225] min-h-screen">
         <div className="flex flex-col p-4 md:p-8 gap-2 items-center w-full max-w-[1312px]">
           <div className="w-full flex justify-center mb-8">
-            <div className="w-full max-w-[1100px] border-b border-line">
-              <div className="flex gap-6 md:gap-8 overflow-x-auto pt-3">
+            <div className="flex w-full max-w-[1100px] items-end gap-6 border-b border-line">
+              <div className="flex min-w-0 flex-1 gap-6 md:gap-8 overflow-x-auto pt-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {tabs.map((t) => {
                   const active = activeTab === t.key;
                   const isNew =
@@ -245,7 +244,7 @@ const Profile = () => {
                         if (activeTab === t.key) return;
                         setSearchParams({ tab: t.key }, { replace: true });
                       }}
-                      className={`relative shrink-0 whitespace-nowrap pb-3 text-sm font-bold uppercase tracking-wider transition-colors ${
+                      className={`relative shrink-0 whitespace-nowrap rounded-none border-0 bg-transparent px-0 pt-0 pb-3 text-sm font-bold uppercase tracking-wider transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light hover:border-0 ${
                         active ? "text-white" : "text-[#84819a] hover:text-white"
                       }`}
                     >
@@ -265,6 +264,21 @@ const Profile = () => {
                   );
                 })}
               </div>
+              {isSameUser && (
+                <button
+                  onClick={() => {
+                    if (activeTab === "settings") return;
+                    setSearchParams({ tab: "settings" }, { replace: true });
+                  }}
+                  aria-label={i18n.t("settings.title")}
+                  title={i18n.t("settings.title")}
+                  className={`flex h-8 shrink-0 items-center rounded-none border-0 bg-transparent px-0 pt-0 pb-3 text-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-light hover:border-0 ${
+                    activeTab === "settings" ? "text-white" : "text-[#84819a] hover:text-white"
+                  }`}
+                >
+                  <FiSettings />
+                </button>
+              )}
             </div>
           </div>
 
@@ -277,7 +291,7 @@ const Profile = () => {
           ) : activeTab === "predictions" ? (
             <PredictionsPanel />
           ) : activeTab === "settings" ? (
-            <EmailSettings />
+            <SettingsPanel />
           ) : activeTab === "collections" ? (
             isSameUser && collectionsLocked ? (
               <LockedPanel unlock="collectionBook" />

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import DiscordSettings from "./DiscordSettings";
 
 const getDiscordLink = vi.fn();
@@ -15,10 +15,13 @@ const success = vi.fn();
 const error = vi.fn();
 vi.mock("react-toastify", () => ({ toast: { success: (...a: unknown[]) => success(...a), error: (...a: unknown[]) => error(...a) } }));
 
+const Address = () => <span data-testid="search">{useLocation().search}</span>;
+
 const draw = (url = "/profile/me?tab=settings") =>
   render(
     <MemoryRouter initialEntries={[url]}>
       <DiscordSettings />
+      <Address />
     </MemoryRouter>
   );
 
@@ -69,5 +72,24 @@ describe("the discord panel in settings", () => {
 
     await waitFor(() => expect(success).toHaveBeenCalledWith(expect.stringMatching(/in the kanicasino server/i), expect.anything()));
     expect(error).not.toHaveBeenCalled();
+  });
+
+  // the outcome is what opened the discord section, so dropping it must not drop the player back on account
+  it("swaps the read outcome for the section it opened", async () => {
+    getDiscordLink.mockResolvedValue({ linked: true, discordName: "brenoj", linkedAt: "2026-09-26", inGuild: true });
+    draw("/profile/me?tab=settings&discord=linked");
+
+    await waitFor(() => expect(success).toHaveBeenCalled());
+    expect(screen.getByTestId("search").textContent).toBe("?tab=settings&section=discord");
+  });
+
+  it("shows who is linked in the card and the actions in its footer", async () => {
+    getDiscordLink.mockResolvedValue({ linked: true, discordName: "brenoj", linkedAt: "2026-09-26", inGuild: false });
+    draw();
+
+    expect(await screen.findByRole("heading", { name: "Discord" })).toBeTruthy();
+    expect(screen.getByText("Linked as brenoj")).toBeTruthy();
+    const footer = screen.getByRole("button", { name: /unlink/i }).parentElement;
+    expect(footer?.contains(screen.getByRole("button", { name: /join the server/i }))).toBe(true);
   });
 });
