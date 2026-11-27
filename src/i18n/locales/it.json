@@ -1348,7 +1348,7 @@
           "what": "La tua parte di ogni pioggia in chat pesa 1,5x, per sempre."
         },
         "stopwatch": {
-          "about": "Accendilo e una cassa ti mostra subito cosa hai trovato invece di far girare la ruota. Spegnilo quando vuoi riavere la ruota. Le battaglie tengono le loro ruote.",
+          "about": "Permette di saltare l'animazione delle casse. Le battaglie mantengono le loro ruote.",
           "name": "Cronometro",
           "opened": "Ora è su ogni pagina delle casse, proprio accanto al pulsante per aprire. Vuoi vedere?",
           "pitch": "Hai guardato quella ruota qualche migliaio di volte. Le ho contate.",

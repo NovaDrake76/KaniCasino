@@ -1348,7 +1348,7 @@
           "what": "Your share of every rain in the chat weighs 1.5x, for good."
         },
         "stopwatch": {
-          "about": "Turn it on and a case shows what you got right away instead of spinning the reel. Turn it off whenever you want the reel back. Battles keep their reels.",
+          "about": "Allows user to skip case animation. Battles keep their reels.",
           "name": "Stopwatch",
           "opened": "It's on every case page now, right by the open button. Want to see?",
           "pitch": "You've watched that reel a few thousand times. I counted.",

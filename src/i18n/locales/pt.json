@@ -1348,7 +1348,7 @@
           "what": "Sua parte de toda chuva no chat pesa 1,5x, pra sempre."
         },
         "stopwatch": {
-          "about": "Com ele ligado, a caixa mostra na hora o que você ganhou, em vez de girar a roleta. Desliga quando quiser a roleta de volta. As batalhas continuam com as roletas delas.",
+          "about": "Permite pular a animação das caixas. As batalhas mantêm suas roletas.",
           "name": "Cronômetro",
           "opened": "Agora ele está em toda página de caixa, bem do lado do botão de abrir. Quer ver?",
           "pitch": "Você já viu essa roleta uns milhares de vezes. Eu contei.",

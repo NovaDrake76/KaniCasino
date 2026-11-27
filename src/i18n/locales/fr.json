@@ -1348,7 +1348,7 @@
           "what": "Ta part de chaque pluie dans le chat pèse 1,5x, pour de bon."
         },
         "stopwatch": {
-          "about": "Active-le et une caisse te montre tout de suite ce que tu as eu au lieu de faire tourner la roulette. Désactive-le quand tu veux retrouver la roulette. Les batailles gardent leurs roulettes.",
+          "about": "Permet de passer l'animation des caisses. Les batailles gardent leurs roulettes.",
           "name": "Chronomètre",
           "opened": "Il est sur chaque page de caisse maintenant, juste à côté du bouton pour ouvrir. Tu veux voir ?",
           "pitch": "Tu as regardé cette roulette quelques milliers de fois. J'ai compté.",

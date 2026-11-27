@@ -1348,7 +1348,7 @@
           "what": "Tu parte de cada lluvia en el chat pesa 1,5x, para siempre."
         },
         "stopwatch": {
-          "about": "Con el interruptor activado, una caja te muestra lo que te tocó al instante en vez de girar la ruleta. Desactívalo cuando quieras recuperar la ruleta. Las batallas conservan sus ruletas.",
+          "about": "Permite saltar la animación de las cajas. Las batallas mantienen sus ruletas.",
           "name": "Cronómetro",
           "opened": "Ya está en cada página de caja, justo al lado del botón de abrir. ¿Quieres verlo?",
           "pitch": "Has visto esa ruleta unos cuantos miles de veces. Las conté.",

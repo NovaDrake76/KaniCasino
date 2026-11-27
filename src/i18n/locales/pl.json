@@ -1356,7 +1356,7 @@
           "what": "Twój udział w każdym deszczu na czacie waży 1,5x, na zawsze."
         },
         "stopwatch": {
-          "about": "Włącz go, a skrzynka od razu pokaże, co ci wypadło, bez kręcenia. Wyłącz go, kiedy tylko zechcesz wrócić do animacji. W bitwach animacja zostaje.",
+          "about": "Pozwala pominąć animację skrzynek. W bitwach animacja zostaje.",
           "name": "Stoper",
           "opened": "Jest teraz na stronie każdej skrzynki, tuż obok przycisku otwierania. Chcesz zobaczyć?",
           "pitch": "Oglądałeś tę animację już kilka tysięcy razy. Liczyłam.",
