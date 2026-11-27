@@ -366,6 +366,7 @@
     "openFreeCount": "Ouvrir gratuitement x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "flèche de droite",
+    "skipAnimation": "Passer l'animation",
     "topArrow": "flèche du haut",
     "viewCollection": "Voir la collection"
   },
@@ -1345,6 +1346,13 @@
           "opened": "Tu le portes. À la prochaine pluie, la plus grosse part est pour toi. Tu veux voir où elle tombe ?",
           "pitch": "Ça te garde au sec. Faux, ça te mouille plus. Ici la pluie, c'est de l'argent.",
           "what": "Ta part de chaque pluie dans le chat pèse 1,5x, pour de bon."
+        },
+        "stopwatch": {
+          "about": "Active-le et une caisse te montre tout de suite ce que tu as eu au lieu de faire tourner la roulette. Désactive-le quand tu veux retrouver la roulette. Les batailles gardent leurs roulettes.",
+          "name": "Chronomètre",
+          "opened": "Il est sur chaque page de caisse maintenant, juste à côté du bouton pour ouvrir. Tu veux voir ?",
+          "pitch": "Tu as regardé cette roulette quelques milliers de fois. J'ai compté.",
+          "what": "Un interrupteur sur chaque page de caisse qui saute la roulette, pour de bon."
         },
         "luckyPencil": {
           "name": "Crayon Porte-bonheur",

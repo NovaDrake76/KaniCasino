@@ -366,6 +366,7 @@
     "openFreeCount": "Apri gratis x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "freccia a destra",
+    "skipAnimation": "Salta animazione",
     "topArrow": "freccia in alto",
     "viewCollection": "Vedi collezione"
   },
@@ -1345,6 +1346,13 @@
           "opened": "Lo indossi. Alla prossima pioggia, la fetta più grande è tua. Vuoi vedere dove cade?",
           "pitch": "Ti tiene asciutto. Bugia, ti bagna di più. Qui la pioggia è denaro.",
           "what": "La tua parte di ogni pioggia in chat pesa 1,5x, per sempre."
+        },
+        "stopwatch": {
+          "about": "Accendilo e una cassa ti mostra subito cosa hai trovato invece di far girare la ruota. Spegnilo quando vuoi riavere la ruota. Le battaglie tengono le loro ruote.",
+          "name": "Cronometro",
+          "opened": "Ora è su ogni pagina delle casse, proprio accanto al pulsante per aprire. Vuoi vedere?",
+          "pitch": "Hai guardato quella ruota qualche migliaio di volte. Le ho contate.",
+          "what": "Un interruttore su ogni pagina delle casse che salta la ruota, per sempre."
         },
         "luckyPencil": {
           "name": "Matita Fortunata",

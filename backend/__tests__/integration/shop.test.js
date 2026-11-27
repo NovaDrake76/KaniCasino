@@ -176,6 +176,24 @@ describe("daisu's shop", () => {
     expect(await Transaction.countDocuments({ userId: user._id })).toBe(0);
   });
 
+  it("sells the stopwatch from level 40 to a player who can pay for it", async () => {
+    // every rung below it held, so it is the next one on the shelf
+    const below = ITEMS.slice(0, ITEMS.findIndex((i) => i.key === "stopwatch"));
+    const climber = (level) => makeUser({ level, walletBalance: 600000, unlocks: below.map(({ key }) => ({ key, via: "bought", at: new Date() })) });
+
+    const early = await climber(39);
+    const refused = await buy(early, "stopwatch");
+    expect(refused.status).toBe(400);
+    expect(refused.body.reason).toBe("level");
+    expect((await User.findById(early._id).lean()).walletBalance).toBe(600000);
+
+    const ready = await climber(40);
+    const res = await buy(ready, "stopwatch");
+    expect(res.body).toMatchObject({ bought: true, key: "stopwatch", walletBalance: 0 });
+    expect(res.body.unlocks).toContain("stopwatch");
+    expect(await Transaction.countDocuments({ userId: ready._id, type: TX.SHOP_PURCHASE, "meta.unlock": "stopwatch" })).toBe(1);
+  });
+
   it("keeps what an account already used, reading its history only the first time", async () => {
     const user = await stocked({ badges: [{ key: "collection:abc", awardedAt: new Date() }] });
     await Transaction.create({ userId: user._id, type: TX.MARKET_SALE, direction: "credit", amount: 40 });

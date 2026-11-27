@@ -366,6 +366,7 @@
     "openFreeCount": "Mở miễn phí x{{count}}",
     "provablyFair": "provably fair",
     "rightArrow": "mũi tên phải",
+    "skipAnimation": "Bỏ qua hoạt ảnh",
     "topArrow": "mũi tên trên",
     "viewCollection": "Xem bộ sưu tập"
   },
@@ -1345,6 +1346,13 @@
           "opened": "Bạn đang mặc nó. Cơn mưa tới, miếng to hơn là của bạn. Muốn xem nó rơi ở đâu không?",
           "pitch": "Nó giữ bạn khô ráo. Nói dối đấy, nó làm bạn ướt hơn. Ở đây mưa là tiền.",
           "what": "Phần của bạn trong mỗi cơn mưa ở chat nặng gấp 1,5 lần, mãi mãi."
+        },
+        "stopwatch": {
+          "about": "Bật lên là hòm cho bạn thấy ngay mình nhận được gì thay vì quay vòng quay. Tắt đi bất cứ lúc nào bạn muốn xem lại vòng quay. Đấu hòm vẫn giữ vòng quay của nó.",
+          "name": "Đồng Hồ Bấm Giờ",
+          "opened": "Giờ nó có trên mọi trang hòm, ngay cạnh nút mở. Muốn xem không?",
+          "pitch": "Bạn đã xem vòng quay đó vài nghìn lần rồi. Tôi đếm đấy.",
+          "what": "Một công tắc trên mọi trang hòm để bỏ qua vòng quay, mãi mãi."
         },
         "luckyPencil": {
           "name": "Bút chì May mắn",

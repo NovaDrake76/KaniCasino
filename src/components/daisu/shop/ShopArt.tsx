@@ -11,6 +11,7 @@ const ART: Record<string, PixelIconName> = {
   merchantSeal: "seal",
   goldenTicket: "goldticket",
   rainCoat: "umbrella",
+  stopwatch: "stopwatch",
   luckyPencil: "pencil",
   pocketNotebook: "notebook",
   readingLamp: "lamp",

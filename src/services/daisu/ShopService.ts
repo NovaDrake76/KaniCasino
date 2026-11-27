@@ -11,7 +11,8 @@ export type UnlockKey =
   | "giftCharm"
   | "merchantSeal"
   | "goldenTicket"
-  | "rainCoat";
+  | "rainCoat"
+  | "stopwatch";
 
 // an unlock opens a feature, a boost adds to the xp every bet earns, a charm adds to it on one game
 export type ItemKind = "unlock" | "boost" | "charm";
