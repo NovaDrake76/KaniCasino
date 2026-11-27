@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveTab } from "./tabs";
+import { resolveSection, resolveTab } from "./tabs";
 
 describe("resolveTab", () => {
   it("defaults to inventory when no tab is asked for", () => {
@@ -28,5 +28,34 @@ describe("resolveTab", () => {
 
   it("falls back to inventory on a junk tab", () => {
     expect(resolveTab("nonsense", true)).toBe("inventory");
+  });
+
+  // the gear opens it now, but old links and the discord redirect still ask for it by name
+  it("still opens settings for the owner only", () => {
+    expect(resolveTab("settings", true)).toBe("settings");
+    expect(resolveTab("settings", false)).toBe("inventory");
+  });
+});
+
+describe("resolveSection", () => {
+  it("opens account when no section is asked for", () => {
+    expect(resolveSection(null, false)).toBe("account");
+  });
+
+  it("opens the section the url names", () => {
+    expect(resolveSection("account", false)).toBe("account");
+    expect(resolveSection("preferences", false)).toBe("preferences");
+    expect(resolveSection("discord", false)).toBe("discord");
+    expect(resolveSection("email", false)).toBe("email");
+  });
+
+  it("falls back to account on a junk section", () => {
+    expect(resolveSection("nonsense", false)).toBe("account");
+  });
+
+  // the oauth redirect carries no section, only its outcome
+  it("opens discord when the link comes back from discord", () => {
+    expect(resolveSection(null, true)).toBe("discord");
+    expect(resolveSection("email", true)).toBe("discord");
   });
 });

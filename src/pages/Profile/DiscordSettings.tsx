@@ -8,6 +8,7 @@ import {
     DiscordLinkState,
 } from "../../services/discord/DiscordLinkService";
 import { useDiscordConnect } from "../../services/discord/useDiscordConnect";
+import SettingsCard from "./SettingsCard";
 import i18n from "../../i18n";
 
 // what the backend redirect can come back saying, and which of those read as a failure
@@ -38,6 +39,8 @@ const DiscordSettings = () => {
         const found = OUTCOMES[outcome] || OUTCOMES.failed;
         toast[found.ok ? "success" : "error"](i18n.t(found.key), { theme: "dark" });
         params.delete("discord");
+        // the outcome is what opened this section, so the url names it once the outcome is gone
+        params.set("section", "discord");
         setParams(params, { replace: true });
     }, [params, setParams]);
 
@@ -57,22 +60,10 @@ const DiscordSettings = () => {
     const outside = state.linked && !state.inGuild;
 
     return (
-        <>
-            <span className="text-lg font-bold">{i18n.t("discord.settingsTitle")}</span>
-
-            <div className="flex items-start justify-between gap-4 bg-surface border border-line rounded-lg p-4">
-                <div className="flex flex-col gap-1">
-                    <span className="font-semibold">
-                        {state.linked
-                            ? i18n.t("discord.linkedAs", { name: state.discordName || "Discord" })
-                            : i18n.t("discord.notLinked")}
-                    </span>
-                    <span className="text-sm text-ink-muted">
-                        {outside ? i18n.t("gift.discordJoinBlurb") : i18n.t("discord.linkHint")}
-                    </span>
-                    {!state.linked && <span className="text-sm text-ink-muted">{i18n.t("gift.discordLinkBlurb")}</span>}
-                </div>
-                <div className="flex shrink-0 flex-wrap justify-end gap-2">
+        <SettingsCard
+            title={i18n.t("discord.settingsTitle")}
+            footer={
+                <>
                     {outside && canJoin && (
                         <button
                             onClick={join}
@@ -98,9 +89,15 @@ const DiscordSettings = () => {
                             <FaDiscord /> {i18n.t("discord.linkButton")}
                         </button>
                     )}
-                </div>
-            </div>
-        </>
+                </>
+            }
+        >
+            <span className="font-semibold">
+                {state.linked
+                    ? i18n.t("discord.linkedAs", { name: state.discordName || "Discord" })
+                    : i18n.t("discord.notLinked")}
+            </span>
+        </SettingsCard>
     );
 };
 

@@ -58,28 +58,21 @@ const BadgeShelf: React.FC<BadgeShelfProps> = ({ badges, selectedBadge, isSameUs
           {isSameUser ? i18n.t("badge.noneYours") : i18n.t("badge.noneTheirs")}
         </p>
       ) : (
-        <>
-          <div className="flex flex-wrap items-center gap-2">
-            {held.map((badge) => (
-              <button
-                key={badge.key}
-                onClick={() => choose(badge.key)}
-                disabled={!isSameUser || saving}
-                className={`notched-sm flex items-center gap-2 border-0 px-3 py-2 text-xs font-semibold outline-none transition-all ${
-                  worn === badge.key ? "bg-[#4F46E5] text-white" : "bg-[#212031] text-[#C9C6DE]"
-                } ${isSameUser ? "hover:text-white" : "cursor-default"}`}
-              >
-                <Badge badge={badge} linked={false} />
-                {badgeName(badge.key, badge.label)}
-              </button>
-            ))}
-          </div>
-          {isSameUser && (
-            <p className="text-[11px] text-[#625F7E]">
-              {worn ? i18n.t("badge.clearHint") : i18n.t("badge.chooseHint")}
-            </p>
-          )}
-        </>
+        <div className="flex flex-wrap items-center gap-2">
+          {held.map((badge) => (
+            <button
+              key={badge.key}
+              onClick={() => choose(badge.key)}
+              disabled={!isSameUser || saving}
+              className={`notched-sm flex items-center gap-2 border-0 px-3 py-2 text-xs font-semibold outline-none transition-all ${
+                worn === badge.key ? "bg-[#4F46E5] text-white" : "bg-[#212031] text-[#C9C6DE]"
+              } ${isSameUser ? "hover:text-white" : "cursor-default"}`}
+            >
+              <Badge badge={badge} linked={false} />
+              {badgeName(badge.key, badge.label)}
+            </button>
+          ))}
+        </div>
       )}
 
       <BadgeCatalog badges={held} worn={worn} open={showAll} setOpen={setShowAll} />

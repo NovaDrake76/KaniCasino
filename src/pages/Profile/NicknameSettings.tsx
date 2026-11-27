@@ -6,6 +6,7 @@ import { MAX_NAME, nicknameProblem } from "../../services/auth/authRules";
 import UserContext from "../../UserContext";
 import Field from "../../components/Field";
 import MainButton from "../../components/MainButton";
+import SettingsCard from "./SettingsCard";
 import i18n from "../../i18n";
 
 const NicknameSettings = () => {
@@ -45,10 +46,21 @@ const NicknameSettings = () => {
     const until = locked && allowedAt ? new Date(allowedAt).toLocaleDateString(i18n.language) : null;
 
     return (
-        <>
-            <span className="text-lg font-bold">{i18n.t("auth.nickname")}</span>
-
-            <form onSubmit={save} className="flex flex-col gap-3 bg-surface border border-line rounded-lg p-4" noValidate>
+        <form onSubmit={save} noValidate>
+            <SettingsCard
+                title={i18n.t("auth.nickname")}
+                footer={
+                    <div className="min-w-[10rem]">
+                        <MainButton
+                            text={i18n.t("settings.saveNickname")}
+                            onClick={() => undefined}
+                            disabled={saving || unchanged || locked}
+                            loading={saving}
+                            submit
+                        />
+                    </div>
+                }
+            >
                 <Field
                     id="nickname"
                     label={i18n.t("settings.newNickname")}
@@ -57,22 +69,12 @@ const NicknameSettings = () => {
                     onBlur={() => setTouched(true)}
                     error={problem ? i18n.t(`auth.errors.${problem}`) : null}
                     touched={touched}
-                    hint={until ? i18n.t("settings.nicknameLocked", { date: until }) : i18n.t("settings.nicknameHint")}
+                    hint={until ? i18n.t("settings.nicknameLocked", { date: until }) : undefined}
                     maxLength={MAX_NAME}
                     autoComplete="nickname"
                 />
-
-                <div className="self-start">
-                    <MainButton
-                        text={i18n.t("settings.saveNickname")}
-                        onClick={() => undefined}
-                        disabled={saving || unchanged || locked}
-                        loading={saving}
-                        submit
-                    />
-                </div>
-            </form>
-        </>
+            </SettingsCard>
+        </form>
     );
 };
 
